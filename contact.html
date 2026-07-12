@@ -2,38 +2,34 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اتصل بنا - HA Marketing</title>
-
-    <link rel="stylesheet" href="css/style.css">
+    <title>طلب خدمة - HA Marketing</title>
 </head>
 
 <body>
 
-<nav>
-    <a href="index.html">الرئيسية</a>
-    <a href="services.html">الخدمات</a>
-    <a href="shop.html">المتجر</a>
-    <a href="contact.html">اتصل بنا</a>
-</nav>
+<h1>طلب خدمة</h1>
 
-<h1>اتصل بنا</h1>
+<form action="https://formspree.io/f/mwvgeqwk" method="POST">
 
-<p>للطلب أو الاستفسار تواصل معنا</p>
+    <input type="text" name="name" placeholder="الاسم" required>
 
-<input type="text" placeholder="الاسم">
+    <br><br>
 
-<br><br>
+    <input type="text" name="phone" placeholder="رقم الهاتف" required>
 
-<input type="text" placeholder="رقم الهاتف">
+    <br><br>
 
-<br><br>
+    <input type="text" name="service" placeholder="نوع الخدمة">
 
-<textarea placeholder="اكتب طلبك هنا"></textarea>
+    <br><br>
 
-<br><br>
+    <textarea name="message" placeholder="اكتب طلبك"></textarea>
 
-<button>إرسال</button>
+    <br><br>
+
+    <button type="submit">إرسال الطلب</button>
+
+</form>
 
 </body>
 </html>
