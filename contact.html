@@ -1,38 +1,47 @@
 <style>
-body {
-    font-family: Arial;
-    direction: rtl;
+body{
+    font-family:Arial;
+    direction:rtl;
+    margin:0;
+    background:#fff;
 }
 
-.service-form {
-    width: 70%;
-    margin: 50px auto;
-    text-align: center;
+.service-form{
+    width:100%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.service-form h1{
+    text-align:center;
+    font-size:40px;
+    margin-bottom:30px;
 }
 
 .service-form input,
-.service-form textarea {
-    width: 100%;
-    padding: 18px;
-    margin: 10px 0;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+.service-form textarea,
+.service-form button{
+    width:100%;
+    box-sizing:border-box;
+    padding:20px;
+    margin:15px 0;
+    font-size:20px;
+    border:1px solid #ccc;
+    border-radius:10px;
 }
 
-.service-form textarea {
-    height: 180px;
+.service-form textarea{
+    height:220px;
+    resize:vertical;
 }
 
-.service-form button {
-    width: 100%;
-    padding: 18px;
-    font-size: 20px;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+.service-form button{
+    background:#000;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    font-size:22px;
+    font-weight:bold;
 }
 </style>
 
@@ -43,13 +52,21 @@ body {
 
 <form action="https://formspree.io/f/mwvgeqwk" method="POST">
 
-<input type="text" name="name" placeholder="الاسم الكامل" required>
+<input type="text" name="name" placeholder="الاسم الكامل (اختياري)">
 
-<input type="text" name="phone" placeholder="رقم الهاتف" required>
+<input type="text" name="phone" placeholder="رقم الهاتف (إجباري)" required>
 
-<input type="text" name="service" placeholder="نوع الخدمة المطلوبة">
+<input type="text" name="location" placeholder="اسم المنطقة (إجباري)" required>
 
-<textarea name="message" placeholder="اكتب تفاصيل الطلب"></textarea>
+<input type="text" name="service" placeholder="نوع الخدمة (اختياري)">
+
+<input type="file" name="file" accept="image/*,video/*">
+
+<p style="font-size:14px; color:#666; margin-top:5px; margin-bottom:15px;">
+إضافة صورة أو فيديو (اختياري)
+</p>
+
+<textarea name="message" placeholder="اكتب تفاصيل الطلب (اختياري)"></textarea>
 
 <button type="submit">إرسال الطلب</button>
 
