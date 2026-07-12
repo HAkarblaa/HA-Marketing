@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر - HA Marketing</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المتجر - HA Marketing</title>
 
-    <link rel="stylesheet" href="css/style.css">
+<style>
+
+body{
+    font-family:Arial;
+    direction:rtl;
+    margin:0;
+    background:#f5f5f5;
+}
+
+nav{
+    background:#000;
+    padding:20px;
+    text-align:center;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 20px;
+    font-size:20px;
+}
+
+h1{
+    text-align:center;
+    margin-top:40px;
+    font-size:45px;
+}
+
+.product{
+    width:90%;
+    max-width:1000px;
+    margin:40px auto;
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 0 15px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+.product img{
+    width:100%;
+    border-radius:10px;
+}
+
+.product h2{
+    font-size:35px;
+    margin-top:25px;
+}
+
+.product p{
+    font-size:22px;
+    line-height:1.8;
+}
+
+.product button{
+    width:100%;
+    padding:20px;
+    font-size:22px;
+    background:black;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+</style>
+
 </head>
 
 <body>
@@ -19,59 +85,19 @@
 
 <h1>المتجر</h1>
 
-<h2>منتجاتنا</h2>
-
-<p>هنا سوف نعرض المنتجات والأسعار والطلبات.</p>
-
-<button>شراء الآن</button>
-
-</body>
-.product{
-    width:90%;
-    max-width:1000px;
-    margin:40px auto;
-    padding:30px;
-    border:1px solid #ddd;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-.product img{
-    width:100%;
-    max-height:500px;
-    object-fit:cover;
-    border-radius:10px;
-}
-
-.product h2{
-    font-size:35px;
-    margin:20px 0;
-}
-
-.product p{
-    font-size:22px;
-    line-height:1.8;
-}
-
-.product button{
-    width:100%;
-    padding:20px;
-    font-size:22px;
-    border:none;
-    border-radius:10px;
-    background:#000;
-    color:#fff;
-    cursor:pointer;
-}
 <div class="product">
+
     <img src="images/product1.jpg" alt="المنتج">
 
     <h2>اسم المنتج</h2>
 
-    <p>وصف المنتج</p>
+    <p>اكتب وصف المنتج هنا.</p>
 
     <p><strong>السعر: 100 دولار</strong></p>
 
     <button>اطلب الآن</button>
+
 </div>
+
+</body>
+</html>
