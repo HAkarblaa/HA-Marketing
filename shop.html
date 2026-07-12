@@ -26,28 +26,52 @@
 <button>شراء الآن</button>
 
 </body>
-<div class="product"></div>
-</html>
-<h2>منتج جديد</h2>
-<img src="images/product1.jpg" width="250">
+.product{
+    width:90%;
+    max-width:1000px;
+    margin:40px auto;
+    padding:30px;
+    border:1px solid #ddd;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
 
-<p>اسم المنتج: جهاز أو قطعة غيار</p>
+.product img{
+    width:100%;
+    max-height:500px;
+    object-fit:cover;
+    border-radius:10px;
+}
 
-<p>السعر: 100 دولار</p>
+.product h2{
+    font-size:35px;
+    margin:20px 0;
+}
 
-<button>شراء الآن</button>
-</div>
+.product p{
+    font-size:22px;
+    line-height:1.8;
+}
 
+.product button{
+    width:100%;
+    padding:20px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    background:#000;
+    color:#fff;
+    cursor:pointer;
+}
 <div class="product">
+    <img src="images/product1.jpg" alt="المنتج">
 
-    <img src="images/canon.jpg" width="250">
+    <h2>اسم المنتج</h2>
 
-    <h2>طابعة Canon</h2>
+    <p>وصف المنتج</p>
 
-    <p>طابعة عالية الجودة للأعمال والطباعة</p>
-
-    <p>السعر: 250 دولار</p>
+    <p><strong>السعر: 100 دولار</strong></p>
 
     <button>اطلب الآن</button>
-
 </div>
