@@ -1,35 +1,58 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <title>طلب خدمة - HA Marketing</title>
-</head>
+<style>
+body {
+    font-family: Arial;
+    direction: rtl;
+}
 
-<body>
+.service-form {
+    width: 70%;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.service-form input,
+.service-form textarea {
+    width: 100%;
+    padding: 18px;
+    margin: 10px 0;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.service-form textarea {
+    height: 180px;
+}
+
+.service-form button {
+    width: 100%;
+    padding: 18px;
+    font-size: 20px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+
+
+<div class="service-form">
 
 <h1>طلب خدمة</h1>
 
 <form action="https://formspree.io/f/mwvgeqwk" method="POST">
 
-    <input type="text" name="name" placeholder="الاسم" required>
+<input type="text" name="name" placeholder="الاسم الكامل" required>
 
-    <br><br>
+<input type="text" name="phone" placeholder="رقم الهاتف" required>
 
-    <input type="text" name="phone" placeholder="رقم الهاتف" required>
+<input type="text" name="service" placeholder="نوع الخدمة المطلوبة">
 
-    <br><br>
+<textarea name="message" placeholder="اكتب تفاصيل الطلب"></textarea>
 
-    <input type="text" name="service" placeholder="نوع الخدمة">
-
-    <br><br>
-
-    <textarea name="message" placeholder="اكتب طلبك"></textarea>
-
-    <br><br>
-
-    <button type="submit">إرسال الطلب</button>
+<button type="submit">إرسال الطلب</button>
 
 </form>
 
-</body>
-</html>
+</div>
