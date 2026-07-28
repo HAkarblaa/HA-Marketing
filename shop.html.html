@@ -265,7 +265,37 @@ function addToCart(productName, productPrice){
   renderCart();
   const box = document.getElementById('cartBox');
   box.style.display = 'block';
-  box.scrollIntoView({behavior:'smooth', block:'center'});
+
+  // يبقى الزبون بمكانه عند إضافة المنتج، ولا ينزل إلى السلة.
+  // يظهر تنبيه صغير فقط للتأكيد أن المنتج انضاف.
+  showAddMessage(productName);
+}
+
+
+function showAddMessage(productName){
+  let message = document.getElementById('addMessage');
+  if(!message){
+    message = document.createElement('div');
+    message.id = 'addMessage';
+    message.style.position = 'fixed';
+    message.style.bottom = '20px';
+    message.style.left = '50%';
+    message.style.transform = 'translateX(-50%)';
+    message.style.background = '#000';
+    message.style.color = '#fff';
+    message.style.padding = '14px 22px';
+    message.style.borderRadius = '10px';
+    message.style.zIndex = '9999';
+    message.style.fontSize = '17px';
+    message.style.boxShadow = '0 4px 14px rgba(0,0,0,.25)';
+    document.body.appendChild(message);
+  }
+  message.textContent = `تمت إضافة ${productName} إلى السلة`;
+  message.style.display = 'block';
+  clearTimeout(window.addMessageTimer);
+  window.addMessageTimer = setTimeout(() => {
+    message.style.display = 'none';
+  }, 1800);
 }
 
 function changeQuantity(index, value){
