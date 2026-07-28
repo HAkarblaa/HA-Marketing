@@ -316,10 +316,38 @@ function showAddMessage(productName){
   }, 1800);
 }
 
-function changeQuantity(index, value){
-  const quantity = Math.max(1, Number(value) || 1);
+function changeQuantity(index, input){
+  // أثناء الكتابة نترك الحقل كما هو حتى يقدر الزبون يمسح ويكتب أكثر من رقم
+  if(input.value === '') return;
+
+  const quantity = Math.max(1, parseInt(input.value, 10) || 1);
   cart[index].quantity = quantity;
-  renderCart();
+
+  const row = input.closest('.cart-item');
+  if(row){
+    row.querySelector('.item-total').textContent = cart[index].price * quantity;
+  }
+  updateCartTotals();
+}
+
+function finishQuantity(index, input){
+  // عند الخروج من الحقل فقط نصحح القيمة الفارغة أو الأقل من 1
+  const quantity = Math.max(1, parseInt(input.value, 10) || 1);
+  input.value = quantity;
+  cart[index].quantity = quantity;
+
+  const row = input.closest('.cart-item');
+  if(row){
+    row.querySelector('.item-total').textContent = cart[index].price * quantity;
+  }
+  updateCartTotals();
+}
+
+function updateCartTotals(){
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  document.getElementById('cartTotal').textContent = total;
+  document.getElementById('hiddenTotal').value = total;
+  prepareOrderDetails();
 }
 
 function removeItem(index){
@@ -343,8 +371,8 @@ function renderCart(){
     row.className = 'cart-item';
     row.innerHTML = `
       <div><strong>${item.name}</strong><br><small>سعر القطعة: ${item.price}</small></div>
-      <input type="number" min="1" value="${item.quantity}" onchange="changeQuantity(${index}, this.value)" oninput="changeQuantity(${index}, this.value)">
-      <div><strong>${itemTotal}</strong></div>
+      <input type="number" min="1" value="${item.quantity}" oninput="changeQuantity(${index}, this)" onblur="finishQuantity(${index}, this)">
+      <div><strong class="item-total">${itemTotal}</strong></div>
       <button type="button" class="remove-btn" onclick="removeItem(${index})">×</button>
     `;
     container.appendChild(row);
