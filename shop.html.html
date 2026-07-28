@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المتجر - HA Marketing</title>
+<style>
+body{font-family:Arial;margin:0;background:#f5f5f5;color:#111}
+h1{text-align:center;margin-top:35px;font-size:42px}
+.product,.order-box{width:90%;max-width:850px;margin:30px auto;background:#fff;border-radius:15px;padding:25px;box-sizing:border-box;box-shadow:0 0 15px rgba(0,0,0,.15);text-align:center}
+.product img{width:100%;max-height:520px;object-fit:contain;border-radius:10px}
+.product h2{font-size:32px}.product p{font-size:21px;line-height:1.7}
+button{width:100%;padding:18px;font-size:21px;background:#000;color:#fff;border:0;border-radius:10px;cursor:pointer}
+.order-box{display:none;text-align:right}
+.order-box h2{text-align:center;font-size:30px}
+label{display:block;margin-top:14px;font-size:18px;font-weight:bold}
+input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;border:1px solid #bbb;border-radius:8px;box-sizing:border-box}
+.total{font-size:22px;text-align:center;background:#f1f1f1;padding:15px;border-radius:8px;margin:18px 0}
+.note{font-size:15px;text-align:center;color:#555}
+</style>
+</head>
+<body>
+<h1>المتجر</h1>
+
+<div class="product">
+  <img src="2.jpg" alt="ستيكر أربعة سنتم">
+  <h2>ستيكر أربعة سنتم</h2>
+  <p>ستيكر لاصق نوعية عادية.</p>
+  <p><strong>سعر كل 1000 قطعة: 10</strong></p>
+  <button type="button" onclick="showOrderForm()">🛒 إضافة إلى السلة</button>
+</div>
+
+<div class="order-box" id="orderBox">
+  <h2>إكمال الطلب</h2>
+  <form action="https://formspree.io/f/mwvgeqwk" method="POST" onsubmit="prepareOrder()">
+    <input type="hidden" name="المنتج" value="ستيكر أربعة سنتم">
+    <input type="hidden" name="السعر_الإجمالي" id="hiddenTotal" value="10">
+
+    <label for="quantity">الكمية</label>
+    <select id="quantity" name="الكمية" onchange="updateTotal()" required>
+      <option value="1">1000 قطعة</option>
+      <option value="2">2000 قطعة</option>
+      <option value="3">3000 قطعة</option>
+      <option value="4">4000 قطعة</option>
+      <option value="5">5000 قطعة</option>
+    </select>
+
+    <div class="total">السعر الكلي: <strong id="totalPrice">10</strong></div>
+
+    <label for="name">الاسم الكامل</label>
+    <input id="name" type="text" name="الاسم" placeholder="اكتب الاسم الكامل" required>
+
+    <label for="phone">رقم الهاتف</label>
+    <input id="phone" type="tel" name="رقم_الهاتف" placeholder="اكتب رقم الهاتف" required>
+
+    <label for="location">المنطقة</label>
+    <input id="location" type="text" name="المنطقة" placeholder="اكتب اسم المنطقة" required>
+
+    <label for="notes">ملاحظات</label>
+    <textarea id="notes" name="ملاحظات" rows="4" placeholder="اكتب أي تفاصيل إضافية (اختياري)"></textarea>
+
+    <button type="submit">إرسال الطلب إلى البريد</button>
+    <p class="note">بعد الضغط، سيُرسل الطلب عبر Formspree إلى بريدك المرتبط بالحساب.</p>
+  </form>
+</div>
+
+<script>
+const packagePrice = 10;
+function showOrderForm(){
+  const box = document.getElementById('orderBox');
+  box.style.display = 'block';
+  box.scrollIntoView({behavior:'smooth'});
+  updateTotal();
+}
+function updateTotal(){
+  const quantity = Number(document.getElementById('quantity').value);
+  const total = quantity * packagePrice;
+  document.getElementById('totalPrice').textContent = total;
+  document.getElementById('hiddenTotal').value = total;
+}
+function prepareOrder(){ updateTotal(); }
+</script>
+</body>
+</html>
