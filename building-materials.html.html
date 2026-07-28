@@ -12,7 +12,16 @@ h1{text-align:center;margin-top:35px;font-size:42px}
 .product img{width:100%;height:260px;object-fit:contain;border-radius:10px;background:#fafafa}
 .product h2{font-size:27px}.product p{font-size:19px;line-height:1.6}
 button{width:100%;padding:16px;font-size:19px;background:#000;color:#fff;border:0;border-radius:10px;cursor:pointer}
-.order-box{display:none;width:90%;max-width:850px;margin:35px auto;text-align:right}
+.cart-box,.order-box{width:90%;max-width:850px;margin:35px auto;background:#fff;border-radius:15px;padding:22px;box-sizing:border-box;box-shadow:0 0 15px rgba(0,0,0,.12)}
+.order-box{display:none;text-align:right}
+.cart-box{display:none}
+.cart-box h2,.order-box h2{text-align:center;font-size:30px}
+.cart-item{display:grid;grid-template-columns:1fr 110px 120px 45px;gap:10px;align-items:center;border-bottom:1px solid #ddd;padding:12px 0}
+.cart-item input{margin:0;padding:9px;text-align:center}
+.remove-btn{background:#b00020;padding:10px;font-size:18px}
+.cart-total{font-size:23px;text-align:center;background:#f1f1f1;padding:15px;border-radius:8px;margin:18px 0}
+.checkout-arrow{font-size:28px;display:inline-block;margin-right:8px;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 .order-box h2{text-align:center;font-size:30px}
 .selected-product{background:#f1f1f1;padding:14px;border-radius:8px;text-align:center;font-size:20px;margin-bottom:15px}
 label{display:block;margin-top:14px;font-size:18px;font-weight:bold}
@@ -33,7 +42,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>أسمنت</h2>
   <p>أسمنت مناسب لأعمال البناء المختلفة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('أسمنت', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('أسمنت', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 1 ===== -->
 
@@ -43,7 +52,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>طابوق</h2>
   <p>طابوق بناء متين للاستخدامات الإنشائية.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('طابوق', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('طابوق', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 2 ===== -->
 
@@ -53,7 +62,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>بلوك</h2>
   <p>بلوك بناء بمقاسات مختلفة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('بلوك', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('بلوك', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 3 ===== -->
 
@@ -63,7 +72,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>رمل</h2>
   <p>رمل بناء نظيف ومناسب لأعمال الصب واللياسة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('رمل', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('رمل', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 4 ===== -->
 
@@ -73,7 +82,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>حصى</h2>
   <p>حصى بناء مناسب للخرسانة والأساسات.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('حصى', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('حصى', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 5 ===== -->
 
@@ -83,7 +92,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>جص</h2>
   <p>جص ناعم لأعمال التشطيب الداخلي.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('جص', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('جص', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 6 ===== -->
 
@@ -93,7 +102,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>حديد تسليح</h2>
   <p>حديد تسليح بمقاسات متعددة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('حديد تسليح', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('حديد تسليح', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 7 ===== -->
 
@@ -103,7 +112,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>سلك ربط</h2>
   <p>سلك ربط مخصص لأعمال حديد التسليح.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('سلك ربط', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('سلك ربط', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 8 ===== -->
 
@@ -113,7 +122,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>أنابيب PVC</h2>
   <p>أنابيب PVC للاستخدامات الصحية ومياه الصرف.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('أنابيب PVC', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('أنابيب PVC', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 9 ===== -->
 
@@ -123,7 +132,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>خزان ماء</h2>
   <p>خزان ماء بأحجام مختلفة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('خزان ماء', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('خزان ماء', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 10 ===== -->
 
@@ -133,7 +142,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>سيراميك</h2>
   <p>سيراميك للأرضيات والجدران بتصاميم متعددة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('سيراميك', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('سيراميك', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 11 ===== -->
 
@@ -143,7 +152,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>بورسلين</h2>
   <p>بورسلين متين للأرضيات والواجهات.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('بورسلين', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('بورسلين', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 12 ===== -->
 
@@ -153,7 +162,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>أصباغ</h2>
   <p>أصباغ داخلية وخارجية بألوان متعددة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('أصباغ', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('أصباغ', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 13 ===== -->
 
@@ -163,7 +172,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>معجون جدران</h2>
   <p>معجون لتسوية وتجهيز الجدران قبل الصبغ.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('معجون جدران', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('معجون جدران', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 14 ===== -->
 
@@ -173,7 +182,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>غراء سيراميك</h2>
   <p>غراء مخصص لتثبيت السيراميك والبورسلين.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('غراء سيراميك', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('غراء سيراميك', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 15 ===== -->
 
@@ -183,7 +192,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>إنترلوك</h2>
   <p>إنترلوك للأرصفة والساحات بمقاسات مختلفة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('إنترلوك', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('إنترلوك', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 16 ===== -->
 
@@ -193,7 +202,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>كاشي</h2>
   <p>كاشي للأرضيات بتصاميم متعددة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('كاشي', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('كاشي', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 17 ===== -->
 
@@ -203,7 +212,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>أبواب</h2>
   <p>أبواب بمقاسات وخامات مختلفة.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('أبواب', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('أبواب', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 18 ===== -->
 
@@ -213,7 +222,7 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>شبابيك</h2>
   <p>شبابيك ألمنيوم وحديد حسب الطلب.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('شبابيك', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('شبابيك', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 19 ===== -->
 
@@ -223,24 +232,26 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
   <h2>خلاطات ماء</h2>
   <p>خلاطات ماء للمطابخ والحمامات.</p>
   <p><strong>السعر: 0</strong></p>
-  <button type="button" onclick="selectProduct('خلاطات ماء', 0)">🛒 إضافة إلى السلة</button>
+  <button type="button" onclick="addToCart('خلاطات ماء', 0)">🛒 إضافة إلى السلة</button>
 </div>
 <!-- ===== نهاية المنتج رقم 20 ===== -->
 
 </div>
 
+<div class="cart-box" id="cartBox">
+  <h2>🛒 سلة المشتريات</h2>
+  <div id="cartItems"></div>
+  <div class="cart-total">المجموع الكلي: <strong id="cartTotal">0</strong></div>
+  <button type="button" onclick="showCheckout()">إكمال الشراء <span class="checkout-arrow">⬇</span></button>
+</div>
+
 <div class="order-box" id="orderBox">
-  <h2>إكمال الطلب</h2>
-  <div class="selected-product">المنتج المختار: <strong id="selectedProductText"></strong></div>
+  <h2>معلومات إكمال الطلب</h2>
   <form action="https://formspree.io/f/mwvgeqwk" method="POST" onsubmit="prepareOrder()">
-    <input type="hidden" name="المنتج" id="hiddenProduct">
-    <input type="hidden" name="سعر_القطعة" id="hiddenUnitPrice">
+    <input type="hidden" name="تفاصيل_الطلب" id="hiddenOrderDetails">
     <input type="hidden" name="السعر_الإجمالي" id="hiddenTotal">
 
-    <label for="quantity">الكمية</label>
-    <input id="quantity" type="number" name="الكمية" min="1" value="1" onchange="updateTotal()" oninput="updateTotal()" required>
-
-    <div class="total">السعر الكلي: <strong id="totalPrice">0</strong></div>
+    <div class="selected-product">راجع السلة أعلاه، ثم اكتب معلوماتك لإرسال الطلب.</div>
 
     <label for="name">الاسم الكامل</label>
     <input id="name" type="text" name="الاسم" placeholder="اكتب الاسم الكامل" required>
@@ -260,25 +271,84 @@ input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;bord
 </div>
 
 <script>
-let selectedPrice = 0;
-function selectProduct(productName, productPrice){
-  selectedPrice = Number(productPrice);
-  document.getElementById('hiddenProduct').value = productName;
-  document.getElementById('hiddenUnitPrice').value = selectedPrice;
-  document.getElementById('selectedProductText').textContent = productName;
-  document.getElementById('quantity').value = 1;
-  const box = document.getElementById('orderBox');
+const cart = [];
+
+function addToCart(productName, productPrice){
+  const price = Number(productPrice);
+  const existing = cart.find(item => item.name === productName);
+  if(existing){
+    existing.quantity += 1;
+  }else{
+    cart.push({name: productName, price: price, quantity: 1});
+  }
+  renderCart();
+  const box = document.getElementById('cartBox');
   box.style.display = 'block';
-  updateTotal();
-  box.scrollIntoView({behavior:'smooth'});
+  box.scrollIntoView({behavior:'smooth', block:'center'});
 }
-function updateTotal(){
-  const quantity = Number(document.getElementById('quantity').value) || 1;
-  const total = quantity * selectedPrice;
-  document.getElementById('totalPrice').textContent = total;
+
+function changeQuantity(index, value){
+  const quantity = Math.max(1, Number(value) || 1);
+  cart[index].quantity = quantity;
+  renderCart();
+}
+
+function removeItem(index){
+  cart.splice(index, 1);
+  renderCart();
+  if(cart.length === 0){
+    document.getElementById('cartBox').style.display = 'none';
+    document.getElementById('orderBox').style.display = 'none';
+  }
+}
+
+function renderCart(){
+  const container = document.getElementById('cartItems');
+  container.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+    const row = document.createElement('div');
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <div><strong>${item.name}</strong><br><small>سعر القطعة: ${item.price}</small></div>
+      <input type="number" min="1" value="${item.quantity}" onchange="changeQuantity(${index}, this.value)" oninput="changeQuantity(${index}, this.value)">
+      <div><strong>${itemTotal}</strong></div>
+      <button type="button" class="remove-btn" onclick="removeItem(${index})">×</button>
+    `;
+    container.appendChild(row);
+  });
+
+  document.getElementById('cartTotal').textContent = total;
+  document.getElementById('hiddenTotal').value = total;
+  prepareOrderDetails();
+}
+
+function showCheckout(){
+  if(cart.length === 0){
+    alert('السلة فارغة. أضف منتجاً أولاً.');
+    return;
+  }
+  const orderBox = document.getElementById('orderBox');
+  orderBox.style.display = 'block';
+  prepareOrderDetails();
+  orderBox.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function prepareOrderDetails(){
+  const details = cart.map((item, index) =>
+    `${index + 1}- ${item.name} | الكمية: ${item.quantity} | سعر القطعة: ${item.price} | المجموع: ${item.price * item.quantity}`
+  ).join('\n');
+  document.getElementById('hiddenOrderDetails').value = details;
+}
+
+function prepareOrder(){
+  prepareOrderDetails();
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   document.getElementById('hiddenTotal').value = total;
 }
-function prepareOrder(){ updateTotal(); }
 </script>
 </body>
 </html>
