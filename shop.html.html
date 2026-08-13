@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المتجر - HA Marketing</title>
+<style>
+body{font-family:Arial;margin:0;background:#f5f5f5;color:#111}
+h1{text-align:center;margin-top:35px;font-size:42px}
+.products-grid{width:94%;max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.product,.order-box{background:#fff;border-radius:15px;padding:18px;box-sizing:border-box;box-shadow:0 0 15px rgba(0,0,0,.12);text-align:center}.product{aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.product img{width:100%;height:48%;object-fit:contain;border-radius:10px;background:#fafafa}
+.product h2{font-size:27px}.product p{font-size:19px;line-height:1.6}
+button{width:100%;padding:16px;font-size:19px;background:#000;color:#fff;border:0;border-radius:10px;cursor:pointer}
+.cart-box,.order-box{width:90%;max-width:850px;margin:35px auto;background:#fff;border-radius:15px;padding:22px;box-sizing:border-box;box-shadow:0 0 15px rgba(0,0,0,.12)}
+.order-box{display:none;text-align:right}
+.cart-box{display:none}
+.cart-box h2,.order-box h2{text-align:center;font-size:30px}
+.cart-item{display:grid;grid-template-columns:1fr 110px 120px 45px;gap:10px;align-items:center;border-bottom:1px solid #ddd;padding:12px 0}
+.cart-item input{margin:0;padding:9px;text-align:center}
+.remove-btn{background:#b00020;padding:10px;font-size:18px}
+.cart-total{font-size:23px;text-align:center;background:#f1f1f1;padding:15px;border-radius:8px;margin:18px 0}
+.checkout-arrow{font-size:28px;display:inline-block;margin-right:8px;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.order-box h2{text-align:center;font-size:30px}
+.selected-product{background:#f1f1f1;padding:14px;border-radius:8px;text-align:center;font-size:20px;margin-bottom:15px}
+label{display:block;margin-top:14px;font-size:18px;font-weight:bold}
+input,select,textarea{width:100%;padding:14px;margin-top:7px;font-size:18px;border:1px solid #bbb;border-radius:8px;box-sizing:border-box}
+.total{font-size:22px;text-align:center;background:#f1f1f1;padding:15px;border-radius:8px;margin:18px 0}
+.note{font-size:15px;text-align:center;color:#555}
+@media(max-width:600px){h1{font-size:30px}.products-grid{width:96%;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product{padding:10px;border-radius:12px}.product h2{font-size:17px;margin:6px 0}.product p{font-size:14px;line-height:1.25;margin:4px 0}.product button{padding:10px 5px;font-size:14px}.product img{height:45%}}
+</style>
+</head>
+<body>
+<h1>المتجر</h1>
+
+<div class="products-grid">
+
+<!-- ===== المنتج رقم 1: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="2.jpg" alt="ستيكر أربعة سنتم">
+  <h2>ستيكر أربعة سنتم</h2>
+  <p>ستيكر لاصق نوعية عادية.</p>
+  <p><strong>السعر: 10</strong></p>
+  <button type="button" onclick="addToCart('ستيكر أربعة سنتم', 10)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 1 ===== -->
+<!-- ===== المنتج رقم 2: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="2.jpg" alt="ستيكر 5 سنتم">
+  <h2>ستيكر 5 سنتم</h2>
+  <p>ستيكر لاصق.</p>
+  <p><strong>السعر: 20</strong></p>
+  <button type="button" onclick="addToCart('ستيكر 5 سنتم', 20)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 2 ===== -->
+<!-- ===== المنتج رقم 3: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="3.jpg" alt="اسم المنتج 3">
+  <h2>اسم المنتج 3</h2>
+  <p>اكتب وصف المنتج 3 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 3', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 3 ===== -->
+<!-- ===== المنتج رقم 4: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="4.jpg" alt="اسم المنتج 4">
+  <h2>اسم المنتج 4</h2>
+  <p>اكتب وصف المنتج 4 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 4', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 4 ===== -->
+<!-- ===== المنتج رقم 5: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="5.jpg" alt="اسم المنتج 5">
+  <h2>اسم المنتج 5</h2>
+  <p>اكتب وصف المنتج 5 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 5', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 5 ===== -->
+<!-- ===== المنتج رقم 6: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="6.jpg" alt="اسم المنتج 6">
+  <h2>اسم المنتج 6</h2>
+  <p>اكتب وصف المنتج 6 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 6', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 6 ===== -->
+<!-- ===== المنتج رقم 7: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="7.jpg" alt="اسم المنتج 7">
+  <h2>اسم المنتج 7</h2>
+  <p>اكتب وصف المنتج 7 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 7', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 7 ===== -->
+<!-- ===== المنتج رقم 8: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="8.jpg" alt="اسم المنتج 8">
+  <h2>اسم المنتج 8</h2>
+  <p>اكتب وصف المنتج 8 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 8', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 8 ===== -->
+<!-- ===== المنتج رقم 9: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="9.jpg" alt="اسم المنتج 9">
+  <h2>اسم المنتج 9</h2>
+  <p>اكتب وصف المنتج 9 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 9', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 9 ===== -->
+<!-- ===== المنتج رقم 10: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="10.jpg" alt="اسم المنتج 10">
+  <h2>اسم المنتج 10</h2>
+  <p>اكتب وصف المنتج 10 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 10', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 10 ===== -->
+<!-- ===== المنتج رقم 11: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="11.jpg" alt="اسم المنتج 11">
+  <h2>اسم المنتج 11</h2>
+  <p>اكتب وصف المنتج 11 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 11', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 11 ===== -->
+<!-- ===== المنتج رقم 12: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="12.jpg" alt="اسم المنتج 12">
+  <h2>اسم المنتج 12</h2>
+  <p>اكتب وصف المنتج 12 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 12', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 12 ===== -->
+<!-- ===== المنتج رقم 13: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="13.jpg" alt="اسم المنتج 13">
+  <h2>اسم المنتج 13</h2>
+  <p>اكتب وصف المنتج 13 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 13', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 13 ===== -->
+<!-- ===== المنتج رقم 14: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="14.jpg" alt="اسم المنتج 14">
+  <h2>اسم المنتج 14</h2>
+  <p>اكتب وصف المنتج 14 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 14', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 14 ===== -->
+<!-- ===== المنتج رقم 15: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="15.jpg" alt="اسم المنتج 15">
+  <h2>اسم المنتج 15</h2>
+  <p>اكتب وصف المنتج 15 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 15', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 15 ===== -->
+<!-- ===== المنتج رقم 16: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="16.jpg" alt="اسم المنتج 16">
+  <h2>اسم المنتج 16</h2>
+  <p>اكتب وصف المنتج 16 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 16', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 16 ===== -->
+<!-- ===== المنتج رقم 17: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="17.jpg" alt="اسم المنتج 17">
+  <h2>اسم المنتج 17</h2>
+  <p>اكتب وصف المنتج 17 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 17', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 17 ===== -->
+<!-- ===== المنتج رقم 18: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="18.jpg" alt="اسم المنتج 18">
+  <h2>اسم المنتج 18</h2>
+  <p>اكتب وصف المنتج 18 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 18', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 18 ===== -->
+<!-- ===== المنتج رقم 19: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="19.jpg" alt="اسم المنتج 19">
+  <h2>اسم المنتج 19</h2>
+  <p>اكتب وصف المنتج 19 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 19', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 19 ===== -->
+<!-- ===== المنتج رقم 20: عدّل الاسم والسعر والوصف والصورة فقط ===== -->
+<div class="product">
+  <img src="20.jpg" alt="اسم المنتج 20">
+  <h2>اسم المنتج 20</h2>
+  <p>اكتب وصف المنتج 20 هنا.</p>
+  <p><strong>السعر: 0</strong></p>
+  <button type="button" onclick="addToCart('اسم المنتج 20', 0)">🛒 إضافة إلى السلة</button>
+</div>
+<!-- ===== نهاية المنتج رقم 20 ===== -->
+
+</div>
+
+<div class="cart-box" id="cartBox">
+  <h2>🛒 سلة المشتريات</h2>
+  <div id="cartItems"></div>
+  <div class="cart-total">المجموع الكلي: <strong id="cartTotal">0</strong></div>
+  <button type="button" onclick="showCheckout()">إكمال الشراء <span class="checkout-arrow">⬇</span></button>
+</div>
+
+<div class="order-box" id="orderBox">
+  <h2>معلومات إكمال الطلب</h2>
+  <form action="https://formspree.io/f/mwvgeqwk" method="POST" onsubmit="prepareOrder()">
+    <input type="hidden" name="تفاصيل_الطلب" id="hiddenOrderDetails">
+    <input type="hidden" name="السعر_الإجمالي" id="hiddenTotal">
+
+    <div class="selected-product">راجع السلة أعلاه، ثم اكتب معلوماتك لإرسال الطلب.</div>
+
+    <label for="name">الاسم الكامل</label>
+    <input id="name" type="text" name="الاسم" placeholder="اكتب الاسم الكامل" required>
+
+    <label for="phone">رقم الهاتف</label>
+    <input id="phone" type="tel" name="رقم_الهاتف" placeholder="اكتب رقم الهاتف" required>
+
+    <label for="location">المنطقة</label>
+    <input id="location" type="text" name="المنطقة" placeholder="اكتب اسم المنطقة" required>
+
+    <label for="notes">ملاحظات</label>
+    <textarea id="notes" name="ملاحظات" rows="4" placeholder="اكتب أي تفاصيل إضافية (اختياري)"></textarea>
+
+    <button type="submit">إرسال الطلب إلى البريد</button>
+    <p class="note">سيصل الطلب إلى بريدك المرتبط بخدمة Formspree.</p>
+  </form>
+</div>
+
+<script>
+const cart = [];
+
+function addToCart(productName, productPrice){
+  const price = Number(productPrice);
+  const existing = cart.find(item => item.name === productName);
+  if(existing){
+    existing.quantity += 1;
+  }else{
+    cart.push({name: productName, price: price, quantity: 1});
+  }
+  renderCart();
+  const box = document.getElementById('cartBox');
+  box.style.display = 'block';
+
+  // يبقى الزبون بمكانه عند إضافة المنتج، ولا ينزل إلى السلة.
+  // يظهر تنبيه صغير فقط للتأكيد أن المنتج انضاف.
+  showAddMessage(productName);
+}
+
+
+function showAddMessage(productName){
+  let message = document.getElementById('addMessage');
+  if(!message){
+    message = document.createElement('div');
+    message.id = 'addMessage';
+    message.style.position = 'fixed';
+    message.style.bottom = '20px';
+    message.style.left = '50%';
+    message.style.transform = 'translateX(-50%)';
+    message.style.background = '#000';
+    message.style.color = '#fff';
+    message.style.padding = '14px 22px';
+    message.style.borderRadius = '10px';
+    message.style.zIndex = '9999';
+    message.style.fontSize = '17px';
+    message.style.boxShadow = '0 4px 14px rgba(0,0,0,.25)';
+    document.body.appendChild(message);
+  }
+  message.textContent = `تمت إضافة ${productName} إلى السلة`;
+  message.style.display = 'block';
+  clearTimeout(window.addMessageTimer);
+  window.addMessageTimer = setTimeout(() => {
+    message.style.display = 'none';
+  }, 1800);
+}
+
+function changeQuantity(index, input){
+  // أثناء الكتابة نترك الحقل كما هو حتى يقدر الزبون يمسح ويكتب أكثر من رقم
+  if(input.value === '') return;
+
+  const quantity = Math.max(1, parseInt(input.value, 10) || 1);
+  cart[index].quantity = quantity;
+
+  const row = input.closest('.cart-item');
+  if(row){
+    row.querySelector('.item-total').textContent = cart[index].price * quantity;
+  }
+  updateCartTotals();
+}
+
+function finishQuantity(index, input){
+  // عند الخروج من الحقل فقط نصحح القيمة الفارغة أو الأقل من 1
+  const quantity = Math.max(1, parseInt(input.value, 10) || 1);
+  input.value = quantity;
+  cart[index].quantity = quantity;
+
+  const row = input.closest('.cart-item');
+  if(row){
+    row.querySelector('.item-total').textContent = cart[index].price * quantity;
+  }
+  updateCartTotals();
+}
+
+function updateCartTotals(){
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  document.getElementById('cartTotal').textContent = total;
+  document.getElementById('hiddenTotal').value = total;
+  prepareOrderDetails();
+}
+
+function removeItem(index){
+  cart.splice(index, 1);
+  renderCart();
+  if(cart.length === 0){
+    document.getElementById('cartBox').style.display = 'none';
+    document.getElementById('orderBox').style.display = 'none';
+  }
+}
+
+function renderCart(){
+  const container = document.getElementById('cartItems');
+  container.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+    const row = document.createElement('div');
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <div><strong>${item.name}</strong><br><small>سعر القطعة: ${item.price}</small></div>
+      <input type="number" min="1" value="${item.quantity}" oninput="changeQuantity(${index}, this)" onblur="finishQuantity(${index}, this)">
+      <div><strong class="item-total">${itemTotal}</strong></div>
+      <button type="button" class="remove-btn" onclick="removeItem(${index})">×</button>
+    `;
+    container.appendChild(row);
+  });
+
+  document.getElementById('cartTotal').textContent = total;
+  document.getElementById('hiddenTotal').value = total;
+  prepareOrderDetails();
+}
+
+function showCheckout(){
+  if(cart.length === 0){
+    alert('السلة فارغة. أضف منتجاً أولاً.');
+    return;
+  }
+  const orderBox = document.getElementById('orderBox');
+  orderBox.style.display = 'block';
+  prepareOrderDetails();
+  orderBox.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function prepareOrderDetails(){
+  const details = cart.map((item, index) =>
+    `${index + 1}- ${item.name} | الكمية: ${item.quantity} | سعر القطعة: ${item.price} | المجموع: ${item.price * item.quantity}`
+  ).join('\n');
+  document.getElementById('hiddenOrderDetails').value = details;
+}
+
+function prepareOrder(){
+  prepareOrderDetails();
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  document.getElementById('hiddenTotal').value = total;
+}
+</script>
+</body>
+</html>
