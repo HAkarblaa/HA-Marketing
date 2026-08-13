@@ -1,0 +1,21 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الدردشة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:28px auto}h1{text-align:center}.rooms{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.room{background:white;border:0;border-radius:18px;min-height:150px;padding:18px;box-shadow:0 4px 16px #0002;font-size:20px;cursor:pointer}.icon{font-size:42px;display:block;margin-bottom:10px}.chat{display:none;background:white;border-radius:18px;padding:16px}.top{display:flex;gap:10px;align-items:center}.name,.send input{width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:16px}.name{margin:10px 0}.messages{height:420px;overflow:auto;background:#f7f7f7;border-radius:12px;padding:12px;margin-bottom:10px}.msg{background:white;padding:10px 12px;border-radius:12px;margin:8px 0}.meta{font-size:12px;color:#777;margin-bottom:5px}.send{display:flex;gap:8px}.send button,.top button{padding:12px 18px;border:0;border-radius:10px;background:#111;color:white;cursor:pointer}.note{text-align:center;color:#777;font-size:13px}</style></head><body>
+<div class="wrap"><section id="rooms"><h1>💬 الدردشة</h1><p style="text-align:center">اختر فئة الدردشة</p><div class="rooms">
+<button class="room" onclick="openRoom('football','كرة القدم')"><span class="icon">⚽</span>كرة القدم</button>
+<button class="room" onclick="openRoom('business','الأعمال')"><span class="icon">💼</span>الأعمال</button>
+<button class="room" onclick="openRoom('students','الطلاب')"><span class="icon">🎓</span>الطلاب</button>
+<button class="room" onclick="openRoom('general','الدردشة العامة')"><span class="icon">💬</span>الدردشة العامة</button></div>
+<p class="note">حالياً الرسائل النصية مفعّلة. الصور والفيديو والصوت نضيفها بالمرحلة التالية.</p></section>
+<section id="chat" class="chat"><div class="top"><button onclick="backRooms()">رجوع</button><h2 id="title"></h2></div>
+<input id="username" class="name" maxlength="30" placeholder="اكتب اسمك"><div id="messages" class="messages"></div>
+<div class="send"><input id="input" maxlength="1000" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')sendMessage()"><button onclick="sendMessage()">إرسال</button></div></section></div>
+<script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let room=null,ch=null;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function openRoom(r,n){room=r;rooms.style.display='none';chat.style.display='block';title.textContent='💬 '+n;await load();subscribe()}
+async function load(){messages.innerHTML='جاري التحميل...';let {data,error}=await db.from('messages').select('*').eq('room',room).order('created_at',{ascending:true}).limit(200);if(error){messages.innerHTML=esc(error.message);return}messages.innerHTML='';(data||[]).forEach(show)}
+function show(m){if(m.room!==room)return;let d=document.createElement('div');d.className='msg';d.innerHTML='<div class="meta"><b>'+esc(m.username||'زائر')+'</b> · '+esc(new Date(m.created_at).toLocaleString('ar-IQ'))+'</div><div>'+esc(m.message||'')+'</div>';messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+function subscribe(){if(ch)db.removeChannel(ch);ch=db.channel('r-'+room+'-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+room},p=>show(p.new)).subscribe()}
+async function sendMessage(){let u=username.value.trim(),m=input.value.trim();if(!u){alert('اكتب اسمك أولاً');return}if(!m)return;let {error}=await db.from('messages').insert({username:u,room,message:m,message_type:'text',file_url:null});if(error)alert(error.message);else input.value=''}
+function backRooms(){if(ch)db.removeChannel(ch);ch=null;room=null;chat.style.display='none';rooms.style.display='block'}
+</script></body></html>
