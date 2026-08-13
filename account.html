@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحساب الشخصي - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#111}
+.wrap{width:94%;max-width:760px;margin:35px auto}h1{text-align:center}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 16px #0001;margin:14px 0}
+label{display:block;font-weight:bold;margin:12px 0 6px}input{width:100%;padding:13px;border:1px solid #ccc;border-radius:9px;font-size:16px}
+button,a.btn{width:100%;display:block;padding:13px;border:0;border-radius:9px;margin-top:10px;text-align:center;text-decoration:none;font-size:16px;cursor:pointer}
+.primary{background:#111;color:#fff}.light{background:#eee;color:#111}.danger{background:#b00020;color:#fff}
+.status{padding:12px;text-align:center;border-radius:10px;background:#fff;margin-bottom:14px}
+</style></head>
+<body><div class="wrap">
+<h1>👤 الحساب الشخصي</h1>
+<div id="status" class="status">جاري التحقق من الحساب...</div>
+
+<div id="guestBox" class="card" style="display:none">
+  <h2>لا يوجد حساب مسجل</h2>
+  <a class="btn primary" href="login.html">تسجيل الدخول</a>
+  <a class="btn light" href="register.html">إنشاء حساب جديد</a>
+</div>
+
+<div id="accountBox" style="display:none">
+  <div class="card">
+    <h2>بيانات الحساب</h2>
+    <label>المعرف</label><input id="username" placeholder="اكتب المعرف">
+    <label>رقم الهاتف</label><input id="phone" type="tel" placeholder="اكتب رقم الهاتف">
+    <button class="primary" onclick="saveProfile()">حفظ التغييرات</button>
+  </div>
+
+  <div class="card">
+    <h2>تغيير الرقم السري</h2>
+    <label>الرقم السري الجديد</label><input id="password" type="password" minlength="6" placeholder="6 أحرف على الأقل">
+    <button class="primary" onclick="changePassword()">تغيير الرقم السري</button>
+  </div>
+
+  <div class="card">
+    <button class="light" onclick="switchAccount()">🔄 تبديل الحساب</button>
+    <button class="danger" onclick="logout()">تسجيل الخروج</button>
+  </div>
+</div>
+
+<a class="btn light" href="index.html">← الرجوع إلى الرئيسية</a>
+</div>
+<script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');
+let currentUser=null;
+async function init(){
+ const {data}=await db.auth.getUser(); currentUser=data.user||null;
+ if(!currentUser){status.textContent='سجل الدخول حتى تستخدم إعدادات الحساب.';guestBox.style.display='block';return;}
+ status.textContent='تم تسجيل الدخول';accountBox.style.display='block';
+ username.value=currentUser.user_metadata?.username||'';
+ phone.value=currentUser.user_metadata?.phone||'';
+}
+async function saveProfile(){
+ const {error}=await db.auth.updateUser({data:{username:username.value.trim(),phone:phone.value.trim()}});
+ alert(error?'تعذر الحفظ: '+error.message:'تم حفظ بيانات الحساب');
+}
+async function changePassword(){
+ const p=password.value;
+ if(p.length<6){alert('الرقم السري لازم يكون 6 أحرف على الأقل');return;}
+ const {error}=await db.auth.updateUser({password:p});
+ if(error) alert('تعذر تغيير الرقم السري: '+error.message); else{alert('تم تغيير الرقم السري');password.value='';}
+}
+async function logout(){await db.auth.signOut();location.href='login.html';}
+async function switchAccount(){await db.auth.signOut();location.href='login.html';}
+init();
+</script></body></html>
