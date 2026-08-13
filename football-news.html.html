@@ -13,7 +13,7 @@ h1{text-align:center;font-size:38px;margin-bottom:8px}
 .status{background:#fff;padding:13px;border-radius:12px;text-align:center;margin-bottom:16px}
 .news-list{display:grid;grid-template-columns:1fr;gap:14px}
 .news-item{background:#fff;border-radius:15px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.09)}
-.news-item h2{font-size:20px;margin:0 0 10px;line-height:1.6}
+.news-item h2{font-size:20px;margin:0 0 10px;line-height:1.7}
 .news-item p{font-size:16px;line-height:1.8;color:#555;margin:0 0 12px}
 .news-item .date{font-size:13px;color:#777;margin-bottom:10px}
 .news-item a{display:inline-block;text-decoration:none;background:#000;color:#fff;padding:10px 14px;border-radius:8px}
@@ -23,28 +23,32 @@ h1{text-align:center;font-size:38px;margin-bottom:8px}
 .actions a{background:#fff;color:#111;border:1px solid #ccc}
 .note{text-align:center;color:#666;font-size:13px;line-height:1.7;margin-top:14px}
 .back{display:block;text-align:center;margin-top:24px;text-decoration:none;color:#111}
-@media(max-width:600px){h1{font-size:30px}.news-item h2{font-size:18px}}
+@media(max-width:600px){
+ h1{font-size:30px}
+ .news-item h2{font-size:18px}
+ .actions{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>⚽ أخبار كرة القدم</h1>
-<p class="subtitle">آخر تحديثات كرة القدم من BBC Sport</p>
+<p class="subtitle">آخر أخبار كرة القدم بالعربي وتتحدث تلقائيًا</p>
 
 <div class="status" id="status">جاري تحميل آخر الأخبار...</div>
 <div class="news-list" id="newsList"></div>
 
 <div class="actions">
   <button type="button" id="refreshBtn">🔄 تحديث الأخبار</button>
-  <a href="https://www.bbc.com/sport/football" target="_blank" rel="noopener">فتح BBC Sport Football</a>
+  <a href="https://news.google.com/search?q=%D9%83%D8%B1%D8%A9%20%D8%A7%D9%84%D9%82%D8%AF%D9%85&hl=ar&gl=IQ&ceid=IQ%3Aar" target="_blank" rel="noopener">فتح أخبار كرة القدم</a>
 </div>
 
-<p class="note">المصدر: BBC Sport عبر RSS. تظهر العناوين وآخر التحديثات تلقائيًا، مع رابط قراءة الخبر من المصدر.</p>
+<p class="note">تُجمع الأخبار تلقائيًا من مصادر عربية مختلفة عبر Google News RSS، لذلك قد تختلف المصادر من خبر إلى آخر.</p>
 <a class="back" href="news.html">← الرجوع إلى آخر الأخبار</a>
 </div>
 
 <script>
-const API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fnewsrss.bbc.co.uk%2Frss%2Fsportonline_uk_edition%2Ffootball%2Frss.xml';
+const API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss%2Fsearch%3Fq%3D%25D9%2583%25D8%25B1%25D8%25A9%2520%25D8%25A7%25D9%2584%25D9%2582%25D8%25AF%25D9%2585%26hl%3Dar%26gl%3DIQ%26ceid%3DIQ%3Aar';
 
 function cleanHtml(html){
   const div = document.createElement('div');
@@ -61,7 +65,8 @@ async function loadNews(){
   const status = document.getElementById('status');
   const list = document.getElementById('newsList');
   const btn = document.getElementById('refreshBtn');
-  status.textContent = 'جاري تحميل آخر الأخبار...';
+
+  status.textContent = 'جاري تحميل آخر أخبار كرة القدم...';
   list.innerHTML = '';
   btn.disabled = true;
 
@@ -72,7 +77,8 @@ async function loadNews(){
     const data = await res.json();
     if(data.status !== 'ok' || !Array.isArray(data.items)) throw new Error('تعذر قراءة الأخبار');
 
-    const items = data.items.slice(0,10);
+    const items = data.items.slice(0,12);
+
     if(items.length === 0){
       status.textContent = 'لا توجد أخبار متاحة حالياً.';
       return;
@@ -93,7 +99,7 @@ async function loadNews(){
       p.textContent = shortText(cleanHtml(item.description));
 
       const link = document.createElement('a');
-      link.href = item.link || 'https://www.bbc.com/sport/football';
+      link.href = item.link;
       link.target = '_blank';
       link.rel = 'noopener';
       link.textContent = 'قراءة الخبر';
@@ -105,10 +111,10 @@ async function loadNews(){
       list.appendChild(article);
     });
 
-    status.textContent = 'تم تحديث الأخبار تلقائيًا';
+    status.textContent = 'تم تحديث أخبار كرة القدم تلقائيًا';
   }catch(err){
     console.error(err);
-    status.textContent = 'تعذر تحميل الأخبار الآن. جرّب التحديث أو افتح BBC Sport مباشرة.';
+    status.textContent = 'تعذر تحميل الأخبار الآن. جرّب زر التحديث مرة أخرى.';
   }finally{
     btn.disabled = false;
   }
