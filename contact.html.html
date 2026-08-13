@@ -1,0 +1,145 @@
+<style>
+body{
+    font-family:Arial;
+    direction:rtl;
+    margin:0;
+    background:#fff;
+}
+
+.service-form{
+    width:100%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.service-form h1{
+    text-align:center;
+    font-size:40px;
+    margin-bottom:30px;
+}
+
+.service-form input,
+.service-form textarea,
+.service-form button{
+    width:100%;
+    box-sizing:border-box;
+    padding:20px;
+    margin:15px 0;
+    font-size:20px;
+    border:1px solid #ccc;
+    border-radius:10px;
+}
+
+.service-form textarea{
+    height:220px;
+    resize:vertical;
+}
+
+.service-form button{
+    background:#000;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.contact-section{
+    width:100%;
+    max-width:900px;
+    margin:35px auto 20px;
+    padding:0 15px;
+    box-sizing:border-box;
+}
+.contact-section h2{
+    text-align:center;
+    font-size:30px;
+    margin-bottom:20px;
+}
+.contact-number{
+    background:#f5f5f5;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:18px;
+    margin:14px 0;
+    text-align:center;
+}
+.contact-number .number{
+    font-size:22px;
+    font-weight:bold;
+    direction:ltr;
+    margin-bottom:14px;
+}
+.contact-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+.contact-actions a{
+    display:block;
+    padding:13px 8px;
+    border-radius:9px;
+    text-decoration:none;
+    font-size:18px;
+    font-weight:bold;
+}
+.call-btn{
+    background:#000;
+    color:#fff;
+}
+.whatsapp-btn{
+    background:#25D366;
+    color:#fff;
+}
+
+</style>
+
+
+
+<div class="contact-section">
+  <h2>اتصل بنا</h2>
+
+  <div class="contact-number">
+    <div class="number">+964 783 709 4984</div>
+    <div class="contact-actions">
+      <a class="call-btn" href="tel:+9647837094984">📞 اتصال مباشر</a>
+      <a class="whatsapp-btn" href="https://wa.me/9647837094984">🟢 واتساب</a>
+    </div>
+  </div>
+
+  <div class="contact-number">
+    <div class="number">+964 776 992 3065</div>
+    <div class="contact-actions">
+      <a class="call-btn" href="tel:+9647769923065">📞 اتصال مباشر</a>
+      <a class="whatsapp-btn" href="https://wa.me/9647769923065">🟢 واتساب</a>
+    </div>
+  </div>
+</div>
+
+<div class="service-form">
+
+<h1>طلب خدمة</h1>
+
+<form action="https://formspree.io/f/mwvgeqwk" method="POST">
+
+<input type="text" name="name" placeholder="الاسم الكامل (اختياري)">
+
+<input type="text" name="phone" placeholder="رقم الهاتف (إجباري)" required>
+
+<input type="text" name="location" placeholder="اسم المنطقة (إجباري)" required>
+
+<input type="text" name="service" placeholder="نوع الخدمة (اختياري)">
+
+<input type="file" name="file" accept="image/*,video/*">
+
+<p style="font-size:14px; color:#666; margin-top:5px; margin-bottom:15px;">
+إضافة صورة أو فيديو (اختياري)
+</p>
+
+<textarea name="message" placeholder="اكتب تفاصيل الطلب (اختياري)"></textarea>
+
+<button type="submit">إرسال الطلب</button>
+
+</form>
+
+</div>
