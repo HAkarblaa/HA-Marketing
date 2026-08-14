@@ -102,9 +102,12 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .price{font-weight:700;font-size:15px}
 
 
-.order-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.extra-options-btn{background:#f1f1f1!important;color:#111!important;border:1px solid #ddd!important}
-.extra-options-btn:disabled{background:#eee!important;color:#aaa!important}
+.extra-options-btn{
+  width:100%;margin-bottom:8px;background:#f1f1f1!important;color:#111!important;
+  border:1px solid #ddd!important;border-radius:12px!important;padding:12px!important;
+  font-size:15px!important;font-weight:700!important;cursor:pointer
+}
+.extra-options-btn:disabled{background:#eee!important;color:#aaa!important;cursor:not-allowed}
 .extra-sheet{
   position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.42);
   display:none;align-items:flex-end;justify-content:center;padding:0
@@ -162,6 +165,15 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .confirm-map.start-confirm{background:#f47b20;color:#fff}
 .confirm-map.end-confirm{background:#1b55d9;color:#fff}
 
+
+.step-select-btn{
+  width:100%;border:0;border-radius:13px;padding:14px 12px;
+  background:#f47b20;color:#fff;font-size:15px;font-weight:700;cursor:pointer
+}
+.step-select-btn.destination{
+  background:#1b55d9;
+}
+
 @media(max-width:560px){
  .metrics{grid-template-columns:1fr 1fr}
  .metrics .metric:last-child{grid-column:1/-1}
@@ -192,36 +204,16 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
   <button id="locateBtn" class="locate-btn" title="تحديد موقعي" aria-label="تحديد موقعي">📍</button>
 
   <div id="centerPin" class="center-pin">📍</div>
-  <button id="confirmMap" class="confirm-map">تأكيد النقطة</button>
 </div>
 
 <div id="selectionPanel" class="box">
 
   <!-- المرحلة الأولى: الانطلاق والوصول -->
   <div id="locationStep">
-    <div class="location-entry">
-      <div class="location-title">
-        <span class="start-pin">●</span>
-        <b>الانطلاق</b>
-        <span id="startText">غير محدد</span>
-      </div>
-    </div>
-
-    <div class="location-entry">
-      <div class="location-title">
-        <span class="end-pin">◆</span>
-        <b>الوصول</b>
-        <span id="endText">غير محدد</span>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button id="pickStart" class="active">📍 الانطلاق</button>
-      <button id="pickEnd">🏁 الوصول</button>
-    </div>
+    <button id="stepSelectBtn" class="step-select-btn" type="button">📍 تثبيت الانطلاق</button>
   </div>
 
-  <!-- المرحلة الثانية: أنواع السيارة والأسعار -->
+    <!-- المرحلة الثانية: أنواع السيارة والأسعار -->
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر نوع السيارة</div>
 
@@ -258,16 +250,14 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 <div id="extraSummary" class="extra-summary"></div>
 
 <div class="order">
-  <div class="order-row">
-    <button id="order" disabled>تأكيد التكسي</button>
-    <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
-  </div>
+  <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
+  <button id="order" disabled>تأكيد التكسي</button>
 </div>
 
 <div id="extraSheet" class="extra-sheet" aria-hidden="true">
   <div class="extra-card">
     <div class="extra-head">
-      <h3>خيارات إضافية</h3>
+      <h3>خيارات إضافية للرحلة</h3>
       <button id="closeExtra" type="button">×</button>
     </div>
 
@@ -304,13 +294,15 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
       </select>
     </div>
 
+    <div style="font-size:12px;color:#777;text-align:center;margin-top:8px">الخيارات اختيارية ويمكن تركها بدون تحديد.</div>
     <button id="saveExtra" class="save-extra" type="button">حفظ الخيارات</button>
   </div>
 </div>
 
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
 // ===== الخيارات الإضافية =====
 const extraSheet=document.getElementById('extraSheet');
 const extraOptionsBtn=document.getElementById('extraOptionsBtn');
@@ -341,13 +333,12 @@ extraOptionsBtn.addEventListener('click',()=>{
   if(extraOptionsBtn.disabled)return;
   extraSheet.classList.add('show');
   extraSheet.setAttribute('aria-hidden','false');
-  history.pushState({extraOptions:true},'',location.href);
 });
 function closeExtraSheet(){
   extraSheet.classList.remove('show');
   extraSheet.setAttribute('aria-hidden','true');
 }
-closeExtra.onclick=()=>history.back();
+closeExtra.onclick=closeExtraSheet;
 
 saveExtra.onclick=()=>{
   let parts=[];
@@ -363,17 +354,11 @@ saveExtra.onclick=()=>{
     extraSummary.style.display='none';
     extraSummary.textContent='';
   }
-  history.back();
+  closeExtraSheet();
 };
 
 extraSheet.addEventListener('click',e=>{
-  if(e.target===extraSheet) history.back();
-});
-
-window.addEventListener('popstate',()=>{
-  if(extraSheet.classList.contains('show')){
-    closeExtraSheet();
-  }
+  if(e.target===extraSheet) closeExtraSheet();
 });
 
 </script>
@@ -402,11 +387,12 @@ function setMode(x){
    searchInput.placeholder=x==='start'?'ابحث عن مكان الانطلاق':'ابحث عن مكان الوصول';
    searchInput.value='';
  }
- confirmMap.textContent=x==='start'?'✓ تثبيت الانطلاق':'✓ تثبيت الوصول';
- confirmMap.classList.toggle('start-confirm',x==='start');
- confirmMap.classList.toggle('end-confirm',x==='end');
- pickStart.classList.toggle('active',x==='start');
- pickEnd.classList.toggle('active',x==='end');
+
+ const stepBtn=document.getElementById('stepSelectBtn');
+ if(stepBtn){
+   stepBtn.textContent=x==='start'?'📍 تثبيت الانطلاق':'🏁 تثبيت الوصول';
+   stepBtn.classList.toggle('destination',x==='end');
+ }
  notice.textContent=x==='start'
    ? 'حرّك الخريطة وحدد نقطة الانطلاق.'
    : 'حرّك الخريطة وحدد نقطة الوصول.';
@@ -414,16 +400,31 @@ function setMode(x){
 
 function startMapPick(){
  centerPin.classList.add('show');
- confirmMap.classList.add('show');
+
 }
 
 function stopMapPick(){
  centerPin.classList.remove('show');
- confirmMap.classList.remove('show');
+
 }
 
-pickStart.onclick=()=>{setMode('start');startMapPick()};
-pickEnd.onclick=()=>{setMode('end');startMapPick()};
+
+
+document.getElementById('stepSelectBtn').onclick=async()=>{
+  const p=await snap(map.getCenter());
+
+  let label='';
+  if(mode==='start'){
+    label=window.pendingStartLabel||'تم تحديد نقطة الانطلاق';
+    window.pendingStartLabel='';
+  }else{
+    label=window.pendingEndLabel||'تم تحديد نقطة الوصول';
+    window.pendingEndLabel='';
+  }
+
+  setPoint(mode,p,label);
+  history.pushState({taxiStep:mode},'',location.href);
+};
 
 async function snap(p){
  try{
@@ -459,7 +460,7 @@ function setPoint(kind,p,label){
    start=p;
    if(sm)map.removeLayer(sm);
    sm=L.marker(p,{icon:startIcon()}).addTo(map).bindPopup('الانطلاق');
-   startText.textContent=label||'تم تحديد نقطة الانطلاق';
+   
 
    if(!end){
      setMode('end');
@@ -469,7 +470,7 @@ function setPoint(kind,p,label){
    end=p;
    if(em)map.removeLayer(em);
    em=L.marker(p,{icon:endIcon()}).addTo(map).bindPopup('الوصول');
-   endText.textContent=label||'تم تحديد نقطة الوصول';
+   
    stopMapPick();
 
    // بعد إكمال الوصول نخفي قائمة الانطلاق والوصول بالكامل
@@ -486,23 +487,7 @@ function setPoint(kind,p,label){
  calc();
 }
 
-confirmMap.onclick=async()=>{
- const p=await snap(map.getCenter());
 
- let label='';
- if(mode==='start'){
-   label=window.pendingStartLabel||'تم تحديد نقطة الانطلاق';
-   window.pendingStartLabel='';
- }else{
-   label=window.pendingEndLabel||'تم تحديد نقطة الوصول';
-   window.pendingEndLabel='';
- }
-
- setPoint(mode,p,label);
-
- // نخزن خطوة حتى زر الرجوع يرجع خطوة مو يطلع
- history.pushState({taxiStep:mode},'',location.href);
-};
 
 locateBtn.onclick=()=>{
  if(!navigator.geolocation){
@@ -520,7 +505,7 @@ locateBtn.onclick=()=>{
    map.setView(p,16);
    startMapPick();
    window.pendingStartLabel='موقعك الحالي';
-   startText.textContent='موقعك الحالي — حرّك الدبوس إذا تريد ثم ثبّت الانطلاق';
+   
    notice.textContent='تم نقل الخريطة إلى موقعك. حرّك الدبوس إذا تريد، ثم اضغط «تثبيت الانطلاق».';
  },()=>{
    notice.textContent='تعذر تحديد موقعك. تأكد من تشغيل GPS والسماح للموقع.';
@@ -566,10 +551,10 @@ async function searchCurrentPlace(){
 
        if(kind==='start'){
          window.pendingStartLabel=x.display_name;
-         startText.textContent='عدّل مكان الدبوس ثم ثبّت الانطلاق';
+         
        }else{
          window.pendingEndLabel=x.display_name;
-         endText.textContent='عدّل مكان الدبوس ثم ثبّت الوصول';
+         
        }
 
        box.style.display='none';
@@ -736,7 +721,7 @@ function backOneStep(){
      em=null;
    }
 
-   endText.textContent='غير محدد';
+   
 
    // الرجوع خطوة يرجع قائمة الانطلاق والوصول بدل أنواع التكسي.
    document.getElementById('vehicleStep').style.display='none';
@@ -760,7 +745,7 @@ function backOneStep(){
      sm=null;
    }
 
-   startText.textContent='غير محدد';
+   
 
    setMode('start');
    startMapPick();
