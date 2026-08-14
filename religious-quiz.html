@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>أسئلة دينية - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:95%;max-width:1000px;margin:26px auto;position:relative}
+h1{text-align:center;margin-bottom:7px}
+.sub{text-align:center;color:#666;margin-bottom:18px}
+.game{display:grid;grid-template-columns:80px 1fr;gap:16px;align-items:start}
+.side{position:sticky;top:18px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.stage-ball{width:62px;height:62px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;position:relative}
+.stage-ball::after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:#fff;top:3px;left:50%;transform:translateX(-50%);animation:orbit 2s linear infinite;transform-origin:0 28px}
+@keyframes orbit{from{transform:rotate(0deg) translateX(28px)}to{transform:rotate(360deg) translateX(28px)}}
+.arrow-up{font-size:32px;transition:transform .3s}
+.progress-rail{height:370px;width:10px;border-radius:999px;background:#ddd;position:relative;overflow:visible}
+.progress-fill{position:absolute;bottom:0;left:0;right:0;background:#111;border-radius:999px;height:0%;transition:height .35s}
+.progress-arrow{position:absolute;left:50%;transform:translate(-50%,50%);bottom:0;font-size:22px;transition:bottom .35s}
+.quiz-card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 4px 18px #0001;min-height:430px}
+.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+.timer{display:flex;align-items:center;gap:10px}
+.timer-ring{width:54px;height:54px;border-radius:50%;background:conic-gradient(#111 var(--p,100%),#ddd 0);display:flex;align-items:center;justify-content:center;position:relative}
+.timer-ring::before{content:"";position:absolute;inset:6px;background:#fff;border-radius:50%}
+.timer-ring span{position:relative;font-weight:700;font-size:16px}
+.stage-text{font-weight:700}
+.question{font-size:25px;line-height:1.7;margin:18px 0 22px}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.answer{border:2px solid #e3e3e3;background:#fafafa;border-radius:14px;padding:16px;text-align:right;font-size:17px;cursor:pointer;transition:.2s}
+.answer:hover{border-color:#aaa}
+.answer.correct{background:#e9f8ed;border-color:#34a853}
+.answer.wrong{background:#fdeaea;border-color:#d93025}
+.answer:disabled{cursor:default}
+.mark{font-size:52px;text-align:center;min-height:65px;margin-top:14px}
+.mark.ok{color:#1e9e4a}.mark.bad{color:#d93025}
+.result{display:none;text-align:center}
+.result.show{display:block}
+.score-circle{width:180px;height:180px;border-radius:50%;border:12px solid #111;margin:20px auto;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-circle b{font-size:42px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.stat{background:#f7f7f7;border-radius:12px;padding:14px}
+.restart{margin-top:18px;border:0;border-radius:12px;background:#111;color:#fff;padding:13px 20px;font-size:16px;cursor:pointer}
+.back{display:block;text-align:center;margin:26px 0;text-decoration:none;color:#111}
+@media(max-width:700px){
+ .game{grid-template-columns:58px 1fr;gap:8px}
+ .stage-ball{width:50px;height:50px;font-size:16px}
+ .progress-rail{height:300px}
+ .quiz-card{padding:16px}
+ .question{font-size:21px}
+ .answers{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>❓ أسئلة دينية</h1>
+<p class="sub">20 مرحلة في كل جولة — الأسئلة تتغير تلقائياً من مجموعة كبيرة.</p>
+
+<div class="game">
+ <aside class="side">
+   <div class="arrow-up">⬆️</div>
+   <div class="stage-ball"><span id="sideStage">1</span></div>
+   <div class="progress-rail">
+     <div id="progressFill" class="progress-fill"></div>
+     <div id="progressArrow" class="progress-arrow">⬆️</div>
+   </div>
+ </aside>
+
+ <main class="quiz-card">
+   <div id="quizView">
+     <div class="topline">
+       <div class="stage-text">المرحلة <span id="stageNum">1</span> من 20</div>
+       <div class="timer">
+         <div id="timerRing" class="timer-ring"><span id="timerNum">15</span></div>
+       </div>
+     </div>
+
+     <div id="question" class="question"></div>
+     <div id="answers" class="answers"></div>
+     <div id="mark" class="mark"></div>
+   </div>
+
+   <div id="resultView" class="result">
+     <h2>انتهت المراحل 🎉</h2>
+     <div class="score-circle">
+       <b id="percent">0%</b>
+       <span>النتيجة</span>
+     </div>
+     <div class="stats">
+       <div class="stat"><b id="correctCount">0</b><div>إجابات صحيحة</div></div>
+       <div class="stat"><b id="wrongCount">0</b><div>إجابات خاطئة</div></div>
+       <div class="stat"><b id="skipCount">0</b><div>بدون جواب</div></div>
+     </div>
+     <button id="restartBtn" class="restart" type="button">بدء جولة جديدة</button>
+   </div>
+ </main>
+</div>
+
+<a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a>
+</div>
+
+<script>
+const BANK=[{"q": "كم عدد أركان الإسلام المشهورة؟", "a": ["3", "4", "5", "6"], "c": 2}, {"q": "ما اسم أول سورة في القرآن الكريم؟", "a": ["البقرة", "الفاتحة", "الناس", "الإخلاص"], "c": 1}, {"q": "كم عدد الصلوات اليومية المفروضة؟", "a": ["3", "4", "5", "6"], "c": 2}, {"q": "في أي شهر يصوم المسلمون؟", "a": ["محرم", "رجب", "رمضان", "شعبان"], "c": 2}, {"q": "ما قبلة المسلمين في الصلاة؟", "a": ["المسجد النبوي", "الكعبة المشرفة", "المسجد الأقصى", "غار حراء"], "c": 1}, {"q": "ما اسم الكتاب الذي أُنزل على النبي محمد ﷺ؟", "a": ["التوراة", "الزبور", "القرآن الكريم", "الإنجيل"], "c": 2}, {"q": "ما السورة التي تُسمّى أم الكتاب؟", "a": ["يس", "الفاتحة", "الرحمن", "الملك"], "c": 1}, {"q": "كم عدد أجزاء القرآن الكريم؟", "a": ["20", "25", "30", "40"], "c": 2}, {"q": "ما اسم الليلة التي نزل فيها القرآن؟", "a": ["ليلة الإسراء", "ليلة القدر", "ليلة النصف من شعبان", "ليلة الجمعة"], "c": 1}, {"q": "ما أول شهر في التقويم الهجري؟", "a": ["رمضان", "رجب", "محرم", "صفر"], "c": 2}, {"q": "من هو النبي الذي ابتلعه الحوت؟", "a": ["يونس عليه السلام", "يوسف عليه السلام", "أيوب عليه السلام", "موسى عليه السلام"], "c": 0}, {"q": "من هو النبي الذي بنى السفينة؟", "a": ["إبراهيم عليه السلام", "نوح عليه السلام", "إسماعيل عليه السلام", "هود عليه السلام"], "c": 1}, {"q": "ما اسم والد النبي يوسف عليه السلام؟", "a": ["إسحاق عليه السلام", "يعقوب عليه السلام", "إبراهيم عليه السلام", "داود عليه السلام"], "c": 1}, {"q": "من هو كليم الله؟", "a": ["موسى عليه السلام", "عيسى عليه السلام", "محمد ﷺ", "نوح عليه السلام"], "c": 0}, {"q": "ما السورة التي لا تبدأ بالبسملة؟", "a": ["التوبة", "الأنفال", "الفتح", "الحديد"], "c": 0}, {"q": "كم عدد سور القرآن الكريم؟", "a": ["110", "112", "114", "120"], "c": 2}, {"q": "ما أطول سورة في القرآن الكريم؟", "a": ["آل عمران", "النساء", "البقرة", "الأعراف"], "c": 2}, {"q": "ما أقصر سورة في القرآن الكريم؟", "a": ["العصر", "الإخلاص", "الكوثر", "الفلق"], "c": 2}, {"q": "ما اسم أم الإمام الحسن والإمام الحسين عليهما السلام؟", "a": ["خديجة عليها السلام", "فاطمة الزهراء عليها السلام", "زينب عليها السلام", "أم البنين عليها السلام"], "c": 1}, {"q": "من هو والد الإمام الحسن والإمام الحسين عليهما السلام؟", "a": ["الإمام علي عليه السلام", "جعفر الطيار", "العباس بن عبد المطلب", "حمزة بن عبد المطلب"], "c": 0}, {"q": "في أي مدينة يوجد مرقد الإمام الحسين عليه السلام؟", "a": ["النجف", "الكاظمية", "كربلاء", "سامراء"], "c": 2}, {"q": "في أي مدينة يوجد مرقد الإمام علي عليه السلام؟", "a": ["النجف", "كربلاء", "بغداد", "المدينة"], "c": 0}, {"q": "ما اسم أخ الإمام الحسين عليه السلام المشهور بحامل اللواء في كربلاء؟", "a": ["علي الأكبر", "القاسم", "العباس عليه السلام", "مسلم بن عقيل"], "c": 2}, {"q": "ما اليوم الذي وقعت فيه واقعة الطف؟", "a": ["1 محرم", "7 محرم", "10 محرم", "20 صفر"], "c": 2}, {"q": "ما المناسبة التي توافق 20 صفر؟", "a": ["عاشوراء", "الأربعين", "عيد الغدير", "المبعث"], "c": 1}, {"q": "من هو سفير الإمام الحسين عليه السلام إلى الكوفة؟", "a": ["مسلم بن عقيل", "حبيب بن مظاهر", "زهير بن القين", "الحر الرياحي"], "c": 0}, {"q": "ما اسم ابنة الإمام علي عليه السلام المشهورة بخطبتها بعد كربلاء؟", "a": ["فاطمة", "زينب عليها السلام", "رقية", "سكينة"], "c": 1}, {"q": "ما اسم الشهر الذي تقع فيه واقعة عاشوراء؟", "a": ["صفر", "محرم", "رجب", "شعبان"], "c": 1}, {"q": "ما السورة التي تبدأ بـ «قل هو الله أحد»؟", "a": ["الفلق", "الناس", "الإخلاص", "الكافرون"], "c": 2}, {"q": "ما السورة التي تبدأ بـ «الحمد لله رب العالمين»؟", "a": ["الفاتحة", "البقرة", "يس", "الرحمن"], "c": 0}, {"q": "ما الصلاة التي تكون في منتصف النهار؟", "a": ["الفجر", "الظهر", "المغرب", "العشاء"], "c": 1}, {"q": "أي صلاة تكون بعد غروب الشمس؟", "a": ["الفجر", "الظهر", "العصر", "المغرب"], "c": 3}, {"q": "ما اسم الزكاة التي تُخرج في نهاية شهر رمضان؟", "a": ["زكاة المال", "زكاة الفطر", "الخمس", "الصدقة الجارية"], "c": 1}, {"q": "ما اسم الحج الذي يكون في مكة المكرمة؟", "a": ["العمرة", "الحج", "الزيارة", "الاعتكاف"], "c": 1}, {"q": "ما اسم الماء المبارك الموجود قرب الكعبة؟", "a": ["الكوثر", "زمزم", "الفرات", "سلسبيل"], "c": 1}, {"q": "ما اسم الجبل الذي يوجد فيه غار حراء؟", "a": ["جبل أحد", "جبل النور", "جبل عرفات", "جبل ثور"], "c": 1}, {"q": "أين هاجر النبي محمد ﷺ من مكة؟", "a": ["إلى الطائف", "إلى المدينة", "إلى القدس", "إلى اليمن"], "c": 1}, {"q": "ما اسم المسجد الموجود في المدينة المنورة؟", "a": ["المسجد الحرام", "المسجد النبوي", "مسجد الكوفة", "المسجد الأقصى"], "c": 1}, {"q": "ما الشهر الذي يسبق رمضان؟", "a": ["رجب", "شعبان", "شوال", "صفر"], "c": 1}, {"q": "ما الشهر الذي يأتي بعد رمضان؟", "a": ["شوال", "شعبان", "محرم", "رجب"], "c": 0}, {"q": "ما العيد الذي يأتي بعد شهر رمضان؟", "a": ["عيد الأضحى", "عيد الغدير", "عيد الفطر", "المبعث"], "c": 2}, {"q": "ما العيد الذي يكون في 10 ذي الحجة؟", "a": ["عيد الفطر", "عيد الأضحى", "عيد الغدير", "رأس السنة الهجرية"], "c": 1}, {"q": "في أي شهر هجري يقع عيد الغدير؟", "a": ["محرم", "رمضان", "ذو الحجة", "رجب"], "c": 2}, {"q": "كم مرة يُذكر «الله أكبر» في تسبيحة الزهراء حسب الترتيب الذي تعتمدونه في المسبحة؟", "a": ["33", "34", "35", "36"], "c": 1}, {"q": "بعد «الله أكبر» في تسبيحة الزهراء حسب ترتيب المسبحة في الموقع، ماذا يأتي؟", "a": ["سبحان الله", "الحمد لله", "لا إله إلا الله", "أستغفر الله"], "c": 1}, {"q": "ما اسم صلاة الصبح؟", "a": ["الفجر", "الظهر", "العصر", "العشاء"], "c": 0}, {"q": "ما أول ركن في الشهادة؟", "a": ["الصلاة", "الشهادتان", "الزكاة", "الحج"], "c": 1}, {"q": "ما اسم السورة التي تسمى قلب القرآن عند كثير من المسلمين؟", "a": ["يس", "الفاتحة", "الملك", "النبأ"], "c": 0}, {"q": "ما اسم السورة التي فيها آية الكرسي؟", "a": ["آل عمران", "البقرة", "النساء", "المائدة"], "c": 1}, {"q": "من هو النبي الذي وُلد من غير أب؟", "a": ["آدم عليه السلام", "عيسى عليه السلام", "يحيى عليه السلام", "إدريس عليه السلام"], "c": 1}, {"q": "من هو النبي الذي أُلقي في النار فكانت عليه برداً وسلاماً؟", "a": ["إبراهيم عليه السلام", "موسى عليه السلام", "يوسف عليه السلام", "داود عليه السلام"], "c": 0}, {"q": "من هو النبي الذي اشتهر بالصبر على البلاء؟", "a": ["أيوب عليه السلام", "سليمان عليه السلام", "هارون عليه السلام", "زكريا عليه السلام"], "c": 0}, {"q": "ما اسم والد السيدة فاطمة الزهراء عليها السلام؟", "a": ["الإمام علي عليه السلام", "النبي محمد ﷺ", "حمزة", "جعفر"], "c": 1}, {"q": "ما اسم زوج السيدة فاطمة الزهراء عليها السلام؟", "a": ["الإمام علي عليه السلام", "الإمام الحسن عليه السلام", "جعفر الطيار", "العباس"], "c": 0}, {"q": "من هو حفيد النبي محمد ﷺ الذي استشهد في كربلاء؟", "a": ["الإمام الحسن عليه السلام", "الإمام الحسين عليه السلام", "الإمام السجاد عليه السلام", "الإمام الباقر عليه السلام"], "c": 1}, {"q": "ما اسم والد الإمام علي عليه السلام؟", "a": ["عبد الله", "أبو طالب", "عبد المطلب", "حمزة"], "c": 1}, {"q": "ما اسم عم النبي ﷺ الذي عُرف بسيد الشهداء قبل كربلاء؟", "a": ["العباس", "حمزة", "أبو طالب", "أبو لهب"], "c": 1}, {"q": "ما المسجد الذي تُشد إليه الرحال في مكة؟", "a": ["المسجد النبوي", "المسجد الحرام", "مسجد قباء", "مسجد الكوفة"], "c": 1}, {"q": "ما اسم أول قبلة للمسلمين؟", "a": ["الكعبة", "بيت المقدس", "مسجد قباء", "عرفات"], "c": 1}, {"q": "أي عبادة تُؤدى بالطواف حول الكعبة؟", "a": ["الصيام", "الحج والعمرة", "الزكاة", "الاعتكاف فقط"], "c": 1}, {"q": "ما اسم الوقوف في اليوم التاسع من ذي الحجة؟", "a": ["وقفة عرفة", "ليلة القدر", "المبعث", "الغدير"], "c": 0}, {"q": "ما اسم اليوم العاشر من محرم؟", "a": ["الأربعين", "عاشوراء", "الغدير", "عرفة"], "c": 1}, {"q": "من هو الإمام الرابع عند الإمامية؟", "a": ["الإمام الباقر", "الإمام السجاد", "الإمام الصادق", "الإمام الكاظم"], "c": 1}, {"q": "من هو الإمام الخامس عند الإمامية؟", "a": ["الإمام الباقر", "الإمام الرضا", "الإمام الجواد", "الإمام الهادي"], "c": 0}, {"q": "من هو الإمام السادس عند الإمامية؟", "a": ["الإمام الصادق", "الإمام الكاظم", "الإمام الرضا", "الإمام العسكري"], "c": 0}, {"q": "في أي مدينة يقع مرقد الإمامين الكاظمين عليهما السلام؟", "a": ["سامراء", "كربلاء", "الكاظمية", "النجف"], "c": 2}, {"q": "في أي مدينة يقع مرقد الإمامين الهادي والعسكري عليهما السلام؟", "a": ["سامراء", "الكاظمية", "النجف", "قم"], "c": 0}, {"q": "ما اسم الإمام الثامن عند الإمامية؟", "a": ["الإمام الكاظم", "الإمام الرضا", "الإمام الجواد", "الإمام الهادي"], "c": 1}, {"q": "أين يقع مرقد الإمام الرضا عليه السلام؟", "a": ["قم", "مشهد", "النجف", "كربلاء"], "c": 1}, {"q": "ما اسم السيدة المدفونة في قم والمشهورة بلقب المعصومة؟", "a": ["فاطمة المعصومة عليها السلام", "زينب الكبرى", "أم البنين", "سكينة"], "c": 0}, {"q": "ما الكتاب الذي يجمع سوراً وآيات؟", "a": ["نهج البلاغة", "الصحيفة السجادية", "القرآن الكريم", "مفاتيح الجنان"], "c": 2}, {"q": "كم سجدة في كل ركعة من الصلاة؟", "a": ["واحدة", "اثنتان", "ثلاث", "أربع"], "c": 1}, {"q": "ما الذكر المشهور في السجود؟", "a": ["سبحان ربي الأعلى وبحمده", "سبحان ربي العظيم وبحمده", "الله أكبر فقط", "الحمد لله"], "c": 0}, {"q": "ما الذكر المشهور في الركوع؟", "a": ["سبحان ربي الأعلى وبحمده", "سبحان ربي العظيم وبحمده", "السلام عليكم", "أستغفر الله"], "c": 1}, {"q": "ما اسم الأذان الذي يُعلن دخول وقت الصلاة؟", "a": ["الإقامة", "الأذان", "التكبير فقط", "الدعاء"], "c": 1}, {"q": "ما العبادة التي تمسك فيها عن الطعام والشراب من الفجر إلى المغرب؟", "a": ["الصلاة", "الصيام", "الحج", "الزكاة"], "c": 1}, {"q": "ما اسم المسجد الأقصى所在 في أي مدينة؟", "a": ["مكة", "المدينة", "القدس", "دمشق"], "c": 2}, {"q": "ما اسم السورة التي تبدأ بـ «تبارك الذي بيده الملك»؟", "a": ["الملك", "الرحمن", "النبأ", "الواقعة"], "c": 0}, {"q": "ما السورة التي فيها قصة أصحاب الفيل؟", "a": ["قريش", "الفيل", "الماعون", "الكوثر"], "c": 1}, {"q": "ما السورة التي تبدأ بـ «إنا أعطيناك الكوثر»؟", "a": ["الكوثر", "الإخلاص", "الفلق", "النصر"], "c": 0}, {"q": "ما السورة التي تبدأ بـ «قل أعوذ برب الناس»؟", "a": ["الفلق", "الناس", "الإخلاص", "الكافرون"], "c": 1}];
+const TOTAL=20;
+let questions=[],index=0,correct=0,wrong=0,skipped=0,timeLeft=15,timer=null,locked=false;
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function newGame(){
+  questions=shuffle(BANK).slice(0,TOTAL);
+  index=0;correct=0;wrong=0;skipped=0;
+  document.getElementById('resultView').classList.remove('show');
+  document.getElementById('quizView').style.display='block';
+  renderQuestion();
+}
+
+function updateProgress(){
+  const stage=index+1;
+  document.getElementById('stageNum').textContent=Math.min(stage,TOTAL);
+  document.getElementById('sideStage').textContent=Math.min(stage,TOTAL);
+  const pct=(index/TOTAL)*100;
+  document.getElementById('progressFill').style.height=pct+'%';
+  document.getElementById('progressArrow').style.bottom=pct+'%';
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft=15;
+  renderTimer();
+  timer=setInterval(()=>{
+    timeLeft--;
+    renderTimer();
+    if(timeLeft<=0){
+      clearInterval(timer);
+      if(!locked) handleTimeout();
+    }
+  },1000);
+}
+
+function renderTimer(){
+  document.getElementById('timerNum').textContent=timeLeft;
+  document.getElementById('timerRing').style.setProperty('--p',(timeLeft/15*100)+'%');
+}
+
+function renderQuestion(){
+  locked=false;
+  updateProgress();
+  document.getElementById('mark').textContent='';
+  document.getElementById('mark').className='mark';
+
+  const q=questions[index];
+  document.getElementById('question').textContent=q.q;
+  const box=document.getElementById('answers');
+  box.innerHTML='';
+  q.a.forEach((txt,i)=>{
+    const b=document.createElement('button');
+    b.className='answer';
+    b.textContent=txt;
+    b.onclick=()=>choose(i,b);
+    box.appendChild(b);
+  });
+  startTimer();
+}
+
+function disableAnswers(){
+  document.querySelectorAll('.answer').forEach(b=>b.disabled=true);
+}
+
+function choose(choice,btn){
+  if(locked)return;
+  locked=true;
+  clearInterval(timer);
+  disableAnswers();
+
+  const q=questions[index];
+  const mark=document.getElementById('mark');
+
+  if(choice===q.c){
+    correct++;
+    btn.classList.add('correct');
+    mark.textContent='✅';
+    mark.className='mark ok';
+  }else{
+    wrong++;
+    btn.classList.add('wrong');
+    const buttons=[...document.querySelectorAll('.answer')];
+    buttons[q.c].classList.add('correct');
+    mark.textContent='❌';
+    mark.className='mark bad';
+  }
+
+  setTimeout(nextQuestion,3000);
+}
+
+function handleTimeout(){
+  if(locked)return;
+  locked=true;
+  skipped++;
+  wrong++;
+  disableAnswers();
+  const q=questions[index];
+  const buttons=[...document.querySelectorAll('.answer')];
+  buttons[q.c].classList.add('correct');
+  const mark=document.getElementById('mark');
+  mark.textContent='⏱️❌';
+  mark.className='mark bad';
+  setTimeout(nextQuestion,3000);
+}
+
+function nextQuestion(){
+  index++;
+  if(index>=TOTAL){
+    finish();
+  }else{
+    renderQuestion();
+  }
+}
+
+function finish(){
+  clearInterval(timer);
+  document.getElementById('quizView').style.display='none';
+  const rv=document.getElementById('resultView');
+  rv.classList.add('show');
+  const pct=Math.round((correct/TOTAL)*100);
+  document.getElementById('percent').textContent=pct+'%';
+  document.getElementById('correctCount').textContent=correct;
+  document.getElementById('wrongCount').textContent=wrong;
+  document.getElementById('skipCount').textContent=skipped;
+  document.getElementById('progressFill').style.height='100%';
+  document.getElementById('progressArrow').style.bottom='100%';
+  document.getElementById('sideStage').textContent='20';
+}
+
+document.getElementById('restartBtn').onclick=newGame;
+newGame();
+</script>
+</body>
+</html>
