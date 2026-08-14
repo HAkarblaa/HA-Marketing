@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مواعيد الأذان - HA Marketing</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:95%;max-width:900px;margin:30px auto}h1{text-align:center}.sub{text-align:center;color:#666}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px #0001;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}label{font-weight:700;display:block;margin-bottom:6px}
+select,button{width:100%;padding:13px;border-radius:10px;font-size:16px}select{background:#fff;border:1px solid #ccc}
+button{border:0;background:#111;color:#fff;font-weight:700;cursor:pointer;margin-top:14px}
+.times{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.time{border:1px solid #ddd;border-radius:12px;padding:14px;text-align:center}
+.time b{display:block;margin-bottom:6px}.time span{font-size:23px}.status{text-align:center;line-height:1.7}
+.hidden{display:none}.back{display:block;text-align:center;margin:25px;text-decoration:none;color:#111}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<h1>🕰️ مواعيد الأذان</h1><p class="sub">كل الأسماء الظاهرة بالعربي — اختر الدولة ثم المحافظة ثم المدينة بدون كتابة.</p>
+<div class="card"><div class="grid">
+<div><label>الدولة</label><select id="country"><option value="">اختر الدولة</option></select></div>
+<div><label>المحافظة / المنطقة</label><select id="state" disabled><option>اختر الدولة أولاً</option></select></div>
+<div><label>المدينة</label><select id="city" disabled><option>اختر المحافظة أولاً</option></select></div>
+</div><button id="show">عرض مواقيت اليوم</button></div>
+<div class="card status" id="status">اختر الدولة أولاً.</div>
+<div class="card hidden" id="result"><h2 id="place" style="text-align:center"></h2><div id="date" class="sub"></div><div class="times">
+<div class="time"><b>الفجر</b><span id="Fajr">-</span></div><div class="time"><b>الشروق</b><span id="Sunrise">-</span></div>
+<div class="time"><b>الظهر</b><span id="Dhuhr">-</span></div><div class="time"><b>العصر</b><span id="Asr">-</span></div>
+<div class="time"><b>المغرب</b><span id="Maghrib">-</span></div><div class="time"><b>العشاء</b><span id="Isha">-</span></div>
+</div></div><a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a></div>
+<script>
+const DATA={"العراق": ["Iraq", {"بغداد": ["بغداد|Baghdad"], "البصرة": ["البصرة|Basra"], "نينوى": ["الموصل|Mosul"], "أربيل": ["أربيل|Erbil"], "النجف": ["النجف|Najaf"], "كربلاء": ["كربلاء|Karbala"], "كركوك": ["كركوك|Kirkuk"], "الأنبار": ["الرمادي|Ramadi", "الفلوجة|Fallujah"], "بابل": ["الحلة|Hillah"], "ديالى": ["بعقوبة|Baqubah"], "ذي قار": ["الناصرية|Nasiriyah"], "ميسان": ["العمارة|Amarah"], "المثنى": ["السماوة|Samawah"], "القادسية": ["الديوانية|Diwaniyah"], "صلاح الدين": ["تكريت|Tikrit"], "واسط": ["الكوت|Kut"], "دهوك": ["دهوك|Duhok"], "السليمانية": ["السليمانية|Sulaymaniyah"]}], "إيران": ["Iran", {"طهران": ["طهران|Tehran"], "قم": ["قم|Qom"], "خراسان الرضوية": ["مشهد|Mashhad"], "أصفهان": ["أصفهان|Isfahan"], "فارس": ["شيراز|Shiraz"], "خوزستان": ["الأهواز|Ahvaz"], "أذربيجان الشرقية": ["تبريز|Tabriz"], "كرمان": ["كرمان|Kerman"], "كرمانشاه": ["كرمانشاه|Kermanshah"], "مازندران": ["ساري|Sari"], "جيلان": ["رشت|Rasht"], "هرمزغان": ["بندر عباس|Bandar Abbas"], "يزد": ["يزد|Yazd"], "همدان": ["همدان|Hamadan"], "قزوين": ["قزوين|Qazvin"], "البرز": ["كرج|Karaj"], "كلستان": ["جرجان|Gorgan"], "بوشهر": ["بوشهر|Bushehr"], "لرستان": ["خرم آباد|Khorramabad"], "مركزي": ["أراك|Arak"], "أردبيل": ["أردبيل|Ardabil"], "زنجان": ["زنجان|Zanjan"], "سمنان": ["سمنان|Semnan"], "كردستان": ["سنندج|Sanandaj"], "إيلام": ["إيلام|Ilam"], "جهارمحال وبختياري": ["شهركرد|Shahrekord"], "كهكيلويه وبوير أحمد": ["ياسوج|Yasuj"], "خراسان الشمالية": ["بجنورد|Bojnord"], "خراسان الجنوبية": ["بيرجند|Birjand"], "سيستان وبلوشستان": ["زاهدان|Zahedan"]}], "لبنان": ["Lebanon", {"بيروت": ["بيروت|Beirut"], "جبل لبنان": ["بعبدا|Baabda", "جونية|Jounieh"], "الشمال": ["طرابلس|Tripoli"], "عكار": ["حلبا|Halba"], "البقاع": ["زحلة|Zahle"], "بعلبك الهرمل": ["بعلبك|Baalbek"], "الجنوب": ["صيدا|Sidon"], "النبطية": ["النبطية|Nabatieh", "صور|Tyre"]}], "الكويت": ["Kuwait", {"العاصمة": ["مدينة الكويت|Kuwait City"], "حولي": ["حولي|Hawalli"], "الفروانية": ["الفروانية|Farwaniya"], "الأحمدي": ["الأحمدي|Ahmadi"], "الجهراء": ["الجهراء|Jahra"], "مبارك الكبير": ["مبارك الكبير|Mubarak Al-Kabeer"]}], "السعودية": ["Saudi Arabia", {"الرياض": ["الرياض|Riyadh"], "مكة المكرمة": ["مكة المكرمة|Mecca", "جدة|Jeddah", "الطائف|Taif"], "المدينة المنورة": ["المدينة المنورة|Medina"], "المنطقة الشرقية": ["الدمام|Dammam", "الأحساء|Al Ahsa", "الخبر|Khobar"], "القصيم": ["بريدة|Buraidah"], "عسير": ["أبها|Abha"], "تبوك": ["تبوك|Tabuk"], "حائل": ["حائل|Hail"], "الحدود الشمالية": ["عرعر|Arar"], "جازان": ["جازان|Jazan"], "نجران": ["نجران|Najran"], "الباحة": ["الباحة|Al Bahah"], "الجوف": ["سكاكا|Sakaka"]}], "البحرين": ["Bahrain", {"العاصمة": ["المنامة|Manama"], "المحرق": ["المحرق|Muharraq"], "الشمالية": ["مدينة حمد|Hamad Town"], "الجنوبية": ["الرفاع|Riffa"]}], "قطر": ["Qatar", {"الدوحة": ["الدوحة|Doha"], "الريان": ["الريان|Al Rayyan"], "الوكرة": ["الوكرة|Al Wakrah"], "الخور والذخيرة": ["الخور|Al Khor"], "أم صلال": ["أم صلال|Umm Salal"], "الشمال": ["الرويس|Ar Ruays"], "الظعاين": ["لوسيل|Lusail"], "الشحانية": ["الشحانية|Al Shahaniya"]}], "الإمارات": ["United Arab Emirates", {"أبوظبي": ["أبوظبي|Abu Dhabi", "العين|Al Ain"], "دبي": ["دبي|Dubai"], "الشارقة": ["الشارقة|Sharjah"], "عجمان": ["عجمان|Ajman"], "أم القيوين": ["أم القيوين|Umm Al Quwain"], "رأس الخيمة": ["رأس الخيمة|Ras Al Khaimah"], "الفجيرة": ["الفجيرة|Fujairah"]}], "مصر": ["Egypt", {"القاهرة": ["القاهرة|Cairo"], "الجيزة": ["الجيزة|Giza"], "الإسكندرية": ["الإسكندرية|Alexandria"], "الدقهلية": ["المنصورة|Mansoura"], "البحر الأحمر": ["الغردقة|Hurghada"], "البحيرة": ["دمنهور|Damanhur"], "الفيوم": ["الفيوم|Faiyum"], "الغربية": ["طنطا|Tanta"], "الإسماعيلية": ["الإسماعيلية|Ismailia"], "المنوفية": ["شبين الكوم|Shibin El Kom"], "المنيا": ["المنيا|Minya"], "القليوبية": ["بنها|Banha"], "الوادي الجديد": ["الخارجة|Kharga"], "السويس": ["السويس|Suez"], "أسوان": ["أسوان|Aswan"], "أسيوط": ["أسيوط|Asyut"], "بني سويف": ["بني سويف|Beni Suef"], "بورسعيد": ["بورسعيد|Port Said"], "دمياط": ["دمياط|Damietta"], "الشرقية": ["الزقازيق|Zagazig"], "جنوب سيناء": ["الطور|El Tor", "شرم الشيخ|Sharm El Sheikh"], "كفر الشيخ": ["كفر الشيخ|Kafr El Sheikh"], "مطروح": ["مرسى مطروح|Marsa Matruh"], "الأقصر": ["الأقصر|Luxor"], "قنا": ["قنا|Qena"], "شمال سيناء": ["العريش|Arish"], "سوهاج": ["سوهاج|Sohag"]}], "سوريا": ["Syria", {"دمشق": ["دمشق|Damascus"], "ريف دمشق": ["دوما|Douma"], "حلب": ["حلب|Aleppo"], "حمص": ["حمص|Homs"], "حماة": ["حماة|Hama"], "اللاذقية": ["اللاذقية|Latakia"], "طرطوس": ["طرطوس|Tartus"], "إدلب": ["إدلب|Idlib"], "الرقة": ["الرقة|Raqqa"], "دير الزور": ["دير الزور|Deir ez-Zor"], "الحسكة": ["الحسكة|Al Hasakah"], "درعا": ["درعا|Daraa"], "السويداء": ["السويداء|As Suwayda"], "القنيطرة": ["القنيطرة|Quneitra"]}], "عُمان": ["Oman", {"مسقط": ["مسقط|Muscat"], "ظفار": ["صلالة|Salalah"], "مسندم": ["خصب|Khasab"], "البريمي": ["البريمي|Al Buraimi"], "الداخلية": ["نزوى|Nizwa"], "شمال الباطنة": ["صحار|Sohar"], "جنوب الباطنة": ["الرستاق|Rustaq"], "شمال الشرقية": ["إبراء|Ibra"], "جنوب الشرقية": ["صور|Sur"], "الوسطى": ["هيما|Haima"], "الظاهرة": ["عبري|Ibri"]}], "اليمن": ["Yemen", {"أمانة العاصمة": ["صنعاء|Sanaa"], "عدن": ["عدن|Aden"], "تعز": ["تعز|Taiz"], "الحديدة": ["الحديدة|Al Hudaydah"], "حضرموت": ["المكلا|Mukalla", "سيئون|Seiyun"], "إب": ["إب|Ibb"], "ذمار": ["ذمار|Dhamar"], "صعدة": ["صعدة|Saada"], "حجة": ["حجة|Hajjah"], "لحج": ["الحوطة|Lahij"], "أبين": ["زنجبار|Zinjibar"], "شبوة": ["عتق|Ataq"], "المهرة": ["الغيضة|Al Ghaydah"], "مأرب": ["مأرب|Marib"], "البيضاء": ["البيضاء|Al Bayda"], "عمران": ["عمران|Amran"], "المحويت": ["المحويت|Al Mahwit"], "ريمة": ["الجبين|Al Jabin"], "الضالع": ["الضالع|Ad Dali"], "الجوف": ["الحزم|Al Hazm"], "سقطرى": ["حديبو|Hadibu"]}]};
+const country=document.getElementById('country'), state=document.getElementById('state'), city=document.getElementById('city');
+Object.keys(DATA).forEach(ar=>{let o=document.createElement('option');o.value=ar;o.textContent=ar;country.appendChild(o)});
+
+country.onchange=()=>{
+ state.innerHTML='<option value="">اختر المحافظة / المنطقة</option>';city.innerHTML='<option>اختر المحافظة أولاً</option>';city.disabled=true;
+ if(!country.value){state.disabled=true;return}
+ Object.keys(DATA[country.value][1]).forEach(ar=>{let o=document.createElement('option');o.value=ar;o.textContent=ar;state.appendChild(o)});
+ state.disabled=false;
+};
+state.onchange=()=>{
+ city.innerHTML='<option value="">اختر المدينة</option>';
+ if(!state.value){city.disabled=true;return}
+ DATA[country.value][1][state.value].forEach(x=>{let [ar,en]=x.split('|');let o=document.createElement('option');o.value=en;o.dataset.ar=ar;o.textContent=ar;city.appendChild(o)});
+ city.disabled=false;
+};
+function clean(v){return String(v||'-').replace(/\s*\(.+?\)\s*/g,'').trim()}
+document.getElementById('show').onclick=async()=>{
+ if(!country.value||!state.value||!city.value){document.getElementById('status').textContent='اختر الدولة والمحافظة والمدينة أولاً.';return}
+ const btn=document.getElementById('show');btn.disabled=true;btn.textContent='جاري التحميل...';
+ document.getElementById('status').textContent='جاري جلب المواقيت...';
+ try{
+   const countryEn=DATA[country.value][0], cityEn=city.value;
+   const u='https://api.aladhan.com/v1/timingsByCity?city='+encodeURIComponent(cityEn)+'&country='+encodeURIComponent(countryEn)+'&method=0';
+   const r=await fetch(u),j=await r.json(); if(j.code!==200)throw 0;
+   ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].forEach(k=>document.getElementById(k).textContent=clean(j.data.timings[k]));
+   const arCity=city.options[city.selectedIndex].dataset.ar;
+   document.getElementById('place').textContent=arCity+' - '+state.value+' - '+country.value;
+   document.getElementById('date').textContent=(j.data.date.readable||'')+(j.data.date.hijri?.date?' | '+j.data.date.hijri.date+' هـ':'');
+   document.getElementById('result').classList.remove('hidden');document.getElementById('status').textContent='✅ تم تحميل مواقيت اليوم.';
+ }catch(e){document.getElementById('status').textContent='تعذر جلب المواقيت حالياً. حاول مرة أخرى.'}
+ finally{btn.disabled=false;btn.textContent='عرض مواقيت اليوم'}
+};
+</script></body></html>
