@@ -686,6 +686,132 @@ body:not(.trip-ready) #extraSummary{
 .call-driver{background:#111;color:#fff}
 .cancel-trip{background:#eee;color:#111}
 
+
+/* ===== معلومات السائق والتواصل ===== */
+.driver-avatar{
+  width:58px !important;
+  height:58px !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:#e9e9e9 !important;
+}
+.driver-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.driver-details{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:10px;
+}
+.driver-detail{
+  background:#fff;
+  border-radius:9px;
+  padding:7px 8px;
+}
+.driver-detail small{
+  display:block;
+  color:#777;
+  font-size:10px;
+  margin-bottom:2px;
+}
+.driver-detail b{
+  font-size:12px;
+}
+.post-actions{
+  grid-template-columns:repeat(2,1fr) !important;
+}
+.whatsapp-driver{background:#eef8f0 !important;color:#176b2f !important}
+.chat-driver{background:#eef3ff !important;color:#174ea6 !important}
+.call-driver{background:#111 !important;color:#fff !important}
+.cancel-trip{background:#eee !important;color:#111 !important}
+
+/* رسائل داخل التطبيق */
+.chat-sheet{
+  position:fixed;
+  inset:0;
+  z-index:4000;
+  background:rgba(0,0,0,.38);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+.chat-sheet.show{display:flex}
+.chat-box{
+  width:min(760px,100%);
+  height:min(68vh,560px);
+  background:#fff;
+  border-radius:22px 22px 0 0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.chat-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:11px 13px;
+  border-bottom:1px solid #eee;
+}
+.chat-head b{font-size:15px}
+.chat-head button{
+  width:36px;height:36px;border:0;border-radius:50%;
+  background:#eee;font-size:20px;cursor:pointer
+}
+.chat-messages{
+  flex:1;
+  overflow:auto;
+  padding:12px;
+  background:#f6f6f6;
+}
+.msg{
+  max-width:78%;
+  padding:9px 11px;
+  border-radius:13px;
+  margin:6px 0;
+  font-size:13px;
+  line-height:1.5;
+}
+.msg.me{
+  margin-right:auto;
+  background:#1769e0;
+  color:#fff;
+  border-bottom-left-radius:4px;
+}
+.msg.driver{
+  margin-left:auto;
+  background:#fff;
+  color:#111;
+  border:1px solid #e5e5e5;
+  border-bottom-right-radius:4px;
+}
+.chat-send{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:7px;
+  padding:10px;
+  border-top:1px solid #eee;
+}
+.chat-send input{
+  width:100%;
+  border:1px solid #ccc;
+  border-radius:11px;
+  padding:11px;
+  font-size:14px;
+}
+.chat-send button{
+  border:0;
+  border-radius:11px;
+  background:#1769e0;
+  color:#fff;
+  padding:0 16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
 </style>
 </head>
 
@@ -841,12 +967,21 @@ body:not(.trip-ready) #extraSummary{
 
     <div id="driverCard" class="driver-card">
       <div class="driver-top">
-        <div class="driver-avatar">👨‍✈️</div>
-        <div class="driver-info">
-          <b>سائق تجريبي</b>
-          <span>تويوتا كورولا • أبيض</span>
+        <div class="driver-avatar">
+          <img id="driverPhoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='%23e5e7eb'/><circle cx='60' cy='43' r='23' fill='%239ca3af'/><path d='M20 112c5-27 21-40 40-40s35 13 40 40' fill='%239ca3af'/></svg>" alt="صورة السائق">
         </div>
-        <strong>⭐ 4.9</strong>
+        <div class="driver-info">
+          <b id="driverName">أحمد علي</b>
+          <span id="driverCarSummary">تويوتا كورولا • أبيض</span>
+        </div>
+        <strong>⭐ <span id="driverRating">4.9</span></strong>
+      </div>
+
+      <div class="driver-details">
+        <div class="driver-detail"><small>رقم السيارة</small><b id="driverPlate">بغداد 12345</b></div>
+        <div class="driver-detail"><small>السيارة</small><b id="driverCarName">تويوتا كورولا</b></div>
+        <div class="driver-detail"><small>اللون</small><b id="driverCarColor">أبيض</b></div>
+        <div class="driver-detail"><small>رقم السائق</small><b id="driverPhoneView">0770 123 4567</b></div>
       </div>
 
       <div class="driver-meta">
@@ -856,9 +991,28 @@ body:not(.trip-ready) #extraSummary{
       </div>
 
       <div class="post-actions">
-        <button class="call-driver" type="button" onclick="alert('ربط الاتصال نضيفه لاحقاً')">📞 اتصال</button>
+        <button id="callDriverBtn" class="call-driver" type="button">📞 اتصال مباشر</button>
+        <button id="whatsappDriverBtn" class="whatsapp-driver" type="button">🟢 واتساب</button>
+        <button id="chatDriverBtn" class="chat-driver" type="button">💬 رسائل داخل التطبيق</button>
         <button id="cancelTripBtn" class="cancel-trip" type="button">إلغاء الطلب</button>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="chatSheet" class="chat-sheet">
+  <div class="chat-box">
+    <div class="chat-head">
+      <b>💬 مراسلة السائق</b>
+      <button id="closeChatBtn" type="button">×</button>
+    </div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="msg driver">السلام عليكم، تم قبول طلبك وأنا بالطريق إليك.</div>
+    </div>
+    <div class="chat-send">
+      <input id="chatInput" placeholder="اكتب رسالة للسائق">
+      <button id="sendChatBtn" type="button">إرسال</button>
     </div>
   </div>
 </div>
@@ -1399,6 +1553,78 @@ window.addEventListener('popstate',()=>{
 setMode('start');
 startMapPick();
 
+
+// بيانات السائق التجريبية حالياً.
+// لاحقاً تأتي هذه البيانات من حساب السائق المقبول من قاعدة البيانات.
+const acceptedDriver={
+  name:'أحمد علي',
+  phoneLocal:'07701234567',
+  phoneInternational:'9647701234567',
+  plate:'بغداد 12345',
+  carName:'تويوتا كورولا',
+  carColor:'أبيض',
+  rating:'4.9',
+  photo:''
+};
+
+function fillAcceptedDriver(){
+  document.getElementById('driverName').textContent=acceptedDriver.name;
+  document.getElementById('driverPlate').textContent=acceptedDriver.plate;
+  document.getElementById('driverCarName').textContent=acceptedDriver.carName;
+  document.getElementById('driverCarColor').textContent=acceptedDriver.carColor;
+  document.getElementById('driverCarSummary').textContent=
+    acceptedDriver.carName+' • '+acceptedDriver.carColor;
+  document.getElementById('driverRating').textContent=acceptedDriver.rating;
+  document.getElementById('driverPhoneView').textContent=
+    acceptedDriver.phoneLocal.replace(/^(\d{4})(\d{3})(\d{4})$/,'$1 $2 $3');
+
+  if(acceptedDriver.photo){
+    document.getElementById('driverPhoto').src=acceptedDriver.photo;
+  }
+}
+
+function callAcceptedDriver(){
+  // على الهاتف يفتح تطبيق الاتصال مباشرة.
+  window.location.href='tel:'+acceptedDriver.phoneLocal;
+}
+
+function whatsappAcceptedDriver(){
+  const msg=encodeURIComponent('السلام عليكم، أنا صاحب طلب التكسي.');
+  window.open('https://wa.me/'+acceptedDriver.phoneInternational+'?text='+msg,'_blank');
+}
+
+function openInAppChat(){
+  document.getElementById('chatSheet').classList.add('show');
+}
+
+function closeInAppChat(){
+  document.getElementById('chatSheet').classList.remove('show');
+}
+
+function sendInAppMessage(){
+  const input=document.getElementById('chatInput');
+  const message=input.value.trim();
+  if(!message)return;
+
+  const el=document.createElement('div');
+  el.className='msg me';
+  el.textContent=message;
+  document.getElementById('chatMessages').appendChild(el);
+  input.value='';
+  document.getElementById('chatMessages').scrollTop=
+    document.getElementById('chatMessages').scrollHeight;
+
+  // رد تجريبي فقط إلى أن نربط حساب السائق والرسائل الفعلية.
+  setTimeout(()=>{
+    const reply=document.createElement('div');
+    reply.className='msg driver';
+    reply.textContent='تم، وصلتني رسالتك.';
+    document.getElementById('chatMessages').appendChild(reply);
+    document.getElementById('chatMessages').scrollTop=
+      document.getElementById('chatMessages').scrollHeight;
+  },700);
+}
+
 // ===== واجهة البحث والمتابعة =====
 let trackingMap=null;
 let trackingDriverMarker=null;
@@ -1430,8 +1656,17 @@ function openPostOrder(){
 
     if(start && end){
       if(trackingRouteLine)trackingMap.removeLayer(trackingRouteLine);
-      trackingRouteLine=L.polyline([[start.lat,start.lng],[end.lat,end.lng]],{weight:5}).addTo(trackingMap);
-      trackingMap.fitBounds(trackingRouteLine.getBounds(),{padding:[35,35]});
+
+      // نستخدم مسار الشوارع الحقيقي بدل الخط المستقيم.
+      route(start,end).then(r=>{
+        trackingRouteLine=L.geoJSON(r.geometry,{
+          style:{weight:5}
+        }).addTo(trackingMap);
+        trackingMap.fitBounds(trackingRouteLine.getBounds(),{padding:[35,35]});
+      }).catch(()=>{
+        // إذا فشل مزود الطرق نبقي النقطتين فقط ولا نرسم خطاً وهمياً مستقيماً.
+        trackingMap.fitBounds([[start.lat,start.lng],[end.lat,end.lng]],{padding:[35,35]});
+      });
     }
   },150);
 
@@ -1440,6 +1675,7 @@ function openPostOrder(){
     document.getElementById('postTitle').textContent='تم قبول الطلب';
     document.getElementById('searchingBox').style.display='none';
     document.getElementById('driverCard').classList.add('show');
+    fillAcceptedDriver();
 
     document.getElementById('pickupEtaText').textContent='5 د';
     document.getElementById('tripEtaText').textContent=
@@ -1450,9 +1686,19 @@ function openPostOrder(){
       : '—';
 
     if(trackingMap && start){
-      const driverPos=[start.lat+0.008,start.lng+0.008];
+      const driverPoint=L.latLng(start.lat+0.008,start.lng+0.008);
       if(trackingDriverMarker)trackingMap.removeLayer(trackingDriverMarker);
-      trackingDriverMarker=L.marker(driverPos).addTo(trackingMap).bindPopup('السائق');
+      trackingDriverMarker=L.marker(driverPoint).addTo(trackingMap).bindPopup(acceptedDriver.name);
+
+      // طريق السائق إلى الزبون يكون على الشوارع أيضاً.
+      route(driverPoint,start).then(driverRoute=>{
+        const driverRoad=L.geoJSON(driverRoute.geometry,{
+          style:{weight:5,dashArray:'8 6'}
+        }).addTo(trackingMap);
+        const group=L.featureGroup([driverRoad,trackingDriverMarker]);
+        if(trackingRouteLine)group.addLayer(trackingRouteLine);
+        trackingMap.fitBounds(group.getBounds(),{padding:[35,35]});
+      }).catch(()=>{});
     }
   },3000);
 }
@@ -1464,6 +1710,19 @@ document.getElementById('postBackBtn').onclick=()=>{
   document.body.classList.add('trip-ready');
   document.getElementById('tripSheet').classList.add('open');
 };
+
+
+document.getElementById('callDriverBtn').onclick=callAcceptedDriver;
+document.getElementById('whatsappDriverBtn').onclick=whatsappAcceptedDriver;
+document.getElementById('chatDriverBtn').onclick=openInAppChat;
+document.getElementById('closeChatBtn').onclick=closeInAppChat;
+document.getElementById('sendChatBtn').onclick=sendInAppMessage;
+document.getElementById('chatInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter')sendInAppMessage();
+});
+document.getElementById('chatSheet').addEventListener('click',e=>{
+  if(e.target===document.getElementById('chatSheet'))closeInAppChat();
+});
 
 document.getElementById('cancelTripBtn').onclick=()=>{
   if(confirm('هل تريد إلغاء الطلب؟')){
