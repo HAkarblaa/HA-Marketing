@@ -289,6 +289,17 @@ body.trip-sheet-open{
 @media(max-width:560px){
  #tripSheet .metrics{grid-template-columns:repeat(3,1fr)}
 }
+
+/* البحث داخل المساحة أسفل الخريطة */
+.single-search-wrap{
+  padding:8px 14px 6px !important;
+  background:#fff;
+  margin:0 !important;
+}
+.single-search-row{
+  width:100%;
+}
+
 </style>
 </head>
 
@@ -301,20 +312,20 @@ body.trip-sheet-open{
   <div style="width:42px"></div>
 </div>
 
-<div class="single-search-wrap">
-  <div class="single-search-row">
-    <input id="placeSearch" placeholder="ابحث عن مكان الانطلاق">
-    <button id="placeSearchBtn" type="button">بحث</button>
-  </div>
-  <div id="placeResults" class="results"></div>
-</div>
-
 <div class="map-wrap">
   <div id="map"></div>
 
   <button id="locateBtn" class="locate-btn" title="تحديد موقعي" aria-label="تحديد موقعي">📍</button>
 
   <div id="centerPin" class="center-pin"><span class="moving-pin"></span></div>
+</div>
+
+<div class="single-search-wrap">
+  <div class="single-search-row">
+    <input id="placeSearch" placeholder="ابحث عن مكان الانطلاق">
+    <button id="placeSearchBtn" type="button">بحث</button>
+  </div>
+  <div id="placeResults" class="results"></div>
 </div>
 
 <div id="selectionPanel" class="box">
