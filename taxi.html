@@ -11,9 +11,9 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .app{width:100%;max-width:760px;margin:auto;background:#fff;min-height:100vh}
-.head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
-.head h1{font-size:15px;margin:0;font-weight:700}
-.back{width:34px;height:34px;border:0;border-radius:50%;background:#f1f1f1;font-size:19px;cursor:pointer}
+.head{display:flex;align-items:center;justify-content:space-between;padding:5px 10px}
+.head h1{font-size:12px;margin:0;font-weight:700}
+.back{width:30px;height:30px;border:0;border-radius:50%;background:#f1f1f1;font-size:17px;cursor:pointer}
 
 .search{padding:4px 14px 8px}
 .search-row{display:grid;grid-template-columns:1fr auto;gap:7px;margin:7px 0}
@@ -23,7 +23,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .results button{width:100%;background:#fff;border:0;border-bottom:1px solid #eee;text-align:right;padding:9px;font-size:14px}
 
 .map-wrap{position:relative}
-#map{height:52vh;min-height:390px;background:#ededed}
+#map{height:42vh;min-height:285px;background:#ededed}
 .locate-btn{
  position:absolute;left:14px;bottom:18px;z-index:600;
  width:46px;height:46px;border:0;border-radius:13px 13px 13px 4px;
@@ -33,9 +33,20 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .center-pin{
  position:absolute;left:50%;top:50%;z-index:550;
  transform:translate(-50%,-100%);
- font-size:36px;pointer-events:none;display:none
+ width:34px;height:42px;pointer-events:none;display:none
 }
 .center-pin.show{display:block}
+.moving-pin{
+ position:absolute;left:6px;top:2px;width:24px;height:24px;
+ background:#f47b20;border:3px solid #fff;border-radius:50% 50% 50% 0;
+ transform:rotate(-45deg);box-shadow:0 3px 8px #0004
+}
+.moving-pin:after{
+ content:"";position:absolute;width:7px;height:7px;background:#fff;
+ border-radius:50%;left:6px;top:6px
+}
+.center-pin.destination .moving-pin{background:#2563eb}
+
 .confirm-map{
  position:absolute;right:14px;bottom:18px;z-index:600;
  border:0;border-radius:12px;background:#111;color:#fff;
@@ -66,7 +77,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .types{padding:4px 14px}
 .type{
  display:flex;align-items:center;gap:9px;border:2px solid transparent;
- border-radius:12px;padding:10px 7px;margin:5px 0;background:#fff;cursor:pointer
+ border-radius:12px;padding:10px 7px;margin:3px 0;background:#fff;cursor:pointer
 }
 .type.selected{border-color:#111;background:#f7f7f7}
 .vehicle{font-size:30px;width:42px;text-align:center}
@@ -146,7 +157,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .location-title b{font-size:13px;font-weight:700}
 .location-title span:last-child{margin-right:auto;color:#777;font-size:10px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .start-pin{font-size:20px;color:#f47b20;line-height:1}
-.end-pin{font-size:19px;color:#1110ff;line-height:1}
+.end-pin{font-size:19px;color:#2563eb;line-height:1}
 .inline-search{display:grid;grid-template-columns:1fr auto;gap:7px}
 .inline-search input{width:100%;padding:13px 12px;border:1px solid #ccc;border-radius:11px;font-size:14px}
 .inline-search button{border:0;border-radius:11px;background:#111;color:#fff;padding:0 16px;font-size:13px}
@@ -155,8 +166,8 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .single-search-wrap{padding:6px 14px 10px;background:#fff}
 .single-search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
 .single-search-row input{
-  width:100%;padding:13px 12px;border:1px solid #ccc;border-radius:11px;
-  font-size:14px;background:#fff
+  width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:10px;
+  font-size:12px;background:#fff
 }
 .single-search-row button{
   border:0;border-radius:11px;background:#111;color:#fff;
@@ -174,9 +185,109 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
   background:#1b55d9;
 }
 
+
+/* القائمة السفلية الكاملة: ظاهرة كاملة بدون سحب */
+#tripSheet{display:none}
+#tripSheet.open{
+  display:flex;
+  flex-direction:column;
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(760px,100%);
+  height:58vh;
+  z-index:1500;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:8px 12px 8px;
+  overflow:hidden;
+  box-shadow:0 -6px 24px #0003;
+}
+#tripSheet.open:before{
+  content:"";
+  display:block;
+  width:42px;
+  height:4px;
+  border-radius:10px;
+  background:#ccc;
+  margin:-1px auto 6px;
+}
+.trip-sheet-title{
+  font-size:13px;
+  font-weight:700;
+  text-align:center;
+  margin:0 0 2px;
+}
+
+/* نخلي كل عناصر القائمة مضغوطة حتى تبين كلها بنفس الشاشة */
+#tripSheet .vehicle-title{font-size:12px;margin:0 0 4px}
+#tripSheet .type{
+  padding:4px 6px;
+  margin:3px 0;
+  min-height:36px;
+  border-radius:10px
+}
+#tripSheet .vehicle{font-size:21px;width:31px}
+#tripSheet .info b{font-size:12px}
+#tripSheet .info small{font-size:9px;margin-top:0}
+#tripSheet .price{font-size:12px}
+
+#tripSheet .metrics{
+  margin:5px 0;
+  gap:5px;
+  grid-template-columns:repeat(3,1fr)
+}
+#tripSheet .metric{
+  padding:5px 3px;
+  border-radius:9px
+}
+#tripSheet .metric small{font-size:9px;margin-bottom:1px}
+#tripSheet .metric b{font-size:11px}
+
+#tripSheet .notice{
+  margin:2px 0;
+  padding:5px 6px;
+  font-size:9px;
+  line-height:1.3
+}
+#tripSheet .extra-summary{
+  margin:4px 0 0;
+  padding:5px 6px;
+  font-size:9px
+}
+#tripSheet .order{
+  position:static;
+  margin-top:auto;
+  padding:6px 0 0;
+  border-top:1px solid #eee;
+  background:#fff;
+  flex-shrink:0
+}
+#tripSheet .extra-options-btn{
+  display:block!important;
+  width:100%!important;
+  margin:0 0 5px!important;
+  padding:9px!important;
+  font-size:12px!important;
+  background:#f1f1f1!important;
+  color:#111!important
+}
+#tripSheet #order{
+  display:block!important;
+  width:100%!important;
+  padding:10px!important;
+  font-size:14px!important;
+  background:#1110ff!important;
+  color:#fff!important
+}
+
+body.trip-sheet-open{
+  padding-bottom:0;
+  overflow:hidden;
+}
 @media(max-width:560px){
- .metrics{grid-template-columns:1fr 1fr}
- .metrics .metric:last-child{grid-column:1/-1}
+ #tripSheet .metrics{grid-template-columns:repeat(3,1fr)}
 }
 </style>
 </head>
@@ -203,7 +314,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 
   <button id="locateBtn" class="locate-btn" title="تحديد موقعي" aria-label="تحديد موقعي">📍</button>
 
-  <div id="centerPin" class="center-pin">📍</div>
+  <div id="centerPin" class="center-pin"><span class="moving-pin"></span></div>
 </div>
 
 <div id="selectionPanel" class="box">
@@ -214,6 +325,12 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
   </div>
 
     <!-- المرحلة الثانية: أنواع السيارة والأسعار -->
+  
+
+</div>
+
+<div id="tripSheet">
+  <div class="trip-sheet-title">تفاصيل الرحلة</div>
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر نوع السيارة</div>
 
@@ -235,10 +352,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
       <div class="price">—</div>
     </div>
   </div>
-
-</div>
-
-<div class="metrics">
+  <div class="metrics">
  <div class="metric"><small>المسافة</small><b id="distance">—</b></div>
  <div class="metric"><small>الرحلة</small><b id="tripTime">—</b></div>
  <div class="metric"><small>السائق</small><b id="driverTime">—</b></div>
@@ -249,9 +363,12 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 </div>
 <div id="extraSummary" class="extra-summary"></div>
 
-<div class="order" id="orderArea" style="display:none">
+<div class="order" id="orderArea">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
   <button id="order" disabled>تأكيد التكسي</button>
+</div>
+
+
 </div>
 
 <div id="extraSheet" class="extra-sheet" aria-hidden="true">
@@ -382,6 +499,7 @@ let selected=document.querySelector('.type.selected');
 
 function setMode(x){
  mode=x;
+ centerPin.classList.toggle('destination',x==='end');
  const searchInput=document.getElementById('placeSearch');
  if(searchInput){
    searchInput.placeholder=x==='start'?'ابحث عن مكان الانطلاق':'ابحث عن مكان الوصول';
@@ -450,7 +568,7 @@ function startIcon(){
 function endIcon(){
  return L.divIcon({
    className:'',
-   html:'<div style="width:23px;height:23px;background:#1110ff;border:4px solid white;box-shadow:0 2px 7px #0005;transform:rotate(45deg)"></div>',
+   html:'<div style="width:23px;height:23px;background:#2563eb;border:4px solid white;box-shadow:0 2px 7px #0005;transform:rotate(45deg)"></div>',
    iconSize:[23,23],iconAnchor:[12,12]
  });
 }
@@ -477,12 +595,14 @@ function setPoint(kind,p,label){
    // ونظهر قائمة أنواع التكسي والأسعار مكانها.
    const locationStep=document.getElementById('locationStep');
    const vehicleStep=document.getElementById('vehicleStep');
-   locationStep.style.display='none';
-   vehicleStep.style.display='block';
 
-   // بعد تثبيت الانطلاق والوصول تظهر قائمة السيارات
-   // والخيارات الإضافية وزر تأكيد التكسي تلقائياً.
-   document.getElementById('orderArea').style.display='block';
+   // نخفي قائمة تثبيت النقاط ونفتح قائمة واحدة كاملة
+   // تضم السيارات + تفاصيل الرحلة + الخيارات الإضافية + التأكيد.
+   document.getElementById('selectionPanel').style.display='none';
+   vehicleStep.style.display='block';
+   document.getElementById('tripSheet').classList.add('open');
+   document.body.classList.add('trip-sheet-open');
+   document.getElementById('extraOptionsBtn').disabled=false;
 
    // إخفاء نتائج البحث القديمة أيضاً.
    document.getElementById('placeResults').style.display='none';
@@ -728,9 +848,11 @@ function backOneStep(){
    
 
    // الرجوع خطوة يرجع قائمة الانطلاق والوصول بدل أنواع التكسي.
+   document.getElementById('tripSheet').classList.remove('open');
+   document.body.classList.remove('trip-sheet-open');
    document.getElementById('vehicleStep').style.display='none';
+   document.getElementById('selectionPanel').style.display='block';
    document.getElementById('locationStep').style.display='block';
-   document.getElementById('orderArea').style.display='none';
 
    resetRouteDisplay();
 
