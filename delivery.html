@@ -833,6 +833,39 @@ body.delivery-stage-1 #centerPin{
   pointer-events:none !important;
 }
 
+
+/* ===== نافذة إلغاء الطلب ===== */
+.cancel-reason-sheet{
+  position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.42);
+  display:none;align-items:flex-end;justify-content:center
+}
+.cancel-reason-sheet.show{display:flex}
+.cancel-reason-card{
+  width:min(760px,100%);background:#fff;border-radius:22px 22px 0 0;
+  padding:16px 14px 18px
+}
+.cancel-reason-head{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:10px
+}
+.cancel-reason-head h3{margin:0;font-size:18px}
+.cancel-reason-head button{
+  width:36px;height:36px;border:0;border-radius:50%;background:#eee;font-size:20px
+}
+.cancel-reason-option{
+  display:flex;align-items:center;gap:9px;padding:12px 10px;
+  border:1px solid #eee;border-radius:11px;margin:7px 0;background:#fafafa
+}
+.cancel-reason-option input{width:18px;height:18px}
+.cancel-other{
+  display:none;width:100%;padding:10px;border:1px solid #ccc;
+  border-radius:10px;margin-top:7px;font-size:14px
+}
+.cancel-other.show{display:block}
+.confirm-cancel-btn{
+  width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;
+  background:#c62828;color:#fff;font-size:15px;font-weight:700
+}
+
 </style>
 </head>
 
@@ -1627,18 +1660,7 @@ document.getElementById('deliveryPostBack').onclick=()=>{
   document.getElementById('deliveryPostScreen').classList.remove('show');
 };
 
-document.getElementById('deliveryCancelBtn').onclick=async()=>{
-  if(confirm('هل تريد إلغاء طلب المندوب؟')){
-    if(activeDeliveryRideId){
-      await db.ref('rides/'+activeDeliveryRideId).update({
-        status:'cancelled',
-        cancelledAt:firebase.database.ServerValue.TIMESTAMP
-      });
-      localStorage.removeItem('ha_active_delivery');
-    }
-    document.getElementById('deliveryPostScreen').classList.remove('show');
-  }
-};
+document.getElementById('deliveryCancelBtn').onclick=()=>openDeliveryCancelReason();
 
 const savedDeliveryId=localStorage.getItem('ha_active_delivery');
 if(savedDeliveryId){
@@ -1970,5 +1992,77 @@ document.addEventListener('click',function(e){
 })();
 </script>
 
+
+<div id="cancelReasonSheet" class="cancel-reason-sheet">
+  <div class="cancel-reason-card">
+    <div class="cancel-reason-head">
+      <h3>سبب إلغاء الطلب</h3>
+      <button type="button" data-close-cancel="cancelReasonSheet">×</button>
+    </div>
+    <label class="cancel-reason-option">
+  <input type="radio" name="cancelReasonSheet_reason" value="غيرت رأيي" >
+  <span>غيرت رأيي</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="cancelReasonSheet_reason" value="تأخر السائق / المندوب" >
+  <span>تأخر السائق / المندوب</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="cancelReasonSheet_reason" value="السعر غير مناسب" >
+  <span>السعر غير مناسب</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="cancelReasonSheet_reason" value="اخترت موقعًا خطأ" >
+  <span>اخترت موقعًا خطأ</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="cancelReasonSheet_reason" value="وجدت وسيلة أخرى" >
+  <span>وجدت وسيلة أخرى</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="cancelReasonSheet_reason" value="سبب آخر" id="cancelReasonSheet_other">
+  <span>سبب آخر</span>
+</label>
+    <input id="cancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
+    <button id="confirmCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
+  </div>
+</div>
+
+<script>
+function openDeliveryCancelReason(){
+  document.getElementById('cancelReasonSheet').classList.add('show');
+}
+function closeDeliveryCancelReason(){
+  document.getElementById('cancelReasonSheet').classList.remove('show');
+}
+document.querySelectorAll('[data-close-cancel="cancelReasonSheet"]').forEach(b=>b.onclick=closeDeliveryCancelReason);
+document.getElementById('cancelReasonSheet').addEventListener('click',e=>{
+  if(e.target.id==='cancelReasonSheet') closeDeliveryCancelReason();
+});
+document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>{
+  r.addEventListener('change',()=>{
+    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='سبب آخر' && r.checked);
+  });
+});
+document.getElementById('confirmCancelReason').onclick=async()=>{
+  const checked=document.querySelector('input[name="cancelReasonSheet_reason"]:checked');
+  if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
+  const reason=checked.value==='سبب آخر'
+    ? (document.getElementById('cancelOtherText').value.trim()||'سبب آخر')
+    : checked.value;
+
+  if(activeDeliveryRideId){
+    await db.ref('rides/'+activeDeliveryRideId).update({
+      status:'cancelled',
+      cancelledBy:'customer',
+      cancelReason:reason,
+      cancelledAt:firebase.database.ServerValue.TIMESTAMP
+    });
+    localStorage.removeItem('ha_active_delivery');
+  }
+  closeDeliveryCancelReason();
+  document.getElementById('deliveryPostScreen').classList.remove('show');
+};
+</script>
 </body>
 </html>

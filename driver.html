@@ -55,6 +55,39 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
   #map{height:40vh}
   .summary{grid-template-columns:repeat(3,1fr)}
 }
+
+/* ===== نافذة إلغاء الطلب ===== */
+.cancel-reason-sheet{
+  position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.42);
+  display:none;align-items:flex-end;justify-content:center
+}
+.cancel-reason-sheet.show{display:flex}
+.cancel-reason-card{
+  width:min(760px,100%);background:#fff;border-radius:22px 22px 0 0;
+  padding:16px 14px 18px
+}
+.cancel-reason-head{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:10px
+}
+.cancel-reason-head h3{margin:0;font-size:18px}
+.cancel-reason-head button{
+  width:36px;height:36px;border:0;border-radius:50%;background:#eee;font-size:20px
+}
+.cancel-reason-option{
+  display:flex;align-items:center;gap:9px;padding:12px 10px;
+  border:1px solid #eee;border-radius:11px;margin:7px 0;background:#fafafa
+}
+.cancel-reason-option input{width:18px;height:18px}
+.cancel-other{
+  display:none;width:100%;padding:10px;border:1px solid #ccc;
+  border-radius:10px;margin-top:7px;font-size:14px
+}
+.cancel-other.show{display:block}
+.confirm-cancel-btn{
+  width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;
+  background:#c62828;color:#fff;font-size:15px;font-weight:700
+}
+
 </style>
 </head>
 <body>
@@ -125,6 +158,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
         <button id="arriveBtn" class="arrive">وصلت للزبون</button>
         <button id="startTripBtn" class="start-trip" disabled>ابدأ الرحلة</button>
         <button id="finishTripBtn" class="finish-trip" disabled>إنهاء الرحلة</button>
+<button id="driverCancelCurrentBtn" class="reject" type="button" style="grid-column:1/-1">إلغاء الطلب</button>
       </div>
     </div>
   </div>
@@ -375,6 +409,87 @@ async function restoreDriverRide(){
 requestCard.style.display='none';
 nearbyCount.textContent='0';
 restoreDriverRide();
+</script>
+
+<div id="driverCancelReasonSheet" class="cancel-reason-sheet">
+  <div class="cancel-reason-card">
+    <div class="cancel-reason-head">
+      <h3>سبب إلغاء الطلب من السائق / المندوب</h3>
+      <button type="button" data-close-cancel="driverCancelReasonSheet">×</button>
+    </div>
+    <label class="cancel-reason-option">
+  <input type="radio" name="driverCancelReasonSheet_reason" value="الزبون بعيد جدًا" >
+  <span>الزبون بعيد جدًا</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="driverCancelReasonSheet_reason" value="ازدحام أو طريق مغلق" >
+  <span>ازدحام أو طريق مغلق</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="driverCancelReasonSheet_reason" value="مشكلة بالمركبة" >
+  <span>مشكلة بالمركبة</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="driverCancelReasonSheet_reason" value="تعذر التواصل مع الزبون" >
+  <span>تعذر التواصل مع الزبون</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="driverCancelReasonSheet_reason" value="طلب غير مناسب" >
+  <span>طلب غير مناسب</span>
+</label>
+<label class="cancel-reason-option">
+  <input type="radio" name="driverCancelReasonSheet_reason" value="سبب آخر" id="driverCancelReasonSheet_other">
+  <span>سبب آخر</span>
+</label>
+    <input id="driverCancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
+    <button id="confirmDriverCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
+  </div>
+</div>
+
+<script>
+function openDriverCancelReason(){
+  document.getElementById('driverCancelReasonSheet').classList.add('show');
+}
+function closeDriverCancelReason(){
+  document.getElementById('driverCancelReasonSheet').classList.remove('show');
+}
+document.getElementById('driverCancelCurrentBtn').onclick=openDriverCancelReason;
+document.querySelectorAll('[data-close-cancel="driverCancelReasonSheet"]').forEach(b=>b.onclick=closeDriverCancelReason);
+document.getElementById('driverCancelReasonSheet').addEventListener('click',e=>{
+  if(e.target.id==='driverCancelReasonSheet') closeDriverCancelReason();
+});
+document.querySelectorAll('input[name="driverCancelReasonSheet_reason"]').forEach(r=>{
+  r.addEventListener('change',()=>{
+    document.getElementById('driverCancelOtherText').classList.toggle('show',r.value==='سبب آخر' && r.checked);
+  });
+});
+document.getElementById('confirmDriverCancelReason').onclick=async()=>{
+  const checked=document.querySelector('input[name="driverCancelReasonSheet_reason"]:checked');
+  if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
+  const reason=checked.value==='سبب آخر'
+    ? (document.getElementById('driverCancelOtherText').value.trim()||'سبب آخر')
+    : checked.value;
+
+  if(currentRideId){
+    await db.ref('rides/'+currentRideId).update({
+      status:'cancelled',
+      cancelledBy:'driver',
+      cancelReason:reason,
+      cancelledAt:firebase.database.ServerValue.TIMESTAMP
+    });
+    localStorage.removeItem('ha_driver_active_ride');
+  }
+
+  closeDriverCancelReason();
+  currentRideId=null;
+  currentRide=null;
+  acceptedPanel.classList.remove('show');
+  requestsSection.style.display='block';
+  arriveBtn.disabled=false;
+  startTripBtn.disabled=true;
+  finishTripBtn.disabled=true;
+  watchPendingRides();
+};
 </script>
 </body>
 </html>
