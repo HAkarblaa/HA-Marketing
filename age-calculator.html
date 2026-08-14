@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>احسب عمرك - HA Marketing</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:94%;max-width:850px;margin:30px auto}h1{text-align:center}.sub{text-align:center;color:#666}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 16px #0001;margin:14px 0}
+.form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label{display:block;font-weight:700;margin-bottom:6px}
+select,button{width:100%;padding:13px;border-radius:10px;font-size:16px}select{border:1px solid #ccc;background:#fff}
+button{border:0;background:#111;color:#fff;font-weight:700;cursor:pointer;margin-top:14px}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}
+.stat{background:#f7f7f7;border-radius:13px;padding:14px;text-align:center}.stat b{display:block;font-size:27px;margin-bottom:5px}.stat span{color:#666}
+.summary{text-align:center;font-size:19px;line-height:1.8}.back{display:block;text-align:center;margin:25px;text-decoration:none;color:#111}
+@media(max-width:650px){.form,.results{grid-template-columns:1fr 1fr}.form>div:last-child{grid-column:1/-1}}
+</style></head>
+<body><div class="wrap">
+<h1>🎂 احسب عمرك</h1><p class="sub">اختر يوم وشهر وسنة الميلاد، والعداد يستمر بالتحديث كل ثانية.</p>
+<div class="card"><div class="form">
+<div><label>اليوم</label><select id="day"></select></div>
+<div><label>الشهر</label><select id="month"></select></div>
+<div><label>السنة</label><select id="year"></select></div>
+</div><button id="calc">احسب عمري</button></div>
+<div id="result" class="card" style="display:none">
+ <div id="summary" class="summary"></div>
+ <div class="results">
+  <div class="stat"><b id="years">0</b><span>سنة</span></div>
+  <div class="stat"><b id="months">0</b><span>شهر</span></div>
+  <div class="stat"><b id="days">0</b><span>يوم</span></div>
+  <div class="stat"><b id="hours">0</b><span>ساعة</span></div>
+  <div class="stat"><b id="minutes">0</b><span>دقيقة</span></div>
+  <div class="stat"><b id="seconds">0</b><span>ثانية</span></div>
+ </div>
+</div>
+<a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a>
+</div>
+<script>
+const day=document.getElementById('day'),month=document.getElementById('month'),year=document.getElementById('year');
+for(let i=1;i<=31;i++) day.add(new Option(i,i));
+['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'].forEach((n,i)=>month.add(new Option(n,i+1)));
+const yNow=new Date().getFullYear();for(let y=yNow;y>=1900;y--)year.add(new Option(y,y));
+let birth=null,timer=null;
+function daysInMonth(y,m){return new Date(y,m,0).getDate()}
+function validDate(){const y=+year.value,m=+month.value,d=+day.value;return d<=daysInMonth(y,m)}
+function update(){
+ if(!birth)return; const now=new Date(); if(birth>now){document.getElementById('summary').textContent='تاريخ الميلاد في المستقبل.';return}
+ let y=now.getFullYear()-birth.getFullYear(),m=now.getMonth()-birth.getMonth(),d=now.getDate()-birth.getDate();
+ if(d<0){m--;d+=new Date(now.getFullYear(),now.getMonth(),0).getDate()}
+ if(m<0){y--;m+=12}
+ const diff=now-birth;
+ const totalSeconds=Math.floor(diff/1000),totalMinutes=Math.floor(totalSeconds/60),totalHours=Math.floor(totalMinutes/60),totalDays=Math.floor(totalHours/24);
+ document.getElementById('years').textContent=y;document.getElementById('months').textContent=m;document.getElementById('days').textContent=d;
+ document.getElementById('hours').textContent=totalHours.toLocaleString('ar-IQ');document.getElementById('minutes').textContent=totalMinutes.toLocaleString('ar-IQ');document.getElementById('seconds').textContent=totalSeconds.toLocaleString('ar-IQ');
+ document.getElementById('summary').textContent=`عمرك الآن: ${y} سنة و${m} شهر و${d} يوم — مرّ على ولادتك تقريباً ${totalDays.toLocaleString('ar-IQ')} يوم.`;
+}
+document.getElementById('calc').onclick=()=>{if(!validDate()){alert('هذا التاريخ غير صحيح.');return}birth=new Date(+year.value,+month.value-1,+day.value,0,0,0);document.getElementById('result').style.display='block';clearInterval(timer);update();timer=setInterval(update,1000)};
+</script></body></html>
