@@ -812,6 +812,34 @@ body:not(.trip-ready) #extraSummary{
   cursor:pointer;
 }
 
+
+/* ===== شاشة انتهاء الرحلة ===== */
+.finish-box{
+  display:none;
+  text-align:center;
+  padding:18px 12px;
+}
+.finish-box.show{display:block}
+.finish-icon{
+  width:62px;height:62px;border-radius:50%;
+  background:#eaf7ee;color:#16803b;
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px;font-weight:700;margin:0 auto 10px
+}
+.finish-box h3{margin:0 0 6px;font-size:19px}
+.finish-box p{margin:0 0 12px;color:#666;font-size:13px}
+.finish-price{
+  background:#f7f7f7;border-radius:11px;
+  padding:10px;margin:8px 0 12px;font-weight:700
+}
+.finish-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.finish-actions button{
+  border:0;border-radius:11px;padding:12px;
+  font-size:14px;font-weight:700;cursor:pointer
+}
+.finish-home{background:#1769e0;color:#fff}
+.finish-rate{background:#f1f1f1;color:#111}
+
 </style>
 </head>
 
@@ -965,7 +993,19 @@ body:not(.trip-ready) #extraSummary{
       <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
     </div>
 
+    <div id="finishBox" class="finish-box">
+      <div class="finish-icon">✓</div>
+      <h3>تم الوصول بنجاح</h3>
+      <p>انتهت الرحلة وتم إغلاق الطلب.</p>
+      <div id="finishPrice" class="finish-price">—</div>
+      <div class="finish-actions">
+        <button id="finishRateBtn" class="finish-rate" type="button">⭐ تقييم السائق</button>
+        <button id="finishHomeBtn" class="finish-home" type="button">العودة</button>
+      </div>
+    </div>
+
     <div id="driverCard" class="driver-card">
+      <div id="customerTripStatus" style="background:#eef4ff;border-radius:11px;padding:9px;text-align:center;font-weight:700;margin-bottom:9px">تم قبول الطلب</div>
       <div class="driver-top">
         <div class="driver-avatar">
           <img id="driverPhoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='%23e5e7eb'/><circle cx='60' cy='43' r='23' fill='%239ca3af'/><path d='M20 112c5-27 21-40 40-40s35 13 40 40' fill='%239ca3af'/></svg>" alt="صورة السائق">
@@ -1016,6 +1056,23 @@ body:not(.trip-ready) #extraSummary{
     </div>
   </div>
 </div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
+  authDomain: "ha-marketing.firebaseapp.com",
+  databaseURL: "https://ha-marketing-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ha-marketing",
+  storageBucket: "ha-marketing.firebasestorage.app",
+  messagingSenderId: "558520139704",
+  appId: "1:558520139704:web:526f8026dac658403b594d"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -1463,8 +1520,53 @@ document.querySelectorAll('.type').forEach(c=>{
  };
 });
 
-order.onclick=()=>{
-  openPostOrder();
+let activeRideId=null;
+let activeRideRef=null;
+
+order.onclick=async()=>{
+  if(!start || !end || !selected || !selected.dataset.price)return;
+
+  order.disabled=true;
+  const oldText=order.textContent;
+  order.textContent='جاري إرسال الطلب...';
+
+  const rideRef=db.ref('rides').push();
+  activeRideId=rideRef.key;
+  activeRideRef=rideRef;
+
+  const rideData={
+    status:'searching',
+    createdAt:firebase.database.ServerValue.TIMESTAMP,
+    customer:{
+      name:'زبون',
+      phone:''
+    },
+    pickup:{lat:start.lat,lng:start.lng},
+    destination:{lat:end.lat,lng:end.lng},
+    vehicleType:selected.dataset.name,
+    price:Number(selected.dataset.price),
+    distanceKm:Number(routeKm||0),
+    tripMinutes:Number(routeMin||0),
+    extras:{
+      extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
+      stop:stopCheck.checked ? stopText.value.trim() : '',
+      luggage:!!luggageCheck.checked,
+      extraPassengers:passengersCheck.checked ? Number(extraPassengers.value) : 0
+    }
+  };
+
+  try{
+    await rideRef.set(rideData);
+    localStorage.setItem('ha_active_ride',activeRideId);
+    openPostOrder();
+    listenToRide(activeRideId);
+  }catch(err){
+    console.error(err);
+    alert('تعذر إرسال الطلب إلى قاعدة البيانات. حاول مرة ثانية.');
+  }finally{
+    order.disabled=false;
+    order.textContent=oldText;
+  }
 };
 
 // ===== الرجوع خطوة بخطوة =====
@@ -1637,88 +1739,128 @@ function openPostOrder(){
   document.getElementById('postTitle').textContent='جاري البحث عن سائق';
   document.getElementById('searchingBox').style.display='block';
   document.getElementById('driverCard').classList.remove('show');
+  const finishBox=document.getElementById('finishBox');
+  if(finishBox) finishBox.classList.remove('show');
 
   setTimeout(()=>{
     if(!trackingMap){
       trackingMap=L.map('postMap',{zoomControl:false}).setView(
-        start ? [start.lat,start.lng] : [33.3152,44.3661],
-        14
+        start ? [start.lat,start.lng] : [33.3152,44.3661],14
       );
       L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-        maxZoom:19,
-        subdomains:'abcd',
-        attribution:'&copy; OpenStreetMap &copy; CARTO'
+        maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
       }).addTo(trackingMap);
       L.control.zoom({position:'topright'}).addTo(trackingMap);
-    }else{
-      trackingMap.invalidateSize();
-    }
+    }else trackingMap.invalidateSize();
 
     if(start && end){
       if(trackingRouteLine)trackingMap.removeLayer(trackingRouteLine);
-
-      // نستخدم مسار الشوارع الحقيقي بدل الخط المستقيم.
       route(start,end).then(r=>{
-        trackingRouteLine=L.geoJSON(r.geometry,{
-          style:{weight:5}
-        }).addTo(trackingMap);
+        trackingRouteLine=L.geoJSON(r.geometry,{style:{weight:5}}).addTo(trackingMap);
         trackingMap.fitBounds(trackingRouteLine.getBounds(),{padding:[35,35]});
-      }).catch(()=>{
-        // إذا فشل مزود الطرق نبقي النقطتين فقط بدون رسم خط مستقيم وهمي.
-        trackingMap.fitBounds([[start.lat,start.lng],[end.lat,end.lng]],{padding:[35,35]});
-      });
+      }).catch(()=>{});
     }
   },150);
+}
 
-  clearTimeout(searchTimer);
-  searchTimer=setTimeout(()=>{
-    document.getElementById('postTitle').textContent='تم قبول الطلب';
-    document.getElementById('searchingBox').style.display='none';
-    document.getElementById('driverCard').classList.add('show');
-    fillAcceptedDriver();
+function listenToRide(rideId){
+  if(activeRideRef) activeRideRef.off();
+  activeRideRef=db.ref('rides/'+rideId);
 
-    document.getElementById('pickupEtaText').textContent='5 د';
-    document.getElementById('tripEtaText').textContent=
-      typeof routeMin!=='undefined' && routeMin ? fm(routeMin) : '—';
-    document.getElementById('tripPriceText').textContent=
-      selected && selected.dataset.price
-      ? Number(selected.dataset.price).toLocaleString('ar-IQ')+' د.ع'
-      : '—';
+  activeRideRef.on('value',snapShot=>{
+    const ride=snapShot.val();
+    if(!ride)return;
 
-    if(trackingMap && start){
-      // موقع سائق تجريبي قريب من الزبون، ونثبته أولاً على أقرب شارع.
-      const rawDriverPoint=L.latLng(start.lat+0.012,start.lng+0.012);
+    if(ride.status==='accepted' || ride.status==='arrived' || ride.status==='started' || ride.status==='finished'){
+      document.getElementById('searchingBox').style.display='none';
+      document.getElementById('driverCard').classList.add('show');
 
-      snap(rawDriverPoint).then(driverPoint=>{
-        if(trackingDriverMarker)trackingMap.removeLayer(trackingDriverMarker);
-        trackingDriverMarker=L.marker(driverPoint).addTo(trackingMap).bindPopup(acceptedDriver.name);
+      const d=ride.driver||{};
+      acceptedDriver.name=d.name||'السائق';
+      acceptedDriver.phoneLocal=d.phone||'';
+      acceptedDriver.phoneInternational=(d.phone||'').replace(/^0/,'964');
+      acceptedDriver.plate=d.plate||'—';
+      acceptedDriver.carName=d.carName||'—';
+      acceptedDriver.carColor=d.carColor||'—';
+      acceptedDriver.rating=d.rating||'—';
+      acceptedDriver.photo=d.photo||'';
+      fillAcceptedDriver();
 
-        // نحسب طريق السائق إلى الزبون عبر شبكة الشوارع الفعلية.
-        return route(driverPoint,start).then(driverRoute=>{
-          if(window.driverRoadLayer){
-            trackingMap.removeLayer(window.driverRoadLayer);
-          }
+      document.getElementById('tripEtaText').textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' د' : '—';
+      document.getElementById('tripPriceText').textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
-          window.driverRoadLayer=L.geoJSON(driverRoute.geometry,{
-            style:{
-              weight:6,
-              opacity:0.95
-            }
-          }).addTo(trackingMap);
+      const titles={
+        accepted:'تم قبول الطلب',
+        arrived:'السائق وصل إليك',
+        started:'الرحلة بدأت',
+        finished:'تم إنهاء الرحلة'
+      };
+      const statusText=titles[ride.status]||'تم قبول الطلب';
+      document.getElementById('postTitle').textContent=statusText;
+      const customerTripStatus=document.getElementById('customerTripStatus');
+      if(customerTripStatus) customerTripStatus.textContent=statusText;
 
-          // نخلي العرض يشمل طريق السائق الحقيقي + نقطة الزبون.
-          const group=L.featureGroup([
-            window.driverRoadLayer,
-            trackingDriverMarker
-          ]);
+      if(ride.status==='finished'){
+        localStorage.removeItem('ha_active_ride');
 
-          trackingMap.fitBounds(group.getBounds(),{padding:[40,40]});
-        });
-      }).catch(()=>{
-        // إذا فشل حساب الطريق، نظهر موقع السائق فقط بدون رسم خط مستقيم وهمي.
-      });
+        // نوقف متابعة الطلب ونحوّل الزبون إلى شاشة انتهاء واضحة.
+        document.getElementById('searchingBox').style.display='none';
+        document.getElementById('driverCard').classList.remove('show');
+        document.getElementById('finishBox').classList.add('show');
+        document.getElementById('postTitle').textContent='انتهت الرحلة';
+        document.getElementById('finishPrice').textContent=
+          ride.price ? 'الأجرة: '+Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : 'تم إنهاء الرحلة';
+
+        if(activeRideRef) activeRideRef.off();
+      }
+
+      if(ride.driverLocation && trackingMap){
+        const p=L.latLng(ride.driverLocation.lat,ride.driverLocation.lng);
+        if(trackingDriverMarker) trackingDriverMarker.setLatLng(p);
+        else trackingDriverMarker=L.marker(p).addTo(trackingMap).bindPopup(acceptedDriver.name);
+
+        // قبل بدء الرحلة: حدث طريق السائق إلى الزبون حسب الشوارع.
+        if((ride.status==='accepted' || ride.status==='arrived') && start){
+          clearTimeout(window._driverRouteTimer);
+          window._driverRouteTimer=setTimeout(()=>{
+            route(p,start).then(driverRoute=>{
+              if(window.liveDriverRoad) trackingMap.removeLayer(window.liveDriverRoad);
+              window.liveDriverRoad=L.geoJSON(driverRoute.geometry,{
+                style:{weight:6,opacity:.9,dashArray:'8 6'}
+              }).addTo(trackingMap);
+            }).catch(()=>{});
+          },350);
+        }
+
+        // بعد بدء الرحلة: لا نعرض طريق السائق للزبون، ويبقى طريق الرحلة الأساسي.
+        if((ride.status==='started' || ride.status==='finished') && window.liveDriverRoad){
+          trackingMap.removeLayer(window.liveDriverRoad);
+          window.liveDriverRoad=null;
+        }
+      }
     }
-  },3000);
+
+    if(ride.status==='rejected'){
+      document.getElementById('postTitle').textContent='لم يتم قبول الطلب';
+      document.querySelector('#searchingBox .status-title').textContent='السائق رفض الطلب';
+      document.querySelector('#searchingBox .status-sub').textContent='يمكنك الرجوع وإرسال طلب جديد.';
+    }
+
+    if(ride.status==='cancelled'){
+      document.getElementById('postTitle').textContent='تم إلغاء الطلب';
+    }
+  });
+}
+
+const savedRideId=localStorage.getItem('ha_active_ride');
+if(savedRideId){
+  db.ref('rides/'+savedRideId).once('value').then(s=>{
+    if(s.exists() && !['finished','cancelled','rejected'].includes(s.val().status)){
+      activeRideId=savedRideId;
+      openPostOrder();
+      listenToRide(savedRideId);
+    }
+  });
 }
 
 document.getElementById('postBackBtn').onclick=()=>{
@@ -1742,9 +1884,51 @@ document.getElementById('chatSheet').addEventListener('click',e=>{
   if(e.target===document.getElementById('chatSheet'))closeInAppChat();
 });
 
-document.getElementById('cancelTripBtn').onclick=()=>{
+
+document.getElementById('finishHomeBtn').onclick=()=>{
+  document.getElementById('finishBox').classList.remove('show');
+  document.getElementById('postOrderScreen').classList.remove('show');
+
+  activeRideId=null;
+  activeRideRef=null;
+
+  // نرجع صفحة التكسي إلى حالة طلب جديد.
+  document.body.classList.remove('trip-ready','trip-sheet-open');
+  document.getElementById('tripSheet').classList.remove('open');
+  document.getElementById('selectionPanel').style.display='block';
+
+  start=null;
+  end=null;
+
+  if(sm){map.removeLayer(sm);sm=null}
+  if(em){map.removeLayer(em);em=null}
+  if(line){map.removeLayer(line);line=null}
+
+  setMode('start');
+  startMapPick();
+  map.setView([33.3152,44.3661],12);
+};
+
+document.getElementById('finishRateBtn').onclick=()=>{
+  const rating=prompt('قيّم السائق من 1 إلى 5');
+  if(!rating)return;
+  const n=Number(rating);
+  if(n<1 || n>5 || !Number.isFinite(n)){
+    alert('اكتب رقم من 1 إلى 5.');
+    return;
+  }
+  alert('شكراً لتقييمك ⭐ '+n);
+};
+
+document.getElementById('cancelTripBtn').onclick=async()=>{
   if(confirm('هل تريد إلغاء الطلب؟')){
-    clearTimeout(searchTimer);
+    if(activeRideId){
+      await db.ref('rides/'+activeRideId).update({
+        status:'cancelled',
+        cancelledAt:firebase.database.ServerValue.TIMESTAMP
+      });
+      localStorage.removeItem('ha_active_ride');
+    }
     document.getElementById('postOrderScreen').classList.remove('show');
   }
 };
