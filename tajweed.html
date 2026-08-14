@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>تعلم التجويد - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:95%;max-width:1050px;margin:28px auto}
+h1{text-align:center;margin-bottom:8px}
+.subtitle{text-align:center;color:#666;line-height:1.8;margin-bottom:18px}
+.hero,.section,.lesson,.practice,.quiz{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 16px #0001;margin:14px 0}
+.hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#f7f7f7;border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:22px;margin-bottom:5px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.tabs button,.action{border:0;border-radius:10px;background:#111;color:#fff;padding:11px 14px;font-size:15px;cursor:pointer}
+.tabs button.light,.action.light{background:#eee;color:#111}
+.lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.lesson{margin:0;border:1px solid #eee;box-shadow:none;cursor:pointer}
+.lesson h3{margin:0 0 7px}
+.lesson p{margin:0;color:#666;line-height:1.7}
+.badge{display:inline-block;background:#111;color:#fff;border-radius:999px;padding:5px 9px;font-size:12px;margin-bottom:8px}
+.reader{display:none}
+.reader.show{display:block}
+.rule-text{font-size:17px;line-height:2}
+.example{font-family:"Traditional Arabic","Amiri",serif;font-size:29px;line-height:2;text-align:center;background:#fafafa;border-radius:12px;padding:16px;margin:12px 0}
+.point{background:#f7f7f7;border-radius:10px;padding:11px;margin:8px 0;line-height:1.8}
+.reciter-box{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+select,button,input{font-size:16px}
+select{width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;background:#fff}
+audio{width:100%;margin-top:10px}
+.ayah{border:1px solid #e2e2e2;border-radius:12px;padding:14px;margin:10px 0}
+.ayah .arabic{font-family:"Traditional Arabic","Amiri",serif;font-size:26px;line-height:2}
+.ayah button{margin-top:8px;border:0;border-radius:9px;background:#111;color:#fff;padding:9px 12px;cursor:pointer}
+.q{border:1px solid #ddd;border-radius:12px;padding:14px;margin:10px 0}
+.q label{display:block;padding:6px 0}
+.result{font-weight:700;text-align:center;padding:12px}
+.back{display:block;text-align:center;margin:26px 0;text-decoration:none;color:#111}
+.hidden{display:none!important}
+@media(max-width:700px){
+ .lesson-grid,.hero-grid,.reciter-box{grid-template-columns:1fr}
+ .example{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🎓 تعلم التجويد</h1>
+<p class="subtitle">مسار تعليمي منظم لتعلّم أحكام تلاوة القرآن: شرح مبسط، أمثلة، قارئ للاستماع، وتدريب واختبار.</p>
+
+<div class="hero">
+ <div class="hero-grid">
+   <div class="stat"><b>10+</b><span>أبواب أساسية</span></div>
+   <div class="stat"><b>أمثلة</b><span>قرآنية وتعليمية</span></div>
+   <div class="stat"><b>قارئ</b><span>للاستماع والتكرار</span></div>
+ </div>
+</div>
+
+<div class="tabs">
+ <button data-view="lessons">📚 الدروس</button>
+ <button data-view="practice" class="light">🎧 تدريب التلاوة</button>
+ <button data-view="quiz" class="light">📝 اختبار</button>
+</div>
+
+<section id="lessonsView">
+<div class="section">
+<h2>أبواب التجويد</h2>
+<div class="lesson-grid" id="lessonGrid">
+
+<div class="lesson" data-rule="makharij"><span class="badge">الأساس</span><h3>مخارج الحروف وصفاتها</h3><p>تعرف على مواضع خروج الحروف والصفات التي تميز النطق الصحيح.</p></div>
+<div class="lesson" data-rule="noon"><span class="badge">مهم</span><h3>النون الساكنة والتنوين</h3><p>الإظهار، الإدغام، الإقلاب، والإخفاء.</p></div>
+<div class="lesson" data-rule="meem"><span class="badge">مهم</span><h3>الميم الساكنة</h3><p>الإخفاء الشفوي، الإدغام الشفوي، والإظهار الشفوي.</p></div>
+<div class="lesson" data-rule="madd"><span class="badge">المدود</span><h3>أحكام المد</h3><p>المد الطبيعي وأهم المدود الفرعية ومقاديرها.</p></div>
+<div class="lesson" data-rule="qalqalah"><span class="badge">الصوت</span><h3>القلقلة</h3><p>نطق حروف قطب جد عند السكون بصوت واضح بلا مبالغة.</p></div>
+<div class="lesson" data-rule="ghunnah"><span class="badge">الغنة</span><h3>الغنة</h3><p>صوت يخرج من الخيشوم ويظهر في النون والميم المشددتين وأحكام أخرى.</p></div>
+<div class="lesson" data-rule="lam"><span class="badge">اللام</span><h3>اللام الشمسية والقمرية</h3><p>متى تُظهر لام التعريف ومتى تُدغم في الحرف التالي.</p></div>
+<div class="lesson" data-rule="ra"><span class="badge">التفخيم</span><h3>التفخيم والترقيق</h3><p>أحكام عامة في الحروف المفخمة، مع باب الراء ولفظ الجلالة.</p></div>
+<div class="lesson" data-rule="waqf"><span class="badge">الوقف</span><h3>الوقف والابتداء</h3><p>كيف تقف وتبدأ دون أن يتغير المعنى أو يختل السياق.</p></div>
+<div class="lesson" data-rule="hamza"><span class="badge">القراءة</span><h3>همزة الوصل والقطع</h3><p>التمييز بينهما في البدء والوصل أثناء القراءة.</p></div>
+
+</div>
+</div>
+
+<div id="ruleReader" class="section reader">
+ <button id="backLessons" class="action light">← الرجوع للدروس</button>
+ <h2 id="ruleTitle"></h2>
+ <div id="ruleBody" class="rule-text"></div>
+</div>
+</section>
+
+<section id="practiceView" class="hidden">
+<div class="practice">
+<h2>🎧 تدريب مع قارئ</h2>
+<p>اختر القارئ والسورة، استمع للآية، ثم كررها بنفسك مع التركيز على الحكم الذي تتعلمه.</p>
+<div class="reciter-box">
+ <div><label>القارئ</label>
+  <select id="reciter">
+   <option value="ar.alafasy">مشاري راشد العفاسي</option>
+   <option value="ar.minshawi">محمد صديق المنشاوي</option>
+   <option value="ar.abdulbasit">عبد الباسط عبد الصمد</option>
+  </select>
+ </div>
+ <div><label>السورة التدريبية</label>
+  <select id="surah">
+   <option value="1">الفاتحة</option>
+   <option value="112">الإخلاص</option>
+   <option value="113">الفلق</option>
+   <option value="114">الناس</option>
+   <option value="108">الكوثر</option>
+  </select>
+ </div>
+</div>
+<button id="loadSurah" class="action" style="margin-top:12px">تحميل السورة</button>
+<div id="practiceStatus" class="point">اختر القارئ والسورة ثم اضغط تحميل.</div>
+<div id="ayahs"></div>
+</div>
+
+<div class="practice">
+<h2>🎙️ تدريب ذاتي</h2>
+<div class="point">1. استمع للآية مرتين.</div>
+<div class="point">2. حدد الحكم التجويدي الموجود فيها.</div>
+<div class="point">3. أعد الآية ببطء مع تطبيق الحكم.</div>
+<div class="point">4. استمع مرة أخرى وقارن نطقك بالقارئ.</div>
+<div class="point">5. كرر حتى يثبت النطق ثم انتقل للآية التالية.</div>
+</div>
+</section>
+
+<section id="quizView" class="hidden">
+<div class="quiz">
+<h2>📝 اختبار سريع</h2>
+<div class="q">
+ <b>1) ما حروف القلقلة؟</b>
+ <label><input type="radio" name="q1" value="0"> يرملون</label>
+ <label><input type="radio" name="q1" value="1"> قطب جد</label>
+ <label><input type="radio" name="q1" value="0"> أبجد هوز</label>
+</div>
+<div class="q">
+ <b>2) إذا جاءت الباء بعد نون ساكنة أو تنوين فالحكم:</b>
+ <label><input type="radio" name="q2" value="1"> الإقلاب</label>
+ <label><input type="radio" name="q2" value="0"> الإظهار</label>
+ <label><input type="radio" name="q2" value="0"> القلقلة</label>
+</div>
+<div class="q">
+ <b>3) الميم الساكنة إذا جاء بعدها ميم فالحكم:</b>
+ <label><input type="radio" name="q3" value="0"> إظهار شفوي</label>
+ <label><input type="radio" name="q3" value="1"> إدغام شفوي</label>
+ <label><input type="radio" name="q3" value="0"> إقلاب</label>
+</div>
+<div class="q">
+ <b>4) المد الطبيعي مقداره غالباً:</b>
+ <label><input type="radio" name="q4" value="1"> حركتان</label>
+ <label><input type="radio" name="q4" value="0"> ست حركات دائماً</label>
+ <label><input type="radio" name="q4" value="0"> لا يمد</label>
+</div>
+<button id="grade" class="action">إظهار النتيجة</button>
+<div id="quizResult" class="result"></div>
+</div>
+</section>
+
+<a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a>
+</div>
+
+<script>
+const RULES={
+makharij:{
+ title:'مخارج الحروف وصفاتها',
+ body:`<div class="point"><b>الفكرة:</b> التجويد يبدأ بإخراج كل حرف من مخرجه الصحيح وإعطائه صفاته دون تكلف.</div>
+ <div class="point"><b>المخارج العامة:</b> الجوف، الحلق، اللسان، الشفتان، والخيشوم.</div>
+ <div class="point"><b>أمثلة تعليمية:</b> ميّز بين س/ص، ت/ط، د/ض، ذ/ظ، ك/ق.</div>
+ <div class="example">صِرَاطَ — سَلَامٌ — قُلْ — كُلْ</div>
+ <div class="point"><b>تدريب:</b> انطق الحرف منفرداً ثم ساكناً بعد همزة: أَصْ، أَسْ، أَقْ، أَكْ.</div>`
+},
+noon:{
+ title:'أحكام النون الساكنة والتنوين',
+ body:`<div class="point"><b>الإظهار:</b> إظهار النون أو التنوين بوضوح عند حروف الحلق: ء هـ ع ح غ خ.</div>
+ <div class="example">مِنْ عِلْمٍ</div>
+ <div class="point"><b>الإدغام:</b> يكون عند حروف «يرملون»، ومنه إدغام بغنة وإدغام بلا غنة.</div>
+ <div class="example">مَن يَعْمَلْ</div>
+ <div class="point"><b>الإقلاب:</b> عند الباء، تقلب النون أو التنوين إلى ميم مخفاة مع غنة.</div>
+ <div class="example">سَمِيعٌ بَصِيرٌ</div>
+ <div class="point"><b>الإخفاء:</b> بين الإظهار والإدغام مع بقاء الغنة عند حروف الإخفاء.</div>
+ <div class="example">مِنْ قَبْلُ</div>`
+},
+meem:{
+ title:'أحكام الميم الساكنة',
+ body:`<div class="point"><b>إخفاء شفوي:</b> إذا جاء بعد الميم الساكنة حرف الباء.</div>
+ <div class="example">تَرْمِيهِمْ بِحِجَارَةٍ</div>
+ <div class="point"><b>إدغام شفوي:</b> إذا جاء بعدها ميم.</div>
+ <div class="example">لَهُمْ مَا</div>
+ <div class="point"><b>إظهار شفوي:</b> مع بقية الحروف، مع الحذر من إخفائها عند الفاء والواو.</div>`
+},
+madd:{
+ title:'أحكام المد',
+ body:`<div class="point"><b>المد الطبيعي:</b> أصل المد، ومقداره حركتان عند عدم وجود سبب زائد.</div>
+ <div class="example">قَالَ — يَقُولُ — قِيلَ</div>
+ <div class="point"><b>المد المتصل:</b> حرف مد وبعده همز في الكلمة نفسها.</div>
+ <div class="point"><b>المد المنفصل:</b> حرف مد في آخر كلمة والهمز في أول الكلمة التالية.</div>
+ <div class="point"><b>المد اللازم:</b> بعد حرف المد سكون أصلي، وله تفصيل في الكلمي والحرفي.</div>
+ <div class="point">مقادير المدود التفصيلية تختلف باختلاف الرواية وطريق الأداء؛ تعلّمها مع قارئ أو معلّم على الرواية التي تقرأ بها.</div>`
+},
+qalqalah:{
+ title:'القلقلة',
+ body:`<div class="point">حروفها مجموعة في: <b>قطب جد</b>. تظهر عند سكون حرف القلقلة، مع صوت ارتداد من غير فتح أو كسر أو ضم زائد.</div>
+ <div class="example">أَحَدْ — يَجْعَلْ — اقْرَأْ</div>
+ <div class="point">تكون أوضح عند الوقف على حرف القلقلة في آخر الكلمة.</div>`
+},
+ghunnah:{
+ title:'الغنة',
+ body:`<div class="point">صوت أغن يخرج من الخيشوم، وأوضح مواضعه النون والميم المشددتان.</div>
+ <div class="example">إِنَّ — ثُمَّ</div>
+ <div class="point">تظهر الغنة أيضاً في عدد من أحكام النون الساكنة والتنوين والميم الساكنة.</div>`
+},
+lam:{
+ title:'اللام الشمسية والقمرية',
+ body:`<div class="point"><b>القمرية:</b> تظهر لام «الـ» في النطق.</div><div class="example">الْقَمَرُ</div>
+ <div class="point"><b>الشمسية:</b> تدغم اللام في الحرف التالي ويشدد الحرف.</div><div class="example">الشَّمْسُ</div>`
+},
+ra:{
+ title:'التفخيم والترقيق',
+ body:`<div class="point">حروف الاستعلاء مفخمة في الأصل، ومجموعة في «خص ضغط قظ» مع درجات للتفخيم.</div>
+ <div class="point">الراء لها أحكام تفصيلية بحسب حركتها وما قبلها وما بعدها. ولفظ الجلالة يفخم بعد فتح أو ضم ويرقق بعد كسر في المشهور.</div>
+ <div class="example">رَبِّ — فِرْعَوْنَ — بِسْمِ اللَّهِ</div>`
+},
+waqf:{
+ title:'الوقف والابتداء',
+ body:`<div class="point">الوقف الجيد يحافظ على المعنى. لا تقف في موضع يفسد المعنى أو يقطع ارتباطاً شديداً بين الكلمات.</div>
+ <div class="point">راقب علامات الوقف في المصحف، وتدرّب على الوقف بالسكون وعلى الابتداء من موضع صحيح.</div>`
+},
+hamza:{
+ title:'همزة الوصل والقطع',
+ body:`<div class="point"><b>همزة القطع:</b> تثبت في الابتداء والوصل.</div>
+ <div class="point"><b>همزة الوصل:</b> تثبت عند الابتداء وتسقط في درج الكلام.</div>
+ <div class="example">ٱهْدِنَا الصِّرَاطَ</div>`
+}
+};
+
+document.querySelectorAll('.lesson').forEach(el=>{
+ el.addEventListener('click',()=>{
+   const r=RULES[el.dataset.rule];
+   document.getElementById('lessonGrid').parentElement.classList.add('hidden');
+   document.getElementById('ruleTitle').textContent=r.title;
+   document.getElementById('ruleBody').innerHTML=r.body;
+   document.getElementById('ruleReader').classList.add('show');
+   window.scrollTo({top:0,behavior:'smooth'});
+ });
+});
+document.getElementById('backLessons').addEventListener('click',()=>{
+ document.getElementById('ruleReader').classList.remove('show');
+ document.getElementById('lessonGrid').parentElement.classList.remove('hidden');
+});
+
+document.querySelectorAll('[data-view]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   document.querySelectorAll('[data-view]').forEach(b=>b.classList.add('light'));
+   btn.classList.remove('light');
+   ['lessons','practice','quiz'].forEach(v=>document.getElementById(v+'View').classList.add('hidden'));
+   document.getElementById(btn.dataset.view+'View').classList.remove('hidden');
+ });
+});
+
+document.getElementById('loadSurah').addEventListener('click',async()=>{
+ const reciter=document.getElementById('reciter').value;
+ const surah=document.getElementById('surah').value;
+ const status=document.getElementById('practiceStatus');
+ const box=document.getElementById('ayahs');
+ status.textContent='جاري تحميل السورة والتلاوة...'; box.innerHTML='';
+ try{
+   const res=await fetch(`https://api.alquran.cloud/v1/surah/${surah}/${reciter}`);
+   if(!res.ok)throw new Error();
+   const j=await res.json();
+   const data=j.data;
+   status.textContent='✅ اضغط تشغيل على أي آية، واستمع ثم كررها.';
+   box.innerHTML=data.ayahs.map(a=>`
+    <div class="ayah">
+      <div class="arabic">${a.text} ﴿${a.numberInSurah}﴾</div>
+      <audio controls preload="none" src="${a.audio||''}"></audio>
+    </div>`).join('');
+ }catch(e){
+   status.textContent='تعذر تحميل التلاوة الآن. تأكد من اتصال الإنترنت وحاول مرة أخرى.';
+ }
+});
+
+document.getElementById('grade').addEventListener('click',()=>{
+ let score=0,total=4,answered=0;
+ ['q1','q2','q3','q4'].forEach(n=>{
+   const x=document.querySelector(`input[name="${n}"]:checked`);
+   if(x){answered++;score+=Number(x.value)}
+ });
+ document.getElementById('quizResult').textContent=
+   answered<total ? `أجبت عن ${answered} من ${total}. أكمل جميع الأسئلة.` :
+   `نتيجتك: ${score} من ${total} — ${score===4?'ممتاز 👏':score>=3?'جيد جداً، راجع نقطة واحدة.':'راجع الدروس وحاول مرة ثانية.'}`;
+});
+</script>
+</body>
+</html>
