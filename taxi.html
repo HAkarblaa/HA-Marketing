@@ -286,119 +286,9 @@ body.trip-sheet-open{
   padding-bottom:0;
   overflow:hidden;
 }
-
-/* ===== ترتيب الشاشة بدون فراغ ===== */
-body:not(.trip-ready) #map{
-  height:58vh !important;
-  min-height:330px !important;
-}
-body:not(.trip-ready) #selectionPanel{
-  margin:8px 14px 10px !important;
-}
-body:not(.trip-ready) #tripSheet{
-  display:none !important;
-}
-body.trip-ready #map{
-  height:42vh !important;
-  min-height:285px !important;
-}
-body.trip-ready #selectionPanel{
-  display:none !important;
-}
-body.trip-ready #tripSheet.open{
-  display:flex !important;
-  flex-direction:column;
-  height:58vh !important;
-  max-height:none !important;
-  overflow:hidden !important;
-}
-body.trip-ready #tripSheet .type{
-  min-height:36px !important;
-  padding:4px 6px !important;
-  margin:3px 0 !important;
-}
-body.trip-ready #tripSheet .vehicle{font-size:21px !important;width:31px !important}
-body.trip-ready #tripSheet .info b{font-size:12px !important}
-body.trip-ready #tripSheet .info small{font-size:9px !important}
-body.trip-ready #tripSheet .price{font-size:12px !important}
-body.trip-ready #tripSheet .metrics{
-  grid-template-columns:repeat(3,1fr) !important;
-  gap:5px !important;
-  margin:3px 0 !important;
-}
-body.trip-ready #tripSheet .metric{padding:5px 3px !important}
-body.trip-ready #tripSheet .notice{
-  margin:2px 0 !important;
-  padding:5px 6px !important;
-  font-size:9px !important;
-}
-body.trip-ready #tripSheet .order{
-  margin-top:auto !important;
-  flex-shrink:0 !important;
-  padding-top:6px !important;
-}
-
-body:not(.trip-ready) #selectionPanel{
-  margin:6px 14px 8px !important;
-  position:relative !important;
-  bottom:auto !important;
-}
-body:not(.trip-ready) #stepSelectBtn{
-  display:block !important;
-  width:100% !important;
-  padding:12px 10px !important;
-  font-size:14px !important;
-}
-
-@media(max-width:560px){
-  body:not(.trip-ready) #map{
-    height:56vh !important;
-    min-height:315px !important;
-  }
-  body.trip-ready #map{
-    height:41vh !important;
-    min-height:270px !important;
-  }
-  body.trip-ready #tripSheet.open{
-    height:59vh !important;
-  }
-}
-
 @media(max-width:560px){
  #tripSheet .metrics{grid-template-columns:repeat(3,1fr)}
 }
-
-/* زر تثبيت النقطة يبقى واضح بالكامل دائماً */
-body:not(.trip-ready){
-  overflow:hidden;
-}
-body:not(.trip-ready) #map{
-  height:calc(100dvh - 245px) !important;
-  min-height:300px !important;
-  max-height:58vh !important;
-}
-body:not(.trip-ready) #selectionPanel{
-  position:fixed !important;
-  left:14px !important;
-  right:14px !important;
-  bottom:12px !important;
-  width:auto !important;
-  margin:0 !important;
-  z-index:1450 !important;
-  padding:10px !important;
-  border-radius:16px !important;
-  background:#fff !important;
-  box-shadow:0 4px 18px #0002 !important;
-}
-body:not(.trip-ready) #stepSelectBtn{
-  display:block !important;
-  width:100% !important;
-  min-height:50px !important;
-  padding:12px !important;
-  font-size:15px !important;
-  font-weight:700 !important;
-}
-
 </style>
 </head>
 
@@ -711,7 +601,6 @@ function setPoint(kind,p,label){
    document.getElementById('selectionPanel').style.display='none';
    vehicleStep.style.display='block';
    document.getElementById('tripSheet').classList.add('open');
-   document.body.classList.add('trip-ready');
    document.body.classList.add('trip-sheet-open');
    document.getElementById('extraOptionsBtn').disabled=false;
 
@@ -960,7 +849,6 @@ function backOneStep(){
 
    // الرجوع خطوة يرجع قائمة الانطلاق والوصول بدل أنواع التكسي.
    document.getElementById('tripSheet').classList.remove('open');
-   document.body.classList.remove('trip-ready');
    document.body.classList.remove('trip-sheet-open');
    document.getElementById('vehicleStep').style.display='none';
    document.getElementById('selectionPanel').style.display='block';
