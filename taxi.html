@@ -448,6 +448,132 @@ body:not(.trip-ready) #extraSummary{
   }
 }
 
+
+.province-bar{
+  padding:6px 14px 4px;
+  background:#fff;
+  flex:0 0 auto;
+}
+.province-bar button{
+  width:100%;
+  min-height:43px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  background:#f8f8f8;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:9px;
+  padding:9px 12px;
+  cursor:pointer;
+  text-align:right;
+}
+.province-label{
+  font-size:12px;
+  font-weight:700;
+  color:#111;
+}
+.province-name{
+  font-size:12px;
+  color:#666;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.province-arrow{
+  font-size:17px;
+  color:#777;
+}
+.province-bar button.detecting .province-name{
+  color:#999;
+}
+
+
+/* المحافظة: اختيار صغير بالأعلى */
+.province-bar{
+  padding:5px 12px 3px !important;
+  display:flex !important;
+  justify-content:flex-start !important;
+  background:#fff;
+}
+.province-bar button{
+  width:auto !important;
+  min-width:145px !important;
+  max-width:220px !important;
+  min-height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:6px !important;
+  padding:6px 9px !important;
+  border-radius:9px !important;
+}
+.province-label{
+  font-size:11px !important;
+}
+.province-name{
+  font-size:10px !important;
+  max-width:120px !important;
+}
+.province-arrow{
+  font-size:14px !important;
+  margin-right:auto;
+}
+
+
+/* اختيار المحافظة داخل الخريطة مقابل أزرار التكبير والتصغير */
+.map-wrap .province-bar{
+  position:absolute !important;
+  top:10px !important;
+  right:10px !important;
+  left:auto !important;
+  z-index:700 !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  width:auto !important;
+}
+.map-wrap .province-bar button{
+  width:auto !important;
+  min-width:120px !important;
+  max-width:180px !important;
+  min-height:32px !important;
+  background:#fff !important;
+  box-shadow:0 1px 5px #0003 !important;
+  border:1px solid #ccc !important;
+  border-radius:6px !important;
+  padding:5px 8px !important;
+}
+
+
+/* المحافظة مقابيل + و - بالجهة الثانية من الخريطة */
+.map-wrap .province-bar{
+  position:absolute !important;
+  top:10px !important;
+  right:10px !important;
+  left:auto !important;
+  z-index:800 !important;
+}
+.leaflet-top.leaflet-left{
+  left:10px !important;
+  right:auto !important;
+}
+
+
+/* اختيار المحافظة في جهة اليسار من الخريطة */
+.map-wrap .province-bar{
+  position:absolute !important;
+  top:10px !important;
+  left:10px !important;
+  right:auto !important;
+  z-index:800 !important;
+}
+
+/* خلي أزرار التكبير والتصغير بالجهة المقابلة */
+.leaflet-top.leaflet-left{
+  left:auto !important;
+  right:10px !important;
+}
+
 </style>
 </head>
 
@@ -462,11 +588,19 @@ body:not(.trip-ready) #extraSummary{
 
 <div class="map-wrap">
   <div id="map"></div>
+<div class="province-bar">
+  <button id="provinceBtn" type="button">
+    <span class="province-label">المحافظة</span>
+    <span id="provinceName" class="province-name">تحديد المحافظة</span>
+    <span class="province-arrow">⌄</span>
+  </button>
+</div>
 
   <button id="locateBtn" class="locate-btn" title="تحديد موقعي" aria-label="تحديد موقعي">📍</button>
 
   <div id="centerPin" class="center-pin"><span class="moving-pin"></span></div>
 </div>
+
 
 <div class="single-search-wrap">
   <div class="single-search-row">
@@ -689,6 +823,7 @@ function stopMapPick(){
 
 document.getElementById('stepSelectBtn').onclick=async()=>{
   const p=await snap(map.getCenter());
+  detectProvinceFromPoint(p);
 
   let label='';
   if(mode==='start'){
@@ -783,6 +918,7 @@ locateBtn.onclick=()=>{
 
  navigator.geolocation.getCurrentPosition(async pos=>{
    const p=await snap(L.latLng(pos.coords.latitude,pos.coords.longitude));
+   detectProvinceFromPoint(p);
 
    // زر الدنبوس ينقل الخريطة فقط ولا يثبت الانطلاق تلقائياً.
    setMode('start');
@@ -827,6 +963,7 @@ async function searchCurrentPlace(){
 
      b.onclick=async()=>{
        const p=await snap(L.latLng(+x.lat,+x.lon));
+       detectProvinceFromPoint(p);
 
        // البحث فقط ينقل الخريطة والدبوس، ولا يثبت النقطة.
        setMode(kind);
@@ -856,6 +993,67 @@ async function searchCurrentPlace(){
 document.getElementById('placeSearchBtn').onclick=searchCurrentPlace;
 document.getElementById('placeSearch').addEventListener('keydown',e=>{
  if(e.key==='Enter')searchCurrentPlace();
+});
+
+
+// ===== تحديد المحافظة =====
+function provinceFromAddress(address){
+  if(!address)return '';
+  return address.state ||
+         address.province ||
+         address.region ||
+         address.state_district ||
+         address.county ||
+         '';
+}
+
+async function detectProvinceFromPoint(p){
+  const btn=document.getElementById('provinceBtn');
+  const label=document.getElementById('provinceName');
+
+  try{
+    btn.classList.add('detecting');
+    label.textContent='جاري تحديد المحافظة...';
+
+    const u='https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=ar'
+      +'&lat='+encodeURIComponent(p.lat)
+      +'&lon='+encodeURIComponent(p.lng)
+      +'&zoom=8';
+
+    const r=await fetch(u);
+    const j=await r.json();
+    const province=provinceFromAddress(j.address);
+
+    if(province){
+      label.textContent=province;
+      window.selectedProvince=province;
+    }else{
+      label.textContent='تعذر تحديد المحافظة';
+    }
+  }catch(e){
+    label.textContent='تعذر تحديد المحافظة';
+  }finally{
+    btn.classList.remove('detecting');
+  }
+}
+
+document.getElementById('provinceBtn').addEventListener('click',()=>{
+  if(!navigator.geolocation){
+    document.getElementById('provinceName').textContent='المتصفح لا يدعم تحديد الموقع';
+    return;
+  }
+
+  document.getElementById('provinceName').textContent='جاري تحديد موقعك...';
+
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const p=L.latLng(pos.coords.latitude,pos.coords.longitude);
+    await detectProvinceFromPoint(p);
+  },()=>{
+    document.getElementById('provinceName').textContent='تعذر تحديد موقعك';
+  },{
+    enableHighAccuracy:true,
+    timeout:10000
+  });
 });
 
 async function route(a,b){
