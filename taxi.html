@@ -300,6 +300,56 @@ body.trip-sheet-open{
   width:100%;
 }
 
+
+/* إلغاء الفراغ أسفل زر تثبيت الانطلاق/الوصول */
+#selectionPanel{
+  margin-bottom:0 !important;
+}
+#locationStep{
+  margin:0 !important;
+  padding:0 !important;
+}
+#stepSelectBtn{
+  margin-bottom:0 !important;
+}
+body:not(.trip-ready) .order,
+body:not(.trip-ready) #extraSummary{
+  margin:0 !important;
+}
+
+
+/* حسب الصورة: إلغاء المساحة البيضاء الكبيرة تحت زر التثبيت */
+html, body{
+  margin:0;
+  padding:0;
+}
+
+body:not(.trip-ready){
+  min-height:0 !important;
+  height:auto !important;
+  padding-bottom:0 !important;
+  overflow-x:hidden;
+}
+
+body:not(.trip-ready) #selectionPanel{
+  margin-bottom:8px !important;
+}
+
+/* أي عناصر تخص تفاصيل الرحلة تبقى مخفية قبل تثبيت النقطتين */
+body:not(.trip-ready) #tripSheet,
+body:not(.trip-ready) #orderArea,
+body:not(.trip-ready) #extraSummary{
+  display:none !important;
+}
+
+/* لا نضيف ارتفاع أو حشو بعد آخر مربع */
+body:not(.trip-ready) main,
+body:not(.trip-ready) .app,
+body:not(.trip-ready) .page{
+  min-height:0 !important;
+  padding-bottom:0 !important;
+}
+
 </style>
 </head>
 
