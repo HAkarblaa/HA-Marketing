@@ -814,6 +814,15 @@ body.delivery-stage-3 #deliveryDetailsStage,
   visibility:visible !important;
 }
 
+
+#stepSelectBtn:active{
+  transform:scale(.99);
+}
+#stepSelectBtn{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
 </style>
 </head>
 
@@ -1102,12 +1111,14 @@ function stopMapPick(){
 
 
 
-document.getElementById('stepSelectBtn').onclick=async()=>{
-  const p=await snap(map.getCenter());
-  detectProvinceFromPoint(p);
+document.getElementById('stepSelectBtn').onclick=()=>{
+  // نثبت النقطة فوراً من مركز الخريطة حتى ما يبقى الزر معلق
+  // إذا خدمة أقرب شارع تأخرت أو ما اشتغلت.
+  const rawPoint=map.getCenter();
+  const currentMode=mode;
 
   let label='';
-  if(mode==='start'){
+  if(currentMode==='start'){
     label=window.pendingStartLabel||'تم تحديد نقطة الاستلام';
     window.pendingStartLabel='';
   }else{
@@ -1115,8 +1126,24 @@ document.getElementById('stepSelectBtn').onclick=async()=>{
     window.pendingEndLabel='';
   }
 
-  setPoint(mode,p,label);
-  history.pushState({taxiStep:mode},'',location.href);
+  setPoint(currentMode,rawPoint,label);
+  detectProvinceFromPoint(rawPoint);
+  history.pushState({deliveryStep:currentMode},'',location.href);
+
+  // بعد التثبيت نحاول فقط تحسين النقطة إلى أقرب شارع بدون تعطيل المستخدم.
+  snap(rawPoint).then(snapped=>{
+    if(currentMode==='start' && start){
+      start=snapped;
+      if(sm) map.removeLayer(sm);
+      sm=L.marker(snapped,{icon:startIcon()}).addTo(map).bindPopup('الاستلام');
+      calc();
+    }else if(currentMode==='end' && end){
+      end=snapped;
+      if(em) map.removeLayer(em);
+      em=L.marker(snapped,{icon:endIcon()}).addTo(map).bindPopup('التسليم');
+      calc();
+    }
+  }).catch(()=>{});
 };
 
 async function snap(p){
