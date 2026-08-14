@@ -590,6 +590,33 @@ body:not(.trip-ready) #extraSummary{
   background:#fff;
 }
 
+
+/* ===== ترتيب الدلفري مثل التكسي ===== */
+body:not(.trip-ready) #tripSheet,
+body:not(.trip-ready) .delivery-details,
+body:not(.trip-ready) #orderArea,
+body:not(.trip-ready) #extraSummary{
+  display:none !important;
+}
+
+body:not(.trip-ready) #selectionPanel{
+  display:block !important;
+}
+
+body.trip-ready #selectionPanel{
+  display:none !important;
+}
+
+body.trip-ready #tripSheet.open{
+  display:flex !important;
+  flex-direction:column;
+}
+
+/* خلي تفاصيل الدلفري تظهر فقط بعد تثبيت الاستلام والتسليم */
+body.trip-ready .delivery-details{
+  display:grid !important;
+}
+
 </style>
 </head>
 
@@ -638,7 +665,7 @@ body:not(.trip-ready) #extraSummary{
 
 </div>
 
-<div id="tripSheet">
+<div id="tripSheet" style="display:none">
   <div class="trip-sheet-title">تفاصيل التوصيل</div>
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر وسيلة المندوب</div>
@@ -668,7 +695,7 @@ body:not(.trip-ready) #extraSummary{
 </div>
 
 <div id="notice" class="notice">
-حدد الاستلام أولاً، وبعدها حدد نقطة التسليم.
+حدد نقطة الاستلام أولاً، وبعدها ثبت نقطة التسليم.
 </div>
 <div id="extraSummary" class="extra-summary"></div>
 
@@ -920,6 +947,7 @@ function setPoint(kind,p,label){
    document.getElementById('tripSheet').classList.add('open');
    document.body.classList.add('trip-sheet-open');
    document.body.classList.add('trip-ready');
+   document.getElementById('tripSheet').style.display='flex';
    document.getElementById('extraOptionsBtn').disabled=false;
 
    // إخفاء نتائج البحث القديمة أيضاً.
@@ -1244,6 +1272,7 @@ function backOneStep(){
 
    // الرجوع خطوة يرجع قائمة الاستلام والتسليم بدل أنواع التكسي.
    document.getElementById('tripSheet').classList.remove('open');
+   document.getElementById('tripSheet').style.display='none';
    document.body.classList.remove('trip-sheet-open');
    document.body.classList.remove('trip-ready');
    document.getElementById('vehicleStep').style.display='none';
