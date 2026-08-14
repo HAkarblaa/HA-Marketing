@@ -367,6 +367,38 @@ body:not(.trip-ready) #stepSelectBtn{
 @media(max-width:560px){
  #tripSheet .metrics{grid-template-columns:repeat(3,1fr)}
 }
+
+/* زر تثبيت النقطة يبقى واضح بالكامل دائماً */
+body:not(.trip-ready){
+  overflow:hidden;
+}
+body:not(.trip-ready) #map{
+  height:calc(100dvh - 245px) !important;
+  min-height:300px !important;
+  max-height:58vh !important;
+}
+body:not(.trip-ready) #selectionPanel{
+  position:fixed !important;
+  left:14px !important;
+  right:14px !important;
+  bottom:12px !important;
+  width:auto !important;
+  margin:0 !important;
+  z-index:1450 !important;
+  padding:10px !important;
+  border-radius:16px !important;
+  background:#fff !important;
+  box-shadow:0 4px 18px #0002 !important;
+}
+body:not(.trip-ready) #stepSelectBtn{
+  display:block !important;
+  width:100% !important;
+  min-height:50px !important;
+  padding:12px !important;
+  font-size:15px !important;
+  font-weight:700 !important;
+}
+
 </style>
 </head>
 
