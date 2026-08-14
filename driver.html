@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>واجهة السائق - HA Marketing</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.app{width:100%;max-width:760px;margin:auto;background:#fff;min-height:100vh}
+.head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #eee}
+.head h1{font-size:17px;margin:0}
+.status-toggle{display:flex;align-items:center;gap:8px}
+.status-toggle button{border:0;border-radius:999px;padding:9px 14px;font-weight:700;cursor:pointer;background:#111;color:#fff}
+.status-toggle button.off{background:#e5e5e5;color:#555}
+
+#map{height:42vh;min-height:300px}
+
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px}
+.summary .box{background:#f7f7f7;border-radius:12px;padding:10px;text-align:center}
+.summary small{display:block;color:#777;font-size:10px;margin-bottom:3px}
+.summary b{font-size:14px}
+
+.section{padding:10px 12px}
+.section h2{font-size:16px;margin:0 0 8px}
+.request-card{background:#fff;border:1px solid #e8e8e8;border-radius:16px;padding:12px;box-shadow:0 3px 12px #0001}
+.customer{display:flex;align-items:center;gap:10px}
+.avatar{width:44px;height:44px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:23px}
+.customer-info{flex:1}.customer-info b{display:block}.customer-info span{color:#777;font-size:12px}
+
+.route-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.route-info .item{background:#f8f8f8;border-radius:10px;padding:9px}
+.route-info small{display:block;color:#777;font-size:10px;margin-bottom:3px}
+.route-info b{font-size:12px}
+
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.actions button{border:0;border-radius:11px;padding:12px;font-size:14px;font-weight:700;cursor:pointer}
+.accept{background:#1769e0;color:#fff}
+.reject{background:#eee;color:#111}
+
+.accepted-panel{display:none}
+.accepted-panel.show{display:block}
+.state{background:#eef4ff;border-radius:12px;padding:10px;text-align:center;font-weight:700;margin-bottom:10px}
+.trip-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.trip-actions button{border:0;border-radius:11px;padding:11px;font-weight:700;cursor:pointer}
+.arrive{background:#111;color:#fff}
+.start-trip{background:#1769e0;color:#fff}
+.finish-trip{background:#16803b;color:#fff;grid-column:1/-1}
+
+.contact{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.contact button{border:0;border-radius:10px;padding:9px;background:#f4f4f4;cursor:pointer;font-size:12px}
+
+@media(max-width:560px){
+  #map{height:40vh}
+  .summary{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="head">
+    <h1>🚖 واجهة السائق</h1>
+    <div class="status-toggle">
+      <button id="availabilityBtn">متاح</button>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="summary">
+    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">1</b></div>
+    <div class="box"><small>المسافة للزبون</small><b id="toCustomer">2.4 كم</b></div>
+    <div class="box"><small>السعر</small><b id="fare">8,500 د.ع</b></div>
+  </div>
+
+  <div class="section" id="requestsSection">
+    <h2>الطلبات القريبة</h2>
+
+    <div class="request-card" id="requestCard">
+      <div class="customer">
+        <div class="avatar">👤</div>
+        <div class="customer-info">
+          <b>زبون قريب</b>
+          <span>⭐ 4.8</span>
+        </div>
+        <strong>🚕 اقتصادي</strong>
+      </div>
+
+      <div class="route-info">
+        <div class="item"><small>الانطلاق</small><b>المنصور</b></div>
+        <div class="item"><small>الوصول</small><b>الكرادة</b></div>
+        <div class="item"><small>مدة الوصول للزبون</small><b>6 دقائق</b></div>
+        <div class="item"><small>مدة الرحلة</small><b>18 دقيقة</b></div>
+      </div>
+
+      <div class="actions">
+        <button id="acceptBtn" class="accept">قبول الطلب</button>
+        <button id="rejectBtn" class="reject">رفض</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section accepted-panel" id="acceptedPanel">
+    <h2>الطلب الحالي</h2>
+    <div class="state" id="tripState">بالطريق إلى الزبون</div>
+
+    <div class="request-card">
+      <div class="customer">
+        <div class="avatar">👤</div>
+        <div class="customer-info">
+          <b>الزبون</b>
+          <span>المنصور → الكرادة</span>
+        </div>
+        <strong id="currentFare">8,500 د.ع</strong>
+      </div>
+
+      <div class="contact">
+        <button onclick="window.location.href='tel:07700000000'">📞 اتصال</button>
+        <button onclick="window.open('https://wa.me/9647700000000','_blank')">🟢 واتساب</button>
+        <button onclick="alert('نربط الدردشة داخل التطبيق لاحقاً')">💬 رسالة</button>
+      </div>
+
+      <div class="trip-actions" style="margin-top:10px">
+        <button id="arriveBtn" class="arrive">وصلت للزبون</button>
+        <button id="startTripBtn" class="start-trip" disabled>ابدأ الرحلة</button>
+        <button id="finishTripBtn" class="finish-trip" disabled>إنهاء الرحلة</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map').setView([33.3152,44.3661],13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+  maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
+}).addTo(map);
+
+const driver=L.marker([33.325,44.35]).addTo(map).bindPopup('موقع السائق');
+const customer=L.marker([33.31,44.37]).addTo(map).bindPopup('موقع الزبون');
+const destination=L.marker([33.29,44.40]).addTo(map).bindPopup('الوجهة');
+
+let available=true;
+availabilityBtn.onclick=()=>{
+  available=!available;
+  availabilityBtn.textContent=available?'متاح':'غير متاح';
+  availabilityBtn.classList.toggle('off',!available);
+  nearbyCount.textContent=available?'1':'0';
+  requestCard.style.display=available?'block':'none';
+};
+
+acceptBtn.onclick=()=>{
+  requestsSection.style.display='none';
+  acceptedPanel.classList.add('show');
+  tripState.textContent='بالطريق إلى الزبون';
+
+  // مسار تجريبي عبر الشوارع إلى الزبون
+  fetch(`https://router.project-osrm.org/route/v1/driving/${driver.getLatLng().lng},${driver.getLatLng().lat};${customer.getLatLng().lng},${customer.getLatLng().lat}?overview=full&geometries=geojson`)
+    .then(r=>r.json())
+    .then(j=>{
+      if(j.code==='Ok'){
+        const layer=L.geoJSON(j.routes[0].geometry,{style:{weight:5}}).addTo(map);
+        map.fitBounds(layer.getBounds(),{padding:[30,30]});
+      }
+    });
+};
+
+rejectBtn.onclick=()=>{
+  requestCard.style.display='none';
+  nearbyCount.textContent='0';
+};
+
+arriveBtn.onclick=()=>{
+  tripState.textContent='وصلت إلى الزبون';
+  arriveBtn.disabled=true;
+  startTripBtn.disabled=false;
+};
+
+startTripBtn.onclick=()=>{
+  tripState.textContent='الرحلة بدأت';
+  startTripBtn.disabled=true;
+  finishTripBtn.disabled=false;
+
+  fetch(`https://router.project-osrm.org/route/v1/driving/${customer.getLatLng().lng},${customer.getLatLng().lat};${destination.getLatLng().lng},${destination.getLatLng().lat}?overview=full&geometries=geojson`)
+    .then(r=>r.json())
+    .then(j=>{
+      if(j.code==='Ok'){
+        const layer=L.geoJSON(j.routes[0].geometry,{style:{weight:5}}).addTo(map);
+        map.fitBounds(layer.getBounds(),{padding:[30,30]});
+      }
+    });
+};
+
+finishTripBtn.onclick=()=>{
+  tripState.textContent='تم إنهاء الرحلة';
+  finishTripBtn.disabled=true;
+};
+</script>
+</body>
+</html>
