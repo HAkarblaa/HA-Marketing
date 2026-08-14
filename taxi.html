@@ -148,6 +148,20 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 .inline-search input{width:100%;padding:13px 12px;border:1px solid #ccc;border-radius:11px;font-size:14px}
 .inline-search button{border:0;border-radius:11px;background:#111;color:#fff;padding:0 16px;font-size:13px}
 
+
+.single-search-wrap{padding:6px 14px 10px;background:#fff}
+.single-search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.single-search-row input{
+  width:100%;padding:13px 12px;border:1px solid #ccc;border-radius:11px;
+  font-size:14px;background:#fff
+}
+.single-search-row button{
+  border:0;border-radius:11px;background:#111;color:#fff;
+  padding:0 16px;font-size:13px;cursor:pointer
+}
+.confirm-map.start-confirm{background:#f47b20;color:#fff}
+.confirm-map.end-confirm{background:#1b55d9;color:#fff}
+
 @media(max-width:560px){
  .metrics{grid-template-columns:1fr 1fr}
  .metrics .metric:last-child{grid-column:1/-1}
@@ -162,6 +176,14 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
   <button class="back" id="backBtn">‹</button>
   <h1>🚕 طلب تكسي</h1>
   <div style="width:42px"></div>
+</div>
+
+<div class="single-search-wrap">
+  <div class="single-search-row">
+    <input id="placeSearch" placeholder="ابحث عن مكان الانطلاق">
+    <button id="placeSearchBtn" type="button">بحث</button>
+  </div>
+  <div id="placeResults" class="results"></div>
 </div>
 
 <div class="map-wrap">
@@ -183,11 +205,6 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
         <b>الانطلاق</b>
         <span id="startText">غير محدد</span>
       </div>
-      <div class="inline-search">
-        <input id="startSearch" placeholder="ابحث عن مكان الانطلاق">
-        <button id="startBtn" type="button">بحث</button>
-      </div>
-      <div id="startResults" class="results"></div>
     </div>
 
     <div class="location-entry">
@@ -196,11 +213,6 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
         <b>الوصول</b>
         <span id="endText">غير محدد</span>
       </div>
-      <div class="inline-search">
-        <input id="endSearch" placeholder="ابحث عن مكان الوصول">
-        <button id="endBtn" type="button">بحث</button>
-      </div>
-      <div id="endResults" class="results"></div>
     </div>
 
     <div class="actions">
@@ -385,7 +397,14 @@ let selected=document.querySelector('.type.selected');
 
 function setMode(x){
  mode=x;
+ const searchInput=document.getElementById('placeSearch');
+ if(searchInput){
+   searchInput.placeholder=x==='start'?'ابحث عن مكان الانطلاق':'ابحث عن مكان الوصول';
+   searchInput.value='';
+ }
  confirmMap.textContent=x==='start'?'✓ تثبيت الانطلاق':'✓ تثبيت الوصول';
+ confirmMap.classList.toggle('start-confirm',x==='start');
+ confirmMap.classList.toggle('end-confirm',x==='end');
  pickStart.classList.toggle('active',x==='start');
  pickEnd.classList.toggle('active',x==='end');
  notice.textContent=x==='start'
@@ -461,8 +480,7 @@ function setPoint(kind,p,label){
    vehicleStep.style.display='block';
 
    // إخفاء نتائج البحث القديمة أيضاً.
-   document.getElementById('startResults').style.display='none';
-   document.getElementById('endResults').style.display='none';
+   document.getElementById('placeResults').style.display='none';
  }
 
  calc();
@@ -495,15 +513,15 @@ locateBtn.onclick=()=>{
  notice.textContent='جاري تحديد موقعك...';
 
  navigator.geolocation.getCurrentPosition(async pos=>{
-   let p=await snap(L.latLng(pos.coords.latitude,pos.coords.longitude));
+   const p=await snap(L.latLng(pos.coords.latitude,pos.coords.longitude));
 
-   map.setView(p,16);
+   // زر الدنبوس ينقل الخريطة فقط ولا يثبت الانطلاق تلقائياً.
    setMode('start');
-   setPoint('start',p,'موقعك الحالي');
-
-   history.pushState({taxiStep:'start'},'',location.href);
-
-   notice.textContent='تم تحديد موقعك. الآن حدد نقطة الوصول.';
+   map.setView(p,16);
+   startMapPick();
+   window.pendingStartLabel='موقعك الحالي';
+   startText.textContent='موقعك الحالي — حرّك الدبوس إذا تريد ثم ثبّت الانطلاق';
+   notice.textContent='تم نقل الخريطة إلى موقعك. حرّك الدبوس إذا تريد، ثم اضغط «تثبيت الانطلاق».';
  },()=>{
    notice.textContent='تعذر تحديد موقعك. تأكد من تشغيل GPS والسماح للموقع.';
  },{
@@ -512,10 +530,12 @@ locateBtn.onclick=()=>{
  });
 };
 
-async function search(q,kind){
- if(!q.trim())return;
+async function searchCurrentPlace(){
+ const q=document.getElementById('placeSearch').value.trim();
+ if(!q)return;
 
- const box=kind==='start'?startResults:endResults;
+ const kind=mode;
+ const box=document.getElementById('placeResults');
  box.style.display='block';
  box.innerHTML='<button disabled>جاري البحث...</button>';
 
@@ -524,7 +544,6 @@ async function search(q,kind){
      'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=ar&q='
      +encodeURIComponent(q)
    );
-
    const j=await r.json();
    box.innerHTML='';
 
@@ -540,22 +559,21 @@ async function search(q,kind){
      b.onclick=async()=>{
        const p=await snap(L.latLng(+x.lat,+x.lon));
 
-       // نتيجة البحث تنقل الخريطة والدبوس فقط ولا تثبت النقطة.
+       // البحث فقط ينقل الخريطة والدبوس، ولا يثبت النقطة.
        setMode(kind);
        map.setView(p,16);
        startMapPick();
 
-       // نخزن اسم المكان مؤقتاً حتى يظهر بعد التأكيد.
        if(kind==='start'){
          window.pendingStartLabel=x.display_name;
-         startText.textContent='عدّل مكان الدبوس ثم اضغط تأكيد النقطة';
+         startText.textContent='عدّل مكان الدبوس ثم ثبّت الانطلاق';
        }else{
          window.pendingEndLabel=x.display_name;
-         endText.textContent='عدّل مكان الدبوس ثم اضغط تأكيد النقطة';
+         endText.textContent='عدّل مكان الدبوس ثم ثبّت الوصول';
        }
 
        box.style.display='none';
-       notice.textContent='تم نقل الدبوس للمكان المختار. حرّك الخريطة إذا تريد تعدّل الموقع، وبعدها اضغط «تأكيد النقطة».';
+       notice.textContent='تم نقل الدبوس للمكان المختار. عدّل مكانه إذا تريد، ثم اضغط زر التثبيت.';
      };
 
      box.appendChild(b);
@@ -566,15 +584,9 @@ async function search(q,kind){
  }
 }
 
-startBtn.onclick=()=>search(startSearch.value,'start');
-endBtn.onclick=()=>search(endSearch.value,'end');
-
-startSearch.addEventListener('keydown',e=>{
- if(e.key==='Enter')search(startSearch.value,'start');
-});
-
-endSearch.addEventListener('keydown',e=>{
- if(e.key==='Enter')search(endSearch.value,'end');
+document.getElementById('placeSearchBtn').onclick=searchCurrentPlace;
+document.getElementById('placeSearch').addEventListener('keydown',e=>{
+ if(e.key==='Enter')searchCurrentPlace();
 });
 
 async function route(a,b){
@@ -772,6 +784,7 @@ window.addEventListener('popstate',()=>{
 });
 
 // أول ما تفتح الصفحة يكون اختيار الانطلاق جاهز
+setMode('start');
 startMapPick();
 </script>
 </body>
