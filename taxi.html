@@ -823,6 +823,46 @@ body:not(.trip-ready) #extraSummary{
 
 </div>
 
+<div id="postOrderScreen" class="post-order-screen">
+  <div class="post-head">
+    <button id="postBackBtn" class="back" type="button">‹</button>
+    <h2 id="postTitle">جاري البحث عن سائق</h2>
+    <div style="width:34px"></div>
+  </div>
+
+  <div id="postMap" class="post-map"></div>
+
+  <div class="post-panel">
+    <div id="searchingBox" class="searching-box">
+      <div class="loader"></div>
+      <div class="status-title">جاري البحث عن أقرب سائق</div>
+      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
+    </div>
+
+    <div id="driverCard" class="driver-card">
+      <div class="driver-top">
+        <div class="driver-avatar">👨‍✈️</div>
+        <div class="driver-info">
+          <b>سائق تجريبي</b>
+          <span>تويوتا كورولا • أبيض</span>
+        </div>
+        <strong>⭐ 4.9</strong>
+      </div>
+
+      <div class="driver-meta">
+        <div><small>الوصول إليك</small><b id="pickupEtaText">5 د</b></div>
+        <div><small>الرحلة</small><b id="tripEtaText">—</b></div>
+        <div><small>السعر</small><b id="tripPriceText">—</b></div>
+      </div>
+
+      <div class="post-actions">
+        <button class="call-driver" type="button" onclick="alert('ربط الاتصال نضيفه لاحقاً')">📞 اتصال</button>
+        <button id="cancelTripBtn" class="cancel-trip" type="button">إلغاء الطلب</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1270,18 +1310,7 @@ document.querySelectorAll('.type').forEach(c=>{
 });
 
 order.onclick=()=>{
-  let extras=[];
-  if(extraDestinationCheck.checked) extras.push('نقطة وصول إضافية: '+(extraDestinationText.value.trim()||'غير محددة'));
-  if(stopCheck.checked) extras.push('توقف: '+(stopText.value.trim()||'غير محدد'));
-  if(luggageCheck.checked) extras.push('معه أغراض');
-  if(passengersCheck.checked) extras.push('ركاب إضافيون: '+extraPassengers.value);
-
-  alert(
-    'تم تجهيز طلب التكسي مبدئياً.\n'+
-    'النوع: '+selected.dataset.name+'\n'+
-    'السعر الأساسي التقديري: '+Number(selected.dataset.price||0).toLocaleString('ar-IQ')+' د.ع'+
-    (extras.length?'\nالخيارات:\n- '+extras.join('\n- '):'')
-  );
+  openPostOrder();
 };
 
 // ===== الرجوع خطوة بخطوة =====
@@ -1429,7 +1458,11 @@ function openPostOrder(){
 }
 
 document.getElementById('postBackBtn').onclick=()=>{
+  clearTimeout(searchTimer);
   document.getElementById('postOrderScreen').classList.remove('show');
+  // يرجع لنفس مرحلة اختيار التكسي بدون مغادرة الصفحة
+  document.body.classList.add('trip-ready');
+  document.getElementById('tripSheet').classList.add('open');
 };
 
 document.getElementById('cancelTripBtn').onclick=()=>{
@@ -1440,55 +1473,9 @@ document.getElementById('cancelTripBtn').onclick=()=>{
 };
 
 // نخلي زر تأكيد التكسي يفتح واجهة البحث بعد التحقق الحالي
-const originalOrderClick=order.onclick;
-order.onclick=()=>{
-  if(originalOrderClick){
-    originalOrderClick();
-  }
-  openPostOrder();
-};
+
 
 </script>
-
-<div id="postOrderScreen" class="post-order-screen">
-  <div class="post-head">
-    <button id="postBackBtn" class="back" type="button">‹</button>
-    <h2 id="postTitle">جاري البحث عن سائق</h2>
-    <div style="width:34px"></div>
-  </div>
-
-  <div id="postMap" class="post-map"></div>
-
-  <div class="post-panel">
-    <div id="searchingBox" class="searching-box">
-      <div class="loader"></div>
-      <div class="status-title">جاري البحث عن أقرب سائق</div>
-      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
-    </div>
-
-    <div id="driverCard" class="driver-card">
-      <div class="driver-top">
-        <div class="driver-avatar">👨‍✈️</div>
-        <div class="driver-info">
-          <b>سائق تجريبي</b>
-          <span>تويوتا كورولا • أبيض</span>
-        </div>
-        <strong>⭐ 4.9</strong>
-      </div>
-
-      <div class="driver-meta">
-        <div><small>الوصول إليك</small><b id="pickupEtaText">5 د</b></div>
-        <div><small>الرحلة</small><b id="tripEtaText">—</b></div>
-        <div><small>السعر</small><b id="tripPriceText">—</b></div>
-      </div>
-
-      <div class="post-actions">
-        <button class="call-driver" type="button" onclick="alert('ربط الاتصال نضيفه لاحقاً')">📞 اتصال</button>
-        <button id="cancelTripBtn" class="cancel-trip" type="button">إلغاء الطلب</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
