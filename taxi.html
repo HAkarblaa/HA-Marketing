@@ -574,6 +574,118 @@ body:not(.trip-ready) #extraSummary{
   right:10px !important;
 }
 
+
+/* ===== ما بعد تأكيد الطلب ===== */
+.post-order-screen{
+  position:fixed;
+  inset:0;
+  z-index:3000;
+  background:#fff;
+  display:none;
+  flex-direction:column;
+}
+.post-order-screen.show{display:flex}
+.post-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid #eee;
+}
+.post-head h2{
+  margin:0;
+  font-size:16px;
+}
+.post-map{
+  flex:1;
+  min-height:280px;
+  background:#eee;
+}
+.post-panel{
+  padding:12px 14px 16px;
+  background:#fff;
+  border-top:1px solid #eee;
+}
+.searching-box{
+  text-align:center;
+  padding:18px 10px;
+}
+.loader{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:5px solid #e5e5e5;
+  border-top-color:#111;
+  margin:0 auto 12px;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+.status-sub{
+  color:#666;
+  font-size:13px;
+  line-height:1.6;
+}
+.driver-card{
+  display:none;
+  background:#f8f8f8;
+  border-radius:14px;
+  padding:12px;
+  margin-top:8px;
+}
+.driver-card.show{display:block}
+.driver-top{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.driver-avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:#ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+}
+.driver-info{flex:1}
+.driver-info b{display:block;font-size:15px}
+.driver-info span{font-size:12px;color:#666}
+.driver-meta{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-top:10px;
+}
+.driver-meta div{
+  background:#fff;
+  border-radius:9px;
+  padding:8px 5px;
+  text-align:center;
+}
+.driver-meta small{display:block;color:#777;font-size:10px}
+.driver-meta b{font-size:12px}
+.post-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+.post-actions button{
+  border:0;
+  border-radius:10px;
+  padding:11px;
+  font-size:13px;
+  cursor:pointer;
+}
+.call-driver{background:#111;color:#fff}
+.cancel-trip{background:#eee;color:#111}
+
 </style>
 </head>
 
@@ -1257,6 +1369,126 @@ window.addEventListener('popstate',()=>{
 // أول ما تفتح الصفحة يكون اختيار الانطلاق جاهز
 setMode('start');
 startMapPick();
+
+// ===== واجهة البحث والمتابعة =====
+let trackingMap=null;
+let trackingDriverMarker=null;
+let trackingRouteLine=null;
+let searchTimer=null;
+
+function openPostOrder(){
+  const screen=document.getElementById('postOrderScreen');
+  screen.classList.add('show');
+  document.getElementById('postTitle').textContent='جاري البحث عن سائق';
+  document.getElementById('searchingBox').style.display='block';
+  document.getElementById('driverCard').classList.remove('show');
+
+  setTimeout(()=>{
+    if(!trackingMap){
+      trackingMap=L.map('postMap',{zoomControl:false}).setView(
+        start ? [start.lat,start.lng] : [33.3152,44.3661],
+        14
+      );
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+        maxZoom:19,
+        subdomains:'abcd',
+        attribution:'&copy; OpenStreetMap &copy; CARTO'
+      }).addTo(trackingMap);
+      L.control.zoom({position:'topright'}).addTo(trackingMap);
+    }else{
+      trackingMap.invalidateSize();
+    }
+
+    if(start && end){
+      if(trackingRouteLine)trackingMap.removeLayer(trackingRouteLine);
+      trackingRouteLine=L.polyline([[start.lat,start.lng],[end.lat,end.lng]],{weight:5}).addTo(trackingMap);
+      trackingMap.fitBounds(trackingRouteLine.getBounds(),{padding:[35,35]});
+    }
+  },150);
+
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>{
+    document.getElementById('postTitle').textContent='تم قبول الطلب';
+    document.getElementById('searchingBox').style.display='none';
+    document.getElementById('driverCard').classList.add('show');
+
+    document.getElementById('pickupEtaText').textContent='5 د';
+    document.getElementById('tripEtaText').textContent=
+      typeof routeMin!=='undefined' && routeMin ? fm(routeMin) : '—';
+    document.getElementById('tripPriceText').textContent=
+      selected && selected.dataset.price
+      ? Number(selected.dataset.price).toLocaleString('ar-IQ')+' د.ع'
+      : '—';
+
+    if(trackingMap && start){
+      const driverPos=[start.lat+0.008,start.lng+0.008];
+      if(trackingDriverMarker)trackingMap.removeLayer(trackingDriverMarker);
+      trackingDriverMarker=L.marker(driverPos).addTo(trackingMap).bindPopup('السائق');
+    }
+  },3000);
+}
+
+document.getElementById('postBackBtn').onclick=()=>{
+  document.getElementById('postOrderScreen').classList.remove('show');
+};
+
+document.getElementById('cancelTripBtn').onclick=()=>{
+  if(confirm('هل تريد إلغاء الطلب؟')){
+    clearTimeout(searchTimer);
+    document.getElementById('postOrderScreen').classList.remove('show');
+  }
+};
+
+// نخلي زر تأكيد التكسي يفتح واجهة البحث بعد التحقق الحالي
+const originalOrderClick=order.onclick;
+order.onclick=()=>{
+  if(originalOrderClick){
+    originalOrderClick();
+  }
+  openPostOrder();
+};
+
 </script>
+
+<div id="postOrderScreen" class="post-order-screen">
+  <div class="post-head">
+    <button id="postBackBtn" class="back" type="button">‹</button>
+    <h2 id="postTitle">جاري البحث عن سائق</h2>
+    <div style="width:34px"></div>
+  </div>
+
+  <div id="postMap" class="post-map"></div>
+
+  <div class="post-panel">
+    <div id="searchingBox" class="searching-box">
+      <div class="loader"></div>
+      <div class="status-title">جاري البحث عن أقرب سائق</div>
+      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
+    </div>
+
+    <div id="driverCard" class="driver-card">
+      <div class="driver-top">
+        <div class="driver-avatar">👨‍✈️</div>
+        <div class="driver-info">
+          <b>سائق تجريبي</b>
+          <span>تويوتا كورولا • أبيض</span>
+        </div>
+        <strong>⭐ 4.9</strong>
+      </div>
+
+      <div class="driver-meta">
+        <div><small>الوصول إليك</small><b id="pickupEtaText">5 د</b></div>
+        <div><small>الرحلة</small><b id="tripEtaText">—</b></div>
+        <div><small>السعر</small><b id="tripPriceText">—</b></div>
+      </div>
+
+      <div class="post-actions">
+        <button class="call-driver" type="button" onclick="alert('ربط الاتصال نضيفه لاحقاً')">📞 اتصال</button>
+        <button id="cancelTripBtn" class="cancel-trip" type="button">إلغاء الطلب</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
