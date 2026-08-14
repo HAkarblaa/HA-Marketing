@@ -289,8 +289,8 @@ body.trip-sheet-open{
 
 /* ===== ترتيب الشاشة بدون فراغ ===== */
 body:not(.trip-ready) #map{
-  height:calc(100vh - 185px) !important;
-  min-height:420px !important;
+  height:58vh !important;
+  min-height:330px !important;
 }
 body:not(.trip-ready) #selectionPanel{
   margin:8px 14px 10px !important;
@@ -337,10 +337,23 @@ body.trip-ready #tripSheet .order{
   flex-shrink:0 !important;
   padding-top:6px !important;
 }
+
+body:not(.trip-ready) #selectionPanel{
+  margin:6px 14px 8px !important;
+  position:relative !important;
+  bottom:auto !important;
+}
+body:not(.trip-ready) #stepSelectBtn{
+  display:block !important;
+  width:100% !important;
+  padding:12px 10px !important;
+  font-size:14px !important;
+}
+
 @media(max-width:560px){
   body:not(.trip-ready) #map{
-    height:calc(100vh - 175px) !important;
-    min-height:380px !important;
+    height:56vh !important;
+    min-height:315px !important;
   }
   body.trip-ready #map{
     height:41vh !important;
