@@ -823,6 +823,16 @@ body.delivery-stage-3 #deliveryDetailsStage,
   -webkit-tap-highlight-color:transparent;
 }
 
+
+/* دنبوس اختيار نقطة الاستلام/التسليم في الدلفري */
+body.delivery-stage-1 #centerPin{
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  z-index:1600 !important;
+  pointer-events:none !important;
+}
+
 </style>
 </head>
 
@@ -1923,6 +1933,40 @@ document.addEventListener('click',function(e){
       sheet.classList.add('details-only');
     }
   };
+})();
+</script>
+
+
+<script>
+(function(){
+  function refreshDeliveryCenterPin(){
+    var pin=document.getElementById('centerPin');
+    if(!pin) return;
+    pin.style.display='flex';
+    pin.style.visibility='visible';
+    pin.style.opacity='1';
+    // برتقالي للاستلام، أزرق للتسليم
+    pin.style.filter = (typeof mode!=='undefined' && mode==='end')
+      ? 'hue-rotate(165deg) saturate(1.8)'
+      : 'hue-rotate(330deg) saturate(1.8)';
+  }
+
+  window.addEventListener('load',function(){
+    setTimeout(refreshDeliveryCenterPin,100);
+  });
+
+  var btn=document.getElementById('stepSelectBtn');
+  if(btn){
+    btn.addEventListener('click',function(){
+      setTimeout(refreshDeliveryCenterPin,50);
+    });
+  }
+
+  if(typeof map!=='undefined' && map){
+    map.on('movestart',refreshDeliveryCenterPin);
+    map.on('move',refreshDeliveryCenterPin);
+    map.on('moveend',refreshDeliveryCenterPin);
+  }
 })();
 </script>
 
