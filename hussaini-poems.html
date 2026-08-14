@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>القصائد الحسينية - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111;padding-top:0}
+body.player-open{padding-top:128px}
+.wrap{width:95%;max-width:950px;margin:28px auto}
+h1{text-align:center;margin-bottom:8px}.sub{text-align:center;color:#666;line-height:1.8}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+.tabs button{border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;background:#e9e9e9;cursor:pointer}
+.tabs button.active{background:#111;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:#fff;border-radius:17px;padding:18px;box-shadow:0 3px 14px #0001;cursor:pointer;border:0;text-align:right;width:100%}
+.card .icon{font-size:36px}.card h2{margin:7px 0}.card p{margin:0;color:#666;line-height:1.7}
+.section{display:none}.section.show{display:block}
+.list-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.back-btn{border:0;border-radius:10px;background:#eee;color:#111;padding:10px 13px;cursor:pointer}
+.track{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:14px;margin:8px 0;box-shadow:0 2px 10px #0001;cursor:pointer;border:0;width:100%;text-align:right}
+.track .play{font-size:28px}.track b{display:block;font-size:18px}.track span{color:#666;font-size:14px}
+.player{
+ position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;color:#fff;
+ display:none;padding:8px 10px;box-shadow:0 4px 16px #0004
+}
+.player.show{display:block}
+.player-inner{width:min(950px,96%);margin:auto;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.now{min-width:0}.now b,.now span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now span{color:#ccc;font-size:13px;margin-top:3px}
+.player-actions{display:flex;gap:6px}
+.player-actions button{border:0;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:14px}
+.stop{background:#fff;color:#111}.cancel{background:#444;color:#fff}.resume{background:#fff;color:#111;display:none}
+.embed{grid-column:1/-1;width:100%;height:58px;border:0;border-radius:8px;background:#fff}
+.note{background:#fff;border-radius:13px;padding:13px;color:#666;line-height:1.8;margin-top:14px}
+.back{display:block;text-align:center;margin:26px 0;text-decoration:none;color:#111}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.player-inner{grid-template-columns:1fr}.player-actions{justify-content:flex-start}.embed{height:62px}}
+</style>
+</head>
+<body>
+
+<div id="player" class="player">
+ <div class="player-inner">
+  <div class="now"><b id="nowTitle">-</b><span id="nowArtist">-</span></div>
+  <div class="player-actions">
+   <button id="stopBtn" class="stop" type="button">⏹ إيقاف</button>
+   <button id="resumeBtn" class="resume" type="button">▶ تشغيل</button>
+   <button id="cancelBtn" class="cancel" type="button">✕ إلغاء</button>
+  </div>
+  <iframe id="audioFrame" class="embed" allow="autoplay"></iframe>
+ </div>
+</div>
+
+<div class="wrap">
+<h1>🎙️ القصائد الحسينية</h1>
+<p class="sub">اختر الرادود أو قسم النعي. المشغل يبقى بالأعلى حتى إذا رجعت من القصيدة إلى القائمة داخل هذا القسم.</p>
+
+<div class="tabs">
+ <button id="radudTab" class="active" type="button">🎤 رواديد حسينيون</button>
+ <button id="naiTab" type="button">🖤 نعي حسيني</button>
+</div>
+
+<section id="home" class="section show">
+ <div id="radudGrid" class="grid"></div>
+</section>
+
+<section id="tracks" class="section">
+ <div class="list-head"><button id="backTracks" class="back-btn" type="button">← رجوع</button><h2 id="tracksTitle"></h2></div>
+ <div id="tracksList"></div>
+</section>
+
+<section id="nai" class="section">
+ <div class="grid">
+  <button class="card artist" data-artist="السيد جاسم الطويرجاوي">
+   <div class="icon">🖤</div><h2>السيد جاسم الطويرجاوي</h2><p>نواعي حسينية ومصائب أهل البيت عليهم السلام</p>
+  </button>
+ </div>
+</section>
+
+<div class="note">المقاطع الصوتية مضمّنة داخل موقعك من مكتبة «صوت الشيعة». عند الرجوع من قائمة القصائد داخل هذه الصفحة يبقى المشغل في الأعلى. إذا خرج المستخدم إلى صفحة أخرى من الموقع، المتصفح يعيد تحميل الصفحة وبالتالي لا يمكن لمشغل HTML عادي أن يستمر بدون إضافة مشغل موحّد إلى كل صفحات الموقع.</div>
+
+<a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a>
+</div>
+
+<script>
+const DATA={
+ "باسم الكربلائي":[
+   {title:"روحي",id:"7rof5",duration:"10:26"},
+   {title:"بريد القلب",id:"k1mcy",duration:"8:34"}
+ ],
+ "مرتضى حرب":[
+   {title:"درب أحبابي",id:"lLID0",duration:"11:50"},
+   {title:"مات الورد",id:"GcoNU",duration:""}
+ ],
+ "نزار القطري":[
+   {title:"لوحة الإمام الحسين عليه السلام",id:"56zxh",duration:"13:26"},
+   {title:"يا سبع الغاضرية",id:"thxsc",duration:"5:27"},
+   {title:"جيب الماي",id:"bxdpe",duration:"7:57"}
+ ],
+ "السيد جاسم الطويرجاوي":[
+   {title:"نعي عن ليلة عاشوراء",id:"bPokH",duration:"11:10"},
+   {title:"نعي عن علي الأكبر عليه السلام",id:"BPnQr",duration:""},
+   {title:"نعي عن مسلم بن عقيل عليه السلام",id:"bppOF",duration:"3:24"}
+ ]
+};
+
+const RADUDS=[
+ {name:"باسم الكربلائي",icon:"🎤",desc:"قصائد ولطميات حسينية"},
+ {name:"مرتضى حرب",icon:"🎤",desc:"قصائد ولطميات حسينية"},
+ {name:"نزار القطري",icon:"🎤",desc:"قصائد ولطميات حسينية"}
+];
+
+const home=document.getElementById('home'),tracks=document.getElementById('tracks'),nai=document.getElementById('nai');
+const grid=document.getElementById('radudGrid'),list=document.getElementById('tracksList'),tracksTitle=document.getElementById('tracksTitle');
+const player=document.getElementById('player'),frame=document.getElementById('audioFrame');
+const nowTitle=document.getElementById('nowTitle'),nowArtist=document.getElementById('nowArtist');
+let current=null,stopped=false,currentArtist='';
+
+function renderRaduds(){
+ grid.innerHTML=RADUDS.map(r=>`
+  <button class="card radud-card" data-name="${r.name}">
+   <div class="icon">${r.icon}</div><h2>${r.name}</h2><p>${r.desc}</p>
+  </button>`).join('');
+ document.querySelectorAll('.radud-card').forEach(b=>b.onclick=()=>openArtist(b.dataset.name));
+}
+
+function openArtist(name){
+ currentArtist=name;
+ tracksTitle.textContent=name;
+ list.innerHTML=(DATA[name]||[]).map(t=>`
+  <button class="track" data-id="${t.id}" data-title="${t.title}" data-duration="${t.duration||''}">
+   <div class="play">▶️</div>
+   <div><b>${t.title}</b><span>${t.duration||'تشغيل صوتي'}</span></div>
+  </button>`).join('');
+ list.querySelectorAll('.track').forEach(b=>b.onclick=()=>playTrack(name,b.dataset.title,b.dataset.id));
+ home.classList.remove('show');nai.classList.remove('show');tracks.classList.add('show');
+ history.pushState({view:'tracks'},'',location.href);
+ window.scrollTo(0,0);
+}
+
+function showHome(){
+ tracks.classList.remove('show');
+ if(document.getElementById('naiTab').classList.contains('active')) nai.classList.add('show');
+ else home.classList.add('show');
+ window.scrollTo(0,0);
+}
+
+function playTrack(artist,title,id){
+ current={artist,title,id};
+ stopped=false;
+ nowTitle.textContent=title;
+ nowArtist.textContent=artist;
+ frame.src='https://shiavoice.com/embed-'+id;
+ player.classList.add('show');
+ document.body.classList.add('player-open');
+ document.getElementById('stopBtn').style.display='';
+ document.getElementById('resumeBtn').style.display='none';
+}
+
+document.getElementById('stopBtn').onclick=()=>{
+ if(!current)return;
+ frame.src='about:blank';
+ stopped=true;
+ document.getElementById('stopBtn').style.display='none';
+ document.getElementById('resumeBtn').style.display='';
+};
+document.getElementById('resumeBtn').onclick=()=>{
+ if(!current)return;
+ frame.src='https://shiavoice.com/embed-'+current.id;
+ stopped=false;
+ document.getElementById('stopBtn').style.display='';
+ document.getElementById('resumeBtn').style.display='none';
+};
+document.getElementById('cancelBtn').onclick=()=>{
+ frame.src='about:blank';current=null;stopped=false;
+ player.classList.remove('show');document.body.classList.remove('player-open');
+};
+
+document.getElementById('backTracks').onclick=()=>history.back();
+window.addEventListener('popstate',()=>{ if(tracks.classList.contains('show'))showHome(); });
+
+document.getElementById('radudTab').onclick=()=>{
+ document.getElementById('radudTab').classList.add('active');
+ document.getElementById('naiTab').classList.remove('active');
+ tracks.classList.remove('show');nai.classList.remove('show');home.classList.add('show');
+};
+document.getElementById('naiTab').onclick=()=>{
+ document.getElementById('naiTab').classList.add('active');
+ document.getElementById('radudTab').classList.remove('active');
+ tracks.classList.remove('show');home.classList.remove('show');nai.classList.add('show');
+ document.querySelectorAll('#nai .artist').forEach(b=>b.onclick=()=>openArtist(b.dataset.artist));
+};
+
+renderRaduds();
+</script>
+</body>
+</html>
