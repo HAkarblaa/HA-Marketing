@@ -379,19 +379,31 @@ document.querySelectorAll('[data-coming-soon="1"]').forEach(function(link){
     const modal = document.getElementById('comingSoonModal');
     modal.classList.add('show');
     modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
   });
 });
 
-document.getElementById('comingSoonClose').addEventListener('click', function(){
+function closeComingSoon(){
   const modal = document.getElementById('comingSoonModal');
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
+  window.scrollTo({top: window.scrollY, behavior: 'auto'});
+}
+
+document.getElementById('comingSoonClose').addEventListener('click', function(){
+  closeComingSoon();
 });
 
 document.getElementById('comingSoonModal').addEventListener('click', function(e){
   if(e.target === this){
-    this.classList.remove('show');
-    this.setAttribute('aria-hidden','true');
+    closeComingSoon();
+  }
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    closeComingSoon();
   }
 });
 
