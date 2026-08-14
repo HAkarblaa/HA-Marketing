@@ -1664,7 +1664,7 @@ function openPostOrder(){
         }).addTo(trackingMap);
         trackingMap.fitBounds(trackingRouteLine.getBounds(),{padding:[35,35]});
       }).catch(()=>{
-        // إذا فشل مزود الطرق نبقي النقطتين فقط ولا نرسم خطاً وهمياً مستقيماً.
+        // إذا فشل مزود الطرق نبقي النقطتين فقط بدون رسم خط مستقيم وهمي.
         trackingMap.fitBounds([[start.lat,start.lng],[end.lat,end.lng]],{padding:[35,35]});
       });
     }
@@ -1686,19 +1686,37 @@ function openPostOrder(){
       : '—';
 
     if(trackingMap && start){
-      const driverPoint=L.latLng(start.lat+0.008,start.lng+0.008);
-      if(trackingDriverMarker)trackingMap.removeLayer(trackingDriverMarker);
-      trackingDriverMarker=L.marker(driverPoint).addTo(trackingMap).bindPopup(acceptedDriver.name);
+      // موقع سائق تجريبي قريب من الزبون، ونثبته أولاً على أقرب شارع.
+      const rawDriverPoint=L.latLng(start.lat+0.012,start.lng+0.012);
 
-      // طريق السائق إلى الزبون يكون على الشوارع أيضاً.
-      route(driverPoint,start).then(driverRoute=>{
-        const driverRoad=L.geoJSON(driverRoute.geometry,{
-          style:{weight:5,dashArray:'8 6'}
-        }).addTo(trackingMap);
-        const group=L.featureGroup([driverRoad,trackingDriverMarker]);
-        if(trackingRouteLine)group.addLayer(trackingRouteLine);
-        trackingMap.fitBounds(group.getBounds(),{padding:[35,35]});
-      }).catch(()=>{});
+      snap(rawDriverPoint).then(driverPoint=>{
+        if(trackingDriverMarker)trackingMap.removeLayer(trackingDriverMarker);
+        trackingDriverMarker=L.marker(driverPoint).addTo(trackingMap).bindPopup(acceptedDriver.name);
+
+        // نحسب طريق السائق إلى الزبون عبر شبكة الشوارع الفعلية.
+        return route(driverPoint,start).then(driverRoute=>{
+          if(window.driverRoadLayer){
+            trackingMap.removeLayer(window.driverRoadLayer);
+          }
+
+          window.driverRoadLayer=L.geoJSON(driverRoute.geometry,{
+            style:{
+              weight:6,
+              opacity:0.95
+            }
+          }).addTo(trackingMap);
+
+          // نخلي العرض يشمل طريق السائق الحقيقي + نقطة الزبون.
+          const group=L.featureGroup([
+            window.driverRoadLayer,
+            trackingDriverMarker
+          ]);
+
+          trackingMap.fitBounds(group.getBounds(),{padding:[40,40]});
+        });
+      }).catch(()=>{
+        // إذا فشل حساب الطريق، نظهر موقع السائق فقط بدون رسم خط مستقيم وهمي.
+      });
     }
   },3000);
 }
