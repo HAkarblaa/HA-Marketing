@@ -653,6 +653,84 @@ body.delivery-stage-3 #deliveryDetailsStage{
   display:grid !important;
 }
 
+
+/* ===== ترتيب مرحلة تفاصيل الطلب حسب عرض الموبايل ===== */
+body.delivery-stage-3 #tripSheet.open{
+  height:60dvh !important;
+  padding:10px 14px 12px !important;
+}
+
+body.delivery-stage-3 #deliveryDetailsStage{
+  display:flex !important;
+  flex-direction:column !important;
+  height:100% !important;
+}
+
+body.delivery-stage-3 .delivery-stage-title{
+  font-size:17px !important;
+  margin:2px 0 12px !important;
+}
+
+/* الحقول أكبر وواضحة، صف واحد لكل حقل */
+body.delivery-stage-3 .delivery-details{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:9px !important;
+  margin:0 !important;
+}
+
+body.delivery-stage-3 .delivery-details input{
+  width:100% !important;
+  min-height:48px !important;
+  padding:11px 13px !important;
+  border:1px solid #d4d4d4 !important;
+  border-radius:12px !important;
+  font-size:13px !important;
+  box-sizing:border-box !important;
+}
+
+/* نخلي الأزرار تجي مباشرة بعد الحقول بدل الفراغ الكبير */
+body.delivery-stage-3 #orderArea{
+  margin-top:12px !important;
+  padding-top:10px !important;
+  position:static !important;
+}
+
+body.delivery-stage-3 .extra-options-btn{
+  min-height:46px !important;
+  padding:11px !important;
+  font-size:14px !important;
+  margin-bottom:8px !important;
+}
+
+body.delivery-stage-3 #order{
+  min-height:50px !important;
+  padding:12px !important;
+  font-size:15px !important;
+}
+
+/* إزالة أي دفع للأزرار إلى نهاية اللوحة */
+body.delivery-stage-3 #tripSheet .order{
+  margin-top:12px !important;
+  flex-shrink:0 !important;
+}
+
+/* إخفاء المساحة/الملخص الفارغ إذا لم توجد خيارات */
+body.delivery-stage-3 #extraSummary:empty{
+  display:none !important;
+}
+
+@media(max-width:600px){
+  body.delivery-stage-3 #tripSheet.open{
+    height:60dvh !important;
+    max-height:60dvh !important;
+  }
+  body.delivery-stage-3 .delivery-details input{
+    min-height:46px !important;
+    font-size:12.5px !important;
+  }
+}
+
 </style>
 </head>
 
