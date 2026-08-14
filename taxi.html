@@ -350,6 +350,104 @@ body:not(.trip-ready) .page{
   padding-bottom:0 !important;
 }
 
+
+/* ===== إصلاح الفراغ الأبيض نهائياً ===== */
+body:not(.trip-ready){
+  overflow:hidden !important;
+}
+
+body:not(.trip-ready) .app{
+  height:100dvh !important;
+  min-height:100dvh !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}
+
+/* العنوان يبقى بحجمه الطبيعي */
+body:not(.trip-ready) .head{
+  flex:0 0 auto !important;
+}
+
+/* الخريطة تأخذ كل الفراغ المتبقي تلقائياً */
+body:not(.trip-ready) .map-wrap{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  display:flex !important;
+  position:relative !important;
+}
+
+body:not(.trip-ready) #map{
+  flex:1 1 auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+}
+
+/* البحث والتثبيت يبقون ظاهرين بالكامل أسفل الخريطة */
+body:not(.trip-ready) .single-search-wrap{
+  flex:0 0 auto !important;
+  padding:7px 14px 5px !important;
+}
+
+body:not(.trip-ready) #selectionPanel{
+  flex:0 0 auto !important;
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  width:auto !important;
+  margin:5px 14px 8px !important;
+  padding:9px !important;
+  box-shadow:none !important;
+}
+
+/* لا يوجد أي عنصر إضافي أسفل زر التثبيت قبل إكمال النقطتين */
+body:not(.trip-ready) #tripSheet,
+body:not(.trip-ready) #orderArea,
+body:not(.trip-ready) #extraSummary{
+  display:none !important;
+}
+
+
+/* ===== تحسين عرض الموبايل ===== */
+@media(max-width:600px){
+  body.trip-ready{
+    overflow:hidden !important;
+  }
+
+  body.trip-ready .app{
+    height:100dvh !important;
+    min-height:100dvh !important;
+    overflow:hidden !important;
+  }
+
+  body.trip-ready .head{
+    height:36px !important;
+    min-height:36px !important;
+    padding:4px 9px !important;
+  }
+
+  body.trip-ready .map-wrap{
+    height:40dvh !important;
+    min-height:40dvh !important;
+    flex:0 0 40dvh !important;
+  }
+
+  body.trip-ready #map{
+    height:40dvh !important;
+    min-height:40dvh !important;
+  }
+
+  body.trip-ready #tripSheet.open{
+    display:flex !important;
+    height:60dvh !important;
+    max-height:60dvh !important;
+    overflow:hidden !important;
+  }
+}
+
 </style>
 </head>
 
@@ -663,6 +761,7 @@ function setPoint(kind,p,label){
    vehicleStep.style.display='block';
    document.getElementById('tripSheet').classList.add('open');
    document.body.classList.add('trip-sheet-open');
+   document.body.classList.add('trip-ready');
    document.getElementById('extraOptionsBtn').disabled=false;
 
    // إخفاء نتائج البحث القديمة أيضاً.
@@ -911,6 +1010,7 @@ function backOneStep(){
    // الرجوع خطوة يرجع قائمة الانطلاق والوصول بدل أنواع التكسي.
    document.getElementById('tripSheet').classList.remove('open');
    document.body.classList.remove('trip-sheet-open');
+   document.body.classList.remove('trip-ready');
    document.getElementById('vehicleStep').style.display='none';
    document.getElementById('selectionPanel').style.display='block';
    document.getElementById('locationStep').style.display='block';
