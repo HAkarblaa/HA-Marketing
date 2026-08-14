@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اتجاه القبلة - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:94%;max-width:760px;margin:30px auto}
+h1{text-align:center;margin-bottom:8px}
+.subtitle{text-align:center;color:#666;line-height:1.8;margin-bottom:18px}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,.08);margin:14px 0}
+.status{text-align:center;padding:13px;border-radius:11px;background:#fff;margin:14px 0;line-height:1.8}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#111;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
+button.light{background:#ececec;color:#111}
+button:disabled{opacity:.55}
+.compass-wrap{display:flex;justify-content:center;align-items:center;margin:22px 0}
+.compass{
+  position:relative;width:min(78vw,330px);aspect-ratio:1/1;border:8px solid #111;border-radius:50%;
+  background:#fff;box-shadow:inset 0 0 0 2px #ddd
+}
+.dir{position:absolute;font-weight:700;font-size:18px}
+.n{top:8px;left:50%;transform:translateX(-50%)}
+.s{bottom:8px;left:50%;transform:translateX(-50%)}
+.e{right:10px;top:50%;transform:translateY(-50%)}
+.w{left:10px;top:50%;transform:translateY(-50%)}
+.arrow{
+  position:absolute;left:50%;top:50%;width:10px;height:42%;
+  transform-origin:50% 100%;transform:translate(-50%,-100%) rotate(0deg);
+  transition:transform .2s linear
+}
+.arrow:before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:32px solid #111
+}
+.arrow:after{
+  content:"";position:absolute;left:50%;top:28px;transform:translateX(-50%);
+  width:8px;height:calc(100% - 28px);background:#111;border-radius:6px
+}
+.kaaba{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:56px;height:56px;background:#111;border-radius:8px;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:28px
+}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.info{background:#f7f7f7;border-radius:11px;padding:12px;text-align:center}
+.info strong{display:block;margin-bottom:5px}
+.note{color:#666;font-size:13px;line-height:1.8;margin-top:12px}
+.back{display:block;text-align:center;margin:26px 0;text-decoration:none;color:#111}
+@media(max-width:520px){.info-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🧭 اتجاه القبلة</h1>
+<p class="subtitle">يحدد اتجاه الكعبة اعتماداً على موقعك الحقيقي، وإذا كان جهازك يدعم البوصلة تتحرك الإبرة مع حركة الهاتف.</p>
+
+<div id="status" class="status">اضغط «تحديد موقعي واتجاه القبلة» واسمح للموقع والبوصلة إذا طلب المتصفح الإذن.</div>
+
+<div class="card">
+  <button id="startBtn" type="button">📍 تحديد موقعي واتجاه القبلة</button>
+  <button id="compassBtn" class="light" type="button">🧭 تفعيل بوصلة الجهاز</button>
+
+  <div class="compass-wrap">
+    <div class="compass">
+      <div class="dir n">N</div>
+      <div class="dir s">S</div>
+      <div class="dir e">E</div>
+      <div class="dir w">W</div>
+      <div id="qiblaArrow" class="arrow"></div>
+      <div class="kaaba">🕋</div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info"><strong>زاوية القبلة من الشمال</strong><span id="bearing">-</span></div>
+    <div class="info"><strong>اتجاه الجهاز الحالي</strong><span id="heading">-</span></div>
+    <div class="info"><strong>خط العرض</strong><span id="lat">-</span></div>
+    <div class="info"><strong>خط الطول</strong><span id="lng">-</span></div>
+  </div>
+
+  <div class="note">
+    للحصول على نتيجة أدق: فعّل GPS، أبعد الهاتف عن المعادن أو المغناطيس، وحرّكه بشكل رقم 8 لمعايرة البوصلة. بعض المتصفحات أو الأجهزة لا تسمح بقراءة البوصلة، وعندها ستظهر زاوية القبلة الرقمية فقط.
+  </div>
+</div>
+
+<a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a>
+</div>
+
+<script>
+const KAABA_LAT=21.422487;
+const KAABA_LNG=39.826206;
+
+let qiblaBearing=null;
+let currentHeading=0;
+let orientationStarted=false;
+
+const statusBox=document.getElementById('status');
+const arrow=document.getElementById('qiblaArrow');
+
+function toRad(d){return d*Math.PI/180}
+function toDeg(r){return r*180/Math.PI}
+function normalize(d){return (d%360+360)%360}
+
+function calculateBearing(lat,lng){
+  const phi1=toRad(lat);
+  const phi2=toRad(KAABA_LAT);
+  const dLon=toRad(KAABA_LNG-lng);
+
+  const y=Math.sin(dLon)*Math.cos(phi2);
+  const x=Math.cos(phi1)*Math.sin(phi2)-
+          Math.sin(phi1)*Math.cos(phi2)*Math.cos(dLon);
+
+  return normalize(toDeg(Math.atan2(y,x)));
+}
+
+function renderArrow(){
+  if(qiblaBearing===null)return;
+  const relative=normalize(qiblaBearing-currentHeading);
+  arrow.style.transform=`translate(-50%,-100%) rotate(${relative}deg)`;
+  document.getElementById('bearing').textContent=qiblaBearing.toFixed(1)+'°';
+  document.getElementById('heading').textContent=currentHeading.toFixed(1)+'°';
+}
+
+function onOrientation(e){
+  let heading=null;
+
+  if(typeof e.webkitCompassHeading==='number'){
+    heading=e.webkitCompassHeading;
+  }else if(e.absolute===true && typeof e.alpha==='number'){
+    heading=normalize(360-e.alpha);
+  }else if(typeof e.alpha==='number'){
+    heading=normalize(360-e.alpha);
+  }
+
+  if(heading===null)return;
+  currentHeading=heading;
+  renderArrow();
+}
+
+async function enableCompass(){
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined' &&
+       typeof DeviceOrientationEvent.requestPermission==='function'){
+      const permission=await DeviceOrientationEvent.requestPermission();
+      if(permission!=='granted'){
+        statusBox.textContent='لم يتم السماح باستخدام بوصلة الجهاز.';
+        return;
+      }
+    }
+
+    if(!orientationStarted){
+      window.addEventListener('deviceorientationabsolute',onOrientation,true);
+      window.addEventListener('deviceorientation',onOrientation,true);
+      orientationStarted=true;
+    }
+
+    statusBox.textContent=qiblaBearing===null
+      ? 'تم تفعيل البوصلة. الآن حدّد موقعك.'
+      : '✅ البوصلة مفعلة. حرّك الهاتف وستشير الإبرة إلى القبلة.';
+  }catch(err){
+    statusBox.textContent='تعذر تفعيل البوصلة على هذا الجهاز أو المتصفح.';
+  }
+}
+
+function locate(){
+  if(!navigator.geolocation){
+    statusBox.textContent='هذا المتصفح لا يدعم تحديد الموقع.';
+    return;
+  }
+
+  statusBox.textContent='جاري تحديد موقعك...';
+
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const lat=pos.coords.latitude;
+      const lng=pos.coords.longitude;
+
+      document.getElementById('lat').textContent=lat.toFixed(6);
+      document.getElementById('lng').textContent=lng.toFixed(6);
+
+      qiblaBearing=calculateBearing(lat,lng);
+      renderArrow();
+
+      statusBox.textContent=
+        '✅ تم تحديد موقعك. زاوية القبلة من الشمال: '+
+        qiblaBearing.toFixed(1)+'°. فعّل البوصلة لتحريك الإبرة مع الهاتف.';
+    },
+    err=>{
+      let msg='تعذر تحديد موقعك.';
+      if(err.code===err.PERMISSION_DENIED)msg='تم رفض إذن الموقع. اسمح للموقع بالوصول إلى GPS ثم حاول مرة أخرى.';
+      else if(err.code===err.POSITION_UNAVAILABLE)msg='الموقع غير متوفر حالياً. تأكد من تشغيل GPS.';
+      else if(err.code===err.TIMEOUT)msg='انتهت مهلة تحديد الموقع. حاول مرة أخرى.';
+      statusBox.textContent=msg;
+    },
+    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+  );
+}
+
+document.getElementById('startBtn').addEventListener('click',async()=>{
+  locate();
+  await enableCompass();
+});
+document.getElementById('compassBtn').addEventListener('click',enableCompass);
+</script>
+</body>
+</html>
