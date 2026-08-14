@@ -1,0 +1,157 @@
+<!doctype html><html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إنشاء حساب - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:650px;margin:35px auto}
+.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 5px 20px #0001}h1{text-align:center}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}.type{border:1px solid #ddd;background:#f7f7f7;padding:14px 5px;border-radius:12px;cursor:pointer}
+.type.active{background:#111;color:#fff}label{display:block;font-weight:700;margin:12px 0 6px}
+input,select,button,a.btn{width:100%;padding:13px;border-radius:10px;font-size:16px}input,select{border:1px solid #ccc;background:#fff}
+button{border:0;cursor:pointer}.primary{background:#111;color:#fff;margin-top:16px}.guest{background:#eee;color:#111}
+a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color:#111;margin-top:9px}.hidden{display:none}
+.avatar{display:flex;align-items:center;gap:12px}#preview{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#eee;display:none}
+.note{font-size:13px;color:#666}.err{color:#a40000;font-size:13px;margin-top:4px}@media(max-width:520px){.types{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><div class="card">
+<h1>إنشاء حساب</h1>
+<div class="types">
+<button class="type" onclick="chooseType('guest',this)">👤 ضيف</button>
+<button class="type active" onclick="chooseType('customer',this)">🛍️ عميل</button>
+<button class="type" onclick="chooseType('employee',this)">🧑‍💼 موظف</button>
+</div>
+<div id="guestBox" class="hidden"><p>الدخول كضيف لا يحتاج أي معلومات.</p><button class="guest" onclick="guestLogin()">الدخول كضيف</button></div>
+<div id="formBox">
+<label>الاسم الكامل *</label><input id="full_name" required>
+<label>رقم الموبايل *</label><input id="phone" inputmode="numeric" maxlength="11" pattern="07[0-9]{9}" type="tel" inputmode="tel" placeholder="07XXXXXXXXX" required>
+<label>المعرف *</label><input id="username" minlength="6" pattern="[A-Za-z0-9]{6,}" placeholder="مثال: hassan123" required>
+<label>المحافظة *</label><select id="governorate" required><option value="">اختر المحافظة</option><option value="بغداد">بغداد</option><option value="البصرة">البصرة</option><option value="نينوى">نينوى</option><option value="أربيل">أربيل</option><option value="النجف">النجف</option><option value="كربلاء">كربلاء</option><option value="كركوك">كركوك</option><option value="الأنبار">الأنبار</option><option value="بابل">بابل</option><option value="ديالى">ديالى</option><option value="ذي قار">ذي قار</option><option value="ميسان">ميسان</option><option value="المثنى">المثنى</option><option value="القادسية">القادسية</option><option value="صلاح الدين">صلاح الدين</option><option value="واسط">واسط</option><option value="دهوك">دهوك</option><option value="السليمانية">السليمانية</option><option value="حلبجة">حلبجة</option></select>
+<div id="roleBox" class="hidden"><label>نوع العمل *</label><select id="employee_role">
+<option value="">اختر الوظيفة</option><option value="delivery">مندوب توصيل</option><option value="library">موظف المكتبة</option>
+<option value="building_materials">موظف مواد البناء</option><option value="customer_service">خدمة العملاء</option><option value="orders">تجهيز الطلبات</option>
+</select><p class="note">حساب الموظف يبقى بانتظار موافقة الإدارة.</p></div>
+<label>الصورة الشخصية (اختياري)</label><div class="avatar"><input id="avatar" type="file" accept="image/*"><img id="preview"></div>
+<label>الرقم السري *</label><input id="password" minlength="6" pattern="[A-Za-z0-9]{6,}" type="password" minlength="6" required>
+<label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="6" pattern="[A-Za-z0-9]{6,}" type="password" minlength="6" required>
+<div id="passError" class="err"></div>
+<button class="primary" onclick="createAccount()">إنشاء الحساب</button>
+</div>
+<a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a><a class="btn" href="index.html">الرجوع للرئيسية</a>
+</div></div>
+<script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let accountType='customer',avatarData=null;
+function chooseType(t,b){accountType=t;document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+guestBox.classList.toggle('hidden',t!=='guest');formBox.classList.toggle('hidden',t==='guest');roleBox.classList.toggle('hidden',t!=='employee');}
+avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}
+const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
+function normalizePhone(v){let p=v.replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
+function authEmail(p){return 'u'+p+'@ha.local'}
+async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error)alert('تعذر دخول الضيف: '+error.message);else location.href='index.html';}
+async function createAccount(){
+ const name=full_name.value.trim(),raw=phone.value.trim(),user=username.value.trim(),gov=governorate.value,p=password.value,cp=confirm_password.value;
+ passError.textContent='';
+
+ if(!name||!raw||!user||!gov||!p||!cp){
+  alert('كل الحقول مطلوبة ما عدا الصورة');
+  return;
+ }
+
+ if(accountType==='employee'&&!employee_role.value){
+  alert('اختار نوع عمل الموظف');
+  return;
+ }
+
+ if(p!==cp){
+  passError.textContent='الرقم السري وتأكيده غير متطابقين';
+  return;
+ }
+
+ // المعرّف: أحرف إنكليزية وأرقام فقط، وأكثر من 5 خانات
+ if(!/^[A-Za-z0-9]{6,}$/.test(user)){
+  alert('المعرّف يجب أن يكون إنكليزي فقط (أحرف أو أرقام) وأكثر من 5 خانات.');
+  username.focus();
+  return;
+ }
+
+ // الرقم السري: أحرف إنكليزية وأرقام فقط، وأكثر من 5 خانات
+ if(!/^[A-Za-z0-9]{6,}$/.test(p)){
+  passError.textContent='الرقم السري يجب أن يكون إنكليزي فقط (أحرف أو أرقام) وأكثر من 5 خانات.';
+  password.focus();
+  return;
+ }
+
+ // رقم عراقي: يبدأ بـ 07 ويتكون من 11 رقماً حصراً
+ const localPhone = raw.replace(/\D/g,'');
+ if(!/^07\d{9}$/.test(localPhone)){
+  alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');
+  phone.focus();
+  return;
+ }
+ const ph=normalizePhone(localPhone);
+
+ const {data:userExists,error:userCheckError}=await db
+  .from('profiles')
+  .select('id')
+  .eq('username',user)
+  .limit(1);
+
+ if(userCheckError){
+  alert('تعذر التحقق من اسم المستخدم. حاول مرة أخرى.');
+  return;
+ }
+
+ if(userExists && userExists.length>0){
+  alert('اسم المستخدم مستخدم مسبقاً. لازم تغيّره ثم تحاول مرة ثانية.');
+  username.focus();
+  return;
+ }
+
+ const {data:phoneExists,error:phoneCheckError}=await db
+  .from('profiles')
+  .select('id')
+  .eq('phone',ph)
+  .limit(1);
+
+ if(phoneCheckError){
+  alert('تعذر التحقق من رقم الموبايل. حاول مرة أخرى.');
+  return;
+ }
+
+ if(phoneExists && phoneExists.length>0){
+  alert('رقم الموبايل مستخدم مسبقاً. لازم تستخدم رقم موبايل آخر.');
+  phone.focus();
+  return;
+ }
+
+ const meta={
+  full_name:name,
+  phone:ph,
+  username:user,
+  governorate:gov,
+  account_type:accountType,
+  employee_role_key:accountType==='employee'?employee_role.value:null,
+  avatar_url:avatarData
+ };
+
+ const {error}=await db.auth.signUp({
+  email:authEmail(ph),
+  password:p,
+  options:{data:meta}
+ });
+
+ if(error){
+  const msg=(error.message||'').toLowerCase();
+  if(msg.includes('already') || msg.includes('registered')){
+   alert('رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً. غيّر البيانات وحاول مرة أخرى.');
+  }else{
+   alert('تعذر إنشاء الحساب: '+error.message);
+  }
+  return;
+ }
+
+ localStorage.setItem('ha_logged_in','1');
+ alert(accountType==='employee'
+   ? 'تم إنشاء حساب الموظف وهو بانتظار موافقة الإدارة.'
+   : 'تم إنشاء الحساب بنجاح.');
+ location.href='index.html';
+}
+</script></body></html>
