@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>الزيارات - HA Marketing</title><style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:94%;max-width:900px;margin:35px auto}
+h1{text-align:center;margin-bottom:8px}
+.subtitle{text-align:center;color:#666;margin-bottom:22px}
+.toolbar,.item{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 16px #0001;margin:14px 0}
+select,button{padding:11px 12px;border-radius:9px;font-size:15px}
+select{border:1px solid #ccc;background:#fff;min-width:220px}
+button{border:0;background:#111;color:#fff;cursor:pointer}
+button.light{background:#eee;color:#111}
+.item h2{margin:0 0 8px}
+.meta{color:#666;font-size:14px;margin-bottom:12px}
+.text{font-family:"Traditional Arabic","Amiri",serif;font-size:24px;line-height:2;text-align:right;white-space:pre-line}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.back{display:block;text-align:center;margin:28px 0;text-decoration:none;color:#111}
+@media(max-width:600px){.text{font-size:21px}.toolbar{display:grid;gap:8px}select{width:100%}}
+</style></head>
+<body><div class="wrap"><h1>🕊️ الزيارات</h1>
+<p class="subtitle">نصوص زيارات مع تفاصيل مختصرة وخيار الاستماع بعدة أصوات عربية متوفرة على الجهاز.</p>
+<div class="toolbar"><label>اختر الصوت: <select id="voiceSelect"></select></label></div>
+
+<div class="item"><h2>زيارة عاشوراء</h2><div class="meta">من أشهر الزيارات المرتبطة بالإمام الحسين عليه السلام.</div>
+<div class="text" id="z1">السلام عليك يا أبا عبد الله، السلام عليك يا ابن رسول الله، السلام عليك يا ابن أمير المؤمنين وابن سيد الوصيين، السلام عليك يا ابن فاطمة سيدة نساء العالمين.</div>
+<div class="actions"><button data-speak="z1">▶ استماع</button><button class="light" data-stop>⏹ إيقاف</button></div></div>
+
+<div class="item"><h2>زيارة وارث</h2><div class="meta">زيارة للإمام الحسين عليه السلام.</div>
+<div class="text" id="z2">السلام عليك يا وارث آدم صفوة الله، السلام عليك يا وارث نوح نبي الله، السلام عليك يا وارث إبراهيم خليل الله، السلام عليك يا وارث موسى كليم الله.</div>
+<div class="actions"><button data-speak="z2">▶ استماع</button><button class="light" data-stop>⏹ إيقاف</button></div></div>
+
+<div class="item"><h2>زيارة أمين الله</h2><div class="meta">زيارة معروفة تُقرأ عند زيارة الأئمة عليهم السلام.</div>
+<div class="text" id="z3">السلام عليك يا أمين الله في أرضه، وحجته على عباده، السلام عليك يا أمير المؤمنين، أشهد أنك جاهدت في الله حق جهاده، وعملت بكتابه، واتبعت سنن نبيه صلى الله عليه وآله.</div>
+<div class="actions"><button data-speak="z3">▶ استماع</button><button class="light" data-stop>⏹ إيقاف</button></div></div>
+
+<div class="item"><h2>زيارة الأربعين</h2><div class="meta">زيارة الإمام الحسين عليه السلام في يوم الأربعين.</div>
+<div class="text" id="z4">السلام على ولي الله وحبيبه، السلام على خليل الله ونجيبه، السلام على صفي الله وابن صفيه، السلام على الحسين المظلوم الشهيد.</div>
+<div class="actions"><button data-speak="z4">▶ استماع</button><button class="light" data-stop>⏹ إيقاف</button></div></div>
+
+<a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a></div>
+<script>
+const voiceSelect=document.getElementById('voiceSelect');
+let voices=[];
+function loadVoices(){
+  voices=speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith('ar'));
+  voiceSelect.innerHTML='';
+  if(!voices.length){
+    const o=document.createElement('option');o.textContent='الصوت العربي الافتراضي';o.value='';
+    voiceSelect.appendChild(o);return;
+  }
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i;
+    o.textContent=v.name+' - '+v.lang;
+    voiceSelect.appendChild(o);
+  });
+}
+speechSynthesis.onvoiceschanged=loadVoices; loadVoices();
+
+function speakText(id){
+  speechSynthesis.cancel();
+  const el=document.getElementById(id);
+  if(!el)return;
+  const u=new SpeechSynthesisUtterance(el.innerText);
+  u.lang='ar-SA';
+  const idx=Number(voiceSelect.value);
+  if(voices[idx])u.voice=voices[idx];
+  u.rate=.82;
+  speechSynthesis.speak(u);
+}
+function stopSpeak(){speechSynthesis.cancel();}
+document.querySelectorAll('[data-speak]').forEach(b=>b.addEventListener('click',()=>speakText(b.dataset.speak)));
+document.querySelectorAll('[data-stop]').forEach(b=>b.addEventListener('click',stopSpeak));
+</script></body></html>
