@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>طلب مندوب - HA Marketing</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
+.app{width:100%;max-width:760px;margin:auto;background:#fff;min-height:100vh}
+.head{display:flex;align-items:center;justify-content:space-between;padding:13px 15px}
+.head h1{font-size:21px;margin:0}.back{width:42px;height:42px;border:0;border-radius:50%;background:#f1f1f1;font-size:22px;cursor:pointer}
+.search{padding:5px 14px 10px}.search-row{display:grid;grid-template-columns:1fr auto;gap:7px;margin:8px 0}
+.search input,.details input,.details textarea{width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:15px;font-family:inherit}
+.search button{border:0;border-radius:10px;background:#111;color:#fff;padding:0 15px}
+.results{display:none;border:1px solid #eee;border-radius:10px;overflow:hidden}.results button{width:100%;background:#fff;border:0;border-bottom:1px solid #eee;text-align:right;padding:10px}
+#map{height:39vh;min-height:300px}
+.box{margin:-22px 14px 0;position:relative;z-index:500;background:#fff;border-radius:18px;padding:14px;box-shadow:0 5px 20px #0002}
+.row{display:flex;gap:10px;align-items:center;padding:9px 3px}.row+.row{border-top:1px solid #eee}.dot{width:14px;height:14px;border-radius:50%;background:#f47b20}.dot.end{background:#1110ff;border-radius:4px}.loc{flex:1}.loc b{display:block}.loc span{font-size:13px;color:#777}
+.actions{display:flex;gap:7px;margin-top:8px}.actions button{flex:1;border:0;border-radius:10px;padding:10px;background:#eee}.actions .active{background:#111;color:#fff}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 14px}.metric{text-align:center;background:#f7f7f7;border-radius:12px;padding:11px}.metric small{display:block;color:#777}.metric b{font-size:17px}
+.details{margin:12px 14px;background:#fafafa;border-radius:14px;padding:13px}.details h3{margin:0 0 10px}.details input,.details textarea{margin:5px 0;background:#fff}.details textarea{min-height:75px;resize:vertical}
+.types{padding:5px 14px}.type{display:flex;align-items:center;gap:10px;border:2px solid transparent;border-bottom:1px solid #eee;border-radius:12px;padding:13px 8px;cursor:pointer}.type.selected{border-color:#111;background:#f7f7f7}.vehicle{font-size:34px;width:48px;text-align:center}.info{flex:1}.info b{font-size:17px}.info small{display:block;color:#777;margin-top:4px}.price{font-weight:700}
+.notice{margin:10px 14px;padding:10px;border-radius:12px;background:#fff8e7;color:#666;font-size:13px;line-height:1.6;text-align:center}
+.order{position:sticky;bottom:0;background:#fff;padding:14px;border-top:1px solid #eee}.order button{width:100%;border:0;border-radius:13px;padding:15px;background:#1110ff;color:#fff;font-size:18px;font-weight:700}.order button:disabled{background:#aaa}
+@media(max-width:560px){.metrics{grid-template-columns:1fr 1fr}.metrics .metric:last-child{grid-column:1/-1}}
+</style></head>
+<body>
+<div class="app">
+<div class="head"><button class="back" onclick="history.back()">‹</button><h1>🛵 طلب مندوب</h1><div style="width:42px"></div></div>
+
+<div class="search">
+ <div class="search-row"><input id="startSearch" placeholder="اكتب اسم مكان الاستلام"><button id="startBtn">بحث</button></div><div id="startResults" class="results"></div>
+ <div class="search-row"><input id="endSearch" placeholder="اكتب اسم مكان التسليم"><button id="endBtn">بحث</button></div><div id="endResults" class="results"></div>
+</div>
+
+<div id="map"></div>
+
+<div class="box">
+ <div class="row"><i class="dot"></i><div class="loc"><b>مكان الاستلام</b><span id="startText">حدد مكان استلام الطلب</span></div></div>
+ <div class="row"><i class="dot end"></i><div class="loc"><b>مكان التسليم</b><span id="endText">حدد مكان تسليم الطلب</span></div></div>
+ <div class="actions"><button id="pickStart" class="active">📦 الاستلام</button><button id="myLocation">◎ موقعي</button><button id="pickEnd">🏁 التسليم</button></div>
+</div>
+
+<div class="metrics">
+ <div class="metric"><small>مسافة الشارع</small><b id="distance">—</b></div>
+ <div class="metric"><small>مدة التوصيل</small><b id="tripTime">—</b></div>
+ <div class="metric"><small>وصول المندوب</small><b id="driverTime">—</b></div>
+</div>
+
+<div class="details">
+ <h3>📋 تفاصيل الطلب</h3>
+ <input id="item" placeholder="نوع الطلب أو الغرض، مثال: مستندات / طعام / أغراض">
+ <input id="receiver" placeholder="اسم المستلم">
+ <input id="phone" inputmode="numeric" placeholder="رقم موبايل المستلم">
+ <textarea id="notes" placeholder="ملاحظات للمندوب، مثال: الطابق، أقرب نقطة دالة..."></textarea>
+</div>
+
+<div class="types">
+ <div class="type selected" data-name="دراجة" data-base="750" data-km="350" data-min="12"><div class="vehicle">🛵</div><div class="info"><b>دراجة</b><small>للطرود الصغيرة والتوصيل السريع</small></div><div class="price">—</div></div>
+ <div class="type" data-name="تكتك" data-base="1000" data-km="450" data-min="15"><div class="vehicle">🛺</div><div class="info"><b>تكتك</b><small>للأغراض المتوسطة</small></div><div class="price">—</div></div>
+ <div class="type" data-name="سيارة" data-base="1750" data-km="650" data-min="20"><div class="vehicle">🚗</div><div class="info"><b>سيارة</b><small>للأغراض الأكبر أو الأبعد</small></div><div class="price">—</div></div>
+</div>
+
+<div id="notice" class="notice">يتم حساب الطريق على شبكة الشوارع. الازدحام الحي وموقع المندوب الحقيقي يحتاجان ربط خدمة حركة المرور ونظام المندوبين.</div>
+<div class="order"><button id="order" disabled>حدد الاستلام والتسليم أولاً</button></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map').setView([33.3152,44.3661],12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
+let mode='start',start=null,end=null,sm=null,em=null,line=null,routeKm=0,routeMin=0,pickupMin=0,selected=document.querySelector('.type.selected');
+function setMode(x){mode=x;pickStart.classList.toggle('active',x==='start');pickEnd.classList.toggle('active',x==='end')}
+pickStart.onclick=()=>setMode('start');pickEnd.onclick=()=>setMode('end');
+async function snap(p){try{let j=await (await fetch(`https://router.project-osrm.org/nearest/v1/driving/${p.lng},${p.lat}?number=1`)).json(),x=j?.waypoints?.[0]?.location;return x?L.latLng(x[1],x[0]):p}catch(e){return p}}
+function put(kind,p,label){if(kind==='start'){start=p;if(sm)map.removeLayer(sm);sm=L.marker(p).addTo(map).bindPopup('مكان الاستلام');startText.textContent=label||p.lat.toFixed(5)+' ، '+p.lng.toFixed(5);if(!end)setMode('end')}else{end=p;if(em)map.removeLayer(em);em=L.marker(p).addTo(map).bindPopup('مكان التسليم');endText.textContent=label||p.lat.toFixed(5)+' ، '+p.lng.toFixed(5)}calc()}
+map.on('click',async e=>put(mode,await snap(e.latlng)));
+myLocation.onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(async p=>{let x=await snap(L.latLng(p.coords.latitude,p.coords.longitude));setMode('start');put('start',x,'موقعك الحالي');map.setView(x,15)},()=>notice.textContent='تعذر تحديد موقعك. تأكد من السماح باستخدام GPS.',{enableHighAccuracy:true}):notice.textContent='المتصفح لا يدعم تحديد الموقع.';
+async function search(q,kind){if(!q.trim())return;let box=kind==='start'?startResults:endResults;box.style.display='block';box.innerHTML='<button disabled>جاري البحث...</button>';try{let j=await(await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=ar&q='+encodeURIComponent(q))).json();box.innerHTML='';if(!j.length){box.innerHTML='<button disabled>لم يتم العثور على مكان</button>';return}j.forEach(x=>{let b=document.createElement('button');b.textContent=x.display_name;b.onclick=async()=>{let p=await snap(L.latLng(+x.lat,+x.lon));put(kind,p,x.display_name);map.setView(p,15);box.style.display='none'};box.appendChild(b)})}catch(e){box.innerHTML='<button disabled>تعذر البحث حالياً</button>'}}
+startBtn.onclick=()=>search(startSearch.value,'start');endBtn.onclick=()=>search(endSearch.value,'end');
+async function route(a,b){let j=await(await fetch(`https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`)).json();if(j.code!=='Ok')throw 0;return j.routes[0]}
+function fm(x){x=Math.max(1,Math.round(x));return x<60?x+' دقيقة':Math.floor(x/60)+' س '+x%60+' د'}function round250(x){return Math.ceil(x/250)*250}
+async function calc(){if(line){map.removeLayer(line);line=null}if(!(start&&end)){order.disabled=true;return}notice.textContent='جاري حساب طريق التوصيل...';try{let r=await route(start,end);routeKm=r.distance/1000;routeMin=r.duration/60;line=L.geoJSON(r.geometry,{style:{weight:6}}).addTo(map);map.fitBounds(line.getBounds(),{padding:[40,40]});distance.textContent=routeKm.toFixed(1)+' كم';tripTime.textContent=fm(routeMin);
+let demo=L.latLng(start.lat+.008,start.lng+.008);try{let d=await route(demo,start);pickupMin=d.duration/60}catch(e){pickupMin=5}driverTime.textContent='حوالي '+fm(pickupMin);
+document.querySelectorAll('.type').forEach(c=>{let p=round250(+c.dataset.base+routeKm*(+c.dataset.km)+routeMin*(+c.dataset.min));c.dataset.price=p;c.querySelector('.price').textContent=p.toLocaleString('ar-IQ')+' د.ع'});notice.textContent='✅ تم حساب مسافة الشارع ومدة الطريق. وقت المندوب المعروض تجريبي إلى أن يتم ربط مواقع المندوبين الحقيقيين.';order.disabled=false;updateOrder()}catch(e){notice.textContent='تعذر حساب الطريق حالياً. جرّب تعديل نقاط الاستلام والتسليم.'}}
+function updateOrder(){if(start&&end&&selected.dataset.price)order.textContent='طلب مندوب '+selected.dataset.name+' — '+Number(selected.dataset.price).toLocaleString('ar-IQ')+' د.ع'}
+document.querySelectorAll('.type').forEach(c=>c.onclick=()=>{document.querySelectorAll('.type').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');selected=c;updateOrder()});
+order.onclick=()=>{if(!item.value.trim()){alert('اكتب نوع الطلب أو الغرض أولاً.');return}if(phone.value.trim()&&!/^07\d{9}$/.test(phone.value.trim())){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقماً.');return}alert(`تم تجهيز طلب المندوب مبدئياً\nالمركبة: ${selected.dataset.name}\nالغرض: ${item.value}\nالمسافة: ${routeKm.toFixed(1)} كم\nمدة التوصيل: ${fm(routeMin)}\nالسعر: ${Number(selected.dataset.price).toLocaleString('ar-IQ')} د.ع`)}
+</script></body></html>
