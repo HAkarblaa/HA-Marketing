@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>طلب تكسي - HA Marketing</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
+.app{width:100%;max-width:720px;margin:auto;background:#fff;min-height:100vh;box-shadow:0 0 20px #0001}
+.head{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:#fff;position:relative;z-index:500}
+.head h1{font-size:21px;margin:0}
+.back{width:42px;height:42px;border:0;border-radius:50%;background:#f1f1f1;font-size:22px;cursor:pointer}
+#map{height:46vh;min-height:330px;background:#e8e8e8}
+.location-box{margin:-28px 14px 0;position:relative;z-index:600;background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 22px #0002}
+.row{display:flex;align-items:center;gap:10px;padding:10px 5px}
+.row+.row{border-top:1px solid #eee}
+.dot{width:15px;height:15px;border-radius:50%;flex:0 0 auto}
+.start{background:#f47b20}.end{background:#1110ff;border-radius:4px}
+.location-text{flex:1}
+.location-text b{display:block;margin-bottom:3px}
+.location-text span{font-size:13px;color:#777}
+.location-actions{display:flex;gap:7px;margin-top:9px}
+.location-actions button{flex:1;border:0;border-radius:10px;padding:10px 8px;cursor:pointer;background:#eee}
+.location-actions .active{background:#111;color:#fff}
+.notice{margin:13px 14px 0;background:#fafafa;border:1px solid #eee;border-radius:13px;padding:11px;text-align:center;color:#555;font-size:14px}
+.choices{padding:13px 14px 5px}
+.choice{display:flex;align-items:center;gap:12px;border:2px solid transparent;border-bottom:1px solid #eee;padding:14px 10px;cursor:pointer;border-radius:13px}
+.choice.selected{border-color:#111;background:#f7f7f7}
+.car{font-size:35px;width:52px;text-align:center}
+.info{flex:1}.info b{font-size:18px}.info small{display:block;color:#777;margin-top:5px}
+.price{font-weight:700;font-size:18px;white-space:nowrap}
+.summary{padding:8px 17px;color:#555;font-size:14px;line-height:1.7}
+.order{padding:14px;position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;z-index:700}
+.order button{width:100%;border:0;border-radius:13px;background:#1110ff;color:#fff;padding:15px;font-size:18px;font-weight:700;cursor:pointer}
+.order button:disabled{background:#aaa;cursor:not-allowed}
+.leaflet-control-attribution{font-size:9px}
+@media(max-width:520px){#map{height:42vh}.location-box{margin-top:-22px}.choice{padding:12px 5px}.price{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+ <div class="head">
+   <button class="back" onclick="history.back()">‹</button>
+   <h1>🚕 طلب تكسي</h1>
+   <div style="width:42px"></div>
+ </div>
+
+ <div id="map"></div>
+
+ <section class="location-box">
+   <div class="row">
+     <i class="dot start"></i>
+     <div class="location-text"><b>الانطلاق</b><span id="startText">حدد موقع الانطلاق من الخريطة</span></div>
+   </div>
+   <div class="row">
+     <i class="dot end"></i>
+     <div class="location-text"><b>الوصول</b><span id="endText">حدد نقطة الوصول من الخريطة</span></div>
+   </div>
+   <div class="location-actions">
+     <button id="pickStart" class="active">📍 تحديد الانطلاق</button>
+     <button id="myLocation">◎ موقعي الحالي</button>
+     <button id="pickEnd">🏁 تحديد الوصول</button>
+   </div>
+ </section>
+
+ <div class="notice" id="notice">اضغط على الخريطة لتحديد موقع الانطلاق، وبعدها حدد نقطة الوصول.</div>
+
+ <section class="choices">
+   <div class="choice selected" data-type="اقتصادي" data-base="1000" data-km="500">
+     <div class="car">🚕</div><div class="info"><b>اقتصادي</b><small>الخيار الأوفر</small></div><div class="price">—</div>
+   </div>
+   <div class="choice" data-type="عادي" data-base="1500" data-km="650">
+     <div class="car">🚖</div><div class="info"><b>عادي</b><small>سيارة مريحة للرحلات اليومية</small></div><div class="price">—</div>
+   </div>
+   <div class="choice" data-type="VIP" data-base="2500" data-km="900">
+     <div class="car">🚘</div><div class="info"><b>VIP</b><small>سيارة أفضل وراحة أعلى</small></div><div class="price">—</div>
+   </div>
+ </section>
+
+ <div id="summary" class="summary">السعر يظهر بعد تحديد الانطلاق والوصول.</div>
+
+ <div class="order"><button id="orderBtn" disabled>حدد الانطلاق والوصول أولاً</button></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map').setView([33.3152,44.3661],12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+ maxZoom:19,
+ attribution:'&copy; OpenStreetMap'
+}).addTo(map);
+
+let mode='start', start=null, end=null, startMarker=null, endMarker=null, line=null;
+let selected=document.querySelector('.choice.selected');
+
+const startText=document.getElementById('startText');
+const endText=document.getElementById('endText');
+const notice=document.getElementById('notice');
+const orderBtn=document.getElementById('orderBtn');
+
+function setMode(m){
+ mode=m;
+ document.getElementById('pickStart').classList.toggle('active',m==='start');
+ document.getElementById('pickEnd').classList.toggle('active',m==='end');
+ notice.textContent=m==='start'?'اضغط على الخريطة لتحديد موقع الانطلاق.':'اضغط على الخريطة لتحديد نقطة الوصول.';
+}
+document.getElementById('pickStart').onclick=()=>setMode('start');
+document.getElementById('pickEnd').onclick=()=>setMode('end');
+
+function coordsText(p){return p.lat.toFixed(5)+' ، '+p.lng.toFixed(5)}
+
+function placePoint(p){
+ if(mode==='start'){
+   start=p;
+   if(startMarker) map.removeLayer(startMarker);
+   startMarker=L.marker(p).addTo(map).bindPopup('موقع الانطلاق');
+   startText.textContent=coordsText(p);
+   if(!end) setMode('end');
+ }else{
+   end=p;
+   if(endMarker) map.removeLayer(endMarker);
+   endMarker=L.marker(p).addTo(map).bindPopup('نقطة الوصول');
+   endText.textContent=coordsText(p);
+ }
+ updateRoute();
+}
+map.on('click',e=>placePoint(e.latlng));
+
+document.getElementById('myLocation').onclick=()=>{
+ if(!navigator.geolocation){notice.textContent='المتصفح لا يدعم تحديد الموقع.';return}
+ notice.textContent='جاري تحديد موقعك...';
+ navigator.geolocation.getCurrentPosition(pos=>{
+   const p=L.latLng(pos.coords.latitude,pos.coords.longitude);
+   mode='start'; placePoint(p); map.setView(p,15);
+   notice.textContent='تم تحديد موقعك. الآن حدد نقطة الوصول.';
+ },()=>{notice.textContent='تعذر الحصول على الموقع. تأكد من السماح للموقع باستخدام GPS.'},{enableHighAccuracy:true,timeout:10000});
+};
+
+function distanceKm(a,b){
+ const R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLon=(b.lng-a.lng)*Math.PI/180;
+ const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLon/2)**2;
+ return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+function round250(n){return Math.ceil(n/250)*250}
+
+function updateRoute(){
+ if(line){map.removeLayer(line);line=null}
+ if(!(start&&end)){
+   document.querySelectorAll('.price').forEach(x=>x.textContent='—');
+   orderBtn.disabled=true;orderBtn.textContent='حدد الانطلاق والوصول أولاً';
+   return;
+ }
+ line=L.polyline([start,end],{weight:5}).addTo(map);
+ map.fitBounds(line.getBounds(),{padding:[45,45]});
+ const km=distanceKm(start,end);
+ document.querySelectorAll('.choice').forEach(c=>{
+   const price=round250(+c.dataset.base + km*(+c.dataset.km));
+   c.dataset.price=price;
+   c.querySelector('.price').textContent=price.toLocaleString('ar-IQ')+' د.ع';
+ });
+ document.getElementById('summary').textContent='المسافة التقديرية بخط مستقيم: '+km.toFixed(1)+' كم — السعر الحالي تقديري لحين ربط خدمة الطرق والتسعير الفعلية.';
+ orderBtn.disabled=false;
+ updateOrderText();
+}
+function updateOrderText(){
+ if(start&&end) orderBtn.textContent='طلب '+selected.dataset.type+' — '+Number(selected.dataset.price||0).toLocaleString('ar-IQ')+' د.ع';
+}
+document.querySelectorAll('.choice').forEach(c=>c.onclick=()=>{
+ document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));
+ c.classList.add('selected');selected=c;updateOrderText();
+});
+orderBtn.onclick=()=>{
+ if(!(start&&end))return;
+ alert('تم تجهيز الطلب مبدئياً\\nالنوع: '+selected.dataset.type+'\\nالسعر التقديري: '+Number(selected.dataset.price).toLocaleString('ar-IQ')+' د.ع\\n\\nالخطوة التالية تكون ربط الطلب بحساب المستخدم والسائقين.');
+};
+</script>
+</body>
+</html>
