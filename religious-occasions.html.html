@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>المناسبات الدينية - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:96%;max-width:1000px;margin:30px auto}
+h1{text-align:center;margin-bottom:8px}
+.subtitle{text-align:center;color:#666;margin-bottom:18px}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 16px #0001;margin:14px 0}
+.next{border:2px solid #111;text-align:center}
+.next .label{color:#666;margin-bottom:6px}
+.next .name{font-size:25px;font-weight:700}
+.next .date{margin-top:7px}
+.cal-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.cal-head button{border:0;border-radius:9px;background:#111;color:#fff;padding:10px 14px;cursor:pointer}
+.month-title{font-size:21px;font-weight:700;text-align:center}
+.weekdays,.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.weekdays div{text-align:center;font-weight:700;padding:8px 2px;color:#666}
+.day{min-height:92px;border:1px solid #ddd;border-radius:10px;padding:7px;background:#fff}
+.day.empty{border:0;background:transparent}
+.greg{font-weight:700}
+.hijri{font-size:13px;color:#666;margin-top:5px}
+.event-chip{font-size:11px;background:#111;color:#fff;border-radius:7px;padding:4px 5px;margin-top:5px;line-height:1.4}
+.events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.event{border:1px solid #ddd;border-radius:12px;padding:13px}
+.event h3{margin:0 0 5px}
+.note{font-size:13px;color:#666;line-height:1.8}
+.back{display:block;text-align:center;margin:28px 0;text-decoration:none;color:#111}
+@media(max-width:650px){
+ .day{min-height:76px;padding:5px}
+ .greg{font-size:14px}.hijri{font-size:11px}.event-chip{font-size:9px}
+ .events{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🌙 المناسبات الدينية</h1>
+<p class="subtitle">تقويم شهري كامل يعرض التاريخ الميلادي والهجري، مع المناسبات والحقل الخاص بالمناسبة القادمة.</p>
+
+<div class="card next">
+  <div class="label">المناسبة الدينية القادمة</div>
+  <div id="nextName" class="name">جاري الحساب...</div>
+  <div id="nextDate" class="date"></div>
+</div>
+
+<div class="card">
+  <div class="cal-head">
+    <button id="prevBtn" type="button">‹ السابق</button>
+    <div id="monthTitle" class="month-title"></div>
+    <button id="nextBtn" type="button">التالي ›</button>
+  </div>
+  <div class="weekdays">
+    <div>الأحد</div><div>الاثنين</div><div>الثلاثاء</div><div>الأربعاء</div><div>الخميس</div><div>الجمعة</div><div>السبت</div>
+  </div>
+  <div id="calendar" class="calendar"></div>
+</div>
+
+<div class="card">
+  <h2>المناسبات المدرجة</h2>
+  <div id="eventsList" class="events"></div>
+  <p class="note">قد تختلف بداية الشهر الهجري أو بعض المناسبات يوماً بحسب ثبوت الهلال والبلد أو الجهة الدينية المعتمدة.</p>
+</div>
+
+<a class="back" href="religious.html">← الرجوع إلى الأمور الدينية</a>
+</div>
+
+<script>
+const HIJRI_MONTHS=[
+ 'محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة',
+ 'رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'
+];
+
+const EVENTS=[
+ {m:1,d:1,name:'رأس السنة الهجرية'},
+ {m:1,d:10,name:'عاشوراء'},
+ {m:2,d:20,name:'الأربعين'},
+ {m:3,d:17,name:'المولد النبوي الشريف'},
+ {m:7,d:13,name:'ولادة الإمام علي عليه السلام'},
+ {m:7,d:27,name:'المبعث النبوي'},
+ {m:8,d:15,name:'النصف من شعبان'},
+ {m:9,d:19,name:'ليلة القدر - 19 رمضان'},
+ {m:9,d:21,name:'ليلة القدر - 21 رمضان'},
+ {m:9,d:23,name:'ليلة القدر - 23 رمضان'},
+ {m:10,d:1,name:'عيد الفطر'},
+ {m:12,d:9,name:'يوم عرفة'},
+ {m:12,d:10,name:'عيد الأضحى'},
+ {m:12,d:18,name:'عيد الغدير'}
+];
+
+const hijriFmt=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
+  day:'numeric',month:'numeric',year:'numeric'
+});
+
+function hijriParts(date){
+ const parts=hijriFmt.formatToParts(date);
+ const out={};
+ parts.forEach(p=>{if(p.type==='day'||p.type==='month'||p.type==='year') out[p.type]=Number(p.value)});
+ return {d:out.day,m:out.month,y:out.year};
+}
+
+function eventFor(date){
+ const h=hijriParts(date);
+ return EVENTS.find(e=>e.m===h.m && e.d===h.d) || null;
+}
+
+let view=new Date();
+view.setDate(1);
+
+function renderCalendar(){
+ const y=view.getFullYear(), m=view.getMonth();
+ const first=new Date(y,m,1);
+ const lastDay=new Date(y,m+1,0).getDate();
+ document.getElementById('monthTitle').textContent=
+   new Intl.DateTimeFormat('ar-IQ',{month:'long',year:'numeric'}).format(first);
+
+ const box=document.getElementById('calendar');
+ box.innerHTML='';
+ for(let i=0;i<first.getDay();i++){
+   const el=document.createElement('div');el.className='day empty';box.appendChild(el);
+ }
+
+ for(let d=1;d<=lastDay;d++){
+   const date=new Date(y,m,d,12);
+   const h=hijriParts(date);
+   const ev=eventFor(date);
+   const el=document.createElement('div');
+   el.className='day';
+   el.innerHTML=
+    '<div class="greg">'+d+'</div>'+
+    '<div class="hijri">'+h.d+' '+HIJRI_MONTHS[h.m-1]+'</div>'+
+    (ev?'<div class="event-chip">'+ev.name+'</div>':'');
+   box.appendChild(el);
+ }
+}
+
+function renderEvents(){
+ const list=document.getElementById('eventsList');
+ list.innerHTML=EVENTS.map(e=>
+   '<div class="event"><h3>'+e.name+'</h3><div>'+e.d+' '+HIJRI_MONTHS[e.m-1]+'</div></div>'
+ ).join('');
+}
+
+function findNextOccasion(){
+ const today=new Date(); today.setHours(12,0,0,0);
+ for(let i=0;i<430;i++){
+   const d=new Date(today); d.setDate(today.getDate()+i);
+   const ev=eventFor(d);
+   if(ev){
+     const h=hijriParts(d);
+     document.getElementById('nextName').textContent=ev.name;
+     document.getElementById('nextDate').textContent=
+       new Intl.DateTimeFormat('ar-IQ',{dateStyle:'full'}).format(d)+
+       ' | '+h.d+' '+HIJRI_MONTHS[h.m-1]+' '+h.y+' هـ';
+     return;
+   }
+ }
+ document.getElementById('nextName').textContent='لم يتم العثور على مناسبة قريبة';
+}
+
+document.getElementById('prevBtn').addEventListener('click',()=>{view.setMonth(view.getMonth()-1);renderCalendar()});
+document.getElementById('nextBtn').addEventListener('click',()=>{view.setMonth(view.getMonth()+1);renderCalendar()});
+
+renderCalendar();
+renderEvents();
+findNextOccasion();
+</script>
+</body>
+</html>
