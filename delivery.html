@@ -591,36 +591,72 @@ body:not(.trip-ready) #extraSummary{
 }
 
 
-/* ===== ترتيب الدلفري مثل التكسي ===== */
-body:not(.trip-ready) #tripSheet,
-body:not(.trip-ready) .delivery-details,
-body:not(.trip-ready) #orderArea,
-body:not(.trip-ready) #extraSummary{
-  display:none !important;
+/* ===== الدلفري: ثلاث مراحل منفصلة ===== */
+#deliveryTransportStage,
+#deliveryDetailsStage{
+  display:none;
 }
 
-body:not(.trip-ready) #selectionPanel{
+body.delivery-stage-1 #selectionPanel{
   display:block !important;
 }
-
-body.trip-ready #selectionPanel{
+body.delivery-stage-1 #tripSheet{
   display:none !important;
 }
 
-body.trip-ready #tripSheet.open{
+body.delivery-stage-2 #selectionPanel{
+  display:none !important;
+}
+body.delivery-stage-2 #tripSheet{
   display:flex !important;
-  flex-direction:column;
+}
+body.delivery-stage-2 #deliveryTransportStage{
+  display:block !important;
+}
+body.delivery-stage-2 #deliveryDetailsStage{
+  display:none !important;
 }
 
-/* خلي تفاصيل الدلفري تظهر فقط بعد تثبيت الاستلام والتسليم */
-body.trip-ready .delivery-details{
+body.delivery-stage-3 #selectionPanel{
+  display:none !important;
+}
+body.delivery-stage-3 #tripSheet{
+  display:flex !important;
+}
+body.delivery-stage-3 #deliveryTransportStage{
+  display:none !important;
+}
+body.delivery-stage-3 #deliveryDetailsStage{
+  display:flex !important;
+  flex-direction:column;
+  height:100%;
+}
+
+.delivery-stage-title{
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  margin:2px 0 8px;
+}
+#continueDeliveryDetails{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:11px;
+  font-size:14px;
+  font-weight:700;
+  background:#1769e0;
+  color:#fff;
+  margin-top:8px;
+}
+#deliveryDetailsStage .delivery-details{
   display:grid !important;
 }
 
 </style>
 </head>
 
-<body>
+<body class="delivery-stage-1">
 <div class="app">
 
 <div class="head">
@@ -665,8 +701,12 @@ body.trip-ready .delivery-details{
 
 </div>
 
-<div id="tripSheet" style="display:none">
+<div id="tripSheet">
+
   <div class="trip-sheet-title">تفاصيل التوصيل</div>
+  
+<div id="deliveryTransportStage">
+  <div class="delivery-stage-title">اختر وسيلة النقل</div>
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر وسيلة المندوب</div>
 
@@ -695,11 +735,17 @@ body.trip-ready .delivery-details{
 </div>
 
 <div id="notice" class="notice">
-حدد نقطة الاستلام أولاً، وبعدها ثبت نقطة التسليم.
+حدد الاستلام أولاً، وبعدها حدد نقطة التسليم.
 </div>
 <div id="extraSummary" class="extra-summary"></div>
 
-<div class="delivery-details">
+
+  <button id="continueDeliveryDetails" type="button">متابعة إلى تفاصيل الطلب</button>
+</div>
+
+<div id="deliveryDetailsStage">
+  <div class="delivery-stage-title">تفاصيل الطلب</div>
+  <div class="delivery-details">
   <input id="item" placeholder="شنو الطلب؟ مثال: طعام، مستندات، أغراض">
   <input id="receiver" placeholder="اسم المستلم">
   <input id="phone" inputmode="numeric" placeholder="رقم موبايل المستلم">
@@ -712,6 +758,8 @@ body.trip-ready .delivery-details{
 </div>
 
 
+
+</div>
 </div>
 
 <div id="extraSheet" class="extra-sheet" aria-hidden="true">
@@ -947,7 +995,8 @@ function setPoint(kind,p,label){
    document.getElementById('tripSheet').classList.add('open');
    document.body.classList.add('trip-sheet-open');
    document.body.classList.add('trip-ready');
-   document.getElementById('tripSheet').style.display='flex';
+   document.body.classList.remove('delivery-stage-1','delivery-stage-3');
+   document.body.classList.add('delivery-stage-2');
    document.getElementById('extraOptionsBtn').disabled=false;
 
    // إخفاء نتائج البحث القديمة أيضاً.
@@ -1272,7 +1321,6 @@ function backOneStep(){
 
    // الرجوع خطوة يرجع قائمة الاستلام والتسليم بدل أنواع التكسي.
    document.getElementById('tripSheet').classList.remove('open');
-   document.getElementById('tripSheet').style.display='none';
    document.body.classList.remove('trip-sheet-open');
    document.body.classList.remove('trip-ready');
    document.getElementById('vehicleStep').style.display='none';
@@ -1323,6 +1371,34 @@ window.addEventListener('popstate',()=>{
 // أول ما تفتح الصفحة يكون اختيار الاستلام جاهز
 setMode('start');
 startMapPick();
+
+// ===== انتقال الدلفري من اختيار الوسيلة إلى تفاصيل الطلب =====
+document.getElementById('continueDeliveryDetails').onclick=()=>{
+  if(!selected){
+    alert('اختار وسيلة النقل أولاً.');
+    return;
+  }
+  document.body.classList.remove('delivery-stage-2');
+  document.body.classList.add('delivery-stage-3');
+  document.getElementById('deliveryTransportStage').style.display='none';
+  document.getElementById('deliveryDetailsStage').style.display='flex';
+};
+
+// زر الرجوع: المرحلة الثالثة ترجع لاختيار وسيلة النقل، والثانية ترجع للنقاط
+const deliveryBackBtn=document.querySelector('.back');
+if(deliveryBackBtn){
+  deliveryBackBtn.addEventListener('click',(e)=>{
+    if(document.body.classList.contains('delivery-stage-3')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      document.body.classList.remove('delivery-stage-3');
+      document.body.classList.add('delivery-stage-2');
+      document.getElementById('deliveryDetailsStage').style.display='none';
+      document.getElementById('deliveryTransportStage').style.display='block';
+    }
+  },true);
+}
+
 </script>
 </body>
 </html>
