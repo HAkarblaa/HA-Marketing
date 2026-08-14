@@ -249,7 +249,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
 </div>
 <div id="extraSummary" class="extra-summary"></div>
 
-<div class="order">
+<div class="order" id="orderArea" style="display:none">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
   <button id="order" disabled>تأكيد التكسي</button>
 </div>
@@ -479,6 +479,10 @@ function setPoint(kind,p,label){
    const vehicleStep=document.getElementById('vehicleStep');
    locationStep.style.display='none';
    vehicleStep.style.display='block';
+
+   // بعد تثبيت الانطلاق والوصول تظهر قائمة السيارات
+   // والخيارات الإضافية وزر تأكيد التكسي تلقائياً.
+   document.getElementById('orderArea').style.display='block';
 
    // إخفاء نتائج البحث القديمة أيضاً.
    document.getElementById('placeResults').style.display='none';
@@ -726,6 +730,7 @@ function backOneStep(){
    // الرجوع خطوة يرجع قائمة الانطلاق والوصول بدل أنواع التكسي.
    document.getElementById('vehicleStep').style.display='none';
    document.getElementById('locationStep').style.display='block';
+   document.getElementById('orderArea').style.display='none';
 
    resetRouteDisplay();
 
