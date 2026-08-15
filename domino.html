@@ -252,12 +252,18 @@ body.tile-compact .pip{width:8px;height:8px}
     <div class="start-hero">
       <div class="big">🁣</div>
       <h2>دومينو HA</h2>
-      <p>اختر طريقة اللعب، اكتب اسمك، وابدأ المباراة.</p>
+      <p>اختر طريقة اللعب، اكتب اسمك، ومن هنا تقدر تدخل المتجر قبل بدء المباراة.</p>
     </div>
 
     <div class="name-box">
       <label>اسم اللاعب</label>
       <input id="startName" maxlength="20" placeholder="اكتب اسمك">
+    </div>
+
+    <div class="wallet-bar" style="justify-content:center;margin:10px 0 14px">
+      <div class="wallet-pill">⭐ نقاط <span id="pointsView" class="num">0</span></div>
+      <div class="wallet-pill">💎 جواهر <span id="gemsView" class="num">0</span></div>
+      <button id="shopBtn" class="shop-btn">🛍️ المتجر</button>
     </div>
 
     <div class="mode-grid">
@@ -307,10 +313,9 @@ body.tile-compact .pip{width:8px;height:8px}
       <div class="logo">🁣</div>
       <div><h1>دومينو HA</h1><small id="gameModeLabel">ضد الجهاز</small></div>
     </div>
-    <div class="wallet-bar">
-      <div class="wallet-pill">⭐ نقاط <span id="pointsView" class="num">0</span></div>
-      <div class="wallet-pill">💎 جواهر <span id="gemsView" class="num">0</span></div>
-      <button id="shopBtn" class="shop-btn">🛍️ المتجر</button>
+    <div class="wallet-bar" style="margin-left:auto">
+      <div class="wallet-pill">⭐ <span id="gamePointsView" class="num">0</span></div>
+      <div class="wallet-pill">💎 <span id="gameGemsView" class="num">0</span></div>
     </div>
     <div class="top-actions">
       <button class="btn" id="settingsBtn">⚙️</button>
@@ -357,6 +362,17 @@ body.tile-compact .pip{width:8px;height:8px}
 
       <div class="card">
         <h3>الصوت</h3>
+        <div class="rule" style="display:block">
+          <span style="display:block;margin-bottom:6px">اختيار الموسيقى</span>
+          <select id="musicTrackSelect" style="width:100%;background:#0d1524;color:#fff;border:1px solid #ffffff18;border-radius:9px;padding:9px">
+            <option value="0">بدون موسيقى</option>
+            <option value="1" selected>موسيقى 1</option>
+            <option value="2">موسيقى 2</option>
+            <option value="3">موسيقى 3</option>
+            <option value="4">موسيقى 4</option>
+            <option value="5">موسيقى 5</option>
+          </select>
+        </div>
         <div class="volume-row"><span>🎵</span><input id="musicVolume" type="range" min="0" max="100" value="22"></div>
         <div class="volume-row"><span>🔊</span><input id="sfxVolume" type="range" min="0" max="100" value="70"></div>
         <div class="rule"><span>الدور</span><b id="turnView">—</b></div>
@@ -528,13 +544,16 @@ localStorage.setItem('ha_domino_uid',uid);
 let cfg={mode:'cpu',rule:'draw',target:100,name:'لاعب',tile:'#f7f2e8',pip:'#101010',board:'#0f7048',board2:'#0b5d3d'};
 let state={players:[],hands:[],stock:[],chain:[],turn:0,scores:[],history:[],over:false,passes:0};
 let myIndex=0, roomCode='', roomRef=null, roomListener=null, localTimer=null, timeLeft=10, musicOn=true, gameStarted=false;
+let musicTrack=1;
 let economy=JSON.parse(localStorage.getItem('ha_domino_economy')||'null')||{
   points:0,gems:0,roundWins:0,matchWins:0,
-  owned:['tile_classic','board_green','theme_default','title_none'],
-  equipped:{tile:'tile_classic',board:'board_green',theme:'theme_default',title:'title_none'}
+  owned:['tile_classic','board_green','theme_free','title_free'],
+  equipped:{tile:'tile_classic',board:'board_green',theme:'theme_free',title:'title_free'}
 };
 
 const SHOP_ITEMS=[
+  {id:'theme_free',type:'theme',name:'ثيم كلاسيكي مجاني',currency:'points',price:0,desc:'ثيم مجاني أساسي وأنيق',preview:'🎨',className:'profile-theme-midnight',bg:'linear-gradient(135deg,#1a2438,#34445f)',free:true},
+  {id:'title_free',type:'title',name:'لقب: لاعب جديد',currency:'points',price:0,desc:'لقب مجاني واحد للجميع',preview:'✨',title:'لاعب جديد',bg:'linear-gradient(135deg,#334155,#64748b)',free:true},
   {id:'tile_royal_gold',type:'tile',name:'أحجار الذهب الملكية',currency:'points',price:1200,desc:'عاجي ذهبي بلمعة ملكية',preview:'🁣',style:{tile:'#e6c777',pip:'#4b2d00'},bg:'linear-gradient(135deg,#f7e7a8,#b8872d)'},
   {id:'tile_black_gold',type:'tile',name:'الأسود الملكي',currency:'gems',price:8,desc:'أسود فاخر بنقاط ذهبية',preview:'🁣',style:{tile:'#171717',pip:'#f2c14e'},bg:'linear-gradient(135deg,#111,#b58a28)'},
   {id:'tile_sapphire',type:'tile',name:'الياقوت الأزرق',currency:'gems',price:6,desc:'أزرق عميق بنقاط بيضاء',preview:'🁣',style:{tile:'#123d78',pip:'#ffffff'},bg:'linear-gradient(135deg,#174f9a,#091c3c)'},
@@ -548,6 +567,18 @@ const SHOP_ITEMS=[
   {id:'title_king',type:'title',name:'لقب: ملك الدومينو',currency:'gems',price:10,desc:'لقب ملكي نادر',preview:'👑',title:'ملك الدومينو',bg:'linear-gradient(135deg,#5a2c77,#e3b657)'}
 ];
 
+function migrateFreeItems(){
+  let changed=false;
+  if(!Array.isArray(economy.owned))economy.owned=[];
+  if(!economy.owned.includes('theme_free')){economy.owned.push('theme_free');changed=true}
+  if(!economy.owned.includes('title_free')){economy.owned.push('title_free');changed=true}
+  if(!economy.equipped)economy.equipped={};
+  if(!economy.equipped.theme||economy.equipped.theme==='theme_default'){economy.equipped.theme='theme_free';changed=true}
+  if(!economy.equipped.title||economy.equipped.title==='title_none'){economy.equipped.title='title_free';changed=true}
+  if(changed)localStorage.setItem('ha_domino_economy',JSON.stringify(economy));
+}
+
+
 let audioCtx=null, musicOsc=null, musicGain=null;
 
 
@@ -558,6 +589,8 @@ function saveEconomy(){
 function updateWallet(){
   if($('pointsView'))$('pointsView').textContent=economy.points;
   if($('gemsView'))$('gemsView').textContent=economy.gems;
+  if($('gamePointsView'))$('gamePointsView').textContent=economy.points;
+  if($('gameGemsView'))$('gameGemsView').textContent=economy.gems;
 }
 function rewardPopup(title,text){
   $('rewardTitle').textContent=title;
@@ -611,6 +644,13 @@ function buyOrEquip(item){
     toast('تم تفعيل '+item.name);
     return;
   }
+  if(item.free){
+    economy.owned.push(item.id);
+    economy.equipped[item.type]=item.id;
+    saveEconomy();applyEquipped();renderShop();render();
+    toast('تم تفعيل '+item.name);
+    return;
+  }
   const wallet=item.currency==='points'?economy.points:economy.gems;
   if(wallet<item.price){toast(item.currency==='points'?'النقاط غير كافية':'الجواهر غير كافية');return}
   if(item.currency==='points')economy.points-=item.price;else economy.gems-=item.price;
@@ -628,7 +668,7 @@ function renderShop(){
     card.innerHTML=
       '<div class="shop-preview" style="background:'+item.bg+'">'+item.preview+'</div>'+
       '<b>'+item.name+'</b><small>'+item.desc+'</small>'+
-      '<div class="price-row"><span class="price-tag">'+(item.currency==='points'?'⭐ '+item.price:'💎 '+item.price)+'</span>'+
+      '<div class="price-row"><span class="price-tag">'+(item.free?'مجاني':(item.currency==='points'?'⭐ '+item.price:'💎 '+item.price))+'</span>'+
       '<button class="buy-btn '+(isEq?'equipped':isOwned?'owned':'')+'">'+(isEq?'مفعّل':isOwned?'تفعيل':'شراء')+'</button></div>';
     card.querySelector('button').onclick=()=>buyOrEquip(item);
     grid.appendChild(card);
@@ -683,22 +723,45 @@ function startMusic(){
   initAudio();
   if(audioCtx.state==='suspended')audioCtx.resume();
   stopMusic();
-  if(!musicOn)return;
 
-  // نغمة خفيفة متكررة حتى تكون موسيقى فعلية وليست صوت ثابت.
-  const melody=[220.00,261.63,329.63,293.66,261.63,220.00,196.00,220.00,261.63,293.66,329.63,293.66,261.63,246.94,220.00,196.00];
+  if(!musicOn || musicTrack===0)return;
+
+  const tracks={
+    1:{
+      melody:[220.00,261.63,329.63,293.66,261.63,220.00,196.00,220.00,261.63,293.66,329.63,293.66,261.63,246.94,220.00,196.00],
+      interval:760,duration:.55,bass:true
+    },
+    2:{
+      melody:[261.63,293.66,349.23,392.00,349.23,329.63,293.66,261.63,293.66,329.63,392.00,440.00,392.00,349.23,329.63,293.66],
+      interval:610,duration:.40,bass:false
+    },
+    3:{
+      melody:[293.66,349.23,392.00,440.00,392.00,349.23,329.63,293.66,261.63,293.66,349.23,392.00,349.23,329.63,293.66,261.63],
+      interval:690,duration:.48,bass:true
+    },
+    4:{
+      melody:[246.94,293.66,329.63,369.99,329.63,293.66,277.18,246.94,220.00,246.94,293.66,329.63,293.66,277.18,246.94,220.00],
+      interval:720,duration:.50,bass:true
+    },
+    5:{
+      melody:[196.00,246.94,293.66,329.63,293.66,246.94,220.00,196.00,220.00,261.63,329.63,392.00,329.63,293.66,246.94,220.00],
+      interval:540,duration:.35,bass:false
+    }
+  };
+
+  const t=tracks[musicTrack]||tracks[1];
   musicStep=0;
 
   const tick=()=>{
-    if(!musicOn)return;
-    playMusicNote(melody[musicStep%melody.length],.55);
-    // نضيف نغمة واطية خفيفة كل أربع خطوات.
-    if(musicStep%4===0)playMusicNote(melody[musicStep%melody.length]/2,.75);
+    if(!musicOn || musicTrack===0)return;
+    const note=t.melody[musicStep%t.melody.length];
+    playMusicNote(note,t.duration);
+    if(t.bass && musicStep%4===0)playMusicNote(note/2,t.duration+.18);
     musicStep++;
   };
 
   tick();
-  musicTimer=setInterval(tick,760);
+  musicTimer=setInterval(tick,t.interval);
 }
 
 function stopMusic(){
@@ -730,7 +793,15 @@ function sfx(type){
   o.stop(now+.17);
 }
 
-$('soundBtn').onclick=()=>{musicOn=!musicOn;$('soundBtn').textContent=musicOn?'🔊':'🔇';musicOn?startMusic():stopMusic()};
+$('soundBtn').onclick=()=>{
+  musicOn=!musicOn;
+  if(musicOn && musicTrack===0){
+    musicTrack=1;
+    $('musicTrackSelect').value='1';
+  }
+  $('soundBtn').textContent=musicOn?'🔊':'🔇';
+  musicOn?startMusic():stopMusic();
+};
 
 function render(){
   $('chain').innerHTML='';state.chain.forEach(t=>$('chain').appendChild(tileEl(t)));
@@ -1139,12 +1210,22 @@ document.querySelectorAll('.swatch').forEach(b=>b.onclick=()=>{
   if(kind==='tile'){cfg.tile=b.dataset.c1;cfg.pip=b.dataset.c2}else{cfg.board=b.dataset.c1;cfg.board2=b.dataset.c2;document.documentElement.style.setProperty('--board',cfg.board);document.documentElement.style.setProperty('--board2',cfg.board2)}
   render()
 });
+$('musicTrackSelect').onchange=()=>{
+  musicTrack=Number($('musicTrackSelect').value);
+  musicOn=musicTrack!==0;
+  $('soundBtn').textContent=musicOn?'🔊':'🔇';
+  if(gameStarted){
+    if(musicOn)startMusic();
+    else stopMusic();
+  }
+};
+
 $('musicVolume').oninput=()=>{if(musicOn)startMusic()};
 document.addEventListener('pointerdown',()=>{if(gameStarted&&musicOn&&audioCtx&&audioCtx.state==='suspended')audioCtx.resume()},{once:true});
 $('exitGameBtn').onclick=()=>{if(confirm('الخروج من اللعبة؟'))location.href='entertainment.html'};
 
 window.addEventListener('beforeunload',()=>{if(roomRef&&roomCode)roomRef.child('players/'+uid+'/connected').set(false)});
-updateWallet();applyEquipped();
+migrateFreeItems();updateWallet();applyEquipped();
 </script>
 </body>
 </html>
