@@ -196,6 +196,7 @@ let available=true;
 let currentRideId=null;
 let currentRide=null;
 let driverWatch=null;
+let currentRideStatusRef=null;
 
 const driverProfile={
   name:'سائق HA',
@@ -248,6 +249,46 @@ function watchPendingRides(){
   });
 }
 
+function stopCurrentRideStatusWatch(){
+  if(currentRideStatusRef){
+    currentRideStatusRef.off();
+    currentRideStatusRef=null;
+  }
+}
+
+function watchCurrentRideStatus(rideId){
+  stopCurrentRideStatusWatch();
+  if(!rideId)return;
+
+  currentRideStatusRef=db.ref('rides/'+rideId);
+  currentRideStatusRef.on('value',snap=>{
+    const ride=snap.val();
+    if(!ride)return;
+
+    if(ride.status==='cancelled' && ride.cancelledBy==='customer'){
+      const reason=ride.cancelReason||'بدون سبب محدد';
+      stopCurrentRideStatusWatch();
+      localStorage.removeItem('ha_driver_active_ride');
+
+      currentRideId=null;
+      currentRide=null;
+      acceptedPanel.classList.remove('show');
+      requestsSection.style.display='block';
+      arriveBtn.disabled=false;
+      startTripBtn.disabled=true;
+      finishTripBtn.disabled=true;
+
+      alert('الزبون ألغى الرحلة.\nسبب الإلغاء: '+reason);
+      watchPendingRides();
+      return;
+    }
+
+    if(ride.status==='finished'){
+      stopCurrentRideStatusWatch();
+    }
+  });
+}
+
 availabilityBtn.onclick=()=>{
   available=!available;
   availabilityBtn.textContent=available?'متاح':'غير متاح';
@@ -286,6 +327,7 @@ acceptBtn.onclick=async()=>{
 
   currentRide=tx.snapshot.val();
   localStorage.setItem('ha_driver_active_ride',currentRideId);
+  watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
   tripState.textContent='بالطريق إلى الزبون';
@@ -346,6 +388,7 @@ finishTripBtn.onclick=async()=>{
   if(currentRideId){
     await db.ref('rides/'+currentRideId).update({status:'finished',finishedAt:Date.now()});
     localStorage.removeItem('ha_driver_active_ride');
+    stopCurrentRideStatusWatch();
   }
   setTimeout(()=>{
     currentRideId=null;
@@ -378,6 +421,7 @@ async function restoreDriverRide(){
 
   currentRideId=saved;
   currentRide=ride;
+  watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
   currentFare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
@@ -414,7 +458,7 @@ restoreDriverRide();
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
   <div class="cancel-reason-card">
     <div class="cancel-reason-head">
-      <h3>سبب إلغاء الطلب من السائق / المندوب</h3>
+      <h3>سبب إلغاء رحلة التكسي من السائق</h3>
       <button type="button" data-close-cancel="driverCancelReasonSheet">×</button>
     </div>
     <label class="cancel-reason-option">
@@ -438,8 +482,8 @@ restoreDriverRide();
   <span>طلب غير مناسب</span>
 </label>
 <label class="cancel-reason-option">
-  <input type="radio" name="driverCancelReasonSheet_reason" value="سبب آخر" id="driverCancelReasonSheet_other">
-  <span>سبب آخر</span>
+  <input type="radio" name="driverCancelReasonSheet_reason" value="غير ذلك" id="driverCancelReasonSheet_other">
+  <span>غير ذلك</span>
 </label>
     <input id="driverCancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
     <button id="confirmDriverCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
@@ -460,15 +504,22 @@ document.getElementById('driverCancelReasonSheet').addEventListener('click',e=>{
 });
 document.querySelectorAll('input[name="driverCancelReasonSheet_reason"]').forEach(r=>{
   r.addEventListener('change',()=>{
-    document.getElementById('driverCancelOtherText').classList.toggle('show',r.value==='سبب آخر' && r.checked);
+    document.getElementById('driverCancelOtherText').classList.toggle('show',r.value==='غير ذلك' && r.checked);
   });
 });
 document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   const checked=document.querySelector('input[name="driverCancelReasonSheet_reason"]:checked');
   if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
-  const reason=checked.value==='سبب آخر'
-    ? (document.getElementById('driverCancelOtherText').value.trim()||'سبب آخر')
-    : checked.value;
+
+  let reason=checked.value;
+  if(checked.value==='غير ذلك'){
+    reason=document.getElementById('driverCancelOtherText').value.trim();
+    if(!reason){
+      alert('اكتب سبب الإلغاء.');
+      document.getElementById('driverCancelOtherText').focus();
+      return;
+    }
+  }
 
   if(currentRideId){
     await db.ref('rides/'+currentRideId).update({
@@ -480,6 +531,7 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
     localStorage.removeItem('ha_driver_active_ride');
   }
 
+  stopCurrentRideStatusWatch();
   closeDriverCancelReason();
   currentRideId=null;
   currentRide=null;
@@ -488,6 +540,11 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   arriveBtn.disabled=false;
   startTripBtn.disabled=true;
   finishTripBtn.disabled=true;
+
+  document.querySelectorAll('input[name="driverCancelReasonSheet_reason"]').forEach(r=>r.checked=false);
+  document.getElementById('driverCancelOtherText').value='';
+  document.getElementById('driverCancelOtherText').classList.remove('show');
+
   watchPendingRides();
 };
 </script>

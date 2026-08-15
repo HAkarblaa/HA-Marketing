@@ -630,6 +630,19 @@ body:not(.trip-ready) #extraSummary{
   font-size:13px;
   line-height:1.6;
 }
+.search-cancel-trip{
+  width:100%;
+  margin-top:14px;
+  border:1px solid #e0e0e0;
+  border-radius:12px;
+  padding:12px;
+  background:#f5f5f5;
+  color:#b42318;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+.search-cancel-trip:active{transform:scale(.99)}
 .driver-card{
   display:none;
   background:#f8f8f8;
@@ -1024,6 +1037,7 @@ body:not(.trip-ready) #extraSummary{
       <div class="loader"></div>
       <div class="status-title">جاري البحث عن أقرب سائق</div>
       <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
+      <button id="searchCancelTripBtn" class="search-cancel-trip" type="button">إلغاء الطلب</button>
     </div>
 
     <div id="finishBox" class="finish-box">
@@ -1771,6 +1785,12 @@ function openPostOrder(){
   screen.classList.add('show');
   document.getElementById('postTitle').textContent='جاري البحث عن سائق';
   document.getElementById('searchingBox').style.display='block';
+  const searchLoader=document.querySelector('#searchingBox .loader');
+  if(searchLoader) searchLoader.style.display='block';
+  document.querySelector('#searchingBox .status-title').textContent='جاري البحث عن أقرب سائق';
+  document.querySelector('#searchingBox .status-sub').textContent='راح تظهر معلومات السائق هنا بعد قبول الطلب.';
+  const searchCancelBtn=document.getElementById('searchCancelTripBtn');
+  if(searchCancelBtn) searchCancelBtn.style.display='block';
   document.getElementById('driverCard').classList.remove('show');
   const finishBox=document.getElementById('finishBox');
   if(finishBox) finishBox.classList.remove('show');
@@ -1880,7 +1900,30 @@ function listenToRide(rideId){
     }
 
     if(ride.status==='cancelled'){
+      const cancelledBy=ride.cancelledBy||'';
+      const cancelReason=ride.cancelReason||'';
       document.getElementById('postTitle').textContent='تم إلغاء الطلب';
+      document.getElementById('driverCard').classList.remove('show');
+      document.getElementById('searchingBox').style.display='block';
+      const loader=document.querySelector('#searchingBox .loader');
+      if(loader) loader.style.display='none';
+      const title=document.querySelector('#searchingBox .status-title');
+      const sub=document.querySelector('#searchingBox .status-sub');
+      const searchCancelBtn=document.getElementById('searchCancelTripBtn');
+      if(searchCancelBtn) searchCancelBtn.style.display='none';
+
+      if(cancelledBy==='driver'){
+        if(title) title.textContent='السائق ألغى الرحلة';
+        if(sub) sub.textContent=cancelReason ? 'سبب الإلغاء: '+cancelReason : 'تم إلغاء الرحلة من طرف السائق.';
+      }else{
+        if(title) title.textContent='تم إلغاء الطلب';
+        if(sub) sub.textContent=cancelReason ? 'سبب الإلغاء: '+cancelReason : 'تم إلغاء الطلب.';
+      }
+
+      localStorage.removeItem('ha_active_ride');
+      if(activeRideRef) activeRideRef.off();
+      activeRideId=null;
+      activeRideRef=null;
     }
   });
 }
@@ -1954,6 +1997,7 @@ document.getElementById('finishRateBtn').onclick=()=>{
 };
 
 document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
+document.getElementById('searchCancelTripBtn').onclick=()=>openCancelReason();
 
 // نخلي زر تأكيد التكسي يفتح واجهة البحث بعد التحقق الحالي
 
@@ -1988,8 +2032,8 @@ document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
   <span>وجدت وسيلة أخرى</span>
 </label>
 <label class="cancel-reason-option">
-  <input type="radio" name="cancelReasonSheet_reason" value="سبب آخر" id="cancelReasonSheet_other">
-  <span>سبب آخر</span>
+  <input type="radio" name="cancelReasonSheet_reason" value="غير ذلك" id="cancelReasonSheet_other">
+  <span>غير ذلك</span>
 </label>
     <input id="cancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
     <button id="confirmCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
@@ -2009,15 +2053,22 @@ document.getElementById('cancelReasonSheet').addEventListener('click',e=>{
 });
 document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>{
   r.addEventListener('change',()=>{
-    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='سبب آخر' && r.checked);
+    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='غير ذلك' && r.checked);
   });
 });
 document.getElementById('confirmCancelReason').onclick=async()=>{
   const checked=document.querySelector('input[name="cancelReasonSheet_reason"]:checked');
   if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
-  const reason=checked.value==='سبب آخر'
-    ? (document.getElementById('cancelOtherText').value.trim()||'سبب آخر')
-    : checked.value;
+
+  let reason=checked.value;
+  if(checked.value==='غير ذلك'){
+    reason=document.getElementById('cancelOtherText').value.trim();
+    if(!reason){
+      alert('اكتب سبب الإلغاء.');
+      document.getElementById('cancelOtherText').focus();
+      return;
+    }
+  }
 
   if(activeRideId){
     await db.ref('rides/'+activeRideId).update({
@@ -2027,9 +2078,16 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
       cancelledAt:firebase.database.ServerValue.TIMESTAMP
     });
     localStorage.removeItem('ha_active_ride');
+    if(activeRideRef) activeRideRef.off();
   }
   closeCancelReason();
+  activeRideId=null;
+  activeRideRef=null;
   document.getElementById('postOrderScreen').classList.remove('show');
+
+  document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>r.checked=false);
+  document.getElementById('cancelOtherText').value='';
+  document.getElementById('cancelOtherText').classList.remove('show');
 };
 </script>
 </body>
