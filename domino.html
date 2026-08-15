@@ -165,6 +165,23 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 .confirm-card h3{margin:0 0 8px}.confirm-card p{color:var(--muted);font-size:12px;line-height:1.7}
 .confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 
+
+.side-choice-overlay{
+  position:fixed;inset:0;z-index:12500;background:rgba(0,0,0,.72);
+  display:none;align-items:center;justify-content:center;padding:18px
+}
+.side-choice-overlay.show{display:flex}
+.side-choice-card{
+  width:min(90vw,390px);background:linear-gradient(180deg,#18243a,#101827);
+  border:1px solid #ffffff18;border-radius:22px;padding:18px;text-align:center;
+  box-shadow:0 22px 60px #0009
+}
+.side-choice-card h3{margin:0 0 7px;font-size:18px}
+.side-choice-card p{margin:0 0 14px;color:var(--muted);font-size:11px;line-height:1.6}
+.side-choice-preview{display:flex;justify-content:center;margin:10px 0 16px}
+.side-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.side-choice-actions button{padding:12px}
+
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#101827;border:1px solid #ffffff20;color:#fff;padding:10px 14px;border-radius:999px;opacity:0;transition:.2s;z-index:12000}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -545,6 +562,19 @@ body.tile-compact .pip{width:8px;height:8px}
 </div>
 
 <div id="rewardToast" class="reward-toast"><b id="rewardTitle"></b><small id="rewardText"></small></div>
+
+<div id="sideChoiceOverlay" class="side-choice-overlay">
+  <div class="side-choice-card">
+    <h3>اختار جهة وضع الحجر</h3>
+    <p>هذا الحجر يطابق الطرفين. اختار الجهة اللي تريد تضيفه إلها.</p>
+    <div id="sideChoicePreview" class="side-choice-preview"></div>
+    <div class="side-choice-actions">
+      <button id="chooseLeftBtn" class="btn primary">الجهة اليسرى</button>
+      <button id="chooseRightBtn" class="btn primary">الجهة اليمنى</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -707,7 +737,42 @@ function makeSet(){const a=[];for(let i=0;i<=6;i++)for(let j=i;j<=6;j++)a.push([
 function sumHand(h){return (h||[]).reduce((s,t)=>s+t[0]+t[1],0)}
 function endpoints(){if(!state.chain.length)return [null,null];return [state.chain[0][0],state.chain[state.chain.length-1][1]]}
 function fits(t){if(!state.chain.length)return true;const [L,R]=endpoints();return t[0]===L||t[1]===L||t[0]===R||t[1]===R}
-function placeOn(chain,t){if(!chain.length){chain.push(t);return true}const L=chain[0][0],R=chain[chain.length-1][1];if(t[1]===L)chain.unshift(t);else if(t[0]===L)chain.unshift([t[1],t[0]]);else if(t[0]===R)chain.push(t);else if(t[1]===R)chain.push([t[1],t[0]]);else return false;return true}
+function canPlaceLeft(chain,t){
+  if(!chain.length)return true;
+  const L=chain[0][0];
+  return t[0]===L||t[1]===L;
+}
+function canPlaceRight(chain,t){
+  if(!chain.length)return true;
+  const R=chain[chain.length-1][1];
+  return t[0]===R||t[1]===R;
+}
+function placeOn(chain,t,side='auto'){
+  if(!chain.length){chain.push(t);return true}
+
+  const L=chain[0][0],R=chain[chain.length-1][1];
+
+  if(side==='left'){
+    if(t[1]===L)chain.unshift(t);
+    else if(t[0]===L)chain.unshift([t[1],t[0]]);
+    else return false;
+    return true;
+  }
+
+  if(side==='right'){
+    if(t[0]===R)chain.push(t);
+    else if(t[1]===R)chain.push([t[1],t[0]]);
+    else return false;
+    return true;
+  }
+
+  if(t[1]===L)chain.unshift(t);
+  else if(t[0]===L)chain.unshift([t[1],t[0]]);
+  else if(t[0]===R)chain.push(t);
+  else if(t[1]===R)chain.push([t[1],t[0]]);
+  else return false;
+  return true;
+}
 
 function pipLayout(n){return {0:[],1:[5],2:[1,9],3:[1,5,9],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]}[n]||[]}
 function faceHtml(n,hidden){if(hidden)return '<div class="face"></div>';return '<div class="face">'+pipLayout(n).map(x=>'<i class="pip" style="grid-area:'+Math.ceil(x/3)+'/'+(((x-1)%3)+1)+'"></i>').join('')+'</div>'}
@@ -849,7 +914,7 @@ function renderChainRectLoop(){
   // حجم حجر الساحة ومسافة صغيرة بين الأحجار.
   const tileW=34;
   const tileH=46;
-  const gap=5;
+  const gap=7;
 
   // حدود الحلقة المستطيلة داخل الساحة.
   const left=tileW/2+18;
@@ -862,7 +927,7 @@ function renderChainRectLoop(){
   const perimeter=2*(topLen+sideLen);
 
   // نوزع الأحجار بالتساوي على محيط المستطيل حتى ما تتراكب.
-  const step=Math.max(tileW+gap, perimeter/Math.max(tiles.length,1));
+  const step=Math.max(tileW+gap, Math.min(62, perimeter/Math.max(tiles.length,1)));
 
   tiles.forEach((t,i)=>{
     const el=tileEl(t);
@@ -1093,12 +1158,73 @@ function checkBlocked(){
   return true;
 }
 
+
+let pendingSideChoice=null;
+
+function askSideChoice(tile,index){
+  pendingSideChoice={tile,index};
+  const preview=$('sideChoicePreview');
+  preview.innerHTML='';
+  preview.appendChild(tileEl(tile));
+  $('sideChoiceOverlay').classList.add('show');
+}
+
+function closeSideChoice(){
+  $('sideChoiceOverlay').classList.remove('show');
+}
+
+async function commitPlayerTile(index,side){
+  if(state.turn!==myIndex||state.over)return;
+  const t=state.hands[myIndex]?.[index];
+  if(!t||!fits(t))return;
+
+  if(cfg.mode==='online'){
+    closeSideChoice();
+    pendingSideChoice=null;
+    return onlineMove('play',index,side);
+  }
+
+  if(!placeOn(state.chain,t,side))return;
+  state.hands[myIndex].splice(index,1);
+  state.passes=0;
+  sfx('place');
+  closeSideChoice();
+  pendingSideChoice=null;
+
+  if(checkRound(myIndex)){render();return}
+  nextTurn();
+  render();
+  if(cfg.mode==='cpu')setTimeout(cpuMove,650);
+}
+
+$('chooseLeftBtn').onclick=()=>{
+  if(pendingSideChoice)commitPlayerTile(pendingSideChoice.index,'left');
+};
+$('chooseRightBtn').onclick=()=>{
+  if(pendingSideChoice)commitPlayerTile(pendingSideChoice.index,'right');
+};
+
 function playTile(i){
   if(state.turn!==myIndex||state.over)return;
-  if(cfg.mode==='online')return onlineMove('play',i);
-  const t=state.hands[myIndex][i];if(!fits(t)){toast('هذا الحجر لا يطابق الأطراف');return}
-  placeOn(state.chain,t);state.hands[myIndex].splice(i,1);state.passes=0;sfx('place');if(checkRound(myIndex)){render();return}
-  nextTurn();render();if(cfg.mode==='cpu')setTimeout(cpuMove,650)
+
+  const t=state.hands[myIndex][i];
+  if(!fits(t)){
+    toast('هذا الحجر لا يطابق الأطراف');
+    return;
+  }
+
+  const leftOk=canPlaceLeft(state.chain,t);
+  const rightOk=canPlaceRight(state.chain,t);
+
+  // إذا ينفع على الجهتين، اللاعب هو اللي يختار.
+  if(state.chain.length && leftOk && rightOk){
+    askSideChoice(t,i);
+    return;
+  }
+
+  // إذا ينفع على جهة واحدة فقط، ينضاف مباشرة.
+  const side=leftOk?'left':'right';
+  commitPlayerTile(i,side);
 }
 function drawStone(){
   if(state.turn!==myIndex||state.over)return;
@@ -1209,7 +1335,7 @@ function watchOnlineGame(){
   });
   roomRef.child('lastReaction').on('value',snap=>{const r=snap.val();if(r)showReaction(r.playerIndex,r.emoji,r.text)})
 }
-async function onlineMove(type,index){
+async function onlineMove(type,index,side='auto'){
   if(!roomRef)return;
   const gameRef=roomRef.child('game');
   const res=await gameRef.transaction(g=>{
@@ -1218,7 +1344,27 @@ async function onlineMove(type,index){
     const localFits=t=>{if(!g.chain.length)return true;const L=g.chain[0][0],R=g.chain[g.chain.length-1][1];return t[0]===L||t[1]===L||t[0]===R||t[1]===R};
     if(type==='play'){
       const t=g.hands[idx][index];if(!t||!localFits(t))return;
-      if(!g.chain.length)g.chain.push(t);else{const L=g.chain[0][0],R=g.chain[g.chain.length-1][1];if(t[1]===L)g.chain.unshift(t);else if(t[0]===L)g.chain.unshift([t[1],t[0]]);else if(t[0]===R)g.chain.push(t);else if(t[1]===R)g.chain.push([t[1],t[0]]);else return}
+      if(!g.chain.length){
+        g.chain.push(t);
+      }else{
+        const L=g.chain[0][0],R=g.chain[g.chain.length-1][1];
+
+        if(side==='left'){
+          if(t[1]===L)g.chain.unshift(t);
+          else if(t[0]===L)g.chain.unshift([t[1],t[0]]);
+          else return;
+        }else if(side==='right'){
+          if(t[0]===R)g.chain.push(t);
+          else if(t[1]===R)g.chain.push([t[1],t[0]]);
+          else return;
+        }else{
+          if(t[1]===L)g.chain.unshift(t);
+          else if(t[0]===L)g.chain.unshift([t[1],t[0]]);
+          else if(t[0]===R)g.chain.push(t);
+          else if(t[1]===R)g.chain.push([t[1],t[0]]);
+          else return;
+        }
+      }
       g.hands[idx].splice(index,1);g.passes=0;
       if(g.hands[idx].length===0){const pts=g.hands.reduce((s,h,i)=>i===idx?s:s+h.reduce((a,t)=>a+t[0]+t[1],0),0);g.scores[idx]+=pts;g.history.push({name:g.players[idx].name,pts,reason:'نفاد الأحجار'});g.over=true;return g}
     }else if(type==='draw'){
