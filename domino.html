@@ -128,8 +128,106 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 .palette{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.swatch{aspect-ratio:1;border-radius:9px;border:3px solid transparent}.swatch.selected{border-color:#fff}
 .reactions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.react{border:0;border-radius:13px;padding:12px 6px;background:#ffffff0a;color:#fff}.react span{display:block;font-size:24px}.react small{font-size:9px;color:var(--muted)}
 
+
+.round-end-overlay{
+  position:fixed;inset:0;z-index:11000;background:rgba(4,8,15,.78);
+  display:none;align-items:center;justify-content:center;padding:18px;
+  backdrop-filter:blur(5px)
+}
+.round-end-overlay.show{display:flex}
+.round-end-card{
+  width:min(92vw,430px);background:linear-gradient(180deg,#17233a,#101827);
+  border:1px solid #ffffff18;border-radius:24px;padding:20px 16px;
+  text-align:center;box-shadow:0 24px 70px #0009
+}
+.round-end-card .icon{font-size:52px;margin-bottom:8px}
+.round-end-card h2{margin:0 0 8px;font-size:23px}
+.round-end-card p{margin:0 0 14px;color:var(--muted);line-height:1.7;font-size:12px}
+.round-score-box{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0
+}
+.round-score-box div{
+  background:#ffffff08;border-radius:13px;padding:10px
+}
+.round-score-box small{display:block;color:var(--muted);font-size:9px;margin-bottom:3px}
+.round-score-box b{font-size:17px;color:var(--accent)}
+.round-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.round-actions button{padding:12px}
+.confirm-overlay{
+  position:fixed;inset:0;z-index:12000;background:rgba(0,0,0,.72);
+  display:none;align-items:center;justify-content:center;padding:18px
+}
+.confirm-overlay.show{display:flex}
+.confirm-card{
+  width:min(90vw,380px);background:#151f32;border:1px solid #ffffff18;
+  border-radius:20px;padding:18px;text-align:center;box-shadow:0 20px 60px #0008
+}
+.confirm-card h3{margin:0 0 8px}.confirm-card p{color:var(--muted);font-size:12px;line-height:1.7}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#101827;border:1px solid #ffffff20;color:#fff;padding:10px 14px;border-radius:999px;opacity:0;transition:.2s;z-index:12000}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.board.pattern-plain{background-image:linear-gradient(135deg,var(--board),var(--board2))}
+.board.pattern-grid{
+  background-image:
+    linear-gradient(#ffffff0a 1px,transparent 1px),
+    linear-gradient(90deg,#ffffff0a 1px,transparent 1px),
+    linear-gradient(135deg,var(--board),var(--board2));
+  background-size:22px 22px,22px 22px,auto
+}
+body.tile-large .face{width:56px;height:72px}
+body.tile-large .pip{width:11px;height:11px}
+body.tile-compact .face{width:40px;height:54px;padding:6px}
+body.tile-compact .pip{width:8px;height:8px}
+
+
+/* ===== النقاط والجواهر والمتجر ===== */
+.wallet-bar{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap
+}
+.wallet-pill{
+  display:flex;align-items:center;gap:5px;background:#ffffff0b;border:1px solid #ffffff12;
+  border-radius:999px;padding:8px 10px;font-size:11px;font-weight:700
+}
+.wallet-pill .num{color:#fff;font-size:12px}
+.shop-btn{
+  border:0;border-radius:12px;padding:9px 12px;background:linear-gradient(135deg,#f4c45e,#b88020);
+  color:#1b1203;font-weight:900;box-shadow:0 6px 16px #0003
+}
+.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.shop-item{
+  background:#ffffff08;border:1px solid #ffffff10;border-radius:16px;padding:11px;
+  display:flex;flex-direction:column;gap:8px;min-height:145px
+}
+.shop-preview{
+  height:58px;border-radius:12px;display:grid;place-items:center;font-size:28px;
+  border:1px solid #ffffff16;overflow:hidden
+}
+.shop-item b{font-size:12px}.shop-item small{color:var(--muted);font-size:9px;line-height:1.5}
+.price-row{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-top:auto}
+.price-tag{font-size:11px;font-weight:900}
+.buy-btn{border:0;border-radius:9px;padding:8px 10px;background:var(--accent);color:#07140e;font-size:10px;font-weight:900}
+.buy-btn.owned{background:#2a3548;color:#dce7f7}
+.buy-btn.equipped{background:#7257c9;color:#fff}
+.profile-theme-royal{--panel:#241b37;--panel2:#35234f;--accent:#d2a75e;--accent2:#b6883f}
+.profile-theme-aurora{--panel:#132b35;--panel2:#173e43;--accent:#68e6ca;--accent2:#43bda4}
+.profile-theme-sunset{--panel:#35202a;--panel2:#50272f;--accent:#ffb36b;--accent2:#e47d4e}
+.profile-theme-midnight{--panel:#111827;--panel2:#172036;--accent:#9eb7ff;--accent2:#6c87dc}
+.player-title{
+  display:inline-block;margin-right:4px;padding:2px 5px;border-radius:999px;
+  background:#ffffff10;color:#f7d489;font-size:8px;font-weight:900;vertical-align:middle
+}
+.reward-toast{
+  position:fixed;top:78px;left:50%;transform:translateX(-50%) translateY(-10px);
+  z-index:13000;background:linear-gradient(135deg,#1b273d,#101827);border:1px solid #ffffff1b;
+  border-radius:16px;padding:10px 14px;box-shadow:0 14px 35px #0007;opacity:0;pointer-events:none;transition:.25s;
+  text-align:center;min-width:220px
+}
+.reward-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.reward-toast b{display:block;color:#ffe08a;font-size:13px}.reward-toast small{color:#dbe6f6;font-size:10px}
+@media(max-width:650px){.shop-grid{grid-template-columns:1fr}.wallet-bar{gap:5px}.wallet-pill{padding:7px 8px}}
+
 .back-link{color:#d9e8ff;text-decoration:none;font-size:11px}
 
 @media(max-width:860px){
@@ -197,10 +295,8 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
           <option>50</option><option selected>100</option><option>150</option><option>200</option><option>300</option><option>500</option>
         </select>
       </div>
-      <div class="mini-setting">القواعد:
-        <select id="startRule"><option value="draw">سحب</option><option value="block">بلوك</option></select>
-      </div>
-      <div class="mini-setting">القطع: <b>0–6 فقط</b></div>
+      
+      <button type="button" class="mini-setting btn" id="startSettingsBtn">⚙️ الإعدادات</button>
     </div>
   </div>
 </div>
@@ -210,6 +306,11 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
     <div class="brand">
       <div class="logo">🁣</div>
       <div><h1>دومينو HA</h1><small id="gameModeLabel">ضد الجهاز</small></div>
+    </div>
+    <div class="wallet-bar">
+      <div class="wallet-pill">⭐ نقاط <span id="pointsView" class="num">0</span></div>
+      <div class="wallet-pill">💎 جواهر <span id="gemsView" class="num">0</span></div>
+      <button id="shopBtn" class="shop-btn">🛍️ المتجر</button>
     </div>
     <div class="top-actions">
       <button class="btn" id="settingsBtn">⚙️</button>
@@ -230,6 +331,7 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
       <div class="hand-panel">
         <div class="hand-head"><b id="handTitle">أحجارك</b><small id="handCount"></small></div>
         <div id="hand" class="hand"></div>
+        <button id="handDrawBtn" class="btn primary hidden" style="width:100%;margin-top:8px;padding:12px">🁣 ما عندك حجر مناسب — اسحب حجر</button>
         <div id="status" class="status">جاهز.</div>
       </div>
     </div>
@@ -255,10 +357,10 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 
       <div class="card">
         <h3>الصوت</h3>
-        <div class="volume-row"><span>🎵</span><input id="musicVolume" type="range" min="0" max="100" value="35"></div>
+        <div class="volume-row"><span>🎵</span><input id="musicVolume" type="range" min="0" max="100" value="22"></div>
         <div class="volume-row"><span>🔊</span><input id="sfxVolume" type="range" min="0" max="100" value="70"></div>
         <div class="rule"><span>الدور</span><b id="turnView">—</b></div>
-        <div class="rule"><span>القواعد</span><b id="ruleView">سحب</b></div>
+        
       </div>
 
       <a class="back-link" href="entertainment.html">← الرجوع إلى الترفيه</a>
@@ -269,7 +371,50 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 <!-- ===== الإعدادات ===== -->
 <div id="settingsModal" class="modal">
   <div class="sheet">
-    <div class="sheet-head"><h2>إعدادات الشكل</h2><button class="close" data-close="settingsModal">×</button></div>
+    <div class="sheet-head"><h2>⚙️ إعدادات اللعبة</h2><button class="close" data-close="settingsModal">×</button></div>
+    <div class="setting-grid">
+      <div class="field">
+        <label>الموسيقى</label>
+        <select id="settingsMusic">
+          <option value="on">تشغيل</option>
+          <option value="off">إيقاف</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>مستوى الموسيقى</label>
+        <input id="settingsMusicVolume" type="range" min="0" max="100" value="22">
+      </div>
+      <div class="field">
+        <label>أصوات الأحجار والمؤثرات</label>
+        <select id="settingsSfx">
+          <option value="on">تشغيل</option>
+          <option value="off">إيقاف</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>مستوى المؤثرات</label>
+        <input id="settingsSfxVolume" type="range" min="0" max="100" value="70">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:10px">
+      <label>شكل الساحة</label>
+      <select id="boardPattern">
+        <option value="dots">نقاط خفيفة</option>
+        <option value="plain">سادة</option>
+        <option value="grid">شبكة</option>
+      </select>
+    </div>
+
+    <div class="field" style="margin-top:10px">
+      <label>حجم الأحجار</label>
+      <select id="tileSizeSetting">
+        <option value="normal">عادي</option>
+        <option value="large">كبير</option>
+        <option value="compact">صغير</option>
+      </select>
+    </div>
+
     <div class="field" style="margin-top:10px">
       <label>لون الأحجار</label>
       <div id="tilePalette" class="palette">
@@ -296,6 +441,20 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 </div>
 
 <!-- ===== السمايلات ===== -->
+
+<div id="shopModal" class="modal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2>🛍️ متجر الدومينو</h2>
+      <button class="close" data-close="shopModal">×</button>
+    </div>
+    <div style="margin-top:8px;color:var(--muted);font-size:10px;line-height:1.6">
+      تربح النقاط من اللعب، أما الجواهر فأصعب: تحصل عليها بعد عدة انتصارات أو عند الفوز بالمباراة.
+    </div>
+    <div id="shopGrid" class="shop-grid"></div>
+  </div>
+</div>
+
 <div id="reactionModal" class="modal">
   <div class="sheet">
     <div class="sheet-head"><h2>اختار رد فعل</h2><button class="close" data-close="reactionModal">×</button></div>
@@ -313,6 +472,37 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
   </div>
 </div>
 
+
+<div id="roundEndOverlay" class="round-end-overlay">
+  <div class="round-end-card">
+    <div class="icon">🏁</div>
+    <h2 id="roundEndTitle">انتهت الجولة</h2>
+    <p id="roundEndText">اختار إكمال اللعب إلى الجولة التالية أو الانسحاب.</p>
+
+    <div class="round-score-box">
+      <div><small>نقاطك الحالية</small><b id="roundMyScore">0</b></div>
+      <div><small>نقاط الفوز المطلوبة</small><b id="roundTargetScore">100</b></div>
+    </div>
+
+    <div class="round-actions">
+      <button id="continueRoundBtn" class="btn primary">إكمال اللعب</button>
+      <button id="withdrawBtn" class="btn danger">انسحاب</button>
+    </div>
+  </div>
+</div>
+
+<div id="withdrawConfirm" class="confirm-overlay">
+  <div class="confirm-card">
+    <h3>تأكيد الانسحاب</h3>
+    <p>إذا انسحبت راح تنتهي المباراة الحالية. هل أنت متأكد من الانسحاب؟</p>
+    <div class="confirm-actions">
+      <button id="confirmWithdrawBtn" class="btn danger">نعم، انسحاب</button>
+      <button id="cancelWithdrawBtn" class="btn">لا، رجوع</button>
+    </div>
+  </div>
+</div>
+
+<div id="rewardToast" class="reward-toast"><b id="rewardTitle"></b><small id="rewardText"></small></div>
 <div id="toast" class="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -338,7 +528,112 @@ localStorage.setItem('ha_domino_uid',uid);
 let cfg={mode:'cpu',rule:'draw',target:100,name:'لاعب',tile:'#f7f2e8',pip:'#101010',board:'#0f7048',board2:'#0b5d3d'};
 let state={players:[],hands:[],stock:[],chain:[],turn:0,scores:[],history:[],over:false,passes:0};
 let myIndex=0, roomCode='', roomRef=null, roomListener=null, localTimer=null, timeLeft=10, musicOn=true, gameStarted=false;
+let economy=JSON.parse(localStorage.getItem('ha_domino_economy')||'null')||{
+  points:0,gems:0,roundWins:0,matchWins:0,
+  owned:['tile_classic','board_green','theme_default','title_none'],
+  equipped:{tile:'tile_classic',board:'board_green',theme:'theme_default',title:'title_none'}
+};
+
+const SHOP_ITEMS=[
+  {id:'tile_royal_gold',type:'tile',name:'أحجار الذهب الملكية',currency:'points',price:1200,desc:'عاجي ذهبي بلمعة ملكية',preview:'🁣',style:{tile:'#e6c777',pip:'#4b2d00'},bg:'linear-gradient(135deg,#f7e7a8,#b8872d)'},
+  {id:'tile_black_gold',type:'tile',name:'الأسود الملكي',currency:'gems',price:8,desc:'أسود فاخر بنقاط ذهبية',preview:'🁣',style:{tile:'#171717',pip:'#f2c14e'},bg:'linear-gradient(135deg,#111,#b58a28)'},
+  {id:'tile_sapphire',type:'tile',name:'الياقوت الأزرق',currency:'gems',price:6,desc:'أزرق عميق بنقاط بيضاء',preview:'🁣',style:{tile:'#123d78',pip:'#ffffff'},bg:'linear-gradient(135deg,#174f9a,#091c3c)'},
+  {id:'board_velvet',type:'board',name:'ساحة المخمل الملكي',currency:'points',price:900,desc:'ساحة خمري داكنة',preview:'♛',style:{board:'#7a2037',board2:'#3b0f1d'},bg:'linear-gradient(135deg,#7a2037,#3b0f1d)'},
+  {id:'board_night',type:'board',name:'ساحة الليل',currency:'gems',price:5,desc:'أسود مزرق فاخر',preview:'✦',style:{board:'#182338',board2:'#060b15'},bg:'linear-gradient(135deg,#263858,#070b12)'},
+  {id:'theme_royal',type:'theme',name:'ثيم ملكي',currency:'gems',price:12,desc:'بنفسجي مع ذهبي',preview:'👑',className:'profile-theme-royal',bg:'linear-gradient(135deg,#3b2759,#c79a4a)'},
+  {id:'theme_aurora',type:'theme',name:'ثيم الشفق',currency:'points',price:1600,desc:'فيروزي هادئ ومميز',preview:'🌌',className:'profile-theme-aurora',bg:'linear-gradient(135deg,#164a50,#64e2c5)'},
+  {id:'theme_sunset',type:'theme',name:'ثيم الغروب',currency:'points',price:1400,desc:'ألوان دافئة أنيقة',preview:'🌅',className:'profile-theme-sunset',bg:'linear-gradient(135deg,#6b2d38,#f0a15f)'},
+  {id:'title_pro',type:'title',name:'لقب: محترف',currency:'points',price:700,desc:'يظهر بجانب اسم اللاعب',preview:'🏅',title:'محترف',bg:'linear-gradient(135deg,#30415c,#6c8fbf)'},
+  {id:'title_star',type:'title',name:'لقب: نجم الطاولة',currency:'points',price:1000,desc:'لقب مميز داخل المباراة',preview:'⭐',title:'نجم الطاولة',bg:'linear-gradient(135deg,#59480d,#e4bb39)'},
+  {id:'title_king',type:'title',name:'لقب: ملك الدومينو',currency:'gems',price:10,desc:'لقب ملكي نادر',preview:'👑',title:'ملك الدومينو',bg:'linear-gradient(135deg,#5a2c77,#e3b657)'}
+];
+
 let audioCtx=null, musicOsc=null, musicGain=null;
+
+
+function saveEconomy(){
+  localStorage.setItem('ha_domino_economy',JSON.stringify(economy));
+  updateWallet();
+}
+function updateWallet(){
+  if($('pointsView'))$('pointsView').textContent=economy.points;
+  if($('gemsView'))$('gemsView').textContent=economy.gems;
+}
+function rewardPopup(title,text){
+  $('rewardTitle').textContent=title;
+  $('rewardText').textContent=text;
+  $('rewardToast').classList.add('show');
+  setTimeout(()=>$('rewardToast').classList.remove('show'),2400);
+}
+function awardRoundRewards(winner,scoredPts){
+  if(winner!==myIndex)return;
+  const gain=25+Math.max(0,Math.min(75,Math.round(Number(scoredPts||0)/2)));
+  economy.points+=gain;
+  economy.roundWins++;
+  let gemGain=0;
+  if(economy.roundWins%3===0){economy.gems+=1;gemGain=1}
+  saveEconomy();
+  rewardPopup('مكافأة الجولة','+'+gain+' نقطة'+(gemGain?' • +1 جوهرة 💎':''));
+}
+function awardMatchReward(winner){
+  if(winner!==myIndex)return;
+  economy.points+=120;
+  economy.gems+=2;
+  economy.matchWins++;
+  saveEconomy();
+  rewardPopup('🏆 مكافأة الفوز بالمباراة','+120 نقطة • +2 جوهرة');
+}
+function owned(id){return economy.owned.includes(id)}
+function getShopItem(id){return SHOP_ITEMS.find(x=>x.id===id)}
+function applyEquipped(){
+  document.body.classList.remove('profile-theme-royal','profile-theme-aurora','profile-theme-sunset','profile-theme-midnight');
+  const theme=getShopItem(economy.equipped.theme);
+  if(theme?.className)document.body.classList.add(theme.className);
+
+  const tile=getShopItem(economy.equipped.tile);
+  if(tile?.style){cfg.tile=tile.style.tile;cfg.pip=tile.style.pip}
+
+  const board=getShopItem(economy.equipped.board);
+  if(board?.style){
+    cfg.board=board.style.board;cfg.board2=board.style.board2;
+    document.documentElement.style.setProperty('--board',cfg.board);
+    document.documentElement.style.setProperty('--board2',cfg.board2);
+  }
+}
+function currentTitle(){
+  const it=getShopItem(economy.equipped.title);
+  return it?.title||'';
+}
+function buyOrEquip(item){
+  if(owned(item.id)){
+    economy.equipped[item.type]=item.id;
+    saveEconomy();applyEquipped();renderShop();render();
+    toast('تم تفعيل '+item.name);
+    return;
+  }
+  const wallet=item.currency==='points'?economy.points:economy.gems;
+  if(wallet<item.price){toast(item.currency==='points'?'النقاط غير كافية':'الجواهر غير كافية');return}
+  if(item.currency==='points')economy.points-=item.price;else economy.gems-=item.price;
+  economy.owned.push(item.id);economy.equipped[item.type]=item.id;
+  saveEconomy();applyEquipped();renderShop();render();
+  rewardPopup('تم الشراء',item.name);
+}
+function renderShop(){
+  const grid=$('shopGrid');if(!grid)return;
+  grid.innerHTML='';
+  SHOP_ITEMS.forEach(item=>{
+    const isOwned=owned(item.id);
+    const isEq=economy.equipped[item.type]===item.id;
+    const card=document.createElement('div');card.className='shop-item';
+    card.innerHTML=
+      '<div class="shop-preview" style="background:'+item.bg+'">'+item.preview+'</div>'+
+      '<b>'+item.name+'</b><small>'+item.desc+'</small>'+
+      '<div class="price-row"><span class="price-tag">'+(item.currency==='points'?'⭐ '+item.price:'💎 '+item.price)+'</span>'+
+      '<button class="buy-btn '+(isEq?'equipped':isOwned?'owned':'')+'">'+(isEq?'مفعّل':isOwned?'تفعيل':'شراء')+'</button></div>';
+    card.querySelector('button').onclick=()=>buyOrEquip(item);
+    grid.appendChild(card);
+  });
+}
 
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800)}
 function nameOrDefault(){return $('startName').value.trim()||'لاعب '+Math.floor(Math.random()*90+10)}
@@ -359,24 +654,82 @@ function tileEl(t,opt={}){
 function initAudio(){
   if(audioCtx)return;
   audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  musicGain=audioCtx.createGain();musicGain.gain.value=.025;musicGain.connect(audioCtx.destination);
 }
-function sfx(type){
-  if(!audioCtx)initAudio();if(audioCtx.state==='suspended')audioCtx.resume();
-  const g=audioCtx.createGain(),o=audioCtx.createOscillator();g.connect(audioCtx.destination);o.connect(g);
-  const vol=Number($('sfxVolume').value)/100;
-  g.gain.setValueAtTime(.0001,audioCtx.currentTime);
-  const freq=type==='place'?190:type==='draw'?330:type==='turn'?520:type==='win'?760:250;
-  o.frequency.value=freq;o.type=type==='place'?'triangle':'sine';
-  g.gain.exponentialRampToValueAtTime(Math.max(.001,.12*vol),audioCtx.currentTime+.01);
-  g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.14);o.start();o.stop(audioCtx.currentTime+.16);
+
+let musicTimer=null;
+let musicStep=0;
+
+function playMusicNote(freq,duration=.32){
+  if(!audioCtx||!musicOn)return;
+  const now=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  const vol=(Number($('musicVolume').value)/100)*0.055;
+
+  osc.type='sine';
+  osc.frequency.setValueAtTime(freq,now);
+
+  gain.gain.setValueAtTime(.0001,now);
+  gain.gain.exponentialRampToValueAtTime(Math.max(.001,vol),now+.025);
+  gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now+duration+.03);
 }
+
 function startMusic(){
-  initAudio();stopMusic();if(!musicOn)return;
-  musicOsc=audioCtx.createOscillator();musicOsc.type='sine';musicOsc.frequency.value=110;
-  const g=audioCtx.createGain();g.gain.value=(Number($('musicVolume').value)/100)*.025;musicOsc.connect(g);g.connect(audioCtx.destination);musicOsc.start();musicGain=g
+  initAudio();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  stopMusic();
+  if(!musicOn)return;
+
+  // نغمة خفيفة متكررة حتى تكون موسيقى فعلية وليست صوت ثابت.
+  const melody=[220.00,261.63,329.63,293.66,261.63,220.00,196.00,220.00,261.63,293.66,329.63,293.66,261.63,246.94,220.00,196.00];
+  musicStep=0;
+
+  const tick=()=>{
+    if(!musicOn)return;
+    playMusicNote(melody[musicStep%melody.length],.55);
+    // نضيف نغمة واطية خفيفة كل أربع خطوات.
+    if(musicStep%4===0)playMusicNote(melody[musicStep%melody.length]/2,.75);
+    musicStep++;
+  };
+
+  tick();
+  musicTimer=setInterval(tick,760);
 }
-function stopMusic(){if(musicOsc){try{musicOsc.stop()}catch(e){}musicOsc=null}}
+
+function stopMusic(){
+  if(musicTimer){
+    clearInterval(musicTimer);
+    musicTimer=null;
+  }
+}
+
+function sfx(type){
+  if(!audioCtx)initAudio();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+
+  const g=audioCtx.createGain();
+  const o=audioCtx.createOscillator();
+  g.connect(audioCtx.destination);
+  o.connect(g);
+
+  const vol=Number($('sfxVolume').value)/100;
+  const now=audioCtx.currentTime;
+  const freq=type==='place'?180:type==='draw'?360:type==='turn'?520:type==='win'?780:250;
+
+  o.frequency.value=freq;
+  o.type=type==='place'?'triangle':'sine';
+  g.gain.setValueAtTime(.0001,now);
+  g.gain.exponentialRampToValueAtTime(Math.max(.001,.12*vol),now+.01);
+  g.gain.exponentialRampToValueAtTime(.0001,now+.15);
+  o.start(now);
+  o.stop(now+.17);
+}
+
 $('soundBtn').onclick=()=>{musicOn=!musicOn;$('soundBtn').textContent=musicOn?'🔊':'🔇';musicOn?startMusic():stopMusic()};
 
 function render(){
@@ -387,18 +740,27 @@ function render(){
   $('stockView').textContent=(state.stock||[]).length;
   $('targetView').textContent=cfg.target;
   $('turnView').textContent=state.players[state.turn]?.name||'—';
-  $('ruleView').textContent=cfg.rule==='draw'?'سحب':'بلوك';
   $('gameModeLabel').textContent=cfg.mode==='online'?'أونلاين '+state.players.length+' لاعبين':cfg.mode==='local'?'محلي':'ضد الجهاز';
 
   $('playersStrip').innerHTML='';
   state.players.forEach((p,i)=>{
     const c=document.createElement('div');c.className='player-chip '+(state.turn===i&&!state.over?'active':'');c.dataset.pidx=i;
-    c.innerHTML='<div class="player-row"><div class="avatar">👤<button class="reaction-btn" data-p="'+i+'">😀</button></div><div class="player-info"><b>'+escapeHtml(p.name)+'</b><small>'+(state.hands[i]?.length||0)+' حجر • '+(state.scores[i]||0)+' نقطة</small></div><div class="timer" style="--deg:'+(state.turn===i?timeLeft/10*360:0)+'deg"><span>'+(state.turn===i?timeLeft:'')+'</span></div></div>';
+    c.innerHTML='<div class="player-row"><div class="avatar">👤<button class="reaction-btn" data-p="'+i+'">😀</button></div><div class="player-info"><b>'+escapeHtml(p.name)+(i===myIndex&&currentTitle()?'<span class="player-title">'+escapeHtml(currentTitle())+'</span>':'')+'</b><small>'+(state.hands[i]?.length||0)+' حجر • '+(state.scores[i]||0)+' نقطة</small></div><div class="timer" style="--deg:'+(state.turn===i?timeLeft/10*360:0)+'deg"><span>'+(state.turn===i?timeLeft:'')+'</span></div></div>';
     $('playersStrip').appendChild(c)
   });
   document.querySelectorAll('.reaction-btn').forEach(b=>b.onclick=()=>{if(Number(b.dataset.p)===myIndex)$('reactionModal').classList.add('show')});
   renderScores();
-  $('drawBtn').disabled=state.over||state.turn!==myIndex||cfg.rule!=='draw';
+  const myHandNow=state.hands[myIndex]||[];
+  const hasPlayable=myHandNow.some(fits);
+  const canDraw=!state.over && state.turn===myIndex && cfg.rule==='draw' && (state.stock||[]).length>0 && !hasPlayable;
+
+  $('drawBtn').disabled=!canDraw;
+  const handDrawBtn=$('handDrawBtn');
+  if(handDrawBtn){
+    handDrawBtn.classList.toggle('hidden',!canDraw);
+    handDrawBtn.disabled=!canDraw;
+  }
+
   $('passBtn').disabled=state.over||state.turn!==myIndex;
 }
 function renderScores(){
@@ -408,20 +770,155 @@ function renderScores(){
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
 function nextTurn(){state.turn=(state.turn+1)%state.players.length;timeLeft=10;sfx('turn')}
+
+function matchFinishedByScore(){
+  return state.scores.some(s=>Number(s||0)>=Number(cfg.target||100));
+}
+
+function showRoundEnd(winner,pts,reason){
+  const myScore=Number(state.scores[myIndex]||0);
+  $('roundEndTitle').textContent=state.players[winner].name+' فاز بالجولة';
+  $('roundEndText').textContent='حصل على '+pts+' نقطة. المباراة مستمرة إلى أن يصل أحد اللاعبين إلى '+cfg.target+' نقطة.';
+  $('roundMyScore').textContent=myScore;
+  $('roundTargetScore').textContent=cfg.target;
+  $('roundEndOverlay').classList.add('show');
+}
+
+function hideRoundEnd(){
+  $('roundEndOverlay').classList.remove('show');
+}
+
+function prepareNextOfflineRound(){
+  const set=makeSet();
+  const handSize=state.players.length===4?5:7;
+  state.hands=state.players.map(()=>set.splice(0,handSize));
+  state.stock=set;
+  state.chain=[];
+  state.turn=0;
+  state.over=false;
+  state.passes=0;
+  timeLeft=10;
+  $('status').textContent='بدأت جولة جديدة. دور '+state.players[state.turn].name;
+  render();
+  if(cfg.mode==='cpu'&&state.turn===1)setTimeout(cpuMove,500);
+}
+
+async function prepareNextOnlineRound(){
+  if(!roomRef)return;
+  const gameRef=roomRef.child('game');
+  await gameRef.transaction(g=>{
+    if(!g)return;
+    const set=makeSet();
+    const handSize=g.players.length===4?5:7;
+    g.hands=g.players.map(()=>set.splice(0,handSize));
+    g.stock=set;
+    g.chain=[];
+    g.turn=0;
+    g.over=false;
+    g.passes=0;
+    g.turnStartedAt=Date.now();
+    return g;
+  });
+}
+
+async function continueAfterRound(){
+  hideRoundEnd();
+
+  if(matchFinishedByScore()){
+    const winnerIndex=state.scores.findIndex(s=>Number(s||0)>=Number(cfg.target||100));
+    const winnerName=winnerIndex>=0?state.players[winnerIndex].name:'الفائز';
+    awardMatchReward(winnerIndex);alert('🏆 انتهت المباراة — '+winnerName+' وصل إلى نقاط الفوز المطلوبة.');
+    return;
+  }
+
+  if(cfg.mode==='online'){
+    // فقط صاحب الغرفة يبدأ الجولة الجديدة لتجنب التكرار.
+    const snap=await roomRef.once('value');
+    const room=snap.val()||{};
+    if(room.host===uid){
+      await prepareNextOnlineRound();
+    }else{
+      $('status').textContent='بانتظار صاحب الغرفة لبدء الجولة التالية...';
+    }
+    return;
+  }
+
+  prepareNextOfflineRound();
+}
+
+$('continueRoundBtn').onclick=continueAfterRound;
+$('withdrawBtn').onclick=()=>$('withdrawConfirm').classList.add('show');
+$('cancelWithdrawBtn').onclick=()=>$('withdrawConfirm').classList.remove('show');
+$('confirmWithdrawBtn').onclick=async()=>{
+  $('withdrawConfirm').classList.remove('show');
+  hideRoundEnd();
+
+  if(cfg.mode==='online'&&roomRef){
+    try{
+      await roomRef.child('withdrawals/'+uid).set({
+        name:state.players[myIndex]?.name||cfg.name||'لاعب',
+        at:Date.now()
+      });
+    }catch(e){}
+  }
+
+  alert('تم الانسحاب من المباراة.');
+  location.href='entertainment.html';
+};
+
 function checkRound(winner){
   if((state.hands[winner]||[]).length===0){
     const pts=state.hands.reduce((s,h,i)=>i===winner?s:s+sumHand(h),0);
-    state.scores[winner]=(state.scores[winner]||0)+pts;state.history=state.history||[];state.history.push({name:state.players[winner].name,pts,reason:'نفاد الأحجار'});state.over=true;sfx('win');
+    state.scores[winner]=(state.scores[winner]||0)+pts;
+    awardRoundRewards(winner,pts);
+    state.history=state.history||[];
+    state.history.push({name:state.players[winner].name,pts,reason:'نفاد الأحجار'});
+    state.over=true;
+    sfx('win');
+
     $('status').textContent=state.players[winner].name+' فاز بالجولة +'+pts+' نقطة';
-    if(state.scores[winner]>=cfg.target)setTimeout(()=>alert('🏆 '+state.players[winner].name+' فاز بالمباراة!'),150);
-    return true
+    render();
+
+    if(state.scores[winner]>=cfg.target){
+      setTimeout(()=>{
+        awardMatchReward(winner);alert('🏆 '+state.players[winner].name+' فاز بالمباراة!');
+        showRoundEnd(winner,pts,'فوز المباراة');
+        $('continueRoundBtn').textContent='إنهاء المباراة';
+      },120);
+    }else{
+      $('continueRoundBtn').textContent='إكمال اللعب';
+      setTimeout(()=>showRoundEnd(winner,pts,'نهاية الجولة'),120);
+    }
+    return true;
   }
-  return false
+  return false;
 }
 function checkBlocked(){
   if(state.passes<state.players.length)return false;
-  const sums=state.hands.map(sumHand),min=Math.min(...sums),winner=sums.indexOf(min);
-  const pts=sums.reduce((a,b)=>a+b,0)-min;state.scores[winner]=(state.scores[winner]||0)+pts;state.history.push({name:state.players[winner].name,pts,reason:'انسداد اللعب'});state.over=true;sfx('win');$('status').textContent=state.players[winner].name+' فاز بعد انسداد اللعب';return true
+
+  const sums=state.hands.map(sumHand);
+  const min=Math.min(...sums);
+  const winner=sums.indexOf(min);
+  const pts=sums.reduce((a,b)=>a+b,0)-min;
+
+  state.scores[winner]=(state.scores[winner]||0)+pts;
+  awardRoundRewards(winner,pts);
+  state.history=state.history||[];
+  state.history.push({name:state.players[winner].name,pts,reason:'انسداد اللعب'});
+  state.over=true;
+  sfx('win');
+
+  $('status').textContent=state.players[winner].name+' فاز بعد انسداد اللعب +'+pts+' نقطة';
+  render();
+
+  if(state.scores[winner]>=cfg.target){
+    $('continueRoundBtn').textContent='إنهاء المباراة';
+  }else{
+    $('continueRoundBtn').textContent='إكمال اللعب';
+  }
+
+  setTimeout(()=>showRoundEnd(winner,pts,'انسداد اللعب'),120);
+  return true;
 }
 
 function playTile(i){
@@ -431,7 +928,38 @@ function playTile(i){
   placeOn(state.chain,t);state.hands[myIndex].splice(i,1);state.passes=0;sfx('place');if(checkRound(myIndex)){render();return}
   nextTurn();render();if(cfg.mode==='cpu')setTimeout(cpuMove,650)
 }
-$('drawBtn').onclick=()=>{if(cfg.mode==='online')return onlineMove('draw');if(state.turn!==myIndex||state.over)return;if(!state.stock.length){toast('المخزون فارغ');return}state.hands[myIndex].push(state.stock.pop());state.passes=0;sfx('draw');render()}
+function drawStone(){
+  if(state.turn!==myIndex||state.over)return;
+
+  const h=state.hands[myIndex]||[];
+  if(h.some(fits)){
+    toast('عندك حجر مناسب للعب');
+    return;
+  }
+
+  if(cfg.rule!=='draw'){
+    toast('هذه الجولة بنظام البلوك ولا يوجد سحب');
+    return;
+  }
+
+  if(cfg.mode==='online'){
+    return onlineMove('draw');
+  }
+
+  if(!state.stock.length){
+    toast('المخزون فارغ — مرّر الدور');
+    return;
+  }
+
+  state.hands[myIndex].push(state.stock.pop());
+  state.passes=0;
+  sfx('draw');
+  $('status').textContent='سحبت حجراً جديداً.';
+  render();
+}
+
+$('drawBtn').onclick=drawStone;
+$('handDrawBtn').onclick=drawStone;
 $('passBtn').onclick=()=>{if(cfg.mode==='online')return onlineMove('pass');if(state.turn!==myIndex||state.over)return;if((state.hands[myIndex]||[]).some(fits)){toast('عندك حجر صالح');return}if(cfg.rule==='draw'&&state.stock.length){toast('اسحب حجراً أولاً');return}state.passes++;if(checkBlocked()){render();return}nextTurn();render();if(cfg.mode==='cpu')setTimeout(cpuMove,500)}
 $('hintBtn').onclick=()=>{const h=state.hands[myIndex]||[],i=h.findIndex(fits);if(i<0){toast('ما عندك حجر مناسب');return}const el=$('hand').children[i];if(el)el.animate([{transform:'translateY(0)'},{transform:'translateY(-12px)'},{transform:'translateY(0)'}],{duration:600})}
 
@@ -444,7 +972,7 @@ function cpuMove(){
 }
 
 function startOffline(mode){
-  cfg.mode=mode;cfg.name=nameOrDefault();cfg.rule=$('startRule').value;cfg.target=Number($('startTarget').value);
+  cfg.mode=mode;cfg.name=nameOrDefault();cfg.rule='draw';cfg.target=Number($('startTarget').value);
   const count=2,set=makeSet();state={players:[{id:uid,name:cfg.name},{id:'cpu',name:mode==='cpu'?'الجهاز':'اللاعب 2'}],hands:[set.splice(0,7),set.splice(0,7)],stock:set,chain:[],turn:0,scores:[0,0],history:[],over:false,passes:0};
   myIndex=0;gameStarted=true;$('startScreen').classList.add('hidden');startMusic();startTurnClock();render();$('status').textContent='ابدأ بوضع أي حجر.'
 }
@@ -456,7 +984,7 @@ document.querySelectorAll('.mode-card').forEach(b=>b.onclick=()=>{
 /* ===== الأونلاين ===== */
 function roomCodeGen(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 $('createRoomBtn').onclick=async()=>{
-  const name=nameOrDefault();cfg.mode='online';cfg.rule=$('startRule').value;cfg.target=Number($('startTarget').value);roomCode=roomCodeGen();
+  const name=nameOrDefault();cfg.mode='online';cfg.rule='draw';cfg.target=Number($('startTarget').value);roomCode=roomCodeGen();
   roomRef=db.ref('dominoRooms/'+roomCode);
   await roomRef.set({host:uid,maxPlayers:Number($('onlineCount').value),status:'waiting',rule:cfg.rule,target:cfg.target,createdAt:firebase.database.ServerValue.TIMESTAMP,players:{[uid]:{name,joinedAt:Date.now()}},reactions:{}});
   myIndex=0;watchRoomWaiting();$('roomCodeView').textContent=roomCode;$('roomWait').classList.add('show')
@@ -490,7 +1018,23 @@ function enterOnlineGame(r){
 }
 function watchOnlineGame(){
   if(!roomRef)return;
-  roomRef.child('game').on('value',snap=>{const g=snap.val();if(!g)return;state=g;render();syncOnlineTimer(g)});
+  roomRef.child('game').on('value',snap=>{
+    const g=snap.val();
+    if(!g)return;
+    const wasOver=state?.over;
+    state=g;
+    render();
+    syncOnlineTimer(g);
+
+    if(g.over&&!wasOver&&g.history&&g.history.length){
+      const last=g.history[g.history.length-1];
+      const winnerIndex=g.players.findIndex(p=>p.name===last.name);
+      if(winnerIndex>=0){
+        $('continueRoundBtn').textContent=g.scores[winnerIndex]>=cfg.target?'إنهاء المباراة':'إكمال اللعب';
+        setTimeout(()=>showRoundEnd(winnerIndex,last.pts,last.reason),100);
+      }
+    }
+  });
   roomRef.child('lastReaction').on('value',snap=>{const r=snap.val();if(r)showReaction(r.playerIndex,r.emoji,r.text)})
 }
 async function onlineMove(type,index){
@@ -550,7 +1094,44 @@ function showReaction(index,emoji,text){
 }
 
 /* ===== إعدادات الشكل ===== */
+$('shopBtn').onclick=()=>{renderShop();$('shopModal').classList.add('show')};
 $('settingsBtn').onclick=()=>$('settingsModal').classList.add('show');
+const startSettingsBtn=$('startSettingsBtn');
+if(startSettingsBtn)startSettingsBtn.onclick=()=>$('settingsModal').classList.add('show');
+
+const settingsMusic=$('settingsMusic');
+const settingsMusicVolume=$('settingsMusicVolume');
+const settingsSfx=$('settingsSfx');
+const settingsSfxVolume=$('settingsSfxVolume');
+const boardPattern=$('boardPattern');
+const tileSizeSetting=$('tileSizeSetting');
+
+if(settingsMusic)settingsMusic.onchange=()=>{
+  musicOn=settingsMusic.value==='on';
+  $('soundBtn').textContent=musicOn?'🔊':'🔇';
+  if(gameStarted){musicOn?startMusic():stopMusic()}
+};
+if(settingsMusicVolume)settingsMusicVolume.oninput=()=>{
+  $('musicVolume').value=settingsMusicVolume.value;
+  if(gameStarted&&musicOn)startMusic();
+};
+if(settingsSfx)settingsSfx.onchange=()=>{
+  $('sfxVolume').value=settingsSfx.value==='on'?(settingsSfxVolume?.value||70):0;
+};
+if(settingsSfxVolume)settingsSfxVolume.oninput=()=>{
+  if(!settingsSfx||settingsSfx.value==='on')$('sfxVolume').value=settingsSfxVolume.value;
+};
+if(boardPattern)boardPattern.onchange=()=>{
+  const board=document.querySelector('.board');
+  board.classList.remove('pattern-plain','pattern-grid');
+  if(boardPattern.value==='plain')board.classList.add('pattern-plain');
+  if(boardPattern.value==='grid')board.classList.add('pattern-grid');
+};
+if(tileSizeSetting)tileSizeSetting.onchange=()=>{
+  document.body.classList.remove('tile-large','tile-compact');
+  if(tileSizeSetting.value==='large')document.body.classList.add('tile-large');
+  if(tileSizeSetting.value==='compact')document.body.classList.add('tile-compact');
+};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$((b.dataset.close)).classList.remove('show'));
 document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('show')});
 document.querySelectorAll('.swatch').forEach(b=>b.onclick=()=>{
@@ -559,9 +1140,11 @@ document.querySelectorAll('.swatch').forEach(b=>b.onclick=()=>{
   render()
 });
 $('musicVolume').oninput=()=>{if(musicOn)startMusic()};
+document.addEventListener('pointerdown',()=>{if(gameStarted&&musicOn&&audioCtx&&audioCtx.state==='suspended')audioCtx.resume()},{once:true});
 $('exitGameBtn').onclick=()=>{if(confirm('الخروج من اللعبة؟'))location.href='entertainment.html'};
 
 window.addEventListener('beforeunload',()=>{if(roomRef&&roomCode)roomRef.child('players/'+uid+'/connected').set(false)});
+updateWallet();applyEquipped();
 </script>
 </body>
 </html>
