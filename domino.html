@@ -1099,8 +1099,27 @@ $('confirmWithdrawBtn').onclick=async()=>{
     }catch(e){}
   }
 
-  alert('تم الانسحاب من المباراة.');
-  location.href='entertainment.html';
+  // يرجع إلى الواجهة الرئيسية للدومينو بدون الخروج من اللعبة/القسم.
+  gameStarted=false;
+  clearInterval(localTimer);
+  stopMusic();
+
+  if(roomListener&&roomRef){
+    try{roomRef.off('value',roomListener)}catch(e){}
+  }
+  roomListener=null;
+  roomRef=null;
+  roomCode='';
+  myIndex=0;
+  state={players:[],hands:[],stock:[],chain:[],turn:0,scores:[],history:[],over:false,passes:0};
+
+  $('roomWait').classList.remove('show');
+  $('onlinePanel').classList.remove('show');
+  $('sideChoiceOverlay').classList.remove('show');
+  $('startScreen').classList.remove('hidden');
+  updateWallet();
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('تم الانسحاب والرجوع إلى الواجهة الرئيسية');
 };
 
 function checkRound(winner){
