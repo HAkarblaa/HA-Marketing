@@ -373,8 +373,8 @@ body.tile-compact .pip{width:8px;height:8px}
             <option value="5">موسيقى 5</option>
           </select>
         </div>
-        <div class="volume-row"><span>🎵</span><input id="musicVolume" type="range" min="0" max="100" value="22"></div>
-        <div class="volume-row"><span>🔊</span><input id="sfxVolume" type="range" min="0" max="100" value="70"></div>
+        <div class="volume-row"><span>🎵</span><input id="musicVolume" type="range" min="0" max="100" value="50"></div>
+        <div class="volume-row"><span>🔊</span><input id="sfxVolume" type="range" min="0" max="100" value="50"></div>
         <div class="rule"><span>الدور</span><b id="turnView">—</b></div>
         
       </div>
@@ -398,7 +398,7 @@ body.tile-compact .pip{width:8px;height:8px}
       </div>
       <div class="field">
         <label>مستوى الموسيقى</label>
-        <input id="settingsMusicVolume" type="range" min="0" max="100" value="22">
+        <input id="settingsMusicVolume" type="range" min="0" max="100" value="50">
       </div>
       <div class="field">
         <label>أصوات الأحجار والمؤثرات</label>
@@ -409,7 +409,7 @@ body.tile-compact .pip{width:8px;height:8px}
       </div>
       <div class="field">
         <label>مستوى المؤثرات</label>
-        <input id="settingsSfxVolume" type="range" min="0" max="100" value="70">
+        <input id="settingsSfxVolume" type="range" min="0" max="100" value="50">
       </div>
     </div>
 
@@ -704,7 +704,7 @@ function playMusicNote(freq,duration=.32){
   const now=audioCtx.currentTime;
   const osc=audioCtx.createOscillator();
   const gain=audioCtx.createGain();
-  const vol=(Number($('musicVolume').value)/100)*0.055;
+  const vol=(Number($('musicVolume').value)/100)*0.16;
 
   osc.type='sine';
   osc.frequency.setValueAtTime(freq,now);
@@ -728,24 +728,29 @@ function startMusic(){
 
   const tracks={
     1:{
-      melody:[220.00,261.63,329.63,293.66,261.63,220.00,196.00,220.00,261.63,293.66,329.63,293.66,261.63,246.94,220.00,196.00],
-      interval:760,duration:.55,bass:true
+      melody:[220.00,261.63,329.63,392.00,329.63,261.63,220.00,196.00,
+              220.00,293.66,349.23,440.00,349.23,293.66,246.94,220.00],
+      interval:820,duration:.60,bass:true
     },
     2:{
-      melody:[261.63,293.66,349.23,392.00,349.23,329.63,293.66,261.63,293.66,329.63,392.00,440.00,392.00,349.23,329.63,293.66],
-      interval:610,duration:.40,bass:false
+      melody:[329.63,392.00,493.88,587.33,493.88,440.00,392.00,329.63,
+              392.00,440.00,523.25,659.25,523.25,440.00,392.00,349.23],
+      interval:460,duration:.28,bass:false
     },
     3:{
-      melody:[293.66,349.23,392.00,440.00,392.00,349.23,329.63,293.66,261.63,293.66,349.23,392.00,349.23,329.63,293.66,261.63],
-      interval:690,duration:.48,bass:true
+      melody:[196.00,246.94,293.66,349.23,293.66,246.94,220.00,196.00,
+              174.61,220.00,261.63,329.63,261.63,220.00,196.00,174.61],
+      interval:690,duration:.45,bass:true
     },
     4:{
-      melody:[246.94,293.66,329.63,369.99,329.63,293.66,277.18,246.94,220.00,246.94,293.66,329.63,293.66,277.18,246.94,220.00],
-      interval:720,duration:.50,bass:true
+      melody:[246.94,311.13,369.99,415.30,369.99,311.13,277.18,246.94,
+              277.18,349.23,415.30,466.16,415.30,349.23,311.13,277.18],
+      interval:590,duration:.38,bass:false
     },
     5:{
-      melody:[196.00,246.94,293.66,329.63,293.66,246.94,220.00,196.00,220.00,261.63,329.63,392.00,329.63,293.66,246.94,220.00],
-      interval:540,duration:.35,bass:false
+      melody:[261.63,523.25,392.00,659.25,440.00,587.33,349.23,493.88,
+              293.66,440.00,329.63,523.25,392.00,659.25,523.25,392.00],
+      interval:360,duration:.22,bass:true
     }
   };
 
@@ -787,7 +792,7 @@ function sfx(type){
   o.frequency.value=freq;
   o.type=type==='place'?'triangle':'sine';
   g.gain.setValueAtTime(.0001,now);
-  g.gain.exponentialRampToValueAtTime(Math.max(.001,.12*vol),now+.01);
+  g.gain.exponentialRampToValueAtTime(Math.max(.001,.28*vol),now+.01);
   g.gain.exponentialRampToValueAtTime(.0001,now+.15);
   o.start(now);
   o.stop(now+.17);
