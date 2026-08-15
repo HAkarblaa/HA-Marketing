@@ -242,6 +242,32 @@ body.tile-compact .pip{width:8px;height:8px}
   .face{width:39px;height:53px;padding:6px}.pip{width:8px;height:8px}
   .side{grid-template-columns:1fr}.setting-grid{grid-template-columns:1fr}
 }
+
+/* ===== ترتيب الأحجار داخل الساحة على شكل حلقة مستطيلة ===== */
+.chain{
+  position:relative !important;
+  display:block !important;
+  min-height:380px !important;
+  height:380px !important;
+  padding:14px !important;
+  overflow:visible !important;
+}
+.chain .tile.loop-tile{
+  position:absolute !important;
+  margin:0 !important;
+  z-index:2;
+  transform-origin:center center;
+}
+.chain .tile.loop-tile .face{
+  width:34px !important;
+  height:46px !important;
+  padding:5px !important;
+}
+.chain .tile.loop-tile .pip{
+  width:6px !important;
+  height:6px !important;
+}
+
 </style>
 </head>
 <body>
@@ -808,8 +834,78 @@ $('soundBtn').onclick=()=>{
   musicOn?startMusic():stopMusic();
 };
 
+
+function renderChainRectLoop(){
+  const box=$('chain');
+  box.innerHTML='';
+
+  const tiles=state.chain||[];
+  if(!tiles.length)return;
+
+  const r=box.getBoundingClientRect();
+  const w=Math.max(r.width||320,280);
+  const h=Math.max(r.height||380,300);
+
+  // حجم حجر الساحة ومسافة صغيرة بين الأحجار.
+  const tileW=34;
+  const tileH=46;
+  const gap=5;
+
+  // حدود الحلقة المستطيلة داخل الساحة.
+  const left=tileW/2+18;
+  const right=w-tileW/2-18;
+  const top=tileH/2+20;
+  const bottom=h-tileH/2-20;
+
+  const topLen=right-left;
+  const sideLen=bottom-top;
+  const perimeter=2*(topLen+sideLen);
+
+  // نوزع الأحجار بالتساوي على محيط المستطيل حتى ما تتراكب.
+  const step=Math.max(tileW+gap, perimeter/Math.max(tiles.length,1));
+
+  tiles.forEach((t,i)=>{
+    const el=tileEl(t);
+    el.classList.add('loop-tile');
+
+    // نبدأ من منتصف الضلع العلوي.
+    let d=(topLen/2 + i*step) % perimeter;
+    let x,y,deg=0;
+
+    if(d<=topLen){
+      x=left+d;
+      y=top;
+      deg=0;
+    }else{
+      d-=topLen;
+      if(d<=sideLen){
+        x=right;
+        y=top+d;
+        deg=90;
+      }else{
+        d-=sideLen;
+        if(d<=topLen){
+          x=right-d;
+          y=bottom;
+          deg=180;
+        }else{
+          d-=topLen;
+          x=left;
+          y=bottom-d;
+          deg=270;
+        }
+      }
+    }
+
+    el.style.left=x+'px';
+    el.style.top=y+'px';
+    el.style.transform='translate(-50%,-50%) rotate('+deg+'deg)';
+    box.appendChild(el);
+  });
+}
+
 function render(){
-  $('chain').innerHTML='';state.chain.forEach(t=>$('chain').appendChild(tileEl(t)));
+  renderChainRectLoop();
   const hand=state.hands[myIndex]||[];$('hand').innerHTML='';
   hand.forEach((t,i)=>$('hand').appendChild(tileEl(t,{player:true,playable:state.turn===myIndex&&!state.over&&fits(t),click:()=>playTile(i)})));
   $('handCount').textContent=hand.length+' حجر';
@@ -1231,6 +1327,8 @@ $('exitGameBtn').onclick=()=>{if(confirm('الخروج من اللعبة؟'))loc
 
 window.addEventListener('beforeunload',()=>{if(roomRef&&roomCode)roomRef.child('players/'+uid+'/connected').set(false)});
 migrateFreeItems();updateWallet();applyEquipped();
+
+window.addEventListener('resize',()=>{if(gameStarted)renderChainRectLoop()});
 </script>
 </body>
 </html>
