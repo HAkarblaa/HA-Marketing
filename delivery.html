@@ -754,6 +754,10 @@ body.delivery-stage-3 #extraSummary:empty{
 @keyframes deliverySpin{to{transform:rotate(360deg)}}
 .delivery-status-title{font-size:18px;font-weight:700;margin-bottom:6px}
 .delivery-status-sub{font-size:13px;color:#666;line-height:1.6}
+.delivery-search-cancel{
+  width:100%;margin-top:14px;border:1px solid #e0e0e0;border-radius:12px;
+  padding:12px;background:#f5f5f5;color:#b42318;font-size:15px;font-weight:700;cursor:pointer
+}
 .delivery-driver-card{
   display:none;background:#f8f8f8;border-radius:14px;padding:12px
 }
@@ -1661,6 +1665,7 @@ document.getElementById('deliveryPostBack').onclick=()=>{
 };
 
 document.getElementById('deliveryCancelBtn').onclick=()=>openDeliveryCancelReason();
+document.getElementById('deliverySearchCancelBtn').onclick=()=>openDeliveryCancelReason();
 
 const savedDeliveryId=localStorage.getItem('ha_active_delivery');
 if(savedDeliveryId){
@@ -1835,6 +1840,7 @@ if(deliveryBackBtn){
       <div class="delivery-loader"></div>
       <div class="delivery-status-title">جاري البحث عن أقرب مندوب</div>
       <div class="delivery-status-sub">بعد قبول الطلب تظهر معلومات المندوب وموقعه هنا.</div>
+      <button id="deliverySearchCancelBtn" class="delivery-search-cancel" type="button">إلغاء الطلب</button>
     </div>
 
     <div id="deliveryDriverCard" class="delivery-driver-card">
@@ -2020,8 +2026,8 @@ document.addEventListener('click',function(e){
   <span>وجدت وسيلة أخرى</span>
 </label>
 <label class="cancel-reason-option">
-  <input type="radio" name="cancelReasonSheet_reason" value="سبب آخر" id="cancelReasonSheet_other">
-  <span>سبب آخر</span>
+  <input type="radio" name="cancelReasonSheet_reason" value="غير ذلك" id="cancelReasonSheet_other">
+  <span>غير ذلك</span>
 </label>
     <input id="cancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
     <button id="confirmCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
@@ -2041,15 +2047,17 @@ document.getElementById('cancelReasonSheet').addEventListener('click',e=>{
 });
 document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>{
   r.addEventListener('change',()=>{
-    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='سبب آخر' && r.checked);
+    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='غير ذلك' && r.checked);
   });
 });
 document.getElementById('confirmCancelReason').onclick=async()=>{
   const checked=document.querySelector('input[name="cancelReasonSheet_reason"]:checked');
   if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
-  const reason=checked.value==='سبب آخر'
-    ? (document.getElementById('cancelOtherText').value.trim()||'سبب آخر')
-    : checked.value;
+  let reason=checked.value;
+  if(checked.value==='غير ذلك'){
+    reason=document.getElementById('cancelOtherText').value.trim();
+    if(!reason){ alert('اكتب سبب الإلغاء.'); document.getElementById('cancelOtherText').focus(); return; }
+  }
 
   if(activeDeliveryRideId){
     await db.ref('rides/'+activeDeliveryRideId).update({

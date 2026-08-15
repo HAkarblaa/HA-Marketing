@@ -630,6 +630,10 @@ body:not(.trip-ready) #extraSummary{
   font-size:13px;
   line-height:1.6;
 }
+.search-cancel-trip{
+  width:100%;margin-top:14px;border:1px solid #e0e0e0;border-radius:12px;
+  padding:12px;background:#f5f5f5;color:#b42318;font-size:15px;font-weight:700;cursor:pointer
+}
 .driver-card{
   display:none;
   background:#f8f8f8;
@@ -1024,6 +1028,7 @@ body:not(.trip-ready) #extraSummary{
       <div class="loader"></div>
       <div class="status-title">جاري البحث عن أقرب سائق تكتك</div>
       <div class="status-sub">راح تظهر معلومات سائق التكتك هنا بعد قبول الطلب.</div>
+      <button id="searchCancelTripBtn" class="search-cancel-trip" type="button">إلغاء الطلب</button>
     </div>
 
     <div id="finishBox" class="finish-box">
@@ -1955,6 +1960,7 @@ document.getElementById('finishRateBtn').onclick=()=>{
 };
 
 document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
+document.getElementById('searchCancelTripBtn').onclick=()=>openCancelReason();
 
 // نخلي زر تأكيد التكتك يفتح واجهة البحث بعد التحقق الحالي
 
@@ -1989,8 +1995,8 @@ document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
   <span>وجدت وسيلة أخرى</span>
 </label>
 <label class="cancel-reason-option">
-  <input type="radio" name="cancelReasonSheet_reason" value="سبب آخر" id="cancelReasonSheet_other">
-  <span>سبب آخر</span>
+  <input type="radio" name="cancelReasonSheet_reason" value="غير ذلك" id="cancelReasonSheet_other">
+  <span>غير ذلك</span>
 </label>
     <input id="cancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
     <button id="confirmCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
@@ -2010,15 +2016,17 @@ document.getElementById('cancelReasonSheet').addEventListener('click',e=>{
 });
 document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>{
   r.addEventListener('change',()=>{
-    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='سبب آخر' && r.checked);
+    document.getElementById('cancelOtherText').classList.toggle('show',r.value==='غير ذلك' && r.checked);
   });
 });
 document.getElementById('confirmCancelReason').onclick=async()=>{
   const checked=document.querySelector('input[name="cancelReasonSheet_reason"]:checked');
   if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
-  const reason=checked.value==='سبب آخر'
-    ? (document.getElementById('cancelOtherText').value.trim()||'سبب آخر')
-    : checked.value;
+  let reason=checked.value;
+  if(checked.value==='غير ذلك'){
+    reason=document.getElementById('cancelOtherText').value.trim();
+    if(!reason){ alert('اكتب سبب الإلغاء.'); document.getElementById('cancelOtherText').focus(); return; }
+  }
 
   if(activeRideId){
     await db.ref('rides/'+activeRideId).update({
