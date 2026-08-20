@@ -13,35 +13,121 @@
 .power{position:absolute;left:14px;top:35%;width:42px;height:180px;border-radius:24px;background:#07111edb;border:2px solid #ffffff70;padding:6px}
 .track{position:relative;width:100%;height:100%;border-radius:18px;overflow:hidden;background:linear-gradient(to top,#2dd36f 0 38%,#f3d65b 38% 70%,#ef4d4d 70%)}
 #mask{position:absolute;left:0;right:0;top:0;height:45%;background:#07111ee8}
-.joy{position:absolute;left:14px;bottom:18px;width:106px;height:106px;border:3px solid #ffffff75;background:#ffffff18;border-radius:50%}
-.joy:after{content:"";position:absolute;width:52px;height:52px;border-radius:50%;left:24px;top:24px;background:#ffffffc9;border:2px solid #fff}
+.joy{pointer-events:auto;touch-action:none;position:absolute;left:14px;bottom:18px;width:106px;height:106px;border:3px solid #ffffff75;background:#ffffff18;border-radius:50%}
+.joyKnob{position:absolute;width:52px;height:52px;border-radius:50%;left:24px;top:24px;background:#ffffffc9;border:2px solid #fff;box-shadow:0 2px 8px #0006}
 .tools{position:absolute;right:10px;top:35%;display:grid;gap:7px;pointer-events:auto}
 .tool{width:94px;padding:8px 5px;border:1px solid #ffffff40;border-radius:10px;background:#08111ddd;color:#fff;font-size:10px;font-weight:900}
 .tool.active{outline:2px solid #fff}
 #shoot{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:102px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#244c69,#0b1e2d);color:#fff;font-weight:900;font-size:17px;box-shadow:0 7px 18px #0008}
-#aim{pointer-events:auto;position:absolute;left:140px;right:140px;bottom:28px;width:calc(100% - 280px)}
+
 #msg{position:absolute;left:50%;top:24%;transform:translate(-50%,-50%) scale(.7);font-size:52px;font-weight:1000;opacity:0;transition:.2s}
 #msg.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .tip{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:#06101bbb;border:1px solid #ffffff22;border-radius:999px;padding:6px 12px;font-size:11px}
-@media(max-width:650px){.score{min-width:245px;font-size:12px}.power{left:5px;width:37px;height:155px}.joy{left:7px;width:88px;height:88px}.joy:after{width:42px;height:42px;left:20px;top:20px}.tools{right:5px}.tool{width:80px;font-size:8px}#shoot{right:8px;width:88px;height:50px;font-size:14px}#aim{left:102px;right:102px;width:calc(100% - 204px)}.tip{font-size:8px;bottom:76px}}
+@media(max-width:650px){.score{min-width:245px;font-size:12px}.power{left:5px;width:37px;height:155px}.joy{left:7px;width:88px;height:88px}.joyKnob{width:42px;height:42px;left:20px;top:20px}.tools{right:5px}.tool{width:80px;font-size:8px}#shoot{right:8px;width:88px;height:50px;font-size:14px}.tip{font-size:8px;bottom:76px}}
+
+/* ===== نظام اللعبة الكامل ===== */
+#menuScreen{
+  position:fixed;inset:0;z-index:5000;background:
+  radial-gradient(circle at 50% 8%,#17385b,#0a1424 45%,#050a12);
+  color:#fff;display:flex;align-items:center;justify-content:center;padding:15px;overflow:auto
+}
+.menuCard{width:min(920px,100%);background:#101b2c;border:1px solid #ffffff18;border-radius:24px;padding:17px;box-shadow:0 25px 70px #0009}
+.menuTitle{text-align:center}.menuTitle h1{margin:2px 0;font-size:28px}.menuTitle p{color:#aeb9c8;margin:5px 0 12px}
+.walletMenu{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.menuPill{background:#ffffff0c;border:1px solid #ffffff14;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800}
+.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.menuField{background:#ffffff08;border-radius:13px;padding:9px}
+.menuField label{display:block;color:#aeb9c8;font-size:10px;margin-bottom:5px}
+.menuField input,.menuField select{width:100%;border:1px solid #ffffff17;background:#08111e;color:#fff;border-radius:9px;padding:10px}
+.modeGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.modeBtn{border:1px solid #ffffff14;background:#ffffff08;color:#fff;border-radius:14px;padding:12px 7px;font-weight:800}
+.modeBtn small{display:block;color:#aeb9c8;font-size:8px;margin-top:4px}.modeBtn.active{outline:2px solid #2bd083;background:#153c2d}
+#tournamentBox,#onlineBox{display:none;margin-top:10px;background:#ffffff07;border:1px solid #ffffff10;border-radius:14px;padding:10px}
+#tournamentBox.show,#onlineBox.show{display:block}
+.tourGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.menuActions{display:flex;justify-content:center;gap:8px;margin-top:13px;flex-wrap:wrap}
+.menuAction{border:0;border-radius:12px;padding:11px 16px;font-weight:900;background:#213149;color:#fff}
+.menuAction.primary{background:#2bd083;color:#062015}.menuAction.gold{background:linear-gradient(135deg,#f5d789,#b88329);color:#211500}
+.offlineNote{display:none;margin-top:8px;text-align:center;color:#ffcf78;font-size:10px}
+.offlineNote.show{display:block}
+#endModal,#tournamentModal{
+ position:fixed;inset:0;z-index:7000;background:#000b;display:none;align-items:center;justify-content:center;padding:15px;color:#fff
+}
+#endModal.show,#tournamentModal.show{display:flex}
+.modalCard{width:min(650px,100%);max-height:88vh;overflow:auto;background:#101b2c;border:1px solid #ffffff18;border-radius:22px;padding:16px}
+.modalCard h2{text-align:center;margin:0 0 12px}
+.resultBig{text-align:center;font-size:26px;font-weight:900;margin:10px 0}
+.fixture{display:flex;justify-content:space-between;gap:10px;padding:9px;border-bottom:1px solid #ffffff0f;font-size:11px}
+#miniHud{position:fixed;right:8px;top:75px;z-index:2100;color:#fff;background:#07111fd8;border:1px solid #ffffff1a;border-radius:12px;padding:7px 9px;font-size:9px;pointer-events:none}
+@media(max-width:700px){.menuGrid,.tourGrid{grid-template-columns:1fr}.modeGrid{grid-template-columns:1fr 1fr}.menuTitle h1{font-size:23px}}
+
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
 </head>
 <body>
+
+<div id="menuScreen">
+ <div class="menuCard">
+  <div class="menuTitle"><h1>⚽ ركلات الجزاء 3D</h1><p>اختر فريقك وطريقة اللعب</p></div>
+  <div class="walletMenu">
+   <div class="menuPill">⭐ نقاط <span id="menuPoints">0</span></div>
+   <div class="menuPill">💎 جواهر <span id="menuGems">0</span></div>
+   <button id="shopOpen" class="menuAction gold">🛍️ المتجر</button>
+  </div>
+  <div class="menuGrid">
+   <div class="menuField"><label>اسم اللاعب</label><input id="playerNameMenu" maxlength="20" placeholder="اكتب اسم اللاعب"></div>
+   <div class="menuField"><label>نوع الفريق</label><select id="teamTypeMenu"><option value="national">منتخبات</option><option value="club">نوادي</option></select></div>
+   <div class="menuField"><label>فريقك</label><select id="teamMenu"></select></div>
+   <div class="menuField"><label>الخصم</label><select id="opponentMenu"></select></div>
+   <div class="menuField"><label>مستوى الجهاز</label><select id="difficultyMenu"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select></div>
+   <div class="menuField"><label>عدد الركلات</label><select id="kickCountMenu"><option value="3">3 ركلات</option><option value="5" selected>5 ركلات</option><option value="7">7 ركلات</option></select></div>
+  </div>
+  <div class="modeGrid">
+   <button class="modeBtn active" data-mode="cpu">🤖 ضد الجهاز<small>يعمل بدون نت</small></button>
+   <button class="modeBtn" data-mode="local">👥 لاعبان محلياً<small>على نفس الجهاز</small></button>
+   <button class="modeBtn" data-mode="tournament">🏆 بطولة<small>مجموعات وإقصائيات</small></button>
+   <button class="modeBtn" data-mode="online">🌐 أونلاين<small>يحتاج إنترنت</small></button>
+  </div>
+  <div id="tournamentBox">
+   <div class="tourGrid">
+    <div class="menuField"><label>اسم البطولة</label><input id="tourName" value="بطولة HA"></div>
+    <div class="menuField"><label>عدد الفرق</label><select id="tourTeams"><option value="8">8 فرق</option><option value="16">16 فريق</option></select></div>
+    <div class="menuField"><label>النظام</label><select id="tourFormat"><option value="groups">مجموعات + خروج مغلوب</option><option value="knockout">خروج مغلوب مباشر</option></select></div>
+    <div class="menuField"><label>نوع البطولة</label><select id="tourType"><option value="cpu">ضد الجهاز</option><option value="rooms">غرف أونلاين</option></select></div>
+   </div>
+   <button id="viewTournament" class="menuAction" style="width:100%;margin-top:8px">📋 عرض جدول البطولة</button>
+  </div>
+  <div id="onlineBox">
+    <div class="menuGrid">
+      <div class="menuField"><label>كود الغرفة</label><input id="roomCode" maxlength="6" placeholder="مثال: H7K21A"></div>
+      <div class="menuField"><label>الحالة</label><input id="onlineStatus" value="جاهز" readonly></div>
+    </div>
+    <div class="menuActions"><button id="createRoom" class="menuAction">إنشاء غرفة</button><button id="joinRoom" class="menuAction">دخول غرفة</button></div>
+  </div>
+  <div id="offlineNote" class="offlineNote">📴 لا يوجد إنترنت: الأونلاين فقط غير متاح، وبقية اللعبة تعمل عادي.</div>
+  <div class="menuActions">
+   <button id="startGameFull" class="menuAction primary">بدء المباراة</button>
+   <a href="entertainment.html" class="menuAction" style="text-decoration:none">رجوع</a>
+  </div>
+ </div>
+</div>
+<div id="miniHud">الوضع: <b id="hudMode">ضد الجهاز</b><br>الركلات: <b id="hudKicks">0/5</b></div>
+<div id="endModal"><div class="modalCard"><h2>نتيجة المباراة</h2><div id="endResult" class="resultBig"></div><div id="endScore" class="resultBig"></div><div class="menuActions"><button id="playAgain" class="menuAction primary">إعادة اللعب</button><button id="backMenu" class="menuAction">القائمة الرئيسية</button></div></div></div>
+<div id="tournamentModal"><div class="modalCard"><h2 id="tourModalTitle">🏆 جدول البطولة</h2><div id="tourContent"></div><div class="menuActions"><button id="closeTour" class="menuAction">إغلاق</button></div></div></div>
+
 <div id="game"></div>
 <div class="hud">
- <div class="score"><span id="score">العراق 0 - 0 إيران</span><small>ركلات الجزاء 3D</small></div>
+ <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small></div>
  <div class="power"><div class="track"><div id="mask"></div></div></div>
- <div class="joy"></div>
+ <div class="joy" id="joy"><div class="joyKnob" id="joyKnob"></div></div>
  <div class="tools">
   <button class="tool active" data-ball="normal">⚽ عادية</button>
   <button class="tool" data-ball="fire">🔥 نارية</button>
   <button class="tool" data-ball="ice">❄️ ثلجية</button>
   <button class="tool" data-ball="dirt">🌪️ ترابية</button>
  </div>
- <input id="aim" type="range" min="-100" max="100" value="0">
  <button id="shoot">تسديد</button>
- <div class="tip">حدد اتجاه الكرة ثم اضغط تسديد</div>
+ <div class="tip">حرّك الزر الدائري للتوجيه بكل الاتجاهات ثم اضغط تسديد</div>
  <div id="msg">GOAL!</div>
 </div>
 <script type="module">
@@ -83,14 +169,46 @@ const curveMat=new THREE.LineDashedMaterial({color:0x6dff63,dashSize:.32,gapSize
 let aimDot=new THREE.Mesh(new THREE.RingGeometry(.25,.34,24),new THREE.MeshBasicMaterial({color:0x6dff63,side:THREE.DoubleSide}));aimDot.rotation.x=-Math.PI/2;scene.add(aimDot);
 
 let home=0,shooting=false,shotT=0,target=new THREE.Vector3(),keeperTarget=0,power=.55;
-const aim=document.getElementById('aim'),mask=document.getElementById('mask'),msg=document.getElementById('msg');
-function updateAim(){let x=Number(aim.value)/100*4,end=new THREE.Vector3(x,1.35,-11.65),mid=new THREE.Vector3(x*.35,1.7,-4.5),curve=new THREE.QuadraticBezierCurve3(ball.position.clone(),mid,end);aimLine.geometry.dispose();aimLine.geometry=new THREE.BufferGeometry().setFromPoints(curve.getPoints(30));aimLine.computeLineDistances();aimDot.position.set(end.x,.03,-11.2)}
-aim.oninput=updateAim;updateAim();
+const mask=document.getElementById('mask'),msg=document.getElementById('msg');
+const joy=document.getElementById('joy'),joyKnob=document.getElementById('joyKnob');
+let aimX=0, aimY=0;
+
+function updateAim(){
+  const x=aimX*4.0;
+  const y=1.35 + aimY*1.25;
+  const end=new THREE.Vector3(x,y,-11.65);
+  const mid=new THREE.Vector3(x*.35,1.7 + aimY*.65,-4.5);
+  const curve=new THREE.QuadraticBezierCurve3(ball.position.clone(),mid,end);
+  aimLine.geometry.dispose();
+  aimLine.geometry=new THREE.BufferGeometry().setFromPoints(curve.getPoints(30));
+  aimLine.computeLineDistances();
+  aimDot.position.set(end.x,end.y,-11.56);
+  aimDot.rotation.set(0,0,0);
+}
+
+function moveJoystick(clientX,clientY){
+  const r=joy.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  let dx=clientX-cx, dy=clientY-cy;
+  const max=r.width*.34;
+  const len=Math.hypot(dx,dy);
+  if(len>max){dx=dx/len*max;dy=dy/len*max}
+  joyKnob.style.transform=`translate(${dx}px,${dy}px)`;
+  aimX=dx/max;
+  aimY=-dy/max;
+  updateAim();
+}
+let joyPointer=null;
+joy.addEventListener('pointerdown',e=>{joyPointer=e.pointerId;joy.setPointerCapture(e.pointerId);moveJoystick(e.clientX,e.clientY)});
+joy.addEventListener('pointermove',e=>{if(e.pointerId===joyPointer)moveJoystick(e.clientX,e.clientY)});
+joy.addEventListener('pointerup',e=>{if(e.pointerId===joyPointer)joyPointer=null});
+joy.addEventListener('pointercancel',()=>{joyPointer=null});
+updateAim();
 
 document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');let t=b.dataset.ball;if(t==='fire'){ballMat.color.set(0xff6b21);ballMat.emissive.set(0xaa1800);ballMat.emissiveIntensity=1.5}else if(t==='ice'){ballMat.color.set(0x9befff);ballMat.emissive.set(0x187cc5);ballMat.emissiveIntensity=1.2}else if(t==='dirt'){ballMat.color.set(0x9b6a3b);ballMat.emissive.set(0)}else{ballMat.color.set(0xffffff);ballMat.emissive.set(0)}});
 
 function reset(){shooting=false;shotT=0;player.position.set(-.8,0,4.7);player.rotation.set(0,Math.PI,0);keeper.position.set(0,0,-11.5);keeper.rotation.set(0,0,0);ball.position.set(.25,.23,2.25);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);aimLine.visible=true;aimDot.visible=true;updateAim()}
-document.getElementById('shoot').onclick=()=>{if(shooting)return;shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;let x=Number(aim.value)/100*4;target.set(x,1+power*1.55,-12.15);keeperTarget=Math.random()*7.4-3.7};
+document.getElementById('shoot').onclick=()=>{if(shooting)return;shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;let x=aimX*4.0;let y=1.0+power*.8+aimY*1.25;target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);keeperTarget=Math.random()*7.4-3.7};
 
 let clock=new THREE.Clock(),phase=0,judged=false;
 function animate(){
@@ -107,4 +225,166 @@ function animate(){
 animate();
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
+
+<script>
+(function(){
+const teams={
+ national:['العراق','إيران','السعودية','الكويت','قطر','الأرجنتين','البرازيل','فرنسا','إسبانيا','ألمانيا','البرتغال','إنجلترا'],
+ club:['ريال مدريد','برشلونة','مانشستر سيتي','ليفربول','بايرن ميونخ','ميلان','إنتر','باريس سان جيرمان']
+};
+let gameMode='cpu',maxKicks=5,kickNo=0,homeScore=0,awayScore=0;
+let points=Number(localStorage.getItem('ha_pen_points')||0),gems=Number(localStorage.getItem('ha_pen_gems')||0);
+let tournament=JSON.parse(localStorage.getItem('ha_pen_tournament')||'null');
+
+const by=id=>document.getElementById(id);
+function syncWallet(){by('menuPoints').textContent=points;by('menuGems').textContent=gems}
+function fillTeams(){
+ const a=teams[by('teamTypeMenu').value];
+ by('teamMenu').innerHTML=a.map(x=>'<option>'+x+'</option>').join('');
+ by('opponentMenu').innerHTML=a.map(x=>'<option>'+x+'</option>').join('');
+ if(a.length>1)by('opponentMenu').selectedIndex=1;
+}
+by('teamTypeMenu').addEventListener('change',fillTeams);fillTeams();syncWallet();
+
+function internetState(){
+ const on=navigator.onLine;
+ by('offlineNote').classList.toggle('show',!on);
+ document.querySelector('[data-mode="online"]').disabled=!on;
+ if(!on && gameMode==='online'){
+   gameMode='cpu';
+   document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='cpu'));
+   by('onlineBox').classList.remove('show');
+ }
+}
+addEventListener('online',internetState);addEventListener('offline',internetState);internetState();
+
+document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{
+ if(b.dataset.mode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج اتصال بالإنترنت');return}
+ gameMode=b.dataset.mode;
+ document.querySelectorAll('.modeBtn').forEach(x=>x.classList.toggle('active',x===b));
+ by('tournamentBox').classList.toggle('show',gameMode==='tournament');
+ by('onlineBox').classList.toggle('show',gameMode==='online');
+}));
+
+function makeTournament(){
+ const count=Number(by('tourTeams').value),pool=[...teams[by('teamTypeMenu').value]];
+ while(pool.length<count)pool.push('فريق '+(pool.length+1));
+ const selected=pool.slice(0,count); const mine=by('teamMenu').value;
+ if(!selected.includes(mine))selected[0]=mine;
+ const fixtures=[];
+ for(let i=0;i<selected.length;i+=2)fixtures.push({a:selected[i],b:selected[i+1],played:false,sa:null,sb:null});
+ tournament={name:by('tourName').value||'بطولة HA',format:by('tourFormat').value,type:by('tourType').value,teams:selected,round:1,fixtures,champion:null};
+ localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament));return tournament;
+}
+function renderTournament(){
+ if(!tournament)makeTournament();
+ by('tourModalTitle').textContent='🏆 '+tournament.name;
+ by('tourContent').innerHTML=(tournament.fixtures||[]).map((m,i)=>'<div class="fixture"><span>'+(i+1)+'. '+m.a+'</span><b>'+(m.played?(m.sa+' - '+m.sb):'VS')+'</b><span>'+m.b+'</span></div>').join('')+(tournament.champion?'<div class="resultBig">🏆 البطل: '+tournament.champion+'</div>':'');
+ by('tournamentModal').classList.add('show');
+}
+by('viewTournament').onclick=()=>{if(!tournament)makeTournament();renderTournament()};
+by('closeTour').onclick=()=>by('tournamentModal').classList.remove('show');
+
+by('createRoom').onclick=()=>{
+ if(!navigator.onLine){alert('لا يوجد إنترنت');return}
+ const code=Math.random().toString(36).slice(2,8).toUpperCase();by('roomCode').value=code;by('onlineStatus').value='تم إنشاء الغرفة '+code;
+};
+by('joinRoom').onclick=()=>{
+ if(!navigator.onLine){alert('لا يوجد إنترنت');return}
+ if(!by('roomCode').value.trim()){alert('اكتب كود الغرفة');return}
+ by('onlineStatus').value='تم الدخول للغرفة';
+};
+
+by('shopOpen').onclick=()=>{
+ const choice=prompt('المتجر\\n1 = كرة نارية (50 نقطة)\\n2 = كرة ثلجية (50 نقطة)\\n3 = كرة ترابية (40 نقطة)');
+ const cost=choice==='3'?40:50;
+ if(['1','2','3'].includes(choice||'')){
+   if(points<cost){alert('النقاط غير كافية');return}
+   points-=cost;gems+=1;localStorage.setItem('ha_pen_points',points);localStorage.setItem('ha_pen_gems',gems);syncWallet();alert('تم الشراء وإضافة جوهرة كمكافأة');
+ }
+};
+
+function resetScore(){
+ kickNo=0;homeScore=0;awayScore=0;
+ by('homeScoreText').textContent='0';by('awayScoreText').textContent='0';
+ by('hudKicks').textContent='0/'+maxKicks;
+}
+function currentOpponent(){
+ if(gameMode!=='tournament')return by('opponentMenu').value;
+ if(!tournament)makeTournament();
+ const mine=by('teamMenu').value;
+ const m=(tournament.fixtures||[]).find(x=>!x.played&&(x.a===mine||x.b===mine));
+ return m?(m.a===mine?m.b:m.a):by('opponentMenu').value;
+}
+function beginGame(){
+ if(gameMode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج إنترنت');return}
+ if(gameMode==='tournament'){
+   if(by('tourType').value==='rooms'&&!navigator.onLine){alert('بطولة الغرف تحتاج إنترنت. اختر بطولة ضد الجهاز أو شغّل الإنترنت.');return}
+   if(!tournament||tournament.champion)makeTournament();
+ }
+ maxKicks=Number(by('kickCountMenu').value);
+ resetScore();
+ by('homeTeamText').textContent=by('teamMenu').value;
+ by('awayTeamText').textContent=currentOpponent();
+ by('hudMode').textContent=gameMode==='cpu'?'ضد الجهاز':gameMode==='local'?'لاعبان محلياً':gameMode==='tournament'?'بطولة':'أونلاين';
+ by('menuScreen').style.display='none';
+}
+by('startGameFull').onclick=beginGame;
+
+function finalizeTournament(){
+ if(gameMode!=='tournament'||!tournament)return;
+ const mine=by('teamMenu').value;
+ const match=(tournament.fixtures||[]).find(x=>!x.played&&(x.a===mine||x.b===mine));
+ if(match){
+  match.played=true;match.sa=match.a===mine?homeScore:awayScore;match.sb=match.a===mine?awayScore:homeScore;
+ }
+ if(homeScore>=awayScore){
+   const remaining=(tournament.fixtures||[]).filter(x=>!x.played);
+   if(!remaining.length)tournament.champion=mine;
+ } else {
+   tournament.champion=(match?(match.a===mine?match.b:match.a):'الخصم');
+ }
+ localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament));
+}
+function finishMatch(){
+ finalizeTournament();
+ let res=homeScore>awayScore?'فوز 🎉':homeScore<awayScore?'خسارة':'تعادل';
+ if(gameMode==='tournament'&&homeScore>=awayScore)res+=' — تأهلت/تقدمت في البطولة 🏆';
+ by('endResult').textContent=res;by('endScore').textContent=homeScore+' - '+awayScore;by('endModal').classList.add('show');
+}
+by('playAgain').onclick=()=>{by('endModal').classList.remove('show');resetScore()};
+by('backMenu').onclick=()=>{by('endModal').classList.remove('show');by('menuScreen').style.display='flex'};
+
+// Hook into the existing visual game's score text changes.
+// A MutationObserver watches the current 3D result and mirrors it into the full system.
+const msg=by('msg');
+let lastShown=false;
+new MutationObserver(()=>{
+ const showing=msg.classList.contains('show');
+ if(showing&&!lastShown){
+   kickNo++;
+   const text=(msg.textContent||'').toLowerCase();
+   if(text.includes('goal')||text.includes('هدف')) homeScore++;
+   else {
+     const d=by('difficultyMenu').value;
+     const cpuChance=d==='hard'?.75:d==='medium'?.58:.42;
+     if(gameMode==='cpu'||gameMode==='tournament'){if(Math.random()<cpuChance)awayScore++}
+   }
+   // For every player kick, simulate opponent kick in CPU/tournament.
+   if((gameMode==='cpu'||gameMode==='tournament') && (text.includes('goal')||text.includes('هدف'))){
+     const d=by('difficultyMenu').value;const cpuChance=d==='hard'?.75:d==='medium'?.58:.42;
+     if(Math.random()<cpuChance)awayScore++;
+   }
+   by('homeScoreText').textContent=homeScore;by('awayScoreText').textContent=awayScore;
+   by('hudKicks').textContent=Math.min(kickNo,maxKicks)+'/'+maxKicks;
+   points+=text.includes('goal')||text.includes('هدف')?10:2;
+   if(Math.random()<.12)gems++;
+   localStorage.setItem('ha_pen_points',points);localStorage.setItem('ha_pen_gems',gems);
+   if(kickNo>=maxKicks)setTimeout(finishMatch,1400);
+ }
+ lastShown=showing;
+}).observe(msg,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
+})();
+</script>
+
 </body></html>
