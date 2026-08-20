@@ -474,6 +474,149 @@ background-size:25px 25px}
  .shoot-button{right:15px;width:76px;height:76px}
 }
 
+
+/* ===== نسخة 3D محسنة بدون مكتبات خارجية ===== */
+.pitch{
+  perspective:1200px !important;
+  transform-style:preserve-3d !important;
+  isolation:isolate;
+}
+.goal-area{
+  transform-style:preserve-3d !important;
+  perspective:900px;
+}
+.scene3d{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  transform-style:preserve-3d;
+  perspective:1000px;
+}
+.field-plane3d{
+  position:absolute;left:8%;right:8%;bottom:-10%;height:58%;
+  transform-origin:50% 100%;
+  transform:rotateX(67deg) translateZ(-42px);
+  border:2px solid rgba(255,255,255,.32);
+  background:
+    linear-gradient(90deg,transparent 49.7%,rgba(255,255,255,.32) 50%,transparent 50.3%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 72px,rgba(0,0,0,.025) 72px 144px);
+  box-shadow:0 -25px 90px rgba(0,0,0,.28) inset;
+}
+.field-plane3d:before{
+  content:"";position:absolute;left:50%;top:8%;width:38%;height:48%;
+  transform:translateX(-50%);
+  border:2px solid rgba(255,255,255,.28);
+  border-bottom:0;
+}
+.goal3d{
+  position:absolute;left:50%;top:19%;width:46%;height:29%;
+  transform:translateX(-50%) translateZ(42px);
+  transform-style:preserve-3d;
+}
+.goal3d .gbar{
+  position:absolute;background:linear-gradient(90deg,#ddd,#fff 45%,#b9b9b9);
+  box-shadow:0 2px 7px #0009;
+}
+.goal3d .post-l,.goal3d .post-r{top:0;width:7px;height:100%}
+.goal3d .post-l{left:0}.goal3d .post-r{right:0}
+.goal3d .cross{left:0;right:0;top:0;height:7px}
+.goal3d .net-back{
+  position:absolute;inset:5px 6px 0;
+  transform:translateZ(-42px) rotateX(-3deg);
+  transform-origin:50% 0;
+  background:
+    linear-gradient(rgba(255,255,255,.22) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.22) 1px,transparent 1px);
+  background-size:26px 22px;
+  border:1px solid rgba(255,255,255,.18);
+}
+.goal3d .side-l,.goal3d .side-r{
+  position:absolute;top:5px;width:42px;height:calc(100% - 5px);
+  background:
+    linear-gradient(rgba(255,255,255,.2) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.2) 1px,transparent 1px);
+  background-size:18px 18px;
+  transform-origin:top;
+}
+.goal3d .side-l{left:5px;transform:rotateY(72deg)}
+.goal3d .side-r{right:5px;transform:rotateY(-72deg)}
+.real-player,.real-keeper,#ballGame{
+  transform-style:preserve-3d !important;
+  backface-visibility:hidden;
+}
+.real-player{
+  filter:drop-shadow(0 16px 10px rgba(0,0,0,.48)) !important;
+  transform:translateX(-50%) translateZ(95px) rotateY(-4deg) !important;
+}
+.real-keeper{
+  filter:drop-shadow(0 12px 9px rgba(0,0,0,.5)) !important;
+  transform:translate(-50%,0) translateZ(55px) !important;
+}
+.real-player.idle{animation:playerIdle3d 2.5s ease-in-out infinite !important}
+.real-keeper.idle{animation:keeperIdle3d 1.7s ease-in-out infinite !important}
+@keyframes playerIdle3d{
+  0%,100%{transform:translateX(-50%) translateZ(95px) rotateY(-4deg) rotateZ(-1deg)}
+  50%{transform:translateX(-50%) translateZ(105px) rotateY(3deg) rotateZ(1deg) translateY(-3px)}
+}
+@keyframes keeperIdle3d{
+  0%,100%{transform:translate(-50%,0) translateZ(55px) scale(1)}
+  50%{transform:translate(-50%,-3%) translateZ(70px) scale(1.02)}
+}
+.real-player.kick-anim{animation:realKick3d .8s cubic-bezier(.2,.75,.25,1) !important}
+@keyframes realKick3d{
+  0%{transform:translateX(-50%) translateZ(95px) rotateY(-4deg) rotateZ(0)}
+  25%{transform:translateX(-54%) translateZ(108px) rotateY(-12deg) rotateZ(-5deg)}
+  52%{transform:translateX(-46%) translateZ(125px) rotateY(15deg) rotateZ(8deg)}
+  76%{transform:translateX(-43%) translateZ(115px) rotateY(21deg) rotateZ(11deg)}
+  100%{transform:translateX(-50%) translateZ(95px) rotateY(-4deg) rotateZ(0)}
+}
+.real-keeper.dive-l{animation:diveL3d .75s cubic-bezier(.18,.82,.25,1) !important}
+.real-keeper.dive-r{animation:diveR3d .75s cubic-bezier(.18,.82,.25,1) !important}
+.real-keeper.dive-u{animation:diveU3d .75s cubic-bezier(.18,.82,.25,1) !important}
+.real-keeper.dive-d{animation:diveD3d .75s cubic-bezier(.18,.82,.25,1) !important}
+@keyframes diveL3d{
+  0%{transform:translate(-50%,0) translateZ(55px) rotateY(0) rotateZ(0)}
+  48%{transform:translate(-128%,-14%) translateZ(115px) rotateY(-18deg) rotateZ(-44deg) scale(1.05)}
+  72%{transform:translate(-145%,2%) translateZ(72px) rotateY(-22deg) rotateZ(-52deg)}
+  100%{transform:translate(-50%,0) translateZ(55px)}
+}
+@keyframes diveR3d{
+  0%{transform:translate(-50%,0) translateZ(55px) rotateY(0) rotateZ(0)}
+  48%{transform:translate(28%,-14%) translateZ(115px) rotateY(18deg) rotateZ(44deg) scale(1.05)}
+  72%{transform:translate(47%,2%) translateZ(72px) rotateY(22deg) rotateZ(52deg)}
+  100%{transform:translate(-50%,0) translateZ(55px)}
+}
+@keyframes diveU3d{
+  0%{transform:translate(-50%,0) translateZ(55px)}
+  50%{transform:translate(-50%,-62%) translateZ(145px) rotateX(-8deg) scale(1.08)}
+  100%{transform:translate(-50%,0) translateZ(55px)}
+}
+@keyframes diveD3d{
+  0%{transform:translate(-50%,0) translateZ(55px)}
+  50%{transform:translate(-50%,28%) translateZ(25px) rotateX(10deg) scale(.96)}
+  100%{transform:translate(-50%,0) translateZ(55px)}
+}
+#ballGame{
+  text-shadow:0 8px 9px rgba(0,0,0,.55);
+  filter:drop-shadow(0 4px 5px rgba(0,0,0,.45));
+}
+.pitch.shot-camera3d{
+  animation:cameraShot3d .9s cubic-bezier(.2,.7,.2,1) !important;
+}
+@keyframes cameraShot3d{
+  0%{transform:perspective(1200px) rotateX(0) scale(1)}
+  42%{transform:perspective(1200px) rotateX(1.5deg) scale(1.035)}
+  100%{transform:perspective(1200px) rotateX(0) scale(1)}
+}
+.depth-shadow3d{
+  position:absolute;width:70px;height:18px;border-radius:50%;
+  background:rgba(0,0,0,.32);filter:blur(5px);z-index:8;
+  left:50%;bottom:40px;transform:translateX(-50%);
+  pointer-events:none;transition:.15s;
+}
+@media(max-width:650px){
+  .goal3d{width:56%;top:21%;height:27%}
+  .field-plane3d{left:3%;right:3%;height:55%}
+}
+
 </style>
 </head>
 <body>
@@ -482,7 +625,7 @@ background-size:25px 25px}
   <div class="start-card">
     <div class="hero">
       <div class="ball">⚽</div>
-      <h1>ركلات الجزاء</h1>
+      <h1>ركلات الجزاء 3D</h1>
       <p>اختار فريقك واسم اللاعب وطريقة اللعب.</p>
     </div>
 
@@ -575,6 +718,18 @@ background-size:25px 25px}
       </div>
       <div class="stands"></div>
       <div class="stadium-lights">✦ ✦ ✦ ✦ ✦</div>
+      <div class="scene3d">
+        <div class="field-plane3d"></div>
+        <div class="goal3d">
+          <div class="gbar post-l"></div>
+          <div class="gbar post-r"></div>
+          <div class="gbar cross"></div>
+          <div class="net-back"></div>
+          <div class="side-l"></div>
+          <div class="side-r"></div>
+        </div>
+        <div id="depthShadow3d" class="depth-shadow3d"></div>
+      </div>
       <div class="scoreboard">
         <div class="team-box"><b id="homeTeam">فريقك</b><small id="homePlayer">اللاعب</small></div>
         <div><span id="homeScore" class="score-num">0</span> - <span id="awayScore" class="score-num">0</span></div>
@@ -1182,10 +1337,19 @@ function animateShot(zone,save,shootingHome=true){
   const dur=Math.max(330,760-power*4);
 
   ball.style.left='50%';ball.style.top='auto';ball.style.bottom='54px';
+  $('pitch')?.classList.add('shot-camera3d');
+  const sh=$('depthShadow3d');
+  if(sh){
+    sh.animate([
+      {left:'50%',bottom:'40px',transform:'translateX(-50%) scale(1)',opacity:.34},
+      {left:(50+bend*.55)+'%',bottom:'34%',transform:'translateX(-50%) scale(.55)',opacity:.22},
+      {left:targetX+'%',bottom:(95-targetY)+'%',transform:'translateX(-50%) scale(.28)',opacity:.10}
+    ],{duration:dur,easing:'cubic-bezier(.18,.72,.2,1)',fill:'forwards'});
+  }
   ball.animate([
-    {left:'50%',bottom:'54px',transform:'translateX(-50%) scale(1) rotate(0deg)',offset:0},
-    {left:(50+bend)+'%',bottom:'42%',transform:'translateX(-50%) scale(.88) rotate(260deg)',offset:.48},
-    {left:targetX+'%',bottom:(100-targetY)+'%',transform:'translateX(-50%) scale(.68) rotate(620deg)',offset:1}
+    {left:'50%',bottom:'54px',transform:'translateX(-50%) translateZ(150px) scale(1.12) rotateX(0deg) rotateY(0deg)',offset:0},
+    {left:(50+bend)+'%',bottom:'42%',transform:'translateX(-50%) translateZ(255px) scale(.92) rotateX(320deg) rotateY(190deg)',offset:.48},
+    {left:targetX+'%',bottom:(100-targetY)+'%',transform:'translateX(-50%) translateZ(35px) scale(.58) rotateX(760deg) rotateY(540deg)',offset:1}
   ],{duration:dur,easing:'cubic-bezier(.18,.72,.2,1)',fill:'forwards'});
 
   crowdSound('kick');
@@ -1204,7 +1368,10 @@ function animateShot(zone,save,shootingHome=true){
     player.classList.remove('kick-anim');player.classList.add('idle');
     keeper.classList.remove('dive-l','dive-r','dive-u','dive-d');keeper.classList.add('idle');
     ball.getAnimations().forEach(a=>a.cancel());
-    ball.style.left='50%';ball.style.bottom='54px';ball.style.transform='translateX(-50%) scale(1)';
+    sh?.getAnimations().forEach(a=>a.cancel());
+    $('pitch')?.classList.remove('shot-camera3d');
+    ball.style.left='50%';ball.style.bottom='54px';ball.style.transform='translateX(-50%) translateZ(150px) scale(1.12)';
+    if(sh){sh.style.left='50%';sh.style.bottom='40px';sh.style.transform='translateX(-50%) scale(1)';sh.style.opacity='.32';}
   },dur+320);
 }
 function cpuChoice(){
