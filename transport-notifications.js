@@ -1,121 +1,137 @@
-// HA Marketing - Transport notifications (Realtime Database + browser/app notifications)
+// HA Marketing - FREE transport notifications
+// Spark-plan version: uses Firebase Realtime Database listeners in the open site/app.
+// No Cloud Functions / Blaze dependency.
 (function(){
   const ENABLE_KEY='ha_notifications_enabled';
   let watchers=[];
 
-  function enabled(){
-    return localStorage.getItem(ENABLE_KEY)==='1' && 'Notification' in window && Notification.permission==='granted';
+  function notificationsAllowed(){
+    return 'Notification' in window &&
+      Notification.permission==='granted' &&
+      localStorage.getItem(ENABLE_KEY)==='1';
   }
 
-  async function show(title, body, url){
-    if(!enabled())return;
+  async function notify(title,body,url,tag){
+    // In-app alert always works while this page is running.
     try{
-      if('serviceWorker' in navigator){
-        const reg=await navigator.serviceWorker.ready;
-        await reg.showNotification(title,{
-          body,
-          icon:'./main.jpg',
-          badge:'./main.jpg',
-          tag:'ha-transport-'+Date.now(),
-          data:{url:url||location.href}
-        });
-      }else{
-        const n=new Notification(title,{body,icon:'./main.jpg'});
-        n.onclick=()=>{window.focus(); if(url)location.href=url;};
+      if(document.visibilityState==='visible'){
+        console.log('[HA]',title,body||'');
       }
-    }catch(e){console.warn('HA notify error',e)}
+      if(!notificationsAllowed())return;
+
+      const options={
+        body:body||'',
+        icon:'./main.jpg',
+        badge:'./main.jpg',
+        tag:tag||('ha-'+Date.now()),
+        data:{url:url||location.href}
+      };
+
+      if('serviceWorker' in navigator){
+        try{
+          const reg=await navigator.serviceWorker.ready;
+          await reg.showNotification(title,options);
+          return;
+        }catch(e){}
+      }
+      const n=new Notification(title,options);
+      n.onclick=()=>{window.focus(); if(url)location.href=url;};
+    }catch(e){console.warn('HA notification error',e)}
   }
 
-  function deviceId(){
-    let id=localStorage.getItem('ha_device_id');
-    if(!id){
-      id='dev_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);
-      localStorage.setItem('ha_device_id',id);
-    }
-    return id;
-  }
-
-  async function registerContext(role, rideId){
-    try{
-      if(!window.firebase?.database)return;
-      const token=localStorage.getItem('ha_web_push_token')||'';
-      await firebase.database().ref('pushDevices/'+deviceId()).update({
-        role:role||'unknown',
-        activeRide:rideId||'',
-        token,
-        updatedAt:firebase.database.ServerValue.TIMESTAMP
-      });
-    }catch(e){console.warn('push context save failed',e)}
-  }
-
-  function clear(){
-    watchers.forEach(x=>{
-      try{x.ref.off(x.event,x.cb)}catch(e){}
-    });
-    watchers=[];
-  }
-
-  function on(ref,event,cb){
+  function add(ref,event,cb){
     ref.on(event,cb);
     watchers.push({ref,event,cb});
   }
 
-  function watchRide(rideId, role){
+  function clear(){
+    watchers.forEach(w=>{try{w.ref.off(w.event,w.cb)}catch(e){}});
+    watchers=[];
+  }
+
+  function watchRide(rideId,role){
     if(!window.firebase?.database || !rideId)return;
     clear();
-    registerContext(role,rideId);
-
     const db=firebase.database();
 
-    // New messages
+    // New chat messages for the opposite side.
     const msgRef=db.ref('rideChats/'+rideId+'/messages');
-    on(msgRef.limitToLast(30),'child_added',snap=>{
-      const m=snap.val();
-      if(!m || m.senderRole===role)return;
-      const title=role==='driver'?'💬 رسالة من الزبون':'💬 رسالة من السائق/المندوب';
-      show(title,m.text||'لديك رسالة جديدة',location.href);
+    let messagesReady=false;
+    msgRef.limitToLast(1).once('value').finally(()=>{messagesReady=true;});
+    add(msgRef.limitToLast(50),'child_added',snap=>{
+      if(!messagesReady)return;
+      const m=snap.val()||{};
+      if(!m.text || m.senderRole===role)return;
+      notify(
+        role==='driver'?'💬 رسالة جديدة من الزبون':'💬 رسالة جديدة من السائق/المندوب',
+        m.text,
+        location.href,
+        'ha-msg-'+rideId
+      );
     });
 
-    // Incoming calls
-    const callsRef=db.ref('rideCalls/'+rideId);
-    on(callsRef.limitToLast(10),'child_added',snap=>{
-      const c=snap.val();
-      if(!c || c.status!=='ringing' || c.callerRole===role)return;
-      const title=role==='driver'?'📞 اتصال من الزبون':'📞 اتصال من السائق/المندوب';
-      show(title,'اضغط للعودة إلى الطلب والرد على المكالمة',location.href);
+    // Incoming calls for the opposite side.
+    const callRef=db.ref('rideCalls/'+rideId);
+    let callsReady=false;
+    callRef.limitToLast(1).once('value').finally(()=>{callsReady=true;});
+    add(callRef.limitToLast(20),'child_added',snap=>{
+      if(!callsReady)return;
+      const c=snap.val()||{};
+      if(c.status!=='ringing' || c.callerRole===role)return;
+      notify(
+        role==='driver'?'📞 اتصال وارد من الزبون':'📞 اتصال وارد من السائق/المندوب',
+        'افتح الطلب للرد على المكالمة.',
+        location.href,
+        'ha-call-'+rideId
+      );
     });
 
-    // Status updates for customer
-    const rideRef=db.ref('rides/'+rideId);
-    on(rideRef,'value',snap=>{
-      const r=snap.val();
-      if(!r || role!=='customer')return;
-      const key='ha_last_status_'+rideId;
-      const previous=localStorage.getItem(key);
-      if(previous===r.status)return;
-      localStorage.setItem(key,r.status||'');
-      const map={
-        accepted:'✅ تم قبول طلبك',
-        arrived:'🚕 السائق وصل إليك',
-        started:'🛣️ بدأت الرحلة',
-        finished:'✅ انتهت الرحلة',
-        cancelled:'❌ تم إلغاء الطلب'
-      };
-      if(map[r.status])show(map[r.status], 'اضغط لفتح تفاصيل الطلب', location.href);
-    });
+    // Customer status updates.
+    if(role==='customer'){
+      const rideRef=db.ref('rides/'+rideId+'/status');
+      let initial=true;
+      add(rideRef,'value',snap=>{
+        const status=snap.val();
+        if(initial){initial=false;return;}
+        const labels={
+          accepted:['✅ تم قبول طلبك','السائق قبل الطلب.'],
+          arrived:['🚕 السائق وصل','السائق وصل إلى نقطة الانطلاق.'],
+          started:['🛣️ بدأت الرحلة','تم بدء الرحلة.'],
+          finished:['✅ انتهت الرحلة','تم إنهاء الرحلة بنجاح.'],
+          cancelled:['❌ تم إلغاء الطلب','تم إلغاء الطلب.']
+        };
+        if(labels[status]){
+          notify(labels[status][0],labels[status][1],location.href,'ha-status-'+rideId);
+        }
+      });
+    }
   }
 
-  // Driver gets alerts for new pending transport requests while driver page is open.
   function watchDriverRequests(){
     if(!window.firebase?.database)return;
-    registerContext('driver','');
-    const ref=firebase.database().ref('rides');
-    on(ref.limitToLast(30),'child_added',snap=>{
-      const r=snap.val();
-      if(!r || r.status!=='pending')return;
-      show('🚕 طلب جديد قريب منك','يوجد طلب نقل جديد بانتظار سائق',location.href);
+    const db=firebase.database();
+    const ref=db.ref('rides');
+    const startedAt=Date.now();
+
+    add(ref.limitToLast(50),'child_added',snap=>{
+      const r=snap.val()||{};
+      // Avoid notifying for old requests already present before driver opened the page.
+      const created=Number(r.createdAt||r.timestamp||0);
+      if(r.status!=='pending')return;
+      if(created && created < startedAt-5000)return;
+      notify(
+        '🚕 طلب نقل جديد',
+        r.type ? ('طلب '+r.type+' جديد بانتظار سائق.') : 'يوجد طلب جديد بانتظار سائق.',
+        location.href,
+        'ha-new-ride-'+snap.key
+      );
     });
   }
 
-  window.HATransportNotify={watchRide,watchDriverRequests,registerContext,show,clear};
+  window.HATransportNotify={
+    watchRide,
+    watchDriverRequests,
+    show:notify,
+    clear
+  };
 })();
