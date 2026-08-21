@@ -1738,16 +1738,6 @@ function callAcceptedDriver(){
 }
 
 
-function startTransportAppCall(){
-  // اتصال داخل HA Marketing بين الزبون والسائق.
-  // حالياً يفتح واجهة الاتصال داخل التطبيق؛ الربط الصوتي الحي يستخدم WebRTC عند توفر الطرف الآخر.
-  const rideId=localStorage.getItem('ha_active_ride')||'current';
-  localStorage.setItem('ha_transport_call_ride',rideId);
-  localStorage.setItem('ha_transport_call_type','التكسي');
-  if(confirm('بدء اتصال داخل التطبيق مع السائق؟')){
-    window.location.href='chat.html?call=audio&ride='+encodeURIComponent(rideId)+'&transport='+encodeURIComponent('التكسي');
-  }
-}
 
 let haChatRef=null;
 let haChatListener=null;
@@ -2006,7 +1996,11 @@ document.getElementById('postBackBtn').onclick=()=>{
 
 
 document.getElementById('callDriverBtn').onclick=callAcceptedDriver;
-document.getElementById('appCallDriverBtn').onclick=()=>startTransportAppCall();
+document.getElementById('appCallDriverBtn').onclick=()=>{
+  const id=activeRideId || localStorage.getItem('ha_active_ride');
+  if(!id){alert('لا توجد رحلة فعالة حالياً.');return;}
+  HATransportCall.start(id,'customer','اتصال مع التكسي');
+};
 document.getElementById('chatDriverBtn').onclick=openInAppChat;
 document.getElementById('closeChatBtn').onclick=closeInAppChat;
 document.getElementById('sendChatBtn').onclick=sendInAppMessage;
@@ -2146,6 +2140,16 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   document.getElementById('cancelOtherText').value='';
   document.getElementById('cancelOtherText').classList.remove('show');
 };
+</script>
+<script src="transport-call.js"></script>
+
+<script>
+window.addEventListener('load',()=>{
+  try{
+    const id=activeRideId || localStorage.getItem('ha_active_ride');
+    if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'customer');
+  }catch(e){console.error(e)}
+});
 </script>
 </body>
 </html>

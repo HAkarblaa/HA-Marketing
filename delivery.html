@@ -2139,10 +2139,9 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   }
 
   if(appCall) appCall.onclick=()=>{
-    const id=rideId()||'current';
-    if(confirm('بدء اتصال داخل التطبيق مع المندوب؟')){
-      location.href='chat.html?call=audio&ride='+encodeURIComponent(id)+'&transport='+encodeURIComponent('المندوب');
-    }
+    const id=activeDeliveryRideId || localStorage.getItem('ha_active_delivery');
+    if(!id){alert('لا توجد رحلة فعالة حالياً.');return;}
+    HATransportCall.start(id,'customer','اتصال مع المندوب');
   };
 
   if(chatBtn) chatBtn.onclick=()=>{
@@ -2186,5 +2185,15 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
 })();
 </script>
 
+<script src="transport-call.js"></script>
+
+<script>
+window.addEventListener('load',()=>{
+  try{
+    const id=activeDeliveryRideId || localStorage.getItem('ha_active_delivery');
+    if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'customer');
+  }catch(e){console.error(e)}
+});
+</script>
 </body>
 </html>

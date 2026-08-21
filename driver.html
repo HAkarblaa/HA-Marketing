@@ -624,10 +624,9 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   };
 
   if(appCall) appCall.onclick=()=>{
-    const id=rideId()||'current';
-    if(confirm('بدء اتصال داخل التطبيق مع الزبون؟')){
-      location.href='chat.html?call=audio&ride='+encodeURIComponent(id)+'&role=driver';
-    }
+    const id=rideId();
+    if(!id){alert('لا يوجد طلب حالي للاتصال.');return;}
+    HATransportCall.start(id,'driver','اتصال مع الزبون');
   };
 
   if(chat) chat.onclick=()=>{
@@ -670,5 +669,18 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
 })();
 </script>
 
+<script src="transport-call.js"></script>
+
+<script>
+window.addEventListener('load',()=>{
+  try{
+    const id=(typeof currentRideId!=='undefined'&&currentRideId) ||
+      localStorage.getItem('ha_driver_active_ride') ||
+      localStorage.getItem('ha_active_ride') ||
+      localStorage.getItem('ha_active_delivery');
+    if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'driver');
+  }catch(e){console.error(e)}
+});
+</script>
 </body>
 </html>
