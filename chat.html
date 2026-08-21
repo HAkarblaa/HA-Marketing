@@ -1,6 +1,17 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الدردشة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:28px auto}h1{text-align:center}.rooms{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.room{background:white;border:0;border-radius:18px;min-height:150px;padding:18px;box-shadow:0 4px 16px #0002;font-size:20px;cursor:pointer}.icon{font-size:42px;display:block;margin-bottom:10px}.chat{display:none;background:white;border-radius:18px;padding:16px}.top{display:flex;gap:10px;align-items:center}.name,.send input{width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:16px}.name{margin:10px 0}.messages{height:420px;overflow:auto;background:#f7f7f7;border-radius:12px;padding:12px;margin-bottom:10px}.msg{background:white;padding:10px 12px;border-radius:12px;margin:8px 0}.meta{font-size:12px;color:#777;margin-bottom:5px}.send{display:flex;gap:8px}.send button,.top button{padding:12px 18px;border:0;border-radius:10px;background:#111;color:white;cursor:pointer}.note{text-align:center;color:#777;font-size:13px}
-.callbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.callbtn{border:0;border-radius:12px;padding:10px 14px;background:#0b6bcb;color:#fff;font-weight:700;cursor:pointer}.callbtn.video{background:#128a49}.callbtn.end{background:#c62828}.call-overlay{display:none;position:fixed;inset:0;background:#07111ff2;z-index:9999;color:#fff;align-items:center;justify-content:center;padding:16px}.call-card{width:min(760px,96vw);background:#101b2a;border:1px solid #ffffff22;border-radius:22px;padding:15px;box-shadow:0 20px 60px #0009}.call-title{text-align:center;margin:4px 0 12px}.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.video-grid video{width:100%;aspect-ratio:16/10;background:#000;border-radius:14px;object-fit:cover}.call-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.call-status{text-align:center;color:#b8c7d9;font-size:13px;margin:8px 0}.incoming{display:none;background:#fff3cd;color:#5b4400;border-radius:12px;padding:10px;margin:10px 0;text-align:center}.incoming button{margin:5px;border:0;border-radius:10px;padding:9px 13px;font-weight:700;cursor:pointer}.incoming .accept{background:#138a4a;color:#fff}.incoming .reject{background:#c62828;color:#fff}@media(max-width:650px){.video-grid{grid-template-columns:1fr}.messages{height:350px}}
+.callbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.callbar .callbtn{min-width:150px;font-size:15px}.callbtn{border:0;border-radius:12px;padding:10px 14px;background:#0b6bcb;color:#fff;font-weight:700;cursor:pointer}.callbtn.video{background:#128a49}.callbtn.end{background:#c62828}.call-overlay{display:none;position:fixed;inset:0;background:#07111ff2;z-index:9999;color:#fff;align-items:center;justify-content:center;padding:16px}.call-card{width:min(760px,96vw);background:#101b2a;border:1px solid #ffffff22;border-radius:22px;padding:15px;box-shadow:0 20px 60px #0009}.call-title{text-align:center;margin:4px 0 12px}.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.video-grid video{width:100%;aspect-ratio:16/10;background:#000;border-radius:14px;object-fit:cover}.call-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.call-status{text-align:center;color:#b8c7d9;font-size:13px;margin:8px 0}.incoming{display:none;background:#fff3cd;color:#5b4400;border-radius:12px;padding:10px;margin:10px 0;text-align:center}.incoming button{margin:5px;border:0;border-radius:10px;padding:9px 13px;font-weight:700;cursor:pointer}.incoming .accept{background:#138a4a;color:#fff}.incoming .reject{background:#c62828;color:#fff}@media(max-width:650px){.video-grid{grid-template-columns:1fr}.messages{height:350px}}
+
+.voice-btn{width:48px;min-width:48px;padding:0!important;font-size:20px!important;background:#0b6bcb!important}
+.voice-btn.recording{background:#c62828!important;animation:voicePulse 1s infinite}
+@keyframes voicePulse{50%{transform:scale(.92);opacity:.8}}
+.voice-status{display:none;font-size:12px;color:#c62828;font-weight:700;margin:5px 2px 0}
+.voice-status.show{display:block}
+.voice-message{display:flex;align-items:center;gap:9px;background:#eef5ff;border-radius:12px;padding:9px 10px;margin-top:4px}
+.voice-message button{border:0;border-radius:50%;width:38px;height:38px;background:#111;color:#fff;cursor:pointer;font-size:15px}
+.voice-message .voice-time{font-size:12px;color:#555;min-width:34px}
+.voice-message audio{display:none}
+
 </style></head><body>
 <div class="wrap"><section id="rooms"><h1>💬 الدردشة</h1><p style="text-align:center">اختر فئة الدردشة</p><div class="rooms">
 <button class="room" onclick="openRoom('football','كرة القدم')"><span class="icon">⚽</span>كرة القدم</button>
@@ -9,21 +20,210 @@
 <button class="room" onclick="openRoom('general','الدردشة العامة')"><span class="icon">💬</span>الدردشة العامة</button></div>
 <p class="note">الرسائل النصية + المكالمات الصوتية والفيديو تعمل عند وجود إنترنت وبموافقة المستخدم على المايكروفون/الكاميرا.</p></section>
 <section id="chat" class="chat"><div class="top"><button onclick="backRooms()">رجوع</button><h2 id="title"></h2></div>
+<div class="callbar" style="justify-content:center;margin-top:4px">
+  <button class="callbtn" onclick="startCall(false)">📞 اتصال صوتي</button>
+  <button class="callbtn video" onclick="startCall(true)">📹 اتصال فيديو</button>
+</div>
 <input id="username" class="name" maxlength="30" placeholder="اكتب اسمك">
-<div class="callbar"><button class="callbtn" onclick="startCall(false)">📞 اتصال صوتي</button><button class="callbtn video" onclick="startCall(true)">📹 اتصال فيديو</button></div>
 <div id="incoming" class="incoming"><div id="incomingText">مكالمة واردة...</div><button class="accept" onclick="acceptCall()">قبول</button><button class="reject" onclick="rejectCall()">رفض</button></div>
 <div id="messages" class="messages"></div>
-<div class="send"><input id="input" maxlength="1000" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')sendMessage()"><button onclick="sendMessage()">إرسال</button></div></section></div>
+<div class="send">
+  <input id="input" maxlength="1000" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')sendMessage()">
+  <button id="voiceBtn" class="voice-btn" type="button" onclick="toggleVoiceRecord()" title="رسالة صوتية">🎤</button>
+  <button onclick="sendMessage()">إرسال</button>
+</div>
+<div id="voiceStatus" class="voice-status">● جاري التسجيل... اضغط المايك مرة ثانية للإرسال</div>
+</section></div>
 <div id="callOverlay" class="call-overlay"><div class="call-card"><h2 id="callTitle" class="call-title">مكالمة</h2><div id="callStatus" class="call-status">جاري الاتصال...</div><div class="video-grid"><video id="remoteVideo" autoplay playsinline></video><video id="localVideo" autoplay playsinline muted></video></div><div class="call-actions"><button id="muteBtn" class="callbtn" onclick="toggleMute()">🎤 كتم</button><button id="cameraBtn" class="callbtn video" onclick="toggleCamera()">📷 إيقاف الكاميرا</button><button class="callbtn end" onclick="endCall(true)">⛔ إنهاء</button></div></div></div>
 <script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let room=null,ch=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function openRoom(r,n){room=r;rooms.style.display='none';chat.style.display='block';title.textContent='💬 '+n;await load();subscribe();setupCallChannel()}
 async function load(){messages.innerHTML='جاري التحميل...';let {data,error}=await db.from('messages').select('*').eq('room',room).order('created_at',{ascending:true}).limit(200);if(error){messages.innerHTML=esc(error.message);return}messages.innerHTML='';(data||[]).forEach(show)}
-function show(m){if(m.room!==room)return;let d=document.createElement('div');d.className='msg';d.innerHTML='<div class="meta"><b>'+esc(m.username||'زائر')+'</b> · '+esc(new Date(m.created_at).toLocaleString('ar-IQ'))+'</div><div>'+esc(m.message||'')+'</div>';messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+function show(m){
+  if(m.room!==room)return;
+  let d=document.createElement('div');
+  d.className='msg';
+
+  const meta=document.createElement('div');
+  meta.className='meta';
+  meta.innerHTML='<b>'+esc(m.username||'زائر')+'</b> · '+esc(new Date(m.created_at).toLocaleString('ar-IQ'));
+  d.appendChild(meta);
+
+  if(m.message_type==='voice' && m.file_url){
+    const box=document.createElement('div');
+    box.className='voice-message';
+
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.textContent='▶';
+
+    const time=document.createElement('span');
+    time.className='voice-time';
+    time.textContent=(m.message||'🎤 رسالة صوتية').replace('🎤 ','') || 'صوت';
+
+    const audio=document.createElement('audio');
+    audio.preload='metadata';
+    audio.src=m.file_url;
+
+    btn.onclick=()=>{
+      if(audio.paused){
+        document.querySelectorAll('.voice-message audio').forEach(a=>{if(a!==audio)a.pause()});
+        audio.play().catch(()=>{});
+        btn.textContent='⏸';
+      }else{
+        audio.pause();
+        btn.textContent='▶';
+      }
+    };
+    audio.onended=()=>btn.textContent='▶';
+    audio.onpause=()=>{if(audio.currentTime<audio.duration)btn.textContent='▶'};
+
+    box.append(btn,time,audio);
+    d.appendChild(box);
+  }else{
+    const body=document.createElement('div');
+    body.textContent=m.message||'';
+    d.appendChild(body);
+  }
+
+  messages.appendChild(d);
+  messages.scrollTop=messages.scrollHeight;
+}
 function subscribe(){if(ch)db.removeChannel(ch);ch=db.channel('r-'+room+'-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+room},p=>show(p.new)).subscribe()}
 async function sendMessage(){let u=username.value.trim(),m=input.value.trim();if(!u){alert('اكتب اسمك أولاً');return}if(!m)return;let {error}=await db.from('messages').insert({username:u,room,message:m,message_type:'text',file_url:null});if(error)alert(error.message);else input.value=''}
-function backRooms(){endCall(true);if(ch)db.removeChannel(ch);if(callChannel)db.removeChannel(callChannel);callChannel=null;ch=null;room=null;chat.style.display='none';rooms.style.display='block'}
+
+// ===== الرسائل الصوتية داخل الدردشة =====
+let voiceRecorder=null,voiceStream=null,voiceChunks=[],voiceStartedAt=0,voiceTimer=null;
+const VOICE_MAX_MS=20000; // 20 ثانية حتى تبقى الرسالة خفيفة
+
+function bestVoiceMime(){
+  const options=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];
+  return options.find(x=>MediaRecorder.isTypeSupported(x))||'';
+}
+
+function blobToDataUrl(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=reject;
+    r.readAsDataURL(blob);
+  });
+}
+
+function stopVoiceTracks(){
+  if(voiceStream){
+    voiceStream.getTracks().forEach(t=>{try{t.stop()}catch(e){}});
+    voiceStream=null;
+  }
+}
+
+async function toggleVoiceRecord(){
+  if(!navigator.onLine){alert('الرسالة الصوتية تحتاج إنترنت');return}
+  if(!room){alert('ادخل غرفة الدردشة أولاً');return}
+  if(!username.value.trim()){alert('اكتب اسمك أولاً');return}
+  if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
+    alert('هذا الجهاز أو المتصفح لا يدعم تسجيل الصوت');
+    return;
+  }
+
+  if(voiceRecorder && voiceRecorder.state==='recording'){
+    await finishVoiceRecord(true);
+    return;
+  }
+
+  try{
+    voiceStream=await navigator.mediaDevices.getUserMedia({
+      audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},
+      video:false
+    });
+
+    voiceChunks=[];
+    voiceStartedAt=Date.now();
+    const mime=bestVoiceMime();
+    voiceRecorder=mime?new MediaRecorder(voiceStream,{mimeType:mime}):new MediaRecorder(voiceStream);
+
+    voiceRecorder.ondataavailable=e=>{
+      if(e.data&&e.data.size)voiceChunks.push(e.data);
+    };
+
+    voiceRecorder.start(250);
+    voiceBtn.classList.add('recording');
+    voiceBtn.textContent='⏹️';
+    voiceStatus.classList.add('show');
+    voiceStatus.textContent='● جاري التسجيل... اضغط مرة ثانية للإرسال';
+
+    clearTimeout(voiceTimer);
+    voiceTimer=setTimeout(()=>{
+      if(voiceRecorder?.state==='recording')finishVoiceRecord(true);
+    },VOICE_MAX_MS);
+  }catch(e){
+    console.error(e);
+    stopVoiceTracks();
+    if(e.name==='NotAllowedError'){
+      alert('لازم تسمح للموقع باستخدام المايكروفون أولاً');
+    }else{
+      alert('تعذر تشغيل المايكروفون');
+    }
+  }
+}
+
+async function finishVoiceRecord(send){
+  if(!voiceRecorder||voiceRecorder.state!=='recording')return;
+
+  clearTimeout(voiceTimer);
+  const stopped=new Promise(resolve=>{
+    voiceRecorder.onstop=resolve;
+  });
+  voiceRecorder.stop();
+  await stopped;
+
+  voiceBtn.classList.remove('recording');
+  voiceBtn.textContent='🎤';
+  voiceStatus.textContent='جاري إرسال الرسالة الصوتية...';
+
+  const duration=Math.max(1,Math.round((Date.now()-voiceStartedAt)/1000));
+  const blob=new Blob(voiceChunks,{type:voiceRecorder.mimeType||'audio/webm'});
+  stopVoiceTracks();
+
+  if(!send){
+    voiceStatus.classList.remove('show');
+    return;
+  }
+
+  // قاعدة البيانات ليست مخزن ملفات، لذلك نبقي التسجيل قصيراً.
+  if(blob.size>450*1024){
+    voiceStatus.classList.remove('show');
+    alert('التسجيل صار كبير. سجل رسالة أقصر.');
+    return;
+  }
+
+  try{
+    const dataUrl=await blobToDataUrl(blob);
+    const u=username.value.trim();
+
+    const {error}=await db.from('messages').insert({
+      username:u,
+      room,
+      message:'🎤 '+duration+' ث',
+      message_type:'voice',
+      file_url:dataUrl
+    });
+
+    if(error)throw error;
+    voiceStatus.classList.remove('show');
+  }catch(e){
+    console.error(e);
+    voiceStatus.classList.remove('show');
+    alert('تعذر إرسال الرسالة الصوتية. حاول مرة ثانية.');
+  }finally{
+    voiceRecorder=null;
+    voiceChunks=[];
+    voiceStartedAt=0;
+  }
+}
+
+function backRooms(){if(voiceRecorder&&voiceRecorder.state==='recording')finishVoiceRecord(false);stopVoiceTracks();endCall(true);if(ch)db.removeChannel(ch);if(callChannel)db.removeChannel(callChannel);callChannel=null;ch=null;room=null;chat.style.display='none';rooms.style.display='block'}
 
 
 // ===== مكالمات WebRTC صوت/فيديو عبر Supabase Realtime Broadcast =====
