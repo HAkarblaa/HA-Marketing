@@ -219,6 +219,18 @@ body{padding-bottom:76px}
   padding:12px 30px;font-size:17px;font-weight:700;cursor:pointer
 }
 
+
+.notif-btn{
+  width:48px;height:48px;border:0;border-radius:10px;background:#fff;
+  font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  position:relative;flex:0 0 auto
+}
+.notif-btn.on::after{
+  content:"";position:absolute;top:6px;right:6px;width:9px;height:9px;
+  border-radius:50%;background:#16a34a;border:2px solid #fff
+}
+@media(max-width:600px){.notif-btn{width:44px;height:44px;font-size:22px}}
+
 </style>
 </head>
 <body>
@@ -234,6 +246,7 @@ body{padding-bottom:76px}
 <div class="topbar">
  <div class="menu-wrap">
   <button class="menu-btn" type="button" onclick="toggleMenu()">☰</button>
+  <button id="haPushButton" class="notif-btn" type="button" aria-label="الإشعارات" title="الإشعارات">🔔</button>
   <div class="shortcuts" id="shortcuts">
     <div class="drawer-head">
       <div class="drawer-title">☁️ الاختصارات</div>
@@ -245,7 +258,7 @@ body{padding-bottom:76px}
     <a href="index.html">🏠 الرئيسية</a>
     <a href="#" data-coming-soon="1">🛒 تسوق الآن</a>
     <a href="contact.html">🛠️ طلب خدمة</a>
-    <a href="#" data-coming-soon="1">💬 الدردشة</a>
+    <a href="chat.html">💬 الدردشة</a>
     <a href="news.html">📰 آخر الأخبار</a>
     <a href="religious.html">🕌 الأمور الدينية</a>
     <a href="#" data-coming-soon="1">📚 دراسة</a>
@@ -267,7 +280,7 @@ body{padding-bottom:76px}
 
  <a class="card" href="contact.html" data-search="طلب خدمة خدمات"><div class="icon">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a>
 
- <a class="card" href="#" data-coming-soon="1" data-search="الدردشة دردشة تواصل كرة القدم الأعمال الطلاب عامة">
+ <a class="card" href="chat.html" data-search="الدردشة دردشة تواصل كرة القدم الأعمال الطلاب عامة">
    <div class="icon">💬</div>
    <h2>الدردشة</h2>
    <p>تواصل مع الآخرين حسب الفئة</p>
