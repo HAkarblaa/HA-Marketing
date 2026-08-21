@@ -61,6 +61,21 @@
 
     if(token){
       localStorage.setItem('ha_web_push_token',token);
+      // حفظ رمز الجهاز حتى يستطيع الخادم إرسال Push للطرف المطلوب لاحقاً.
+      try{
+        if(window.firebase?.database){
+          let deviceId=localStorage.getItem('ha_device_id');
+          if(!deviceId){
+            deviceId='dev_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);
+            localStorage.setItem('ha_device_id',deviceId);
+          }
+          await firebase.database().ref('pushDevices/'+deviceId).update({
+            token:token,
+            role:'user',
+            updatedAt:firebase.database.ServerValue.TIMESTAMP
+          });
+        }
+      }catch(e){console.warn('Token save failed',e)}
       localStorage.setItem(STORAGE_KEY,'1');
       updateBell();
       alert('تم تشغيل الإشعارات.');

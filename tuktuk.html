@@ -2102,5 +2102,16 @@ window.addEventListener('load',()=>{
   }catch(e){console.error(e)}
 });
 </script>
+<script src="transport-notifications.js"></script>
+
+<script>
+window.addEventListener('load',()=>{
+  try{
+    if(!window.HATransportNotify)return;
+    const id=(typeof activeRideId!=='undefined'&&activeRideId) || localStorage.getItem('ha_active_ride');
+    if(id)HATransportNotify.watchRide(id,'customer');
+  }catch(e){console.error(e)}
+});
+</script>
 </body>
 </html>
