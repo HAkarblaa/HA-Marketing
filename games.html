@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HA Games</title>
+<style>
+:root{
+  --bg:#050914;--panel:#0b1220;--panel2:#101a2d;--line:#1d2a42;
+  --text:#f8fbff;--muted:#96a6bf;--purple:#7c3cff;--blue:#1887ff;
+  --green:#22c55e;--gold:#f5b51b;--danger:#ef4444
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:
+radial-gradient(circle at 20% 0%,#101a34 0,transparent 34%),
+radial-gradient(circle at 85% 10%,#25104b 0,transparent 28%),var(--bg);
+color:var(--text);font-family:Arial,Tahoma,sans-serif}
+button,a{font-family:inherit}
+body{padding-bottom:30px}
+.topbar{
+  height:78px;display:flex;align-items:center;gap:18px;padding:0 24px;
+  border-bottom:1px solid var(--line);background:#050914e8;backdrop-filter:blur(16px);
+  position:sticky;top:0;z-index:50
+}
+.brand{font-size:28px;font-weight:900;letter-spacing:.5px;direction:ltr;white-space:nowrap}
+.brand b{background:linear-gradient(135deg,#50b9ff,#8b5cff,#e054ff);-webkit-background-clip:text;color:transparent}
+.brand span{font-size:18px;margin-left:7px;color:#e8eeff}
+.nav{display:flex;gap:6px;align-items:center;flex:1;justify-content:center}
+.nav button{
+  border:0;background:transparent;color:#c8d3e6;padding:11px 13px;border-radius:12px;cursor:pointer;font-weight:700
+}
+.nav button.active{background:#121d35;color:#a98cff;box-shadow:inset 0 -2px 0 #7c3cff}
+.wallet{display:flex;gap:8px;align-items:center}
+.coin,.profile-mini{background:#0a1221;border:1px solid var(--line);border-radius:13px;padding:9px 12px}
+.coin{font-weight:800}
+.profile-mini{display:flex;gap:9px;align-items:center}
+.avatar{
+  width:39px;height:39px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,#1c65ff,#853cff);font-size:20px;border:2px solid #fff2
+}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px;max-width:1500px;margin:20px auto;padding:0 22px}
+.side{display:flex;flex-direction:column;gap:16px}
+.card{background:linear-gradient(180deg,#0c1526,#09111e);border:1px solid var(--line);border-radius:20px;box-shadow:0 15px 50px #0005}
+.profile-card{padding:18px;text-align:center}
+.profile-card .big-avatar{
+  width:82px;height:82px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-size:38px;
+  background:linear-gradient(135deg,#0f7fff,#8b44ff);border:3px solid #ffffff22
+}
+.profile-card h3{margin:5px 0}.muted{color:var(--muted)}
+.levelbar{height:7px;background:#1c2940;border-radius:99px;overflow:hidden;margin:10px 0}
+.levelbar i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#22c55e,#1389ff)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px}
+.stats div{background:#0a1220;border-radius:12px;padding:9px 4px}
+.stats b{display:block;font-size:17px}.stats small{color:var(--muted);font-size:9px}
+.friend-card{padding:14px}.friend-card h4{margin:0 0 12px}
+.friend{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #ffffff0b}
+.friend:last-child{border:0}.friend .mini{width:34px;height:34px;border-radius:50%;background:#182741;display:grid;place-items:center}
+.friend .name{flex:1}.friend .name b{display:block;font-size:12px}.friend .name small{font-size:9px;color:#5ee58e}
+.friend button{border:0;border-radius:9px;background:#6939f6;color:white;padding:7px 10px;cursor:pointer;font-size:10px}
+.main{min-width:0}
+.hero{
+  min-height:300px;border-radius:24px;overflow:hidden;position:relative;border:1px solid #2a3e63;
+  background:
+  linear-gradient(90deg,#06101e 0%,#071220bf 34%,transparent 65%),
+  radial-gradient(circle at 78% 48%,#2a91ff70,transparent 27%),
+  linear-gradient(135deg,#172c56,#0b1831 45%,#172245);
+  box-shadow:0 22px 70px #0007
+}
+.hero:before{
+ content:"⚽";position:absolute;left:64%;top:36%;font-size:150px;filter:drop-shadow(0 18px 20px #0008);transform:rotate(-16deg)
+}
+.goal{position:absolute;left:73%;top:22%;width:220px;height:150px;border:5px solid #fff9;border-bottom-width:7px;transform:skewY(-4deg);box-shadow:0 0 50px #5aa8ff50}
+.hero-content{position:relative;z-index:2;width:min(520px,58%);padding:46px 40px}
+.badge{display:inline-block;background:#7b35ff;padding:6px 12px;border-radius:99px;font-size:11px;font-weight:800}
+.hero h1{font-size:48px;margin:13px 0 8px;line-height:1.05}
+.hero p{color:#d0dbeb;font-size:16px;line-height:1.7;margin:0 0 22px}
+.play{
+  border:0;border-radius:13px;padding:13px 28px;background:linear-gradient(135deg,#7c3cff,#245cff);
+  color:#fff;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 8px 28px #5f3dff66
+}
+.filters{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin:16px 0}
+.filter{background:#0b1322;border:1px solid var(--line);border-radius:15px;padding:13px 6px;text-align:center;color:#d5deec;cursor:pointer}
+.filter.active{border-color:#1b9cff;background:#0c1c32;box-shadow:0 0 0 1px #1b9cff50 inset}
+.filter span{display:block;font-size:22px;margin-bottom:5px}.filter small{font-size:10px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 10px}
+.section-head h2{margin:0;font-size:20px}
+.games{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.game{
+  overflow:hidden;border-radius:20px;border:1px solid var(--line);background:#0b1424;transition:.2s;
+  box-shadow:0 12px 36px #0004
+}
+.game:hover{transform:translateY(-3px);border-color:#4778c8}
+.cover{
+  height:170px;display:flex;align-items:center;justify-content:center;font-size:76px;position:relative;
+  background:linear-gradient(145deg,#15233d,#0c1322)
+}
+.cover:after{content:"";position:absolute;inset:auto 0 0;height:70px;background:linear-gradient(transparent,#0b1424)}
+.cover.penalty{background:radial-gradient(circle at 50% 60%,#156a2f 0 18%,transparent 19%),linear-gradient(145deg,#0c3260,#09182a)}
+.cover.domino{background:linear-gradient(145deg,#56391f,#20150d)}
+.cover.chess{background:linear-gradient(145deg,#4f3417,#16100b)}
+.cover.board{background:linear-gradient(145deg,#7b4b19,#2a1807)}
+.game-body{padding:13px}
+.game-body h3{margin:0 0 7px;font-size:17px}.meta{font-size:10px;color:var(--muted);margin-bottom:11px}
+.game-btn{
+  display:block;text-decoration:none;text-align:center;border:0;width:100%;padding:11px;border-radius:11px;
+  background:linear-gradient(135deg,#1379ff,#4746ff);color:#fff;font-weight:800;cursor:pointer
+}
+.game:nth-child(2) .game-btn{background:linear-gradient(135deg,#7134f5,#9d34cc)}
+.game:nth-child(3) .game-btn{background:linear-gradient(135deg,#00a6a6,#057270)}
+.game:nth-child(4) .game-btn{background:linear-gradient(135deg,#e29b18,#a85d00)}
+.game-btn.disabled{background:#283246;color:#8d99aa;cursor:not-allowed}
+.bottom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.small-card{padding:16px;display:flex;align-items:center;gap:12px}.small-card .ico{font-size:33px}.small-card .txt{flex:1}
+.small-card b{display:block}.small-card small{color:var(--muted)}
+.small-card button{border:0;border-radius:10px;padding:9px 13px;background:#244ba5;color:#fff;font-weight:700}
+@media(max-width:1050px){
+  .layout{grid-template-columns:1fr}.side{display:none}.games{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:repeat(4,1fr)}
+  .hero-content{width:68%}.nav{display:none}
+}
+@media(max-width:620px){
+  .topbar{height:64px;padding:0 12px}.brand{font-size:22px}.brand span{font-size:13px}.coin{display:none}
+  .layout{padding:0 10px;margin:12px auto}.hero{min-height:270px}.hero-content{width:78%;padding:30px 20px}
+  .hero h1{font-size:34px}.hero p{font-size:13px}.hero:before{font-size:90px;left:62%;top:45%}.goal{width:140px;height:105px;left:67%;top:27%}
+  .filters{grid-template-columns:repeat(3,1fr)}.games{grid-template-columns:1fr 1fr;gap:10px}.cover{height:135px;font-size:58px}
+  .bottom-grid{grid-template-columns:1fr}.game-body h3{font-size:15px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><b>HA</b><span>GAMES 🎮</span></div>
+  <nav class="nav">
+    <button class="active">⌂ الرئيسية</button>
+    <button>🎮 ألعابي</button>
+    <button>🛍️ المتجر</button>
+    <button>🏆 بطولات</button>
+    <button>🥇 الترتيب</button>
+    <button>🎖️ الإنجازات</button>
+  </nav>
+  <div class="wallet">
+    <div class="coin">🪙 12,450</div>
+    <div class="profile-mini"><div class="avatar">👤</div><div><b>لاعب HA</b><div class="muted" style="font-size:10px">المستوى 28</div></div></div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <div class="card profile-card">
+      <div class="big-avatar">👤</div>
+      <h3>لاعب HA</h3>
+      <div class="muted">المستوى 28</div>
+      <div class="levelbar"><i></i></div>
+      <div class="muted" style="font-size:10px">12,450 / 20,000</div>
+      <div class="stats">
+        <div><b>42</b><small>الانتصارات</small></div>
+        <div><b>125</b><small>الإنجازات</small></div>
+        <div><b>18</b><small>الأصدقاء</small></div>
+      </div>
+    </div>
+
+    <div class="card friend-card">
+      <h4>🟢 الأصدقاء أونلاين</h4>
+      <div class="friend"><div class="mini">👤</div><div class="name"><b>أحمد</b><small>يلعب الآن</small></div><button>دعوة</button></div>
+      <div class="friend"><div class="mini">👤</div><div class="name"><b>محمد</b><small>في القائمة</small></div><button>دعوة</button></div>
+      <div class="friend"><div class="mini">👤</div><div class="name"><b>حسين</b><small>يلعب دومينو</small></div><button>دعوة</button></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <div class="goal"></div>
+      <div class="hero-content">
+        <span class="badge">جديد</span>
+        <h1>ركلات الجزاء</h1>
+        <p>تحدى الحارس، سجل الأهداف، واصعد في الترتيب. العب فردي أو أونلاين ضد لاعب آخر.</p>
+        <button class="play" onclick="location.href='penalties.html'">العب الآن</button>
+      </div>
+    </section>
+
+    <div class="filters">
+      <div class="filter active"><span>🎮</span><small>كل الألعاب</small></div>
+      <div class="filter"><span>🌐</span><small>أونلاين</small></div>
+      <div class="filter"><span>👥</span><small>ثنائي</small></div>
+      <div class="filter"><span>👤</span><small>فردي</small></div>
+      <div class="filter"><span>⚽</span><small>رياضة</small></div>
+      <div class="filter"><span>♟️</span><small>استراتيجية</small></div>
+      <div class="filter"><span>▦</span><small>أخرى</small></div>
+    </div>
+
+    <div class="section-head"><h2>🎮 الألعاب المميزة</h2><span class="muted">اختر لعبتك</span></div>
+
+    <section class="games">
+      <article class="game">
+        <div class="cover penalty">⚽</div>
+        <div class="game-body">
+          <h3>ركلات الجزاء</h3>
+          <div class="meta">رياضة • فردي • أونلاين</div>
+          <a class="game-btn" href="penalties.html">العب الآن</a>
+        </div>
+      </article>
+
+      <article class="game">
+        <div class="cover domino">🁣</div>
+        <div class="game-body">
+          <h3>دومينو</h3>
+          <div class="meta">ثنائي • 4 لاعبين • أونلاين</div>
+          <a class="game-btn" href="domino.html">العب الآن</a>
+        </div>
+      </article>
+
+      <article class="game">
+        <div class="cover chess">♛</div>
+        <div class="game-body">
+          <h3>شطرنج</h3>
+          <div class="meta">استراتيجية • فردي • ثنائي</div>
+          <button class="game-btn disabled" onclick="alert('قريباً')">قريباً</button>
+        </div>
+      </article>
+
+      <article class="game">
+        <div class="cover board">🎲</div>
+        <div class="game-body">
+          <h3>لعبة الطاولة</h3>
+          <div class="meta">ثنائي • أونلاين</div>
+          <button class="game-btn disabled" onclick="alert('قريباً')">قريباً</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="card small-card"><div class="ico">🛡️</div><div class="txt"><b>بطولات يومية</b><small>شارك واربح جوائز</small></div><button>عرض</button></div>
+      <div class="card small-card"><div class="ico">👑</div><div class="txt"><b>لوحة المتصدرين</b><small>أفضل اللاعبين هذا الأسبوع</small></div><button>عرض</button></div>
+      <div class="card small-card"><div class="ico">🎁</div><div class="txt"><b>جوائز مجانية</b><small>سجل دخولك يومياً</small></div><button>استلام</button></div>
+    </section>
+  </main>
+</div>
+
+<script>
+document.querySelectorAll('.filter').forEach(x=>{
+  x.onclick=()=>{
+    document.querySelectorAll('.filter').forEach(y=>y.classList.remove('active'));
+    x.classList.add('active');
+  };
+});
+</script>
+</body>
+</html>
