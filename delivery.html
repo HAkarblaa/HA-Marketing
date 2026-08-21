@@ -894,6 +894,11 @@ body.delivery-stage-1 #centerPin{
 .ride-status-step.done{background:#dff6e7;color:#136b35;font-weight:800}
 .ride-status-step.current{outline:2px solid #16a34a}
 
+
+.price-breakdown{margin:8px 14px;padding:10px;border-radius:12px;background:#f7f7f7;font-size:11px;line-height:1.7;display:none}
+.price-breakdown.show{display:block}
+.price-breakdown b{font-size:12px}
+
 </style>
 </head>
 
@@ -1075,6 +1080,7 @@ const db = firebase.database();
 <script src="transport-live-tracking.js"></script>
 <script src="transport-ride-status.js"></script>
 <script src="transport-rating.js"></script>
+<script src="transport-pricing.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1128,6 +1134,7 @@ saveExtra.onclick=()=>{
     extraSummary.style.display='none';
     extraSummary.textContent='';
   }
+  refreshFinalPrices();
   closeExtraSheet();
 };
 
@@ -1459,6 +1466,40 @@ function round250(x){
  return Math.ceil(x/250)*250;
 }
 
+
+function currentPricingExtras(){
+  return {
+    extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
+    extraPickup:stopCheck.checked ? stopText.value.trim() : '',
+    fragile:!!luggageCheck.checked,
+    packages:passengersCheck.checked ? Number(extraPassengers.value) : 1
+  };
+}
+
+function refreshFinalPrices(){
+  if(!(start&&end))return;
+  const extras=currentPricingExtras();
+  document.querySelectorAll('.type').forEach(c=>{
+    const q=HA_Pricing.totalFare('delivery',c,routeKm,routeMin,extras);
+    c.dataset.basePrice=q.base;
+    c.dataset.extraPrice=q.extras;
+    c.dataset.price=q.total;
+    const pe=c.querySelector('.price');
+    if(pe)pe.textContent=q.total.toLocaleString('ar-IQ')+' د.ع';
+  });
+
+  const b=document.getElementById('priceBreakdown');
+  if(b&&selected&&selected.dataset.price){
+    const q=HA_Pricing.totalFare('delivery',selected,routeKm,routeMin,extras);
+    let details=q.parts.map(x=>x[0]+': '+Number(x[1]).toLocaleString('ar-IQ')+' د.ع').join(' • ');
+    b.innerHTML='<b>تفاصيل السعر:</b> الطريق '+q.base.toLocaleString('ar-IQ')+' د.ع'
+      +(details?' • '+details:'')
+      +' • <b>المجموع '+q.total.toLocaleString('ar-IQ')+' د.ع</b>';
+    b.classList.add('show');
+  }
+  updateOrder();
+}
+
 async function calc(){
  if(line){
    map.removeLayer(line);
@@ -1501,17 +1542,7 @@ async function calc(){
 
    driverTime.textContent='~ '+fm(pickupMin);
 
-   document.querySelectorAll('.type').forEach(c=>{
-     const p=round250(
-       +c.dataset.base
-       +routeKm*(+c.dataset.km)
-       +routeMin*(+c.dataset.min)
-     );
-
-     c.dataset.price=p;
-     c.querySelector('.price').textContent=
-       p.toLocaleString('ar-IQ')+' د.ع';
-   });
+   refreshFinalPrices();
 
    notice.textContent='جاهز للطلب.';
    order.disabled=false;
@@ -1537,7 +1568,7 @@ document.querySelectorAll('.type').forEach(c=>{
    document.querySelectorAll('.type').forEach(x=>x.classList.remove('selected'));
    c.classList.add('selected');
    selected=c;
-   updateOrder();
+   refreshFinalPrices();
  };
 });
 
@@ -1586,6 +1617,12 @@ order.onclick=async()=>{
     price:Number(selected.dataset.price),
     distanceKm:Number(routeKm||0),
     tripMinutes:Number(routeMin||0),
+    pricing:{
+      routeBase:Number(selected.dataset.basePrice||selected.dataset.price||0),
+      extras:Number(selected.dataset.extraPrice||0),
+      total:Number(selected.dataset.price||0),
+      calculatedAt:firebase.database.ServerValue.TIMESTAMP
+    },
     delivery:{
       item:item,
       receiver:receiverEl ? receiverEl.value.trim() : '',
