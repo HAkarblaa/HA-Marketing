@@ -216,6 +216,7 @@ const db = firebase.database();
 
 <script src="transport-live-tracking.js"></script>
 <script src="transport-ride-status.js"></script>
+<script src="transport-rating.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map=L.map('map').setView([33.3152,44.3661],13);
@@ -420,6 +421,9 @@ finishTripBtn.onclick=async()=>{
   finishTripBtn.disabled=true;
   if(currentRideId){
     await db.ref('rides/'+currentRideId).update({status:'finished',finishedAt:Date.now()});
+    const finishedRideId=currentRideId;
+    const customerName=(currentRide&&currentRide.customerName)||'الزبون';
+    HA_Rating.show({rideId:finishedRideId,role:'driver',targetName:customerName});
     localStorage.removeItem('ha_driver_active_ride');
     stopCurrentRideStatusWatch();
     HA_LiveTracking.stopDriver();
