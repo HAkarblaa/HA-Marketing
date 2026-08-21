@@ -1,687 +1,418 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>HA Marketing - ركلات الجزاء 3D</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ركلات الجزاء - HA Marketing</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07120b;font-family:Arial,Tahoma,sans-serif}
-#game{position:fixed;inset:0}canvas{display:block}
-.hud{position:fixed;inset:0;pointer-events:none;color:#fff;text-shadow:0 2px 4px #000}
-.score{position:absolute;top:10px;left:50%;transform:translateX(-50%);min-width:300px;text-align:center;background:#08111cdd;border:1px solid #ffffff45;border-radius:12px;padding:8px 14px;font-weight:900}
-.score small{display:block;font-size:10px;color:#ccd5df}
-.power{position:absolute;left:14px;top:35%;width:42px;height:180px;border-radius:24px;background:#07111edb;border:2px solid #ffffff70;padding:6px}
-.track{position:relative;width:100%;height:100%;border-radius:18px;overflow:hidden;background:linear-gradient(to top,#2dd36f 0 38%,#f3d65b 38% 70%,#ef4d4d 70%)}
-#mask{position:absolute;left:0;right:0;top:0;height:45%;background:#07111ee8}
-.joy{pointer-events:auto;touch-action:none;position:absolute;left:14px;bottom:18px;width:106px;height:106px;border:3px solid #ffffff75;background:#ffffff18;border-radius:50%}
-.joyKnob{position:absolute;width:52px;height:52px;border-radius:50%;left:24px;top:24px;background:#ffffffc9;border:2px solid #fff;box-shadow:0 2px 8px #0006}
-.tools{position:absolute;right:10px;top:35%;display:grid;gap:7px;pointer-events:auto}
-.tool{width:94px;padding:8px 5px;border:1px solid #ffffff40;border-radius:10px;background:#08111ddd;color:#fff;font-size:10px;font-weight:900}
-.tool.active{outline:2px solid #fff}
-#shoot{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:102px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#244c69,#0b1e2d);color:#fff;font-weight:900;font-size:17px;box-shadow:0 7px 18px #0008}
-
-#msg{position:absolute;left:50%;top:24%;transform:translate(-50%,-50%) scale(.7);font-size:52px;font-weight:1000;opacity:0;transition:.2s}
-#msg.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.tip{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:#06101bbb;border:1px solid #ffffff22;border-radius:999px;padding:6px 12px;font-size:11px}
-@media(max-width:650px){.score{min-width:245px;font-size:12px}.power{left:5px;width:37px;height:155px}.joy{left:7px;width:88px;height:88px}.joyKnob{width:42px;height:42px;left:20px;top:20px}.tools{right:5px}.tool{width:80px;font-size:8px}#shoot{right:8px;width:88px;height:50px;font-size:14px}.tip{font-size:8px;bottom:76px}}
-
-/* ===== نظام اللعبة الكامل ===== */
-#menuScreen{
-  position:fixed;inset:0;z-index:5000;background:
-  radial-gradient(circle at 50% 8%,#17385b,#0a1424 45%,#050a12);
-  color:#fff;display:flex;align-items:center;justify-content:center;padding:15px;overflow:auto
+:root{
+  --bg:#08111f;--panel:#111d2f;--panel2:#18263d;--text:#f6f8fb;--muted:#9ba9be;
+  --accent:#28d17c;--accent2:#1da965;--danger:#ef5f68;--gold:#e2b95b;
 }
-.menuCard{width:min(920px,100%);background:#101b2c;border:1px solid #ffffff18;border-radius:24px;padding:17px;box-shadow:0 25px 70px #0009}
-.menuTitle{text-align:center}.menuTitle h1{margin:2px 0;font-size:28px}.menuTitle p{color:#aeb9c8;margin:5px 0 12px}
-.walletMenu{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0}
-.menuPill{background:#ffffff0c;border:1px solid #ffffff14;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800}
-.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.menuField{background:#ffffff08;border-radius:13px;padding:9px}
-.menuField label{display:block;color:#aeb9c8;font-size:10px;margin-bottom:5px}
-.menuField input,.menuField select{width:100%;border:1px solid #ffffff17;background:#08111e;color:#fff;border-radius:9px;padding:10px}
-.modeGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-.modeBtn{border:1px solid #ffffff14;background:#ffffff08;color:#fff;border-radius:14px;padding:12px 7px;font-weight:800}
-.modeBtn small{display:block;color:#aeb9c8;font-size:8px;margin-top:4px}.modeBtn.active{outline:2px solid #2bd083;background:#153c2d}
-#tournamentBox,#onlineBox{display:none;margin-top:10px;background:#ffffff07;border:1px solid #ffffff10;border-radius:14px;padding:10px}
-#tournamentBox.show,#onlineBox.show{display:block}
-.tourGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.menuActions{display:flex;justify-content:center;gap:8px;margin-top:13px;flex-wrap:wrap}
-.menuAction{border:0;border-radius:12px;padding:11px 16px;font-weight:900;background:#213149;color:#fff}
-.menuAction.primary{background:#2bd083;color:#062015}.menuAction.gold{background:linear-gradient(135deg,#f5d789,#b88329);color:#211500}
-.offlineNote{display:none;margin-top:8px;text-align:center;color:#ffcf78;font-size:10px}
-.offlineNote.show{display:block}
-#endModal,#tournamentModal{
- position:fixed;inset:0;z-index:7000;background:#000b;display:none;align-items:center;justify-content:center;padding:15px;color:#fff
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Tahoma,sans-serif;background:
+radial-gradient(circle at 50% 0,#17345a 0,#0a1628 35%,#050b14 100%);color:var(--text)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{width:min(1180px,100%);margin:auto;min-height:100vh;padding:12px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.brand{display:flex;align-items:center;gap:9px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#37df8d,#9bf0c6);display:grid;place-items:center;font-size:25px;color:#04130d}
+.brand h1{margin:0;font-size:19px}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.btn{border:0;border-radius:12px;padding:10px 13px;background:var(--panel2);color:#fff;font-weight:700}
+.btn.primary{background:var(--accent);color:#06140d}.btn.danger{background:#40202a;color:#ffc1c5}
+.wallet{display:flex;gap:6px;flex-wrap:wrap}.pill{background:#ffffff0c;border:1px solid #ffffff14;border-radius:999px;padding:8px 10px;font-size:11px;font-weight:700}
+.start-screen{position:fixed;inset:0;z-index:9000;background:
+radial-gradient(circle at 50% 12%,#1b3f68 0,#101a2a 38%,#07101b 100%);
+display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.start-card{width:min(940px,100%);background:linear-gradient(180deg,#17243a,#101827);border:1px solid #ffffff14;border-radius:27px;padding:18px;box-shadow:0 24px 70px #0008}
+.hero{text-align:center}.hero .ball{font-size:58px}.hero h2{font-size:28px;margin:5px 0}.hero p{color:var(--muted);margin:0 0 12px}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{background:#ffffff08;border-radius:14px;padding:10px}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}.field select,.field input{width:100%;background:#0d1524;color:#fff;border:1px solid #ffffff18;border-radius:10px;padding:11px}
+.team-preview{display:flex;align-items:center;gap:10px;margin-top:7px;padding:9px;background:#ffffff07;border-radius:12px}.team-badge{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:21px;background:linear-gradient(135deg,#ef4444,#111827);border:2px solid #fff3}
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.mode-card{background:#ffffff08;border:1px solid #ffffff12;color:#fff;border-radius:17px;padding:14px 8px;text-align:center}.mode-card .ico{font-size:34px;display:block;margin-bottom:6px}.mode-card b{display:block}.mode-card small{display:block;color:var(--muted);font-size:9px;margin-top:5px}
+.online-panel{display:none;margin-top:10px;background:#ffffff08;border-radius:16px;padding:11px}.online-panel.show{display:block}
+.online-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online-actions{display:flex;gap:8px;margin-top:8px}.online-actions button{flex:1}
+.room-code{text-align:center;color:var(--accent);font-size:25px;font-weight:900;letter-spacing:3px;margin-top:8px}
+.game-shell{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:12px}
+.main{min-width:0}
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:9px;align-items:center;margin-bottom:9px}
+.team-box{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid #ffffff12;border-radius:17px;padding:10px;text-align:center}
+.team-box .badge{font-size:26px}.team-box b{display:block;font-size:12px;margin-top:3px}.team-box small{color:var(--muted);font-size:9px}
+.bigscore{font-size:30px;font-weight:900;padding:8px 14px;background:#ffffff09;border-radius:14px}
+.pitch{position:relative;min-height:500px;border-radius:26px;overflow:hidden;border:1px solid #ffffff1b;background:
+linear-gradient(#ffffff06,#ffffff06),
+repeating-linear-gradient(90deg,#087844 0 70px,#0a8249 70px 140px);
+box-shadow:inset 0 0 60px #00331f66}
+.pitch:before{content:"";position:absolute;inset:30px;border:3px solid #ffffffb8;border-radius:10px}.pitch:after{content:"";position:absolute;left:50%;top:30px;bottom:30px;width:2px;background:#ffffffa5}
+.goal{position:absolute;top:56px;left:50%;transform:translateX(-50%);width:58%;height:145px;border:5px solid #fff;border-bottom:0;background:
+linear-gradient(90deg,#ffffff2b 1px,transparent 1px),
+linear-gradient(#ffffff2b 1px,transparent 1px);background-size:18px 18px}
+.keeper{position:absolute;top:145px;left:50%;transform:translateX(-50%);font-size:58px;transition:.45s ease;z-index:5}
+.ball{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);font-size:43px;z-index:6;transition:.55s cubic-bezier(.2,.8,.2,1)}
+.shooter{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-size:46px}
+.zone-grid{position:absolute;top:55px;left:21%;width:58%;height:147px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);z-index:8}
+.zone{border:1px dashed #ffffff35;background:transparent;color:transparent}.zone:hover,.zone.active{background:#2de68a33;color:#fff}
+.kick-panel{margin-top:9px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid #ffffff12;border-radius:18px;padding:11px}
+.kick-panel h3{margin:0 0 8px;font-size:13px}.kick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.kick-actions button{padding:10px}
+.round-dots{display:flex;justify-content:center;gap:6px;margin-top:8px;flex-wrap:wrap}.dot{width:13px;height:13px;border-radius:50%;background:#667085}.dot.goal{background:#23d17b}.dot.miss{background:#ef5f68}
+.side{display:flex;flex-direction:column;gap:9px}.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid #ffffff10;border-radius:17px;padding:12px}.card h3{margin:0 0 9px;font-size:13px}
+.reactions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.react{border:0;border-radius:10px;padding:8px;background:#ffffff08;color:#fff;font-size:18px}
+.timer{width:54px;height:54px;border-radius:50%;margin:auto;display:grid;place-items:center;font-weight:900;background:conic-gradient(var(--accent) var(--deg,360deg),#ffffff12 0);position:relative}.timer:before{content:"";position:absolute;inset:5px;background:#121d2f;border-radius:50%}.timer span{z-index:1}
+.status{text-align:center;padding:10px;background:#ffffff08;border-radius:12px;font-size:11px;line-height:1.6}
+.music-row{display:grid;grid-template-columns:auto 1fr;gap:7px;align-items:center;margin:7px 0}.music-row input{width:100%}
+.modal{position:fixed;inset:0;z-index:10000;background:#000a;display:none;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.modal-card{width:min(92vw,420px);background:#111b2d;border:1px solid #ffffff18;border-radius:22px;padding:18px;text-align:center}.modal-card h3{margin:0 0 8px}.modal-card p{color:var(--muted);font-size:11px;line-height:1.6}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+@media(max-width:850px){.game-shell{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}.pitch{min-height:440px}}
+@media(max-width:650px){.app{padding:8px}.setup-grid,.online-grid{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}.side{grid-template-columns:1fr}.pitch{min-height:390px}.goal{width:72%}.zone-grid{left:14%;width:72%}.scoreboard{grid-template-columns:1fr auto 1fr}.brand h1{font-size:16px}}
+
+.game-mic-btn{
+ position:fixed;right:14px;bottom:92px;z-index:5000;width:52px;height:52px;
+ border:0;border-radius:50%;background:#111827;color:#fff;font-size:23px;
+ box-shadow:0 8px 24px #0007;display:none;align-items:center;justify-content:center;cursor:pointer
 }
-#endModal.show,#tournamentModal.show{display:flex}
-.modalCard{width:min(650px,100%);max-height:88vh;overflow:auto;background:#101b2c;border:1px solid #ffffff18;border-radius:22px;padding:16px}
-.modalCard h2{text-align:center;margin:0 0 12px}
-.resultBig{text-align:center;font-size:26px;font-weight:900;margin:10px 0}
-.fixture{display:flex;justify-content:space-between;gap:10px;padding:9px;border-bottom:1px solid #ffffff0f;font-size:11px}
-#miniHud{position:fixed;right:8px;top:75px;z-index:2100;color:#fff;background:#07111fd8;border:1px solid #ffffff1a;border-radius:12px;padding:7px 9px;font-size:9px;pointer-events:none}
-@media(max-width:700px){.menuGrid,.tourGrid{grid-template-columns:1fr}.modeGrid{grid-template-columns:1fr 1fr}.menuTitle h1{font-size:23px}}
-
-
-/* Goalkeeper turn */
-#keeperTurnHud{position:fixed;inset:0;z-index:2300;pointer-events:none;display:none;color:#fff}
-#keeperTurnHud.show{display:block}
-#keeperJoy{pointer-events:auto;touch-action:none;position:absolute;left:14px;bottom:18px;width:106px;height:106px;border:3px solid #bde7d0;background:#1d9d4d88;border-radius:50%}
-#keeperKnob{position:absolute;width:52px;height:52px;border-radius:50%;left:24px;top:24px;background:#d9eee2;border:2px solid white;box-shadow:0 2px 8px #0007}
-#keeperJump{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:102px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#2b6ca3,#103b60);color:#fff;font-size:16px;font-weight:900}
-#keeperAction{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:118px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#2b6ca3,#103b60);color:#fff;font-size:16px;font-weight:900}
-#keeperHint{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);background:#06101bcc;border:1px solid #ffffff22;border-radius:999px;padding:7px 14px;font-size:11px;white-space:nowrap}
-@media(max-width:650px){#keeperJoy{left:7px;width:88px;height:88px}#keeperKnob{width:42px;height:42px;left:20px;top:20px}#keeperAction{right:8px;width:104px;height:50px;font-size:14px}}
-
-
-#finalMatchModal{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:#000c;color:#fff;padding:16px}
-#finalMatchModal.show{display:flex}
-#finalMatchCard{width:min(520px,94vw);background:#101b2c;border:1px solid #ffffff25;border-radius:24px;padding:22px;text-align:center;box-shadow:0 24px 70px #000b}
-#finalMatchTitle{font-size:30px;font-weight:1000;margin-bottom:10px}
-#finalMatchScore{font-size:44px;font-weight:1000;margin:12px 0}
-#finalMatchText{font-size:17px;margin-bottom:16px}
-.finalBtn{border:0;border-radius:13px;padding:12px 18px;font-weight:900;margin:5px;background:#2bd083;color:#062015}
-.finalBtn.secondary{background:#26374f;color:#fff}
+.game-mic-btn.show{display:flex}
+.game-mic-btn.on{background:#16a34a}
+.game-mic-btn.muted{background:#c62828}
+.game-mic-status{
+ position:fixed;right:14px;bottom:151px;z-index:5000;background:#101827e8;color:#fff;
+ border-radius:999px;padding:7px 10px;font-size:10px;display:none
+}
+.game-mic-status.show{display:block}
 
 </style>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
 </head>
 <body>
 
-<div id="menuScreen">
- <div class="menuCard">
-  <div class="menuTitle"><h1>⚽ ركلات الجزاء 3D</h1><p>اختر فريقك وطريقة اللعب</p></div>
-  <div class="walletMenu">
-   <div class="menuPill">⭐ نقاط <span id="menuPoints">0</span></div>
-   <div class="menuPill">💎 جواهر <span id="menuGems">0</span></div>
-   <button id="shopOpen" class="menuAction gold">🛍️ المتجر</button>
-  </div>
-  <div class="menuGrid">
-   <div class="menuField"><label>اسم اللاعب</label><input id="playerNameMenu" maxlength="20" placeholder="اكتب اسم اللاعب"></div>
-   <div class="menuField"><label>نوع الفريق</label><select id="teamTypeMenu"><option value="national">منتخبات</option><option value="club">نوادي</option></select></div>
-   <div class="menuField"><label>فريقك</label><select id="teamMenu"></select></div>
-   <div class="menuField"><label>الخصم</label><select id="opponentMenu"></select></div>
-   <div class="menuField"><label>مستوى الجهاز</label><select id="difficultyMenu"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select></div>
-   <div class="menuField"><label>عدد الركلات</label><input id="kickCountMenu" value="5 لكل طرف" readonly></div>
-  </div>
-  <div class="modeGrid">
-   <button class="modeBtn active" data-mode="cpu">🤖 ضد الجهاز<small>يعمل بدون نت</small></button>
-   <button class="modeBtn" data-mode="local">👥 لاعبان محلياً<small>على نفس الجهاز</small></button>
-   <button class="modeBtn" data-mode="tournament">🏆 بطولة<small>مجموعات وإقصائيات</small></button>
-   <button class="modeBtn" data-mode="online">🌐 أونلاين<small>يحتاج إنترنت</small></button>
-  </div>
-  <div id="tournamentBox">
-   <div class="tourGrid">
-    <div class="menuField"><label>اسم البطولة</label><input id="tourName" value="بطولة HA"></div>
-    <div class="menuField"><label>عدد الفرق</label><select id="tourTeams"><option value="8">8 فرق</option><option value="16">16 فريق</option></select></div>
-    <div class="menuField"><label>النظام</label><select id="tourFormat"><option value="groups">مجموعات + خروج مغلوب</option><option value="knockout">خروج مغلوب مباشر</option></select></div>
-    <div class="menuField"><label>نوع البطولة</label><select id="tourType"><option value="cpu">ضد الجهاز</option><option value="rooms">غرف أونلاين</option></select></div>
-   </div>
-   <button id="viewTournament" class="menuAction" style="width:100%;margin-top:8px">📋 عرض جدول البطولة</button>
-  </div>
-  <div id="onlineBox">
-    <div class="menuGrid">
-      <div class="menuField"><label>كود الغرفة</label><input id="roomCode" maxlength="6" placeholder="مثال: H7K21A"></div>
-      <div class="menuField"><label>الحالة</label><input id="onlineStatus" value="جاهز" readonly></div>
+<div id="startScreen" class="start-screen">
+  <div class="start-card">
+    <div class="hero">
+      <div class="ball">⚽</div>
+      <h2>ركلات الجزاء</h2>
+      <p>اختار منتخب أو نادي، اسم اللاعب، وطريقة اللعب.</p>
     </div>
-    <div class="menuActions"><button id="createRoom" class="menuAction">إنشاء غرفة</button><button id="joinRoom" class="menuAction">دخول غرفة</button></div>
+
+    <div class="setup-grid">
+      <div class="field">
+        <label>نوع الفريق</label>
+        <select id="teamType">
+          <option value="national">منتخب</option>
+          <option value="club">نادي</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>الفريق</label>
+        <select id="teamSelect"></select>
+        <div class="team-preview"><div id="teamBadge" class="team-badge">🇮🇶</div><div><b id="teamNamePreview">العراق</b><small id="teamTypePreview">منتخب</small></div></div>
+      </div>
+      <div class="field">
+        <label>اسم اللاعب</label>
+        <input id="playerName" maxlength="20" placeholder="مثلاً: حسين">
+      </div>
+      <div class="field">
+        <label>عدد الركلات</label>
+        <select id="kickCount"><option value="5" selected>5 ركلات</option><option value="7">7 ركلات</option><option value="10">10 ركلات</option></select>
+      </div>
+      <div class="field">
+        <label>مستوى الجهاز</label>
+        <select id="difficulty"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select>
+      </div>
+      <div class="field">
+        <label>اسم الخصم</label>
+        <input id="opponentName" maxlength="20" placeholder="الجهاز أو لاعب 2">
+      </div>
+    </div>
+
+    <div class="mode-grid">
+      <button class="mode-card" data-mode="cpu"><span class="ico">🤖</span><b>ضد الجهاز</b><small>3 مستويات صعوبة</small></button>
+      <button class="mode-card" data-mode="local"><span class="ico">👥</span><b>لاعبان محلياً</b><small>على نفس الجهاز</small></button>
+      <button class="mode-card" data-mode="online"><span class="ico">🌐</span><b>أونلاين</b><small>بين جهازين عبر الغرفة</small></button>
+    </div>
+
+    <div id="onlinePanel" class="online-panel">
+      <div class="online-grid">
+        <input id="roomCodeInput" maxlength="6" placeholder="كود الغرفة">
+        <div class="field" style="padding:0;background:none"><select id="onlineTeamType"><option value="national">منتخب</option><option value="club">نادي</option></select></div>
+      </div>
+      <div class="online-actions">
+        <button id="createRoomBtn" class="btn primary">إنشاء غرفة</button>
+        <button id="joinRoomBtn" class="btn">دخول غرفة</button>
+      </div>
+      <div id="roomCodeView" class="room-code"></div>
+    </div>
+
+    <div class="wallet" style="justify-content:center;margin-top:12px">
+      <div class="pill">⭐ نقاط <span id="pointsView">0</span></div>
+      <div class="pill">💎 جواهر <span id="gemsView">0</span></div>
+    </div>
   </div>
-  <div id="offlineNote" class="offlineNote">📴 لا يوجد إنترنت: الأونلاين فقط غير متاح، وبقية اللعبة تعمل عادي.</div>
-  <div class="menuActions">
-   <button id="startGameFull" class="menuAction primary">بدء المباراة</button>
-   <a href="entertainment.html" class="menuAction" style="text-decoration:none">رجوع</a>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><div class="logo">⚽</div><div><h1>ركلات الجزاء</h1><small id="modeLabel">ضد الجهاز</small></div></div>
+    <div class="wallet"><div class="pill">⭐ <span id="gamePoints">0</span></div><div class="pill">💎 <span id="gameGems">0</span></div></div>
+    <div style="display:flex;gap:6px"><button id="soundBtn" class="btn">🔊</button><button id="withdrawBtn" class="btn danger">انسحاب</button></div>
   </div>
- </div>
+
+  <div class="scoreboard">
+    <div class="team-box"><div id="myBadge" class="badge">🇮🇶</div><b id="myTeam">العراق</b><small id="myPlayer">اللاعب</small></div>
+    <div id="scoreText" class="bigscore">0 - 0</div>
+    <div class="team-box"><div id="oppBadge" class="badge">🤖</div><b id="oppTeam">الخصم</b><small id="oppPlayer">الجهاز</small></div>
+  </div>
+
+  <div class="game-shell">
+    <div class="main">
+      <div class="pitch">
+        <div class="goal"></div>
+        <div id="keeper" class="keeper">🧤</div>
+        <div id="ball" class="ball">⚽</div>
+        <div class="shooter">🧍</div>
+        <div id="zoneGrid" class="zone-grid">
+          <button class="zone" data-zone="0">↖</button><button class="zone" data-zone="1">↑</button><button class="zone" data-zone="2">↗</button>
+          <button class="zone" data-zone="3">←</button><button class="zone" data-zone="4">•</button><button class="zone" data-zone="5">→</button>
+          <button class="zone" data-zone="6">↙</button><button class="zone" data-zone="7">↓</button><button class="zone" data-zone="8">↘</button>
+        </div>
+      </div>
+
+      <div class="kick-panel">
+        <h3>اختار جهة التسديد</h3>
+        <div class="kick-actions">
+          <button class="btn" data-shot="0">يسار</button>
+          <button class="btn primary" data-shot="4">وسط</button>
+          <button class="btn" data-shot="2">يمين</button>
+        </div>
+        <div id="roundDots" class="round-dots"></div>
+        <div id="status" class="status">جاهز للمباراة.</div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <h3>الوقت</h3>
+        <div id="timer" class="timer" style="--deg:360deg"><span>10</span></div>
+      </div>
+      <div class="card">
+        <h3>السمايلات</h3>
+        <div class="reactions">
+          <button class="react" data-react="😂">😂</button><button class="react" data-react="😡">😡</button><button class="react" data-react="😎">😎</button>
+          <button class="react" data-react="😱">😱</button><button class="react" data-react="👏">👏</button><button class="react" data-react="🥳">🥳</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>الصوت</h3>
+        <select id="musicSelect" style="width:100%;background:#0d1524;color:#fff;border:1px solid #ffffff18;border-radius:9px;padding:8px">
+          <option value="0">بدون موسيقى</option><option value="1" selected>موسيقى 1</option><option value="2">موسيقى 2</option><option value="3">موسيقى 3</option>
+        </select>
+        <div class="music-row"><span>🎵</span><input id="musicVolume" type="range" min="0" max="100" value="50"></div>
+        <div class="music-row"><span>🔊</span><input id="sfxVolume" type="range" min="0" max="100" value="50"></div>
+      </div>
+      <a href="entertainment.html" style="color:#dbe8ff;text-decoration:none;text-align:center">← الرجوع إلى الترفيه</a>
+    </div>
+  </div>
 </div>
-<div id="miniHud">الوضع: <b id="hudMode">ضد الجهاز</b><br>الجولات: <b id="hudKicks">0/5</b></div>
-<div id="endModal"><div class="modalCard"><h2>نتيجة المباراة</h2><div id="endResult" class="resultBig"></div><div id="endScore" class="resultBig"></div><div class="menuActions"><button id="playAgain" class="menuAction primary">إعادة اللعب</button><button id="backMenu" class="menuAction">القائمة الرئيسية</button></div></div></div>
-<div id="tournamentModal"><div class="modalCard"><h2 id="tourModalTitle">🏆 جدول البطولة</h2><div id="tourContent"></div><div class="menuActions"><button id="closeTour" class="menuAction">إغلاق</button></div></div></div>
 
-<div id="game"></div>
+<div id="withdrawModal" class="modal"><div class="modal-card"><h3>تأكيد الانسحاب</h3><p>هل أنت متأكد؟ راح تنتهي المباراة الحالية وترجع إلى الواجهة الرئيسية للعبة.</p><div class="modal-actions"><button id="confirmWithdraw" class="btn danger">نعم، انسحاب</button><button id="cancelWithdraw" class="btn">لا</button></div></div></div>
+<div id="endModal" class="modal"><div class="modal-card"><h3 id="endTitle">انتهت المباراة</h3><p id="endText"></p><div class="modal-actions"><button id="rematchBtn" class="btn primary">إعادة المباراة</button><button id="mainBtn" class="btn">الواجهة الرئيسية</button></div></div></div>
 
-<div id="finalMatchModal">
- <div id="finalMatchCard">
-  <div id="finalMatchTitle">نهاية المباراة</div>
-  <div id="finalMatchScore">0 - 0</div>
-  <div id="finalMatchText"></div>
-  <button id="finalReplay" class="finalBtn">إعادة المباراة</button>
-  <button id="finalMenu" class="finalBtn secondary">القائمة الرئيسية</button>
- </div>
-</div>
-
-
-<div id="keeperTurnHud">
-  <div id="keeperJoy"><div id="keeperKnob"></div></div>
-  <button id="keeperAction">استعداد</button>
-  <div id="keeperHint">دور الحارس: حرّك الزر للاتجاه ثم اضغط قفز عند تسديدة الخصم</div>
-</div>
-
-<div class="hud">
- <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small></div>
- <div class="power"><div class="track"><div id="mask"></div></div></div>
- <div class="joy" id="joy"><div class="joyKnob" id="joyKnob"></div></div>
- <div class="tools">
-  <button class="tool active" data-ball="normal">⚽ عادية</button>
-  <button class="tool" data-ball="fire">🔥 نارية</button>
-  <button class="tool" data-ball="ice">❄️ ثلجية</button>
-  <button class="tool" data-ball="dirt">🌪️ ترابية</button>
- </div>
- <button id="shoot">تسديد</button>
- <div class="tip">حرّك الزر الدائري للتوجيه بكل الاتجاهات ثم اضغط تسديد</div>
- <div id="msg">GOAL!</div>
-</div>
-<script type="module">
-import * as THREE from 'three';
-
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9bc8eb);scene.fog=new THREE.Fog(0x9bc8eb,55,130);
-const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.1,220);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;document.getElementById('game').appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xffffff,0x234526,2.3));const sun=new THREE.DirectionalLight(0xffffff,2.7);sun.position.set(-14,22,11);sun.castShadow=true;scene.add(sun);
-
-const pitch=new THREE.Mesh(new THREE.PlaneGeometry(72,110),new THREE.MeshStandardMaterial({color:0x178c3c,roughness:1}));pitch.rotation.x=-Math.PI/2;pitch.position.z=-24;pitch.receiveShadow=true;scene.add(pitch);
-for(let i=0;i<12;i++){let s=new THREE.Mesh(new THREE.PlaneGeometry(72,5),new THREE.MeshBasicMaterial({color:i%2?0x1d9b43:0x147e36,transparent:true,opacity:.35}));s.rotation.x=-Math.PI/2;s.position.set(0,.006,5-i*5);scene.add(s)}
-const standMat=new THREE.MeshStandardMaterial({color:0x263142});
-for(const x of [-28,28]){let s=new THREE.Mesh(new THREE.BoxGeometry(14,9,50),standMat);s.position.set(x,4,-18);scene.add(s)}
-let back=new THREE.Mesh(new THREE.BoxGeometry(70,10,10),standMat);back.position.set(0,5,-33);scene.add(back);
-for(let i=0;i<160;i++){let c=new THREE.Mesh(new THREE.SphereGeometry(.1,6,5),new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(Math.random(),.75,.58)}));let side=Math.random()<.5?-1:1;c.position.set(side*(21+Math.random()*12),1+Math.random()*7,-2-Math.random()*39);scene.add(c)}
-
-const white=new THREE.MeshStandardMaterial({color:0xf7f7f7});
-function post(x,y,z,sx,sy,sz){let m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),white);m.position.set(x,y,z);m.castShadow=true;scene.add(m)}
-post(-4.8,1.45,-12,.18,2.9,.18);post(4.8,1.45,-12,.18,2.9,.18);post(0,2.9,-12,9.78,.18,.18);
-const netMat=new THREE.LineBasicMaterial({color:0xf4f8ff,transparent:true,opacity:.65});
-for(let x=-4.7;x<=4.7;x+=.55)scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,.08,-12.06),new THREE.Vector3(x,2.82,-12.06)]),netMat));
-for(let y=.12;y<=2.8;y+=.34)scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.7,y,-12.06),new THREE.Vector3(4.7,y,-12.06)]),netMat));
-
-function human(shirt,shorts){
- const g=new THREE.Group(),skin=new THREE.MeshStandardMaterial({color:0xb9784d}),sm=new THREE.MeshStandardMaterial({color:shirt}),hm=new THREE.MeshStandardMaterial({color:shorts});
- let head=new THREE.Mesh(new THREE.SphereGeometry(.27,16,12),skin);head.position.y=2.35;g.add(head);
- let body=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.85,6,12),sm);body.position.y=1.52;g.add(body);
- let hip=new THREE.Mesh(new THREE.BoxGeometry(.72,.36,.43),hm);hip.position.y=.92;g.add(hip);
- for(const x of [-.22,.22]){let leg=new THREE.Mesh(new THREE.CapsuleGeometry(.105,.65,5,10),skin);leg.position.set(x,.38,0);g.add(leg)}
- for(const x of [-.48,.48]){let arm=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.62,5,10),skin);arm.position.set(x,1.55,0);arm.rotation.z=x<0?-.18:.18;g.add(arm)}
- g.traverse(o=>{if(o.isMesh)o.castShadow=true});return g
-}
-const player=human(0xd51d29,0xffffff);player.position.set(-.8,0,4.7);player.rotation.y=Math.PI;player.scale.set(1.18,1.18,1.18);scene.add(player);
-const keeper=human(0xf0d31e,0x161616);keeper.position.set(0,0,-11.5);keeper.scale.set(.92,.92,.92);scene.add(keeper);
-
-const ballMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.55});const ball=new THREE.Mesh(new THREE.SphereGeometry(.23,24,18),ballMat);ball.position.set(.25,.23,2.25);ball.castShadow=true;scene.add(ball);
-window.HA3D={scene,camera,renderer,player,keeper,ball,THREE};
-window.haKeeperCameraLocked=false;
-window.haKeeperCamera=function(){
-  // تثبيت كاميرا الحارس من بداية دور التصدي إلى نهاية تسديدة الخصم
-  window.haKeeperCameraLocked=true;
-  camera.position.set(0,4.15,-20.5);
-  camera.lookAt(0,1.35,1.8);
-};
-window.haPlayerCamera=function(){
-  window.haKeeperCameraLocked=false;
-  camera.position.set(0,5.7,14.7);
-  camera.lookAt(0,1.7,-8);
-};
-window.haResetKeeperPose=function(){
-  keeper.position.set(0,0,-11.5);
-  keeper.rotation.set(0,0,0);
-};
-window.haOpponentShot=function(targetX,targetY,onDone){
-  const start=new THREE.Vector3(.25,.23,2.25);
-  const end=new THREE.Vector3(targetX,targetY,-11.75);
-  const mid=new THREE.Vector3(targetX*.25,2.0,-4.7);
-  const curve=new THREE.QuadraticBezierCurve3(start,mid,end);
-  const began=performance.now(),dur=860;
-  function f(now){
-    const q=Math.min(1,(now-began)/dur);
-    ball.position.copy(curve.getPoint(q));
-    ball.rotation.x+=.24;ball.rotation.z+=.11;
-    if(q<1)requestAnimationFrame(f); else if(onDone)onDone();
-  }
-  requestAnimationFrame(f);
-};
-window.haResetOpponentBall=function(){
-  ball.position.set(.25,.23,2.25);
-  ball.rotation.set(0,0,0);
-};
-
-const curveMat=new THREE.LineDashedMaterial({color:0x6dff63,dashSize:.32,gapSize:.22});let aimLine=new THREE.Line(new THREE.BufferGeometry(),curveMat);scene.add(aimLine);
-let aimDot=new THREE.Mesh(new THREE.RingGeometry(.25,.34,24),new THREE.MeshBasicMaterial({color:0x6dff63,side:THREE.DoubleSide}));aimDot.rotation.x=-Math.PI/2;scene.add(aimDot);
-
-let home=0,shooting=false,shotT=0,target=new THREE.Vector3(),keeperTarget=0,power=.55;
-const mask=document.getElementById('mask'),msg=document.getElementById('msg');
-const joy=document.getElementById('joy'),joyKnob=document.getElementById('joyKnob');
-let aimX=0, aimY=0;
-
-function updateAim(){
-  const x=aimX*4.0;
-  const y=1.35 + aimY*1.25;
-  const end=new THREE.Vector3(x,y,-11.65);
-  const mid=new THREE.Vector3(x*.35,1.7 + aimY*.65,-4.5);
-  const curve=new THREE.QuadraticBezierCurve3(ball.position.clone(),mid,end);
-  aimLine.geometry.dispose();
-  aimLine.geometry=new THREE.BufferGeometry().setFromPoints(curve.getPoints(30));
-  aimLine.computeLineDistances();
-  aimDot.position.set(end.x,end.y,-11.56);
-  aimDot.rotation.set(0,0,0);
-}
-
-function moveJoystick(clientX,clientY){
-  const r=joy.getBoundingClientRect();
-  const cx=r.left+r.width/2, cy=r.top+r.height/2;
-  let dx=clientX-cx, dy=clientY-cy;
-  const max=r.width*.34;
-  const len=Math.hypot(dx,dy);
-  if(len>max){dx=dx/len*max;dy=dy/len*max}
-  joyKnob.style.transform=`translate(${dx}px,${dy}px)`;
-  aimX=dx/max;
-  aimY=-dy/max;
-  updateAim();
-}
-let joyPointer=null;
-joy.addEventListener('pointerdown',e=>{joyPointer=e.pointerId;joy.setPointerCapture(e.pointerId);moveJoystick(e.clientX,e.clientY)});
-joy.addEventListener('pointermove',e=>{if(e.pointerId===joyPointer)moveJoystick(e.clientX,e.clientY)});
-joy.addEventListener('pointerup',e=>{if(e.pointerId===joyPointer)joyPointer=null});
-joy.addEventListener('pointercancel',()=>{joyPointer=null});
-updateAim();
-
-document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');let t=b.dataset.ball;if(t==='fire'){ballMat.color.set(0xff6b21);ballMat.emissive.set(0xaa1800);ballMat.emissiveIntensity=1.5}else if(t==='ice'){ballMat.color.set(0x9befff);ballMat.emissive.set(0x187cc5);ballMat.emissiveIntensity=1.2}else if(t==='dirt'){ballMat.color.set(0x9b6a3b);ballMat.emissive.set(0)}else{ballMat.color.set(0xffffff);ballMat.emissive.set(0)}});
-
-function reset(){shooting=false;shotT=0;player.position.set(-.8,0,4.7);player.rotation.set(0,Math.PI,0);keeper.position.set(0,0,-11.5);keeper.rotation.set(0,0,0);ball.position.set(.25,.23,2.25);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);aimLine.visible=true;aimDot.visible=true;updateAim()}
-document.getElementById('shoot').onclick=()=>{
- if(shooting)return;
- shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;
- let x=aimX*4.0;
- let y=1.0+power*.8+aimY*1.25;
- target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);
-
- // الحارس يحدد اتجاه القفز ويبدأ الحركة بنفس لحظة تسديد اللاعب
- keeperTarget=Math.random()*7.4-3.7;
- const diveDir=keeperTarget<-.8?'left':keeperTarget>.8?'right':'up';
- keeper.classList?.remove?.('left','right','up');
- try{ keeper.userData.playerShotDive=diveDir; }catch(e){}
-};
-
-let clock=new THREE.Clock(),phase=0,judged=false;
-function animate(){
- requestAnimationFrame(animate);let dt=Math.min(clock.getDelta(),.04);phase+=dt*3;power=.48+(Math.sin(phase)+1)*.22;mask.style.height=((1-power)*100)+'%';
- if(shooting){
-  shotT+=dt;let t=shotT;
-  if(t<.58){let q=t/.58;player.position.z=4.7-q*2.15;player.position.x=-.8+q*.55;player.rotation.z=Math.sin(q*Math.PI)*-.08}
-  if(t>.38&&t<1.38){
-   let q=Math.min((t-.38),1),start=new THREE.Vector3(.25,.23,2.25),mid=new THREE.Vector3(target.x*.28,2.15,-4.8),c=new THREE.QuadraticBezierCurve3(start,mid,target);
-   ball.position.copy(c.getPoint(q));ball.rotation.x+=dt*18;ball.rotation.z+=dt*9;
-
-   // القفزة تبدأ من أول لحظة حركة الكرة تقريباً
-   let d=Math.min(q/.58,1);
-   keeper.position.x=THREE.MathUtils.lerp(0,keeperTarget,d);
-   keeper.position.y=Math.sin(d*Math.PI)*.78;
-   keeper.rotation.z=-keeperTarget*.17*d;
-
-   camera.position.z=THREE.MathUtils.lerp(14.7,10.8,q);camera.position.y=THREE.MathUtils.lerp(5.7,4.4,q);camera.lookAt(ball.position.x*.22,1.55,-8.7)
-  }
-  if(t>=1.38&&!judged){judged=true;let saved=Math.abs(target.x-keeperTarget)<.75&&target.y<2.1;if(!saved){home++;document.getElementById('score').textContent=`العراق ${home} - 0 إيران`;msg.textContent='GOAL!'}else msg.textContent='تصدي!';msg.classList.add('show')}
-  if(t>2.15){msg.classList.remove('show');judged=false;reset()}
- }
- if(window.haKeeperCameraLocked){
-   camera.position.set(0,4.15,-20.5);
-   camera.lookAt(0,1.35,1.8);
- }
- renderer.render(scene,camera)
-}
-animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-</script>
-
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
-(function(){
-const teams={
- national:['العراق','إيران','السعودية','الكويت','قطر','الأرجنتين','البرازيل','فرنسا','إسبانيا','ألمانيا','البرتغال','إنجلترا'],
- club:['ريال مدريد','برشلونة','مانشستر سيتي','ليفربول','بايرن ميونخ','ميلان','إنتر','باريس سان جيرمان']
+const firebaseConfig={
+  apiKey:"AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
+  authDomain:"ha-marketing.firebaseapp.com",
+  databaseURL:"https://ha-marketing-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"ha-marketing",
+  storageBucket:"ha-marketing.firebasestorage.app",
+  messagingSenderId:"558520139704",
+  appId:"1:558520139704:web:526f8026dac658403b594d"
 };
-let gameMode='cpu',maxKicks=5,kickNo=0,homeScore=0,awayScore=0;
-let points=Number(localStorage.getItem('ha_pen_points')||0),gems=Number(localStorage.getItem('ha_pen_gems')||0);
-let tournament=JSON.parse(localStorage.getItem('ha_pen_tournament')||'null');
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const $=id=>document.getElementById(id);
 
-const by=id=>document.getElementById(id);
-function syncWallet(){by('menuPoints').textContent=points;by('menuGems').textContent=gems}
+const NATIONALS=[
+  {name:'العراق',badge:'🇮🇶'},{name:'الأرجنتين',badge:'🇦🇷'},{name:'البرازيل',badge:'🇧🇷'},{name:'فرنسا',badge:'🇫🇷'},
+  {name:'إسبانيا',badge:'🇪🇸'},{name:'إيطاليا',badge:'🇮🇹'},{name:'ألمانيا',badge:'🇩🇪'},{name:'البرتغال',badge:'🇵🇹'},
+  {name:'إيران',badge:'🇮🇷'},{name:'السعودية',badge:'🇸🇦'},{name:'المغرب',badge:'🇲🇦'},{name:'اليابان',badge:'🇯🇵'}
+];
+const CLUBS=[
+  {name:'ريال مدريد',badge:'⚪'},{name:'برشلونة',badge:'🔵'},{name:'مانشستر سيتي',badge:'🩵'},{name:'ليفربول',badge:'🔴'},
+  {name:'بايرن ميونخ',badge:'🔴'},{name:'ميلان',badge:'⚫'},{name:'إنتر',badge:'🔵'},{name:'باريس',badge:'🔷'},
+  {name:'الهلال',badge:'🔵'},{name:'النصر',badge:'🟡'},{name:'الشرطة',badge:'🟢'},{name:'الزوراء',badge:'⚪'}
+];
+
+let mode='cpu',difficulty='medium',myTeam=null,oppTeam=null,myName='لاعب',oppName='الجهاز',kickMax=5;
+let score=[0,0],turn=0,kicks=[0,0],history=[],timeLeft=10,timerId=null,gameOver=false;
+let roomRef=null,roomCode='',uid=localStorage.getItem('ha_pen_uid')||('p_'+Math.random().toString(36).slice(2,10));
+localStorage.setItem('ha_pen_uid',uid);
+let econ=JSON.parse(localStorage.getItem('ha_pen_econ')||'null')||{points:0,gems:0,wins:0};
+let audioCtx=null,musicTimer=null,musicTrack=1,musicOn=true;
+
+function updateWallet(){['pointsView','gamePoints'].forEach(id=>$(id).textContent=econ.points);['gemsView','gameGems'].forEach(id=>$(id).textContent=econ.gems)}
+function saveEcon(){localStorage.setItem('ha_pen_econ',JSON.stringify(econ));updateWallet()}
+function teams(){return $('teamType').value==='club'?CLUBS:NATIONALS}
 function fillTeams(){
- const a=teams[by('teamTypeMenu').value];
- by('teamMenu').innerHTML=a.map(x=>'<option>'+x+'</option>').join('');
- by('opponentMenu').innerHTML=a.map(x=>'<option>'+x+'</option>').join('');
- if(a.length>1)by('opponentMenu').selectedIndex=1;
+  const arr=teams(),sel=$('teamSelect');sel.innerHTML='';
+  arr.forEach((t,i)=>{const o=document.createElement('option');o.value=i;o.textContent=t.name;sel.appendChild(o)});
+  updateTeamPreview()
 }
-by('teamTypeMenu').addEventListener('change',fillTeams);fillTeams();syncWallet();
+function updateTeamPreview(){const t=teams()[Number($('teamSelect').value)||0];$('teamBadge').textContent=t.badge;$('teamNamePreview').textContent=t.name;$('teamTypePreview').textContent=$('teamType').value==='club'?'نادي':'منتخب'}
+$('teamType').onchange=fillTeams;$('teamSelect').onchange=updateTeamPreview;fillTeams();updateWallet();
 
-function internetState(){
- const on=navigator.onLine;
- by('offlineNote').classList.toggle('show',!on);
- document.querySelector('[data-mode="online"]').disabled=!on;
- if(!on && gameMode==='online'){
-   gameMode='cpu';
-   document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='cpu'));
-   by('onlineBox').classList.remove('show');
- }
+function startGame(selectedMode){
+  mode=selectedMode;difficulty=$('difficulty').value;kickMax=Number($('kickCount').value);
+  myName=$('playerName').value.trim()||'لاعب';oppName=$('opponentName').value.trim()||(mode==='cpu'?'الجهاز':'اللاعب 2');
+  myTeam=teams()[Number($('teamSelect').value)||0];
+  const pool=$('teamType').value==='club'?CLUBS:NATIONALS;
+  oppTeam=pool[(Number($('teamSelect').value)+1)%pool.length];
+  score=[0,0];kicks=[0,0];history=[];turn=0;gameOver=false;
+  $('startScreen').classList.add('hidden');renderHeader();renderDots();resetScene();startClock();startMusic();
+  $('status').textContent='ابدأ باختيار جهة التسديد.';
 }
-addEventListener('online',internetState);addEventListener('offline',internetState);internetState();
+document.querySelectorAll('.mode-card').forEach(b=>b.onclick=()=>{const m=b.dataset.mode;if(m==='online'){$('onlinePanel').classList.add('show');return}startGame(m)});
 
-document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{
- if(b.dataset.mode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج اتصال بالإنترنت');return}
- gameMode=b.dataset.mode;
- document.querySelectorAll('.modeBtn').forEach(x=>x.classList.toggle('active',x===b));
- by('tournamentBox').classList.toggle('show',gameMode==='tournament');
- by('onlineBox').classList.toggle('show',gameMode==='online');
-}));
-
-function makeTournament(){
- const count=Number(by('tourTeams').value),pool=[...teams[by('teamTypeMenu').value]];
- while(pool.length<count)pool.push('فريق '+(pool.length+1));
- const selected=pool.slice(0,count); const mine=by('teamMenu').value;
- if(!selected.includes(mine))selected[0]=mine;
- const fixtures=[];
- for(let i=0;i<selected.length;i+=2)fixtures.push({a:selected[i],b:selected[i+1],played:false,sa:null,sb:null});
- tournament={name:by('tourName').value||'بطولة HA',format:by('tourFormat').value,type:by('tourType').value,teams:selected,round:1,fixtures,champion:null};
- localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament));return tournament;
+function renderHeader(){
+  $('modeLabel').textContent=mode==='cpu'?'ضد الجهاز - '+(difficulty==='easy'?'سهل':difficulty==='hard'?'صعب':'متوسط'):mode==='local'?'لاعبان محلياً':'أونلاين';
+  $('myBadge').textContent=myTeam?.badge||'⚽';$('myTeam').textContent=myTeam?.name||'فريقك';$('myPlayer').textContent=myName;
+  $('oppBadge').textContent=oppTeam?.badge||'🤖';$('oppTeam').textContent=oppTeam?.name||'الخصم';$('oppPlayer').textContent=oppName;
+  $('scoreText').textContent=score[0]+' - '+score[1]
 }
-function renderTournament(){
- if(!tournament)makeTournament();
- by('tourModalTitle').textContent='🏆 '+tournament.name;
- by('tourContent').innerHTML=(tournament.fixtures||[]).map((m,i)=>'<div class="fixture"><span>'+(i+1)+'. '+m.a+'</span><b>'+(m.played?(m.sa+' - '+m.sb):'VS')+'</b><span>'+m.b+'</span></div>').join('')+(tournament.champion?'<div class="resultBig">🏆 البطل: '+tournament.champion+'</div>':'');
- by('tournamentModal').classList.add('show');
+function renderDots(){
+  $('roundDots').innerHTML='';
+  history.forEach(h=>{const d=document.createElement('span');d.className='dot '+(h.goal?'goal':'miss');d.title=h.player===0?myName:oppName;$('roundDots').appendChild(d)})
 }
-by('viewTournament').onclick=()=>{if(!tournament)makeTournament();renderTournament()};
-by('closeTour').onclick=()=>by('tournamentModal').classList.remove('show');
+function resetScene(){const ball=$('ball'),keeper=$('keeper');ball.style.left='50%';ball.style.bottom='82px';ball.style.top='auto';ball.style.transform='translateX(-50%) scale(1)';keeper.style.left='50%';keeper.style.top='145px';keeper.style.transform='translateX(-50%)'}
+function keeperChoice(){
+  if(mode==='cpu'){
+    if(difficulty==='easy')return Math.floor(Math.random()*9);
+    if(difficulty==='medium')return Math.random()<.45?lastPlayerShot:Math.floor(Math.random()*9);
+    return Math.random()<.7?lastPlayerShot:Math.floor(Math.random()*9)
+  }
+  return Math.floor(Math.random()*9)
+}
+let lastPlayerShot=4;
+function shoot(zone){
+  if(gameOver||turn!==0)return;
+  clearInterval(timerId);lastPlayerShot=zone;
+  const save=keeperChoice();animateKick(zone,save,()=>{
+    const isGoal=zone!==save;
+    if(isGoal)score[0]++;kicks[0]++;history.push({player:0,goal:isGoal});
+    sfx(isGoal?'goal':'save');renderHeader();renderDots();
+    if(checkEnd())return;
+    turn=1;setTimeout(opponentKick,900)
+  })
+}
+document.querySelectorAll('[data-shot]').forEach(b=>b.onclick=()=>shoot(Number(b.dataset.shot)));
+document.querySelectorAll('.zone').forEach(b=>b.onclick=()=>shoot(Number(b.dataset.zone)));
 
-by('createRoom').onclick=()=>{
- if(!navigator.onLine){alert('لا يوجد إنترنت');return}
- const code=Math.random().toString(36).slice(2,8).toUpperCase();by('roomCode').value=code;by('onlineStatus').value='تم إنشاء الغرفة '+code;
+function opponentKick(){
+  if(gameOver)return;
+  resetScene();
+  const oppShot=Math.floor(Math.random()*9);
+  const mySave=Math.floor(Math.random()*9);
+  animateKick(oppShot,mySave,()=>{
+    const isGoal=oppShot!==mySave;
+    if(isGoal)score[1]++;kicks[1]++;history.push({player:1,goal:isGoal});
+    renderHeader();renderDots();
+    if(checkEnd())return;
+    turn=0;timeLeft=10;startClock();$('status').textContent='دورك — اختار جهة التسديد.'
+  })
+}
+function animateKick(zone,save,done){
+  const cols=[24,50,76],rows=[85,125,165];const c=zone%3,r=Math.floor(zone/3);const sc=save%3,sr=Math.floor(save/3);
+  $('ball').style.left=cols[c]+'%';$('ball').style.bottom='auto';$('ball').style.top=rows[r]+'px';$('ball').style.transform='translateX(-50%) scale(.72)';
+  $('keeper').style.left=cols[sc]+'%';$('keeper').style.top=rows[sr]+'px';$('keeper').style.transform='translateX(-50%) scale(.9)';
+  setTimeout(()=>{done();setTimeout(resetScene,350)},620)
+}
+function checkEnd(){
+  if(kicks[0]>=kickMax&&kicks[1]>=kickMax){
+    if(score[0]===score[1]){kickMax++;return false}
+    gameOver=true;clearInterval(timerId);
+    const win=score[0]>score[1];
+    if(win){econ.points+=100;econ.wins++;if(econ.wins%2===0)econ.gems+=1;saveEcon()}
+    $('endTitle').textContent=win?'🏆 فزت بالمباراة':'انتهت المباراة';
+    $('endText').textContent=(win?'أحسنت! ':'')+'النتيجة '+score[0]+' - '+score[1]+(win?' • حصلت على 100 نقطة'+(econ.wins%2===0?' و1 جوهرة 💎':''):'');
+    $('endModal').classList.add('show');return true
+  }
+  return false
+}
+function startClock(){
+  clearInterval(timerId);timeLeft=10;updateTimer();
+  timerId=setInterval(()=>{if(gameOver||turn!==0)return;timeLeft--;updateTimer();if(timeLeft<=0){clearInterval(timerId);shoot(Math.floor(Math.random()*9))}},1000)
+}
+function updateTimer(){$('timer').style.setProperty('--deg',(timeLeft/10*360)+'deg');$('timer').querySelector('span').textContent=timeLeft}
+function goMain(){clearInterval(timerId);stopMusic();$('endModal').classList.remove('show');$('withdrawModal').classList.remove('show');$('startScreen').classList.remove('hidden');$('onlinePanel').classList.remove('show');gameOver=true;window.scrollTo(0,0)}
+$('withdrawBtn').onclick=()=>$('withdrawModal').classList.add('show');$('cancelWithdraw').onclick=()=>$('withdrawModal').classList.remove('show');$('confirmWithdraw').onclick=goMain;$('mainBtn').onclick=goMain;$('rematchBtn').onclick=()=>{ $('endModal').classList.remove('show');startGame(mode) };
+
+document.querySelectorAll('.react').forEach(b=>b.onclick=()=>{$('status').textContent=b.dataset.react+' '+myName+' أرسل ردة فعل';sfx('click')});
+
+function initAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)()}
+function tone(freq,d=.16,v=.08){if(!musicOn)return;initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=freq;g.gain.value=v*(Number($('musicVolume').value)/100);o.start();g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+d);o.stop(audioCtx.currentTime+d+.02)}
+function startMusic(){stopMusic();musicTrack=Number($('musicSelect').value);musicOn=musicTrack!==0;if(!musicOn)return;const tracks=[[220,277,330,392],[262,330,392,523],[196,247,294,370]],arr=tracks[musicTrack-1]||tracks[0];let i=0;musicTimer=setInterval(()=>tone(arr[i++%arr.length],.45,.11),650)}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
+function sfx(t){initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=t==='goal'?760:t==='save'?180:360;g.gain.value=.18*(Number($('sfxVolume').value)/100);o.start();g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.18);o.stop(audioCtx.currentTime+.2)}
+$('musicSelect').onchange=startMusic;$('soundBtn').onclick=()=>{musicOn=!musicOn;$('soundBtn').textContent=musicOn?'🔊':'🔇';musicOn?startMusic():stopMusic()};
+
+
+// ===== مايك مباشر داخل ركلات الجزاء الأونلاين =====
+let gameVoiceJoined=false,gameVoiceMuted=false;
+function showGameMic(){const b=$('gameMicBtn');if(b)b.classList.add('show')}
+async function joinGameVoice(){
+  if(mode!=='online'||!roomCode)return;
+  showGameMic();
+  if(gameVoiceJoined)return;
+  try{
+    $('gameMicStatus').classList.add('show');
+    $('gameMicStatus').textContent='جاري ربط المايك...';
+    await HA_GameVoice.join('penalties_'+roomCode,uid);
+    gameVoiceJoined=true;
+    $('gameMicBtn').classList.add('on');
+    $('gameMicStatus').textContent='المايك متصل';
+    setTimeout(()=>$('gameMicStatus').classList.remove('show'),1800);
+  }catch(e){
+    console.error(e);
+    $('gameMicStatus').textContent='تعذر ربط المايك';
+  }
+}
+$('gameMicBtn').onclick=async()=>{
+  if(!gameVoiceJoined){await joinGameVoice();return}
+  gameVoiceMuted=!gameVoiceMuted;
+  HA_GameVoice.mute(gameVoiceMuted);
+  $('gameMicBtn').classList.toggle('muted',gameVoiceMuted);
+  $('gameMicBtn').textContent=gameVoiceMuted?'🔇':'🎤';
+  $('gameMicStatus').classList.add('show');
+  $('gameMicStatus').textContent=gameVoiceMuted?'المايك مكتوم':'المايك شغال';
+  setTimeout(()=>$('gameMicStatus').classList.remove('show'),1200);
 };
-by('joinRoom').onclick=()=>{
- if(!navigator.onLine){alert('لا يوجد إنترنت');return}
- if(!by('roomCode').value.trim()){alert('اكتب كود الغرفة');return}
- by('onlineStatus').value='تم الدخول للغرفة';
+window.addEventListener('beforeunload',()=>{try{HA_GameVoice.leave()}catch(e){}});
+
+/* Online room basic sync */
+function genCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
+$('createRoomBtn').onclick=async()=>{
+  mode='online';roomCode=genCode();roomRef=db.ref('penaltyRooms/'+roomCode);
+  const t=teams()[Number($('teamSelect').value)||0],name=$('playerName').value.trim()||'لاعب';
+  await roomRef.set({status:'waiting',host:uid,createdAt:Date.now(),players:{[uid]:{name,team:t}}});
+  $('roomCodeView').textContent=roomCode;
+  roomRef.on('value',snap=>{const r=snap.val();if(!r)return;const ps=Object.entries(r.players||{});if(ps.length>=2&&r.status==='waiting'&&r.host===uid)roomRef.update({status:'playing'});if(r.status==='playing')enterOnline(r)})
 };
-
-by('shopOpen').onclick=()=>{
- const choice=prompt('المتجر\\n1 = كرة نارية (50 نقطة)\\n2 = كرة ثلجية (50 نقطة)\\n3 = كرة ترابية (40 نقطة)');
- const cost=choice==='3'?40:50;
- if(['1','2','3'].includes(choice||'')){
-   if(points<cost){alert('النقاط غير كافية');return}
-   points-=cost;gems+=1;localStorage.setItem('ha_pen_points',points);localStorage.setItem('ha_pen_gems',gems);syncWallet();alert('تم الشراء وإضافة جوهرة كمكافأة');
- }
+$('joinRoomBtn').onclick=async()=>{
+  const code=$('roomCodeInput').value.trim().toUpperCase();if(!code)return;
+  roomCode=code;roomRef=db.ref('penaltyRooms/'+code);const snap=await roomRef.once('value');if(!snap.exists()){alert('الغرفة غير موجودة');return}
+  const t=teams()[Number($('teamSelect').value)||0],name=$('playerName').value.trim()||'لاعب';
+  await roomRef.child('players/'+uid).set({name,team:t});
+  roomRef.on('value',s=>{const r=s.val();if(r?.status==='playing')enterOnline(r)})
 };
-
-function resetScore(){
- kickNo=0;homeScore=0;awayScore=0;
- by('homeScoreText').textContent='0';by('awayScoreText').textContent='0';
- by('hudKicks').textContent='0/'+maxKicks;
+function enterOnline(r){
+  const ps=Object.entries(r.players||{});if(ps.length<2)return;
+  const mine=ps.find(([id])=>id===uid),other=ps.find(([id])=>id!==uid);if(!mine||!other)return;
+  mode='online';myName=mine[1].name;myTeam=mine[1].team;oppName=other[1].name;oppTeam=other[1].team;kickMax=Number($('kickCount').value);score=[0,0];kicks=[0,0];history=[];turn=0;gameOver=false;
+  $('startScreen').classList.add('hidden');renderHeader();renderDots();startClock();startMusic();showGameMic();joinGameVoice()
 }
-function currentOpponent(){
- if(gameMode!=='tournament')return by('opponentMenu').value;
- if(!tournament)makeTournament();
- const mine=by('teamMenu').value;
- const m=(tournament.fixtures||[]).find(x=>!x.played&&(x.a===mine||x.b===mine));
- return m?(m.a===mine?m.b:m.a):by('opponentMenu').value;
-}
-function beginGame(){
- if(gameMode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج إنترنت');return}
- if(gameMode==='tournament'){
-   if(by('tourType').value==='rooms'&&!navigator.onLine){alert('بطولة الغرف تحتاج إنترنت. اختر بطولة ضد الجهاز أو شغّل الإنترنت.');return}
-   if(!tournament||tournament.champion)makeTournament();
- }
- maxKicks=5;
- resetScore();
- by('homeTeamText').textContent=by('teamMenu').value;
- by('awayTeamText').textContent=currentOpponent();
- by('hudMode').textContent=gameMode==='cpu'?'ضد الجهاز':gameMode==='local'?'لاعبان محلياً':gameMode==='tournament'?'بطولة':'أونلاين';
- by('menuScreen').style.display='none';
-}
-by('startGameFull').onclick=beginGame;
-
-function finalizeTournament(){
- if(gameMode!=='tournament'||!tournament)return;
- const mine=by('teamMenu').value;
- const match=(tournament.fixtures||[]).find(x=>!x.played&&(x.a===mine||x.b===mine));
- if(match){
-  match.played=true;match.sa=match.a===mine?homeScore:awayScore;match.sb=match.a===mine?awayScore:homeScore;
- }
- if(homeScore>=awayScore){
-   const remaining=(tournament.fixtures||[]).filter(x=>!x.played);
-   if(!remaining.length)tournament.champion=mine;
- } else {
-   tournament.champion=(match?(match.a===mine?match.b:match.a):'الخصم');
- }
- localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament));
-}
-function finishMatch(){
- finalizeTournament();
- let res=homeScore>awayScore?'فوز 🎉':homeScore<awayScore?'خسارة':'تعادل';
- if(gameMode==='tournament'&&homeScore>=awayScore)res+=' — تأهلت/تقدمت في البطولة 🏆';
- by('endResult').textContent=res;by('endScore').textContent=homeScore+' - '+awayScore;by('endModal').classList.add('show');
-}
-by('playAgain').onclick=()=>{by('endModal').classList.remove('show');resetScore()};
-by('backMenu').onclick=()=>{by('endModal').classList.remove('show');by('menuScreen').style.display='flex'};
-
-// Hook into the existing visual game's score text changes.
-// A MutationObserver watches the current 3D result and mirrors it into the full system.
-const msg=by('msg');
-let lastShown=false;
-new MutationObserver(()=>{
- const showing=msg.classList.contains('show');
- if(showing&&!lastShown){
-   kickNo++;
-   const text=(msg.textContent||'').toLowerCase();
-   if(text.includes('goal')||text.includes('هدف')) homeScore++;
-   else {
-     const d=by('difficultyMenu').value;
-     const cpuChance=d==='hard'?.75:d==='medium'?.58:.42;
-     if(gameMode==='cpu'||gameMode==='tournament'){if(Math.random()<cpuChance)awayScore++}
-   }
-   // For every player kick, simulate opponent kick in CPU/tournament.
-   if((gameMode==='cpu'||gameMode==='tournament') && (text.includes('goal')||text.includes('هدف'))){
-     const d=by('difficultyMenu').value;const cpuChance=d==='hard'?.75:d==='medium'?.58:.42;
-     if(Math.random()<cpuChance)awayScore++;
-   }
-   by('homeScoreText').textContent=homeScore;by('awayScoreText').textContent=awayScore;
-   by('hudKicks').textContent=Math.min(kickNo,maxKicks)+'/'+maxKicks;
-   points+=text.includes('goal')||text.includes('هدف')?10:2;
-   if(Math.random()<.12)gems++;
-   localStorage.setItem('ha_pen_points',points);localStorage.setItem('ha_pen_gems',gems);
-   if(kickNo>=maxKicks)setTimeout(finishMatch,1400);
- }
- lastShown=showing;
-}).observe(msg,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
-})();
 </script>
+<button id="gameMicBtn" class="game-mic-btn" type="button" title="مايك اللاعبين">🎤</button>
+<div id="gameMicStatus" class="game-mic-status">المايك غير متصل</div>
+<script src="game-voice.js"></script>
 
-
-<script>
-(function(){
- const by=id=>document.getElementById(id);
- const hud=by('keeperTurnHud'), joy=by('keeperJoy'), knob=by('keeperKnob');
- let gx=0,gy=0,pointer=null,armed=false,opponentShooting=false;
- let shotX=0,shotY=1.4,jumped=false;
-
- function move(x,y){
-   const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-   let dx=x-cx,dy=y-cy,max=r.width*.34,len=Math.hypot(dx,dy);
-   if(len>max){dx=dx/len*max;dy=dy/len*max}
-   knob.style.transform=`translate(${dx}px,${dy}px)`;
-   gx=dx/max; gy=-dy/max;
- }
- joy.addEventListener('pointerdown',e=>{pointer=e.pointerId;joy.setPointerCapture(e.pointerId);move(e.clientX,e.clientY)});
- joy.addEventListener('pointermove',e=>{if(e.pointerId===pointer)move(e.clientX,e.clientY)});
- joy.addEventListener('pointerup',e=>{if(e.pointerId===pointer)pointer=null});
- joy.addEventListener('pointercancel',()=>pointer=null);
-
- function showKeeperTurn(){
-   hud.classList.add('show');
-   const normalHud=document.querySelector('.hud');
-   if(normalHud)normalHud.style.visibility='hidden';
-
-   armed=false;opponentShooting=false;jumped=false;
-   by('keeperAction').textContent='استعداد';
-   gx=0;gy=0;knob.style.transform='translate(0,0)';
-   if(window.haResetKeeperPose)window.haResetKeeperPose();
-   if(window.haResetOpponentBall)window.haResetOpponentBall();
-   if(window.haKeeperCamera)window.haKeeperCamera();
-
-   const seenGuide=localStorage.getItem('ha_keeper_guide_seen')==='1';
-   if(seenGuide){
-     by('keeperHint').style.display='none';
-   }else{
-     by('keeperHint').style.display='block';
-     by('keeperHint').textContent='أنت الحارس: وجّه الزر الدائري، ثم اضغط استعداد. عند تسديدة الخصم اضغط نفس الزر للقفز.';
-     localStorage.setItem('ha_keeper_guide_seen','1');
-   }
- }
-
- function hideKeeperTurn(){
-   hud.classList.remove('show');
-   by('keeperHint').style.display='none';
-   const normalHud=document.querySelector('.hud');
-   if(normalHud)normalHud.style.visibility='visible';
-   if(window.haPlayerCamera)window.haPlayerCamera();
-   if(window.haResetKeeperPose)window.haResetKeeperPose();
-   if(window.haResetOpponentBall)window.haResetOpponentBall();
- }
-
- function animateDive(){
-   const h=window.HA3D;
-   if(!h)return;
-   const keeper=h.keeper;
-   const sx=keeper.position.x, sy=keeper.position.y, sz=keeper.position.z;
-   const tx=gx*3.5;
-   const ty=Math.max(-.05,gy*1.35);
-   const rot=-gx*.9;
-   const began=performance.now(),dur=520;
-   function f(now){
-     const q=Math.min(1,(now-began)/dur);
-     const ease=1-Math.pow(1-q,3);
-     keeper.position.x=sx+(tx-sx)*ease;
-     keeper.position.y=sy+(ty-sy)*ease + Math.sin(q*Math.PI)*.55;
-     keeper.position.z=sz+.18*Math.sin(q*Math.PI);
-     keeper.rotation.z=rot*ease;
-     keeper.rotation.x=(-gy*.28)*ease;
-     if(q<1)requestAnimationFrame(f);
-   }
-   requestAnimationFrame(f);
- }
-
- const actionBtn=by('keeperAction');
- actionBtn.onclick=()=>{
-   if(!armed){
-     armed=true;jumped=false;
-     shotX=(Math.random()*2-1)*4.1;
-     shotY=.55+Math.random()*2.0;
-     actionBtn.textContent='قفز';
-     if(by('keeperHint').style.display!=='none')by('keeperHint').textContent='استعد... الخصم راح يسدد';
-     setTimeout(()=>{
-       opponentShooting=true;
-       if(by('keeperHint').style.display!=='none')by('keeperHint').textContent='هسه! اضغط قفز';
-       if(window.haOpponentShot){
-         window.haOpponentShot(shotX,shotY,()=>{
-           if(!jumped){
-             if(by('keeperHint').style.display!=='none')by('keeperHint').textContent='⚽ هدف للخصم';
-             window.dispatchEvent(new CustomEvent('haGoalkeeperResult',{detail:{saved:false}}));
-             actionBtn.textContent='استعداد';
-             setTimeout(hideKeeperTurn,900);
-           }
-         });
-       }
-     },700+Math.random()*650);
-     return;
-   }
-
-   if(jumped)return;
-   jumped=true;
-   animateDive();
-
-   const timing=opponentShooting;
-   const nx=shotX/4.1;
-   const ny=(shotY-1.55)/1.25;
-   const distance=Math.hypot(gx-nx,(gy-ny)*.78);
-   const saved=timing && distance<.78;
-
-   setTimeout(()=>{
-     if(by('keeperHint').style.display!=='none')by('keeperHint').textContent=saved?'🧤 صدّيتها!':'⚽ ما لحگت عليها';
-     window.dispatchEvent(new CustomEvent('haGoalkeeperResult',{detail:{saved}}));
-     actionBtn.textContent='استعداد';
-     setTimeout(hideKeeperTurn,950);
-   },520);
- };
-
- window.haShowKeeperTurn=showKeeperTurn;
-
- // بعد انتهاء تسديدة اللاعب يتحول الدور للحارس.
- const msg=by('msg');
- if(msg){
-   let prev=false;
-   new MutationObserver(()=>{
-     const now=msg.classList.contains('show');
-     if(now&&!prev)setTimeout(showKeeperTurn,650);
-     prev=now;
-   }).observe(msg,{attributes:true,attributeFilter:['class']});
- }
-})();
-</script>
-
-
-<script>
-(function(){
- const $=id=>document.getElementById(id);
- let finished=false, suddenDeath=false;
-
- function num(id){const e=$(id);return e?Number(e.textContent||0):0}
- function configuredKicks(){
-   // المباراة الأساسية: 5 تسديدات لكل طرف
-   return 5;
- }
- function rounds(){
-   const e=$('hudKicks');
-   if(!e)return 0;
-   const m=(e.textContent||'').match(/(\d+)\s*\/\s*(\d+)/);
-   return m?Number(m[1]):0;
- }
- function showFinal(){
-   if(finished)return;
-   const h=num('homeScoreText'),a=num('awayScoreText');
-   if(h===a){suddenDeath=true;return} // تعادل: نكمل ركلة بركلة
-   finished=true;
-   $('finalMatchScore').textContent=h+' - '+a;
-   $('finalMatchText').textContent=h>a?'🎉 فوز! انتهت المباراة.':'انتهت المباراة بالخسارة.';
-   $('finalMatchModal').classList.add('show');
- }
- function checkEnd(){
-   if(finished)return;
-   const r=rounds(), max=5;
-   const h=num('homeScoreText'),a=num('awayScoreText');
-
-   // لا تنتهي المباراة قبل إكمال 5 تسديدات لكل طرف.
-   if(r<max)return;
-
-   // بعد الجولة الخامسة: إذا اختلفت النتيجة تنتهي.
-   if(r===max){
-     if(h!==a){showFinal();return;}
-     suddenDeath=true;
-     return;
-   }
-
-   // التعادل بعد الخمس: ركلة لكل طرف في كل جولة إضافية.
-   // لا نحسم إلا بعد اكتمال الجولة الإضافية ووجود فارق.
-   if(suddenDeath && h!==a)showFinal();
- }
- const hud=$('hudKicks'), hs=$('homeScoreText'), as=$('awayScoreText');
- [hud,hs,as].filter(Boolean).forEach(el=>new MutationObserver(()=>setTimeout(checkEnd,1200)).observe(el,{childList:true,subtree:true,characterData:true}));
-
- $('finalReplay').onclick=()=>{
-   finished=false;suddenDeath=false;
-   $('finalMatchModal').classList.remove('show');
-   const old=$('playAgain'); if(old)old.click();
-   else location.reload();
- };
- $('finalMenu').onclick=()=>{
-   finished=false;suddenDeath=false;
-   $('finalMatchModal').classList.remove('show');
-   const old=$('backMenu'); if(old)old.click();
-   else {const m=$('menuScreen');if(m)m.style.display='flex';}
- };
-})();
-</script>
-
-</body></html>
+</body>
+</html>
