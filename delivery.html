@@ -1064,6 +1064,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 </script>
 
+<script src="transport-live-tracking.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1632,6 +1633,17 @@ function openDeliveryPostOrder(){
 
 function listenDeliveryRide(rideId){
   activeDeliveryRideRef=db.ref('rides/'+rideId);
+
+  HA_LiveTracking.watchCustomer(rideId,{
+    onLocation:(p,loc)=>{
+      if(!deliveryTrackingMap)return;
+      if(deliveryDriverMarker) deliveryDriverMarker.setLatLng(p);
+      else deliveryDriverMarker=L.marker(p).addTo(deliveryTrackingMap).bindPopup('المندوب');
+
+      const b=deliveryTrackingMap.getBounds();
+      if(!b.contains(p)) deliveryTrackingMap.panTo(p,{animate:true,duration:.5});
+    }
+  });
   activeDeliveryRideRef.on('value',ss=>{
     const ride=ss.val();
     if(!ride)return;
@@ -1672,6 +1684,7 @@ function listenDeliveryRide(rideId){
 
     if(ride.status==='finished'){
       localStorage.removeItem('ha_active_delivery');
+      HA_LiveTracking.clearCustomer();
     }
   });
 }

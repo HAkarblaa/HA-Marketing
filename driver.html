@@ -197,6 +197,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 </script>
 
+<script src="transport-live-tracking.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map=L.map('map').setView([33.3152,44.3661],13);
@@ -284,6 +285,7 @@ function watchCurrentRideStatus(rideId){
     if(ride.status==='cancelled' && ride.cancelledBy==='customer'){
       const reason=ride.cancelReason||'بدون سبب محدد';
       stopCurrentRideStatusWatch();
+      HA_LiveTracking.stopDriver();
       localStorage.removeItem('ha_driver_active_ride');
 
       currentRideId=null;
@@ -301,6 +303,7 @@ function watchCurrentRideStatus(rideId){
 
     if(ride.status==='finished'){
       stopCurrentRideStatusWatch();
+      HA_LiveTracking.stopDriver();
     }
   });
 }
@@ -349,14 +352,7 @@ acceptBtn.onclick=async()=>{
   tripState.textContent='بالطريق إلى الزبون';
   currentFare.textContent=currentRide.price ? Number(currentRide.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
-  if(navigator.geolocation){
-    navigator.geolocation.watchPosition(pos=>{
-      if(!currentRideId)return;
-      const loc={lat:pos.coords.latitude,lng:pos.coords.longitude,updatedAt:Date.now()};
-      driver.setLatLng([loc.lat,loc.lng]);
-      db.ref('rides/'+currentRideId+'/driverLocation').set(loc);
-    },()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:10000});
-  }
+  HA_LiveTracking.startDriver(currentRideId,driver);
 
   fetch(`https://router.project-osrm.org/route/v1/driving/${driver.getLatLng().lng},${driver.getLatLng().lat};${customer.getLatLng().lng},${customer.getLatLng().lat}?overview=full&geometries=geojson`)
     .then(r=>r.json()).then(j=>{
@@ -405,6 +401,7 @@ finishTripBtn.onclick=async()=>{
     await db.ref('rides/'+currentRideId).update({status:'finished',finishedAt:Date.now()});
     localStorage.removeItem('ha_driver_active_ride');
     stopCurrentRideStatusWatch();
+    HA_LiveTracking.stopDriver();
   }
   setTimeout(()=>{
     currentRideId=null;
@@ -456,14 +453,7 @@ async function restoreDriverRide(){
   startTripBtn.disabled=ride.status!=='arrived';
   finishTripBtn.disabled=ride.status!=='started';
 
-  if(navigator.geolocation){
-    navigator.geolocation.watchPosition(pos=>{
-      if(!currentRideId)return;
-      const loc={lat:pos.coords.latitude,lng:pos.coords.longitude,updatedAt:Date.now()};
-      driver.setLatLng([loc.lat,loc.lng]);
-      db.ref('rides/'+currentRideId+'/driverLocation').set(loc);
-    },()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:10000});
-  }
+  HA_LiveTracking.startDriver(currentRideId,driver);
 }
 
 requestCard.style.display='none';

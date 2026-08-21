@@ -1112,6 +1112,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 </script>
 
+<script src="transport-live-tracking.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1853,6 +1854,19 @@ function listenToRide(rideId){
   if(activeRideRef) activeRideRef.off();
   activeRideRef=db.ref('rides/'+rideId);
 
+  HA_LiveTracking.watchCustomer(rideId,{
+    statusElement:'customerTripStatus',
+    onLocation:(p,loc)=>{
+      if(!trackingMap)return;
+      if(trackingDriverMarker) trackingDriverMarker.setLatLng(p);
+      else trackingDriverMarker=L.marker(p).addTo(trackingMap).bindPopup(acceptedDriver.name||'السائق');
+
+      // Keep the live marker visible without constantly forcing the user's zoom.
+      const b=trackingMap.getBounds();
+      if(!b.contains(p)) trackingMap.panTo(p,{animate:true,duration:.5});
+    }
+  });
+
   activeRideRef.on('value',snapShot=>{
     const ride=snapShot.val();
     if(!ride)return;
@@ -1898,6 +1912,7 @@ function listenToRide(rideId){
           ride.price ? 'الأجرة: '+Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : 'تم إنهاء الرحلة';
 
         if(activeRideRef) activeRideRef.off();
+        HA_LiveTracking.clearCustomer();
       }
 
       if(ride.driverLocation && trackingMap){
