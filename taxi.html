@@ -886,6 +886,14 @@ body:not(.trip-ready) #extraSummary{
   background:#c62828;color:#fff;font-size:15px;font-weight:700
 }
 
+
+.ride-status-box{margin:10px 0;background:#f7f7f7;border-radius:14px;padding:10px}
+.ride-status-live{font-weight:800;text-align:center;margin-bottom:9px}
+.ride-status-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.ride-status-step{font-size:10px;text-align:center;padding:8px 4px;border-radius:10px;background:#e5e7eb;color:#555}
+.ride-status-step.done{background:#dff6e7;color:#136b35;font-weight:800}
+.ride-status-step.current{outline:2px solid #16a34a}
+
 </style>
 </head>
 
@@ -1051,7 +1059,16 @@ body:not(.trip-ready) #extraSummary{
       </div>
     </div>
 
-    <div id="driverCard" class="driver-card">
+    <div class="ride-status-box">
+  <div id="rideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
+  <div id="rideStatusTimeline" class="ride-status-steps">
+    <div class="ride-status-step" data-ride-step>تم القبول</div>
+    <div class="ride-status-step" data-ride-step>وصل</div>
+    <div class="ride-status-step" data-ride-step>بدأت</div>
+    <div class="ride-status-step" data-ride-step>انتهت</div>
+  </div>
+</div>
+<div id="driverCard" class="driver-card">
       <div id="customerTripStatus" style="background:#eef4ff;border-radius:11px;padding:9px;text-align:center;font-weight:700;margin-bottom:9px">تم قبول الطلب</div>
       <div class="driver-top">
         <div class="driver-avatar">
@@ -1122,6 +1139,7 @@ const db = firebase.database();
 </script>
 
 <script src="transport-live-tracking.js"></script>
+<script src="transport-ride-status.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1865,6 +1883,11 @@ function openPostOrder(){
 }
 
 function listenToRide(rideId){
+  HA_RideStatus.clear();
+  HA_RideStatus.watch(rideId,'taxi',{
+    textElement:'rideStatusLive',
+    timelineElement:'rideStatusTimeline'
+  });
   if(activeRideRef) activeRideRef.off();
   activeRideRef=db.ref('rides/'+rideId);
 

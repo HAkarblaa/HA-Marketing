@@ -886,6 +886,14 @@ body.delivery-stage-1 #centerPin{
 .delivery-chat-send input{flex:1;padding:11px;border:1px solid #ddd;border-radius:10px}
 .delivery-chat-send button{border:0;border-radius:10px;padding:0 16px;background:#111;color:#fff;font-weight:700}
 
+
+.ride-status-box{margin:10px 0;background:#f7f7f7;border-radius:14px;padding:10px}
+.ride-status-live{font-weight:800;text-align:center;margin-bottom:9px}
+.ride-status-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.ride-status-step{font-size:10px;text-align:center;padding:8px 4px;border-radius:10px;background:#e5e7eb;color:#555}
+.ride-status-step.done{background:#dff6e7;color:#136b35;font-weight:800}
+.ride-status-step.current{outline:2px solid #16a34a}
+
 </style>
 </head>
 
@@ -1065,6 +1073,7 @@ const db = firebase.database();
 </script>
 
 <script src="transport-live-tracking.js"></script>
+<script src="transport-ride-status.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1632,6 +1641,11 @@ function openDeliveryPostOrder(){
 }
 
 function listenDeliveryRide(rideId){
+  HA_RideStatus.clear();
+  HA_RideStatus.watch(rideId,'delivery',{
+    textElement:'deliveryRideStatusLive',
+    timelineElement:'deliveryRideStatusTimeline'
+  });
   activeDeliveryRideRef=db.ref('rides/'+rideId);
 
   HA_LiveTracking.watchCustomer(rideId,{
@@ -1872,7 +1886,16 @@ if(deliveryBackBtn){
       <button id="deliverySearchCancelBtn" class="delivery-search-cancel" type="button">إلغاء الطلب</button>
     </div>
 
-    <div id="deliveryDriverCard" class="delivery-driver-card">
+    <div class="ride-status-box">
+  <div id="deliveryRideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
+  <div id="deliveryRideStatusTimeline" class="ride-status-steps">
+    <div class="ride-status-step" data-ride-step>تم القبول</div>
+    <div class="ride-status-step" data-ride-step>وصل</div>
+    <div class="ride-status-step" data-ride-step>بدأت</div>
+    <div class="ride-status-step" data-ride-step>انتهت</div>
+  </div>
+</div>
+<div id="deliveryDriverCard" class="delivery-driver-card">
       <div class="delivery-driver-top">
         <div class="delivery-driver-avatar">🛵</div>
         <div class="delivery-driver-info">

@@ -104,6 +104,14 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
 #driverAppCallBtn{background:#2563eb;color:#fff}
 #driverChatBtn{background:#16a34a;color:#fff}
 
+
+.ride-status-box{margin:10px 0;background:#f7f7f7;border-radius:14px;padding:10px}
+.ride-status-live{font-weight:800;text-align:center;margin-bottom:9px}
+.ride-status-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.ride-status-step{font-size:10px;text-align:center;padding:8px 4px;border-radius:10px;background:#e5e7eb;color:#555}
+.ride-status-step.done{background:#dff6e7;color:#136b35;font-weight:800}
+.ride-status-step.current{outline:2px solid #16a34a}
+
 </style>
 </head>
 <body>
@@ -170,7 +178,16 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
         <button id="driverChatBtn" type="button">💬 رسائل داخل التطبيق</button>
       </div>
 
-      <div class="trip-actions" style="margin-top:10px">
+      <div class="ride-status-box">
+  <div id="driverRideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
+  <div id="driverRideStatusTimeline" class="ride-status-steps">
+    <div class="ride-status-step" data-ride-step>تم القبول</div>
+    <div class="ride-status-step" data-ride-step>وصل</div>
+    <div class="ride-status-step" data-ride-step>بدأت</div>
+    <div class="ride-status-step" data-ride-step>انتهت</div>
+  </div>
+</div>
+<div class="trip-actions" style="margin-top:10px">
         <button id="arriveBtn" class="arrive">وصلت للزبون</button>
         <button id="startTripBtn" class="start-trip" disabled>ابدأ الرحلة</button>
         <button id="finishTripBtn" class="finish-trip" disabled>إنهاء الرحلة</button>
@@ -198,6 +215,7 @@ const db = firebase.database();
 </script>
 
 <script src="transport-live-tracking.js"></script>
+<script src="transport-ride-status.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map=L.map('map').setView([33.3152,44.3661],13);
@@ -286,6 +304,7 @@ function watchCurrentRideStatus(rideId){
       const reason=ride.cancelReason||'بدون سبب محدد';
       stopCurrentRideStatusWatch();
       HA_LiveTracking.stopDriver();
+      HA_RideStatus.clear();
       localStorage.removeItem('ha_driver_active_ride');
 
       currentRideId=null;
@@ -346,6 +365,8 @@ acceptBtn.onclick=async()=>{
 
   currentRide=tx.snapshot.val();
   localStorage.setItem('ha_driver_active_ride',currentRideId);
+  HA_RideStatus.clear();
+  HA_RideStatus.watch(currentRideId,'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -402,6 +423,7 @@ finishTripBtn.onclick=async()=>{
     localStorage.removeItem('ha_driver_active_ride');
     stopCurrentRideStatusWatch();
     HA_LiveTracking.stopDriver();
+    HA_RideStatus.clear();
   }
   setTimeout(()=>{
     currentRideId=null;
@@ -434,6 +456,8 @@ async function restoreDriverRide(){
 
   currentRideId=saved;
   currentRide=ride;
+  HA_RideStatus.clear();
+  HA_RideStatus.watch(currentRideId,(ride.vehicleType||'').includes('مندوب')?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
