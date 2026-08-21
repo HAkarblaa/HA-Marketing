@@ -696,7 +696,7 @@ body:not(.trip-ready) #extraSummary{
   font-size:13px;
   cursor:pointer;
 }
-.call-driver{background:#111;color:#fff}
+.call-driver{background:#111;color:#fff}.app-call-driver{background:#2563eb;color:#fff}
 .cancel-trip{background:#eee;color:#111}
 
 
@@ -1079,7 +1079,7 @@ body:not(.trip-ready) #extraSummary{
 
       <div class="post-actions">
         <button id="callDriverBtn" class="call-driver" type="button">📞 اتصال مباشر</button>
-        <button id="whatsappDriverBtn" class="whatsapp-driver" type="button">🟢 واتساب</button>
+        <button id="appCallDriverBtn" class="app-call-driver" type="button">☎️ اتصال التطبيق</button>
         <button id="chatDriverBtn" class="chat-driver" type="button">💬 رسائل داخل التطبيق</button>
         <button id="cancelTripBtn" class="cancel-trip" type="button">إلغاء الطلب</button>
       </div>
@@ -1737,41 +1737,98 @@ function callAcceptedDriver(){
   window.location.href='tel:'+acceptedDriver.phoneLocal;
 }
 
-function whatsappAcceptedDriver(){
-  const msg=encodeURIComponent('السلام عليكم، أنا صاحب طلب التكسي.');
-  window.open('https://wa.me/'+acceptedDriver.phoneInternational+'?text='+msg,'_blank');
+
+function startTransportAppCall(){
+  // اتصال داخل HA Marketing بين الزبون والسائق.
+  // حالياً يفتح واجهة الاتصال داخل التطبيق؛ الربط الصوتي الحي يستخدم WebRTC عند توفر الطرف الآخر.
+  const rideId=localStorage.getItem('ha_active_ride')||'current';
+  localStorage.setItem('ha_transport_call_ride',rideId);
+  localStorage.setItem('ha_transport_call_type','التكسي');
+  if(confirm('بدء اتصال داخل التطبيق مع السائق؟')){
+    window.location.href='chat.html?call=audio&ride='+encodeURIComponent(rideId)+'&transport='+encodeURIComponent('التكسي');
+  }
+}
+
+let haChatRef=null;
+let haChatListener=null;
+
+function getCurrentRideForChat(){
+  return activeRideId || localStorage.getItem('ha_active_ride') || null;
+}
+
+function renderRideChatMessage(msg){
+  const box=document.getElementById('chatMessages');
+  if(!box || !msg || !msg.text)return;
+  const el=document.createElement('div');
+  el.className='msg '+(msg.senderRole==='customer'?'me':'driver');
+  el.textContent=msg.text;
+  box.appendChild(el);
+  box.scrollTop=box.scrollHeight;
+}
+
+function attachRideChat(){
+  const rideId=getCurrentRideForChat();
+  if(!rideId){
+    alert('لا توجد رحلة فعالة حالياً.');
+    return false;
+  }
+
+  if(haChatRef)haChatRef.off();
+  haChatRef=db.ref('rideChats/'+rideId+'/messages');
+
+  const box=document.getElementById('chatMessages');
+  if(box)box.innerHTML='';
+
+  haChatRef.limitToLast(100).on('child_added',snap=>{
+    renderRideChatMessage(snap.val());
+  });
+
+  return true;
 }
 
 function openInAppChat(){
+  if(!attachRideChat())return;
   document.getElementById('chatSheet').classList.add('show');
 }
 
 function closeInAppChat(){
   document.getElementById('chatSheet').classList.remove('show');
+  if(haChatRef)haChatRef.off();
+  haChatRef=null;
 }
 
-function sendInAppMessage(){
+async function sendInAppMessage(){
   const input=document.getElementById('chatInput');
   const message=input.value.trim();
   if(!message)return;
 
-  const el=document.createElement('div');
-  el.className='msg me';
-  el.textContent=message;
-  document.getElementById('chatMessages').appendChild(el);
-  input.value='';
-  document.getElementById('chatMessages').scrollTop=
-    document.getElementById('chatMessages').scrollHeight;
+  const rideId=getCurrentRideForChat();
+  if(!rideId){
+    alert('لا توجد رحلة فعالة حالياً.');
+    return;
+  }
 
-  // رد تجريبي فقط إلى أن نربط حساب السائق والرسائل الفعلية.
-  setTimeout(()=>{
-    const reply=document.createElement('div');
-    reply.className='msg driver';
-    reply.textContent='تم، وصلتني رسالتك.';
-    document.getElementById('chatMessages').appendChild(reply);
-    document.getElementById('chatMessages').scrollTop=
-      document.getElementById('chatMessages').scrollHeight;
-  },700);
+  input.disabled=true;
+  try{
+    await db.ref('rideChats/'+rideId+'/messages').push({
+      senderRole:'customer',
+      senderType:'taxi',
+      text:message,
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    });
+    await db.ref('rideChats/'+rideId+'/meta').update({
+      lastMessage:message,
+      lastSender:'customer',
+      updatedAt:firebase.database.ServerValue.TIMESTAMP
+    });
+    input.value='';
+  }catch(err){
+    console.error(err);
+    alert('تعذر إرسال الرسالة. تحقق من الإنترنت.');
+  }finally{
+    input.disabled=false;
+    input.focus();
+  }
 }
 
 // ===== واجهة البحث والمتابعة =====
@@ -1949,7 +2006,7 @@ document.getElementById('postBackBtn').onclick=()=>{
 
 
 document.getElementById('callDriverBtn').onclick=callAcceptedDriver;
-document.getElementById('whatsappDriverBtn').onclick=whatsappAcceptedDriver;
+document.getElementById('appCallDriverBtn').onclick=()=>startTransportAppCall();
 document.getElementById('chatDriverBtn').onclick=openInAppChat;
 document.getElementById('closeChatBtn').onclick=closeInAppChat;
 document.getElementById('sendChatBtn').onclick=sendInAppMessage;

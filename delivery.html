@@ -870,6 +870,22 @@ body.delivery-stage-1 #centerPin{
   background:#c62828;color:#fff;font-size:15px;font-weight:700
 }
 
+
+.delivery-app-call{background:#2563eb;color:#fff}
+.delivery-chat{background:#16a34a;color:#fff}
+.delivery-chat-sheet{position:fixed;inset:0;background:#0008;z-index:7000;display:none;align-items:flex-end;justify-content:center}
+.delivery-chat-sheet.show{display:flex}
+.delivery-chat-box{width:min(520px,100%);background:#fff;border-radius:20px 20px 0 0;padding:14px}
+.delivery-chat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.delivery-chat-head button{border:0;background:#eee;border-radius:50%;width:34px;height:34px;font-size:20px}
+.delivery-chat-messages{height:240px;overflow:auto;background:#f5f5f5;border-radius:12px;padding:10px}
+.delivery-msg{max-width:82%;padding:9px 11px;border-radius:12px;margin:6px 0}
+.delivery-msg.me{margin-right:auto;background:#dbeafe}
+.delivery-msg.driver{margin-left:auto;background:#e5e7eb}
+.delivery-chat-send{display:flex;gap:7px;margin-top:9px}
+.delivery-chat-send input{flex:1;padding:11px;border:1px solid #ddd;border-radius:10px}
+.delivery-chat-send button{border:0;border-radius:10px;padding:0 16px;background:#111;color:#fff;font-weight:700}
+
 </style>
 </head>
 
@@ -1861,13 +1877,28 @@ if(deliveryBackBtn){
       </div>
 
       <div class="delivery-post-actions">
-        <button id="deliveryCallBtn" class="delivery-call" type="button">📞 اتصال</button>
+        <button id="deliveryCallBtn" class="delivery-call" type="button">📞 اتصال مباشر</button>
+        <button id="deliveryAppCallBtn" class="delivery-app-call" type="button">☎️ اتصال التطبيق</button>
+        <button id="deliveryChatBtn" class="delivery-chat" type="button">💬 رسائل داخل التطبيق</button>
         <button id="deliveryCancelBtn" class="delivery-cancel" type="button">إلغاء الطلب</button>
       </div>
     </div>
   </div>
 </div>
 
+
+<div id="deliveryChatSheet" class="delivery-chat-sheet">
+  <div class="delivery-chat-box">
+    <div class="delivery-chat-head"><b>💬 مراسلة المندوب</b><button id="deliveryCloseChatBtn" type="button">×</button></div>
+    <div id="deliveryChatMessages" class="delivery-chat-messages">
+      <div class="delivery-msg driver">السلام عليكم، تم قبول طلبك وأنا بالطريق.</div>
+    </div>
+    <div class="delivery-chat-send">
+      <input id="deliveryChatInput" placeholder="اكتب رسالة للمندوب">
+      <button id="deliverySendChatBtn" type="button">إرسال</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ===== إصلاح مستقل لانتقال وسيلة النقل إلى تفاصيل الطلب =====
@@ -2072,5 +2103,88 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   document.getElementById('deliveryPostScreen').classList.remove('show');
 };
 </script>
+
+<script>
+(function(){
+  const appCall=document.getElementById('deliveryAppCallBtn');
+  const chatBtn=document.getElementById('deliveryChatBtn');
+  const sheet=document.getElementById('deliveryChatSheet');
+  const close=document.getElementById('deliveryCloseChatBtn');
+  const send=document.getElementById('deliverySendChatBtn');
+  const input=document.getElementById('deliveryChatInput');
+  const messages=document.getElementById('deliveryChatMessages');
+  let chatRef=null;
+
+  function rideId(){
+    return activeDeliveryRideId || localStorage.getItem('ha_active_delivery') || null;
+  }
+
+  function render(msg){
+    if(!msg || !msg.text)return;
+    const el=document.createElement('div');
+    el.className='delivery-msg '+(msg.senderRole==='customer'?'me':'driver');
+    el.textContent=msg.text;
+    messages.appendChild(el);
+    messages.scrollTop=messages.scrollHeight;
+  }
+
+  function attach(){
+    const id=rideId();
+    if(!id){alert('لا يوجد طلب مندوب فعال حالياً.');return false;}
+    if(chatRef)chatRef.off();
+    chatRef=db.ref('rideChats/'+id+'/messages');
+    messages.innerHTML='';
+    chatRef.limitToLast(100).on('child_added',snap=>render(snap.val()));
+    return true;
+  }
+
+  if(appCall) appCall.onclick=()=>{
+    const id=rideId()||'current';
+    if(confirm('بدء اتصال داخل التطبيق مع المندوب؟')){
+      location.href='chat.html?call=audio&ride='+encodeURIComponent(id)+'&transport='+encodeURIComponent('المندوب');
+    }
+  };
+
+  if(chatBtn) chatBtn.onclick=()=>{
+    if(attach())sheet.classList.add('show');
+  };
+
+  if(close) close.onclick=()=>{
+    sheet.classList.remove('show');
+    if(chatRef)chatRef.off();
+    chatRef=null;
+  };
+
+  if(send) send.onclick=async()=>{
+    const value=input.value.trim();
+    if(!value)return;
+    const id=rideId();
+    if(!id){alert('لا يوجد طلب مندوب فعال حالياً.');return;}
+
+    input.disabled=true;
+    try{
+      await db.ref('rideChats/'+id+'/messages').push({
+        senderRole:'customer',
+        senderType:'delivery',
+        text:value,
+        createdAt:firebase.database.ServerValue.TIMESTAMP
+      });
+      await db.ref('rideChats/'+id+'/meta').update({
+        lastMessage:value,
+        lastSender:'customer',
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      });
+      input.value='';
+    }catch(err){
+      console.error(err);
+      alert('تعذر إرسال الرسالة. تحقق من الإنترنت.');
+    }finally{
+      input.disabled=false;
+      input.focus();
+    }
+  };
+})();
+</script>
+
 </body>
 </html>

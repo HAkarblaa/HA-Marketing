@@ -88,6 +88,22 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
   background:#c62828;color:#fff;font-size:15px;font-weight:700
 }
 
+
+.driver-chat-sheet{position:fixed;inset:0;background:#0008;z-index:8000;display:none;align-items:flex-end;justify-content:center}
+.driver-chat-sheet.show{display:flex}
+.driver-chat-box{width:min(520px,100%);background:#fff;border-radius:20px 20px 0 0;padding:14px}
+.driver-chat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.driver-chat-head button{border:0;background:#eee;border-radius:50%;width:34px;height:34px;font-size:20px}
+.driver-chat-messages{height:240px;overflow:auto;background:#f5f5f5;border-radius:12px;padding:10px}
+.driver-msg{max-width:82%;padding:9px 11px;border-radius:12px;margin:6px 0}
+.driver-msg.me{margin-right:auto;background:#dbeafe}
+.driver-msg.customer{margin-left:auto;background:#e5e7eb}
+.driver-chat-send{display:flex;gap:7px;margin-top:9px}
+.driver-chat-send input{flex:1;padding:11px;border:1px solid #ddd;border-radius:10px}
+.driver-chat-send button{border:0;border-radius:10px;padding:0 16px;background:#111;color:#fff;font-weight:700}
+#driverAppCallBtn{background:#2563eb;color:#fff}
+#driverChatBtn{background:#16a34a;color:#fff}
+
 </style>
 </head>
 <body>
@@ -149,9 +165,9 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
       </div>
 
       <div class="contact">
-        <button onclick="window.location.href='tel:07700000000'">📞 اتصال</button>
-        <button onclick="window.open('https://wa.me/9647700000000','_blank')">🟢 واتساب</button>
-        <button onclick="alert('نربط الدردشة داخل التطبيق لاحقاً')">💬 رسالة</button>
+        <button id="driverDirectCallBtn" type="button">📞 اتصال مباشر</button>
+        <button id="driverAppCallBtn" type="button">☎️ اتصال التطبيق</button>
+        <button id="driverChatBtn" type="button">💬 رسائل داخل التطبيق</button>
       </div>
 
       <div class="trip-actions" style="margin-top:10px">
@@ -548,5 +564,111 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   watchPendingRides();
 };
 </script>
+
+<div id="driverChatSheet" class="driver-chat-sheet">
+  <div class="driver-chat-box">
+    <div class="driver-chat-head"><b>💬 مراسلة الزبون</b><button id="driverCloseChatBtn" type="button">×</button></div>
+    <div id="driverChatMessages" class="driver-chat-messages">
+      <div class="driver-msg customer">السلام عليكم، أنا صاحب الطلب.</div>
+    </div>
+    <div class="driver-chat-send">
+      <input id="driverChatInput" placeholder="اكتب رسالة للزبون">
+      <button id="driverSendChatBtn" type="button">إرسال</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  const direct=document.getElementById('driverDirectCallBtn');
+  const appCall=document.getElementById('driverAppCallBtn');
+  const chat=document.getElementById('driverChatBtn');
+  const sheet=document.getElementById('driverChatSheet');
+  const close=document.getElementById('driverCloseChatBtn');
+  const send=document.getElementById('driverSendChatBtn');
+  const input=document.getElementById('driverChatInput');
+  const messages=document.getElementById('driverChatMessages');
+  let chatRef=null;
+
+  function rideId(){
+    return currentRideId ||
+      localStorage.getItem('ha_driver_active_ride') ||
+      localStorage.getItem('ha_active_ride') ||
+      localStorage.getItem('ha_active_delivery') ||
+      null;
+  }
+
+  function render(msg){
+    if(!msg || !msg.text)return;
+    const el=document.createElement('div');
+    el.className='driver-msg '+(msg.senderRole==='driver'?'me':'customer');
+    el.textContent=msg.text;
+    messages.appendChild(el);
+    messages.scrollTop=messages.scrollHeight;
+  }
+
+  function attach(){
+    const id=rideId();
+    if(!id){alert('لا يوجد طلب حالي للمراسلة.');return false;}
+    if(chatRef)chatRef.off();
+    chatRef=db.ref('rideChats/'+id+'/messages');
+    messages.innerHTML='';
+    chatRef.limitToLast(100).on('child_added',snap=>render(snap.val()));
+    return true;
+  }
+
+  if(direct) direct.onclick=()=>{
+    const phone=currentRide?.customerPhone || '07700000000';
+    location.href='tel:'+phone;
+  };
+
+  if(appCall) appCall.onclick=()=>{
+    const id=rideId()||'current';
+    if(confirm('بدء اتصال داخل التطبيق مع الزبون؟')){
+      location.href='chat.html?call=audio&ride='+encodeURIComponent(id)+'&role=driver';
+    }
+  };
+
+  if(chat) chat.onclick=()=>{
+    if(attach())sheet.classList.add('show');
+  };
+
+  if(close) close.onclick=()=>{
+    sheet.classList.remove('show');
+    if(chatRef)chatRef.off();
+    chatRef=null;
+  };
+
+  if(send) send.onclick=async()=>{
+    const value=input.value.trim();
+    if(!value)return;
+    const id=rideId();
+    if(!id){alert('لا يوجد طلب حالي للمراسلة.');return;}
+
+    input.disabled=true;
+    try{
+      await db.ref('rideChats/'+id+'/messages').push({
+        senderRole:'driver',
+        text:value,
+        createdAt:firebase.database.ServerValue.TIMESTAMP
+      });
+      await db.ref('rideChats/'+id+'/meta').update({
+        lastMessage:value,
+        lastSender:'driver',
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      });
+      input.value='';
+    }catch(err){
+      console.error(err);
+      alert('تعذر إرسال الرسالة. تحقق من الإنترنت.');
+    }finally{
+      input.disabled=false;
+      input.focus();
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
