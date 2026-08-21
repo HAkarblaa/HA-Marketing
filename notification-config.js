@@ -1,0 +1,12 @@
+window.HA_PUSH_CONFIG={
+ firebaseConfig:{
+  apiKey:"AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
+  authDomain:"ha-marketing.firebaseapp.com",
+  databaseURL:"https://ha-marketing-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"ha-marketing",
+  storageBucket:"ha-marketing.firebasestorage.app",
+  messagingSenderId:"558520139704",
+  appId:"1:558520139704:web:526f8026dac658403b594d"
+ },
+ vapidKey:"BPjF2vcNKKBgsKTrFPDj-NVvt7qL3AFRJSnPJDhXUNIXhBim5JPPJmsgpTNP9BHi8YPW_fJgRp3WiBx2fUDLWPA"
+};

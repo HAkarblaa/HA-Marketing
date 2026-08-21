@@ -1,21 +1,107 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الدردشة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:28px auto}h1{text-align:center}.rooms{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.room{background:white;border:0;border-radius:18px;min-height:150px;padding:18px;box-shadow:0 4px 16px #0002;font-size:20px;cursor:pointer}.icon{font-size:42px;display:block;margin-bottom:10px}.chat{display:none;background:white;border-radius:18px;padding:16px}.top{display:flex;gap:10px;align-items:center}.name,.send input{width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:16px}.name{margin:10px 0}.messages{height:420px;overflow:auto;background:#f7f7f7;border-radius:12px;padding:12px;margin-bottom:10px}.msg{background:white;padding:10px 12px;border-radius:12px;margin:8px 0}.meta{font-size:12px;color:#777;margin-bottom:5px}.send{display:flex;gap:8px}.send button,.top button{padding:12px 18px;border:0;border-radius:10px;background:#111;color:white;cursor:pointer}.note{text-align:center;color:#777;font-size:13px}</style></head><body>
+<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:28px auto}h1{text-align:center}.rooms{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.room{background:white;border:0;border-radius:18px;min-height:150px;padding:18px;box-shadow:0 4px 16px #0002;font-size:20px;cursor:pointer}.icon{font-size:42px;display:block;margin-bottom:10px}.chat{display:none;background:white;border-radius:18px;padding:16px}.top{display:flex;gap:10px;align-items:center}.name,.send input{width:100%;padding:12px;border:1px solid #ccc;border-radius:10px;font-size:16px}.name{margin:10px 0}.messages{height:420px;overflow:auto;background:#f7f7f7;border-radius:12px;padding:12px;margin-bottom:10px}.msg{background:white;padding:10px 12px;border-radius:12px;margin:8px 0}.meta{font-size:12px;color:#777;margin-bottom:5px}.send{display:flex;gap:8px}.send button,.top button{padding:12px 18px;border:0;border-radius:10px;background:#111;color:white;cursor:pointer}.note{text-align:center;color:#777;font-size:13px}
+.callbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.callbtn{border:0;border-radius:12px;padding:10px 14px;background:#0b6bcb;color:#fff;font-weight:700;cursor:pointer}.callbtn.video{background:#128a49}.callbtn.end{background:#c62828}.call-overlay{display:none;position:fixed;inset:0;background:#07111ff2;z-index:9999;color:#fff;align-items:center;justify-content:center;padding:16px}.call-card{width:min(760px,96vw);background:#101b2a;border:1px solid #ffffff22;border-radius:22px;padding:15px;box-shadow:0 20px 60px #0009}.call-title{text-align:center;margin:4px 0 12px}.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.video-grid video{width:100%;aspect-ratio:16/10;background:#000;border-radius:14px;object-fit:cover}.call-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.call-status{text-align:center;color:#b8c7d9;font-size:13px;margin:8px 0}.incoming{display:none;background:#fff3cd;color:#5b4400;border-radius:12px;padding:10px;margin:10px 0;text-align:center}.incoming button{margin:5px;border:0;border-radius:10px;padding:9px 13px;font-weight:700;cursor:pointer}.incoming .accept{background:#138a4a;color:#fff}.incoming .reject{background:#c62828;color:#fff}@media(max-width:650px){.video-grid{grid-template-columns:1fr}.messages{height:350px}}
+</style></head><body>
 <div class="wrap"><section id="rooms"><h1>💬 الدردشة</h1><p style="text-align:center">اختر فئة الدردشة</p><div class="rooms">
 <button class="room" onclick="openRoom('football','كرة القدم')"><span class="icon">⚽</span>كرة القدم</button>
 <button class="room" onclick="openRoom('business','الأعمال')"><span class="icon">💼</span>الأعمال</button>
 <button class="room" onclick="openRoom('students','الطلاب')"><span class="icon">🎓</span>الطلاب</button>
 <button class="room" onclick="openRoom('general','الدردشة العامة')"><span class="icon">💬</span>الدردشة العامة</button></div>
-<p class="note">حالياً الرسائل النصية مفعّلة. الصور والفيديو والصوت نضيفها بالمرحلة التالية.</p></section>
+<p class="note">الرسائل النصية + المكالمات الصوتية والفيديو تعمل عند وجود إنترنت وبموافقة المستخدم على المايكروفون/الكاميرا.</p></section>
 <section id="chat" class="chat"><div class="top"><button onclick="backRooms()">رجوع</button><h2 id="title"></h2></div>
-<input id="username" class="name" maxlength="30" placeholder="اكتب اسمك"><div id="messages" class="messages"></div>
+<input id="username" class="name" maxlength="30" placeholder="اكتب اسمك">
+<div class="callbar"><button class="callbtn" onclick="startCall(false)">📞 اتصال صوتي</button><button class="callbtn video" onclick="startCall(true)">📹 اتصال فيديو</button></div>
+<div id="incoming" class="incoming"><div id="incomingText">مكالمة واردة...</div><button class="accept" onclick="acceptCall()">قبول</button><button class="reject" onclick="rejectCall()">رفض</button></div>
+<div id="messages" class="messages"></div>
 <div class="send"><input id="input" maxlength="1000" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')sendMessage()"><button onclick="sendMessage()">إرسال</button></div></section></div>
+<div id="callOverlay" class="call-overlay"><div class="call-card"><h2 id="callTitle" class="call-title">مكالمة</h2><div id="callStatus" class="call-status">جاري الاتصال...</div><div class="video-grid"><video id="remoteVideo" autoplay playsinline></video><video id="localVideo" autoplay playsinline muted></video></div><div class="call-actions"><button id="muteBtn" class="callbtn" onclick="toggleMute()">🎤 كتم</button><button id="cameraBtn" class="callbtn video" onclick="toggleCamera()">📷 إيقاف الكاميرا</button><button class="callbtn end" onclick="endCall(true)">⛔ إنهاء</button></div></div></div>
 <script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let room=null,ch=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-async function openRoom(r,n){room=r;rooms.style.display='none';chat.style.display='block';title.textContent='💬 '+n;await load();subscribe()}
+async function openRoom(r,n){room=r;rooms.style.display='none';chat.style.display='block';title.textContent='💬 '+n;await load();subscribe();setupCallChannel()}
 async function load(){messages.innerHTML='جاري التحميل...';let {data,error}=await db.from('messages').select('*').eq('room',room).order('created_at',{ascending:true}).limit(200);if(error){messages.innerHTML=esc(error.message);return}messages.innerHTML='';(data||[]).forEach(show)}
 function show(m){if(m.room!==room)return;let d=document.createElement('div');d.className='msg';d.innerHTML='<div class="meta"><b>'+esc(m.username||'زائر')+'</b> · '+esc(new Date(m.created_at).toLocaleString('ar-IQ'))+'</div><div>'+esc(m.message||'')+'</div>';messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
 function subscribe(){if(ch)db.removeChannel(ch);ch=db.channel('r-'+room+'-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+room},p=>show(p.new)).subscribe()}
 async function sendMessage(){let u=username.value.trim(),m=input.value.trim();if(!u){alert('اكتب اسمك أولاً');return}if(!m)return;let {error}=await db.from('messages').insert({username:u,room,message:m,message_type:'text',file_url:null});if(error)alert(error.message);else input.value=''}
-function backRooms(){if(ch)db.removeChannel(ch);ch=null;room=null;chat.style.display='none';rooms.style.display='block'}
+function backRooms(){endCall(true);if(ch)db.removeChannel(ch);if(callChannel)db.removeChannel(callChannel);callChannel=null;ch=null;room=null;chat.style.display='none';rooms.style.display='block'}
+
+
+// ===== مكالمات WebRTC صوت/فيديو عبر Supabase Realtime Broadcast =====
+let callChannel=null,pc=null,localStream=null,currentCallId=null,pendingOffer=null,pendingCaller=null,callIsVideo=false;
+const rtcConfig={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+function callName(){return (username.value.trim()||'زائر').slice(0,30)}
+function setupCallChannel(){
+  if(!room)return;
+  if(callChannel)db.removeChannel(callChannel);
+  callChannel=db.channel('calls-'+room,{config:{broadcast:{self:false}}})
+    .on('broadcast',{event:'call-offer'},async ({payload})=>{
+      if(!payload||payload.to===callName()||payload.from===callName())return;
+      if(pc||pendingOffer)return;
+      pendingOffer=payload;pendingCaller=payload.from;callIsVideo=!!payload.video;
+      incomingText.textContent=(callIsVideo?'📹 مكالمة فيديو واردة من ':'📞 مكالمة صوتية واردة من ')+payload.from;incoming.style.display='block';
+    })
+    .on('broadcast',{event:'call-answer'},async ({payload})=>{
+      if(!pc||payload.callId!==currentCallId)return;
+      await pc.setRemoteDescription(new RTCSessionDescription(payload.answer));callStatus.textContent='متصل';
+    })
+    .on('broadcast',{event:'call-ice'},async ({payload})=>{
+      if(!pc||payload.callId!==currentCallId||!payload.candidate)return;
+      try{await pc.addIceCandidate(payload.candidate)}catch(e){console.warn(e)}
+    })
+    .on('broadcast',{event:'call-end'},({payload})=>{if(currentCallId&&payload.callId===currentCallId)endCall(false)})
+    .on('broadcast',{event:'call-reject'},({payload})=>{if(currentCallId&&payload.callId===currentCallId){alert('تم رفض المكالمة');endCall(false)}})
+    .subscribe();
+}
+function makePc(){
+  pc=new RTCPeerConnection(rtcConfig);
+  pc.onicecandidate=e=>{if(e.candidate&&callChannel)callChannel.send({type:'broadcast',event:'call-ice',payload:{callId:currentCallId,candidate:e.candidate}})};
+  pc.ontrack=e=>{remoteVideo.srcObject=e.streams[0];callStatus.textContent='متصل'};
+  pc.onconnectionstatechange=()=>{if(pc&&['failed','disconnected','closed'].includes(pc.connectionState))callStatus.textContent='انقطع الاتصال'};
+}
+async function getMedia(video){
+  return navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:'user'}:false});
+}
+async function startCall(video){
+  if(!navigator.onLine){alert('المكالمة تحتاج إنترنت');return}
+  if(!room){alert('ادخل غرفة أولاً');return}
+  if(!username.value.trim()){alert('اكتب اسمك أولاً');return}
+  if(!navigator.mediaDevices||!window.RTCPeerConnection){alert('هذا المتصفح لا يدعم المكالمات');return}
+  try{
+    callIsVideo=video;currentCallId=crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();
+    localStream=await getMedia(video);localVideo.srcObject=localStream;
+    callOverlay.style.display='flex';callTitle.textContent=video?'📹 مكالمة فيديو':'📞 مكالمة صوتية';callStatus.textContent='بانتظار شخص آخر في الغرفة...';
+    cameraBtn.style.display=video?'inline-block':'none';remoteVideo.style.display=video?'block':'none';localVideo.style.display=video?'block':'none';
+    makePc();localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+    const offer=await pc.createOffer();await pc.setLocalDescription(offer);
+    await callChannel.send({type:'broadcast',event:'call-offer',payload:{callId:currentCallId,from:callName(),video,offer}});
+  }catch(e){console.error(e);alert('تعذر بدء المكالمة. تأكد من السماح للمايكروفون والكاميرا.');endCall(false)}
+}
+async function acceptCall(){
+  if(!pendingOffer)return;
+  try{
+    incoming.style.display='none';currentCallId=pendingOffer.callId;callIsVideo=!!pendingOffer.video;
+    localStream=await getMedia(callIsVideo);localVideo.srcObject=localStream;
+    callOverlay.style.display='flex';callTitle.textContent=callIsVideo?'📹 مكالمة فيديو':'📞 مكالمة صوتية';callStatus.textContent='جاري الاتصال...';
+    cameraBtn.style.display=callIsVideo?'inline-block':'none';remoteVideo.style.display=callIsVideo?'block':'none';localVideo.style.display=callIsVideo?'block':'none';
+    makePc();localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+    await pc.setRemoteDescription(new RTCSessionDescription(pendingOffer.offer));
+    const answer=await pc.createAnswer();await pc.setLocalDescription(answer);
+    await callChannel.send({type:'broadcast',event:'call-answer',payload:{callId:currentCallId,answer,from:callName()}});
+    pendingOffer=null;pendingCaller=null;
+  }catch(e){console.error(e);alert('تعذر قبول المكالمة');endCall(false)}
+}
+async function rejectCall(){
+  if(pendingOffer&&callChannel)await callChannel.send({type:'broadcast',event:'call-reject',payload:{callId:pendingOffer.callId}});
+  pendingOffer=null;pendingCaller=null;incoming.style.display='none';
+}
+async function endCall(send=true){
+  const id=currentCallId;
+  if(send&&id&&callChannel)try{await callChannel.send({type:'broadcast',event:'call-end',payload:{callId:id}})}catch(e){}
+  if(pc){pc.ontrack=null;pc.onicecandidate=null;pc.close();pc=null}
+  if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null}
+  remoteVideo.srcObject=null;localVideo.srcObject=null;currentCallId=null;pendingOffer=null;pendingCaller=null;callOverlay.style.display='none';incoming.style.display='none';
+}
+function toggleMute(){if(!localStream)return;const a=localStream.getAudioTracks()[0];if(a){a.enabled=!a.enabled;muteBtn.textContent=a.enabled?'🎤 كتم':'🔇 تشغيل المايك'}}
+function toggleCamera(){if(!localStream)return;const v=localStream.getVideoTracks()[0];if(v){v.enabled=!v.enabled;cameraBtn.textContent=v.enabled?'📷 إيقاف الكاميرا':'📷 تشغيل الكاميرا'}}
+
 </script></body></html>
