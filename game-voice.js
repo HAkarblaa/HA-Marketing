@@ -1,137 +1,138 @@
 // HA Marketing - Online Game Voice Room (WebRTC + Firebase RTDB)
-// مايك مباشر بين لاعبين داخل غرفة لعبة.
-// مثال:
-// HA_GameVoice.join('penalties_room_123', 'playerA');
-// HA_GameVoice.leave();
-
+// يدعم حتى 4 لاعبين بصوت جماعي داخل نفس الغرفة.
 (function(){
   const ICE={iceServers:[
     {urls:'stun:stun.l.google.com:19302'},
     {urls:'stun:stun1.l.google.com:19302'}
   ]};
 
-  let roomId=null, userId=null, pc=null, localStream=null, remoteAudio=null;
-  let roomRef=null, role=null, listeners=[];
+  let roomId=null,userId=null,localStream=null,roomRef=null;
+  let peers={},listeners=[],remoteAudios={};
 
-  function id(){
-    return 'u_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
-  }
+  function makeId(){return 'u_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+  function on(ref,event,cb){ref.on(event,cb);listeners.push({ref,event,cb})}
+  function clearListeners(){listeners.forEach(x=>{try{x.ref.off(x.event,x.cb)}catch(e){}});listeners=[]}
 
   async function getMic(){
     if(localStream)return localStream;
     localStream=await navigator.mediaDevices.getUserMedia({
-      audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},
-      video:false
+      audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false
     });
     return localStream;
   }
 
-  function ensureAudio(){
-    if(remoteAudio)return;
-    remoteAudio=document.createElement('audio');
-    remoteAudio.autoplay=true;
-    remoteAudio.playsInline=true;
-    remoteAudio.style.display='none';
-    document.body.appendChild(remoteAudio);
+  function audioFor(peerId){
+    if(remoteAudios[peerId])return remoteAudios[peerId];
+    const a=document.createElement('audio');
+    a.autoplay=true;a.playsInline=true;a.style.display='none';
+    document.body.appendChild(a);remoteAudios[peerId]=a;return a;
   }
 
-  function on(ref,event,cb){
-    ref.on(event,cb); listeners.push({ref,event,cb});
-  }
+  function pairKey(a,b){return [a,b].sort().join('__')}
+  function isCaller(peerId){return userId.localeCompare(peerId)<0}
 
-  function clearListeners(){
-    listeners.forEach(x=>{try{x.ref.off(x.event,x.cb)}catch(e){}});
-    listeners=[];
-  }
-
-  function makePC(){
-    pc=new RTCPeerConnection(ICE);
+  function makePeer(peerId){
+    if(peers[peerId])return peers[peerId];
+    const pc=new RTCPeerConnection(ICE);
+    peers[peerId]=pc;
     localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
-    pc.ontrack=e=>{ensureAudio();remoteAudio.srcObject=e.streams[0];};
+    pc.ontrack=e=>{audioFor(peerId).srcObject=e.streams[0]};
     pc.onconnectionstatechange=()=>{
-      window.dispatchEvent(new CustomEvent('ha-game-voice-state',{detail:{state:pc.connectionState}}));
+      window.dispatchEvent(new CustomEvent('ha-game-voice-peer-state',{
+        detail:{peerId,state:pc.connectionState}
+      }));
     };
     return pc;
   }
 
-  async function join(rid, uid){
-    if(!window.firebase?.database) throw new Error('Firebase غير محمل.');
-    if(!navigator.mediaDevices?.getUserMedia) throw new Error('المايك غير مدعوم.');
+  async function connectPeer(peerId){
+    if(!peerId||peerId===userId)return;
+    const pc=makePeer(peerId);
+    const key=pairKey(userId,peerId);
+    const sig=roomRef.child('signals/'+key);
+    const mine=isCaller(peerId);
 
-    await leave();
-    roomId=rid;
-    userId=uid||id();
-    roomRef=firebase.database().ref('gameVoiceRooms/'+roomId);
-    await getMic();
+    pc.onicecandidate=e=>{
+      if(e.candidate)sig.child(mine?'aCandidates':'bCandidates').push(e.candidate.toJSON());
+    };
 
-    const membersSnap=await roomRef.child('members').once('value');
-    const members=membersSnap.val()||{};
-    const memberIds=Object.keys(members);
-
-    role=memberIds.length===0?'caller':'answerer';
-    await roomRef.child('members/'+userId).set({
-      joinedAt:firebase.database.ServerValue.TIMESTAMP
-    });
-
-    const p=makePC();
-
-    if(role==='caller'){
-      p.onicecandidate=e=>{
-        if(e.candidate)roomRef.child('callerCandidates').push(e.candidate.toJSON());
-      };
-
-      const offer=await p.createOffer();
-      await p.setLocalDescription(offer);
-      await roomRef.child('offer').set({type:offer.type,sdp:offer.sdp});
-
-      on(roomRef.child('answer'),'value',async snap=>{
+    if(mine){
+      on(sig.child('answer'),'value',async snap=>{
         const a=snap.val();
         if(a && !pc.currentRemoteDescription){
-          await pc.setRemoteDescription(new RTCSessionDescription(a));
+          try{await pc.setRemoteDescription(new RTCSessionDescription(a))}catch(e){console.warn(e)}
         }
       });
-
-      on(roomRef.child('answererCandidates'),'child_added',snap=>{
-        const c=snap.val();
-        if(c)pc.addIceCandidate(new RTCIceCandidate(c)).catch(console.error);
+      on(sig.child('bCandidates'),'child_added',snap=>{
+        const c=snap.val();if(c)pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{});
       });
+
+      if(!pc.localDescription){
+        const offer=await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await sig.child('offer').set({type:offer.type,sdp:offer.sdp});
+      }
     }else{
-      p.onicecandidate=e=>{
-        if(e.candidate)roomRef.child('answererCandidates').push(e.candidate.toJSON());
-      };
-
-      const offerSnap=await roomRef.child('offer').once('value');
-      const offer=offerSnap.val();
-      if(!offer) throw new Error('الغرفة بعد ما جاهزة.');
-
-      await p.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer=await p.createAnswer();
-      await p.setLocalDescription(answer);
-      await roomRef.child('answer').set({type:answer.type,sdp:answer.sdp});
-
-      on(roomRef.child('callerCandidates'),'child_added',snap=>{
-        const c=snap.val();
-        if(c)pc.addIceCandidate(new RTCIceCandidate(c)).catch(console.error);
+      on(sig.child('aCandidates'),'child_added',snap=>{
+        const c=snap.val();if(c)pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{});
+      });
+      on(sig.child('offer'),'value',async snap=>{
+        const offer=snap.val();
+        if(!offer||pc.currentRemoteDescription)return;
+        try{
+          await pc.setRemoteDescription(new RTCSessionDescription(offer));
+          const answer=await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+          await sig.child('answer').set({type:answer.type,sdp:answer.sdp});
+        }catch(e){console.warn(e)}
       });
     }
+  }
 
-    window.dispatchEvent(new CustomEvent('ha-game-voice-joined',{detail:{roomId,userId,role}}));
-    return {roomId,userId,role};
+  async function join(rid,uid){
+    await leave();
+    if(!window.firebase?.database)throw new Error('Firebase غير محمل.');
+    if(!navigator.mediaDevices?.getUserMedia)throw new Error('المايك غير مدعوم.');
+    roomId=rid;userId=uid||makeId();roomRef=firebase.database().ref('gameVoiceRooms/'+roomId);
+    await getMic();
+
+    const snap=await roomRef.child('members').once('value');
+    const members=snap.val()||{};
+    const ids=Object.keys(members).filter(x=>x!==userId);
+    if(ids.length>=4)throw new Error('غرفة الصوت ممتلئة.');
+
+    await roomRef.child('members/'+userId).set({joinedAt:firebase.database.ServerValue.TIMESTAMP});
+    try{roomRef.child('members/'+userId).onDisconnect().remove()}catch(e){}
+
+    ids.forEach(connectPeer);
+    on(roomRef.child('members'),'child_added',snap=>{
+      const peerId=snap.key;if(peerId!==userId)connectPeer(peerId);
+    });
+    on(roomRef.child('members'),'child_removed',snap=>{
+      const peerId=snap.key;
+      if(peers[peerId]){try{peers[peerId].close()}catch(e){};delete peers[peerId]}
+      if(remoteAudios[peerId]){remoteAudios[peerId].remove();delete remoteAudios[peerId]}
+    });
+
+    window.dispatchEvent(new CustomEvent('ha-game-voice-joined',{
+      detail:{roomId,userId,maxPlayers:4}
+    }));
+    return {roomId,userId,maxPlayers:4};
   }
 
   function mute(value){
-    if(!localStream)return;
-    localStream.getAudioTracks().forEach(t=>t.enabled=!value);
+    if(localStream)localStream.getAudioTracks().forEach(t=>t.enabled=!value);
   }
 
   async function leave(){
     clearListeners();
-    try{if(roomRef && userId)await roomRef.child('members/'+userId).remove()}catch(e){}
-    try{if(pc)pc.close()}catch(e){}
-    pc=null;
+    try{if(roomRef&&userId)await roomRef.child('members/'+userId).remove()}catch(e){}
+    Object.values(peers).forEach(pc=>{try{pc.close()}catch(e){}});
+    peers={};
+    Object.values(remoteAudios).forEach(a=>{try{a.remove()}catch(e){}});
+    remoteAudios={};
     if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null}
-    if(remoteAudio)remoteAudio.srcObject=null;
-    roomId=null;userId=null;roomRef=null;role=null;
+    roomId=null;userId=null;roomRef=null;
   }
 
   window.HA_GameVoice={join,leave,mute};

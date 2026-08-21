@@ -479,13 +479,7 @@ function showGameMic(){
 }
 async function joinGameVoice(){
   if(cfg.mode!=='online'||!roomCode)return;
-  const snap=await roomRef.once('value');
-  const r=snap.val()||{};
-  if(Number(r.maxPlayers||2)>2){
-    $('gameMicBtn').style.display='none';
-    return; // المايك الحالي مخصص لمباراة شخصين
-  }
-  showGameMic();
+showGameMic();
   if(gameVoiceJoined)return;
   try{
     $('gameMicStatus').classList.add('show');
