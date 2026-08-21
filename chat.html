@@ -12,6 +12,14 @@
 .voice-message .voice-time{font-size:12px;color:#555;min-width:34px}
 .voice-message audio{display:none}
 
+
+.ha-chat-toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-130%);z-index:100000;
+ width:min(430px,92vw);background:#111827;color:#fff;border-radius:15px;padding:12px 14px;
+ box-shadow:0 12px 35px #0006;transition:.25s;cursor:pointer;direction:rtl}
+.ha-chat-toast.show{transform:translate(-50%,0)}
+.ha-chat-toast b{display:block;font-size:14px;margin-bottom:4px}
+.ha-chat-toast span{display:block;font-size:12px;color:#dbe4ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 </style></head><body>
 <div class="wrap"><section id="rooms"><h1>💬 الدردشة</h1><p style="text-align:center">اختر فئة الدردشة</p><div class="rooms">
 <button class="room" onclick="openRoom('football','كرة القدم')"><span class="icon">⚽</span>كرة القدم</button>
@@ -34,10 +42,88 @@
 </div>
 <div id="voiceStatus" class="voice-status">● جاري التسجيل... اضغط المايك مرة ثانية للإرسال</div>
 </section></div>
+<div id="haChatToast" class="ha-chat-toast"><b id="haChatToastTitle">رسالة جديدة</b><span id="haChatToastBody"></span></div>
 <div id="callOverlay" class="call-overlay"><div class="call-card"><h2 id="callTitle" class="call-title">مكالمة</h2><div id="callStatus" class="call-status">جاري الاتصال...</div><div class="video-grid"><video id="remoteVideo" autoplay playsinline></video><video id="localVideo" autoplay playsinline muted></video></div><div class="call-actions"><button id="muteBtn" class="callbtn" onclick="toggleMute()">🎤 كتم</button><button id="cameraBtn" class="callbtn video" onclick="toggleCamera()">📷 إيقاف الكاميرا</button><button class="callbtn end" onclick="endCall(true)">⛔ إنهاء</button></div></div></div>
 <script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let room=null,ch=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let haLastNotifyId=null;
+let haGlobalChatChannel=null;
+let haToastTimer=null;
+
+async function enableChatNotifications(){
+  if(!('Notification' in window))return 'unsupported';
+  if(Notification.permission==='default'){
+    try{return await Notification.requestPermission()}catch(e){return Notification.permission}
+  }
+  return Notification.permission;
+}
+
+function chatNotifyText(m){
+  if(m.message_type==='voice')return '🎤 رسالة صوتية جديدة';
+  const t=String(m.message||'رسالة جديدة').trim();
+  return t.length>90?t.slice(0,90)+'…':t;
+}
+
+function showChatToast(m){
+  const box=document.getElementById('haChatToast');
+  if(!box)return;
+  document.getElementById('haChatToastTitle').textContent='💬 '+(m.username||'رسالة جديدة');
+  document.getElementById('haChatToastBody').textContent=chatNotifyText(m);
+  box.classList.add('show');
+  clearTimeout(haToastTimer);
+  haToastTimer=setTimeout(()=>box.classList.remove('show'),4500);
+  box.onclick=()=>{
+    box.classList.remove('show');
+    if(m.room){
+      const names={football:'كرة القدم',business:'الأعمال',students:'الطلاب',general:'الدردشة العامة'};
+      openRoom(m.room,names[m.room]||'الدردشة');
+    }
+  };
+}
+
+function notifyChatMessage(m){
+  // لا ننبه المستخدم عن رسالته التي أرسلها من نفس الاسم في الغرفة المفتوحة.
+  const myName=(document.getElementById('username')?.value||'').trim();
+  const currentlyViewing=(document.getElementById('chat')?.style.display==='block' && room===m.room && !document.hidden);
+  if(currentlyViewing)return;
+  if(myName && m.username===myName)return;
+
+  showChatToast(m);
+
+  if('Notification' in window && Notification.permission==='granted'){
+    try{
+      const n=new Notification('💬 '+(m.username||'رسالة جديدة'),{
+        body:chatNotifyText(m),
+        tag:'ha-chat-'+(m.id||Date.now()),
+        renotify:false
+      });
+      n.onclick=()=>{window.focus();n.close()};
+      setTimeout(()=>n.close(),6000);
+    }catch(e){}
+  }
+}
+
+function startGlobalChatNotifications(){
+  if(haGlobalChatChannel)return;
+  haGlobalChatChannel=db.channel('ha-global-chat-notifications-'+Date.now())
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+      const m=payload.new||{};
+      const key=m.id||m.created_at||JSON.stringify(m).slice(0,60);
+      if(key===haLastNotifyId)return;
+      haLastNotifyId=key;
+      notifyChatMessage(m);
+    }).subscribe();
+}
+
+// طلب الصلاحية يحصل بعد أول تفاعل من المستخدم حتى تقبله المتصفحات.
+document.addEventListener('click',function haFirstInteraction(){
+  enableChatNotifications();
+  document.removeEventListener('click',haFirstInteraction);
+},{once:true});
+startGlobalChatNotifications();
+
 async function openRoom(r,n){room=r;rooms.style.display='none';chat.style.display='block';title.textContent='💬 '+n;await load();subscribe();setupCallChannel()}
 async function load(){messages.innerHTML='جاري التحميل...';let {data,error}=await db.from('messages').select('*').eq('room',room).order('created_at',{ascending:true}).limit(200);if(error){messages.innerHTML=esc(error.message);return}messages.innerHTML='';(data||[]).forEach(show)}
 function show(m){
