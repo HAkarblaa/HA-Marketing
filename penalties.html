@@ -61,6 +61,27 @@
 #miniHud{position:fixed;right:8px;top:75px;z-index:2100;color:#fff;background:#07111fd8;border:1px solid #ffffff1a;border-radius:12px;padding:7px 9px;font-size:9px;pointer-events:none}
 @media(max-width:700px){.menuGrid,.tourGrid{grid-template-columns:1fr}.modeGrid{grid-template-columns:1fr 1fr}.menuTitle h1{font-size:23px}}
 
+
+/* Goalkeeper turn */
+#keeperTurnHud{position:fixed;inset:0;z-index:2300;pointer-events:none;display:none;color:#fff}
+#keeperTurnHud.show{display:block}
+#keeperJoy{pointer-events:auto;touch-action:none;position:absolute;left:14px;bottom:18px;width:106px;height:106px;border:3px solid #bde7d0;background:#1d9d4d88;border-radius:50%}
+#keeperKnob{position:absolute;width:52px;height:52px;border-radius:50%;left:24px;top:24px;background:#d9eee2;border:2px solid white;box-shadow:0 2px 8px #0007}
+#keeperJump{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:102px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#2b6ca3,#103b60);color:#fff;font-size:16px;font-weight:900}
+#keeperAction{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:118px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#2b6ca3,#103b60);color:#fff;font-size:16px;font-weight:900}
+#keeperHint{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);background:#06101bcc;border:1px solid #ffffff22;border-radius:999px;padding:7px 14px;font-size:11px;white-space:nowrap}
+@media(max-width:650px){#keeperJoy{left:7px;width:88px;height:88px}#keeperKnob{width:42px;height:42px;left:20px;top:20px}#keeperAction{right:8px;width:104px;height:50px;font-size:14px}}
+
+
+#finalMatchModal{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:#000c;color:#fff;padding:16px}
+#finalMatchModal.show{display:flex}
+#finalMatchCard{width:min(520px,94vw);background:#101b2c;border:1px solid #ffffff25;border-radius:24px;padding:22px;text-align:center;box-shadow:0 24px 70px #000b}
+#finalMatchTitle{font-size:30px;font-weight:1000;margin-bottom:10px}
+#finalMatchScore{font-size:44px;font-weight:1000;margin:12px 0}
+#finalMatchText{font-size:17px;margin-bottom:16px}
+.finalBtn{border:0;border-radius:13px;padding:12px 18px;font-weight:900;margin:5px;background:#2bd083;color:#062015}
+.finalBtn.secondary{background:#26374f;color:#fff}
+
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
 </head>
@@ -80,7 +101,7 @@
    <div class="menuField"><label>فريقك</label><select id="teamMenu"></select></div>
    <div class="menuField"><label>الخصم</label><select id="opponentMenu"></select></div>
    <div class="menuField"><label>مستوى الجهاز</label><select id="difficultyMenu"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select></div>
-   <div class="menuField"><label>عدد الركلات</label><select id="kickCountMenu"><option value="3">3 ركلات</option><option value="5" selected>5 ركلات</option><option value="7">7 ركلات</option></select></div>
+   <div class="menuField"><label>عدد الركلات</label><input id="kickCountMenu" value="5 لكل طرف" readonly></div>
   </div>
   <div class="modeGrid">
    <button class="modeBtn active" data-mode="cpu">🤖 ضد الجهاز<small>يعمل بدون نت</small></button>
@@ -111,11 +132,29 @@
   </div>
  </div>
 </div>
-<div id="miniHud">الوضع: <b id="hudMode">ضد الجهاز</b><br>الركلات: <b id="hudKicks">0/5</b></div>
+<div id="miniHud">الوضع: <b id="hudMode">ضد الجهاز</b><br>الجولات: <b id="hudKicks">0/5</b></div>
 <div id="endModal"><div class="modalCard"><h2>نتيجة المباراة</h2><div id="endResult" class="resultBig"></div><div id="endScore" class="resultBig"></div><div class="menuActions"><button id="playAgain" class="menuAction primary">إعادة اللعب</button><button id="backMenu" class="menuAction">القائمة الرئيسية</button></div></div></div>
 <div id="tournamentModal"><div class="modalCard"><h2 id="tourModalTitle">🏆 جدول البطولة</h2><div id="tourContent"></div><div class="menuActions"><button id="closeTour" class="menuAction">إغلاق</button></div></div></div>
 
 <div id="game"></div>
+
+<div id="finalMatchModal">
+ <div id="finalMatchCard">
+  <div id="finalMatchTitle">نهاية المباراة</div>
+  <div id="finalMatchScore">0 - 0</div>
+  <div id="finalMatchText"></div>
+  <button id="finalReplay" class="finalBtn">إعادة المباراة</button>
+  <button id="finalMenu" class="finalBtn secondary">القائمة الرئيسية</button>
+ </div>
+</div>
+
+
+<div id="keeperTurnHud">
+  <div id="keeperJoy"><div id="keeperKnob"></div></div>
+  <button id="keeperAction">استعداد</button>
+  <div id="keeperHint">دور الحارس: حرّك الزر للاتجاه ثم اضغط قفز عند تسديدة الخصم</div>
+</div>
+
 <div class="hud">
  <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small></div>
  <div class="power"><div class="track"><div id="mask"></div></div></div>
@@ -165,6 +204,42 @@ const player=human(0xd51d29,0xffffff);player.position.set(-.8,0,4.7);player.rota
 const keeper=human(0xf0d31e,0x161616);keeper.position.set(0,0,-11.5);keeper.scale.set(.92,.92,.92);scene.add(keeper);
 
 const ballMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.55});const ball=new THREE.Mesh(new THREE.SphereGeometry(.23,24,18),ballMat);ball.position.set(.25,.23,2.25);ball.castShadow=true;scene.add(ball);
+window.HA3D={scene,camera,renderer,player,keeper,ball,THREE};
+window.haKeeperCameraLocked=false;
+window.haKeeperCamera=function(){
+  // تثبيت كاميرا الحارس من بداية دور التصدي إلى نهاية تسديدة الخصم
+  window.haKeeperCameraLocked=true;
+  camera.position.set(0,4.15,-20.5);
+  camera.lookAt(0,1.35,1.8);
+};
+window.haPlayerCamera=function(){
+  window.haKeeperCameraLocked=false;
+  camera.position.set(0,5.7,14.7);
+  camera.lookAt(0,1.7,-8);
+};
+window.haResetKeeperPose=function(){
+  keeper.position.set(0,0,-11.5);
+  keeper.rotation.set(0,0,0);
+};
+window.haOpponentShot=function(targetX,targetY,onDone){
+  const start=new THREE.Vector3(.25,.23,2.25);
+  const end=new THREE.Vector3(targetX,targetY,-11.75);
+  const mid=new THREE.Vector3(targetX*.25,2.0,-4.7);
+  const curve=new THREE.QuadraticBezierCurve3(start,mid,end);
+  const began=performance.now(),dur=860;
+  function f(now){
+    const q=Math.min(1,(now-began)/dur);
+    ball.position.copy(curve.getPoint(q));
+    ball.rotation.x+=.24;ball.rotation.z+=.11;
+    if(q<1)requestAnimationFrame(f); else if(onDone)onDone();
+  }
+  requestAnimationFrame(f);
+};
+window.haResetOpponentBall=function(){
+  ball.position.set(.25,.23,2.25);
+  ball.rotation.set(0,0,0);
+};
+
 const curveMat=new THREE.LineDashedMaterial({color:0x6dff63,dashSize:.32,gapSize:.22});let aimLine=new THREE.Line(new THREE.BufferGeometry(),curveMat);scene.add(aimLine);
 let aimDot=new THREE.Mesh(new THREE.RingGeometry(.25,.34,24),new THREE.MeshBasicMaterial({color:0x6dff63,side:THREE.DoubleSide}));aimDot.rotation.x=-Math.PI/2;scene.add(aimDot);
 
@@ -208,7 +283,19 @@ updateAim();
 document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');let t=b.dataset.ball;if(t==='fire'){ballMat.color.set(0xff6b21);ballMat.emissive.set(0xaa1800);ballMat.emissiveIntensity=1.5}else if(t==='ice'){ballMat.color.set(0x9befff);ballMat.emissive.set(0x187cc5);ballMat.emissiveIntensity=1.2}else if(t==='dirt'){ballMat.color.set(0x9b6a3b);ballMat.emissive.set(0)}else{ballMat.color.set(0xffffff);ballMat.emissive.set(0)}});
 
 function reset(){shooting=false;shotT=0;player.position.set(-.8,0,4.7);player.rotation.set(0,Math.PI,0);keeper.position.set(0,0,-11.5);keeper.rotation.set(0,0,0);ball.position.set(.25,.23,2.25);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);aimLine.visible=true;aimDot.visible=true;updateAim()}
-document.getElementById('shoot').onclick=()=>{if(shooting)return;shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;let x=aimX*4.0;let y=1.0+power*.8+aimY*1.25;target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);keeperTarget=Math.random()*7.4-3.7};
+document.getElementById('shoot').onclick=()=>{
+ if(shooting)return;
+ shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;
+ let x=aimX*4.0;
+ let y=1.0+power*.8+aimY*1.25;
+ target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);
+
+ // الحارس يحدد اتجاه القفز ويبدأ الحركة بنفس لحظة تسديد اللاعب
+ keeperTarget=Math.random()*7.4-3.7;
+ const diveDir=keeperTarget<-.8?'left':keeperTarget>.8?'right':'up';
+ keeper.classList?.remove?.('left','right','up');
+ try{ keeper.userData.playerShotDive=diveDir; }catch(e){}
+};
 
 let clock=new THREE.Clock(),phase=0,judged=false;
 function animate(){
@@ -216,9 +303,24 @@ function animate(){
  if(shooting){
   shotT+=dt;let t=shotT;
   if(t<.58){let q=t/.58;player.position.z=4.7-q*2.15;player.position.x=-.8+q*.55;player.rotation.z=Math.sin(q*Math.PI)*-.08}
-  if(t>.38&&t<1.38){let q=Math.min((t-.38),1),start=new THREE.Vector3(.25,.23,2.25),mid=new THREE.Vector3(target.x*.28,2.15,-4.8),c=new THREE.QuadraticBezierCurve3(start,mid,target);ball.position.copy(c.getPoint(q));ball.rotation.x+=dt*18;ball.rotation.z+=dt*9;if(q>.24){let d=Math.min((q-.24)/.48,1);keeper.position.x=THREE.MathUtils.lerp(0,keeperTarget,d);keeper.position.y=Math.sin(d*Math.PI)*.72;keeper.rotation.z=-keeperTarget*.16*d}camera.position.z=THREE.MathUtils.lerp(14.7,10.8,q);camera.position.y=THREE.MathUtils.lerp(5.7,4.4,q);camera.lookAt(ball.position.x*.22,1.55,-8.7)}
+  if(t>.38&&t<1.38){
+   let q=Math.min((t-.38),1),start=new THREE.Vector3(.25,.23,2.25),mid=new THREE.Vector3(target.x*.28,2.15,-4.8),c=new THREE.QuadraticBezierCurve3(start,mid,target);
+   ball.position.copy(c.getPoint(q));ball.rotation.x+=dt*18;ball.rotation.z+=dt*9;
+
+   // القفزة تبدأ من أول لحظة حركة الكرة تقريباً
+   let d=Math.min(q/.58,1);
+   keeper.position.x=THREE.MathUtils.lerp(0,keeperTarget,d);
+   keeper.position.y=Math.sin(d*Math.PI)*.78;
+   keeper.rotation.z=-keeperTarget*.17*d;
+
+   camera.position.z=THREE.MathUtils.lerp(14.7,10.8,q);camera.position.y=THREE.MathUtils.lerp(5.7,4.4,q);camera.lookAt(ball.position.x*.22,1.55,-8.7)
+  }
   if(t>=1.38&&!judged){judged=true;let saved=Math.abs(target.x-keeperTarget)<.75&&target.y<2.1;if(!saved){home++;document.getElementById('score').textContent=`العراق ${home} - 0 إيران`;msg.textContent='GOAL!'}else msg.textContent='تصدي!';msg.classList.add('show')}
   if(t>2.15){msg.classList.remove('show');judged=false;reset()}
+ }
+ if(window.haKeeperCameraLocked){
+   camera.position.set(0,4.15,-20.5);
+   camera.lookAt(0,1.35,1.8);
  }
  renderer.render(scene,camera)
 }
@@ -322,7 +424,7 @@ function beginGame(){
    if(by('tourType').value==='rooms'&&!navigator.onLine){alert('بطولة الغرف تحتاج إنترنت. اختر بطولة ضد الجهاز أو شغّل الإنترنت.');return}
    if(!tournament||tournament.champion)makeTournament();
  }
- maxKicks=Number(by('kickCountMenu').value);
+ maxKicks=5;
  resetScore();
  by('homeTeamText').textContent=by('teamMenu').value;
  by('awayTeamText').textContent=currentOpponent();
@@ -384,6 +486,201 @@ new MutationObserver(()=>{
  }
  lastShown=showing;
 }).observe(msg,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
+})();
+</script>
+
+
+<script>
+(function(){
+ const by=id=>document.getElementById(id);
+ const hud=by('keeperTurnHud'), joy=by('keeperJoy'), knob=by('keeperKnob');
+ let gx=0,gy=0,pointer=null,armed=false,opponentShooting=false;
+ let shotX=0,shotY=1.4,jumped=false;
+
+ function move(x,y){
+   const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+   let dx=x-cx,dy=y-cy,max=r.width*.34,len=Math.hypot(dx,dy);
+   if(len>max){dx=dx/len*max;dy=dy/len*max}
+   knob.style.transform=`translate(${dx}px,${dy}px)`;
+   gx=dx/max; gy=-dy/max;
+ }
+ joy.addEventListener('pointerdown',e=>{pointer=e.pointerId;joy.setPointerCapture(e.pointerId);move(e.clientX,e.clientY)});
+ joy.addEventListener('pointermove',e=>{if(e.pointerId===pointer)move(e.clientX,e.clientY)});
+ joy.addEventListener('pointerup',e=>{if(e.pointerId===pointer)pointer=null});
+ joy.addEventListener('pointercancel',()=>pointer=null);
+
+ function showKeeperTurn(){
+   hud.classList.add('show');
+   const normalHud=document.querySelector('.hud');
+   if(normalHud)normalHud.style.visibility='hidden';
+
+   armed=false;opponentShooting=false;jumped=false;
+   by('keeperAction').textContent='استعداد';
+   gx=0;gy=0;knob.style.transform='translate(0,0)';
+   if(window.haResetKeeperPose)window.haResetKeeperPose();
+   if(window.haResetOpponentBall)window.haResetOpponentBall();
+   if(window.haKeeperCamera)window.haKeeperCamera();
+
+   const seenGuide=localStorage.getItem('ha_keeper_guide_seen')==='1';
+   if(seenGuide){
+     by('keeperHint').style.display='none';
+   }else{
+     by('keeperHint').style.display='block';
+     by('keeperHint').textContent='أنت الحارس: وجّه الزر الدائري، ثم اضغط استعداد. عند تسديدة الخصم اضغط نفس الزر للقفز.';
+     localStorage.setItem('ha_keeper_guide_seen','1');
+   }
+ }
+
+ function hideKeeperTurn(){
+   hud.classList.remove('show');
+   by('keeperHint').style.display='none';
+   const normalHud=document.querySelector('.hud');
+   if(normalHud)normalHud.style.visibility='visible';
+   if(window.haPlayerCamera)window.haPlayerCamera();
+   if(window.haResetKeeperPose)window.haResetKeeperPose();
+   if(window.haResetOpponentBall)window.haResetOpponentBall();
+ }
+
+ function animateDive(){
+   const h=window.HA3D;
+   if(!h)return;
+   const keeper=h.keeper;
+   const sx=keeper.position.x, sy=keeper.position.y, sz=keeper.position.z;
+   const tx=gx*3.5;
+   const ty=Math.max(-.05,gy*1.35);
+   const rot=-gx*.9;
+   const began=performance.now(),dur=520;
+   function f(now){
+     const q=Math.min(1,(now-began)/dur);
+     const ease=1-Math.pow(1-q,3);
+     keeper.position.x=sx+(tx-sx)*ease;
+     keeper.position.y=sy+(ty-sy)*ease + Math.sin(q*Math.PI)*.55;
+     keeper.position.z=sz+.18*Math.sin(q*Math.PI);
+     keeper.rotation.z=rot*ease;
+     keeper.rotation.x=(-gy*.28)*ease;
+     if(q<1)requestAnimationFrame(f);
+   }
+   requestAnimationFrame(f);
+ }
+
+ const actionBtn=by('keeperAction');
+ actionBtn.onclick=()=>{
+   if(!armed){
+     armed=true;jumped=false;
+     shotX=(Math.random()*2-1)*4.1;
+     shotY=.55+Math.random()*2.0;
+     actionBtn.textContent='قفز';
+     if(by('keeperHint').style.display!=='none')by('keeperHint').textContent='استعد... الخصم راح يسدد';
+     setTimeout(()=>{
+       opponentShooting=true;
+       if(by('keeperHint').style.display!=='none')by('keeperHint').textContent='هسه! اضغط قفز';
+       if(window.haOpponentShot){
+         window.haOpponentShot(shotX,shotY,()=>{
+           if(!jumped){
+             if(by('keeperHint').style.display!=='none')by('keeperHint').textContent='⚽ هدف للخصم';
+             window.dispatchEvent(new CustomEvent('haGoalkeeperResult',{detail:{saved:false}}));
+             actionBtn.textContent='استعداد';
+             setTimeout(hideKeeperTurn,900);
+           }
+         });
+       }
+     },700+Math.random()*650);
+     return;
+   }
+
+   if(jumped)return;
+   jumped=true;
+   animateDive();
+
+   const timing=opponentShooting;
+   const nx=shotX/4.1;
+   const ny=(shotY-1.55)/1.25;
+   const distance=Math.hypot(gx-nx,(gy-ny)*.78);
+   const saved=timing && distance<.78;
+
+   setTimeout(()=>{
+     if(by('keeperHint').style.display!=='none')by('keeperHint').textContent=saved?'🧤 صدّيتها!':'⚽ ما لحگت عليها';
+     window.dispatchEvent(new CustomEvent('haGoalkeeperResult',{detail:{saved}}));
+     actionBtn.textContent='استعداد';
+     setTimeout(hideKeeperTurn,950);
+   },520);
+ };
+
+ window.haShowKeeperTurn=showKeeperTurn;
+
+ // بعد انتهاء تسديدة اللاعب يتحول الدور للحارس.
+ const msg=by('msg');
+ if(msg){
+   let prev=false;
+   new MutationObserver(()=>{
+     const now=msg.classList.contains('show');
+     if(now&&!prev)setTimeout(showKeeperTurn,650);
+     prev=now;
+   }).observe(msg,{attributes:true,attributeFilter:['class']});
+ }
+})();
+</script>
+
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ let finished=false, suddenDeath=false;
+
+ function num(id){const e=$(id);return e?Number(e.textContent||0):0}
+ function configuredKicks(){
+   // المباراة الأساسية: 5 تسديدات لكل طرف
+   return 5;
+ }
+ function rounds(){
+   const e=$('hudKicks');
+   if(!e)return 0;
+   const m=(e.textContent||'').match(/(\d+)\s*\/\s*(\d+)/);
+   return m?Number(m[1]):0;
+ }
+ function showFinal(){
+   if(finished)return;
+   const h=num('homeScoreText'),a=num('awayScoreText');
+   if(h===a){suddenDeath=true;return} // تعادل: نكمل ركلة بركلة
+   finished=true;
+   $('finalMatchScore').textContent=h+' - '+a;
+   $('finalMatchText').textContent=h>a?'🎉 فوز! انتهت المباراة.':'انتهت المباراة بالخسارة.';
+   $('finalMatchModal').classList.add('show');
+ }
+ function checkEnd(){
+   if(finished)return;
+   const r=rounds(), max=5;
+   const h=num('homeScoreText'),a=num('awayScoreText');
+
+   // لا تنتهي المباراة قبل إكمال 5 تسديدات لكل طرف.
+   if(r<max)return;
+
+   // بعد الجولة الخامسة: إذا اختلفت النتيجة تنتهي.
+   if(r===max){
+     if(h!==a){showFinal();return;}
+     suddenDeath=true;
+     return;
+   }
+
+   // التعادل بعد الخمس: ركلة لكل طرف في كل جولة إضافية.
+   // لا نحسم إلا بعد اكتمال الجولة الإضافية ووجود فارق.
+   if(suddenDeath && h!==a)showFinal();
+ }
+ const hud=$('hudKicks'), hs=$('homeScoreText'), as=$('awayScoreText');
+ [hud,hs,as].filter(Boolean).forEach(el=>new MutationObserver(()=>setTimeout(checkEnd,1200)).observe(el,{childList:true,subtree:true,characterData:true}));
+
+ $('finalReplay').onclick=()=>{
+   finished=false;suddenDeath=false;
+   $('finalMatchModal').classList.remove('show');
+   const old=$('playAgain'); if(old)old.click();
+   else location.reload();
+ };
+ $('finalMenu').onclick=()=>{
+   finished=false;suddenDeath=false;
+   $('finalMatchModal').classList.remove('show');
+   const old=$('backMenu'); if(old)old.click();
+   else {const m=$('menuScreen');if(m)m.style.display='flex';}
+ };
 })();
 </script>
 
