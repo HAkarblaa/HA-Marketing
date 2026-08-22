@@ -159,6 +159,38 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 }
 .game-mic-status.show{display:block}
 
+
+/* ===== ترتيب أحجار الدومينو على شكل حلقة مربعة ===== */
+.board{overflow:hidden;min-height:540px}
+.chain{
+  position:relative!important;display:block!important;min-height:470px!important;
+  width:100%;padding:0!important;margin:0 auto;
+}
+.chain:before{
+  content:"";position:absolute;left:15%;right:15%;top:21%;bottom:21%;
+  border:1px dashed #ffffff18;border-radius:18px;pointer-events:none
+}
+.chain .tile{
+  position:absolute!important;margin:0!important;
+  transform-origin:center center;
+  transition:left .28s ease,top .28s ease,transform .28s ease!important;
+  z-index:3;
+}
+.square-center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:32%;min-width:170px;height:32%;border-radius:24px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  background:#061a1285;border:1px solid #ffffff12;color:#d7f7e9;
+  font-size:12px;line-height:1.7;pointer-events:none;
+  box-shadow:inset 0 0 35px #0004
+}
+@media(max-width:650px){
+  .board{min-height:470px;padding:8px}
+  .chain{min-height:405px!important}
+  .chain:before{left:10%;right:10%;top:18%;bottom:18%}
+  .square-center{width:38%;height:28%;min-width:120px;font-size:10px}
+}
+
 </style>
 </head>
 <body>
@@ -240,7 +272,7 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
     <div class="game-area">
       <div class="board">
         <div class="board-title">ساحة اللعب</div>
-        <div id="chain" class="chain"></div>
+        <div id="chain" class="chain"><div class="square-center">HA DOMINO<br>حلقة اللعب</div></div>
       </div>
 
       <div class="hand-panel">
@@ -397,8 +429,47 @@ function startMusic(){
 function stopMusic(){if(musicOsc){try{musicOsc.stop()}catch(e){}musicOsc=null}}
 $('soundBtn').onclick=()=>{musicOn=!musicOn;$('soundBtn').textContent=musicOn?'🔊':'🔇';musicOn?startMusic():stopMusic()};
 
+
+function renderSquareChain(){
+  const el=$('chain');
+  el.innerHTML='<div class="square-center">HA DOMINO<br>حلقة اللعب</div>';
+
+  const tiles=state.chain||[];
+  const n=tiles.length;
+  if(!n)return;
+
+  // توزيع متتابع حول محيط مربع: أعلى ← يمين ← أسفل ← يسار.
+  // المقياس يصغر تلقائياً حتى تبقى الحلقة مرتبة عندما يزداد عدد الأحجار.
+  const scale=n<=10?.82:n<=16?.70:n<=22?.60:.52;
+  const left=12,right=88,top=15,bottom=85;
+  const width=right-left,height=bottom-top;
+  const perimeter=2*(width+height);
+
+  tiles.forEach((t,i)=>{
+    const tile=tileEl(t);
+    const u=((i+.5)/n)*perimeter;
+    let x,y,rot=0;
+
+    if(u<width){
+      x=left+u;y=top;rot=0;
+    }else if(u<width+height){
+      x=right;y=top+(u-width);rot=90;
+    }else if(u<2*width+height){
+      x=right-(u-width-height);y=bottom;rot=180;
+    }else{
+      x=left;y=bottom-(u-(2*width+height));rot=270;
+    }
+
+    tile.style.left=x+'%';
+    tile.style.top=y+'%';
+    tile.style.transform=`translate(-50%,-50%) rotate(${rot}deg) scale(${scale})`;
+    tile.style.zIndex=String(10+i);
+    el.appendChild(tile);
+  });
+}
+
 function render(){
-  $('chain').innerHTML='';state.chain.forEach(t=>$('chain').appendChild(tileEl(t)));
+  renderSquareChain();
   const hand=state.hands[myIndex]||[];$('hand').innerHTML='';
   hand.forEach((t,i)=>$('hand').appendChild(tileEl(t,{player:true,playable:state.turn===myIndex&&!state.over&&fits(t),click:()=>playTile(i)})));
   $('handCount').textContent=hand.length+' حجر';

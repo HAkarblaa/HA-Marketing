@@ -114,7 +114,7 @@ body{
   pointer-events:none;z-index:1
 }
 /* Hide the old emoji actors; the approved realistic scene is now the field visual. */
-.goal,.keeper,.shooter,.ball{opacity:0;pointer-events:none}
+.goal,.keeper,.shooter,.ball{pointer-events:none}
 .zone-grid{
   z-index:8;top:31%;left:31%;width:38%;height:26%;opacity:.08
 }
@@ -180,6 +180,123 @@ body{
   .kick-actions .btn{min-height:43px;font-size:12px}
   .status{min-width:240px;max-width:70vw;bottom:8px;font-size:11px}
   .side{grid-template-columns:1fr 1fr}
+}
+
+
+/* ===== Animated football actors ===== */
+.pitch{isolation:isolate}
+.pitch:after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0 70%,#00190b20 100%);
+}
+.goal{
+  opacity:1!important;z-index:5;top:29%;left:50%;width:42%;height:25%;
+  border:5px solid #fff;border-bottom:0;
+  background:
+    linear-gradient(90deg,#ffffff42 1px,transparent 1px),
+    linear-gradient(#ffffff42 1px,transparent 1px);
+  background-size:16px 16px;
+  box-shadow:inset 0 0 22px #0008,0 8px 22px #0008;
+  transition:filter .18s ease
+}
+.goal.net-hit{animation:netShake .5s ease}
+@keyframes netShake{
+  0%,100%{transform:translateX(-50%) scaleX(1)}
+  30%{transform:translateX(-50%) scaleX(1.035) skewX(-1deg)}
+  60%{transform:translateX(-50%) scaleX(.985) skewX(1deg)}
+}
+
+/* CSS goalkeeper: no static emoji */
+.keeper{
+  opacity:1!important;z-index:8;width:58px;height:105px;font-size:0;
+  top:42%;left:50%;transform:translateX(-50%);
+  transition:left .48s cubic-bezier(.2,.75,.22,1),top .48s cubic-bezier(.2,.75,.22,1),transform .48s ease
+}
+.keeper:before{
+  content:"";position:absolute;left:15px;top:19px;width:30px;height:54px;
+  border-radius:12px 12px 9px 9px;background:linear-gradient(160deg,#1586d9,#07548e);
+  box-shadow:0 8px 14px #0007
+}
+.keeper:after{
+  content:"";position:absolute;left:20px;top:0;width:20px;height:20px;border-radius:50%;
+  background:#d9a679;box-shadow:
+    -23px 34px 0 -6px #4db5ff,
+     23px 34px 0 -6px #4db5ff,
+    -10px 77px 0 -4px #0b2847,
+     10px 77px 0 -4px #0b2847;
+}
+.keeper.dive-left{transform:translateX(-50%) rotate(-28deg) scale(1.04)}
+.keeper.dive-right{transform:translateX(-50%) rotate(28deg) scale(1.04)}
+.keeper.save-flash{filter:drop-shadow(0 0 18px #e9fbff)}
+
+/* CSS shooter from behind */
+.shooter{
+  opacity:1!important;z-index:8;width:64px;height:138px;font-size:0;
+  bottom:9%;left:30%;transform:translateX(-50%);
+  transition:left .46s ease,bottom .46s ease,transform .46s ease;
+  filter:drop-shadow(0 13px 9px #0008)
+}
+.shooter:before{
+  content:"";position:absolute;left:15px;top:23px;width:35px;height:62px;
+  border-radius:11px 11px 8px 8px;
+  background:linear-gradient(90deg,#213f86 0 48%,#8b1f3a 48% 100%);
+  box-shadow:inset 0 0 0 2px #ffffff10
+}
+.shooter:after{
+  content:"9";position:absolute;left:19px;top:32px;width:28px;text-align:center;
+  font-size:24px;font-weight:900;color:#f1c54d;
+  text-shadow:0 2px 2px #000;
+  padding-top:0;height:25px;
+  box-shadow:
+    0 -20px 0 -5px #b97b55,
+    -13px 66px 0 -7px #1f315b,
+     13px 66px 0 -7px #1f315b,
+    -16px 90px 0 -8px #16284b,
+     16px 90px 0 -8px #16284b;
+}
+.shooter.runup{left:44%;bottom:16%;transform:translateX(-50%) rotate(-4deg)}
+.shooter.kick{left:47%;bottom:17%;transform:translateX(-50%) rotate(8deg) scale(1.02)}
+.shooter.celebrate{animation:celebrate .9s ease 2}
+@keyframes celebrate{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-18px) rotate(-5deg)}
+}
+
+/* animated ball */
+.ball{
+  opacity:1!important;z-index:12;font-size:42px;bottom:18%;left:50%;
+  filter:drop-shadow(0 8px 6px #0008);
+  transition:left .52s cubic-bezier(.1,.75,.2,1),top .52s cubic-bezier(.1,.75,.2,1),
+             bottom .52s cubic-bezier(.1,.75,.2,1),transform .52s ease
+}
+.ball.kicked{animation:ballSpin .52s linear}
+@keyframes ballSpin{
+  to{rotate:540deg}
+}
+
+/* crowd movement and camera kick */
+.pitch.crowd-cheer{animation:stadiumPulse .55s ease 2}
+@keyframes stadiumPulse{
+  0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.14) saturate(1.15)}
+}
+.pitch.camera-kick{animation:cameraKick .24s ease}
+@keyframes cameraKick{
+  0%,100%{transform:translate(0,0)}
+  30%{transform:translate(-2px,1px)}
+  60%{transform:translate(2px,-1px)}
+}
+.goal-flash{
+  position:absolute;z-index:30;left:50%;top:19%;transform:translateX(-50%) scale(.7);
+  padding:10px 24px;border-radius:999px;background:#16a34acc;color:#fff;
+  border:1px solid #ffffff88;font-size:28px;font-weight:900;opacity:0;pointer-events:none
+}
+.goal-flash.show{animation:goalPop 1.1s ease}
+.goal-flash.save{background:#0f6fbfcc}
+@keyframes goalPop{
+  0%{opacity:0;transform:translateX(-50%) scale(.65)}
+  20%,75%{opacity:1;transform:translateX(-50%) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) scale(1.1)}
 }
 
 </style>
@@ -267,9 +384,10 @@ body{
     <div class="main">
       <div class="pitch">
         <div class="goal"></div>
-        <div id="keeper" class="keeper">🧤</div>
+        <div id="keeper" class="keeper"></div>
         <div id="ball" class="ball">⚽</div>
-        <div class="shooter">🧍</div>
+        <div id="shooter" class="shooter"></div>
+        <div id="goalFlash" class="goal-flash">هدف!</div>
         <div id="zoneGrid" class="zone-grid">
           <button class="zone" data-zone="0">↖</button><button class="zone" data-zone="1">↑</button><button class="zone" data-zone="2">↗</button>
           <button class="zone" data-zone="3">←</button><button class="zone" data-zone="4">•</button><button class="zone" data-zone="5">→</button>
@@ -384,7 +502,16 @@ function renderDots(){
   $('roundDots').innerHTML='';
   history.forEach(h=>{const d=document.createElement('span');d.className='dot '+(h.goal?'goal':'miss');d.title=h.player===0?myName:oppName;$('roundDots').appendChild(d)})
 }
-function resetScene(){const ball=$('ball'),keeper=$('keeper');ball.style.left='50%';ball.style.bottom='82px';ball.style.top='auto';ball.style.transform='translateX(-50%) scale(1)';keeper.style.left='50%';keeper.style.top='145px';keeper.style.transform='translateX(-50%)'}
+function resetScene(){
+  const ball=$('ball'),keeper=$('keeper'),shooter=$('shooter'),pitch=document.querySelector('.pitch'),goal=document.querySelector('.goal');
+  ball.classList.remove('kicked');
+  ball.style.left='50%';ball.style.bottom='18%';ball.style.top='auto';ball.style.transform='translateX(-50%) scale(1)';
+  keeper.classList.remove('dive-left','dive-right','save-flash');
+  keeper.style.left='50%';keeper.style.top='42%';keeper.style.transform='translateX(-50%)';
+  shooter.classList.remove('runup','kick','celebrate');
+  if(pitch)pitch.classList.remove('crowd-cheer','camera-kick');
+  if(goal)goal.classList.remove('net-hit');
+}
 function keeperChoice(){
   if(mode==='cpu'){
     if(difficulty==='easy')return Math.floor(Math.random()*9);
@@ -422,10 +549,49 @@ function opponentKick(){
   })
 }
 function animateKick(zone,save,done){
-  const cols=[24,50,76],rows=[85,125,165];const c=zone%3,r=Math.floor(zone/3);const sc=save%3,sr=Math.floor(save/3);
-  $('ball').style.left=cols[c]+'%';$('ball').style.bottom='auto';$('ball').style.top=rows[r]+'px';$('ball').style.transform='translateX(-50%) scale(.72)';
-  $('keeper').style.left=cols[sc]+'%';$('keeper').style.top=rows[sr]+'px';$('keeper').style.transform='translateX(-50%) scale(.9)';
-  setTimeout(()=>{done();setTimeout(resetScene,350)},620)
+  const pitch=document.querySelector('.pitch');
+  const goal=document.querySelector('.goal');
+  const ball=$('ball'),keeper=$('keeper'),shooter=$('shooter'),flash=$('goalFlash');
+  const cols=[34,50,66],rows=[31,39,47];
+  const c=zone%3,r=Math.floor(zone/3),sc=save%3,sr=Math.floor(save/3);
+  const goalScored=zone!==save;
+
+  shooter.classList.add('runup');
+  if(pitch)pitch.classList.add('camera-kick');
+
+  setTimeout(()=>{
+    shooter.classList.remove('runup');
+    shooter.classList.add('kick');
+    ball.classList.add('kicked');
+    ball.style.left=cols[c]+'%';
+    ball.style.bottom='auto';
+    ball.style.top=rows[r]+'%';
+    ball.style.transform='translateX(-50%) scale(.72)';
+
+    keeper.style.left=cols[sc]+'%';
+    keeper.style.top=rows[sr]+'%';
+    keeper.classList.add(sc===0?'dive-left':sc===2?'dive-right':'save-flash');
+  },360);
+
+  setTimeout(()=>{
+    if(goalScored){
+      if(goal)goal.classList.add('net-hit');
+      if(pitch)pitch.classList.add('crowd-cheer');
+      shooter.classList.add('celebrate');
+      flash.textContent='هدف!';
+      flash.classList.remove('save');flash.classList.add('show');
+    }else{
+      keeper.classList.add('save-flash');
+      flash.textContent='تصدي!';
+      flash.classList.add('save','show');
+    }
+  },880);
+
+  setTimeout(()=>{
+    flash.classList.remove('show','save');
+    done();
+    setTimeout(resetScene,420);
+  },1450);
 }
 function checkEnd(){
   if(kicks[0]>=kickMax&&kicks[1]>=kickMax){
