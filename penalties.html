@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ركلات الجزاء - HA Marketing</title>
+<title>ركلات الجزاء • HA STADIUM - HA Marketing</title>
 <style>
 :root{
   --bg:#08111f;--panel:#111d2f;--panel2:#18263d;--text:#f6f8fb;--muted:#9ba9be;
@@ -79,6 +79,108 @@ linear-gradient(#ffffff2b 1px,transparent 1px);background-size:18px 18px}
  border-radius:999px;padding:7px 10px;font-size:10px;display:none
 }
 .game-mic-status.show{display:block}
+
+
+/* ===== HA STADIUM - full game presentation ===== */
+body{
+  background:#02060c;
+}
+.app{max-width:1500px;padding:10px}
+.topbar{
+  background:#07101dd9;border:1px solid #ffffff20;border-radius:16px;
+  backdrop-filter:blur(14px);box-shadow:0 12px 35px #0008
+}
+.game-layout{grid-template-columns:minmax(0,1fr) 250px;gap:12px}
+.scoreboard{
+  position:relative;z-index:20;margin:8px auto -74px;
+  width:min(760px,75%);direction:ltr
+}
+.team-box,.bigscore{
+  background:#06101de8;border:1px solid #ffffff24;
+  box-shadow:0 10px 30px #0008;backdrop-filter:blur(9px)
+}
+.main-game{position:relative}
+.pitch{
+  height:min(76vh,760px);min-height:590px;border-radius:22px;overflow:hidden;
+  border:1px solid #ffffff26;
+  background:
+    linear-gradient(180deg,#00000010,#00000005),
+    url("ha-stadium-bg.png") center center/cover no-repeat;
+  box-shadow:0 26px 75px #000c;
+}
+.pitch:before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,#02081455 0 14%,transparent 35% 75%,#02081435);
+  pointer-events:none;z-index:1
+}
+/* Hide the old emoji actors; the approved realistic scene is now the field visual. */
+.goal,.keeper,.shooter,.ball{opacity:0;pointer-events:none}
+.zone-grid{
+  z-index:8;top:31%;left:31%;width:38%;height:26%;opacity:.08
+}
+.zone{border:1px solid #fff0;background:transparent;color:transparent}
+.zone:hover{background:#ffffff18;border-color:#ffffff30}
+.kick-panel{
+  position:absolute;z-index:15;right:20px;bottom:20px;width:220px;
+  background:#03080dbd;border:1px solid #ffffff32;border-radius:22px;
+  padding:14px;backdrop-filter:blur(10px);box-shadow:0 14px 40px #0008
+}
+.kick-panel h3{font-size:13px;text-align:center;margin:0 0 10px;color:#eaf2ff}
+.kick-actions{display:grid;grid-template-columns:1fr;gap:9px}
+.kick-actions .btn{
+  min-height:48px;border-radius:50px;background:#08111bbd;border:1px solid #ffffff55;
+  font-size:14px;font-weight:800;box-shadow:inset 0 0 20px #ffffff08
+}
+.kick-actions .btn.primary{
+  order:-1;background:#ffffff17;border-color:#ffffffaa;color:#fff
+}
+.round-dots{justify-content:center;margin:10px 0 4px}
+.status{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
+  width:auto;min-width:300px;max-width:55vw;z-index:40;
+  background:#02070cbb;border:1px solid #ffffff28;border-radius:12px;
+  backdrop-filter:blur(9px);padding:10px 18px;text-align:center
+}
+.side .card{
+  background:#07101ddb;border:1px solid #ffffff18;border-radius:16px;
+  backdrop-filter:blur(10px);box-shadow:0 12px 35px #0007
+}
+.timer{box-shadow:0 0 28px #25d27b22}
+.reactions{grid-template-columns:repeat(3,1fr)}
+.react{background:#ffffff0b;border-color:#ffffff18}
+#micBtn,#speakerBtn{border-radius:50px}
+.start-screen{
+  background:
+    linear-gradient(90deg,#02060dc9,#02060d40),
+    url("ha-stadium-bg.png") center/cover no-repeat;
+}
+.start-card{
+  max-width:780px;background:#050c16df;border:1px solid #ffffff28;
+  box-shadow:0 30px 90px #000d;backdrop-filter:blur(16px)
+}
+.start-card h2{font-size:32px}
+.mode-card{
+  background:#ffffff0b;border:1px solid #ffffff1e;
+  transition:.2s
+}
+.mode-card:hover{transform:translateY(-3px);background:#ffffff13;border-color:#49d58a80}
+.hero .ball{opacity:1}
+@media(max-width:900px){
+  .game-layout{grid-template-columns:1fr}
+  .side{display:grid;grid-template-columns:repeat(3,1fr)}
+  .side>a{grid-column:1/-1}
+  .pitch{height:68vh;min-height:520px}
+  .scoreboard{width:92%;margin-bottom:-68px}
+}
+@media(max-width:650px){
+  .app{padding:5px}.pitch{height:72vh;min-height:500px;border-radius:14px}
+  .scoreboard{width:96%;margin-bottom:-60px}
+  .team-box{padding:6px}.bigscore{font-size:28px;min-width:80px}
+  .kick-panel{right:10px;bottom:12px;width:145px;padding:9px}
+  .kick-actions .btn{min-height:43px;font-size:12px}
+  .status{min-width:240px;max-width:70vw;bottom:8px;font-size:11px}
+  .side{grid-template-columns:1fr 1fr}
+}
 
 </style>
 </head>
@@ -176,11 +278,11 @@ linear-gradient(#ffffff2b 1px,transparent 1px);background-size:18px 18px}
       </div>
 
       <div class="kick-panel">
-        <h3>اختار جهة التسديد</h3>
+        <h3>حدد اتجاه وقوة التسديد</h3>
         <div class="kick-actions">
-          <button class="btn" data-shot="0">يسار</button>
-          <button class="btn primary" data-shot="4">وسط</button>
-          <button class="btn" data-shot="2">يمين</button>
+          <button class="btn" data-shot="0">↖ يسار</button>
+          <button class="btn primary" data-shot="4">⚽ تسديد</button>
+          <button class="btn" data-shot="2">يمين ↗</button>
         </div>
         <div id="roundDots" class="round-dots"></div>
         <div id="status" class="status">جاهز للمباراة.</div>
