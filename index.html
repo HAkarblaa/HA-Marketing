@@ -389,15 +389,7 @@ function searchCards(){
   document.getElementById('noResults').style.display = n ? 'none' : 'block';
 }
 
-/* إذا كان المستخدم مسجلاً، افتح الرئيسية مباشرة بدون شاشة الدخول */
-document.addEventListener('DOMContentLoaded', function(){
-  if(localStorage.getItem('ha_logged_in') === '1'){
-    const splash=document.getElementById('haSplash');
-    if(splash) splash.classList.add('hide');
-  }
-});
-
-/* شاشة البداية للزائر غير المسجل */
+/* شاشة البداية تظهر في كل مرة يتم فتح الصفحة الرئيسية من الرابط */
 function continueLogin(){
   const signedIn = localStorage.getItem('ha_logged_in') === '1';
 
