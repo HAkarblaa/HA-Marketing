@@ -45,7 +45,7 @@ avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=
 const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
 function normalizePhone(v){let p=v.replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function authEmail(p){return 'u'+p+'@ha.local'}
-async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error)alert('تعذر دخول الضيف: '+error.message);else location.href='index.html';}
+async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error)alert('تعذر دخول الضيف: '+error.message);else{localStorage.setItem('ha_logged_in','1');location.href='index.html';}}
 async function createAccount(){
  const name=full_name.value.trim(),raw=phone.value.trim(),user=username.value.trim(),gov=governorate.value,p=password.value,cp=confirm_password.value;
  passError.textContent='';
@@ -132,7 +132,7 @@ async function createAccount(){
   avatar_url:avatarData
  };
 
- const {error}=await db.auth.signUp({
+ const {data:signUpData,error}=await db.auth.signUp({
   email:authEmail(ph),
   password:p,
   options:{data:meta}
@@ -148,6 +148,14 @@ async function createAccount(){
   return;
  }
 
+ if(!signUpData?.session){
+  const {error:loginError}=await db.auth.signInWithPassword({email:authEmail(ph),password:p});
+  if(loginError){
+    alert('تم إنشاء الحساب، لكن تعذر تسجيل الدخول تلقائياً. سجل الدخول من صفحة الدخول.');
+    location.href='login.html';
+    return;
+  }
+ }
  localStorage.setItem('ha_logged_in','1');
  alert(accountType==='employee'
    ? 'تم إنشاء حساب الموظف وهو بانتظار موافقة الإدارة.'
