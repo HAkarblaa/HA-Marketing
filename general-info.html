@@ -5,5 +5,33 @@
 .pic{height:150px;border-radius:14px;background:linear-gradient(135deg,#f0f0f0,#fff);display:flex;align-items:center;justify-content:center;font-size:75px;margin-bottom:12px}
 .card h2{margin:0 0 5px}.fact{font-weight:700;margin-bottom:8px}.desc{color:#666;line-height:1.8}.back{display:block;text-align:center;margin:25px;text-decoration:none;color:#111}
 @media(max-width:650px){.grid{grid-template-columns:1fr}}
+
+/* HA Marketing mobile compact grid: 3 cards per row */
+@media (max-width: 700px){
+  .grid,.cards,.menu-grid,.rooms,.categories,.category-grid,.services-grid,.service-grid,.games-grid,.options-grid,.quick-grid,.tools-grid,.subgrid,.main-grid,.dashboard-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:7px !important;
+  }
+  .card,.menu-card,.room,.category,.category-card,.service-card,.game-card,.option-card,.quick-card,.tool-card,.subcard{
+    min-width:0 !important;
+    min-height:88px !important;
+    padding:9px 5px !important;
+    border-radius:12px !important;
+  }
+  .card .icon,.menu-card .icon,.room .icon,.category .icon,.category-card .icon,.service-card .icon,.game-card .icon,.option-card .icon,.quick-card .icon,.tool-card .icon,.subcard .subicon{
+    font-size:27px !important;
+    margin-bottom:4px !important;
+  }
+  .card h2,.card h3,.menu-card h2,.menu-card h3,.category-card h2,.category-card h3,.service-card h2,.service-card h3,.game-card h2,.game-card h3,.option-card h2,.quick-card h2,.tool-card h2,.subcard strong{
+    font-size:12px !important;
+    line-height:1.25 !important;
+    margin:2px 0 !important;
+  }
+  .card p,.menu-card p,.category-card p,.service-card p,.game-card p,.option-card p,.quick-card p,.tool-card p{
+    font-size:9px !important;
+    line-height:1.2 !important;
+    margin:2px 0 !important;
+  }
+}
 </style></head><body><div class="wrap"><h1>💡 معلومات عامة</h1><p class="sub">اسم + صورة توضيحية + معلومة سريعة + شرح مبسط.</p><div id="grid" class="grid"></div><a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a></div>
 <script>const DATA=[["الأرض", "🌍", "الكوكب الذي نعيش عليه", "الأرض ثالث كواكب المجموعة الشمسية قرباً من الشمس، وتغطي المياه معظم سطحها."], ["الشمس", "☀️", "نجم مجموعتنا الشمسية", "الشمس نجم ضخم يوفر الضوء والحرارة، وتدور حولها كواكب المجموعة الشمسية."], ["القلب", "❤️", "مضخة الجسم الأساسية", "القلب عضو عضلي يضخ الدم عبر الأوعية الدموية ليصل الأكسجين والمواد الغذائية إلى أنحاء الجسم."], ["الدماغ", "🧠", "مركز التحكم في الجسم", "الدماغ يدير الحركة والذاكرة والحواس واللغة ووظائف كثيرة أخرى عبر الجهاز العصبي."], ["النحل", "🐝", "حشرات مهمة للتلقيح", "يسهم النحل في تلقيح كثير من النباتات، وهو جزء مهم من الأنظمة البيئية والزراعة."], ["الأخطبوط", "🐙", "حيوان بحري ذكي", "للأخطبوط ثمانية أذرع وجهاز عصبي معقد، ويشتهر بقدرته على التمويه وحل بعض المشكلات."], ["الأهرامات", "🔺", "معالم أثرية شهيرة", "أهرامات الجيزة في مصر من أشهر آثار العالم القديم، وبُنيت قبل آلاف السنين."], ["القمر", "🌙", "تابع الأرض الطبيعي", "القمر يدور حول الأرض ويؤثر في المد والجزر، وتتغير أطواره كما نراها من الأرض."], ["المحيط الهادئ", "🌊", "أكبر محيط على الأرض", "المحيط الهادئ هو الأكبر مساحة بين محيطات العالم ويمتد بين آسيا والأمريكيتين."], ["اللغة العربية", "🔤", "إحدى اللغات العالمية الكبرى", "العربية لغة واسعة الانتشار وتتميز بنظام كتابي من اليمين إلى اليسار وتراث أدبي كبير."], ["الجاذبية", "🪐", "قوة تجذب الأجسام", "الجاذبية هي القوة التي تجعل الأجسام ذات الكتلة تتجاذب، وهي التي تبقينا على سطح الأرض."], ["الماء", "💧", "أساس الحياة", "الماء ضروري للكائنات الحية، ويوجد في الطبيعة في حالات سائلة وصلبة وغازية."]];document.getElementById('grid').innerHTML=DATA.map(x=>`<article class="card"><div class="pic">${x[1]}</div><h2>${x[0]}</h2><div class="fact">${x[2]}</div><div class="desc">${x[3]}</div></article>`).join('');</script></body></html>
