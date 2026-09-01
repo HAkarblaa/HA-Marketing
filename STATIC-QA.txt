@@ -1,1 +1,22 @@
-Missing local references: 0
+HA Marketing - Final static QA
+
+Results:
+- Missing local href/src targets: 0
+- Inline JavaScript syntax failures: 0
+- Standalone JavaScript syntax failures: 0
+- Fake transport driver/customer names, phone numbers, vehicle data: removed
+- Simulated pre-accept driver ETA: removed
+- Homepage shop link: active
+- Homepage sports link: active
+- Building materials: real shop category
+- Chat sender identity: authenticated Supabase profile
+- Transport customer identity: authenticated Supabase profile
+- Driver identity: approved employee profile + driver-entered real vehicle data
+- Firebase paths used by site: rides, rideChats, rideCalls, dominoRooms, penaltyRooms
+- firebase-database.rules.json includes all of those paths
+- Games launcher fake wallet/profile/stats: removed
+
+Intentional future/provider-dependent items are not presented as working services:
+- automatic electronic payments require a real payment provider
+- automatic SMS/WhatsApp password reset requires a real provider
+- Study / Appointments and Gym remain intentionally marked as coming soon where the project had no real backend/service implementation

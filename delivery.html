@@ -1061,6 +1061,8 @@ body.delivery-stage-1 #centerPin{
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
@@ -1530,17 +1532,8 @@ async function calc(){
 
    distance.textContent=routeKm.toFixed(1)+' كم';
    tripTime.textContent=fm(routeMin);
-
-   const demo=L.latLng(start.lat+.008,start.lng+.008);
-
-   try{
-     const dr=await route(demo,start);
-     pickupMin=dr.duration/60;
-   }catch(e){
-     pickupMin=5;
-   }
-
-   driverTime.textContent='~ '+fm(pickupMin);
+   pickupMin=0;
+   driverTime.textContent='بعد قبول المندوب';
 
    refreshFinalPrices();
 
@@ -1602,6 +1595,9 @@ order.onclick=async()=>{
   order.disabled=true;
   order.textContent='جاري إرسال الطلب...';
 
+  const realCustomer=await HA_TransportProfile.customerOrLogin();
+  if(!realCustomer){ order.disabled=false; order.textContent=oldText; return; }
+
   const rideRef=db.ref('rides').push();
   activeDeliveryRideId=rideRef.key;
   activeDeliveryRideRef=rideRef;
@@ -1610,7 +1606,7 @@ order.onclick=async()=>{
     serviceType:'delivery',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
-    customer:{name:'زبون',phone:''},
+    customer:realCustomer,
     pickup:{lat:start.lat,lng:start.lng},
     destination:{lat:end.lat,lng:end.lng},
     vehicleType:selected.dataset.name,

@@ -1,28 +1,22 @@
-HA Marketing - Final code-complete package
+HA Marketing - Final corrected package
 
-The website files in this package include the completed code-side work for:
-1) accounts/authentication and employee approval
-2) real service orders, tracking and ratings
-3) in-app notifications + Firebase push client integration
-4) shop, cart, inventory, customer orders and shop admin
-5) authenticated realtime chat + voice uploads to Supabase Storage
-6) taxi/tuktuk/delivery existing live Firebase ride flow
-7) news/currency/gold pages with their configured live sources
-8) admin pages and real admin-assisted password reset workflow
-9) religious section pages
-10) entertainment/games and final internal-link cleanup
+Code-side final QA and cleanup completed:
+1) shop link on homepage now opens the real shop
+2) shop/cart/orders/admin remain connected to the real Supabase shop tables
+3) transport customer orders now use the logged-in Supabase profile instead of fake customer data
+4) driver page now requires a real approved employee account and real vehicle details entered by that driver
+5) fake driver names/phones/cars and simulated driver ETA were removed
+6) taxi/tuktuk rating button now stores the real rating in Firebase
+7) ride chat/call paths were included in the final Firebase rules file
+8) domino and penalty online-room paths were included in the final Firebase rules file
+9) transport notification listener now watches the actual "searching" ride status
+10) fake games wallet/profile/stats dashboard was removed; games page only links to games that actually exist
+11) building materials now opens the real shop category instead of a placeholder catalog
+12) football card now opens the real football-news page
+13) internal file references and inline JavaScript were statically checked
 
-IMPORTANT LIVE PLATFORM ACTIONS THAT CANNOT BE PERFORMED BY A ZIP FILE:
-- Deploy Supabase Edge Function folder/code EDGE-admin-reset-password-index.ts as function name: admin-reset-password.
-- Keep the already deployed send-fcm-push function.
-- Run FINAL-REMAINING-POINTS.sql if its objects/RPCs are not already present.
-- Firebase Realtime Database rules must be reviewed/applied in Firebase Console. The included firebase-database.rules.json is a baseline that limits access to /rides only, but because the current transport pages do not use Firebase Authentication, it cannot provide per-user/per-driver authorization. True production-grade ride authorization requires adding Firebase Auth or migrating rides to Supabase.
-- Electronic payments and automatic SMS/WhatsApp password recovery still require real provider accounts/API credentials; no fake provider integration is included.
-- Live news/market pages depend on third-party sources and may temporarily fail if those services change or go offline.
-
-Static QA performed before packaging:
-- All relative href/src file targets referenced by HTML pages exist in the package.
-- Chat message inserts include authenticated user_id.
-- Chat voice media uploads to chat-media storage bucket.
-- Forgot-password page submits real reset requests to Supabase RPC.
-- Admin page verifies account_type=admin before showing admin functions.
+IMPORTANT CLOUD STATE:
+- Supabase Edge Functions were already deployed in the live project during setup.
+- Firebase Rules in the live console must match firebase-database.rules.json in this package.
+  The previous live rules only allowed rides/dominoRooms, while the final code also uses rideChats, rideCalls and penaltyRooms.
+- Electronic payments and automatic SMS/WhatsApp still require real third-party provider accounts/credentials; the site does not fake these services.

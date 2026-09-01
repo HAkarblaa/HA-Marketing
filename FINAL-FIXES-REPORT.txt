@@ -1,0 +1,18 @@
+HA Marketing - final correction pass
+
+This pass fixed issues found after the previous package:
+1. Enabled the real Shop Now link on the homepage and shortcut drawer.
+2. Enabled the Sports page; football now opens the real football-news page.
+3. Replaced the old static building-materials placeholder catalog with the live shop category.
+4. Removed fake game profile/wallet/levels/stats and kept only actual game launch links.
+5. Chat now derives the displayed sender name from the authenticated Supabase profile and makes it read-only.
+6. Taxi/Tuktuk/Delivery orders now store the logged-in customer's real profile name/phone/id instead of generic fake customer data.
+7. Driver page now requires an approved employee account and real vehicle details entered by the driver before accepting rides.
+8. Removed fake driver name, phone, plate, car, rating and simulated ETA values.
+9. Direct customer/driver calling no longer falls back to a fake phone number.
+10. Taxi/Tuktuk manual rating button now uses the real Firebase rating store.
+11. Fixed transport notification new-ride status from pending to searching.
+12. Final Firebase rules now include every Realtime Database path used by transport and online games: rides, rideChats, rideCalls, dominoRooms, penaltyRooms.
+13. Shop reference SQL now matches the current front-end schema: product_categories/products/shop_orders/shop_order_items.
+14. Removed unused legacy admin prototype pages under css/admin.
+15. Re-ran local link and JavaScript syntax checks successfully.

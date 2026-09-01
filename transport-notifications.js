@@ -117,11 +117,11 @@
       const r=snap.val()||{};
       // Avoid notifying for old requests already present before driver opened the page.
       const created=Number(r.createdAt||r.timestamp||0);
-      if(r.status!=='pending')return;
+      if(r.status!=='searching')return;
       if(created && created < startedAt-5000)return;
       notify(
         '🚕 طلب نقل جديد',
-        r.type ? ('طلب '+r.type+' جديد بانتظار سائق.') : 'يوجد طلب جديد بانتظار سائق.',
+        r.serviceType ? ('طلب '+r.serviceType+' جديد بانتظار سائق.') : 'يوجد طلب جديد بانتظار سائق.',
         location.href,
         'ha-new-ride-'+snap.key
       );

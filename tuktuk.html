@@ -1071,21 +1071,21 @@ body:not(.trip-ready) #extraSummary{
           <img id="driverPhoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='%23e5e7eb'/><circle cx='60' cy='43' r='23' fill='%239ca3af'/><path d='M20 112c5-27 21-40 40-40s35 13 40 40' fill='%239ca3af'/></svg>" alt="صورة السائق">
         </div>
         <div class="driver-info">
-          <b id="driverName">أحمد علي</b>
-          <span id="driverCarSummary">تويوتا كورولا • أبيض</span>
+          <b id="driverName">السائق</b>
+          <span id="driverCarSummary">—</span>
         </div>
-        <strong>⭐ <span id="driverRating">4.9</span></strong>
+        <strong>⭐ <span id="driverRating">—</span></strong>
       </div>
 
       <div class="driver-details">
-        <div class="driver-detail"><small>رقم السيارة</small><b id="driverPlate">بغداد 12345</b></div>
-        <div class="driver-detail"><small>السيارة</small><b id="driverCarName">تويوتا كورولا</b></div>
-        <div class="driver-detail"><small>اللون</small><b id="driverCarColor">أبيض</b></div>
-        <div class="driver-detail"><small>رقم السائق</small><b id="driverPhoneView">0770 123 4567</b></div>
+        <div class="driver-detail"><small>رقم السيارة</small><b id="driverPlate">—</b></div>
+        <div class="driver-detail"><small>السيارة</small><b id="driverCarName">—</b></div>
+        <div class="driver-detail"><small>اللون</small><b id="driverCarColor">—</b></div>
+        <div class="driver-detail"><small>رقم السائق</small><b id="driverPhoneView">—</b></div>
       </div>
 
       <div class="driver-meta">
-        <div><small>الوصول إليك</small><b id="pickupEtaText">5 د</b></div>
+        <div><small>الوصول إليك</small><b id="pickupEtaText">—</b></div>
         <div><small>الرحلة</small><b id="tripEtaText">—</b></div>
         <div><small>السعر</small><b id="tripPriceText">—</b></div>
       </div>
@@ -1118,6 +1118,8 @@ body:not(.trip-ready) #extraSummary{
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
@@ -1567,17 +1569,8 @@ async function calc(){
 
    distance.textContent=routeKm.toFixed(1)+' كم';
    tripTime.textContent=fm(routeMin);
-
-   const demo=L.latLng(start.lat+.008,start.lng+.008);
-
-   try{
-     const dr=await route(demo,start);
-     pickupMin=dr.duration/60;
-   }catch(e){
-     pickupMin=5;
-   }
-
-   driverTime.textContent='~ '+fm(pickupMin);
+   pickupMin=0;
+   driverTime.textContent='بعد قبول السائق';
 
    refreshFinalPrices();
 
@@ -1619,6 +1612,9 @@ order.onclick=async()=>{
   const oldText=order.textContent;
   order.textContent='جاري إرسال الطلب...';
 
+  const realCustomer=await HA_TransportProfile.customerOrLogin();
+  if(!realCustomer){ order.disabled=false; order.textContent=oldText; return; }
+
   const rideRef=db.ref('rides').push();
   activeRideId=rideRef.key;
   activeRideRef=rideRef;
@@ -1627,10 +1623,7 @@ order.onclick=async()=>{
     serviceType:'tuktuk',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
-    customer:{
-      name:'زبون',
-      phone:''
-    },
+    customer:realCustomer,
     pickup:{lat:start.lat,lng:start.lng},
     destination:{lat:end.lat,lng:end.lng},
     vehicleType:selected.dataset.name,
@@ -1752,18 +1745,8 @@ setMode('start');
 startMapPick();
 
 
-// بيانات السائق التجريبية حالياً.
-// لاحقاً تأتي هذه البيانات من حساب السائق المقبول من قاعدة البيانات.
-const acceptedDriver={
-  name:'أحمد علي',
-  phoneLocal:'07701234567',
-  phoneInternational:'9647701234567',
-  plate:'بغداد 12345',
-  carName:'تويوتا كورولا',
-  carColor:'أبيض',
-  rating:'4.9',
-  photo:''
-};
+// بيانات السائق لا تظهر إلا بعد قبول الطلب، وتأتي من السائق الحقيقي.
+const acceptedDriver={name:'السائق',phoneLocal:'',phoneInternational:'',plate:'—',carName:'—',carColor:'—',rating:'—',photo:''};
 
 function fillAcceptedDriver(){
   document.getElementById('driverName').textContent=acceptedDriver.name;
@@ -1783,6 +1766,7 @@ function fillAcceptedDriver(){
 
 function callAcceptedDriver(){
   // على الهاتف يفتح تطبيق الاتصال مباشرة.
+  if(!acceptedDriver.phoneLocal){alert('رقم السائق غير متوفر.');return;}
   window.location.href='tel:'+acceptedDriver.phoneLocal;
 }
 
@@ -2077,14 +2061,9 @@ document.getElementById('finishHomeBtn').onclick=()=>{
 };
 
 document.getElementById('finishRateBtn').onclick=()=>{
-  const rating=prompt('قيّم السائق من 1 إلى 5');
-  if(!rating)return;
-  const n=Number(rating);
-  if(n<1 || n>5 || !Number.isFinite(n)){
-    alert('اكتب رقم من 1 إلى 5.');
-    return;
-  }
-  alert('شكراً لتقييمك ⭐ '+n);
+  const id=activeRideId||localStorage.getItem('ha_active_ride');
+  if(!id){alert('لا توجد رحلة مكتملة للتقييم.');return;}
+  HA_Rating.show({rideId:id,role:'customer',targetName:acceptedDriver.name||'السائق'});
 };
 
 document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();

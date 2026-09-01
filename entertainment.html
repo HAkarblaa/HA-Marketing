@@ -45,20 +45,5 @@ h1{text-align:center;margin-bottom:8px}
 <a class="back" href="index.html">← الرجوع إلى الصفحة الرئيسية</a>
 </div>
 
-<div id="comingSoonModal" class="coming-soon-modal" aria-hidden="true">
-  <div class="coming-soon-box">
-    <div class="big">⏳</div>
-    <h2>قريباً</h2>
-    <p>هذه اللعبة قيد التجهيز وستكون متاحة قريباً.</p>
-    <button id="comingSoonClose" type="button">حسناً</button>
-  </div>
-</div>
-
-<script>
-const modal=document.getElementById('comingSoonModal');
-document.querySelectorAll('[data-coming-soon="1"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();modal.classList.add('show');modal.setAttribute('aria-hidden','false')}));
-document.getElementById('comingSoonClose').onclick=()=>{modal.classList.remove('show');modal.setAttribute('aria-hidden','true')};
-modal.addEventListener('click',e=>{if(e.target===modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true')}});
-</script>
 </body>
 </html>

@@ -123,12 +123,14 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
     </div>
   </div>
 
+
+  <div id="driverGate" class="section"><div class="request-card"><b>بيانات السائق والمركبة</b><p id="driverGateMsg" style="color:#666;line-height:1.7">جاري التحقق من الحساب...</p><div id="vehicleSetup" style="display:none"><input id="vehiclePlate" placeholder="رقم المركبة / اللوحة" style="width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:10px"><input id="vehicleName" placeholder="اسم المركبة، مثال: تويوتا كورولا" style="width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:10px"><input id="vehicleColor" placeholder="لون المركبة" style="width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:10px"><button id="saveVehicleBtn" class="accept" style="width:100%;border:0;border-radius:10px;padding:11px">حفظ بيانات المركبة</button></div></div></div>
   <div id="map"></div>
 
   <div class="summary">
-    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">1</b></div>
-    <div class="box"><small>المسافة للزبون</small><b id="toCustomer">2.4 كم</b></div>
-    <div class="box"><small>السعر</small><b id="fare">8,500 د.ع</b></div>
+    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">0</b></div>
+    <div class="box"><small>المسافة للزبون</small><b id="toCustomer">—</b></div>
+    <div class="box"><small>السعر</small><b id="fare">—</b></div>
   </div>
 
   <div class="section" id="requestsSection">
@@ -139,7 +141,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
         <div class="avatar">👤</div>
         <div class="customer-info">
           <b id="requestCustomerName">بانتظار طلب...</b>
-          <span>⭐ 4.8</span>
+          <span id="requestCustomerPhone">—</span>
         </div>
         <strong id="requestVehicle">🚕 —</strong>
       </div>
@@ -147,7 +149,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
       <div class="route-info">
         <div class="item"><small>الانطلاق</small><b id="requestPickup">—</b></div>
         <div class="item"><small>الوصول</small><b id="requestDestination">—</b></div>
-        <div class="item"><small>مدة الوصول للزبون</small><b>6 دقائق</b></div>
+        <div class="item"><small>مدة الوصول للزبون</small><b id="requestPickupEta">—</b></div>
         <div class="item"><small>مدة الرحلة</small><b id="requestTripTime">—</b></div>
       </div>
 
@@ -166,10 +168,10 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
       <div class="customer">
         <div class="avatar">👤</div>
         <div class="customer-info">
-          <b>الزبون</b>
-          <span>المنصور → الكرادة</span>
+          <b id="activeCustomerName">الزبون</b>
+          <span id="activeCustomerPhone">—</span>
         </div>
-        <strong id="currentFare">8,500 د.ع</strong>
+        <strong id="currentFare">—</strong>
       </div>
 
       <div class="contact">
@@ -198,6 +200,8 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
@@ -234,15 +238,8 @@ let currentRide=null;
 let driverWatch=null;
 let currentRideStatusRef=null;
 
-const driverProfile={
-  name:'سائق HA',
-  phone:'07700000000',
-  plate:'بغداد —',
-  carName:'سيارة تكسي',
-  carColor:'—',
-  rating:'5.0',
-  photo:''
-};
+let driverProfile=null;
+let driverReady=false;
 
 function coordText(p){
   if(!p)return '—';
@@ -269,7 +266,8 @@ function watchPendingRides(){
     currentRide=ride;
     requestCard.style.display='block';
 
-    requestCustomerName.textContent=ride.customer?.name||'زبون';
+    requestCustomerName.textContent=ride.customer?.name||'الزبون';
+    if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
     requestVehicle.textContent='🚕 '+(ride.vehicleType||'تكسي');
     requestPickup.textContent=coordText(ride.pickup);
     requestDestination.textContent=coordText(ride.destination);
@@ -344,6 +342,9 @@ availabilityBtn.onclick=()=>{
 
 acceptBtn.onclick=async()=>{
   if(!currentRideId)return;
+  const ident=await HA_TransportProfile.driverIdentity();
+  if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
+  driverProfile=ident.driver;
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
@@ -373,6 +374,8 @@ acceptBtn.onclick=async()=>{
   acceptedPanel.classList.add('show');
   tripState.textContent='بالطريق إلى الزبون';
   currentFare.textContent=currentRide.price ? Number(currentRide.price).toLocaleString('ar-IQ')+' د.ع' : '—';
+  if(window.activeCustomerName)activeCustomerName.textContent=currentRide.customer?.name||'الزبون';
+  if(window.activeCustomerPhone)activeCustomerPhone.textContent=currentRide.customer?.phone||'—';
 
   HA_LiveTracking.startDriver(currentRideId,driver);
 
@@ -422,7 +425,7 @@ finishTripBtn.onclick=async()=>{
   if(currentRideId){
     await db.ref('rides/'+currentRideId).update({status:'finished',finishedAt:Date.now()});
     const finishedRideId=currentRideId;
-    const customerName=(currentRide&&currentRide.customerName)||'الزبون';
+    const customerName=currentRide?.customer?.name||'الزبون';
     HA_Rating.show({rideId:finishedRideId,role:'driver',targetName:customerName});
     localStorage.removeItem('ha_driver_active_ride');
     stopCurrentRideStatusWatch();
@@ -486,7 +489,37 @@ async function restoreDriverRide(){
 
 requestCard.style.display='none';
 nearbyCount.textContent='0';
-restoreDriverRide();
+
+async function initRealDriver(){
+  const msg=document.getElementById('driverGateMsg');
+  const setup=document.getElementById('vehicleSetup');
+  const saved=HA_TransportProfile.vehicle()||{};
+  if(saved.plate)vehiclePlate.value=saved.plate;
+  if(saved.carName)vehicleName.value=saved.carName;
+  if(saved.carColor)vehicleColor.value=saved.carColor;
+
+  const ident=await HA_TransportProfile.driverIdentity();
+  if(ident.ok){
+    driverProfile=ident.driver;driverReady=true;
+    msg.textContent='تم التحقق من حساب الموظف. بيانات المركبة محفوظة ويمكنك استقبال الطلبات.';
+    setup.style.display='none';
+    return true;
+  }
+  driverReady=false;
+  msg.textContent=ident.message||'تعذر التحقق من حساب السائق.';
+  setup.style.display=ident.needsVehicle?'block':'none';
+  if(!ident.needsVehicle){availabilityBtn.disabled=true;acceptBtn.disabled=true;}
+  return false;
+}
+document.getElementById('saveVehicleBtn').onclick=async()=>{
+  const v={plate:vehiclePlate.value.trim(),carName:vehicleName.value.trim(),carColor:vehicleColor.value.trim()};
+  if(!v.plate||!v.carName||!v.carColor){alert('اكتب رقم المركبة واسمها ولونها.');return;}
+  HA_TransportProfile.saveVehicle(v);
+  const ok=await initRealDriver();
+  if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
+};
+
+initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
@@ -637,7 +670,8 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   }
 
   if(direct) direct.onclick=()=>{
-    const phone=currentRide?.customerPhone || '07700000000';
+    const phone=currentRide?.customer?.phone || '';
+    if(!phone){alert('رقم الزبون غير متوفر.');return;}
     location.href='tel:'+phone;
   };
 

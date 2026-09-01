@@ -32,7 +32,7 @@
   <button class="callbtn" onclick="startCall(false)">📞 اتصال صوتي</button>
   <button class="callbtn video" onclick="startCall(true)">📹 اتصال فيديو</button>
 </div>
-<input id="username" class="name" maxlength="30" placeholder="اكتب اسمك">
+<input id="username" class="name" maxlength="30" placeholder="اسم الحساب" readonly>
 <div id="incoming" class="incoming"><div id="incomingText">مكالمة واردة...</div><button class="accept" onclick="acceptCall()">قبول</button><button class="reject" onclick="rejectCall()">رفض</button></div>
 <div id="messages" class="messages"></div>
 <div class="send">
@@ -182,14 +182,23 @@ async function currentChatUser(){
   if(error||!data?.user)return null;
   return data.user;
 }
+async function chatIdentity(user){
+  if(!user)user=await currentChatUser();
+  if(!user)return null;
+  const {data:p}=await db.from('profiles').select('full_name,username').eq('id',user.id).maybeSingle();
+  const name=p?.full_name||p?.username||'مستخدم';
+  username.value=name;
+  return {user,name};
+}
+window.addEventListener('DOMContentLoaded',async()=>{
+  const id=await chatIdentity();
+  if(!id)username.placeholder='سجّل الدخول حتى ترسل أو تتصل';
+});
 async function sendMessage(){
   const user=await currentChatUser();
   if(!user){alert('سجّل الدخول أولاً حتى ترسل رسالة');location.href='login.html';return}
-  let u=username.value.trim(),m=input.value.trim();
-  if(!u){
-    const {data:p}=await db.from('profiles').select('full_name,username').eq('id',user.id).maybeSingle();
-    u=p?.full_name||p?.username||'مستخدم'; username.value=u;
-  }
+  const ident=await chatIdentity(user);
+  const u=ident.name,m=input.value.trim();
   if(!m)return;
   let {error}=await db.from('messages').insert({user_id:user.id,username:u,room,message:m,message_type:'text',file_url:null});
   if(error)alert(error.message);else input.value='';
@@ -223,7 +232,8 @@ function stopVoiceTracks(){
 async function toggleVoiceRecord(){
   if(!navigator.onLine){alert('الرسالة الصوتية تحتاج إنترنت');return}
   if(!room){alert('ادخل غرفة الدردشة أولاً');return}
-  if(!username.value.trim()){alert('اكتب اسمك أولاً');return}
+  const voiceUser=await currentChatUser();
+  if(!voiceUser){alert('سجّل الدخول أولاً حتى ترسل رسالة صوتية');location.href='login.html';return}
   if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
     alert('هذا الجهاز أو المتصفح لا يدعم تسجيل الصوت');
     return;
@@ -303,11 +313,8 @@ async function finishVoiceRecord(send){
   try{
     const user=await currentChatUser();
     if(!user)throw new Error('يجب تسجيل الدخول');
-    let u=username.value.trim();
-    if(!u){
-      const {data:p}=await db.from('profiles').select('full_name,username').eq('id',user.id).maybeSingle();
-      u=p?.full_name||p?.username||'مستخدم'; username.value=u;
-    }
+    const ident=await chatIdentity(user);
+    const u=ident.name;
     const ext=(blob.type||'audio/webm').includes('ogg')?'ogg':'webm';
     const path=user.id+'/'+Date.now()+'.'+ext;
     const {error:upErr}=await db.storage.from('chat-media').upload(path,blob,{contentType:blob.type||'audio/webm',upsert:false});
@@ -375,7 +382,9 @@ async function getMedia(video){
 async function startCall(video){
   if(!navigator.onLine){alert('المكالمة تحتاج إنترنت');return}
   if(!room){alert('ادخل غرفة أولاً');return}
-  if(!username.value.trim()){alert('اكتب اسمك أولاً');return}
+  const callUser=await currentChatUser();
+  if(!callUser){alert('سجّل الدخول أولاً حتى تبدأ مكالمة');location.href='login.html';return}
+  await chatIdentity(callUser);
   if(!navigator.mediaDevices||!window.RTCPeerConnection){alert('هذا المتصفح لا يدعم المكالمات');return}
   try{
     callIsVideo=video;currentCallId=crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();

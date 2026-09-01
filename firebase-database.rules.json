@@ -4,10 +4,24 @@
     ".write": false,
     "rides": {
       ".read": true,
-      "$rideId": {
-        ".write": true,
-        ".validate": "newData.hasChildren(['status','createdAt']) && newData.child('status').isString()"
-      }
+      ".write": true,
+      ".indexOn": ["status"]
+    },
+    "rideChats": {
+      ".read": true,
+      ".write": true
+    },
+    "rideCalls": {
+      ".read": true,
+      ".write": true
+    },
+    "dominoRooms": {
+      ".read": true,
+      ".write": true
+    },
+    "penaltyRooms": {
+      ".read": true,
+      ".write": true
     }
   }
 }
