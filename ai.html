@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المساعد الذكي - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111;height:100vh;display:flex;flex-direction:column}
+.top{background:#000;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+.back{width:44px;height:44px;border:0;border-radius:10px;background:#fff;color:#111;font-size:22px;cursor:pointer}.title{flex:1}.title h1{font-size:20px;margin:0}.title small{color:#ccc}.status{font-size:12px;background:#1f2937;padding:7px 10px;border-radius:999px}
+.chat{width:min(920px,100%);margin:0 auto;flex:1;overflow:auto;padding:18px 14px 125px;scroll-behavior:smooth}.msg{max-width:82%;padding:12px 14px;margin:9px 0;border-radius:16px;line-height:1.7;white-space:pre-wrap;word-break:break-word}.me{margin-right:auto;background:#111;color:#fff;border-bottom-left-radius:5px}.bot{margin-left:auto;background:#fff;border:1px solid #e5e7eb;border-bottom-right-radius:5px;box-shadow:0 2px 10px #0000000d}.bot .name{font-size:12px;font-weight:700;margin-bottom:4px;color:#555}.typing{opacity:.65;font-style:italic}
+.composer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ddd;padding:10px 12px}.composer-inner{width:min(920px,100%);margin:auto;display:flex;gap:8px;align-items:flex-end}.composer textarea{flex:1;resize:none;min-height:48px;max-height:130px;border:1px solid #ccc;border-radius:14px;padding:12px 14px;font-size:16px;font-family:inherit;outline:none}.send{width:54px;height:48px;border:0;border-radius:14px;background:#111;color:#fff;font-size:21px;cursor:pointer}.send:disabled{opacity:.45;cursor:not-allowed}.hint{width:min(920px,100%);margin:0 auto 5px;color:#777;font-size:11px;padding:0 2px;text-align:center}
+.quick{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.quick button{white-space:nowrap;border:1px solid #ddd;background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;color:#222}.welcome{background:#fff;border-radius:18px;padding:18px;margin:5px 0 16px;box-shadow:0 2px 12px #0000000b}.welcome h2{margin:0 0 8px;font-size:21px}.welcome p{margin:0;color:#666;line-height:1.7}
+@media(max-width:600px){.msg{max-width:90%}.chat{padding-left:10px;padding-right:10px}.title h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="top">
+  <button class="back" onclick="history.length>1?history.back():location.href='index.html'" aria-label="رجوع">←</button>
+  <div class="title"><h1>🤖 المساعد الذكي</h1><small>HA Marketing AI</small></div>
+  <div class="status" id="status">جاهز</div>
+</div>
+
+<main class="chat" id="chat">
+  <section class="welcome">
+    <h2>أهلاً بك 👋</h2>
+    <p>اسألني عن خدمات الموقع، اختيار خدمة مناسبة، التسوق، أو أي سؤال عام. المساعد قد يخطئ أحياناً، لذلك لا تعتمد عليه وحده في القرارات الطبية أو القانونية أو المالية المهمة.</p>
+  </section>
+  <div class="quick">
+    <button onclick="quickAsk('ساعدني أختار الخدمة المناسبة لمشكلة عندي في البيت')">اختيار خدمة</button>
+    <button onclick="quickAsk('اشرح لي شلون أطلب خدمة من الموقع')">طريقة طلب خدمة</button>
+    <button onclick="quickAsk('اشرح لي شلون أطلب تكسي أو مندوب')">تكسي أو مندوب</button>
+    <button onclick="quickAsk('ساعدني باستخدام المتجر والسلة')">التسوق والسلة</button>
+  </div>
+  <div id="messages"></div>
+</main>
+
+<div class="composer">
+  <div class="hint">لا ترسل كلمات مرور أو معلومات حساسة داخل المحادثة.</div>
+  <div class="composer-inner">
+    <textarea id="input" rows="1" maxlength="4000" placeholder="اكتب سؤالك هنا..."></textarea>
+    <button class="send" id="send" onclick="sendMessage()" aria-label="إرسال">➤</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SUPABASE_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const historyMessages=[];
+let busy=false;
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function addMessage(role,text,extra=''){
+  const wrap=document.createElement('div');
+  wrap.className='msg '+(role==='user'?'me':'bot')+(extra?' '+extra:'');
+  wrap.innerHTML=(role==='assistant'?'<div class="name">المساعد الذكي</div>':'')+esc(text);
+  document.getElementById('messages').appendChild(wrap);
+  document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight;
+  return wrap;
+}
+function setBusy(v){busy=v;document.getElementById('send').disabled=v;document.getElementById('status').textContent=v?'يكتب...':'جاهز'}
+function quickAsk(text){document.getElementById('input').value=text;sendMessage()}
+
+async function ensureSession(){
+  const {data:{session}}=await db.auth.getSession();
+  if(session) return session;
+  localStorage.removeItem('ha_logged_in');
+  location.href='login.html';
+  return null;
+}
+
+async function sendMessage(){
+  if(busy)return;
+  const box=document.getElementById('input');
+  const text=box.value.trim();
+  if(!text)return;
+  const session=await ensureSession(); if(!session)return;
+  box.value=''; addMessage('user',text);
+  historyMessages.push({role:'user',content:text});
+  while(historyMessages.length>12)historyMessages.shift();
+  setBusy(true);
+  const typing=addMessage('assistant','جاري التفكير...','typing');
+  try{
+    const r=await fetch(SUPABASE_URL+'/functions/v1/ai-assistant',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
+      body:JSON.stringify({messages:historyMessages})
+    });
+    const data=await r.json().catch(()=>({}));
+    typing.remove();
+    if(!r.ok || !data.ok) throw new Error(data.error||'تعذر الحصول على جواب');
+    const answer=String(data.answer||'ما حصلت جواب. حاول مرة ثانية.');
+    addMessage('assistant',answer);
+    historyMessages.push({role:'assistant',content:answer});
+    while(historyMessages.length>12)historyMessages.shift();
+  }catch(e){
+    typing.remove(); addMessage('assistant','صار خطأ بالاتصال بالمساعد الذكي. حاول مرة ثانية بعد قليل.');
+    console.error(e);
+  }finally{setBusy(false);box.focus()}
+}
+
+document.getElementById('input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}
+});
+ensureSession();
+</script>
+</body>
+</html>
