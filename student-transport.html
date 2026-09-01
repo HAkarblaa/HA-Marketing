@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خطوط نقل الطلاب - HA Marketing</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
+.top{position:sticky;top:0;z-index:1000;background:#000;color:#fff;padding:10px 14px;display:flex;align-items:center;gap:12px}
+.top a{width:44px;height:44px;border-radius:10px;background:#fff;color:#111;text-decoration:none;display:flex;align-items:center;justify-content:center;font-size:23px}
+.top h1{font-size:20px;margin:0;flex:1;text-align:center}
+.wrap{width:min(1050px,94%);margin:20px auto 45px}
+.hero,.panel{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 15px #00000012;margin-bottom:15px}
+.hero{text-align:center}.hero .ico{font-size:52px}.hero h2{margin:6px 0}.hero p{color:#666;line-height:1.7;margin:6px 0}
+.types{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.type{border:0;background:#fff;border-radius:16px;padding:17px 10px;box-shadow:0 3px 12px #00000012;cursor:pointer;text-align:center;min-height:120px}
+.type .ico{font-size:38px}.type strong{display:block;font-size:18px;margin-top:7px}.type.active{outline:3px solid #111}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.btn{border:0;border-radius:11px;padding:12px 15px;font-weight:700;cursor:pointer;background:#111;color:#fff}
+.btn.alt{background:#eee;color:#111}.btn.danger{background:#eee;color:#111}
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px;background:#fff}
+textarea{min-height:80px;resize:vertical}.list{display:grid;gap:12px;margin-top:12px}
+.route-card{background:#fff;border-radius:16px;padding:15px;box-shadow:0 3px 12px #00000010;border:1px solid #eee}
+.route-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.route-top h3{margin:0 0 7px}.badge{background:#f1f1f1;border-radius:20px;padding:6px 9px;font-size:12px;white-space:nowrap}
+.meta{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px;color:#444;font-size:14px}
+.route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.route-actions a,.route-actions button{text-decoration:none;border:0;border-radius:10px;padding:10px 12px;background:#eee;color:#111;font-weight:700;cursor:pointer}
+.empty{text-align:center;color:#777;padding:25px;background:#fff;border-radius:14px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:14px;z-index:2000}.modal.show{display:flex}
+.box{width:min(720px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:18px}.boxhead{display:flex;justify-content:space-between;align-items:center}.boxhead h2{margin:0}.x{width:42px;height:42px;border:0;border-radius:10px;font-size:22px}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:700;margin:6px 0}.help{color:#666;font-size:13px;line-height:1.6}
+#pickMap,#viewMap{height:330px;border-radius:14px;margin-top:10px;overflow:hidden}.mapnote{font-size:13px;color:#666;margin-top:7px}
+.status{margin-top:10px;padding:10px;border-radius:10px;background:#f3f3f3;display:none}.status.show{display:block}
+@media(max-width:650px){.filters,.formgrid,.meta{grid-template-columns:1fr}.types{gap:9px}.type{min-height:110px}.top h1{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="top"><a href="study.html">→</a><h1>🚌 خطوط نقل الطلاب</h1><a href="index.html">🏠</a></div>
+<div class="wrap">
+  <section class="hero">
+    <div class="ico">🚌</div><h2>خطوط المدارس والطلاب</h2>
+    <p>اختر نوع المركبة وشاهد الخطوط المسجلة، منطقة الانطلاق، المدرسة، أوقات الذهاب والعودة، المقاعد والتفاصيل والخريطة.</p>
+  </section>
+
+  <div class="types" id="types">
+    <button class="type active" data-type="taxi"><div class="ico">🚕</div><strong>تكسي</strong></button>
+    <button class="type" data-type="tuktuk"><div class="ico">🛺</div><strong>تكتك</strong></button>
+    <button class="type" data-type="bike"><div class="ico">🏍️</div><strong>دراجة</strong></button>
+    <button class="type" data-type="kia"><div class="ico">🚐</div><strong>سيارة كية</strong></button>
+    <button class="type" data-type="coaster"><div class="ico">🚌</div><strong>كوستر</strong></button>
+  </div>
+
+  <section class="panel">
+    <div class="toolbar">
+      <button class="btn" id="addBtn">➕ تسجيل خط نقل</button>
+      <button class="btn alt" id="locBtn">📍 الأقرب إليّ</button>
+    </div>
+    <div class="filters">
+      <input id="areaFilter" placeholder="ابحث باسم المنطقة">
+      <input id="schoolFilter" placeholder="ابحث باسم المدرسة">
+      <select id="shiftFilter"><option value="">كل الأوقات</option><option>صباحي</option><option>مسائي</option><option>كلاهما</option></select>
+    </div>
+    <div id="list" class="list"></div>
+  </section>
+</div>
+
+<div class="modal" id="addModal"><div class="box">
+  <div class="boxhead"><h2>➕ تسجيل خط نقل</h2><button class="x" id="closeAdd">×</button></div>
+  <p class="help">يضيف السائق بيانات خطه ومركبته. البيانات الحالية تحفظ على هذا الجهاز فقط إلى أن نربط القسم بقاعدة بيانات الموقع.</p>
+  <div class="formgrid">
+    <div><label>اسم السائق</label><input id="driverName"></div>
+    <div><label>رقم الهاتف</label><input id="phone" inputmode="tel" placeholder="07xxxxxxxxx"></div>
+    <div><label>نوع المركبة</label><select id="vehicleType"><option value="taxi">تكسي</option><option value="tuktuk">تكتك</option><option value="bike">دراجة</option><option value="kia">سيارة كية</option><option value="coaster">كوستر</option></select></div>
+    <div><label>لون المركبة</label><input id="vehicleColor"></div>
+    <div><label>رقم المركبة / اللوحة</label><input id="plate"></div>
+    <div><label>عدد المقاعد الكلي</label><input id="seats" type="number" min="1" max="40"></div>
+    <div><label>المقاعد المتوفرة</label><input id="available" type="number" min="0" max="40"></div>
+    <div><label>الدوام</label><select id="shift"><option>صباحي</option><option>مسائي</option><option>كلاهما</option></select></div>
+    <div><label>منطقة الانطلاق</label><input id="fromArea"></div>
+    <div><label>المدرسة / المعهد / الجامعة</label><input id="toSchool"></div>
+    <div><label>وقت أخذ الطلاب</label><input id="pickupTime" type="time"></div>
+    <div><label>وقت العودة</label><input id="returnTime" type="time"></div>
+    <div><label>الأجرة الشهرية (د.ع)</label><input id="price" type="number" min="0" step="1000"></div>
+    <div><label>أيام العمل</label><input id="days" placeholder="مثال: الأحد - الخميس"></div>
+    <div class="full"><label>المناطق/المحطات التي يمر بها الخط</label><textarea id="stops" placeholder="مثال: حي كذا، شارع كذا..."></textarea></div>
+    <div class="full"><label>ملاحظات</label><textarea id="notes"></textarea></div>
+  </div>
+  <div class="panel" style="box-shadow:none;border:1px solid #eee;margin-top:12px">
+    <strong>🗺️ تحديد الخط على الخريطة</strong>
+    <div class="mapnote">اضغط أول مرة لتحديد نقطة الانطلاق، واضغط مرة ثانية لتحديد المدرسة/الوجهة. يمكن إعادة الضغط لتعديل النقطتين.</div>
+    <div id="pickMap"></div>
+    <div class="toolbar"><button class="btn alt" id="resetPoints">إعادة تحديد النقاط</button></div>
+  </div>
+  <button class="btn" id="saveRoute">حفظ الخط</button>
+  <div id="saveStatus" class="status"></div>
+</div></div>
+
+<div class="modal" id="mapModal"><div class="box">
+  <div class="boxhead"><h2 id="mapTitle">🗺️ مسار الخط</h2><button class="x" id="closeMap">×</button></div>
+  <div id="viewMap"></div>
+  <p class="mapnote">الخريطة تعرض نقطتي الانطلاق والوصول بخط تقريبي. مسار الشوارع الفعلي يحتاج خدمة توجيه طرق.</p>
+</div></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const names={taxi:'تكسي',tuktuk:'تكتك',bike:'دراجة',kia:'سيارة كية',coaster:'كوستر'};
+let currentType='taxi',pickMap=null,viewMap=null,pickPoints=[],userPos=null;
+
+function getRoutes(){try{return JSON.parse(localStorage.getItem('ha_student_transport_routes')||'[]')}catch(e){return []}}
+function setRoutes(v){localStorage.setItem('ha_student_transport_routes',JSON.stringify(v))}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function cleanPhone(v){return String(v||'').replace(/\D/g,'')}
+function distKm(a,b){if(!a||!b)return null;const R=6371,toR=x=>x*Math.PI/180,dLat=toR(b[0]-a[0]),dLon=toR(b[1]-a[1]),x=Math.sin(dLat/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+function render(){
+ const area=$('#areaFilter').value.trim().toLowerCase(),school=$('#schoolFilter').value.trim().toLowerCase(),shift=$('#shiftFilter').value;
+ let a=getRoutes().filter(r=>r.type===currentType);
+ if(area)a=a.filter(r=>(r.fromArea+' '+r.stops).toLowerCase().includes(area));
+ if(school)a=a.filter(r=>r.toSchool.toLowerCase().includes(school));
+ if(shift)a=a.filter(r=>r.shift===shift||r.shift==='كلاهما');
+ if(userPos)a.sort((x,y)=>(distKm(userPos,x.start)||9999)-(distKm(userPos,y.start)||9999));
+ const el=$('#list');
+ if(!a.length){el.innerHTML='<div class="empty">لا توجد خطوط '+esc(names[currentType])+' مسجلة حسب الاختيار الحالي.</div>';return}
+ el.innerHTML=a.map(r=>{
+   const d=userPos&&r.start?distKm(userPos,r.start):null;
+   return `<article class="route-card">
+    <div class="route-top"><div><h3>${esc(r.driverName)} — ${esc(names[r.type])}</h3><div>📍 ${esc(r.fromArea)} ← 🏫 ${esc(r.toSchool)}</div></div><span class="badge">${esc(r.shift)}</span></div>
+    <div class="meta">
+      <div>🚘 ${esc(r.vehicleColor||'—')} ${r.plate?'• '+esc(r.plate):''}</div>
+      <div>💺 متوفر ${esc(r.available)} من ${esc(r.seats)}</div>
+      <div>🕒 الذهاب ${esc(r.pickupTime||'—')} | العودة ${esc(r.returnTime||'—')}</div>
+      <div>💰 ${r.price?Number(r.price).toLocaleString('ar-IQ')+' د.ع / شهر':'الأجرة غير محددة'}</div>
+      <div>📅 ${esc(r.days||'الأيام غير محددة')}</div>
+      <div>${d!=null?'📏 يبعد تقريباً '+d.toFixed(1)+' كم عنك':'📍 الموقع غير مقارن'}</div>
+    </div>
+    ${r.stops?'<div style="margin-top:9px">🛣️ المحطات: '+esc(r.stops)+'</div>':''}
+    ${r.notes?'<div style="margin-top:7px;color:#666">📝 '+esc(r.notes)+'</div>':''}
+    <div class="route-actions">
+      ${r.phone?'<a href="tel:'+esc(cleanPhone(r.phone))+'">📞 اتصال</a><a href="https://wa.me/964'+esc(cleanPhone(r.phone).replace(/^0/,''))+'" target="_blank">💬 واتساب</a>':''}
+      ${r.start&&r.end?'<button onclick="showMap('+r.id+')">🗺️ الخريطة</button>':''}
+      <button onclick="removeRoute('+r.id+')">🗑️ حذف من هذا الجهاز</button>
+    </div>
+   </article>`
+ }).join('');
+}
+$$('.type').forEach(b=>b.addEventListener('click',()=>{$$('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentType=b.dataset.type;render()}));
+['areaFilter','schoolFilter'].forEach(id=>$('#'+id).addEventListener('input',render));$('#shiftFilter').addEventListener('change',render);
+
+$('#addBtn').onclick=()=>{ $('#vehicleType').value=currentType; $('#addModal').classList.add('show'); setTimeout(initPickMap,100) }
+$('#closeAdd').onclick=()=>$('#addModal').classList.remove('show');
+$('#closeMap').onclick=()=>$('#mapModal').classList.remove('show');
+$('#resetPoints').onclick=()=>{pickPoints=[];if(pickMap){pickMap.eachLayer(l=>{if(l instanceof L.Marker||l instanceof L.Polyline)pickMap.removeLayer(l)});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(pickMap)}}
+$('#locBtn').onclick=()=>{
+ if(!navigator.geolocation)return alert('المتصفح لا يدعم تحديد الموقع.');
+ navigator.geolocation.getCurrentPosition(p=>{userPos=[p.coords.latitude,p.coords.longitude];render()},()=>alert('تعذر تحديد موقعك أو لم يتم السماح بالموقع.'),{enableHighAccuracy:true,timeout:10000});
+}
+function initPickMap(){
+ if(!window.L){$('#saveStatus').textContent='تعذر تحميل الخريطة. تحقق من الإنترنت.';$('#saveStatus').className='status show';return}
+ if(!pickMap){
+  pickMap=L.map('pickMap').setView([33.3152,44.3661],6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(pickMap);
+  pickMap.on('click',e=>{
+    if(pickPoints.length>=2){pickPoints=[];pickMap.eachLayer(l=>{if(l instanceof L.Marker||l instanceof L.Polyline)pickMap.removeLayer(l)});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(pickMap)}
+    pickPoints.push([e.latlng.lat,e.latlng.lng]);
+    L.marker(e.latlng).addTo(pickMap).bindPopup(pickPoints.length===1?'نقطة الانطلاق':'المدرسة / الوجهة').openPopup();
+    if(pickPoints.length===2)L.polyline(pickPoints).addTo(pickMap);
+  });
+ } else pickMap.invalidateSize();
+}
+$('#saveRoute').onclick=()=>{
+ const driverName=$('#driverName').value.trim(),phone=$('#phone').value.trim(),fromArea=$('#fromArea').value.trim(),toSchool=$('#toSchool').value.trim(),seats=Number($('#seats').value),available=Number($('#available').value);
+ if(!driverName||!phone||!fromArea||!toSchool||!seats)return showSave('أكمل اسم السائق والهاتف والمنطقة والمدرسة وعدد المقاعد.');
+ if(available<0||available>seats)return showSave('عدد المقاعد المتوفرة يجب أن يكون بين 0 وعدد المقاعد الكلي.');
+ if(pickPoints.length!==2)return showSave('حدد نقطتي الانطلاق والمدرسة على الخريطة.');
+ const r={id:Date.now(),driverName,phone,type:$('#vehicleType').value,vehicleColor:$('#vehicleColor').value.trim(),plate:$('#plate').value.trim(),seats,available,shift:$('#shift').value,fromArea,toSchool,pickupTime:$('#pickupTime').value,returnTime:$('#returnTime').value,price:Number($('#price').value)||0,days:$('#days').value.trim(),stops:$('#stops').value.trim(),notes:$('#notes').value.trim(),start:pickPoints[0],end:pickPoints[1]};
+ const a=getRoutes();a.push(r);setRoutes(a);currentType=r.type;$$('.type').forEach(x=>x.classList.toggle('active',x.dataset.type===currentType));showSave('تم حفظ خط النقل على هذا الجهاز.');render();
+}
+function showSave(t){const s=$('#saveStatus');s.textContent=t;s.className='status show'}
+function removeRoute(id){if(!confirm('حذف هذا الخط من هذا الجهاز؟'))return;setRoutes(getRoutes().filter(r=>r.id!==id));render()}
+function showMap(id){
+ const r=getRoutes().find(x=>x.id===id);if(!r||!r.start||!r.end)return;
+ $('#mapModal').classList.add('show');$('#mapTitle').textContent='🗺️ '+r.fromArea+' ← '+r.toSchool;
+ setTimeout(()=>{
+  if(viewMap){viewMap.remove();viewMap=null}
+  viewMap=L.map('viewMap');L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(viewMap);
+  L.marker(r.start).addTo(viewMap).bindPopup('الانطلاق: '+r.fromArea);L.marker(r.end).addTo(viewMap).bindPopup('الوجهة: '+r.toSchool);
+  L.polyline([r.start,r.end]).addTo(viewMap);viewMap.fitBounds([r.start,r.end],{padding:[35,35]});
+ },100);
+}
+render();
+</script>
+</body>
+</html>
