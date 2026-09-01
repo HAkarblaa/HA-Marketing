@@ -177,7 +177,23 @@ function show(m){
   messages.scrollTop=messages.scrollHeight;
 }
 function subscribe(){if(ch)db.removeChannel(ch);ch=db.channel('r-'+room+'-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+room},p=>show(p.new)).subscribe()}
-async function sendMessage(){let u=username.value.trim(),m=input.value.trim();if(!u){alert('اكتب اسمك أولاً');return}if(!m)return;let {error}=await db.from('messages').insert({username:u,room,message:m,message_type:'text',file_url:null});if(error)alert(error.message);else input.value=''}
+async function currentChatUser(){
+  const {data,error}=await db.auth.getUser();
+  if(error||!data?.user)return null;
+  return data.user;
+}
+async function sendMessage(){
+  const user=await currentChatUser();
+  if(!user){alert('سجّل الدخول أولاً حتى ترسل رسالة');location.href='login.html';return}
+  let u=username.value.trim(),m=input.value.trim();
+  if(!u){
+    const {data:p}=await db.from('profiles').select('full_name,username').eq('id',user.id).maybeSingle();
+    u=p?.full_name||p?.username||'مستخدم'; username.value=u;
+  }
+  if(!m)return;
+  let {error}=await db.from('messages').insert({user_id:user.id,username:u,room,message:m,message_type:'text',file_url:null});
+  if(error)alert(error.message);else input.value='';
+}
 
 // ===== الرسائل الصوتية داخل الدردشة =====
 let voiceRecorder=null,voiceStream=null,voiceChunks=[],voiceStartedAt=0,voiceTimer=null;
@@ -285,17 +301,26 @@ async function finishVoiceRecord(send){
   }
 
   try{
-    const dataUrl=await blobToDataUrl(blob);
-    const u=username.value.trim();
-
+    const user=await currentChatUser();
+    if(!user)throw new Error('يجب تسجيل الدخول');
+    let u=username.value.trim();
+    if(!u){
+      const {data:p}=await db.from('profiles').select('full_name,username').eq('id',user.id).maybeSingle();
+      u=p?.full_name||p?.username||'مستخدم'; username.value=u;
+    }
+    const ext=(blob.type||'audio/webm').includes('ogg')?'ogg':'webm';
+    const path=user.id+'/'+Date.now()+'.'+ext;
+    const {error:upErr}=await db.storage.from('chat-media').upload(path,blob,{contentType:blob.type||'audio/webm',upsert:false});
+    if(upErr)throw upErr;
+    const {data:pub}=db.storage.from('chat-media').getPublicUrl(path);
     const {error}=await db.from('messages').insert({
+      user_id:user.id,
       username:u,
       room,
       message:'🎤 '+duration+' ث',
       message_type:'voice',
-      file_url:dataUrl
+      file_url:pub.publicUrl
     });
-
     if(error)throw error;
     voiceStatus.classList.remove('show');
   }catch(e){
