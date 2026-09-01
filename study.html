@@ -123,6 +123,21 @@ body{
   text-align:center;
 }
 
+
+.student-tools{display:none;width:min(960px,94%);margin:18px auto 42px}
+.student-tools.show{display:block}
+.formbox{background:#fff;border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.formrow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.formbox input,.formbox select,.formbox textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px;margin:5px 0}
+.formbox textarea{min-height:80px;resize:vertical}
+.savebtn,.delbtn{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}
+.savebtn{background:#111;color:#fff}.delbtn{background:#eee;color:#111}
+.items{display:grid;gap:9px;margin-top:12px}
+.item{background:#fafafa;border:1px solid #eee;border-radius:12px;padding:12px}
+.itemhead{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.empty{color:#777;text-align:center;padding:15px}
+@media(max-width:600px){.formrow{grid-template-columns:1fr}}
+
 @media(max-width:600px){
   .grid{gap:11px}
   .card{min-height:145px;padding:18px 10px}
@@ -205,17 +220,34 @@ body{
     <button class="close-panel" type="button" onclick="closePanel()">×</button>
   </div>
   <div class="subgrid">
-    <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
-    <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
-    <div class="subcard"><div class="subicon">📘</div><strong>متوسط</strong></div>
-    <div class="subcard"><div class="subicon">📗</div><strong>إعدادي</strong></div>
-    <div class="subcard"><div class="subicon">⭐</div><strong>متميزين</strong></div>
-    <div class="subcard"><div class="subicon">📝</div><strong>خارجي</strong></div>
-    <div class="subcard"><div class="subicon">📜</div><strong>دبلوم</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>بكالوريوس</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>ماجستير</strong></div>
-    <div class="subcard"><div class="subicon">🏅</div><strong>دكتوراه</strong></div>
+    <button class="subcard" type="button" onclick="openStudentStage('kindergarten','روضة')"><div class="subicon">🧸</div><strong>روضة</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('primary','ابتدائي')"><div class="subicon">✏️</div><strong>ابتدائي</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('middle','متوسط')"><div class="subicon">📘</div><strong>متوسط</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('secondary','إعدادي')"><div class="subicon">📗</div><strong>إعدادي</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('distinguished','متميزين')"><div class="subicon">⭐</div><strong>متميزين</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('external','خارجي')"><div class="subicon">📝</div><strong>خارجي</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('diploma','دبلوم')"><div class="subicon">📜</div><strong>دبلوم</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('bachelor','بكالوريوس')"><div class="subicon">🎓</div><strong>بكالوريوس</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('master','ماجستير')"><div class="subicon">🎓</div><strong>ماجستير</strong></button>
+    <button class="subcard" type="button" onclick="openStudentStage('phd','دكتوراه')"><div class="subicon">🏅</div><strong>دكتوراه</strong></button>
   </div>
+</section>
+
+
+<section class="student-tools" id="studentStage">
+  <div class="panel-head">
+    <h2 id="stageTitle">👨‍🎓 الطالب</h2>
+    <button class="close-panel" type="button" onclick="closeStudentStage()">×</button>
+  </div>
+  <div class="subgrid">
+    <button class="subcard" onclick="openStudentTool('chat')"><div class="subicon">💬</div><strong>دردشة المرحلة</strong></button>
+    <button class="subcard" onclick="openStudentTool('exams')"><div class="subicon">📅</div><strong>جدول الامتحانات</strong></button>
+    <button class="subcard" onclick="openStudentTool('weekly')"><div class="subicon">📚</div><strong>جدول الدروس الأسبوعي</strong></button>
+    <button class="subcard" onclick="openStudentTool('news')"><div class="subicon">📰</div><strong>أخبار المرحلة</strong></button>
+    <button class="subcard" onclick="openStudentTool('alerts')"><div class="subicon">🔔</div><strong>التنبيهات</strong></button>
+    <button class="subcard" onclick="openStudentTool('subjects')"><div class="subicon">📖</div><strong>المواد الدراسية</strong></button>
+  </div>
+  <div id="studentToolBox"></div>
 </section>
 
 <section class="panel" id="quick">
@@ -233,6 +265,77 @@ body{
 <script>
 let currentPanel = null;
 
+let currentStageKey='', currentStageName='';
+
+function openStudentStage(key,name){
+  document.getElementById('students').classList.remove('show');
+  currentStageKey=key; currentStageName=name;
+  document.getElementById('stageTitle').textContent='👨‍🎓 '+name;
+  document.getElementById('studentToolBox').innerHTML='';
+  document.getElementById('studentStage').classList.add('show');
+  currentPanel='studentStage';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeStudentStage(){
+  document.getElementById('studentStage').classList.remove('show');
+  document.getElementById('studentToolBox').innerHTML='';
+  document.getElementById('students').classList.add('show');
+  currentPanel='students';
+}
+function studentKey(type){return 'ha_study_'+currentStageKey+'_'+type}
+function getStudentData(type){try{return JSON.parse(localStorage.getItem(studentKey(type))||'[]')}catch(e){return []}}
+function setStudentData(type,data){localStorage.setItem(studentKey(type),JSON.stringify(data))}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function openStudentTool(type){
+ const b=document.getElementById('studentToolBox');
+ if(type==='exams'){
+  b.innerHTML=`<div class="formbox"><h3>📅 جدول امتحانات ${esc(currentStageName)}</h3>
+  <div class="formrow"><input id="examSubject" placeholder="اسم المادة"><input id="examDate" type="date"></div>
+  <div class="formrow"><input id="examTime" type="time"><input id="examNote" placeholder="ملاحظة"></div>
+  <button class="savebtn" onclick="addExam()">إضافة الموعد</button><div class="items" id="examItems"></div></div>`; renderExams();
+ } else if(type==='weekly'){
+  b.innerHTML=`<div class="formbox"><h3>📚 جدول الدروس الأسبوعي - ${esc(currentStageName)}</h3>
+  <div class="formrow"><select id="lessonDay"><option>السبت</option><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option></select><input id="lessonSubject" placeholder="اسم المادة"></div>
+  <div class="formrow"><input id="lessonFrom" type="time"><input id="lessonTo" type="time"></div>
+  <input id="lessonNote" placeholder="اسم المدرس أو ملاحظة">
+  <button class="savebtn" onclick="addLesson()">إضافة الدرس</button><div class="items" id="lessonItems"></div></div>`; renderLessons();
+ } else if(type==='alerts'){
+  b.innerHTML=`<div class="formbox"><h3>🔔 تنبيهات ${esc(currentStageName)}</h3><p>تقدر تفعل تنبيهات مواعيد الامتحانات المحفوظة على هذا الجهاز.</p><button class="savebtn" onclick="enableStudyAlerts()">تفعيل التنبيهات</button><div id="alertStatus" class="note" style="margin-top:12px"></div></div>`;
+ } else if(type==='chat'){
+  b.innerHTML=`<div class="formbox"><h3>💬 دردشة ${esc(currentStageName)}</h3><div class="note">الدردشة ستكون خاصة بهذه المرحلة. تحتاج ربطها بقاعدة البيانات وحسابات الطلاب حتى تكون دردشة حقيقية وآمنة؛ لم أضع رسائل وهمية.</div></div>`;
+ } else if(type==='news'){
+  b.innerHTML=`<div class="formbox"><h3>📰 أخبار ${esc(currentStageName)}</h3><div class="note">هذا القسم مخصص لأخبار هذه المرحلة. يحتاج مصدر أخبار/إدارة حقيقية قبل نشر الأخبار.</div></div>`;
+ } else {
+  b.innerHTML=`<div class="formbox"><h3>📖 المواد الدراسية - ${esc(currentStageName)}</h3><div class="note">مكان مخصص لمواد المرحلة وملفاتها الدراسية. لا توجد مواد وهمية مضافة.</div></div>`;
+ }
+}
+function addExam(){
+ const subject=document.getElementById('examSubject').value.trim(),date=document.getElementById('examDate').value,time=document.getElementById('examTime').value,note=document.getElementById('examNote').value.trim();
+ if(!subject||!date)return alert('اكتب اسم المادة وتاريخ الامتحان.');
+ const a=getStudentData('exams');a.push({id:Date.now(),subject,date,time,note});a.sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));setStudentData('exams',a);renderExams();
+}
+function renderExams(){
+ const el=document.getElementById('examItems');if(!el)return;const a=getStudentData('exams');
+ el.innerHTML=a.length?a.map(x=>`<div class="item"><div class="itemhead"><strong>${esc(x.subject)}</strong><button class="delbtn" onclick="removeStudentItem('exams',${x.id},renderExams)">حذف</button></div><div>📅 ${esc(x.date)} ${x.time?'⏰ '+esc(x.time):''}</div>${x.note?'<div>📝 '+esc(x.note)+'</div>':''}</div>`).join(''):'<div class="empty">لا توجد امتحانات مضافة.</div>';
+}
+function addLesson(){
+ const day=document.getElementById('lessonDay').value,subject=document.getElementById('lessonSubject').value.trim(),from=document.getElementById('lessonFrom').value,to=document.getElementById('lessonTo').value,note=document.getElementById('lessonNote').value.trim();
+ if(!subject)return alert('اكتب اسم المادة.');
+ const a=getStudentData('weekly');a.push({id:Date.now(),day,subject,from,to,note});setStudentData('weekly',a);renderLessons();
+}
+function renderLessons(){
+ const el=document.getElementById('lessonItems');if(!el)return;const a=getStudentData('weekly');
+ el.innerHTML=a.length?a.map(x=>`<div class="item"><div class="itemhead"><strong>${esc(x.day)} - ${esc(x.subject)}</strong><button class="delbtn" onclick="removeStudentItem('weekly',${x.id},renderLessons)">حذف</button></div><div>${x.from?'⏰ '+esc(x.from):''}${x.to?' - '+esc(x.to):''}</div>${x.note?'<div>📝 '+esc(x.note)+'</div>':''}</div>`).join(''):'<div class="empty">لا توجد دروس مضافة.</div>';
+}
+function removeStudentItem(type,id,render){setStudentData(type,getStudentData(type).filter(x=>x.id!==id));render()}
+async function enableStudyAlerts(){
+ const st=document.getElementById('alertStatus');
+ if(!('Notification' in window)){st.textContent='هذا المتصفح لا يدعم إشعارات الويب.';return}
+ try{const r=await Notification.requestPermission();st.textContent=r==='granted'?'تم السماح بالإشعارات على هذا الجهاز. مواعيدك محفوظة، والربط التلقائي بالخلفية يحتاج نظام الإشعارات الموجود بالموقع.':'لم يتم السماح بالإشعارات.'}catch(e){st.textContent='تعذر طلب إذن الإشعارات.'}
+}
+
+
 function openPanel(id){
   document.getElementById('mainGrid').style.display = 'none';
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
@@ -244,13 +347,17 @@ function openPanel(id){
 }
 
 function closePanel(){
+  document.getElementById('studentStage').classList.remove('show');
+  document.getElementById('studentToolBox').innerHTML='';
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
   document.getElementById('mainGrid').style.display = 'grid';
   currentPanel = null;
 }
 
 function goBack(){
-  if(currentPanel){
+  if(currentPanel==='studentStage'){
+    closeStudentStage();
+  }else if(currentPanel){
     closePanel();
   }else{
     location.href = 'index.html';
