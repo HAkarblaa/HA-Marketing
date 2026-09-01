@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إدارة خطوط نقل الطلاب - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f5f5;color:#111;font-family:Arial,Tahoma,sans-serif}
+.topbar{
+  position:sticky;top:0;z-index:50;background:#000;color:#fff;
+  min-height:64px;padding:10px 14px;display:flex;align-items:center;gap:12px
+}
+.topbar a{
+  width:44px;height:44px;border-radius:10px;background:#fff;color:#111;
+  text-decoration:none;display:flex;align-items:center;justify-content:center;font-size:22px
+}
+.topbar h1{font-size:18px;margin:0;flex:1;text-align:center}
+.wrap{width:min(980px,94%);margin:22px auto 50px}
+.card{
+  background:#fff;border-radius:16px;padding:17px;margin:13px 0;
+  box-shadow:0 4px 16px #0000000d
+}
+.info{text-align:center;line-height:1.8}
+.badge{display:inline-block;border-radius:999px;padding:5px 10px;background:#eee;font-size:13px;font-weight:700}
+.approved{background:#def3e3;color:#12612a}
+.pending{background:#fff1c8;color:#7a5700}
+.rejected{background:#fde1e5;color:#8c1830}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+button,a.btn{
+  border:0;border-radius:10px;padding:11px 13px;cursor:pointer;
+  text-decoration:none;font-size:14px;text-align:center
+}
+.primary{background:#111;color:#fff}.light{background:#eee;color:#111}
+.route{border:1px solid #ddd;border-radius:14px;padding:14px;margin-top:12px}
+.route h3{margin:0 0 8px}.meta{color:#555;font-size:14px;line-height:1.9}
+.apps{margin-top:12px;display:grid;gap:9px}
+.app{
+  background:#f8f8f8;border:1px solid #e6e6e6;border-radius:12px;padding:12px
+}
+.app strong{display:block;margin-bottom:5px}.empty{text-align:center;color:#777;padding:22px}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}
+.stat{background:#f4f4f4;border-radius:12px;padding:12px;text-align:center}
+.stat b{font-size:22px;display:block}
+select,input{padding:10px;border:1px solid #ccc;border-radius:9px;background:#fff;font-size:14px}
+select{min-width:150px}
+#pageStatus{margin-bottom:14px}
+@media(max-width:650px){
+  .statgrid{grid-template-columns:1fr}
+  .actions button,.actions a{flex:1 1 45%}
+  .topbar h1{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="account.html" aria-label="رجوع">→</a>
+  <h1>🚌 إدارة خطوط نقل الطلاب</h1>
+  <a href="index.html" aria-label="الرئيسية">🏠</a>
+</div>
+
+<main class="wrap">
+  <div id="pageStatus" class="card info">جاري التحقق من حساب الموظف...</div>
+
+  <section id="content" style="display:none">
+    <div class="card">
+      <div class="row">
+        <div>
+          <strong>خطوط النقل الخاصة بك</strong>
+          <div style="color:#666;font-size:13px;margin-top:5px">تسجيل الخط متاح فقط لحساب الموظف المفعّل.</div>
+        </div>
+        <a class="btn primary" href="student-transport.html">➕ تسجيل خط جديد</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <strong>ملخص الطلبات</strong>
+        <button class="light" onclick="loadAll()">🔄 تحديث</button>
+      </div>
+      <div class="statgrid">
+        <div class="stat"><b id="routesCount">0</b>الخطوط</div>
+        <div class="stat"><b id="pendingCount">0</b>طلبات جديدة</div>
+        <div class="stat"><b id="acceptedCount">0</b>طلاب مقبولون</div>
+      </div>
+    </div>
+
+    <div id="routesBox"></div>
+  </section>
+</main>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll'
+);
+
+const $=id=>document.getElementById(id);
+let me=null,profile=null,routes=[],applications=[];
+
+const vehicleNames={
+  taxi:'تكسي',
+  tuktuk:'تكتك',
+  kia:'سيارة كية',
+  coaster:'كوستر'
+};
+
+const statusNames={
+  pending:'قيد الانتظار',
+  accepted:'مقبول',
+  rejected:'مرفوض',
+  cancelled:'ملغي'
+};
+
+function esc(v){
+  return String(v??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[c]));
+}
+
+function statusClass(s){
+  if(s==='accepted') return 'approved';
+  if(s==='rejected'||s==='cancelled') return 'rejected';
+  return 'pending';
+}
+
+async function init(){
+  const {data,error}=await db.auth.getUser();
+  me=data?.user||null;
+
+  if(error || !me){
+    $('pageStatus').innerHTML=
+      'يجب تسجيل الدخول بحساب موظف.<br><a class="btn primary" href="login.html">تسجيل الدخول</a>';
+    return;
+  }
+
+  const {data:p,error:pe}=await db
+    .from('profiles')
+    .select('*')
+    .eq('id',me.id)
+    .maybeSingle();
+
+  if(pe || !p){
+    $('pageStatus').textContent='تعذر العثور على بيانات الحساب.';
+    return;
+  }
+
+  profile=p;
+
+  if(profile.account_type!=='employee'){
+    $('pageStatus').textContent='هذه الصفحة مخصصة لحسابات الموظفين فقط.';
+    return;
+  }
+
+  if(profile.employee_status!=='approved'){
+    const label=profile.employee_status==='rejected'?'مرفوض':'قيد المراجعة';
+    $('pageStatus').innerHTML=
+      'حالة حساب الموظف: <span class="badge '+(profile.employee_status==='rejected'?'rejected':'pending')+'">'+label+'</span><br>'+
+      'لا يمكن إدارة خطوط النقل قبل موافقة الإدارة.';
+    return;
+  }
+
+  $('pageStatus').innerHTML=
+    '<strong>'+esc(profile.full_name||profile.username||'الموظف')+'</strong><br>'+
+    'الحالة: <span class="badge approved">مفعّل</span>';
+
+  $('content').style.display='block';
+  await loadAll();
+}
+
+async function loadAll(){
+  $('routesBox').innerHTML='<div class="card empty">جاري تحميل الخطوط والطلبات...</div>';
+
+  const {data:r,error:re}=await db
+    .from('student_transport_routes')
+    .select('*')
+    .eq('employee_id',me.id)
+    .order('created_at',{ascending:false});
+
+  if(re){
+    $('routesBox').innerHTML='<div class="card empty">تعذر تحميل الخطوط: '+esc(re.message)+'</div>';
+    return;
+  }
+
+  routes=r||[];
+
+  if(!routes.length){
+    applications=[];
+    updateStats();
+    $('routesBox').innerHTML=
+      '<div class="card empty">ما عندك أي خط مسجل حالياً.<br><br>'+
+      '<a class="btn primary" href="student-transport.html">تسجيل أول خط</a></div>';
+    return;
+  }
+
+  const ids=routes.map(x=>x.id);
+
+  const {data:a,error:ae}=await db
+    .from('student_transport_applications')
+    .select('*')
+    .in('route_id',ids)
+    .order('created_at',{ascending:false});
+
+  if(ae){
+    applications=[];
+    $('routesBox').innerHTML='<div class="card empty">تعذر تحميل طلبات الطلاب: '+esc(ae.message)+'</div>';
+    return;
+  }
+
+  applications=a||[];
+  updateStats();
+  renderRoutes();
+}
+
+function updateStats(){
+  $('routesCount').textContent=routes.length;
+  $('pendingCount').textContent=applications.filter(a=>a.status==='pending').length;
+  $('acceptedCount').textContent=applications.filter(a=>a.status==='accepted').length;
+}
+
+function renderRoutes(){
+  $('routesBox').innerHTML=routes.map(r=>{
+    const apps=applications.filter(a=>a.route_id===r.id);
+    const pending=apps.filter(a=>a.status==='pending').length;
+    const accepted=apps.filter(a=>a.status==='accepted').length;
+
+    return `<section class="card">
+      <div class="route">
+        <div class="row">
+          <div>
+            <h3>${esc(vehicleNames[r.vehicle_type]||r.vehicle_type)} — ${esc(r.from_area)} ← ${esc(r.school_name)}</h3>
+            <div class="meta">
+              🚘 ${esc(r.vehicle_model||'')} ${r.vehicle_color?'• '+esc(r.vehicle_color):''} ${r.plate_number?'• '+esc(r.plate_number):''}<br>
+              💺 المتوفر: ${esc(r.available_seats)} من ${esc(r.total_seats)}<br>
+              🕒 الذهاب: ${esc(r.pickup_time||'—')} | العودة: ${esc(r.return_time||'—')}<br>
+              💰 ${r.monthly_price?Number(r.monthly_price).toLocaleString('ar-IQ')+' د.ع / شهر':'الأجرة غير محددة'}<br>
+              📅 ${esc(r.work_days||'الأيام غير محددة')}<br>
+              ${r.stops?'🛣️ '+esc(r.stops)+'<br>':''}
+              الحالة: <span class="badge ${r.is_active?'approved':'rejected'}">${r.is_active?'نشط':'متوقف'}</span>
+            </div>
+          </div>
+          <div>
+            <span class="badge pending">${pending} جديد</span>
+            <span class="badge approved">${accepted} مقبول</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="light" onclick="toggleRoute('${r.id}',${r.is_active})">${r.is_active?'⏸️ إيقاف الخط':'▶️ تفعيل الخط'}</button>
+          <button class="light" onclick="changeSeats('${r.id}',${Number(r.available_seats)},${Number(r.total_seats)})">💺 تعديل المقاعد</button>
+        </div>
+
+        <div class="apps">
+          ${apps.length?apps.map(a=>renderApplication(a)).join(''):'<div class="empty">لا توجد طلبات على هذا الخط.</div>'}
+        </div>
+      </div>
+    </section>`;
+  }).join('');
+}
+
+function renderApplication(a){
+  return `<article class="app">
+    <div class="row">
+      <div>
+        <strong>🎓 ${esc(a.student_name)}</strong>
+        <div class="meta">
+          📱 ${esc(a.phone)}<br>
+          ${a.study_stage?'📚 المرحلة: '+esc(a.study_stage)+'<br>':''}
+          📍 المنطقة: ${esc(a.area)}
+          ${a.pickup_address?'<br>🚏 نقطة الاستلام: '+esc(a.pickup_address):''}
+          ${a.notes?'<br>📝 '+esc(a.notes):''}
+        </div>
+      </div>
+      <span class="badge ${statusClass(a.status)}">${esc(statusNames[a.status]||a.status)}</span>
+    </div>
+
+    ${a.status==='pending'?`
+    <div class="actions">
+      <button class="primary" onclick="updateApplication('${a.id}','accepted','${a.route_id}')">✅ قبول</button>
+      <button class="light" onclick="updateApplication('${a.id}','rejected','${a.route_id}')">❌ رفض</button>
+    </div>`:''}
+  </article>`;
+}
+
+async function updateApplication(appId,newStatus,routeId){
+  const app=applications.find(x=>x.id===appId);
+  const route=routes.find(x=>x.id===routeId);
+  if(!app||!route) return;
+
+  if(newStatus==='accepted' && Number(route.available_seats)<=0){
+    alert('لا توجد مقاعد متوفرة بهذا الخط.');
+    return;
+  }
+
+  const label=newStatus==='accepted'?'قبول الطالب':'رفض الطالب';
+  if(!confirm('تأكيد '+label+'؟')) return;
+
+  const {error}=await db
+    .from('student_transport_applications')
+    .update({status:newStatus})
+    .eq('id',appId);
+
+  if(error){
+    alert('تعذر تحديث الطلب: '+error.message);
+    return;
+  }
+
+  if(newStatus==='accepted'){
+    const newAvailable=Math.max(0,Number(route.available_seats)-1);
+    const {error:se}=await db
+      .from('student_transport_routes')
+      .update({available_seats:newAvailable})
+      .eq('id',routeId);
+
+    if(se){
+      alert('تم قبول الطالب، لكن تعذر تحديث عدد المقاعد: '+se.message);
+    }
+  }
+
+  await loadAll();
+}
+
+async function toggleRoute(id,isActive){
+  const text=isActive?'إيقاف الخط مؤقتاً؟':'إعادة تفعيل الخط؟';
+  if(!confirm(text)) return;
+
+  const {error}=await db
+    .from('student_transport_routes')
+    .update({is_active:!isActive})
+    .eq('id',id);
+
+  if(error){
+    alert('تعذر تحديث حالة الخط: '+error.message);
+    return;
+  }
+
+  await loadAll();
+}
+
+async function changeSeats(id,current,total){
+  const value=prompt('عدد المقاعد المتوفرة حالياً (من 0 إلى '+total+'):',String(current));
+  if(value===null) return;
+
+  const n=Number(value);
+  if(!Number.isInteger(n)||n<0||n>Number(total)){
+    alert('أدخل رقماً صحيحاً من 0 إلى '+total);
+    return;
+  }
+
+  const {error}=await db
+    .from('student_transport_routes')
+    .update({available_seats:n})
+    .eq('id',id);
+
+  if(error){
+    alert('تعذر تعديل المقاعد: '+error.message);
+    return;
+  }
+
+  await loadAll();
+}
+
+init();
+</script>
+</body>
+</html>
