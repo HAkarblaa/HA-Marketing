@@ -1,0 +1,22 @@
+HA Marketing — consolidated final package
+
+Included in this site package:
+1) Accounts/auth/profile flow already built with Supabase.
+2) Real service orders, employee workflow, location sharing/tracking and ratings.
+3) In-app notifications + Firebase Web Push wiring and service worker.
+4) Real shop catalog/cart/orders/admin flow. Payment remains cash-on-delivery until a real payment merchant/provider is connected.
+5) Chat rooms use Supabase Realtime; text, short voice messages, and WebRTC calling UI are included. FINAL-ALL-REMAINING.sql tightens authenticated chat access and creates chat-media storage for future media migration.
+6) Taxi/tuktuk/delivery pages use the configured Firebase Realtime Database and browser GPS/Leaflet routing. Production security still depends on Firebase Realtime Database Rules in the Firebase project; never use open test-mode rules in production.
+7) News pages fetch current feeds through external RSS bridges; currency/gold pages fetch external live sources. Availability/accuracy depends on those third-party sources.
+8) Admin pages manage employee approval, service orders, and shop administration.
+9) Password recovery cannot be securely automated by phone while accounts use synthetic @ha.local email unless a verified SMS/WhatsApp provider is connected. A real provider is intentionally not faked.
+10) Religious/entertainment pages are preserved in this consolidated package.
+
+Already executed previously in Supabase: service orders, notification/admin update, push setup.
+SHOP-FINAL.sql must be executed if it has not already been run.
+FINAL-ALL-REMAINING.sql contains the remaining safe Supabase setup for chat/storage/reset-request groundwork.
+
+External prerequisites that cannot be truthfully bundled as code-only features:
+- Electronic payment: merchant account/API credentials from a payment provider.
+- Automatic phone password reset: verified SMS/WhatsApp provider and server-side verification flow.
+- Firebase Realtime Database production rules must be configured in Firebase for transport data.
