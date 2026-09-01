@@ -1,0 +1,13 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rides": {
+      ".read": true,
+      "$rideId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['status','createdAt']) && newData.child('status').isString()"
+      }
+    }
+  }
+}

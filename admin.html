@@ -2,11 +2,31 @@
 async function loadResets(){
  const {data,error}=await db.from('password_reset_requests').select('id,phone,status,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){resetsBox.textContent=error.message;return}
- resetsBox.innerHTML=(data||[]).map(r=>`<div class="card"><div class="row"><strong>#${r.id} — ${esc(r.phone)}</strong><span class="badge">${esc(r.status)}</span></div><div class="muted">${esc(new Date(r.created_at).toLocaleString('ar-IQ'))}</div><div class="row" style="margin-top:10px"><button class="ok" onclick="setReset(${r.id},'verified')">تم التحقق</button><button class="bad" onclick="setReset(${r.id},'rejected')">رفض</button><button class="light" onclick="setReset(${r.id},'completed')">مكتمل</button></div></div>`).join('')||'<div class="card">لا توجد طلبات استرجاع.</div>';
+ resetsBox.innerHTML=(data||[]).map(r=>`<div class="card"><div class="row"><strong>#${r.id} — ${esc(r.phone)}</strong><span class="badge">${esc(r.status)}</span></div><div class="muted">${esc(new Date(r.created_at).toLocaleString('ar-IQ'))}</div><div class="row" style="margin-top:10px"><button class="ok" onclick="setReset(${r.id},'verified')">تم التحقق</button><button class="ok" onclick="adminResetPassword(${r.id})">تعيين كلمة مرور مؤقتة</button><button class="bad" onclick="setReset(${r.id},'rejected')">رفض</button><button class="light" onclick="setReset(${r.id},'completed')">مكتمل</button></div></div>`).join('')||'<div class="card">لا توجد طلبات استرجاع.</div>';
 }
 async function setReset(id,status){const {error}=await db.rpc('admin_set_password_reset_status',{p_request_id:id,p_status:status});if(error)alert(error.message);else loadResets()}
 </script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5}.wrap{width:95%;max-width:1000px;margin:22px auto}.card{background:#fff;border-radius:15px;padding:16px;margin:12px 0;box-shadow:0 4px 15px #0001}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.muted{color:#666;font-size:14px;line-height:1.7}.badge{background:#eee;padding:5px 9px;border-radius:999px}button,a{border:0;border-radius:9px;padding:10px 12px;cursor:pointer;text-decoration:none}.ok{background:#111;color:#fff}.bad{background:#a90020;color:#fff}.light{background:#eee;color:#111}.tabs{display:flex;gap:8px;flex-wrap:wrap}.section{display:none}.section.on{display:block}</style></head><body><div class="wrap"><h1>🛡️ لوحة الإدارة</h1><div id="gate" class="card">جاري التحقق من الصلاحية...</div><div id="panel" style="display:none"><div class="card tabs"><button class="ok" onclick="show('employees')">الموظفون</button><button class="light" onclick="show('orders')">الطلبات</button><button class="light" onclick="show('resets')">استرجاع الحساب</button><a class="light" href="admin-shop.html">المتجر</a></div><section id="employees" class="section on"><h2>طلبات الموظفين</h2><div id="employeesBox"></div></section><section id="orders" class="section"><h2>كل الطلبات</h2><div id="ordersBox"></div></section><section id="resets" class="section"><h2>طلبات استرجاع الحساب</h2><div id="resetsBox"></div></section></div><a class="light" style="display:block;text-align:center;margin-top:15px" href="index.html">← الرئيسية</a></div><script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let me=null;function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function show(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on')}
+
+async function adminResetPassword(id){
+  const pwd=prompt('اكتب كلمة مرور مؤقتة جديدة (8 أحرف على الأقل):');
+  if(!pwd)return;
+  if(pwd.length<8){alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل');return}
+  const {data:sess}=await db.auth.getSession();
+  const token=sess?.session?.access_token;
+  if(!token){alert('انتهت جلسة الدخول. سجل الدخول من جديد.');return}
+  try{
+    const r=await fetch('https://ubayrhtshgtgggxprrek.supabase.co/functions/v1/admin-reset-password',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({request_id:id,new_password:pwd})
+    });
+    const j=await r.json();
+    if(!r.ok||!j.ok)throw new Error(j.error||'تعذر تغيير كلمة المرور');
+    alert('تم تغيير كلمة المرور وإكمال الطلب. أعطِ المستخدم كلمة المرور المؤقتة عبر وسيلة تحقق موثوقة.');
+    loadResets();
+  }catch(e){alert(e.message||String(e))}
+}
+
 async function init(){const {data}=await db.auth.getUser();me=data?.user||null;if(!me){gate.textContent='يجب تسجيل الدخول.';return}const {data:p}=await db.from('profiles').select('account_type').eq('id',me.id).maybeSingle();if(p?.account_type!=='admin'){gate.textContent='لا تملك صلاحية الإدارة.';return}gate.textContent='تم التحقق من حساب الإدارة.';panel.style.display='block';await Promise.all([loadEmployees(),loadOrders(),loadResets()])}
 async function loadEmployees(){const {data,error}=await db.from('profiles').select('id,full_name,phone,username,governorate,employee_status,employee_role,employee_role_id,created_at').eq('account_type','employee').order('created_at',{ascending:false});if(error){employeesBox.textContent=error.message;return}employeesBox.innerHTML=(data||[]).map(p=>`<div class="card"><div class="row"><strong>${esc(p.full_name||p.username||'موظف')}</strong><span class="badge">${esc(p.employee_status||'pending')}</span></div><div class="muted">${esc(p.phone||'')} — ${esc(p.governorate||'')}<br>الوظيفة: ${esc(p.employee_role||'—')}</div><div class="row" style="margin-top:10px"><button class="ok" onclick="setStatus('${p.id}','approved')">موافقة</button><button class="bad" onclick="setStatus('${p.id}','rejected')">رفض</button><button class="light" onclick="setStatus('${p.id}','pending')">إرجاع للمراجعة</button></div></div>`).join('')||'<div class="card">لا توجد حسابات موظفين.</div>'}
 async function setStatus(id,status){const {error}=await db.rpc('admin_set_employee_status',{p_user_id:id,p_status:status});if(error)alert(error.message);else loadEmployees()}
@@ -15,7 +35,7 @@ async function loadOrders(){const {data,error}=await db.from('orders').select('*
 async function loadResets(){
  const {data,error}=await db.from('password_reset_requests').select('id,phone,status,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){resetsBox.textContent=error.message;return}
- resetsBox.innerHTML=(data||[]).map(r=>`<div class="card"><div class="row"><strong>#${r.id} — ${esc(r.phone)}</strong><span class="badge">${esc(r.status)}</span></div><div class="muted">${esc(new Date(r.created_at).toLocaleString('ar-IQ'))}</div><div class="row" style="margin-top:10px"><button class="ok" onclick="setReset(${r.id},'verified')">تم التحقق</button><button class="bad" onclick="setReset(${r.id},'rejected')">رفض</button><button class="light" onclick="setReset(${r.id},'completed')">مكتمل</button></div></div>`).join('')||'<div class="card">لا توجد طلبات استرجاع.</div>';
+ resetsBox.innerHTML=(data||[]).map(r=>`<div class="card"><div class="row"><strong>#${r.id} — ${esc(r.phone)}</strong><span class="badge">${esc(r.status)}</span></div><div class="muted">${esc(new Date(r.created_at).toLocaleString('ar-IQ'))}</div><div class="row" style="margin-top:10px"><button class="ok" onclick="setReset(${r.id},'verified')">تم التحقق</button><button class="ok" onclick="adminResetPassword(${r.id})">تعيين كلمة مرور مؤقتة</button><button class="bad" onclick="setReset(${r.id},'rejected')">رفض</button><button class="light" onclick="setReset(${r.id},'completed')">مكتمل</button></div></div>`).join('')||'<div class="card">لا توجد طلبات استرجاع.</div>';
 }
 async function setReset(id,status){const {error}=await db.rpc('admin_set_password_reset_status',{p_request_id:id,p_status:status});if(error)alert(error.message);else loadResets()}
 </script></body></html>
