@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دراسة - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111;
+}
+.topbar{
+  background:#000;
+  color:#fff;
+  min-height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 16px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.back{
+  width:44px;height:44px;border:0;border-radius:10px;
+  background:#fff;color:#111;font-size:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.title{font-size:20px;font-weight:700}
+.home{
+  width:44px;height:44px;border-radius:10px;background:#fff;
+  color:#111;text-decoration:none;display:flex;align-items:center;
+  justify-content:center;font-size:22px;
+}
+.hero{
+  width:min(960px,94%);
+  margin:28px auto 14px;
+  background:#fff;
+  border-radius:20px;
+  padding:24px 18px;
+  text-align:center;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+.hero .icon{font-size:54px}
+.hero h1{margin:8px 0 6px;font-size:30px}
+.hero p{margin:0;color:#666;line-height:1.7}
+.grid{
+  width:min(960px,94%);
+  margin:18px auto 40px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+.card{
+  min-height:165px;
+  background:#fff;
+  border:0;
+  border-radius:18px;
+  padding:22px 14px;
+  box-shadow:0 4px 16px rgba(0,0,0,.09);
+  cursor:pointer;
+  text-align:center;
+  color:#111;
+}
+.card:active{transform:scale(.99)}
+.card .icon{font-size:46px;margin-bottom:10px}
+.card h2{margin:0 0 7px;font-size:23px}
+.card p{margin:0;color:#666;line-height:1.6}
+
+.panel{
+  display:none;
+  width:min(960px,94%);
+  margin:18px auto 42px;
+}
+.panel.show{display:block}
+.panel-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:#fff;
+  padding:15px 16px;
+  border-radius:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,.07);
+  margin-bottom:14px;
+}
+.panel-head h2{margin:0;font-size:22px}
+.close-panel{
+  width:42px;height:42px;border:0;border-radius:10px;
+  background:#f1f1f1;font-size:22px;cursor:pointer;
+}
+.subgrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.subcard{
+  background:#fff;
+  border:0;
+  border-radius:15px;
+  padding:18px 12px;
+  min-height:105px;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.subcard .subicon{font-size:34px;margin-bottom:7px}
+.subcard strong{font-size:18px}
+.note{
+  background:#fff;
+  border-radius:15px;
+  padding:18px;
+  color:#555;
+  line-height:1.8;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+  text-align:center;
+}
+
+@media(max-width:600px){
+  .grid{gap:11px}
+  .card{min-height:145px;padding:18px 10px}
+  .card .icon{font-size:39px}
+  .card h2{font-size:20px}
+  .card p{font-size:14px}
+  .subgrid{gap:10px}
+  .subcard{min-height:96px;padding:15px 8px}
+  .subcard strong{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back" type="button" onclick="goBack()" aria-label="رجوع">→</button>
+  <div class="title">📚 دراسة</div>
+  <a class="home" href="index.html" aria-label="الرئيسية">🏠</a>
+</div>
+
+<section class="hero">
+  <div class="icon">📚</div>
+  <h1>القسم الدراسي</h1>
+  <p>اختر القسم الذي تحتاجه من المدارس أو الجامعات أو الطلاب أو الخدمات الدراسية السريعة.</p>
+</section>
+
+<main class="grid" id="mainGrid">
+  <button class="card" type="button" onclick="openPanel('schools')">
+    <div class="icon">🏫</div>
+    <h2>المدارس</h2>
+    <p>حكومية وأهلية وخارجية</p>
+  </button>
+
+  <button class="card" type="button" onclick="openPanel('universities')">
+    <div class="icon">🎓</div>
+    <h2>الجامعات</h2>
+    <p>حكومية وأهلية وخارجية</p>
+  </button>
+
+  <button class="card" type="button" onclick="openPanel('students')">
+    <div class="icon">👨‍🎓</div>
+    <h2>الطلاب</h2>
+    <p>من الروضة إلى الدكتوراه</p>
+  </button>
+
+  <button class="card" type="button" onclick="openPanel('quick')">
+    <div class="icon">⚡</div>
+    <h2>خدمات دراسية سريعة</h2>
+    <p>قسم مخصص للخدمات الدراسية السريعة</p>
+  </button>
+</main>
+
+<section class="panel" id="schools">
+  <div class="panel-head">
+    <h2>🏫 المدارس</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <div class="subcard"><div class="subicon">🏛️</div><strong>المدارس الحكومية</strong></div>
+    <div class="subcard"><div class="subicon">🏫</div><strong>المدارس الأهلية</strong></div>
+    <div class="subcard"><div class="subicon">🌍</div><strong>المدارس الخارجية</strong></div>
+  </div>
+</section>
+
+<section class="panel" id="universities">
+  <div class="panel-head">
+    <h2>🎓 الجامعات</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <div class="subcard"><div class="subicon">🏛️</div><strong>الجامعات الحكومية</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>الجامعات الأهلية</strong></div>
+    <div class="subcard"><div class="subicon">🌍</div><strong>الجامعات الخارجية</strong></div>
+  </div>
+</section>
+
+<section class="panel" id="students">
+  <div class="panel-head">
+    <h2>👨‍🎓 الطلاب</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
+    <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
+    <div class="subcard"><div class="subicon">📘</div><strong>متوسط</strong></div>
+    <div class="subcard"><div class="subicon">📗</div><strong>إعدادي</strong></div>
+    <div class="subcard"><div class="subicon">⭐</div><strong>متميزين</strong></div>
+    <div class="subcard"><div class="subicon">📝</div><strong>خارجي</strong></div>
+    <div class="subcard"><div class="subicon">📜</div><strong>دبلوم</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>بكالوريوس</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>ماجستير</strong></div>
+    <div class="subcard"><div class="subicon">🏅</div><strong>دكتوراه</strong></div>
+  </div>
+</section>
+
+<section class="panel" id="quick">
+  <div class="panel-head">
+    <h2>⚡ خدمات دراسية سريعة</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="note">
+    تم إنشاء قسم الخدمات الدراسية السريعة، وتكدر تضيف بداخله الخدمات اللي تريدها لاحقاً.
+  </div>
+</section>
+
+<script>
+let currentPanel = null;
+
+function openPanel(id){
+  document.getElementById('mainGrid').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  const panel = document.getElementById(id);
+  panel.classList.add('show');
+  currentPanel = id;
+  window.scrollTo({top:0, behavior:'smooth'});
+  history.pushState({studyPanel:id}, '', location.href);
+}
+
+function closePanel(){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.getElementById('mainGrid').style.display = 'grid';
+  currentPanel = null;
+}
+
+function goBack(){
+  if(currentPanel){
+    closePanel();
+  }else{
+    location.href = 'index.html';
+  }
+}
+
+window.addEventListener('popstate', function(){
+  if(currentPanel){
+    closePanel();
+  }
+});
+</script>
+
+</body>
+</html>
