@@ -226,6 +226,7 @@ body{
     <button class="subcard" type="button" onclick="openStudentStage('secondary','إعدادي')"><div class="subicon">📗</div><strong>إعدادي</strong></button>
     <button class="subcard" type="button" onclick="openStudentStage('distinguished','متميزين')"><div class="subicon">⭐</div><strong>متميزين</strong></button>
     <button class="subcard" type="button" onclick="openStudentStage('external','خارجي')"><div class="subicon">📝</div><strong>خارجي</strong></button>
+    <button class="subcard" type="button" onclick="openVocational()"><div class="subicon">🛠️</div><strong>المهني</strong></button>
     <button class="subcard" type="button" onclick="openStudentStage('diploma','دبلوم')"><div class="subicon">📜</div><strong>دبلوم</strong></button>
     <button class="subcard" type="button" onclick="openStudentStage('bachelor','بكالوريوس')"><div class="subicon">🎓</div><strong>بكالوريوس</strong></button>
     <button class="subcard" type="button" onclick="openStudentStage('master','ماجستير')"><div class="subicon">🎓</div><strong>ماجستير</strong></button>
@@ -233,6 +234,22 @@ body{
   </div>
 </section>
 
+
+
+<section class="student-tools" id="vocationalStage">
+  <div class="panel-head">
+    <h2>🛠️ أقسام التعليم المهني</h2>
+    <button class="close-panel" type="button" onclick="closeVocational()">×</button>
+  </div>
+  <div class="subgrid">
+    <button class="subcard" type="button" onclick="openVocationalBranch('industrial','الصناعي')"><div class="subicon">🏭</div><strong>الصناعي</strong></button>
+    <button class="subcard" type="button" onclick="openVocationalBranch('agricultural','الزراعي')"><div class="subicon">🌾</div><strong>الزراعي</strong></button>
+    <button class="subcard" type="button" onclick="openVocationalBranch('commercial','التجاري')"><div class="subicon">💼</div><strong>التجاري</strong></button>
+    <button class="subcard" type="button" onclick="openVocationalBranch('applied-arts','الفنون التطبيقية')"><div class="subicon">🎨</div><strong>الفنون التطبيقية</strong></button>
+    <button class="subcard" type="button" onclick="openVocationalBranch('computer-it','الحاسوب وتقنية المعلومات')"><div class="subicon">💻</div><strong>الحاسوب وتقنية المعلومات</strong></button>
+    <button class="subcard" type="button" onclick="openVocationalBranch('tourism','السياحة')"><div class="subicon">🏨</div><strong>السياحة</strong></button>
+  </div>
+</section>
 
 <section class="student-tools" id="studentStage">
   <div class="panel-head">
@@ -267,6 +284,28 @@ let currentPanel = null;
 
 let currentStageKey='', currentStageName='';
 
+let vocationalOpen=false;
+function openVocational(){
+  document.getElementById('students').classList.remove('show');
+  document.getElementById('vocationalStage').classList.add('show');
+  document.getElementById('studentStage').classList.remove('show');
+  vocationalOpen=true;
+  currentPanel='vocationalStage';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeVocational(){
+  document.getElementById('vocationalStage').classList.remove('show');
+  document.getElementById('students').classList.add('show');
+  vocationalOpen=false;
+  currentPanel='students';
+}
+function openVocationalBranch(key,name){
+  document.getElementById('vocationalStage').classList.remove('show');
+  vocationalOpen=true;
+  openStudentStage('vocational-'+key,'المهني - '+name);
+}
+
+
 function openStudentStage(key,name){
   document.getElementById('students').classList.remove('show');
   currentStageKey=key; currentStageName=name;
@@ -279,8 +318,15 @@ function openStudentStage(key,name){
 function closeStudentStage(){
   document.getElementById('studentStage').classList.remove('show');
   document.getElementById('studentToolBox').innerHTML='';
-  document.getElementById('students').classList.add('show');
-  currentPanel='students';
+  if(currentStageKey.startsWith('vocational-')){
+    document.getElementById('vocationalStage').classList.add('show');
+    vocationalOpen=true;
+    currentPanel='vocationalStage';
+  }else{
+    document.getElementById('students').classList.add('show');
+    vocationalOpen=false;
+    currentPanel='students';
+  }
 }
 function studentKey(type){return 'ha_study_'+currentStageKey+'_'+type}
 function getStudentData(type){try{return JSON.parse(localStorage.getItem(studentKey(type))||'[]')}catch(e){return []}}
@@ -348,6 +394,7 @@ function openPanel(id){
 
 function closePanel(){
   document.getElementById('studentStage').classList.remove('show');
+  document.getElementById('vocationalStage').classList.remove('show');
   document.getElementById('studentToolBox').innerHTML='';
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
   document.getElementById('mainGrid').style.display = 'grid';
@@ -357,6 +404,8 @@ function closePanel(){
 function goBack(){
   if(currentPanel==='studentStage'){
     closeStudentStage();
+  }else if(currentPanel==='vocationalStage'){
+    closeVocational();
   }else if(currentPanel){
     closePanel();
   }else{
