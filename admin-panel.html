@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>لوحة الإدارة - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}.top{background:#000;color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}.top a{color:#111;background:#fff;text-decoration:none;border-radius:10px;padding:10px 13px}.wrap{width:min(1080px,95%);margin:18px auto 50px}.hero,.box{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px #00000012}.hero{text-align:center}.hero h1{margin:5px 0}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.tab{border:0;border-radius:13px;padding:13px;background:#fff;box-shadow:0 3px 12px #00000012;font-weight:700;cursor:pointer}.tab.active{background:#111;color:#fff}.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.sections{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.section-card{background:#fff;border-radius:15px;padding:15px;text-align:center;box-shadow:0 3px 12px #00000012}.section-card .ico{font-size:32px}.section-card h3{margin:7px 0 5px}.section-card p{font-size:12px;color:#666;min-height:34px}.section-card a{display:inline-block;text-decoration:none;background:#111;color:#fff;border-radius:9px;padding:8px 11px;font-size:13px}.locked{opacity:.45}.field{margin:10px 0}.field label{display:block;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid #ccc;border-radius:11px;font:inherit}.field textarea{min-height:110px;resize:vertical}.btn{border:0;border-radius:11px;padding:12px 16px;background:#111;color:#fff;font-weight:700;cursor:pointer}.btn.alt{background:#eee;color:#111}.status{padding:11px;border-radius:10px;background:#f3f3f3;margin-top:10px;white-space:pre-wrap}.small{font-size:13px;color:#666;line-height:1.6}.perm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.perm{background:#f7f7f7;border-radius:10px;padding:10px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#eee;font-size:12px}.admin-item{padding:12px 0;border-bottom:1px solid #eee}.danger{background:#8b0000}.ok{color:#087a23}.err{color:#a40000}@media(max-width:700px){.sections,.perm-grid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.tabs{grid-template-columns:1fr 1fr 1fr;font-size:12px;padding:0}.tab{padding:11px 6px}}
+</style>
+</head>
+<body>
+<div class="top"><b>🛡️ لوحة الإدارة العامة</b><a href="index.html">الرئيسية</a></div>
+<div class="wrap">
+  <div class="hero"><h1>HA Marketing</h1><div id="who">جاري التحقق من صلاحية الحساب...</div><div class="small">الأدمن الرئيسي يملك جميع الأقسام، والأدمن الفرعي تظهر له فقط الأقسام التي منحتها له.</div></div>
+  <div id="denied" class="box" style="display:none">هذا الحساب ليس لديه صلاحية دخول لوحة الإدارة.</div>
+  <div id="panel" style="display:none">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('sectionsView',this)">🏠 الأقسام</button>
+      <button class="tab" onclick="showTab('notifyView',this)">🔔 التبليغات</button>
+      <button class="tab" id="adminsTab" onclick="showTab('adminsView',this)">👥 الأدمنية</button>
+    </div>
+
+    <section id="sectionsView" class="view active">
+      <div class="box">
+        <h2>إدارة أقسام التطبيق</h2>
+        <p class="small">هذه الصفحة تبين صلاحيات الحساب الحالي. الـSuper Admin يملك كل الأقسام تلقائياً. الأدمن الفرعي يملك الأقسام المحددة له فقط.</p>
+        <div id="sectionCards" class="sections"></div>
+      </div>
+    </section>
+
+    <section id="notifyView" class="view">
+      <div class="box" id="studyNotifyBox">
+        <h2>📚 تبليغ دراسي مستهدف</h2>
+        <p class="small">يظهر هذا الإرسال للـSuper Admin أو الأدمن الذي لديه صلاحية الدراسة. يمكن تحديد المحافظة والمرحلة والمدرسة والصف، ويصل فقط للطلاب المطابقين.</p>
+        <div class="grid">
+          <div class="field"><label>المحافظة</label><select id="gov"><option value="">كل المحافظات</option></select></div>
+          <div class="field"><label>المرحلة</label><select id="stage"><option value="">كل المراحل</option></select></div>
+          <div class="field"><label>المدرسة / الجامعة</label><select id="school"><option value="">كل المؤسسات</option></select></div>
+          <div class="field"><label>الصف / المرحلة الدراسية</label><select id="grade"><option value="">كل الصفوف</option></select></div>
+        </div>
+        <div class="field"><label>العنوان</label><input id="noticeTitle" maxlength="100" placeholder="مثال: تعطيل الدوام غداً"></div>
+        <div class="field"><label>نص التبليغ</label><textarea id="noticeBody" maxlength="1200" placeholder="اكتب تفاصيل التبليغ..."></textarea></div>
+        <div class="row"><button class="btn" onclick="sendStudyNotice()">إرسال الإشعار</button><button class="btn alt" onclick="loadTargets()">تحديث المدارس</button></div>
+        <div id="sendStatus" class="status">جاهز للإرسال.</div>
+      </div>
+      <div class="box"><b>ملاحظة:</b> الإرسال المستهدف الفعلي المجهز حالياً هو للدراسة. بقية الأقسام تظهر ضمن صلاحيات الإدارة، ونضيف لكل قسم أدواته الحقيقية عندما يكون Backend الخاص به موجوداً، بدون إنشاء أزرار وهمية.</div>
+    </section>
+
+    <section id="adminsView" class="view">
+      <div class="box" id="adminManager">
+        <h2>إضافة / تعديل أدمن</h2>
+        <p class="small">هذه الصفحة للـSuper Admin فقط. اكتب رقم الهاتف أو المعرّف لحساب موجود، ثم اختر الأقسام. يمكن تعيين أكثر من أدمن لنفس القسم.</p>
+        <div class="field"><label>رقم الهاتف أو المعرّف</label><input id="identifier" placeholder="07XXXXXXXXX أو username"></div>
+        <label class="row"><input type="checkbox" id="superAdmin"> <b>Super Admin — كل الأقسام والصلاحيات</b></label>
+        <h3>صلاحيات الأقسام</h3>
+        <div class="perm-grid" id="permGrid"></div>
+        <div class="row" style="margin-top:12px"><button class="btn" onclick="saveAdmin()">حفظ الأدمن</button><button class="btn danger" onclick="disableAdmin()">إيقاف صلاحية الحساب</button></div>
+        <div id="adminStatus" class="status">جاهز.</div>
+      </div>
+      <div class="box"><h2>الأدمنية الحاليون</h2><div id="adminList">جاري التحميل...</div></div>
+    </section>
+  </div>
+</div>
+<script>
+const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+let session=null,adminRow=null,myPermissions=[];
+const SECTIONS=[
+ ['shop','التسوق','🛒','shop.html'],['services','طلب خدمة','🛠️','contact.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','news.html'],
+ ['religious','الأمور الدينية','🕌','religious.html'],['study','الدراسة','📚','study.html'],['entertainment','الترفيه','🎮','entertainment.html'],['sports','الرياضة','⚽','sports.html'],
+ ['transport','النقل','🚕','taxi-delivery.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
+ ['notifications','الإشعارات','🔔','admin-panel.html#notify'],['settings','الإعدادات','⚙️','account.html']
+];
+function showTab(id,b){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');b.classList.add('active')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fillSelect(id,values){const el=document.getElementById(id),old=el.value,label=el.options[0]?.text||'الكل';el.innerHTML='<option value="">'+label+'</option>'+values.map(v=>'<option>'+esc(v)+'</option>').join('');if([...el.options].some(o=>o.value===old))el.value=old}
+function can(section){return !!adminRow?.is_super_admin || myPermissions.includes(section)}
+async function init(){
+ const {data:{session:s}}=await db.auth.getSession();session=s;
+ if(!s){who.textContent='يجب تسجيل الدخول أولاً.';denied.style.display='block';return}
+ const {data:a,error}=await db.from('app_admins').select('*').eq('user_id',s.user.id).eq('is_active',true).maybeSingle();
+ if(error||!a){who.textContent='الحساب مسجل لكنه غير مخول كأدمن.';denied.style.display='block';return}
+ adminRow=a;
+ if(!a.is_super_admin){const {data:p}=await db.from('app_admin_permissions').select('section_key').eq('admin_user_id',s.user.id).eq('can_view',true);myPermissions=(p||[]).map(x=>x.section_key)}
+ who.innerHTML='تم الدخول كأدمن '+(a.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');panel.style.display='block';
+ renderSections();renderPerms();
+ if(can('study')||can('notifications')) await loadTargets(); else studyNotifyBox.innerHTML='<h2>🔒 التبليغات الدراسية</h2><p>هذا الحساب لا يملك صلاحية الدراسة أو الإشعارات.</p>';
+ if(a.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
+ if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
+}
+function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('')}
+function renderPerms(){permGrid.innerHTML=SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
+async function loadTargets(){
+ const {data,error}=await db.from('study_student_profiles').select('governorate,stage,school_name,grade_name').limit(10000);
+ if(error){sendStatus.textContent='تعذر قراءة ملفات الطلاب: '+error.message;return}
+ const uniq=k=>[...new Set((data||[]).map(x=>x[k]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'ar'));
+ fillSelect('gov',uniq('governorate'));fillSelect('stage',uniq('stage'));fillSelect('school',uniq('school_name'));fillSelect('grade',uniq('grade_name'));
+ sendStatus.textContent='تم تحميل '+(data||[]).length+' ملف طالب للاستهداف.';
+}
+async function sendStudyNotice(){
+ if(!(can('study')||can('notifications')))return alert('لا توجد صلاحية لإرسال تبليغات الدراسة');
+ const t=noticeTitle.value.trim(),b=noticeBody.value.trim();if(!t||!b)return alert('اكتب العنوان ونص التبليغ');
+ if(!confirm('تأكيد إرسال هذا التبليغ للفئة المحددة؟'))return;sendStatus.textContent='جاري الإرسال...';
+ const payload={title:t,body:b,stages:stage.value?[stage.value]:[],governorates:gov.value?[gov.value]:[],schools:school.value?[school.value]:[],grades:grade.value?[grade.value]:[],url:'https://hakarblaa.github.io/HA-Marketing/study-profile.html'};
+ const {data,error}=await db.functions.invoke('send-study-notification',{body:payload});
+ if(error){sendStatus.innerHTML='<span class="err">تعذر الإرسال: '+esc(error.message)+'</span>';return}
+ sendStatus.innerHTML='<span class="ok">تم إنشاء التبليغ.</span>\nالطلاب المطابقون: '+(data?.matched_users??0)+'\nالأجهزة المسجلة: '+(data?.registered_devices??0)+'\nتم الإرسال: '+(data?.sent??0)+'\nفشل: '+(data?.failed??0);
+ if((data?.sent??0)>0){noticeTitle.value='';noticeBody.value=''}
+}
+async function saveAdmin(){
+ if(!adminRow?.is_super_admin)return;const id=identifier.value.trim();if(!id)return alert('اكتب الرقم أو المعرّف');
+ const secs=[...document.querySelectorAll('.sec:checked')].map(x=>x.value);if(!superAdmin.checked&&!secs.length)return alert('اختر قسم واحد على الأقل أو فعّل Super Admin');
+ adminStatus.textContent='جاري الحفظ...';const {error}=await db.rpc('admin_set_user_role',{p_identifier:id,p_super:superAdmin.checked,p_sections:secs});
+ if(error){adminStatus.innerHTML='<span class="err">'+esc(error.message)+'</span>';return}adminStatus.innerHTML='<span class="ok">تم حفظ صلاحيات الأدمن.</span>';await loadAdmins();
+}
+async function disableAdmin(){
+ if(!adminRow?.is_super_admin)return;const id=identifier.value.trim();if(!id)return alert('اكتب الرقم أو المعرّف');if(!confirm('تأكيد إيقاف صلاحية هذا الأدمن؟'))return;
+ const {error}=await db.rpc('admin_disable_user',{p_identifier:id});adminStatus.textContent=error?error.message:'تم إيقاف الصلاحية.';await loadAdmins();
+}
+async function loadAdmins(){
+ const {data,error}=await db.from('app_admins').select('user_id,is_super_admin,is_active,created_at').order('created_at',{ascending:false});if(error){adminList.textContent='تعذر التحميل: '+error.message;return}
+ const ids=(data||[]).map(x=>x.user_id);let profiles=[];if(ids.length){const r=await db.from('profiles').select('id,full_name,phone,username').in('id',ids);profiles=r.data||[]}
+ const pm=Object.fromEntries(profiles.map(p=>[p.id,p]));const {data:perms}=await db.from('app_admin_permissions').select('admin_user_id,section_key');const by={};(perms||[]).forEach(p=>(by[p.admin_user_id]??=[]).push(p.section_key));
+ adminList.innerHTML=(data||[]).map(a=>{const p=pm[a.user_id]||{},names=(by[a.user_id]||[]).map(k=>SECTIONS.find(s=>s[0]===k)?.[1]||k);return '<div class="admin-item"><b>'+esc(p.full_name||p.username||p.phone||a.user_id)+'</b> '+(a.is_super_admin?'<span class="badge">Super Admin</span>':'')+' '+(a.is_active?'<span class="badge">فعال</span>':'<span class="badge">متوقف</span>')+'<div class="small">'+esc(p.phone||'')+' '+esc(p.username||'')+'</div><div class="small">'+(a.is_super_admin?'كل الأقسام':esc(names.join('، ')||'بدون أقسام'))+'</div></div>'}).join('')||'لا يوجد أدمنية.';
+}
+init();
+</script>
+</body>
+</html>

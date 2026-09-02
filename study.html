@@ -4,209 +4,270 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>دراسة - HA Marketing</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
-button,input,select,textarea{font-family:inherit}
-.topbar{background:#000;color:#fff;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;position:sticky;top:0;z-index:40}
-.back,.home{width:44px;height:44px;border:0;border-radius:10px;background:#fff;color:#111;font-size:23px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111;
+}
+.topbar{
+  background:#000;
+  color:#fff;
+  min-height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 16px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.back{
+  width:44px;height:44px;border:0;border-radius:10px;
+  background:#fff;color:#111;font-size:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
 .title{font-size:20px;font-weight:700}
-.hero,.panelbox{width:min(1050px,94%);margin:22px auto 14px;background:#fff;border-radius:20px;padding:22px 18px;box-shadow:0 4px 18px rgba(0,0,0,.08)}
-.hero{text-align:center}.hero .icon{font-size:54px}.hero h1{margin:8px 0 6px;font-size:30px}.hero p{margin:0;color:#666;line-height:1.7}
-.grid{width:min(1050px,94%);margin:18px auto 40px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.card,.subcard{background:#fff;border:0;border-radius:18px;padding:20px 12px;box-shadow:0 4px 16px rgba(0,0,0,.08);cursor:pointer;text-align:center;color:#111;text-decoration:none}
-.card{min-height:150px}.card .icon,.subcard .subicon{font-size:42px;margin-bottom:8px}.card h2{margin:0 0 7px;font-size:21px}.card p{margin:0;color:#666;line-height:1.5;font-size:14px}
-.view{display:none;width:min(1050px,94%);margin:18px auto 42px}.view.show{display:block}
-.head{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;padding:14px 15px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.07);margin-bottom:13px}
-.head h2{margin:0;font-size:21px}.close{width:42px;height:42px;border:0;border-radius:10px;background:#f1f1f1;font-size:22px;cursor:pointer}
-.subgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.subcard{min-height:105px}
-.section{background:#fff;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 3px 12px rgba(0,0,0,.07)}
-.note{background:#f7f7f7;border-radius:12px;padding:13px;color:#555;line-height:1.7}
-.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.full{grid-column:1/-1}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px;background:#fff}
-textarea{min-height:78px;resize:vertical}
-.btn{border:0;border-radius:10px;padding:11px 14px;background:#111;color:#fff;font-weight:700;cursor:pointer}.btn.alt{background:#eee;color:#111}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.items{display:grid;gap:8px;margin-top:10px}.item{border:1px solid #eee;background:#fafafa;border-radius:12px;padding:12px}.item strong{display:block;margin-bottom:5px}
-.empty{text-align:center;color:#777;padding:18px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#f5f5f5;border-radius:12px;padding:12px;text-align:center}.stat b{display:block;font-size:22px}
-.timer{font-size:42px;font-weight:700;text-align:center;padding:18px}
-.progress{height:12px;background:#eee;border-radius:20px;overflow:hidden}.progress span{display:block;height:100%;background:#111;width:0}
-.chatmsgs{height:330px;overflow:auto;background:#f7f7f7;border-radius:12px;padding:10px}.msg{background:#fff;border-radius:11px;padding:9px 11px;margin:7px 0}.msg small{color:#777}
-.disabled{opacity:.6}
-.dashboard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.dash{background:#f7f7f7;border-radius:12px;padding:13px}
-@media(max-width:650px){.grid,.subgrid,.formgrid,.stats,.dashboard-grid{grid-template-columns:1fr}.card{min-height:125px}.hero h1{font-size:26px}}
+.home{
+  width:44px;height:44px;border-radius:10px;background:#fff;
+  color:#111;text-decoration:none;display:flex;align-items:center;
+  justify-content:center;font-size:22px;
+}
+.hero{
+  width:min(960px,94%);
+  margin:28px auto 14px;
+  background:#fff;
+  border-radius:20px;
+  padding:24px 18px;
+  text-align:center;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+.hero .icon{font-size:54px}
+.hero h1{margin:8px 0 6px;font-size:30px}
+.hero p{margin:0;color:#666;line-height:1.7}
+.grid{
+  width:min(960px,94%);
+  margin:18px auto 40px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+.card{
+  min-height:165px;
+  background:#fff;
+  border:0;
+  border-radius:18px;
+  padding:22px 14px;
+  box-shadow:0 4px 16px rgba(0,0,0,.09);
+  cursor:pointer;
+  text-align:center;
+  color:#111;
+}
+.card:active{transform:scale(.99)}
+.card .icon{font-size:46px;margin-bottom:10px}
+.card h2{margin:0 0 7px;font-size:23px}
+.card p{margin:0;color:#666;line-height:1.6}
 
-/* HA Marketing mobile compact grid: 3 cards per row */
-@media (max-width: 700px){
-  .grid,.cards,.menu-grid,.rooms,.categories,.category-grid,.services-grid,.service-grid,.games-grid,.options-grid,.quick-grid,.tools-grid,.subgrid,.main-grid,.dashboard-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    gap:7px !important;
-  }
-  .card,.menu-card,.room,.category,.category-card,.service-card,.game-card,.option-card,.quick-card,.tool-card,.subcard{
-    min-width:0 !important;
-    min-height:88px !important;
-    padding:9px 5px !important;
-    border-radius:12px !important;
-  }
-  .card .icon,.menu-card .icon,.room .icon,.category .icon,.category-card .icon,.service-card .icon,.game-card .icon,.option-card .icon,.quick-card .icon,.tool-card .icon,.subcard .subicon{
-    font-size:27px !important;
-    margin-bottom:4px !important;
-  }
-  .card h2,.card h3,.menu-card h2,.menu-card h3,.category-card h2,.category-card h3,.service-card h2,.service-card h3,.game-card h2,.game-card h3,.option-card h2,.quick-card h2,.tool-card h2,.subcard strong{
-    font-size:12px !important;
-    line-height:1.25 !important;
-    margin:2px 0 !important;
-  }
-  .card p,.menu-card p,.category-card p,.service-card p,.game-card p,.option-card p,.quick-card p,.tool-card p{
-    font-size:9px !important;
-    line-height:1.2 !important;
-    margin:2px 0 !important;
-  }
+.panel{
+  display:none;
+  width:min(960px,94%);
+  margin:18px auto 42px;
+}
+.panel.show{display:block}
+.panel-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:#fff;
+  padding:15px 16px;
+  border-radius:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,.07);
+  margin-bottom:14px;
+}
+.panel-head h2{margin:0;font-size:22px}
+.close-panel{
+  width:42px;height:42px;border:0;border-radius:10px;
+  background:#f1f1f1;font-size:22px;cursor:pointer;
+}
+.subgrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.subcard{
+  background:#fff;
+  border:0;
+  border-radius:15px;
+  padding:18px 12px;
+  min-height:105px;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.subcard .subicon{font-size:34px;margin-bottom:7px}
+.subcard strong{font-size:18px}
+.note{
+  background:#fff;
+  border-radius:15px;
+  padding:18px;
+  color:#555;
+  line-height:1.8;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+  text-align:center;
+}
+
+@media(max-width:600px){
+  .grid{gap:11px}
+  .card{min-height:145px;padding:18px 10px}
+  .card .icon{font-size:39px}
+  .card h2{font-size:20px}
+  .card p{font-size:14px}
+  .subgrid{gap:10px}
+  .subcard{min-height:96px;padding:15px 8px}
+  .subcard strong{font-size:16px}
 }
 </style>
 </head>
 <body>
+
 <div class="topbar">
-  <button class="back" onclick="goBack()">→</button>
+  <button class="back" type="button" onclick="goBack()" aria-label="رجوع">→</button>
   <div class="title">📚 دراسة</div>
-  <a class="home" href="index.html">🏠</a>
+  <a class="home" href="index.html" aria-label="الرئيسية">🏠</a>
 </div>
 
-<section class="hero" id="hero">
+<section class="hero">
   <div class="icon">📚</div>
   <h1>القسم الدراسي</h1>
-  <p>دراسة، جداول، اختبارات، واجبات، دردشة، نقل طلاب، أدوات وملف دراسي بمكان واحد.</p>
+  <p>اختر القسم الذي تحتاجه من المدارس أو الجامعات أو الطلاب أو الخدمات الدراسية السريعة.</p>
 </section>
 
 <main class="grid" id="mainGrid">
-  <button class="card" onclick="openView('schools')"><div class="icon">🏫</div><h2>المدارس</h2><p>حكومية وأهلية وخارجية</p></button>
-  <button class="card" onclick="openView('universities')"><div class="icon">🎓</div><h2>الجامعات</h2><p>حكومية وأهلية وخارجية</p></button>
-  <button class="card" onclick="openView('students')"><div class="icon">👨‍🎓</div><h2>الطلاب</h2><p>من الروضة إلى الدكتوراه والمهني</p></button>
-  <a class="card" href="student-transport.html"><div class="icon">🚌</div><h2>خطوط النقل</h2><p>الخطوط الرسمية والنقل السريع للطوارئ</p></a>
-  <button class="card" onclick="openView('dashboard')"><div class="icon">🧭</div><h2>لوحة الطالب</h2><p>امتحانات، واجبات، دراسة، نقل وآخر نشاط</p></button>
-  <button class="card" onclick="openView('library')"><div class="icon">📚</div><h2>المكتبة الدراسية</h2><p>روابط ومصادر الطالب حسب المادة</p></button>
-  <button class="card" onclick="openView('quiz')"><div class="icon">📝</div><h2>الاختبارات والتدريب</h2><p>بنك أسئلة خاص ونتائج محفوظة</p></button>
-  <button class="card" onclick="openView('planner')"><div class="icon">📅</div><h2>مخطط الدراسة</h2><p>خطة يومية حسب المادة والموعد</p></button>
-  <button class="card" onclick="openView('timer')"><div class="icon">⏱️</div><h2>مؤقت الدراسة</h2><p>25 أو 45 أو 60 دقيقة وتتبع الوقت</p></button>
-  <button class="card" onclick="openView('progress')"><div class="icon">📊</div><h2>متابعة المستوى</h2><p>درجات ومعدل وتقدم كل مادة</p></button>
-  <button class="card" onclick="openView('homework')"><div class="icon">📌</div><h2>الواجبات</h2><p>موعد التسليم ومكتمل أو غير مكتمل</p></button>
-  <button class="card" onclick="openView('reminders')"><div class="icon">🔔</div><h2>التذكيرات</h2><p>امتحان، واجب، درس أو محاضرة</p></button>
-  <button class="card" onclick="openView('tutors')"><div class="icon">👨‍🏫</div><h2>المدرسون الخصوصيون</h2><p>يعرض الموظفين المدرسين المفعّلين فقط</p></button>
-  <button class="card" onclick="openView('admissions')"><div class="icon">🎓</div><h2>القبول والتقديم</h2><p>مكان للروابط والمعلومات الرسمية</p></button>
-  <button class="card" onclick="openView('exchange')"><div class="icon">🔄</div><h2>تبادل الكتب والملازم</h2><p>بيع، مجاني أو تبادل</p></button>
-  <button class="card" onclick="openView('challenges')"><div class="icon">🏆</div><h2>تحديات دراسية</h2><p>نقاط التزام بدون جوائز وهمية</p></button>
-  <a class="card" href="file-tools.html"><div class="icon">📁</div><h2>تحويل وتعديل الملفات</h2><p>PDF وصور وأدوات الملفات</p></a>
-  <button class="card disabled" onclick="openView('ai')"><div class="icon">🤖</div><h2>المساعد الدراسي</h2><p>جاهز بالواجهة ويتفعل بعد توفر رصيد API</p></button>
+  <button class="card" type="button" onclick="openPanel('schools')">
+    <div class="icon">🏫</div>
+    <h2>المدارس</h2>
+    <p>حكومية وأهلية وخارجية</p>
+  </button>
+
+  <button class="card" type="button" onclick="openPanel('universities')">
+    <div class="icon">🎓</div>
+    <h2>الجامعات</h2>
+    <p>حكومية وأهلية وخارجية</p>
+  </button>
+
+  <button class="card" type="button" onclick="openPanel('students')">
+    <div class="icon">👨‍🎓</div>
+    <h2>الطلاب</h2>
+    <p>من الروضة إلى الدكتوراه</p>
+  </button>
+
+  <button class="card" type="button" onclick="openPanel('quick')">
+    <div class="icon">⚡</div>
+    <h2>خدمات دراسية سريعة</h2>
+    <p>قسم مخصص للخدمات الدراسية السريعة</p>
+  </button>
+  <a class="card" href="study-profile.html" style="text-decoration:none">
+    <div class="icon">🔔</div>
+    <h2>ملفي الدراسي والتبليغات</h2>
+    <p>حدد مدرستك وصفك واستلم التبليغات الخاصة بك</p>
+  </a>
 </main>
 
-<section class="view" id="schools"><div class="head"><h2>🏫 المدارس</h2><button class="close" onclick="closeView()">×</button></div><div class="subgrid"><div class="subcard"><div class="subicon">🏛️</div><strong>المدارس الحكومية</strong></div><div class="subcard"><div class="subicon">🏫</div><strong>المدارس الأهلية</strong></div><div class="subcard"><div class="subicon">🌍</div><strong>المدارس الخارجية</strong></div></div></section>
-<section class="view" id="universities"><div class="head"><h2>🎓 الجامعات</h2><button class="close" onclick="closeView()">×</button></div><div class="subgrid"><div class="subcard"><div class="subicon">🏛️</div><strong>الجامعات الحكومية</strong></div><div class="subcard"><div class="subicon">🎓</div><strong>الجامعات الأهلية</strong></div><div class="subcard"><div class="subicon">🌍</div><strong>الجامعات الخارجية</strong></div></div></section>
-
-<section class="view" id="students">
-<div class="head"><h2>👨‍🎓 الطلاب</h2><button class="close" onclick="closeView()">×</button></div>
-<div class="subgrid" id="stageGrid"></div>
+<section class="panel" id="schools">
+  <div class="panel-head">
+    <h2>🏫 المدارس</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <div class="subcard"><div class="subicon">🏛️</div><strong>المدارس الحكومية</strong></div>
+    <div class="subcard"><div class="subicon">🏫</div><strong>المدارس الأهلية</strong></div>
+    <div class="subcard"><div class="subicon">🌍</div><strong>المدارس الخارجية</strong></div>
+  </div>
 </section>
 
-<section class="view" id="stageView">
-<div class="head"><h2 id="stageTitle">👨‍🎓 المرحلة</h2><button class="close" onclick="backToStages()">×</button></div>
-<div class="subgrid">
-<button class="subcard" onclick="openStageTool('chat')"><div class="subicon">💬</div><strong>دردشة المرحلة</strong></button>
-<button class="subcard" onclick="openStageTool('exams')"><div class="subicon">📅</div><strong>جدول الامتحانات</strong></button>
-<button class="subcard" onclick="openStageTool('weekly')"><div class="subicon">📚</div><strong>الجدول الأسبوعي</strong></button>
-<button class="subcard" onclick="openStageTool('news')"><div class="subicon">📰</div><strong>أخبار المرحلة</strong></button>
-<button class="subcard" onclick="openStageTool('alerts')"><div class="subicon">🔔</div><strong>التنبيهات</strong></button>
-<button class="subcard" onclick="openStageTool('subjects')"><div class="subicon">📖</div><strong>المواد الدراسية</strong></button>
-</div>
-<div id="stageTool"></div>
+<section class="panel" id="universities">
+  <div class="panel-head">
+    <h2>🎓 الجامعات</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <div class="subcard"><div class="subicon">🏛️</div><strong>الجامعات الحكومية</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>الجامعات الأهلية</strong></div>
+    <div class="subcard"><div class="subicon">🌍</div><strong>الجامعات الخارجية</strong></div>
+  </div>
 </section>
 
-<section class="view" id="vocational"><div class="head"><h2>🛠️ أقسام المهني</h2><button class="close" onclick="backToStages()">×</button></div><div class="subgrid" id="vocGrid"></div></section>
+<section class="panel" id="students">
+  <div class="panel-head">
+    <h2>👨‍🎓 الطلاب</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
+    <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
+    <div class="subcard"><div class="subicon">📘</div><strong>متوسط</strong></div>
+    <div class="subcard"><div class="subicon">📗</div><strong>إعدادي</strong></div>
+    <div class="subcard"><div class="subicon">⭐</div><strong>متميزين</strong></div>
+    <div class="subcard"><div class="subicon">📝</div><strong>خارجي</strong></div>
+    <div class="subcard"><div class="subicon">📜</div><strong>دبلوم</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>بكالوريوس</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>ماجستير</strong></div>
+    <div class="subcard"><div class="subicon">🏅</div><strong>دكتوراه</strong></div>
+  </div>
+</section>
 
-<section class="view" id="dashboard"><div class="head"><h2>🧭 لوحة الطالب</h2><button class="close" onclick="closeView()">×</button></div><div id="dashboardBox"></div></section>
-<section class="view" id="library"><div class="head"><h2>📚 المكتبة الدراسية</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><input id="libTitle" placeholder="اسم الكتاب/الملزمة"><input id="libSubject" placeholder="المادة"><input id="libUrl" class="full" placeholder="رابط المصدر"></div><div class="actions"><button class="btn" onclick="addLibrary()">إضافة للمكتبة</button></div><div id="libItems" class="items"></div></div></section>
-<section class="view" id="quiz"><div class="head"><h2>📝 الاختبارات والتدريب</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><p class="note">حتى ما نضع أسئلة وهمية، تقدر تضيف بنك أسئلتك الحقيقي ثم تبدأ الاختبار.</p><div class="formgrid"><input id="qText" class="full" placeholder="السؤال"><input id="qA" placeholder="الخيار A"><input id="qB" placeholder="الخيار B"><input id="qC" placeholder="الخيار C"><input id="qD" placeholder="الخيار D"><select id="qCorrect"><option value="0">A صحيح</option><option value="1">B صحيح</option><option value="2">C صحيح</option><option value="3">D صحيح</option></select></div><div class="actions"><button class="btn" onclick="addQuestion()">إضافة السؤال</button><button class="btn alt" onclick="startQuiz()">بدء الاختبار</button></div><div id="quizBox" class="items"></div></div></section>
-<section class="view" id="planner"><div class="head"><h2>📅 مخطط الدراسة</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><input id="planSubject" placeholder="المادة"><input id="planDate" type="date"><input id="planMinutes" type="number" min="10" value="45" placeholder="الدقائق"><input id="planTopic" placeholder="الموضوع"></div><div class="actions"><button class="btn" onclick="addPlan()">إضافة للخطة</button></div><div id="planItems" class="items"></div></div></section>
-<section class="view" id="timer"><div class="head"><h2>⏱️ مؤقت الدراسة</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><input id="timerSubject" placeholder="المادة"><select id="timerPreset"><option value="25">25 دقيقة</option><option value="45">45 دقيقة</option><option value="60">60 دقيقة</option></select></div><div class="timer" id="timerText">25:00</div><div class="actions"><button class="btn" onclick="startTimer()">ابدأ</button><button class="btn alt" onclick="pauseTimer()">إيقاف مؤقت</button><button class="btn alt" onclick="resetTimer()">إعادة</button></div><div class="note" id="timeStats"></div></div></section>
-<section class="view" id="progress"><div class="head"><h2>📊 متابعة المستوى</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><input id="gradeSubject" placeholder="المادة"><input id="gradeValue" type="number" min="0" max="100" placeholder="الدرجة من 100"></div><div class="actions"><button class="btn" onclick="addGrade()">حفظ الدرجة</button></div><div id="gradeItems" class="items"></div></div></section>
-<section class="view" id="homework"><div class="head"><h2>📌 الواجبات</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><input id="hwSubject" placeholder="المادة"><input id="hwDate" type="date"><textarea id="hwText" class="full" placeholder="تفاصيل الواجب"></textarea></div><div class="actions"><button class="btn" onclick="addHomework()">إضافة الواجب</button></div><div id="hwItems" class="items"></div></div></section>
-<section class="view" id="reminders"><div class="head"><h2>🔔 التذكيرات</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><select id="remType"><option>امتحان</option><option>واجب</option><option>درس</option><option>محاضرة</option><option>أخرى</option></select><input id="remDate" type="datetime-local"><input id="remText" class="full" placeholder="التذكير"></div><div class="actions"><button class="btn" onclick="addReminder()">حفظ التذكير</button><button class="btn alt" onclick="enablePush()">تفعيل إشعارات الموقع</button></div><div class="note">التذكيرات محفوظة على هذا الجهاز. الإشعار أثناء إغلاق الموقع يحتاج نظام الإشعارات الخلفي الموجود بالمشروع مع جدولة خادمية.</div><div id="remItems" class="items"></div></div></section>
-<section class="view" id="tutors"><div class="head"><h2>👨‍🏫 المدرسون الخصوصيون</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="note">نعرض فقط حسابات موظفين مفعّلين ويظهر من بياناتهم أنهم مدرسون/معلمون. لا نضيف مدرسين وهميين.</div><div id="tutorItems" class="items"><div class="empty">جاري التحميل...</div></div></div></section>
-<section class="view" id="admissions"><div class="head"><h2>🎓 القبول والتقديم</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="note">هذا المكان مخصص لمعدلات القبول، الشروط والمواعيد والروابط الرسمية. لم أضع أرقام قبول غير موثقة. تقدر تحفظ روابط الجهات الرسمية التي تعتمد عليها.</div><div class="formgrid"><input id="admTitle" placeholder="اسم الجهة/التقديم"><input id="admUrl" placeholder="الرابط الرسمي"><textarea id="admNote" class="full" placeholder="ملاحظة"></textarea></div><div class="actions"><button class="btn" onclick="addAdmission()">حفظ الرابط</button></div><div id="admItems" class="items"></div></div></section>
-<section class="view" id="exchange"><div class="head"><h2>🔄 تبادل الكتب والملازم</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="formgrid"><input id="exTitle" placeholder="اسم الكتاب/الملزمة"><select id="exType"><option>مجاني</option><option>تبادل</option><option>بيع</option></select><input id="exArea" placeholder="المنطقة"><input id="exPhone" placeholder="رقم التواصل"><textarea id="exNote" class="full" placeholder="التفاصيل"></textarea></div><div class="actions"><button class="btn" onclick="addExchange()">إضافة العرض</button></div><div class="note">العروض هنا محفوظة على هذا الجهاز فقط؛ نشرها لكل المستخدمين يحتاج جدول قاعدة بيانات إضافي.</div><div id="exItems" class="items"></div></div></section>
-<section class="view" id="challenges"><div class="head"><h2>🏆 تحديات دراسية</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="stats"><div class="stat"><b id="points">0</b>نقطة</div><div class="stat"><b id="studySessions">0</b>جلسات دراسة</div><div class="stat"><b id="doneHomework">0</b>واجبات مكتملة</div></div><div class="note" style="margin-top:10px">النقاط تحفيزية داخل الجهاز فقط: جلسة دراسة مكتملة +10، واجب مكتمل +5، اختبار مكتمل +10. ماكو فلوس أو جوائز وهمية.</div></div></section>
-<section class="view" id="ai"><div class="head"><h2>🤖 المساعد الدراسي وحل الصور</h2><button class="close" onclick="closeView()">×</button></div><div class="section"><div class="note">الواجهة جاهزة، لكن ما راح أشغّل إجابات أو حل صور بشكل وهمي. هذا القسم يحتاج رصيد OpenAI API وربط الواجهة بعقد الـ Edge Function الصحيح قبل تفعيله.</div></div></section>
+<section class="panel" id="quick">
+  <div class="panel-head">
+    <h2>⚡ خدمات دراسية سريعة</h2>
+    <button class="close-panel" type="button" onclick="closePanel()">×</button>
+  </div>
+  <div class="subgrid">
+    <a class="subcard" href="file-tools.html" style="text-decoration:none;color:#111">
+      <div class="subicon">📁</div><strong>تحويل وتعديل الملفات</strong>
+    </a>
+  </div>
+</section>
 
-<script src="notification-config.js"></script>
-<script src="notifications.js"></script>
 <script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');
-let currentView=null,currentStageKey='',currentStageName='',chatChannel=null,me=null,profile=null;
-const stages=[['🧸','روضة','kindergarten'],['✏️','ابتدائي','primary'],['📘','متوسط','middle'],['📗','إعدادي','secondary'],['⭐','متميزين','distinguished'],['📝','خارجي','external'],['🛠️','المهني','vocational'],['📜','دبلوم','diploma'],['🎓','بكالوريوس','bachelor'],['🎓','ماجستير','master'],['🏅','دكتوراه','phd']];
-const voc=[['🏭','الصناعي','industrial'],['🌾','الزراعي','agricultural'],['💼','التجاري','commercial'],['🎨','الفنون التطبيقية','applied-arts'],['💻','الحاسوب وتقنية المعلومات','computer-it'],['🏨','السياحة','tourism']];
-const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const get=(k,d=[])=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch(e){return d}};
-const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-function showMain(){document.querySelectorAll('.view').forEach(v=>v.classList.remove('show'));mainGrid.style.display='grid';hero.style.display='block';currentView=null}
-function openView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('show'));mainGrid.style.display='none';hero.style.display='none';document.getElementById(id).classList.add('show');currentView=id;window.scrollTo({top:0,behavior:'smooth'});if(id==='dashboard')renderDashboard();if(id==='library')renderLibrary();if(id==='planner')renderPlans();if(id==='timer')renderTimeStats();if(id==='progress')renderGrades();if(id==='homework')renderHomework();if(id==='reminders')renderReminders();if(id==='tutors')loadTutors();if(id==='admissions')renderAdmissions();if(id==='exchange')renderExchange();if(id==='challenges')renderChallenges()}
-function closeView(){if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}showMain()}
-function goBack(){if(currentView==='stageView')return backToStages();if(currentView==='vocational')return backToStages();if(currentView)return closeView();location.href='index.html'}
-stageGrid.innerHTML=stages.map(([i,n,k])=>`<button class="subcard" onclick="${k==='vocational'?"openVocational()":`openStage('${k}','${n}')`}"><div class="subicon">${i}</div><strong>${n}</strong></button>`).join('');
-vocGrid.innerHTML=voc.map(([i,n,k])=>`<button class="subcard" onclick="openStage('vocational-${k}','المهني - ${n}')"><div class="subicon">${i}</div><strong>${n}</strong></button>`).join('');
-function openStage(k,n){currentStageKey=k;currentStageName=n;document.getElementById('students').classList.remove('show');document.getElementById('vocational').classList.remove('show');document.getElementById('stageView').classList.add('show');stageTitle.textContent='👨‍🎓 '+n;stageTool.innerHTML='';currentView='stageView'}
-function openVocational(){document.getElementById('students').classList.remove('show');document.getElementById('vocational').classList.add('show');currentView='vocational'}
-function backToStages(){if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}document.getElementById('stageView').classList.remove('show');document.getElementById('vocational').classList.remove('show');document.getElementById('students').classList.add('show');currentView='students'}
-function sk(t){return 'ha_study_'+currentStageKey+'_'+t}
-function openStageTool(t){
- if(t==='exams'){stageTool.innerHTML=`<div class="section"><h3>📅 امتحانات ${esc(currentStageName)}</h3><div class="formgrid"><input id="es" placeholder="المادة"><input id="ed" type="date"><input id="et" type="time"><input id="en" placeholder="ملاحظة"></div><div class="actions"><button class="btn" onclick="addExam()">إضافة</button></div><div id="stageItems" class="items"></div></div>`;renderStageItems('exams')}
- else if(t==='weekly'){stageTool.innerHTML=`<div class="section"><h3>📚 الجدول الأسبوعي</h3><div class="formgrid"><select id="wd"><option>السبت</option><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option></select><input id="ws" placeholder="المادة"><input id="wf" type="time"><input id="wt" type="time"><input id="wn" class="full" placeholder="مدرس/ملاحظة"></div><div class="actions"><button class="btn" onclick="addWeekly()">إضافة</button></div><div id="stageItems" class="items"></div></div>`;renderStageItems('weekly')}
- else if(t==='subjects'){stageTool.innerHTML=`<div class="section"><h3>📖 المواد</h3><div class="formgrid"><input id="subj" placeholder="اسم المادة"><input id="subjNote" placeholder="ملاحظة"></div><div class="actions"><button class="btn" onclick="addSubject()">إضافة</button></div><div id="stageItems" class="items"></div></div>`;renderStageItems('subjects')}
- else if(t==='news'){stageTool.innerHTML=`<div class="section"><h3>📰 أخبار ${esc(currentStageName)}</h3><div class="note">ما أضفنا أخبار وهمية. هذا المكان جاهز للربط بمصدر أخبار رسمي خاص بهذه المرحلة.</div></div>`}
- else if(t==='alerts'){stageTool.innerHTML=`<div class="section"><h3>🔔 التنبيهات</h3><button class="btn" onclick="enablePush()">تفعيل إشعارات الموقع</button><div class="note" style="margin-top:10px">التنبيهات الخلفية تعتمد على نظام Firebase Web Push الموجود بالمشروع.</div></div>`}
- else if(t==='chat') openStageChat();
+let currentPanel = null;
+
+function openPanel(id){
+  document.getElementById('mainGrid').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  const panel = document.getElementById(id);
+  panel.classList.add('show');
+  currentPanel = id;
+  window.scrollTo({top:0, behavior:'smooth'});
+  history.pushState({studyPanel:id}, '', location.href);
 }
-function addExam(){let a=get(sk('exams'));if(!es.value.trim()||!ed.value)return alert('اكتب المادة والتاريخ');a.push({id:Date.now(),subject:es.value.trim(),date:ed.value,time:et.value,note:en.value.trim()});set(sk('exams'),a);renderStageItems('exams')}
-function addWeekly(){let a=get(sk('weekly'));if(!ws.value.trim())return alert('اكتب المادة');a.push({id:Date.now(),day:wd.value,subject:ws.value.trim(),from:wf.value,to:wt.value,note:wn.value.trim()});set(sk('weekly'),a);renderStageItems('weekly')}
-function addSubject(){let a=get(sk('subjects'));if(!subj.value.trim())return;a.push({id:Date.now(),subject:subj.value.trim(),note:subjNote.value.trim()});set(sk('subjects'),a);renderStageItems('subjects')}
-function removeStage(t,id){set(sk(t),get(sk(t)).filter(x=>x.id!==id));renderStageItems(t)}
-function renderStageItems(t){let el=stageItems,a=get(sk(t));el.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.subject||'')}</strong>${x.date?'📅 '+esc(x.date)+' '+esc(x.time||'')+'<br>':''}${x.day?'📚 '+esc(x.day)+' '+esc(x.from||'')+' - '+esc(x.to||'')+'<br>':''}${x.note?'📝 '+esc(x.note):''}<div class="actions"><button class="btn alt" onclick="removeStage('${t}',${x.id})">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد بيانات بعد.</div>'}
-async function openStageChat(){
- stageTool.innerHTML=`<div class="section"><h3>💬 دردشة ${esc(currentStageName)}</h3><div id="chatMsgs" class="chatmsgs">جاري التحميل...</div><div class="actions"><input id="chatInput" placeholder="اكتب رسالتك"><button class="btn" onclick="sendStageMessage()">إرسال</button></div></div>`;
- const room='study-'+currentStageKey;const {data,error}=await db.from('messages').select('*').eq('room',room).order('created_at',{ascending:true}).limit(200);if(error){chatMsgs.innerHTML='تعذر تحميل الدردشة: '+esc(error.message);return}chatMsgs.innerHTML='';(data||[]).forEach(showChat);if(chatChannel)db.removeChannel(chatChannel);chatChannel=db.channel('study-'+room+'-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+room},p=>showChat(p.new)).subscribe()
+
+function closePanel(){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.getElementById('mainGrid').style.display = 'grid';
+  currentPanel = null;
 }
-function showChat(m){if(!document.getElementById('chatMsgs'))return;let d=document.createElement('div');d.className='msg';d.innerHTML='<small>'+esc(m.username||'مستخدم')+' · '+esc(new Date(m.created_at).toLocaleString('ar-IQ'))+'</small><div>'+esc(m.message||'')+'</div>';chatMsgs.appendChild(d);chatMsgs.scrollTop=chatMsgs.scrollHeight}
-async function sendStageMessage(){if(!chatInput.value.trim())return;if(!me)return alert('سجل الدخول أولاً');let name=profile?.full_name||profile?.username||'مستخدم';let room='study-'+currentStageKey;let {error}=await db.from('messages').insert({user_id:me.id,username:name,room,message:chatInput.value.trim(),message_type:'text',file_url:null});if(error)alert('تعذر الإرسال: '+error.message);else chatInput.value=''}
-function addLibrary(){let a=get('ha_study_library');if(!libTitle.value.trim())return;a.push({id:Date.now(),title:libTitle.value.trim(),subject:libSubject.value.trim(),url:libUrl.value.trim()});set('ha_study_library',a);renderLibrary()}
-function renderLibrary(){let a=get('ha_study_library');libItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.title)}</strong>${x.subject?'📘 '+esc(x.subject)+'<br>':''}${x.url?`<a href="${esc(x.url)}" target="_blank">فتح المصدر</a>`:''}<div class="actions"><button class="btn alt" onclick="delLocal('ha_study_library',${x.id},renderLibrary)">حذف</button></div></div>`).join(''):'<div class="empty">المكتبة فارغة.</div>'}
-function addQuestion(){let a=get('ha_study_questions');if(!qText.value.trim()||![qA,qB,qC,qD].every(x=>x.value.trim()))return alert('أكمل السؤال والخيارات');a.push({id:Date.now(),q:qText.value.trim(),opts:[qA.value.trim(),qB.value.trim(),qC.value.trim(),qD.value.trim()],correct:+qCorrect.value});set('ha_study_questions',a);quizBox.innerHTML='<div class="note">تمت إضافة السؤال. عدد أسئلة البنك: '+a.length+'</div>'}
-let quizState=null;function startQuiz(){let a=get('ha_study_questions');if(!a.length)return alert('أضف أسئلة أولاً');quizState={i:0,score:0,a};showQuizQ()}
-function showQuizQ(){let q=quizState.a[quizState.i];quizBox.innerHTML=`<div class="item"><strong>${quizState.i+1}/${quizState.a.length} — ${esc(q.q)}</strong>${q.opts.map((o,i)=>`<button class="btn alt" style="display:block;width:100%;margin-top:7px" onclick="answerQuiz(${i})">${esc(o)}</button>`).join('')}</div>`}
-function answerQuiz(i){let q=quizState.a[quizState.i];if(i===q.correct)quizState.score++;quizState.i++;if(quizState.i<quizState.a.length)return showQuizQ();let pct=Math.round(quizState.score/quizState.a.length*100);quizBox.innerHTML=`<div class="note">النتيجة: ${quizState.score}/${quizState.a.length} — ${pct}%</div>`;addPoints(10)}
-function addPlan(){let a=get('ha_study_plans');if(!planSubject.value.trim()||!planDate.value)return alert('اكتب المادة والتاريخ');a.push({id:Date.now(),subject:planSubject.value.trim(),date:planDate.value,min:+planMinutes.value||45,topic:planTopic.value.trim()});set('ha_study_plans',a);renderPlans()}
-function renderPlans(){let a=get('ha_study_plans').sort((x,y)=>x.date.localeCompare(y.date));planItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.subject)} — ${esc(x.date)}</strong>⏱️ ${x.min} دقيقة ${x.topic?'<br>📖 '+esc(x.topic):''}<div class="actions"><button class="btn alt" onclick="delLocal('ha_study_plans',${x.id},renderPlans)">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد خطة بعد.</div>'}
-let timerId=null,remaining=1500,running=false;timerPreset.onchange=resetTimer;function drawTimer(){timerText.textContent=String(Math.floor(remaining/60)).padStart(2,'0')+':'+String(remaining%60).padStart(2,'0')}
-function startTimer(){if(running)return;if(remaining<=0)resetTimer();running=true;timerId=setInterval(()=>{remaining--;drawTimer();if(remaining<=0){clearInterval(timerId);running=false;let mins=+timerPreset.value;let log=get('ha_study_time',{minutes:0,sessions:0});log.minutes+=mins;log.sessions++;set('ha_study_time',log);addPoints(10);renderTimeStats();alert('اكتملت جلسة الدراسة.')}},1000)}
-function pauseTimer(){clearInterval(timerId);running=false}function resetTimer(){pauseTimer();remaining=(+timerPreset.value||25)*60;drawTimer()}function renderTimeStats(){let l=get('ha_study_time',{minutes:0,sessions:0});timeStats.textContent='إجمالي الدراسة: '+l.minutes+' دقيقة | الجلسات المكتملة: '+l.sessions;drawTimer()}
-function addGrade(){let a=get('ha_study_grades');let v=+gradeValue.value;if(!gradeSubject.value.trim()||v<0||v>100)return alert('تحقق من المادة والدرجة');a.push({id:Date.now(),subject:gradeSubject.value.trim(),value:v});set('ha_study_grades',a);renderGrades()}
-function renderGrades(){let a=get('ha_study_grades');if(!a.length){gradeItems.innerHTML='<div class="empty">لا توجد درجات.</div>';return}let groups={};a.forEach(x=>(groups[x.subject]??=[]).push(x.value));gradeItems.innerHTML=Object.entries(groups).map(([s,v])=>{let avg=Math.round(v.reduce((a,b)=>a+b,0)/v.length);return `<div class="item"><strong>${esc(s)} — ${avg}%</strong><div class="progress"><span style="width:${avg}%"></span></div></div>`}).join('')}
-function addHomework(){let a=get('ha_study_homework');if(!hwSubject.value.trim()||!hwText.value.trim())return;a.push({id:Date.now(),subject:hwSubject.value.trim(),date:hwDate.value,text:hwText.value.trim(),done:false});set('ha_study_homework',a);renderHomework()}
-function renderHomework(){let a=get('ha_study_homework');hwItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.subject)} ${x.done?'✅':''}</strong>${x.date?'📅 '+esc(x.date)+'<br>':''}${esc(x.text)}<div class="actions"><button class="btn ${x.done?'alt':''}" onclick="toggleHomework(${x.id})">${x.done?'إلغاء الإكمال':'تم الإنجاز'}</button><button class="btn alt" onclick="delLocal('ha_study_homework',${x.id},renderHomework)">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد واجبات.</div>'}
-function toggleHomework(id){let a=get('ha_study_homework'),x=a.find(x=>x.id===id);if(!x)return;let was=x.done;x.done=!x.done;set('ha_study_homework',a);if(!was&&x.done)addPoints(5);renderHomework()}
-function addReminder(){let a=get('ha_study_reminders');if(!remText.value.trim()||!remDate.value)return;a.push({id:Date.now(),type:remType.value,date:remDate.value,text:remText.value.trim()});set('ha_study_reminders',a);renderReminders()}
-function renderReminders(){let a=get('ha_study_reminders').sort((x,y)=>x.date.localeCompare(y.date));remItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.type)} — ${esc(x.date.replace('T',' '))}</strong>${esc(x.text)}<div class="actions"><button class="btn alt" onclick="delLocal('ha_study_reminders',${x.id},renderReminders)">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد تذكيرات.</div>'}
-function enablePush(){if(window.HA_EnableNotifications)return window.HA_EnableNotifications();alert('نظام الإشعارات غير متاح بهذه الصفحة حالياً.')}
-async function loadTutors(){tutorItems.innerHTML='<div class="empty">جاري التحميل...</div>';let {data,error}=await db.from('profiles').select('id,full_name,username,governorate,employee_role,employee_status,account_type').eq('account_type','employee').eq('employee_status','approved').limit(100);if(error){tutorItems.innerHTML='<div class="empty">تعذر تحميل الموظفين المفعّلين.</div>';return}let a=(data||[]).filter(x=>/مدرس|معلم|استاذ|أستاذ|تدريس|teacher/i.test(x.employee_role||''));tutorItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>👨‍🏫 ${esc(x.full_name||x.username||'مدرس')}</strong>${x.employee_role?'الاختصاص: '+esc(x.employee_role)+'<br>':''}${x.governorate?'📍 '+esc(x.governorate):''}</div>`).join(''):'<div class="empty">لا توجد حالياً حسابات موظفين مفعّلين مصنفة كمدرسين.</div>'}
-function addAdmission(){let a=get('ha_study_admissions');if(!admTitle.value.trim()||!admUrl.value.trim())return;a.push({id:Date.now(),title:admTitle.value.trim(),url:admUrl.value.trim(),note:admNote.value.trim()});set('ha_study_admissions',a);renderAdmissions()}
-function renderAdmissions(){let a=get('ha_study_admissions');admItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.title)}</strong><a href="${esc(x.url)}" target="_blank">فتح الرابط الرسمي</a>${x.note?'<br>'+esc(x.note):''}<div class="actions"><button class="btn alt" onclick="delLocal('ha_study_admissions',${x.id},renderAdmissions)">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد روابط محفوظة.</div>'}
-function addExchange(){let a=get('ha_study_exchange');if(!exTitle.value.trim())return;a.push({id:Date.now(),title:exTitle.value.trim(),type:exType.value,area:exArea.value.trim(),phone:exPhone.value.trim(),note:exNote.value.trim()});set('ha_study_exchange',a);renderExchange()}
-function renderExchange(){let a=get('ha_study_exchange');exItems.innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.title)} — ${esc(x.type)}</strong>${x.area?'📍 '+esc(x.area)+'<br>':''}${x.phone?'📱 '+esc(x.phone)+'<br>':''}${esc(x.note||'')}<div class="actions"><button class="btn alt" onclick="delLocal('ha_study_exchange',${x.id},renderExchange)">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد عروض على هذا الجهاز.</div>'}
-function addPoints(n){let p=+localStorage.getItem('ha_study_points')||0;localStorage.setItem('ha_study_points',p+n)}
-function renderChallenges(){points.textContent=+localStorage.getItem('ha_study_points')||0;studySessions.textContent=get('ha_study_time',{sessions:0}).sessions||0;doneHomework.textContent=get('ha_study_homework').filter(x=>x.done).length}
-function renderDashboard(){let exams=[];stages.forEach(([i,n,k])=>get('ha_study_'+k+'_exams').forEach(x=>exams.push({...x,stage:n})));voc.forEach(([i,n,k])=>get('ha_study_vocational-'+k+'_exams').forEach(x=>exams.push({...x,stage:'المهني - '+n})));exams.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));let h=get('ha_study_homework').filter(x=>!x.done).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));let p=get('ha_study_plans').sort((a,b)=>a.date.localeCompare(b.date));let t=get('ha_study_time',{minutes:0,sessions:0});dashboardBox.innerHTML=`<div class="dashboard-grid"><div class="dash"><strong>📅 الامتحان القادم</strong><div>${exams[0]?esc(exams[0].subject)+' — '+esc(exams[0].date)+'<br>'+esc(exams[0].stage):'لا يوجد'}</div></div><div class="dash"><strong>📌 الواجب القادم</strong><div>${h[0]?esc(h[0].subject)+' — '+esc(h[0].date||'بدون تاريخ'):'لا يوجد'}</div></div><div class="dash"><strong>📖 خطة الدراسة</strong><div>${p[0]?esc(p[0].subject)+' — '+esc(p[0].date):'لا توجد'}</div></div><div class="dash"><strong>⏱️ وقت الدراسة</strong><div>${t.minutes||0} دقيقة — ${t.sessions||0} جلسة</div></div><div class="dash"><strong>🏆 النقاط</strong><div>${+localStorage.getItem('ha_study_points')||0}</div></div><div class="dash"><strong>🚌 النقل</strong><div><a href="student-transport.html">فتح خطوط النقل</a></div></div></div>`}
-function delLocal(k,id,render){set(k,get(k).filter(x=>x.id!==id));render()}
-async function authInit(){const {data}=await db.auth.getUser();me=data?.user||null;if(me){const {data:p}=await db.from('profiles').select('*').eq('id',me.id).maybeSingle();profile=p||null}}
-authInit();showMain();resetTimer();
+
+function goBack(){
+  if(currentPanel){
+    closePanel();
+  }else{
+    location.href = 'index.html';
+  }
+}
+
+window.addEventListener('popstate', function(){
+  if(currentPanel){
+    closePanel();
+  }
+});
 </script>
+
 </body>
 </html>

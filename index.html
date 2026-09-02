@@ -251,6 +251,7 @@ body{padding-bottom:76px}
   }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -272,6 +273,7 @@ body{padding-bottom:76px}
     </div>
 
     <a href="account.html">👤 الحساب الشخصي</a>
+    <a id="adminPanelLink" href="admin-panel.html" style="display:none">🛡️ لوحة الإدارة</a>
     <a href="payments.html">💳 الدفع الإلكتروني</a>
     <a href="index.html">🏠 الرئيسية</a>
     <a href="shop.html">🛒 تسوق الآن</a>
@@ -477,5 +479,22 @@ function continueLogin(){
 
 
 
+
+<script>
+(async function(){
+  try{
+    if(!window.supabase)return;
+    const adb=supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+    const {data:{session}}=await adb.auth.getSession();
+    if(!session)return;
+    const {data}=await adb.from('app_admins').select('user_id,is_active').eq('user_id',session.user.id).eq('is_active',true).maybeSingle();
+    if(data){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex';}
+  }catch(e){console.warn('admin link',e)}
+})();
+</script>
 </body>
 </html>
