@@ -175,22 +175,30 @@ async function authUpdateDirect(changes){
   return body;
 }
 async function invokeAccountUpdate(payload){
-  const {data:ss,error:sessionErr}=await db.auth.getSession();
-  if(sessionErr) throw sessionErr;
-  if(!ss.session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
+  let session=await getLiveSession();
+  if(!session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
 
-  const {data,error}=await db.functions.invoke('update-my-account',{body:payload});
-  if(error){
-    let msg=error.message||'تعذر الاتصال بالخادم';
-    try{
-      if(error.context){
-        const body=await error.context.json();
-        if(body?.error) msg=body.error;
-      }
-    }catch(_e){}
-    throw new Error(msg);
+  const endpoint=SB_URL+'/functions/v1/update-my-account';
+  const send=async()=>fetchWithRetry(endpoint,{
+    method:'POST',
+    headers:{
+      'apikey':SB_KEY,
+      'Authorization':'Bearer '+session.access_token,
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify(payload)
+  },3);
+
+  let r=await send();
+  if(r.status===401){
+    const rr=await db.auth.refreshSession();
+    if(rr.error||!rr.data.session) throw rr.error||new Error('انتهت جلسة الحساب. سجل الدخول من جديد.');
+    session=rr.data.session;
+    r=await send();
   }
-  if(!data?.ok) throw new Error(data?.error||'تعذر تنفيذ التغيير');
+  let data={};
+  try{ data=await r.json(); }catch(_e){}
+  if(!r.ok||!data?.ok) throw new Error(data?.error||data?.message||('خطأ الخادم HTTP '+r.status));
   return data;
 }
 
