@@ -6,10 +6,49 @@ a{display:block;text-align:center;text-decoration:none;background:#eee;color:#11
 <h1>تسجيل الدخول</h1><input id="phone" type="tel" placeholder="رقم الموبايل"><input id="password" type="password" placeholder="الرقم السري">
 <button onclick="login()">تسجيل الدخول</button><a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a><button onclick="guestLogin()" style="background:#666">الدخول كضيف</button>
 <a href="register.html">إنشاء حساب جديد</a><a href="index.html">الرجوع للرئيسية</a></div>
-<script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');
-function normalizePhone(v){let p=v.replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
+<script>
+const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
+function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
 function authEmail(p){return 'u'+p+'@ha.local'}
-async function login(){const p=normalizePhone(phone.value.trim());if(!phone.value.trim()||!password.value){alert('اكتب رقم الموبايل والرقم السري');return}
-const {error}=await db.auth.signInWithPassword({email:authEmail(p),password:password.value});if(error)alert('بيانات الدخول غير صحيحة');else{localStorage.setItem('ha_logged_in','1');location.href='index.html';}}
-async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error)alert(error.message);else{localStorage.setItem('ha_logged_in','1');location.href='index.html';}}
+function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
+async function persistLoginFlag(){const {data}=await db.auth.getSession();if(data.session){localStorage.setItem('ha_logged_in','1');return data.session}localStorage.removeItem('ha_logged_in');return null}
+async function ensureProfile(user, fallback={}){
+  if(!user||user.is_anonymous)return;
+  const m=user.user_metadata||{};
+  const row={
+    id:user.id,
+    full_name:fallback.full_name??m.full_name??null,
+    phone:fallback.phone??m.phone??null,
+    username:fallback.username??m.username??null,
+    avatar_url:fallback.avatar_url??m.avatar_url??null,
+    governorate:fallback.governorate??m.governorate??null,
+    account_type:fallback.account_type??m.account_type??'customer',
+    employee_role:fallback.employee_role??m.employee_role_key??m.employee_role??null,
+    employee_status:(fallback.account_type??m.account_type)==='employee'?'pending':'not_applicable'
+  };
+  const {data:existing}=await db.from('profiles').select('id').eq('id',user.id).maybeSingle();
+  if(existing){
+    await db.from('profiles').update({full_name:row.full_name,phone:row.phone,username:row.username,avatar_url:row.avatar_url,governorate:row.governorate}).eq('id',user.id);
+  }else{
+    await db.from('profiles').insert(row);
+  }
+}
+
+async function login(){
+ const raw=phone.value.trim(),pass=password.value;
+ if(!raw||!pass){alert('اكتب رقم الموبايل والرقم السري');return}
+ const lp=localPhone(raw);if(!/^07\d{9}$/.test(lp)){alert('اكتب رقم موبايل عراقي صحيح يبدأ بـ 07 ويتكون من 11 رقم.');return}
+ const p=normalizePhone(lp);
+ const {data,error}=await db.auth.signInWithPassword({email:authEmail(p),password:pass});
+ if(error||!data.session){localStorage.removeItem('ha_logged_in');alert('بيانات الدخول غير صحيحة');return}
+ await ensureProfile(data.user);
+ await persistLoginFlag();
+ location.replace('index.html');
+}
+async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error){alert(error.message);return}await persistLoginFlag();location.replace('index.html');}
+(async()=>{const s=await persistLoginFlag();if(s&&!s.user?.is_anonymous){/* يبقى المستخدم مسجلاً */}})();
+
 </script></body></html>

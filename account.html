@@ -1,8 +1,140 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>حسابي - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:850px;margin:25px auto}.card{background:#fff;border-radius:16px;padding:18px;margin:13px 0;box-shadow:0 4px 16px #0001}h1{text-align:center}.row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.muted{color:#666;font-size:14px;line-height:1.7}.badge{padding:6px 10px;border-radius:999px;background:#eee;font-weight:bold}.order{border:1px solid #ddd;border-radius:12px;padding:14px;margin-top:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}button,a.btn{border:0;border-radius:9px;padding:11px 14px;text-decoration:none;text-align:center;cursor:pointer;font-size:15px}.primary{background:#111;color:#fff}.light{background:#eee;color:#111}.danger{background:#a90020;color:#fff}input,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:9px;margin-top:7px}.stars button{background:#eee;color:#111}.empty{text-align:center;color:#666;padding:20px}.topbtn{display:block;width:100%;margin-top:10px}</style></head><body><div class="wrap"><h1>👤 حسابي</h1><div class="card"><a class="btn primary topbtn" href="notifications-center.html">🔔 الإشعارات</a></div><div id="profileBox" class="card">جاري تحميل الحساب...</div><div id="employeeLink" class="card" style="display:none"><a class="btn primary topbtn" href="employee-orders.html">🧑‍💼 طلبات الموظف</a></div><div class="card"><a class="btn light topbtn" href="shop-orders.html">🛍️ طلبات المشتريات</a></div><div class="card"><div class="row"><h2>📦 طلبات الخدمة</h2><a class="btn primary" href="contact.html">+ طلب خدمة جديد</a></div><div id="ordersBox" class="empty">جاري تحميل الطلبات...</div></div><div class="card"><button class="danger topbtn" onclick="logout()">تسجيل الخروج</button><a class="btn light topbtn" href="index.html">← الرئيسية</a></div></div><script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll');let me=null,profile=null;const ar={new:'جديد',accepted:'مقبول',on_the_way:'بالطريق',completed:'مكتمل',cancelled:'ملغي'};function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-async function init(){const {data}=await db.auth.getUser();me=data?.user||null;if(!me){profileBox.innerHTML='غير مسجل. <a href="login.html">تسجيل الدخول</a>';ordersBox.textContent='';return}const {data:p}=await db.from('profiles').select('*').eq('id',me.id).maybeSingle();profile=p;if(!p){profileBox.textContent='تعذر تحميل بيانات الحساب';return}profileBox.innerHTML='<strong>'+esc(p.full_name||p.username||'حسابي')+'</strong><div class="muted">'+esc(p.phone||'')+'<br>'+esc(p.governorate||'')+'<br>نوع الحساب: '+(p.account_type==='employee'?'موظف':'عميل')+'</div>';if(p.account_type==='employee'&&p.employee_status==='approved')employeeLink.style.display='block';if(p.account_type==='customer')await loadOrders();else ordersBox.innerHTML='<div class="empty">طلبات الخدمة الخاصة بالعملاء فقط.</div>';db.channel('account-orders-'+me.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'orders',filter:'customer_id=eq.'+me.id},()=>loadOrders()).subscribe()}
-async function loadOrders(){const {data,error}=await db.from('orders').select('id,order_type,description,area,status,assigned_employee_id,attachment_url,customer_rating,created_at').eq('customer_id',me.id).order('created_at',{ascending:false});if(error){ordersBox.textContent='تعذر تحميل الطلبات: '+error.message;return}if(!data?.length){ordersBox.innerHTML='<div class="empty">لا توجد طلبات خدمة.</div>';return}ordersBox.innerHTML=data.map(o=>`<div class="order"><div class="row"><strong>طلب #${o.id} — ${esc(o.order_type)}</strong><span class="badge">${esc(ar[o.status]||o.status)}</span></div><div class="muted">${esc(o.area||'')}<br>${new Date(o.created_at).toLocaleString('ar-IQ')}</div>${o.description?`<p>${esc(o.description)}</p>`:''}${o.attachment_url?`<a href="${esc(o.attachment_url)}" target="_blank">📎 فتح المرفق</a>`:''}<div class="actions">${o.status==='on_the_way'?`<a class="btn primary" href="track-service.html?order=${o.id}">📍 تتبع الموظف</a>`:''}${['new','accepted'].includes(o.status)?`<button class="danger" onclick="cancelOrder(${o.id})">إلغاء الطلب</button>`:''}${o.status==='completed'&&!o.customer_rating?`<button class="primary" onclick="rateOrder(${o.id})">⭐ تقييم الموظف</button>`:''}${o.customer_rating?`<span class="badge">تقييمك: ${o.customer_rating}/5</span>`:''}</div></div>`).join('')}
-async function cancelOrder(id){const reason=prompt('سبب الإلغاء (اختياري):')??null;if(reason===null)return;const {error}=await db.rpc('customer_cancel_order',{p_order_id:id,p_reason:reason});if(error)alert('تعذر الإلغاء: '+error.message);else loadOrders()}
-async function rateOrder(id){const r=Number(prompt('قيّم الموظف من 1 إلى 5:'));if(!Number.isInteger(r)||r<1||r>5){alert('التقييم لازم يكون من 1 إلى 5');return}const review=prompt('ملاحظة على الخدمة (اختياري):')||null;const {error}=await db.rpc('customer_rate_order',{p_order_id:id,p_rating:r,p_review:review});if(error)alert('تعذر حفظ التقييم: '+error.message);else loadOrders()}
-async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.href='login.html'}init();
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحساب الشخصي - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#111}
+.wrap{width:94%;max-width:760px;margin:35px auto}h1{text-align:center}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 16px #0001;margin:14px 0}
+label{display:block;font-weight:bold;margin:12px 0 6px}input{width:100%;padding:13px;border:1px solid #ccc;border-radius:9px;font-size:16px}
+button,a.btn{width:100%;display:block;padding:13px;border:0;border-radius:9px;margin-top:10px;text-align:center;text-decoration:none;font-size:16px;cursor:pointer}
+.primary{background:#111;color:#fff}.light{background:#eee;color:#111}.danger{background:#b00020;color:#fff}
+.status{padding:12px;text-align:center;border-radius:10px;background:#fff;margin-bottom:14px}
+.order-row{border:1px solid #ddd;border-radius:12px;padding:14px;margin-top:12px}
+.order-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.order-state{font-weight:bold}
+.order-meta{color:#666;font-size:14px;margin-top:8px;line-height:1.7}
+.track-btn{background:#111;color:#fff;display:none}
+</style></head>
+<body><div class="wrap">
+<h1>👤 الحساب الشخصي</h1>
+<div id="status" class="status">جاري التحقق من الحساب...</div>
+
+<div id="guestBox" class="card" style="display:none">
+  <h2>لا يوجد حساب مسجل</h2>
+  <a class="btn primary" href="login.html">تسجيل الدخول</a>
+  <a class="btn light" href="register.html">إنشاء حساب جديد</a>
+</div>
+
+<div id="accountBox" style="display:none">
+  <div class="card">
+    <h2>بيانات الحساب</h2>
+    <label>المعرف</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="حروف إنكليزية + أرقام + رموز"><div style="font-size:13px;color:#666;margin-top:5px">يقبل @ # $ % , . _ - وباقي الرموز الإنكليزية، بدون مسافات.</div>
+    <label>رقم الهاتف</label><input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="07XXXXXXXXX">
+    <button class="primary" onclick="saveProfile()">حفظ التغييرات</button>
+  </div>
+
+  <div class="card">
+    <h2>تغيير الرقم السري</h2>
+    <label>الرقم السري الجديد</label><input id="password" type="password" minlength="6" placeholder="6 أحرف على الأقل">
+    <button class="primary" onclick="changePassword()">تغيير الرقم السري</button>
+  </div>
+
+  <div class="card">
+    <h2>📦 طلباتي</h2>
+
+    <div id="serviceOrderBox" class="order-row">
+      <div class="order-head">
+        <strong>طلب خدمة</strong>
+        <span id="serviceOrderState" class="order-state">جاري تحميل الطلب...</span>
+      </div>
+
+      <div id="serviceOrderMeta" class="order-meta"></div>
+
+      <button id="serviceTrackBtn" class="track-btn" type="button">
+        📍 تتبع الموظف
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <button class="light" onclick="switchAccount()">🔄 تبديل الحساب</button>
+    <button class="danger" onclick="logout()">تسجيل الخروج</button>
+  </div>
+</div>
+
+<a class="btn light" href="index.html">← الرجوع إلى الرئيسية</a>
+</div>
+<script>
+const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
+function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
+function authEmail(p){return 'u'+p+'@ha.local'}
+function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
+async function persistLoginFlag(){const {data}=await db.auth.getSession();if(data.session){localStorage.setItem('ha_logged_in','1');return data.session}localStorage.removeItem('ha_logged_in');return null}
+async function ensureProfile(user, fallback={}){
+  if(!user||user.is_anonymous)return;
+  const m=user.user_metadata||{};
+  const row={
+    id:user.id,
+    full_name:fallback.full_name??m.full_name??null,
+    phone:fallback.phone??m.phone??null,
+    username:fallback.username??m.username??null,
+    avatar_url:fallback.avatar_url??m.avatar_url??null,
+    governorate:fallback.governorate??m.governorate??null,
+    account_type:fallback.account_type??m.account_type??'customer',
+    employee_role:fallback.employee_role??m.employee_role_key??m.employee_role??null,
+    employee_status:(fallback.account_type??m.account_type)==='employee'?'pending':'not_applicable'
+  };
+  const {data:existing}=await db.from('profiles').select('id').eq('id',user.id).maybeSingle();
+  if(existing){
+    await db.from('profiles').update({full_name:row.full_name,phone:row.phone,username:row.username,avatar_url:row.avatar_url,governorate:row.governorate}).eq('id',user.id);
+  }else{
+    await db.from('profiles').insert(row);
+  }
+}
+
+let currentUser=null,currentProfile=null;
+async function init(){
+ const {data:s}=await db.auth.getSession();currentUser=s.session?.user||null;
+ if(!currentUser){localStorage.removeItem('ha_logged_in');status.textContent='سجل الدخول حتى تستخدم إعدادات الحساب.';guestBox.style.display='block';return}
+ localStorage.setItem('ha_logged_in','1');
+ await ensureProfile(currentUser);
+ const {data:p}=await db.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();currentProfile=p||null;
+ status.textContent='تم تسجيل الدخول';accountBox.style.display='block';
+ username.value=currentProfile?.username||currentUser.user_metadata?.username||'';
+ phone.value=localPhone(currentProfile?.phone||currentUser.user_metadata?.phone||'');
+ await loadLatestServiceOrder();
+}
+async function loadLatestServiceOrder(){const stateEl=document.getElementById('serviceOrderState'),metaEl=document.getElementById('serviceOrderMeta'),trackBtn=document.getElementById('serviceTrackBtn');stateEl.textContent='جاري تحميل الطلب...';metaEl.textContent='';trackBtn.style.display='none';const {data,error}=await db.from('service_orders').select('id,status,customer_lat,customer_lng,employee_lat,employee_lng,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);if(error){stateEl.textContent='تعذر تحميل الطلب';metaEl.textContent=error.message;return}if(!data||!data.length){stateEl.textContent='لا يوجد طلب خدمة حالياً';return}const order=data[0];stateEl.textContent=order.status||'جديد';metaEl.textContent='تاريخ الطلب: '+new Date(order.created_at).toLocaleString('ar-IQ');if(order.status==='بالطريق'){trackBtn.style.display='block';trackBtn.dataset.orderId=order.id}}
+document.getElementById('serviceTrackBtn')?.addEventListener('click',function(){const orderId=this.dataset.orderId;if(orderId)location.href='track-service.html?order='+encodeURIComponent(orderId)});
+async function saveProfile(){
+ const user=username.value.trim(),lp=localPhone(phone.value.trim());
+ if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز مثل @ # $ % , . _ -، وبدون مسافات.');return}
+ if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
+ const ph=normalizePhone(lp);
+ const {data:uDup}=await db.from('profiles').select('id').eq('username',user).neq('id',currentUser.id).limit(1);if(uDup?.length){alert('هذا المعرّف مستخدم بحساب آخر.');return}
+ const {data:pDup}=await db.from('profiles').select('id').eq('phone',ph).neq('id',currentUser.id).limit(1);if(pDup?.length){alert('هذا الرقم مستخدم بحساب آخر.');return}
+ const oldPhone=currentProfile?.phone||currentUser.user_metadata?.phone||'';
+ const meta={...(currentUser.user_metadata||{}),username:user,phone:ph};
+ if(ph!==oldPhone){
+   const {error:authErr}=await db.auth.updateUser({email:authEmail(ph),data:meta});
+   if(authErr){alert('تعذر تغيير رقم الهاتف: '+authErr.message);return}
+ }else{
+   const {error:authErr}=await db.auth.updateUser({data:meta});if(authErr){alert('تعذر حفظ البيانات: '+authErr.message);return}
+ }
+ const {error:profileErr}=await db.from('profiles').update({username:user,phone:ph}).eq('id',currentUser.id);
+ if(profileErr){await ensureProfile({...currentUser,user_metadata:meta},{username:user,phone:ph});}
+ currentUser=(await db.auth.getUser()).data.user||currentUser;currentProfile={...(currentProfile||{}),username:user,phone:ph};
+ await persistLoginFlag();alert('تم حفظ رقم الهاتف والمعرف. استخدم الرقم الجديد في تسجيل الدخول من الآن.');
+}
+async function changePassword(){const p=password.value;if(!/^[A-Za-z0-9]{6,}$/.test(p)){alert('الرقم السري لازم يكون 6 خانات أو أكثر، أحرف إنكليزية أو أرقام فقط.');return}const {error}=await db.auth.updateUser({password:p});if(error)alert('تعذر تغيير الرقم السري: '+error.message);else{alert('تم تغيير الرقم السري');password.value=''}}
+async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
+async function switchAccount(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
+init();
+
 </script></body></html>
