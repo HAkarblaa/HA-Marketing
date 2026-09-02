@@ -178,26 +178,27 @@ async function invokeAccountUpdate(payload){
   let session=await getLiveSession();
   if(!session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
 
+  // إرسال Simple Request بدون Authorization/apikey headers حتى لا ينفذ المتصفح CORS preflight.
+  // التحقق من الجلسة يتم داخل Edge Function بواسطة access_token الموجود في جسم الطلب.
   const endpoint=SB_URL+'/functions/v1/update-my-account';
   const send=async()=>fetchWithRetry(endpoint,{
     method:'POST',
-    headers:{
-      'apikey':SB_KEY,
-      'Authorization':'Bearer '+session.access_token,
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify(payload)
+    headers:{'Content-Type':'text/plain;charset=UTF-8'},
+    body:JSON.stringify({...payload,access_token:session.access_token})
   },3);
 
   let r=await send();
+  let data={};
+  try{ data=await r.json(); }catch(_e){}
+
   if(r.status===401){
     const rr=await db.auth.refreshSession();
     if(rr.error||!rr.data.session) throw rr.error||new Error('انتهت جلسة الحساب. سجل الدخول من جديد.');
     session=rr.data.session;
     r=await send();
+    try{ data=await r.json(); }catch(_e){ data={}; }
   }
-  let data={};
-  try{ data=await r.json(); }catch(_e){}
+
   if(!r.ok||!data?.ok) throw new Error(data?.error||data?.message||('خطأ الخادم HTTP '+r.status));
   return data;
 }
