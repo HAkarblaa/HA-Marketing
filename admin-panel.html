@@ -66,6 +66,21 @@
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+
+function migrateLegacyAuth(){
+  try{
+    const target='ha-marketing-auth';
+    if(localStorage.getItem(target)) return;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i)||'';
+      if(/^sb-.*-auth-token$/.test(k)){
+        const v=localStorage.getItem(k);
+        if(v){ localStorage.setItem(target,v); break; }
+      }
+    }
+  }catch(e){ console.warn('auth migration',e); }
+}
+migrateLegacyAuth();
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 let session=null,adminRow=null,myPermissions=[];
 const SECTIONS=[
@@ -81,10 +96,14 @@ function can(section){return !!adminRow?.is_super_admin || myPermissions.include
 async function init(){
  const {data:{session:s}}=await db.auth.getSession();session=s;
  if(!s){who.textContent='يجب تسجيل الدخول أولاً.';denied.style.display='block';return}
- const {data:a,error}=await db.from('app_admins').select('*').eq('user_id',s.user.id).eq('is_active',true).maybeSingle();
- if(error||!a){who.textContent='الحساب مسجل لكنه غير مخول كأدمن.';denied.style.display='block';return}
- adminRow=a;
- if(!a.is_super_admin){const {data:p}=await db.from('app_admin_permissions').select('section_key').eq('admin_user_id',s.user.id).eq('can_view',true);myPermissions=(p||[]).map(x=>x.section_key)}
+ const {data:isSuper,error:superErr}=await db.rpc('is_super_admin');
+ const {data:isAdmin,error:adminErr}=await db.rpc('is_app_admin');
+ if(superErr||adminErr){who.textContent='تعذر التحقق من صلاحية الإدارة. أعد فتح التطبيق.';denied.style.display='block';return}
+ if(!isAdmin && !isSuper){who.textContent='هذا الحساب غير مخول كأدمن.';denied.style.display='block';return}
+ const {data:a}=await db.from('app_admins').select('*').eq('user_id',s.user.id).maybeSingle();
+ adminRow=a||{user_id:s.user.id,is_super_admin:!!isSuper,is_active:true};
+ adminRow.is_super_admin=!!isSuper || !!adminRow.is_super_admin;
+ if(!adminRow.is_super_admin){const {data:p}=await db.from('app_admin_permissions').select('section_key').eq('admin_user_id',s.user.id).eq('can_view',true);myPermissions=(p||[]).map(x=>x.section_key)}
  who.innerHTML='تم الدخول كأدمن '+(a.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');panel.style.display='block';
  renderSections();renderPerms();
  if(can('study')||can('notifications')) await loadTargets(); else studyNotifyBox.innerHTML='<h2>🔒 التبليغات الدراسية</h2><p>هذا الحساب لا يملك صلاحية الدراسة أو الإشعارات.</p>';

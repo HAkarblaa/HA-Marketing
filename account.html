@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الحساب الشخصي - HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -70,6 +70,21 @@ button,a.btn{width:100%;display:block;padding:13px;border:0;border-radius:9px;ma
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+
+function migrateLegacyAuth(){
+  try{
+    const target='ha-marketing-auth';
+    if(localStorage.getItem(target)) return;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i)||'';
+      if(/^sb-.*-auth-token$/.test(k)){
+        const v=localStorage.getItem(k);
+        if(v){ localStorage.setItem(target,v); break; }
+      }
+    }
+  }catch(e){ console.warn('auth migration',e); }
+}
+migrateLegacyAuth();
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
@@ -113,6 +128,8 @@ async function init(){
 async function loadLatestServiceOrder(){const stateEl=document.getElementById('serviceOrderState'),metaEl=document.getElementById('serviceOrderMeta'),trackBtn=document.getElementById('serviceTrackBtn');stateEl.textContent='جاري تحميل الطلب...';metaEl.textContent='';trackBtn.style.display='none';const {data,error}=await db.from('service_orders').select('id,status,customer_lat,customer_lng,employee_lat,employee_lng,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);if(error){stateEl.textContent='تعذر تحميل الطلب';metaEl.textContent=error.message;return}if(!data||!data.length){stateEl.textContent='لا يوجد طلب خدمة حالياً';return}const order=data[0];stateEl.textContent=order.status||'جديد';metaEl.textContent='تاريخ الطلب: '+new Date(order.created_at).toLocaleString('ar-IQ');if(order.status==='بالطريق'){trackBtn.style.display='block';trackBtn.dataset.orderId=order.id}}
 document.getElementById('serviceTrackBtn')?.addEventListener('click',function(){const orderId=this.dataset.orderId;if(orderId)location.href='track-service.html?order='+encodeURIComponent(orderId)});
 async function saveProfile(){
+ const {data:ss}=await db.auth.getSession(); if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
+ currentUser=ss.session.user;
  const user=username.value.trim(),lp=localPhone(phone.value.trim());
  if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز مثل @ # $ % , . _ -، وبدون مسافات.');return}
  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
@@ -132,7 +149,7 @@ async function saveProfile(){
  currentUser=(await db.auth.getUser()).data.user||currentUser;currentProfile={...(currentProfile||{}),username:user,phone:ph};
  await persistLoginFlag();alert('تم حفظ رقم الهاتف والمعرف. استخدم الرقم الجديد في تسجيل الدخول من الآن.');
 }
-async function changePassword(){const p=password.value;if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}const {error}=await db.auth.updateUser({password:p});if(error)alert('تعذر تغيير الرقم السري: '+error.message);else{alert('تم تغيير الرقم السري بنجاح');password.value=''}}
+async function changePassword(){const {data:ss}=await db.auth.getSession();if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}const p=password.value;if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}const {error}=await db.auth.updateUser({password:p});if(error)alert('تعذر تغيير الرقم السري: '+error.message);else{await db.auth.refreshSession();alert('تم تغيير الرقم السري بنجاح');password.value=''}}
 async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 async function switchAccount(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 init();

@@ -40,6 +40,21 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+
+function migrateLegacyAuth(){
+  try{
+    const target='ha-marketing-auth';
+    if(localStorage.getItem(target)) return;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i)||'';
+      if(/^sb-.*-auth-token$/.test(k)){
+        const v=localStorage.getItem(k);
+        if(v){ localStorage.setItem(target,v); break; }
+      }
+    }
+  }catch(e){ console.warn('auth migration',e); }
+}
+migrateLegacyAuth();
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}

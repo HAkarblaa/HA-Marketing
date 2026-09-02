@@ -491,8 +491,8 @@ function continueLogin(){
     );
     const {data:{session}}=await adb.auth.getSession();
     if(!session)return;
-    const {data}=await adb.from('app_admins').select('user_id,is_active').eq('user_id',session.user.id).eq('is_active',true).maybeSingle();
-    if(data){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex';}
+    const {data:isAdmin}=await adb.rpc('is_app_admin');
+    if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex';}
   }catch(e){console.warn('admin link',e)}
 })();
 </script>
