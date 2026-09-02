@@ -204,6 +204,8 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
 <script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="firebase-auth-secure.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
@@ -240,6 +242,7 @@ let currentRideStatusRef=null;
 
 let driverProfile=null;
 let driverReady=false;
+let firebaseDriverUser=null;
 
 function coordText(p){
   if(!p)return '—';
@@ -247,11 +250,15 @@ function coordText(p){
 }
 
 function watchPendingRides(){
+  if(!firebase.auth().currentUser){
+    HA_FirebaseAuth.ready().then(u=>{firebaseDriverUser=u;watchPendingRides();}).catch(err=>{console.error(err);nearbyCount.textContent='—';});
+    return;
+  }
   if(driverWatch) driverWatch.off();
   driverWatch=db.ref('rides');
   driverWatch.orderByChild('status').equalTo('searching').on('value',snap=>{
     const rides=snap.val()||{};
-    const entries=Object.entries(rides).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+    const entries=Object.entries(rides).filter(([,r])=>!!r?.customerUid).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
     nearbyCount.textContent=available ? String(entries.length) : '0';
 
     if(!available || currentRideId)return;
@@ -342,6 +349,7 @@ availabilityBtn.onclick=()=>{
 
 acceptBtn.onclick=async()=>{
   if(!currentRideId)return;
+  try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){ alert('تعذر التحقق الآمن من Firebase. فعّل Anonymous Authentication.'); return; }
   const ident=await HA_TransportProfile.driverIdentity();
   if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
   driverProfile=ident.driver;
@@ -351,6 +359,7 @@ acceptBtn.onclick=async()=>{
     if(ride && ride.status==='searching'){
       ride.status='accepted';
       ride.acceptedAt=Date.now();
+      ride.driverUid=firebaseDriverUser.uid;
       ride.driver=driverProfile;
       return ride;
     }
@@ -492,6 +501,11 @@ nearbyCount.textContent='0';
 
 async function initRealDriver(){
   const msg=document.getElementById('driverGateMsg');
+  try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){
+    console.error(err);
+    msg.textContent='تعذر تأمين Firebase. فعّل Anonymous Authentication من Firebase Authentication.';
+    availabilityBtn.disabled=true;acceptBtn.disabled=true;return false;
+  }
   const setup=document.getElementById('vehicleSetup');
   const saved=HA_TransportProfile.vehicle()||{};
   if(saved.plate)vehiclePlate.value=saved.plate;

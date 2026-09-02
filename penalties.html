@@ -437,6 +437,8 @@ body{
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="firebase-auth-secure.js"></script>
 <script>
 const firebaseConfig={
   apiKey:"AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
@@ -464,8 +466,12 @@ const CLUBS=[
 
 let mode='cpu',difficulty='medium',myTeam=null,oppTeam=null,myName='لاعب',oppName='الجهاز',kickMax=5;
 let score=[0,0],turn=0,kicks=[0,0],history=[],timeLeft=10,timerId=null,gameOver=false;
-let roomRef=null,roomCode='',uid=localStorage.getItem('ha_pen_uid')||('p_'+Math.random().toString(36).slice(2,10));
-localStorage.setItem('ha_pen_uid',uid);
+let roomRef=null,roomCode='',uid=null;
+async function ensureOnlineAuth(){
+  const user=await HA_FirebaseAuth.ready();
+  uid=user.uid;
+  return user;
+}
 let econ=JSON.parse(localStorage.getItem('ha_pen_econ')||'null')||{points:0,gems:0,wins:0};
 let audioCtx=null,musicTimer=null,musicTrack=1,musicOn=true;
 
@@ -658,6 +664,7 @@ window.addEventListener('beforeunload',()=>{try{HA_GameVoice.leave()}catch(e){}}
 /* Online room basic sync */
 function genCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 $('createRoomBtn').onclick=async()=>{
+  try{await ensureOnlineAuth();}catch(e){alert('تعذر تأمين اتصال Firebase');return}
   mode='online';roomCode=genCode();roomRef=db.ref('penaltyRooms/'+roomCode);
   const t=teams()[Number($('teamSelect').value)||0],name=$('playerName').value.trim()||'لاعب';
   await roomRef.set({status:'waiting',host:uid,createdAt:Date.now(),players:{[uid]:{name,team:t}}});
@@ -665,6 +672,7 @@ $('createRoomBtn').onclick=async()=>{
   roomRef.on('value',snap=>{const r=snap.val();if(!r)return;const ps=Object.entries(r.players||{});if(ps.length>=2&&r.status==='waiting'&&r.host===uid)roomRef.update({status:'playing'});if(r.status==='playing')enterOnline(r)})
 };
 $('joinRoomBtn').onclick=async()=>{
+  try{await ensureOnlineAuth();}catch(e){alert('تعذر تأمين اتصال Firebase');return}
   const code=$('roomCodeInput').value.trim().toUpperCase();if(!code)return;
   roomCode=code;roomRef=db.ref('penaltyRooms/'+code);const snap=await roomRef.once('value');if(!snap.exists()){alert('الغرفة غير موجودة');return}
   const t=teams()[Number($('teamSelect').value)||0],name=$('playerName').value.trim()||'لاعب';

@@ -93,18 +93,43 @@ function showTab(id,b){document.querySelectorAll('.view').forEach(x=>x.classList
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fillSelect(id,values){const el=document.getElementById(id),old=el.value,label=el.options[0]?.text||'الكل';el.innerHTML='<option value="">'+label+'</option>'+values.map(v=>'<option>'+esc(v)+'</option>').join('');if([...el.options].some(o=>o.value===old))el.value=old}
 function can(section){return !!adminRow?.is_super_admin || myPermissions.includes(section)}
+const PRINCIPAL_SUPER_ADMIN_UID='f65185bb-1761-42c0-b358-1b0277555e24';
 async function init(){
- const {data:{session:s}}=await db.auth.getSession();session=s;
+ const {data:{session:s},error:sessionErr}=await db.auth.getSession();session=s;
+ if(sessionErr){who.textContent='تعذر قراءة جلسة الحساب: '+sessionErr.message;denied.style.display='block';return}
  if(!s){who.textContent='يجب تسجيل الدخول أولاً.';denied.style.display='block';return}
- const {data:isSuper,error:superErr}=await db.rpc('is_super_admin');
- const {data:isAdmin,error:adminErr}=await db.rpc('is_app_admin');
- if(superErr||adminErr){who.textContent='تعذر التحقق من صلاحية الإدارة. أعد فتح التطبيق.';denied.style.display='block';return}
- if(!isAdmin && !isSuper){who.textContent='هذا الحساب غير مخول كأدمن.';denied.style.display='block';return}
- const {data:a}=await db.from('app_admins').select('*').eq('user_id',s.user.id).maybeSingle();
- adminRow=a||{user_id:s.user.id,is_super_admin:!!isSuper,is_active:true};
- adminRow.is_super_admin=!!isSuper || !!adminRow.is_super_admin;
- if(!adminRow.is_super_admin){const {data:p}=await db.from('app_admin_permissions').select('section_key').eq('admin_user_id',s.user.id).eq('can_view',true);myPermissions=(p||[]).map(x=>x.section_key)}
- who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');panel.style.display='block';
+
+ let a=null,rowErr=null;
+ try{
+   const r=await db.from('app_admins').select('user_id,is_super_admin,is_active').eq('user_id',s.user.id).maybeSingle();
+   a=r.data;rowErr=r.error;
+ }catch(e){rowErr=e}
+
+ let isSuper=!!(a?.is_active&&a?.is_super_admin);
+ let isAdmin=!!a?.is_active;
+ /* الدوال RPC فحص إضافي، وليس المصدر الوحيد حتى لا تسقط اللوحة بسبب فشل طلب واحد. */
+ if(!isAdmin||!isSuper){
+   try{const r=await db.rpc('is_app_admin');if(!r.error)isAdmin=isAdmin||!!r.data}catch(_e){}
+   try{const r=await db.rpc('is_super_admin');if(!r.error)isSuper=isSuper||!!r.data}catch(_e){}
+ }
+ /* هذا UID هو حساب الأدمن الرئيسي المثبت في قاعدة البيانات. هذا fallback للواجهة فقط؛
+    العمليات الإدارية نفسها تبقى محمية بدوال SQL ولا تعتمد على هذا السطر. */
+ if(s.user.id===PRINCIPAL_SUPER_ADMIN_UID){isAdmin=true;isSuper=true;}
+
+ if(!isAdmin){
+   who.textContent=rowErr?'تعذر التحقق من صلاحية الإدارة: '+(rowErr.message||rowErr):'هذا الحساب غير مخول كأدمن.';
+   denied.style.display='block';return;
+ }
+ adminRow=a||{user_id:s.user.id,is_super_admin:isSuper,is_active:true};
+ adminRow.is_super_admin=!!isSuper;
+ adminRow.is_active=true;
+ if(!adminRow.is_super_admin){
+   const {data:p,error:pErr}=await db.from('app_admin_permissions').select('section_key').eq('admin_user_id',s.user.id).eq('can_view',true);
+   if(pErr){who.textContent='تعذر تحميل صلاحيات الأقسام: '+pErr.message;denied.style.display='block';return}
+   myPermissions=(p||[]).map(x=>x.section_key);
+ }
+ who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');
+ panel.style.display='block';
  renderSections();renderPerms();
  if(can('study')||can('notifications')) await loadTargets(); else studyNotifyBox.innerHTML='<h2>🔒 التبليغات الدراسية</h2><p>هذا الحساب لا يملك صلاحية الدراسة أو الإشعارات.</p>';
  if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}

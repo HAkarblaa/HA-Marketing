@@ -127,52 +127,105 @@ async function init(){
 }
 async function loadLatestServiceOrder(){const stateEl=document.getElementById('serviceOrderState'),metaEl=document.getElementById('serviceOrderMeta'),trackBtn=document.getElementById('serviceTrackBtn');stateEl.textContent='جاري تحميل الطلب...';metaEl.textContent='';trackBtn.style.display='none';const {data,error}=await db.from('service_orders').select('id,status,customer_lat,customer_lng,employee_lat,employee_lng,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);if(error){stateEl.textContent='تعذر تحميل الطلب';metaEl.textContent=error.message;return}if(!data||!data.length){stateEl.textContent='لا يوجد طلب خدمة حالياً';return}const order=data[0];stateEl.textContent=order.status||'جديد';metaEl.textContent='تاريخ الطلب: '+new Date(order.created_at).toLocaleString('ar-IQ');if(order.status==='بالطريق'){trackBtn.style.display='block';trackBtn.dataset.orderId=order.id}}
 document.getElementById('serviceTrackBtn')?.addEventListener('click',function(){const orderId=this.dataset.orderId;if(orderId)location.href='track-service.html?order='+encodeURIComponent(orderId)});
+async function getLiveSession(){
+  let {data,error}=await db.auth.getSession();
+  if(error) throw error;
+  if(!data.session) return null;
+  const now=Math.floor(Date.now()/1000);
+  if(data.session.expires_at && data.session.expires_at < now+60){
+    const r=await db.auth.refreshSession();
+    if(r.error) throw r.error;
+    data.session=r.data.session;
+  }
+  return data.session;
+}
+async function fetchWithRetry(url,options={},tries=3){
+  let lastErr=null;
+  for(let i=0;i<tries;i++){
+    try{
+      const c=new AbortController();
+      const t=setTimeout(()=>c.abort(),12000);
+      const r=await fetch(url,{...options,cache:'no-store',signal:c.signal});
+      clearTimeout(t);
+      return r;
+    }catch(e){
+      lastErr=e;
+      if(i<tries-1) await new Promise(x=>setTimeout(x,700*(i+1)));
+    }
+  }
+  throw lastErr||new Error('تعذر الاتصال بالخادم');
+}
+async function authUpdateDirect(changes){
+  let sess=await getLiveSession();
+  if(!sess) throw new Error('جلسة الحساب غير فعالة');
+  const run=async()=>fetchWithRetry(SB_URL+'/auth/v1/user',{
+    method:'PUT',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+sess.access_token,'Content-Type':'application/json'},
+    body:JSON.stringify(changes)
+  });
+  let r=await run();
+  if(r.status===401){
+    const rr=await db.auth.refreshSession();
+    if(rr.error||!rr.data.session) throw rr.error||new Error('تعذر تحديث جلسة الحساب');
+    sess=rr.data.session;
+    r=await run();
+  }
+  let body={}; try{body=await r.json()}catch(_e){}
+  if(!r.ok) throw new Error(body?.msg||body?.message||body?.error_description||('HTTP '+r.status));
+  return body;
+}
 async function saveProfile(){
- const {data:ss}=await db.auth.getSession();
- if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
- currentUser=ss.session.user;
- const user=username.value.trim(),lp=localPhone(phone.value.trim());
- if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، وبدون مسافات.');return}
- if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
- const ph=normalizePhone(lp);
- try{
-   const {data:uDup,error:uErr}=await db.from('profiles').select('id').eq('username',user).neq('id',currentUser.id).limit(1);
-   if(uErr) throw uErr;
-   if(uDup?.length){alert('هذا المعرّف مستخدم بحساب آخر.');return}
-   const {data:pDup,error:pErr}=await db.from('profiles').select('id').eq('phone',ph).neq('id',currentUser.id).limit(1);
-   if(pErr) throw pErr;
-   if(pDup?.length){alert('هذا الرقم مستخدم بحساب آخر.');return}
+  let sess;
+  try{sess=await getLiveSession()}catch(e){alert('تعذر التحقق من جلسة الحساب: '+(e?.message||e));return}
+  if(!sess){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
+  currentUser=sess.user;
+  const user=username.value.trim(),lp=localPhone(phone.value.trim());
+  if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، وبدون مسافات.');return}
+  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
+  const ph=normalizePhone(lp);
+  const oldPhone=normalizePhone(currentProfile?.phone||currentUser.user_metadata?.phone||lp);
+  try{
+    /* إذا تغير الهاتف نحدّث بريد الدخول الداخلي أولاً حتى لا يفقد المستخدم طريقة الدخول. */
+    if(ph!==oldPhone){
+      await authUpdateDirect({email:authEmail(ph),data:{...(currentUser.user_metadata||{}),username:user,phone:ph}});
+      const refreshed=await db.auth.refreshSession();
+      if(!refreshed.error && refreshed.data.session){currentUser=refreshed.data.session.user;sess=refreshed.data.session;}
+    }
 
-   /* المعرّف يُحفظ في profiles مباشرة. لا نربطه بتغيير بيانات Auth. */
-   const {error:profileErr}=await db.from('profiles').update({username:user,phone:ph}).eq('id',currentUser.id);
-   if(profileErr) throw profileErr;
+    /* الحفظ الحقيقي يتم بدالة آمنة في قاعدة البيانات، وتتحقق من التكرار. */
+    const {error:rpcErr}=await db.rpc('update_my_profile',{p_username:user,p_phone:ph});
+    if(rpcErr) throw rpcErr;
 
-   /* نحدّث metadata فقط إن أمكن، وفشلها لا يلغي حفظ المعرّف. */
-   try{ await db.auth.updateUser({data:{...(currentUser.user_metadata||{}),username:user,phone:ph}}); }catch(_e){}
-   currentProfile={...(currentProfile||{}),username:user,phone:ph};
-   alert('تم حفظ المعرّف والبيانات بنجاح.');
- }catch(e){
-   alert('تعذر حفظ البيانات: '+(e?.message||String(e)));
- }
+    /* تحديث metadata للمزامنة بين الصفحات، وفشله لا يلغي حفظ profiles. */
+    if(ph===oldPhone){
+      try{await authUpdateDirect({data:{...(currentUser.user_metadata||{}),username:user,phone:ph}})}catch(metaErr){console.warn('metadata update',metaErr)}
+    }
+    currentProfile={...(currentProfile||{}),username:user,phone:ph};
+    username.value=user; phone.value=lp;
+    alert('تم حفظ المعرّف وبيانات الحساب بنجاح.');
+  }catch(e){
+    const m=e?.message||String(e);
+    if(/username.*used|duplicate.*username|المعر/i.test(m)) alert('هذا المعرّف مستخدم بحساب آخر.');
+    else if(/phone.*used|duplicate.*phone|الهاتف/i.test(m)) alert('هذا الرقم مستخدم بحساب آخر.');
+    else alert('تعذر حفظ البيانات: '+m);
+  }
 }
 async function changePassword(){
- const {data:ss}=await db.auth.getSession();
- if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
- const p=password.value;
- if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}
- try{
-   let r=await db.auth.updateUser({password:p});
-   if(r.error && /fetch/i.test(r.error.message||'')){
-     await new Promise(x=>setTimeout(x,700));
-     r=await db.auth.updateUser({password:p});
-   }
-   if(r.error) throw r.error;
-   await db.auth.refreshSession();
-   password.value='';
-   alert('تم تغيير الرقم السري بنجاح.');
- }catch(e){
-   alert('تعذر تغيير الرقم السري: '+(e?.message||String(e)));
- }
+  let sess;
+  try{sess=await getLiveSession()}catch(e){alert('تعذر التحقق من جلسة الحساب: '+(e?.message||e));return}
+  if(!sess){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
+  const p=password.value;
+  if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}
+  try{
+    await authUpdateDirect({password:p});
+    const r=await db.auth.refreshSession();
+    if(r.error) console.warn('refresh after password',r.error);
+    password.value='';
+    alert('تم تغيير الرقم السري بنجاح. استخدم الرقم السري الجديد من تسجيل الدخول القادم.');
+  }catch(e){
+    const m=e?.message||String(e);
+    alert('تعذر تغيير الرقم السري: '+m);
+  }
 }
 async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 async function switchAccount(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}

@@ -1065,6 +1065,8 @@ body.delivery-stage-1 #centerPin{
 <script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="firebase-auth-secure.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
@@ -1598,11 +1600,19 @@ order.onclick=async()=>{
   const realCustomer=await HA_TransportProfile.customerOrLogin();
   if(!realCustomer){ order.disabled=false; order.textContent=oldText; return; }
 
+  let fbUser;
+  try{ fbUser=await HA_FirebaseAuth.ready(); }catch(err){
+    console.error(err);
+    alert('تعذر تأمين الاتصال بـ Firebase. فعّل Anonymous في Firebase Authentication ثم حاول مجددًا.');
+    order.disabled=false; order.textContent=oldText; return;
+  }
+
   const rideRef=db.ref('rides').push();
   activeDeliveryRideId=rideRef.key;
   activeDeliveryRideRef=rideRef;
 
   const rideData={
+    customerUid:fbUser.uid,
     serviceType:'delivery',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
@@ -1747,7 +1757,7 @@ document.getElementById('deliverySearchCancelBtn').onclick=()=>openDeliveryCance
 
 const savedDeliveryId=localStorage.getItem('ha_active_delivery');
 if(savedDeliveryId){
-  db.ref('rides/'+savedDeliveryId).once('value').then(s=>{
+  HA_FirebaseAuth.ready().then(()=>db.ref('rides/'+savedDeliveryId).once('value')).then(s=>{
     if(s.exists() && !['finished','cancelled','rejected'].includes(s.val().status)){
       activeDeliveryRideId=savedDeliveryId;
       openDeliveryPostOrder();

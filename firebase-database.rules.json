@@ -2,26 +2,52 @@
   "rules": {
     ".read": false,
     ".write": false,
+
     "rides": {
-      ".read": true,
-      ".write": true,
-      ".indexOn": ["status"]
+      ".read": "auth != null && query.orderByChild == 'status' && query.equalTo == 'searching'",
+      ".indexOn": ["status"],
+      "$rideId": {
+        ".read": "auth != null && (data.child('status').val() == 'searching' || data.child('customerUid').val() == auth.uid || data.child('driverUid').val() == auth.uid)",
+        ".write": "auth != null && ((!data.exists() && newData.child('customerUid').val() == auth.uid && newData.child('status').val() == 'searching') || (data.exists() && data.child('customerUid').val() == auth.uid && newData.child('customerUid').val() == auth.uid) || (data.exists() && data.child('driverUid').val() == auth.uid && newData.child('driverUid').val() == auth.uid) || (data.exists() && data.child('status').val() == 'searching' && !data.child('driverUid').exists() && newData.child('driverUid').val() == auth.uid && newData.child('customerUid').val() == data.child('customerUid').val()))",
+        ".validate": "newData.hasChildren(['customerUid','status']) && ((!data.exists() && newData.child('customerUid').val() == auth.uid) || (data.exists() && newData.child('customerUid').val() == data.child('customerUid').val())) && (!data.child('driverUid').exists() || newData.child('driverUid').val() == data.child('driverUid').val())"
+      }
     },
+
     "rideChats": {
-      ".read": true,
-      ".write": true
+      "$rideId": {
+        ".read": "auth != null && (root.child('rides').child($rideId).child('customerUid').val() == auth.uid || root.child('rides').child($rideId).child('driverUid').val() == auth.uid)",
+        ".write": "auth != null && (root.child('rides').child($rideId).child('customerUid').val() == auth.uid || root.child('rides').child($rideId).child('driverUid').val() == auth.uid)"
+      }
     },
+
     "rideCalls": {
-      ".read": true,
-      ".write": true
+      "$rideId": {
+        ".read": "auth != null && (root.child('rides').child($rideId).child('customerUid').val() == auth.uid || root.child('rides').child($rideId).child('driverUid').val() == auth.uid)",
+        ".write": "auth != null && (root.child('rides').child($rideId).child('customerUid').val() == auth.uid || root.child('rides').child($rideId).child('driverUid').val() == auth.uid)"
+      }
     },
+
     "dominoRooms": {
-      ".read": true,
-      ".write": true
+      "$roomId": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.child('host').val() == auth.uid) || data.child('players').child(auth.uid).exists() || newData.child('players').child(auth.uid).exists())",
+        ".validate": "newData.child('host').val() == (data.exists() ? data.child('host').val() : auth.uid)"
+      }
     },
+
     "penaltyRooms": {
-      ".read": true,
-      ".write": true
+      "$roomId": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.child('host').val() == auth.uid) || data.child('players').child(auth.uid).exists() || newData.child('players').child(auth.uid).exists())",
+        ".validate": "newData.child('host').val() == (data.exists() ? data.child('host').val() : auth.uid)"
+      }
+    },
+
+    "gameVoiceRooms": {
+      "$roomId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
     }
   }
 }

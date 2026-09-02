@@ -367,6 +367,8 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="firebase-auth-secure.js"></script>
 <script>
 /* Firebase المستخدم حالياً في HA Marketing */
 const firebaseConfig={
@@ -382,8 +384,12 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
 const $=id=>document.getElementById(id);
-const uid=localStorage.getItem('ha_domino_uid')||('p_'+Math.random().toString(36).slice(2,10));
-localStorage.setItem('ha_domino_uid',uid);
+let uid=null;
+async function ensureOnlineAuth(){
+  const user=await HA_FirebaseAuth.ready();
+  uid=user.uid;
+  return user;
+}
 
 let cfg={mode:'cpu',rule:'draw',target:100,name:'لاعب',tile:'#f7f2e8',pip:'#101010',board:'#0f7048',board2:'#0b5d3d'};
 let state={players:[],hands:[],stock:[],chain:[],turn:0,scores:[],history:[],over:false,passes:0};
@@ -580,12 +586,14 @@ window.addEventListener('beforeunload',()=>{try{HA_GameVoice.leave()}catch(e){}}
 /* ===== الأونلاين ===== */
 function roomCodeGen(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 $('createRoomBtn').onclick=async()=>{
+  try{await ensureOnlineAuth();}catch(e){toast('تعذر تأمين اتصال Firebase');return}
   const name=nameOrDefault();cfg.mode='online';cfg.rule=$('startRule').value;cfg.target=Number($('startTarget').value);roomCode=roomCodeGen();
   roomRef=db.ref('dominoRooms/'+roomCode);
   await roomRef.set({host:uid,maxPlayers:Number($('onlineCount').value),status:'waiting',rule:cfg.rule,target:cfg.target,createdAt:firebase.database.ServerValue.TIMESTAMP,players:{[uid]:{name,joinedAt:Date.now()}},reactions:{}});
   myIndex=0;watchRoomWaiting();$('roomCodeView').textContent=roomCode;$('roomWait').classList.add('show')
 }
 $('joinRoomBtn').onclick=async()=>{
+  try{await ensureOnlineAuth();}catch(e){toast('تعذر تأمين اتصال Firebase');return}
   const code=$('roomCodeInput').value.trim().toUpperCase();if(code.length<4){toast('اكتب كود الغرفة');return}
   const ref=db.ref('dominoRooms/'+code),snap=await ref.once('value');if(!snap.exists()){toast('الغرفة غير موجودة');return}
   const room=snap.val(),players=room.players||{};if(room.status!=='waiting'){toast('المباراة بدأت');return}if(Object.keys(players).length>=room.maxPlayers){toast('الغرفة ممتلئة');return}
