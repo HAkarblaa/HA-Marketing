@@ -208,13 +208,23 @@ async function saveProfile(){
   if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، وبدون مسافات.');return}
   if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
   try{
-    const data=await invokeAccountUpdate({action:'profile',username:user,phone:lp});
-    currentProfile={...(currentProfile||{}),username:data.username||user,phone:data.phone||normalizePhone(lp)};
-    username.value=data.username||user;
-    phone.value=localPhone(data.phone||lp);
-    if(data.session_refresh_required){
-      await db.auth.refreshSession().catch(()=>{});
-    }
+    const session=await getLiveSession();
+    if(!session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
+    const np=normalizePhone(lp);
+    const {data:dupeUser}=await db.from('profiles').select('id').eq('username',user).neq('id',currentUser.id).limit(1);
+    if(dupeUser?.length) throw new Error('هذا المعرّف مستخدم بحساب آخر.');
+    const {data:dupePhone}=await db.from('profiles').select('id').eq('phone',np).neq('id',currentUser.id).limit(1);
+    if(dupePhone?.length) throw new Error('هذا الرقم مستخدم بحساب آخر.');
+    const {error:profileErr}=await db.from('profiles').update({username:user,phone:np}).eq('id',currentUser.id);
+    if(profileErr) throw profileErr;
+    const authChanges={data:{...(currentUser.user_metadata||{}),username:user,phone:np}};
+    const oldPhone=normalizePhone(currentProfile?.phone||currentUser.user_metadata?.phone||'');
+    if(oldPhone!==np) authChanges.email=authEmail(np);
+    const {data:authData,error:authErr}=await db.auth.updateUser(authChanges);
+    if(authErr) throw authErr;
+    currentUser=authData.user||currentUser;
+    currentProfile={...(currentProfile||{}),username:user,phone:np};
+    username.value=user; phone.value=lp;
     alert('تم حفظ المعرّف وبيانات الحساب بنجاح.');
   }catch(e){
     const m=e?.message||String(e);
@@ -223,17 +233,17 @@ async function saveProfile(){
     else alert('تعذر حفظ البيانات: '+m);
   }
 }
-
 async function changePassword(){
   const p=password.value;
   if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}
   try{
-    await invokeAccountUpdate({action:'password',password:p});
+    const session=await getLiveSession();
+    if(!session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
+    const {error}=await db.auth.updateUser({password:p});
+    if(error) throw error;
     password.value='';
-    alert('تم تغيير الرقم السري بنجاح. استخدم الرقم السري الجديد عند تسجيل الدخول القادم.');
-  }catch(e){
-    alert('تعذر تغيير الرقم السري: '+(e?.message||e));
-  }
+    alert('تم تغيير الرقم السري بنجاح.');
+  }catch(e){ alert('تعذر تغيير الرقم السري: '+(e?.message||e)); }
 }
 async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 async function switchAccount(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
