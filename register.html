@@ -30,8 +30,8 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <option value="building_materials">موظف مواد البناء</option><option value="customer_service">خدمة العملاء</option><option value="orders">تجهيز الطلبات</option>
 </select><p class="note">حساب الموظف يبقى بانتظار موافقة الإدارة.</p></div>
 <label>الصورة الشخصية (اختياري)</label><div class="avatar"><input id="avatar" type="file" accept="image/*"><img id="preview"></div>
-<label>الرقم السري *</label><input id="password" minlength="6" pattern="[A-Za-z0-9]{6,}" type="password" minlength="6" required>
-<label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="6" pattern="[A-Za-z0-9]{6,}" type="password" minlength="6" required>
+<label>الرقم السري *</label><input id="password" minlength="8" maxlength="72" type="password" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز" required><p class="note">8 خانات على الأقل. يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات أو حروف عربية.</p>
+<label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="8" maxlength="72" type="password" autocomplete="new-password" required>
 <div id="passError" class="err"></div>
 <button class="primary" onclick="createAccount()">إنشاء الحساب</button>
 </div>
@@ -79,7 +79,7 @@ async function createAccount(){
  if(accountType==='employee'&&!employee_role.value){alert('اختار نوع عمل الموظف');return}
  if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين';return}
  if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، ويقبل فقط الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.');username.focus();return}
- if(!/^[A-Za-z0-9]{6,}$/.test(p)){passError.textContent='الرقم السري يجب أن يحتوي أحرف إنكليزية أو أرقام فقط ويكون 6 خانات أو أكثر.';password.focus();return}
+ if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.';password.focus();return}
  const lp=localPhone(raw);
  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return}
  const ph=normalizePhone(lp);

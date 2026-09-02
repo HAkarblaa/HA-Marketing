@@ -38,7 +38,7 @@ button,a.btn{width:100%;display:block;padding:13px;border:0;border-radius:9px;ma
 
   <div class="card">
     <h2>تغيير الرقم السري</h2>
-    <label>الرقم السري الجديد</label><input id="password" type="password" minlength="6" placeholder="6 أحرف على الأقل">
+    <label>الرقم السري الجديد</label><input id="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز"><div style="font-size:13px;color:#666;margin-top:5px">8 خانات على الأقل. يقبل @ # $ % & * ! ? , . _ - + = وغيرها، بدون مسافات أو حروف عربية.</div>
     <button class="primary" onclick="changePassword()">تغيير الرقم السري</button>
   </div>
 
@@ -132,7 +132,7 @@ async function saveProfile(){
  currentUser=(await db.auth.getUser()).data.user||currentUser;currentProfile={...(currentProfile||{}),username:user,phone:ph};
  await persistLoginFlag();alert('تم حفظ رقم الهاتف والمعرف. استخدم الرقم الجديد في تسجيل الدخول من الآن.');
 }
-async function changePassword(){const p=password.value;if(!/^[A-Za-z0-9]{6,}$/.test(p)){alert('الرقم السري لازم يكون 6 خانات أو أكثر، أحرف إنكليزية أو أرقام فقط.');return}const {error}=await db.auth.updateUser({password:p});if(error)alert('تعذر تغيير الرقم السري: '+error.message);else{alert('تم تغيير الرقم السري');password.value=''}}
+async function changePassword(){const p=password.value;if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}const {error}=await db.auth.updateUser({password:p});if(error)alert('تعذر تغيير الرقم السري: '+error.message);else{alert('تم تغيير الرقم السري بنجاح');password.value=''}}
 async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 async function switchAccount(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 init();
