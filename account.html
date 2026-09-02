@@ -174,57 +174,56 @@ async function authUpdateDirect(changes){
   if(!r.ok) throw new Error(body?.msg||body?.message||body?.error_description||('HTTP '+r.status));
   return body;
 }
+async function invokeAccountUpdate(payload){
+  const {data:ss,error:sessionErr}=await db.auth.getSession();
+  if(sessionErr) throw sessionErr;
+  if(!ss.session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
+
+  const {data,error}=await db.functions.invoke('update-my-account',{body:payload});
+  if(error){
+    let msg=error.message||'تعذر الاتصال بالخادم';
+    try{
+      if(error.context){
+        const body=await error.context.json();
+        if(body?.error) msg=body.error;
+      }
+    }catch(_e){}
+    throw new Error(msg);
+  }
+  if(!data?.ok) throw new Error(data?.error||'تعذر تنفيذ التغيير');
+  return data;
+}
+
 async function saveProfile(){
-  let sess;
-  try{sess=await getLiveSession()}catch(e){alert('تعذر التحقق من جلسة الحساب: '+(e?.message||e));return}
-  if(!sess){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
-  currentUser=sess.user;
   const user=username.value.trim(),lp=localPhone(phone.value.trim());
   if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، وبدون مسافات.');return}
   if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
-  const ph=normalizePhone(lp);
-  const oldPhone=normalizePhone(currentProfile?.phone||currentUser.user_metadata?.phone||lp);
   try{
-    /* إذا تغير الهاتف نحدّث بريد الدخول الداخلي أولاً حتى لا يفقد المستخدم طريقة الدخول. */
-    if(ph!==oldPhone){
-      await authUpdateDirect({email:authEmail(ph),data:{...(currentUser.user_metadata||{}),username:user,phone:ph}});
-      const refreshed=await db.auth.refreshSession();
-      if(!refreshed.error && refreshed.data.session){currentUser=refreshed.data.session.user;sess=refreshed.data.session;}
+    const data=await invokeAccountUpdate({action:'profile',username:user,phone:lp});
+    currentProfile={...(currentProfile||{}),username:data.username||user,phone:data.phone||normalizePhone(lp)};
+    username.value=data.username||user;
+    phone.value=localPhone(data.phone||lp);
+    if(data.session_refresh_required){
+      await db.auth.refreshSession().catch(()=>{});
     }
-
-    /* الحفظ الحقيقي يتم بدالة آمنة في قاعدة البيانات، وتتحقق من التكرار. */
-    const {error:rpcErr}=await db.rpc('update_my_profile',{p_username:user,p_phone:ph});
-    if(rpcErr) throw rpcErr;
-
-    /* تحديث metadata للمزامنة بين الصفحات، وفشله لا يلغي حفظ profiles. */
-    if(ph===oldPhone){
-      try{await authUpdateDirect({data:{...(currentUser.user_metadata||{}),username:user,phone:ph}})}catch(metaErr){console.warn('metadata update',metaErr)}
-    }
-    currentProfile={...(currentProfile||{}),username:user,phone:ph};
-    username.value=user; phone.value=lp;
     alert('تم حفظ المعرّف وبيانات الحساب بنجاح.');
   }catch(e){
     const m=e?.message||String(e);
-    if(/username.*used|duplicate.*username|المعر/i.test(m)) alert('هذا المعرّف مستخدم بحساب آخر.');
-    else if(/phone.*used|duplicate.*phone|الهاتف/i.test(m)) alert('هذا الرقم مستخدم بحساب آخر.');
+    if(/username.*used|اسم المستخدم|المعر/i.test(m)) alert('هذا المعرّف مستخدم بحساب آخر.');
+    else if(/phone.*used|رقم الموبايل|الهاتف/i.test(m)) alert('هذا الرقم مستخدم بحساب آخر.');
     else alert('تعذر حفظ البيانات: '+m);
   }
 }
+
 async function changePassword(){
-  let sess;
-  try{sess=await getLiveSession()}catch(e){alert('تعذر التحقق من جلسة الحساب: '+(e?.message||e));return}
-  if(!sess){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
   const p=password.value;
   if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}
   try{
-    await authUpdateDirect({password:p});
-    const r=await db.auth.refreshSession();
-    if(r.error) console.warn('refresh after password',r.error);
+    await invokeAccountUpdate({action:'password',password:p});
     password.value='';
-    alert('تم تغيير الرقم السري بنجاح. استخدم الرقم السري الجديد من تسجيل الدخول القادم.');
+    alert('تم تغيير الرقم السري بنجاح. استخدم الرقم السري الجديد عند تسجيل الدخول القادم.');
   }catch(e){
-    const m=e?.message||String(e);
-    alert('تعذر تغيير الرقم السري: '+m);
+    alert('تعذر تغيير الرقم السري: '+(e?.message||e));
   }
 }
 async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
