@@ -104,10 +104,10 @@ async function init(){
  adminRow=a||{user_id:s.user.id,is_super_admin:!!isSuper,is_active:true};
  adminRow.is_super_admin=!!isSuper || !!adminRow.is_super_admin;
  if(!adminRow.is_super_admin){const {data:p}=await db.from('app_admin_permissions').select('section_key').eq('admin_user_id',s.user.id).eq('can_view',true);myPermissions=(p||[]).map(x=>x.section_key)}
- who.innerHTML='تم الدخول كأدمن '+(a.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');panel.style.display='block';
+ who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');panel.style.display='block';
  renderSections();renderPerms();
  if(can('study')||can('notifications')) await loadTargets(); else studyNotifyBox.innerHTML='<h2>🔒 التبليغات الدراسية</h2><p>هذا الحساب لا يملك صلاحية الدراسة أو الإشعارات.</p>';
- if(a.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
+ if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }
 function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('')}

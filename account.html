@@ -128,28 +128,52 @@ async function init(){
 async function loadLatestServiceOrder(){const stateEl=document.getElementById('serviceOrderState'),metaEl=document.getElementById('serviceOrderMeta'),trackBtn=document.getElementById('serviceTrackBtn');stateEl.textContent='جاري تحميل الطلب...';metaEl.textContent='';trackBtn.style.display='none';const {data,error}=await db.from('service_orders').select('id,status,customer_lat,customer_lng,employee_lat,employee_lng,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);if(error){stateEl.textContent='تعذر تحميل الطلب';metaEl.textContent=error.message;return}if(!data||!data.length){stateEl.textContent='لا يوجد طلب خدمة حالياً';return}const order=data[0];stateEl.textContent=order.status||'جديد';metaEl.textContent='تاريخ الطلب: '+new Date(order.created_at).toLocaleString('ar-IQ');if(order.status==='بالطريق'){trackBtn.style.display='block';trackBtn.dataset.orderId=order.id}}
 document.getElementById('serviceTrackBtn')?.addEventListener('click',function(){const orderId=this.dataset.orderId;if(orderId)location.href='track-service.html?order='+encodeURIComponent(orderId)});
 async function saveProfile(){
- const {data:ss}=await db.auth.getSession(); if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
+ const {data:ss}=await db.auth.getSession();
+ if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
  currentUser=ss.session.user;
  const user=username.value.trim(),lp=localPhone(phone.value.trim());
- if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز مثل @ # $ % , . _ -، وبدون مسافات.');return}
+ if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، وبدون مسافات.');return}
  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');return}
  const ph=normalizePhone(lp);
- const {data:uDup}=await db.from('profiles').select('id').eq('username',user).neq('id',currentUser.id).limit(1);if(uDup?.length){alert('هذا المعرّف مستخدم بحساب آخر.');return}
- const {data:pDup}=await db.from('profiles').select('id').eq('phone',ph).neq('id',currentUser.id).limit(1);if(pDup?.length){alert('هذا الرقم مستخدم بحساب آخر.');return}
- const oldPhone=currentProfile?.phone||currentUser.user_metadata?.phone||'';
- const meta={...(currentUser.user_metadata||{}),username:user,phone:ph};
- if(ph!==oldPhone){
-   const {error:authErr}=await db.auth.updateUser({email:authEmail(ph),data:meta});
-   if(authErr){alert('تعذر تغيير رقم الهاتف: '+authErr.message);return}
- }else{
-   const {error:authErr}=await db.auth.updateUser({data:meta});if(authErr){alert('تعذر حفظ البيانات: '+authErr.message);return}
+ try{
+   const {data:uDup,error:uErr}=await db.from('profiles').select('id').eq('username',user).neq('id',currentUser.id).limit(1);
+   if(uErr) throw uErr;
+   if(uDup?.length){alert('هذا المعرّف مستخدم بحساب آخر.');return}
+   const {data:pDup,error:pErr}=await db.from('profiles').select('id').eq('phone',ph).neq('id',currentUser.id).limit(1);
+   if(pErr) throw pErr;
+   if(pDup?.length){alert('هذا الرقم مستخدم بحساب آخر.');return}
+
+   /* المعرّف يُحفظ في profiles مباشرة. لا نربطه بتغيير بيانات Auth. */
+   const {error:profileErr}=await db.from('profiles').update({username:user,phone:ph}).eq('id',currentUser.id);
+   if(profileErr) throw profileErr;
+
+   /* نحدّث metadata فقط إن أمكن، وفشلها لا يلغي حفظ المعرّف. */
+   try{ await db.auth.updateUser({data:{...(currentUser.user_metadata||{}),username:user,phone:ph}}); }catch(_e){}
+   currentProfile={...(currentProfile||{}),username:user,phone:ph};
+   alert('تم حفظ المعرّف والبيانات بنجاح.');
+ }catch(e){
+   alert('تعذر حفظ البيانات: '+(e?.message||String(e)));
  }
- const {error:profileErr}=await db.from('profiles').update({username:user,phone:ph}).eq('id',currentUser.id);
- if(profileErr){await ensureProfile({...currentUser,user_metadata:meta},{username:user,phone:ph});}
- currentUser=(await db.auth.getUser()).data.user||currentUser;currentProfile={...(currentProfile||{}),username:user,phone:ph};
- await persistLoginFlag();alert('تم حفظ رقم الهاتف والمعرف. استخدم الرقم الجديد في تسجيل الدخول من الآن.');
 }
-async function changePassword(){const {data:ss}=await db.auth.getSession();if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}const p=password.value;if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}const {error}=await db.auth.updateUser({password:p});if(error)alert('تعذر تغيير الرقم السري: '+error.message);else{await db.auth.refreshSession();alert('تم تغيير الرقم السري بنجاح');password.value=''}}
+async function changePassword(){
+ const {data:ss}=await db.auth.getSession();
+ if(!ss.session){alert('جلسة الحساب غير فعالة. سجل الدخول مرة واحدة ثم حاول من جديد.');location.href='login.html';return}
+ const p=password.value;
+ if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}
+ try{
+   let r=await db.auth.updateUser({password:p});
+   if(r.error && /fetch/i.test(r.error.message||'')){
+     await new Promise(x=>setTimeout(x,700));
+     r=await db.auth.updateUser({password:p});
+   }
+   if(r.error) throw r.error;
+   await db.auth.refreshSession();
+   password.value='';
+   alert('تم تغيير الرقم السري بنجاح.');
+ }catch(e){
+   alert('تعذر تغيير الرقم السري: '+(e?.message||String(e)));
+ }
+}
 async function logout(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 async function switchAccount(){localStorage.removeItem('ha_logged_in');await db.auth.signOut();location.replace('login.html')}
 init();
