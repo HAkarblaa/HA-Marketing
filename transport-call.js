@@ -126,6 +126,7 @@
 
   async function start(rideId, role, label){
     ensureUI();
+    try{if(window.HA_FirebaseAuth)await HA_FirebaseAuth.ready();}catch(e){alert('تعذر التحقق الآمن من Firebase.');return;}
     if(!window.firebase || !firebase.database){
       alert('Firebase غير محمل في هذه الصفحة.');
       return;
@@ -183,8 +184,9 @@
     }
   }
 
-  function listenForIncoming(rideId, role){
+  async function listenForIncoming(rideId, role){
     ensureUI();
+    try{if(window.HA_FirebaseAuth)await HA_FirebaseAuth.ready();}catch(e){console.error(e);return;}
     if(!window.firebase || !firebase.database || !rideId)return;
 
     currentRideId=rideId;

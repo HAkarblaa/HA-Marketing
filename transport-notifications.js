@@ -113,7 +113,7 @@
     const ref=db.ref('rides');
     const startedAt=Date.now();
 
-    add(ref.limitToLast(50),'child_added',snap=>{
+    add(ref.orderByChild('status').equalTo('searching').limitToLast(50),'child_added',snap=>{
       const r=snap.val()||{};
       // Avoid notifying for old requests already present before driver opened the page.
       const created=Number(r.createdAt||r.timestamp||0);
