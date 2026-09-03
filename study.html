@@ -52,7 +52,7 @@ body{
   width:min(960px,94%);
   margin:18px auto 40px;
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:16px;
 }
 .card{
@@ -95,7 +95,7 @@ body{
 }
 .subgrid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:12px;
 }
 .subcard{
@@ -134,6 +134,7 @@ body{
   .subcard strong{font-size:16px}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -203,6 +204,12 @@ body{
     <h2>ملفي الدراسي والتبليغات</h2>
     <p>حدد مدرستك وصفك واستلم التبليغات الخاصة بك</p>
   </a>
+
+  <a class="card" href="study-planner.html" style="text-decoration:none">
+    <div class="icon">📅</div>
+    <h2>الجدول والتقويم</h2>
+    <p>6 محاضرات يومياً من السبت للخميس ومواعيد الامتحانات</p>
+  </a>
 </main>
 
 <section class="panel" id="schools">
@@ -234,17 +241,28 @@ body{
     <h2>👨‍🎓 الطلاب</h2>
     <button class="close-panel" type="button" onclick="closePanel()">×</button>
   </div>
-  <div class="subgrid">
-    <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
-    <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
-    <div class="subcard"><div class="subicon">📘</div><strong>متوسط</strong></div>
-    <div class="subcard"><div class="subicon">📗</div><strong>إعدادي</strong></div>
-    <div class="subcard"><div class="subicon">⭐</div><strong>متميزين</strong></div>
-    <div class="subcard"><div class="subicon">📝</div><strong>خارجي</strong></div>
-    <div class="subcard"><div class="subicon">📜</div><strong>دبلوم</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>بكالوريوس</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>ماجستير</strong></div>
-    <div class="subcard"><div class="subicon">🏅</div><strong>دكتوراه</strong></div>
+  <div class="note" style="text-align:right;margin-bottom:14px">
+    <h3 style="margin-top:0">تسجيل طالب</h3>
+    <p style="line-height:1.7">أي صاحب حساب في HA Marketing يقدر يسجل طالب. التسجيل يبقى مرتبط بحسابك ويمكنك تعديله أو حذفه لاحقاً.</p>
+    <div id="studentAuthMsg" style="padding:10px;border-radius:10px;background:#f5f5f5;margin-bottom:10px">جاري التحقق من الحساب...</div>
+    <div id="studentForm" style="display:none;grid-template-columns:1fr 1fr;gap:9px">
+      <input id="stName" placeholder="اسم الطالب" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <select id="stLevel" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+        <option value="روضة">روضة</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="إعدادي">إعدادي</option><option value="متميزين">متميزين</option><option value="خارجي">خارجي</option><option value="دبلوم">دبلوم</option><option value="بكالوريوس">بكالوريوس</option><option value="ماجستير">ماجستير</option><option value="دكتوراه">دكتوراه</option>
+      </select>
+      <input id="stGrade" placeholder="الصف / المرحلة / القسم" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <input id="stInstitution" placeholder="اسم المدرسة / الجامعة / المعهد" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <input id="stGovernorate" placeholder="المحافظة" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <input id="stArea" placeholder="المنطقة" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <input id="stPhone" placeholder="رقم التواصل (اختياري)" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <input id="stBirthYear" type="number" min="1950" max="2030" placeholder="سنة الميلاد (اختياري)" style="padding:11px;border:1px solid #ccc;border-radius:10px">
+      <textarea id="stNotes" placeholder="ملاحظات أو تفاصيل إضافية" style="grid-column:1/-1;padding:11px;border:1px solid #ccc;border-radius:10px;min-height:80px"></textarea>
+      <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap"><button id="stSaveBtn" onclick="saveStudent()" style="border:0;border-radius:10px;background:#111;color:#fff;padding:11px 18px">حفظ التسجيل</button><button onclick="resetStudentForm()" style="border:0;border-radius:10px;background:#eee;padding:11px 18px">تفريغ</button></div>
+    </div>
+  </div>
+  <div class="note" style="text-align:right">
+    <h3 style="margin-top:0">تسجيلاتي</h3>
+    <div id="myStudents">سجّل دخولك حتى تظهر تسجيلاتك.</div>
   </div>
 </section>
 
@@ -290,6 +308,37 @@ function closePanel(){
 }
 
 function renderStudyNotes(){const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');const el=document.getElementById('studyNotes');if(!el)return;el.innerHTML=a.length?a.map((x,i)=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:9px;border-bottom:1px solid #eee"><span>${String(x).replace(/[&<>]/g,'')}</span><button onclick="delStudyNote(${i})" style="border:0;background:#eee;border-radius:7px">حذف</button></div>`).join(''):'لا توجد مهام بعد.'}function addStudyNote(){const v=document.getElementById('studyNote').value.trim();if(!v)return;const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');a.unshift(v);localStorage.setItem('ha_study_notes',JSON.stringify(a.slice(0,100)));document.getElementById('studyNote').value='';renderStudyNotes()}function delStudyNote(i){const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');a.splice(i,1);localStorage.setItem('ha_study_notes',JSON.stringify(a));renderStudyNotes()}renderStudyNotes();
+
+
+const STUDY_SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const STUDY_SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const studyDb=window.supabase?supabase.createClient(STUDY_SB_URL,STUDY_SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}):null;
+let studyMe=null,studentEditId=null;
+async function initStudentRegistration(){
+  if(!studyDb)return;
+  let session=null;try{({data:{session}}=await studyDb.auth.getSession())}catch(e){}
+  if(!session){studentAuthMsg.innerHTML='حتى تسجل طالب، <a href="login.html?next=study.html">سجّل دخولك</a> أولاً.';return}
+  studyMe=session.user;studentAuthMsg.textContent='✅ مسجل دخول — تقدر تضيف أو تعدل تسجيلات الطلاب المرتبطة بحسابك.';studentForm.style.display='grid';loadMyStudents();
+}
+function studentEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function loadMyStudents(){
+  if(!studyMe)return;myStudents.textContent='جاري التحميل...';
+  const {data,error}=await studyDb.from('study_students').select('*').eq('owner_user_id',studyMe.id).order('created_at',{ascending:false});
+  if(error){myStudents.textContent='تعذر تحميل التسجيلات: '+error.message;return}
+  myStudents.innerHTML=(data||[]).map(x=>`<div style="padding:11px 0;border-bottom:1px solid #eee"><b>${studentEsc(x.student_name)}</b><div style="color:#666;margin:5px 0">${studentEsc(x.education_level)}${x.grade?' • '+studentEsc(x.grade):''}${x.institution_name?' • '+studentEsc(x.institution_name):''}</div><button onclick='editStudent(${JSON.stringify(x)})' style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px">تعديل</button><button onclick="deleteStudent(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;background:#b91c1c;color:#fff">حذف</button></div>`).join('')||'ما عندك تسجيلات طلاب بعد.';
+}
+async function saveStudent(){
+  if(!studyMe)return location.href='login.html?next=study.html';
+  if(!stName.value.trim())return alert('اكتب اسم الطالب');
+  const payload={owner_user_id:studyMe.id,student_name:stName.value.trim(),education_level:stLevel.value,grade:stGrade.value.trim()||null,institution_name:stInstitution.value.trim()||null,governorate:stGovernorate.value.trim()||null,area:stArea.value.trim()||null,phone:stPhone.value.trim()||null,birth_year:stBirthYear.value?Number(stBirthYear.value):null,notes:stNotes.value.trim()||null,updated_at:new Date().toISOString()};
+  stSaveBtn.disabled=true;stSaveBtn.textContent='جاري الحفظ...';
+  const q=studentEditId?studyDb.from('study_students').update(payload).eq('id',studentEditId).eq('owner_user_id',studyMe.id):studyDb.from('study_students').insert(payload);
+  const {error}=await q;stSaveBtn.disabled=false;stSaveBtn.textContent='حفظ التسجيل';if(error)return alert(error.message);resetStudentForm();loadMyStudents();
+}
+function editStudent(x){studentEditId=x.id;stName.value=x.student_name||'';stLevel.value=x.education_level||'ابتدائي';stGrade.value=x.grade||'';stInstitution.value=x.institution_name||'';stGovernorate.value=x.governorate||'';stArea.value=x.area||'';stPhone.value=x.phone||'';stBirthYear.value=x.birth_year||'';stNotes.value=x.notes||'';stSaveBtn.textContent='حفظ التعديل';document.getElementById('students').scrollIntoView({behavior:'smooth'})}
+function resetStudentForm(){studentEditId=null;['stName','stGrade','stInstitution','stGovernorate','stArea','stPhone','stBirthYear','stNotes'].forEach(id=>document.getElementById(id).value='');stLevel.value='روضة';stSaveBtn.textContent='حفظ التسجيل'}
+async function deleteStudent(id){if(!studyMe||!confirm('متأكد من حذف تسجيل الطالب؟'))return;const {error}=await studyDb.from('study_students').delete().eq('id',id).eq('owner_user_id',studyMe.id);if(error)return alert(error.message);loadMyStudents()}
+initStudentRegistration();
 
 function goBack(){
   if(currentPanel){
