@@ -93,10 +93,7 @@ select{min-width:150px}
 </main>
 
 <script>
-const db=supabase.createClient(
-  'https://ubayrhtshgtgggxprrek.supabase.co',
-  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll'
-);
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 
 const $=id=>document.getElementById(id);
 let me=null,profile=null,routes=[],applications=[];

@@ -21,7 +21,7 @@
     if(!window.supabase || !window.supabase.createClient){
       await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
     }
-    if(!db) db=window.supabase.createClient(SB_URL,SB_KEY);
+    if(!db) db=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
     return db;
   }
 

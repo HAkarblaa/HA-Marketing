@@ -31,6 +31,7 @@
     </section>
 
     <section id="notifyView" class="view">
+      <div class="box"><h2>📚 إدارة دليل الدراسة</h2><p class="small">إضافة وحذف وتعديل المدارس والجامعات والمعاهد والمدرسين ومراكز التقوية.</p><a class="btn" href="admin-study.html" style="display:inline-block;text-decoration:none">فتح إدارة الدراسة</a></div>
       <div class="box" id="studyNotifyBox">
         <h2>📚 تبليغ دراسي مستهدف</h2>
         <p class="small">يظهر هذا الإرسال للـSuper Admin أو الأدمن الذي لديه صلاحية الدراسة. يمكن تحديد المحافظة والمرحلة والمدرسة والصف، ويصل فقط للطلاب المطابقين.</p>
@@ -90,8 +91,8 @@ const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefr
 let session=null,adminRow=null,myPermissions=[];
 const SHOP_SECTIONS=[['library','مكتبة','📚'],['building_materials','مواد البناء','🏗️'],['cards_credit','بطاقات وأرصدة','💳'],['yugioh','أوراق يوغي','🃏'],['markets','أسواق','🛒'],['restaurants','مطاعم','🍽️'],['flowers','ورد','💐'],['home_appliances','أجهزة منزلية','🏠'],['printers','طابعات','🖨️'],['devices','أجهزة','📱'],['device_accessories','إكسسوارات الأجهزة','🎧'],['clothes','ملابس','👕'],['shoes','أحذية','👟']];
 const SECTIONS=[
- ['shop','التسوق','🛒','admin-shop.html'],['services','طلب خدمة','🛠️','admin-services.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','news.html'],
- ['religious','الأمور الدينية','🕌','religious.html'],['study','الدراسة','📚','study.html'],['entertainment','الترفيه','🎮','entertainment.html'],['sports','الرياضة','⚽','sports.html'],
+ ['shop','التسوق','🛒','admin-shop.html'],['services','طلب خدمة','🛠️','admin-services.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','admin-content.html?section=news'],
+ ['religious','الأمور الدينية','🕌','admin-content.html?section=religious'],['study','الدراسة','📚','admin-study.html'],['entertainment','الترفيه','🎮','admin-content.html?section=entertainment'],['sports','الرياضة','⚽','admin-content.html?section=sports'],
  ['transport','النقل','🚕','taxi-delivery.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
  ['notifications','الإشعارات','🔔','admin-panel.html#notify'],['settings','الإعدادات','⚙️','account.html']
 ];

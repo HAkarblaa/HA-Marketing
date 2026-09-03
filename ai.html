@@ -47,7 +47,7 @@
 <script>
 const SUPABASE_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SUPABASE_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 const historyMessages=[];
 let busy=false;
 
