@@ -2,10 +2,15 @@
 <title>تسجيل الدخول - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.box{width:92%;max-width:480px;margin:60px auto;background:#fff;padding:25px;border-radius:18px;box-shadow:0 5px 20px #0001}
 h1{text-align:center}input,button,a{width:100%;padding:13px;margin:7px 0;border-radius:10px;font-size:16px;box-sizing:border-box}input{border:1px solid #ccc}button{border:0;background:#111;color:#fff;cursor:pointer}
-a{display:block;text-align:center;text-decoration:none;background:#eee;color:#111}</style></head><body><div class="box">
+a{display:block;text-align:center;text-decoration:none;background:#eee;color:#111}
+button:disabled{opacity:.65;cursor:not-allowed}
+.ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px;color:#222}
+@keyframes haSpin{to{transform:rotate(360deg)}}
+</style></head><body><div class="box">
 <h1>تسجيل الدخول</h1><input id="phone" type="tel" placeholder="رقم الموبايل"><input id="password" type="password" placeholder="الرقم السري">
-<button onclick="login()">تسجيل الدخول</button><a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a><button onclick="guestLogin()" style="background:#666">الدخول كضيف</button>
-<a href="register.html">إنشاء حساب جديد</a><a href="index.html">الرجوع للرئيسية</a></div>
+<button id="loginBtn" onclick="login()">تسجيل الدخول</button><a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a>
+<a href="register.html">إنشاء حساب جديد</a><a href="index.html">الرجوع للرئيسية</a></div><div id="haLoading" class="ha-loading" aria-live="polite"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري التحقق...</div></div>
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
@@ -52,18 +57,31 @@ async function ensureProfile(user, fallback={}){
   }
 }
 
+function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.loginBtn)loginBtn.disabled=true}
+function hideLoading(){haLoading.classList.remove('show');if(window.loginBtn)loginBtn.disabled=false}
 async function login(){
  const raw=phone.value.trim(),pass=password.value;
  if(!raw||!pass){alert('اكتب رقم الموبايل والرقم السري');return}
  const lp=localPhone(raw);if(!/^07\d{9}$/.test(lp)){alert('اكتب رقم موبايل عراقي صحيح يبدأ بـ 07 ويتكون من 11 رقم.');return}
  const p=normalizePhone(lp);
- const {data,error}=await db.auth.signInWithPassword({email:authEmail(p),password:pass});
- if(error||!data.session){localStorage.removeItem('ha_logged_in');alert('بيانات الدخول غير صحيحة');return}
- await ensureProfile(data.user);
- await persistLoginFlag();
- location.replace('index.html');
+ showLoading('جاري تسجيل الدخول...');
+ try{
+  const {data,error}=await db.auth.signInWithPassword({email:authEmail(p),password:pass});
+  if(error||!data.session){localStorage.removeItem('ha_logged_in');hideLoading();alert('بيانات الدخول غير صحيحة');return}
+  if(data.user?.is_anonymous){await db.auth.signOut();localStorage.removeItem('ha_logged_in');hideLoading();alert('الدخول كضيف غير متاح. سجّل دخول بحسابك.');return}
+  await ensureProfile(data.user);
+  await persistLoginFlag();
+  haLoadText.textContent='تم تسجيل الدخول، جاري فتح الموقع...';
+  location.replace('index.html');
+ }catch(e){hideLoading();alert('تعذر تسجيل الدخول حالياً. تحقق من الإنترنت وحاول مرة ثانية.');}
 }
-async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error){alert(error.message);return}await persistLoginFlag();location.replace('index.html');}
-(async()=>{const s=await persistLoginFlag();if(s&&!s.user?.is_anonymous){/* يبقى المستخدم مسجلاً */}})();
+(async()=>{
+ showLoading('جاري التحقق من الحساب...');
+ try{
+  const s=await persistLoginFlag();
+  if(s?.user?.is_anonymous){await db.auth.signOut();localStorage.removeItem('ha_logged_in');}
+ }catch(e){}
+ hideLoading();
+})();
 
 </script></body></html>

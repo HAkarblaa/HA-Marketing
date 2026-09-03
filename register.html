@@ -5,21 +5,20 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:650px;margin:35px auto}
 .card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 5px 20px #0001}h1{text-align:center}
-.types{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}.type{border:1px solid #ddd;background:#f7f7f7;padding:14px 5px;border-radius:12px;cursor:pointer}
+.types{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:16px 0}.type{border:1px solid #ddd;background:#f7f7f7;padding:14px 5px;border-radius:12px;cursor:pointer}
 .type.active{background:#111;color:#fff}label{display:block;font-weight:700;margin:12px 0 6px}
 input,select,button,a.btn{width:100%;padding:13px;border-radius:10px;font-size:16px}input,select{border:1px solid #ccc;background:#fff}
-button{border:0;cursor:pointer}.primary{background:#111;color:#fff;margin-top:16px}.guest{background:#eee;color:#111}
+button{border:0;cursor:pointer}.primary{background:#111;color:#fff;margin-top:16px}.primary:disabled{opacity:.65;cursor:not-allowed}
 a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color:#111;margin-top:9px}.hidden{display:none}
 .avatar{display:flex;align-items:center;gap:12px}#preview{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#eee;display:none}
 .note{font-size:13px;color:#666}.err{color:#a40000;font-size:13px;margin-top:4px}@media(max-width:520px){.types{grid-template-columns:1fr}}
+.ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px}@keyframes haSpin{to{transform:rotate(360deg)}}
 </style></head><body><div class="wrap"><div class="card">
 <h1>إنشاء حساب</h1>
 <div class="types">
-<button class="type" onclick="chooseType('guest',this)">👤 ضيف</button>
 <button class="type active" onclick="chooseType('customer',this)">🛍️ عميل</button>
 <button class="type" onclick="chooseType('employee',this)">🧑‍💼 موظف</button>
 </div>
-<div id="guestBox" class="hidden"><p>الدخول كضيف لا يحتاج أي معلومات.</p><button class="guest" onclick="guestLogin()">الدخول كضيف</button></div>
 <div id="formBox">
 <label>الاسم الكامل *</label><input id="full_name" required>
 <label>رقم الموبايل *</label><input id="phone" inputmode="numeric" maxlength="11" pattern="07[0-9]{9}" type="tel" inputmode="numeric" placeholder="07XXXXXXXXX" required>
@@ -33,10 +32,10 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <label>الرقم السري *</label><input id="password" minlength="8" maxlength="72" type="password" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز" required><p class="note">8 خانات على الأقل. يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات أو حروف عربية.</p>
 <label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="8" maxlength="72" type="password" autocomplete="new-password" required>
 <div id="passError" class="err"></div>
-<button class="primary" onclick="createAccount()">إنشاء الحساب</button>
+<button id="createBtn" class="primary" onclick="createAccount()">إنشاء الحساب</button>
 </div>
 <a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a><a class="btn" href="index.html">الرجوع للرئيسية</a>
-</div></div>
+</div></div><div id="haLoading" class="ha-loading" aria-live="polite"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري إنشاء الحساب...</div></div>
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
@@ -84,9 +83,10 @@ async function ensureProfile(user, fallback={}){
 }
 
 let accountType='customer',avatarData=null;
-function chooseType(t,b){accountType=t;document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');guestBox.classList.toggle('hidden',t!=='guest');formBox.classList.toggle('hidden',t==='guest');roleBox.classList.toggle('hidden',t!=='employee');}
+function chooseType(t,b){accountType=t;document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');roleBox.classList.toggle('hidden',t!=='employee');}
 avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
-async function guestLogin(){const {error}=await db.auth.signInAnonymously();if(error){alert('تعذر دخول الضيف: '+error.message);return}await persistLoginFlag();location.href='index.html';}
+function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.createBtn)createBtn.disabled=true}
+function hideLoading(){haLoading.classList.remove('show');if(window.createBtn)createBtn.disabled=false}
 async function createAccount(){
  const name=full_name.value.trim(),raw=phone.value.trim(),user=username.value.trim(),gov=governorate.value,p=password.value,cp=confirm_password.value;
  passError.textContent='';
@@ -98,20 +98,24 @@ async function createAccount(){
  const lp=localPhone(raw);
  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return}
  const ph=normalizePhone(lp);
+ showLoading('جاري التحقق من البيانات...');
+ try{
  const {data:userExists,error:userCheckError}=await db.from('profiles').select('id').eq('username',user).limit(1);
- if(!userCheckError&&userExists?.length){alert('اسم المستخدم مستخدم مسبقاً. غيّره وحاول مرة ثانية.');username.focus();return}
+ if(!userCheckError&&userExists?.length){hideLoading();alert('اسم المستخدم مستخدم مسبقاً. غيّره وحاول مرة ثانية.');username.focus();return}
  const {data:phoneExists,error:phoneCheckError}=await db.from('profiles').select('id').eq('phone',ph).limit(1);
- if(!phoneCheckError&&phoneExists?.length){alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
+ if(!phoneCheckError&&phoneExists?.length){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
  const meta={full_name:name,phone:ph,username:user,governorate:gov,account_type:accountType,employee_role_key:accountType==='employee'?employee_role.value:null,avatar_url:avatarData};
  const email=authEmail(ph);
  const {data:signup,error}=await db.auth.signUp({email,password:p,options:{data:meta}});
- if(error){const msg=(error.message||'').toLowerCase();alert(msg.includes('already')||msg.includes('registered')?'رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.':'تعذر إنشاء الحساب: '+error.message);return}
+ if(error){hideLoading();const msg=(error.message||'').toLowerCase();alert(msg.includes('already')||msg.includes('registered')?'رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.':'تعذر إنشاء الحساب: '+error.message);return}
  let session=signup?.session||null;
- if(!session){const {data:loginData,error:loginError}=await db.auth.signInWithPassword({email,password:p});if(loginError){alert('تم إنشاء الحساب، لكن تعذر تثبيت تسجيل الدخول تلقائياً. افتح تسجيل الدخول واستخدم نفس الرقم السري.');location.href='login.html';return}session=loginData.session;}
+ if(!session){const {data:loginData,error:loginError}=await db.auth.signInWithPassword({email,password:p});if(loginError){hideLoading();alert('تم إنشاء الحساب، لكن تعذر تثبيت تسجيل الدخول تلقائياً. افتح تسجيل الدخول واستخدم نفس الرقم السري.');location.href='login.html';return}session=loginData.session;}
  if(session?.user){await ensureProfile(session.user,meta);localStorage.setItem('ha_logged_in','1');}
  await persistLoginFlag();
+ haLoadText.textContent='تم إنشاء الحساب، جاري فتح الموقع...';
  alert(accountType==='employee'?'تم إنشاء حساب الموظف وهو بانتظار موافقة الإدارة.':'تم إنشاء الحساب وتثبيت تسجيل الدخول بنجاح.');
  location.replace('index.html');
+ }catch(e){hideLoading();console.error(e);alert('تعذر إكمال إنشاء الحساب حالياً. تحقق من الإنترنت وحاول مرة ثانية.');}
 }
 
 </script></body></html>

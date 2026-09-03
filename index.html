@@ -250,10 +250,14 @@ body{padding-bottom:76px}
     margin:2px 0 !important;
   }
 }
+
+.ha-page-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:100000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px}.ha-page-loading.show{display:flex}.ha-page-spinner{width:50px;height:50px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haPageSpin .8s linear infinite}.ha-page-loading-text{font-size:15px;font-weight:700;color:#222}@keyframes haPageSpin{to{transform:rotate(360deg)}}
+.search-box.searching .search-icon{animation:haPageSpin .7s linear infinite}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div>
 
 <div id="haSplash" aria-label="شاشة الدخول">
   <div class="splash-inner">
@@ -395,32 +399,63 @@ toggleMenu = function(){
   }
 };
 
+let haSearchTimer=null;
 function searchCards(){
-  const v = document.getElementById('searchInput').value.trim().toLowerCase();
-  const cards = document.querySelectorAll('.card');
-  let n = 0;
-
-  cards.forEach(function(c){
-    const ok = (c.innerText + ' ' + (c.dataset.search || '')).toLowerCase().includes(v);
-    c.style.display = ok ? 'flex' : 'none';
-    if(ok) n++;
-  });
-
-  document.getElementById('noResults').style.display = n ? 'none' : 'block';
+  const box=document.querySelector('.search-box');
+  if(box)box.classList.add('searching');
+  clearTimeout(haSearchTimer);
+  haSearchTimer=setTimeout(function(){
+    const v = document.getElementById('searchInput').value.trim().toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    let n = 0;
+    cards.forEach(function(c){
+      const ok = (c.innerText + ' ' + (c.dataset.search || '')).toLowerCase().includes(v);
+      c.style.display = ok ? 'flex' : 'none';
+      if(ok) n++;
+    });
+    const nr=document.getElementById('noResults');if(nr)nr.style.display = n ? 'none' : 'block';
+    if(box)box.classList.remove('searching');
+  },120);
 }
 
 /* شاشة البداية تظهر في كل مرة يتم فتح الصفحة الرئيسية من الرابط */
-function continueLogin(){
-  const signedIn = localStorage.getItem('ha_logged_in') === '1';
-
-  if(signedIn){
-    document.getElementById('haSplash').classList.add('hide');
-  }else{
-    window.location.href = 'login.html';
+function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading');const t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;if(x)x.classList.add('show')}
+function hidePageLoading(){const x=document.getElementById('haPageLoading');if(x)x.classList.remove('show')}
+async function continueLogin(){
+  showPageLoading('جاري التحقق من تسجيل الدخول...');
+  try{
+    const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+    const {data:{session}}=await adb.auth.getSession();
+    if(session && !session.user?.is_anonymous){
+      localStorage.setItem('ha_logged_in','1');
+      document.getElementById('haSplash').classList.add('hide');
+      hidePageLoading();
+    }else{
+      if(session?.user?.is_anonymous)await adb.auth.signOut();
+      localStorage.removeItem('ha_logged_in');
+      document.getElementById('haPageLoadingText').textContent='جاري فتح تسجيل الدخول...';
+      window.location.href = 'login.html';
+    }
+  }catch(e){
+    localStorage.removeItem('ha_logged_in');
+    document.getElementById('haPageLoadingText').textContent='جاري فتح تسجيل الدخول...';
+    window.location.href='login.html';
   }
 }
 
 
+
+
+/* مؤشر انتظار عند الانتقال بين الصفحات */
+document.addEventListener('click',function(e){
+  const a=e.target.closest('a[href]');
+  if(!a)return;
+  const href=a.getAttribute('href')||'';
+  if(!href || href==='#' || a.dataset.comingSoon==='1' || href.startsWith('javascript:') || a.target==='_blank')return;
+  if(href.endsWith('.html') || (!href.includes('://') && !href.startsWith('mailto:') && !href.startsWith('tel:'))){
+    showPageLoading('جاري فتح الصفحة...');
+  }
+},true);
 
 /* ===== نافذة قريباً - نسخة مصححة ===== */
 (function(){
