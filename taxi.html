@@ -949,6 +949,10 @@ body:not(.trip-ready) #extraSummary{
 
 <div id="tripSheet">
   <div class="trip-sheet-title">تفاصيل الرحلة</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px">
+    <a href="ride-history.html" style="text-decoration:none;text-align:center;background:#f3f4f6;color:#111;padding:9px;border-radius:12px;font-weight:800;font-size:12px">🕘 رحلاتي</a>
+    <button id="shareTripTopBtn" type="button" style="border:0;background:#f3f4f6;padding:9px;border-radius:12px;font-weight:800;font-size:12px">🛡️ مشاركة الرحلة</button>
+  </div>
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر نوع السيارة</div>
 
@@ -980,6 +984,13 @@ body:not(.trip-ready) #extraSummary{
 حدد الانطلاق أولاً، وبعدها حدد نقطة الوصول.
 </div>
 <div id="extraSummary" class="extra-summary"></div>
+<div style="margin:10px 0;background:#f7f7f7;padding:10px;border-radius:12px">
+  <b style="display:block;margin-bottom:7px;font-size:12px">طريقة الدفع</b>
+  <select id="taxiPaymentMethod" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:white">
+    <option value="cash">💵 الدفع نقداً عند الوصول</option>
+    <option value="electronic">💳 دفع إلكتروني</option>
+  </select>
+</div>
 
 <div class="order" id="orderArea">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
@@ -1654,6 +1665,7 @@ order.onclick=async()=>{
       total:Number(selected.dataset.price||0),
       calculatedAt:firebase.database.ServerValue.TIMESTAMP
     },
+    paymentMethod:(document.getElementById('taxiPaymentMethod')?.value||'cash'),
     extras:{
       extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
       stop:stopCheck.checked ? stopText.value.trim() : '',
@@ -1664,6 +1676,7 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
+    await db.ref('userRides/'+fbUser.uid+'/'+activeRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();
     listenToRide(activeRideId);
@@ -2045,6 +2058,15 @@ function listenToRide(rideId){
     }
   });
 }
+
+
+const shareTripTopBtn=document.getElementById('shareTripTopBtn');
+if(shareTripTopBtn) shareTripTopBtn.onclick=async()=>{
+  const id=activeRideId||localStorage.getItem('ha_active_ride');
+  if(!id){alert('ما عندك رحلة فعالة حالياً.');return;}
+  const text='تفاصيل رحلة HA Marketing - رقم الرحلة: '+id;
+  try{if(navigator.share) await navigator.share({title:'مشاركة الرحلة',text}); else {await navigator.clipboard.writeText(text);alert('تم نسخ رقم الرحلة.');}}catch(e){}
+};
 
 const savedRideId=localStorage.getItem('ha_active_ride');
 if(savedRideId){
