@@ -375,6 +375,7 @@ acceptBtn.onclick=async()=>{
   }
 
   currentRide=tx.snapshot.val();
+  await db.ref('driverRides/'+firebaseDriverUser.uid+'/'+currentRideId).set(true).catch(()=>{});
   localStorage.setItem('ha_driver_active_ride',currentRideId);
   HA_RideStatus.clear();
   HA_RideStatus.watch(currentRideId,'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});

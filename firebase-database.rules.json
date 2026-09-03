@@ -27,6 +27,19 @@
       }
     },
 
+
+    "userRides": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$rideId": { ".write": "auth != null && auth.uid == $uid" }
+      }
+    },
+    "driverRides": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$rideId": { ".write": "auth != null && auth.uid == $uid" }
+      }
+    },
     "dominoRooms": {
       "$roomId": {
         ".read": "auth != null",
