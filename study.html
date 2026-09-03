@@ -125,10 +125,10 @@ body{
 
 @media(max-width:600px){
   .grid{gap:11px}
-  .card{min-height:145px;padding:18px 10px}
-  .card .icon{font-size:39px}
-  .card h2{font-size:20px}
-  .card p{font-size:14px}
+  .card{min-height:118px;padding:12px 7px}
+  .card .icon{font-size:31px;margin-bottom:6px}
+  .card h2{font-size:15px;line-height:1.35}
+  .card p{font-size:11px;line-height:1.45}
   .subgrid{gap:10px}
   .subcard{min-height:96px;padding:15px 8px}
   .subcard strong{font-size:16px}
@@ -210,6 +210,30 @@ body{
     <h2>الجدول والتقويم</h2>
     <p>6 محاضرات يومياً من السبت للخميس ومواعيد الامتحانات</p>
   </a>
+
+  <a class="card" href="study-library.html" style="text-decoration:none">
+    <div class="icon">📚</div>
+    <h2>المكتبة الدراسية</h2>
+    <p>كتب وملازم ومحاضرات وأسئلة حسب المرحلة والمادة</p>
+  </a>
+
+  <a class="card" href="education-news.html" style="text-decoration:none">
+    <div class="icon">📰</div>
+    <h2>أخبار التربية</h2>
+    <p>أخبار المدارس والامتحانات والقرارات التربوية</p>
+  </a>
+
+  <a class="card" href="higher-education-news.html" style="text-decoration:none">
+    <div class="icon">🏛️</div>
+    <h2>أخبار التعليم العالي</h2>
+    <p>أخبار الجامعات والقبول والدراسات العليا</p>
+  </a>
+
+  <a class="card" href="student-transport.html" style="text-decoration:none">
+    <div class="icon">🚌</div>
+    <h2>النقل الطلابي</h2>
+    <p>خدمات نقل الطلبة للمدارس والجامعات</p>
+  </a>
 </main>
 
 <section class="panel" id="schools">
@@ -241,6 +265,19 @@ body{
     <h2>👨‍🎓 الطلاب</h2>
     <button class="close-panel" type="button" onclick="closePanel()">×</button>
   </div>
+  <div class="subgrid" style="margin-bottom:14px">
+    <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
+    <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
+    <div class="subcard"><div class="subicon">📘</div><strong>متوسط</strong></div>
+    <div class="subcard"><div class="subicon">📗</div><strong>إعدادي</strong></div>
+    <div class="subcard"><div class="subicon">⭐</div><strong>متميزين</strong></div>
+    <div class="subcard"><div class="subicon">📝</div><strong>خارجي</strong></div>
+    <div class="subcard"><div class="subicon">📜</div><strong>دبلوم</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>بكالوريوس</strong></div>
+    <div class="subcard"><div class="subicon">🎓</div><strong>ماجستير</strong></div>
+    <div class="subcard"><div class="subicon">🏅</div><strong>دكتوراه</strong></div>
+  </div>
+
   <div class="note" style="text-align:right;margin-bottom:14px">
     <h3 style="margin-top:0">تسجيل طالب</h3>
     <p style="line-height:1.7">أي صاحب حساب في HA Marketing يقدر يسجل طالب. التسجيل يبقى مرتبط بحسابك ويمكنك تعديله أو حذفه لاحقاً.</p>
@@ -274,6 +311,21 @@ body{
   <div class="subgrid">
     <a class="subcard" href="file-tools.html" style="text-decoration:none;color:#111">
       <div class="subicon">📁</div><strong>تحويل وتعديل الملفات</strong>
+    </a>
+    <a class="subcard" href="study-language.html" style="text-decoration:none;color:#111">
+      <div class="subicon">🌐</div><strong>الترجمة والإنجليزية</strong>
+    </a>
+    <a class="subcard" href="math-calculator.html" style="text-decoration:none;color:#111">
+      <div class="subicon">🧮</div><strong>الحاسبة والمعادلات</strong>
+    </a>
+    <a class="subcard" href="study-directory.html" style="text-decoration:none;color:#111">
+      <div class="subicon">🔎</div><strong>دليل الدراسة</strong>
+    </a>
+    <a class="subcard" href="study-library.html" style="text-decoration:none;color:#111">
+      <div class="subicon">📚</div><strong>المكتبة الدراسية</strong>
+    </a>
+    <a class="subcard" href="study-planner.html" style="text-decoration:none;color:#111">
+      <div class="subicon">📅</div><strong>الجدول والتقويم</strong>
     </a>
   </div>
 </section>
@@ -325,7 +377,7 @@ async function loadMyStudents(){
   if(!studyMe)return;myStudents.textContent='جاري التحميل...';
   const {data,error}=await studyDb.from('study_students').select('*').eq('owner_user_id',studyMe.id).order('created_at',{ascending:false});
   if(error){myStudents.textContent='تعذر تحميل التسجيلات: '+error.message;return}
-  myStudents.innerHTML=(data||[]).map(x=>`<div style="padding:11px 0;border-bottom:1px solid #eee"><b>${studentEsc(x.student_name)}</b><div style="color:#666;margin:5px 0">${studentEsc(x.education_level)}${x.grade?' • '+studentEsc(x.grade):''}${x.institution_name?' • '+studentEsc(x.institution_name):''}</div><button onclick='editStudent(${JSON.stringify(x)})' style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px">تعديل</button><button onclick="deleteStudent(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;background:#b91c1c;color:#fff">حذف</button><a class="card" href="study-library.html"><div class="icon">📚</div><h3>المكتبة الدراسية</h3><p>كتب وملازم ومحاضرات وأسئلة حسب المرحلة والمادة.</p></a></div>`).join('')||'ما عندك تسجيلات طلاب بعد.';
+  myStudents.innerHTML=(data||[]).map(x=>`<div style="padding:11px 0;border-bottom:1px solid #eee"><b>${studentEsc(x.student_name)}</b><div style="color:#666;margin:5px 0">${studentEsc(x.education_level)}${x.grade?' • '+studentEsc(x.grade):''}${x.institution_name?' • '+studentEsc(x.institution_name):''}</div><button onclick='editStudent(${JSON.stringify(x)})' style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px">تعديل</button><button onclick="deleteStudent(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;background:#b91c1c;color:#fff">حذف</button></div>`).join('')||'ما عندك تسجيلات طلاب بعد.';
 }
 async function saveStudent(){
   if(!studyMe)return location.href='login.html?next=study.html';
