@@ -235,7 +235,9 @@ body{
     <p>خدمات نقل الطلبة للمدارس والجامعات</p>
   </a>
   <a class="card" href="study-grades.html" style="text-decoration:none"><div class="icon">📊</div><h2>الدرجات والتقييم</h2><p>يومي، شهري، إملاء، سعي وامتحانات مع مستوى تلقائي</p></a>
+  <a class="card" href="parent-portal.html" style="text-decoration:none"><div class="icon">👨‍👩‍👧</div><h2>ولي أمر الطالب</h2><p>متابعة الدرجات والمعدل والمستوى الدراسي للطالب المرتبط</p></a>
   <a class="card" href="student-talents.html" style="text-decoration:none"><div class="icon">🎨</div><h2>مواهب الطلاب</h2><p>انشر صور الموهبة والتفاصيل وشاهد مواهب الطلاب</p></a>
+  <a class="card" href="study-sports-challenges.html" style="text-decoration:none"><div class="icon">🏆</div><h2>التحديات الرياضية</h2><p>تحديات طلابية رياضية، مشاركة النتائج والترتيب</p></a>
 </main>
 
 <section class="panel" id="schools">
@@ -379,18 +381,18 @@ async function loadMyStudents(){
   if(!studyMe)return;myStudents.textContent='جاري التحميل...';
   const {data,error}=await studyDb.from('study_students').select('*').eq('owner_user_id',studyMe.id).order('created_at',{ascending:false});
   if(error){myStudents.textContent='تعذر تحميل التسجيلات: '+error.message;return}
-  myStudents.innerHTML=(data||[]).map(x=>`<div style="padding:11px 0;border-bottom:1px solid #eee"><b>${studentEsc(x.student_name)}</b><div style="color:#666;margin:5px 0">${studentEsc(x.education_level)}${x.grade?' • '+studentEsc(x.grade):''}${x.institution_name?' • '+studentEsc(x.institution_name):''}</div><button onclick='editStudent(${JSON.stringify(x)})' style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px">تعديل</button><button onclick="deleteStudent(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;background:#b91c1c;color:#fff">حذف</button></div>`).join('')||'ما عندك تسجيلات طلاب بعد.';
+  myStudents.innerHTML=(data||[]).map(x=>`<div style="padding:11px 0;border-bottom:1px solid #eee"><b>${studentEsc(x.student_name)}</b><div style="color:#666;margin:5px 0">${studentEsc(x.education_level)}${x.grade?' • '+studentEsc(x.grade):''}${x.institution_name?' • '+studentEsc(x.institution_name):''}</div><button onclick='editStudent(${JSON.stringify(x)})' style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px">تعديل</button><button onclick="parentCode(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px;background:#e8f0ff">رمز ولي الأمر</button><button onclick="deleteStudent(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;background:#b91c1c;color:#fff">حذف</button></div>`).join('')||'ما عندك تسجيلات طلاب بعد.';
 }
 async function saveStudent(){
   if(!studyMe)return location.href='login.html?next=study.html';
   if(!stName.value.trim())return alert('اكتب اسم الطالب');
   const payload={owner_user_id:studyMe.id,student_name:stName.value.trim(),education_level:stLevel.value,grade:stGrade.value.trim()||null,institution_name:stInstitution.value.trim()||null,governorate:stGovernorate.value.trim()||null,area:stArea.value.trim()||null,phone:stPhone.value.trim()||null,birth_year:stBirthYear.value?Number(stBirthYear.value):null,notes:stNotes.value.trim()||null,updated_at:new Date().toISOString()};
   stSaveBtn.disabled=true;stSaveBtn.textContent='جاري الحفظ...';
-  const q=studentEditId?studyDb.from('study_students').update(payload).eq('id',studentEditId).eq('owner_user_id',studyMe.id):studyDb.from('study_students').insert(payload);
-  const {error}=await q;stSaveBtn.disabled=false;stSaveBtn.textContent='حفظ التسجيل';if(error)return alert(error.message);resetStudentForm();loadMyStudents();
+  let error=null;if(studentEditId){({error}=await studyDb.from('study_students').update(payload).eq('id',studentEditId).eq('owner_user_id',studyMe.id));}else{const r=await studyDb.rpc('register_my_student',{p_student:payload});error=r.error;} stSaveBtn.disabled=false;stSaveBtn.textContent='حفظ التسجيل';if(error)return alert('تعذر حفظ معلومات الطالب: '+error.message);resetStudentForm();loadMyStudents();
 }
 function editStudent(x){studentEditId=x.id;stName.value=x.student_name||'';stLevel.value=x.education_level||'ابتدائي';stGrade.value=x.grade||'';stInstitution.value=x.institution_name||'';stGovernorate.value=x.governorate||'';stArea.value=x.area||'';stPhone.value=x.phone||'';stBirthYear.value=x.birth_year||'';stNotes.value=x.notes||'';stSaveBtn.textContent='حفظ التعديل';document.getElementById('students').scrollIntoView({behavior:'smooth'})}
 function resetStudentForm(){studentEditId=null;['stName','stGrade','stInstitution','stGovernorate','stArea','stPhone','stBirthYear','stNotes'].forEach(id=>document.getElementById(id).value='');stLevel.value='روضة';stSaveBtn.textContent='حفظ التسجيل'}
+async function parentCode(id){const {data,error}=await studyDb.rpc('generate_student_parent_code',{p_student_id:id});if(error)return alert(error.message);prompt('رمز ربط ولي الأمر — أرسله لولي الأمر فقط:',data)}
 async function deleteStudent(id){if(!studyMe||!confirm('متأكد من حذف تسجيل الطالب؟'))return;const {error}=await studyDb.from('study_students').delete().eq('id',id).eq('owner_user_id',studyMe.id);if(error)return alert(error.message);loadMyStudents()}
 initStudentRegistration();
 
