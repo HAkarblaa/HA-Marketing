@@ -4,7 +4,20 @@
 <div id="modal" class="modal"><div class="card"><button class="close" onclick="modal.classList.remove('show')">✕</button><h2>محادثة جديدة</h2><input id="peopleQ" class="search" placeholder="ابحث بالاسم أو المعرف أو الرقم" oninput="loadPeople(peopleQ.value)"><div id="people"></div><hr><h3>إنشاء كروب</h3><input id="groupName" class="search" placeholder="اسم الكروب"><p class="hint">حدد الأعضاء من النتائج أعلاه ثم اضغط إنشاء.</p><button class="new" onclick="createGroup()">إنشاء الكروب</button></div></div>
 <script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let me=null,threads=[],active=null,channel=null,tab='chats',selected=new Set();
-async function init(){let {data:{user}}=await db.auth.getUser();if(!user){location.href='login.html';return}me=user;await loadThreads();}
+async function init(){
+  let session=null;
+  try{({data:{session}}=await db.auth.getSession())}catch(e){}
+  if(!session){
+    for(let i=0;i<4&&!session;i++){
+      await new Promise(r=>setTimeout(r,250));
+      try{({data:{session}}=await db.auth.getSession())}catch(e){}
+    }
+  }
+  if(!session){location.replace('login.html?next=chat.html');return}
+  me=session.user;
+  localStorage.setItem('ha_logged_in','1');
+  await loadThreads();
+}
 async function profileMap(ids){if(!ids.length)return{};let {data}=await db.from('profiles').select('id,full_name,username,phone').in('id',[...new Set(ids)]);return Object.fromEntries((data||[]).map(x=>[x.id,x]));}
 async function loadThreads(){let {data:mem}=await db.from('chat_members').select('thread_id,last_read_at').eq('user_id',me.id);let ids=(mem||[]).map(x=>x.thread_id);if(!ids.length){threads=[];renderThreads();return}let {data:t}=await db.from('chat_threads').select('*').in('id',ids).order('updated_at',{ascending:false});let {data:allm}=await db.from('chat_members').select('thread_id,user_id,role').in('thread_id',ids);let pmap=await profileMap((allm||[]).map(x=>x.user_id));threads=(t||[]).map(x=>{let members=(allm||[]).filter(m=>m.thread_id===x.id),other=members.find(m=>m.user_id!==me.id),name=x.type==='group'?(x.title||'كروب'):(pmap[other?.user_id]?.full_name||pmap[other?.user_id]?.username||pmap[other?.user_id]?.phone||'مستخدم');return {...x,name,members,pmap}});renderThreads();}
 function renderThreads(){let qv=q.value.trim().toLowerCase(),arr=threads.filter(x=>x.name.toLowerCase().includes(qv));list.innerHTML=arr.map(x=>`<div class="item ${active===x.id?'active':''}" onclick="openThread('${x.id}')"><div class="ava">${x.type==='group'?'👥':esc(x.name.slice(0,1))}</div><div class="txt"><b>${esc(x.name)}</b><span>${x.type==='group'?'كروب':'محادثة خاصة'}</span></div></div>`).join('')||'<div class="empty" style="padding:30px">لا توجد محادثات بعد</div>';}
