@@ -255,10 +255,6 @@ body{padding-bottom:76px}
 .search-box.searching .search-icon{animation:haPageSpin .7s linear infinite}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-#haOfflineBadge{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;border-radius:999px;font:700 12px Arial,sans-serif;z-index:99999;box-shadow:0 3px 12px #0003}
-</style>
 </head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div>
@@ -282,7 +278,7 @@ body{padding-bottom:76px}
 
     <a href="account.html">👤 الحساب الشخصي</a>
     <a id="adminPanelLink" href="admin-panel.html" style="display:none">🛡️ لوحة الإدارة</a>
-    <a href="payments.html">💳 الدفع الإلكتروني</a>
+    <a href="payments.html" style="display:none" aria-hidden="true">💳 الدفع الإلكتروني</a>
     <a href="index.html">🏠 الرئيسية</a>
     <a href="shop.html">🛒 تسوق الآن</a>
     <a href="services.html">🛠️ طلب خدمة</a>
@@ -292,7 +288,7 @@ body{padding-bottom:76px}
     <a href="study.html">📚 دراسة</a>
     <a href="entertainment.html">🎮 ترفيه</a>
     <a href="sports.html">⚽ رياضة</a>
-    <a href="#" data-coming-soon="1">📅 مواعيد</a>
+    <a href="personal-center.html">👤 أنا</a>
     <a href="taxi-delivery.html">🚕 طلب مندوب أو تكسي</a>
     <a href="call-us.html">📞 اتصل بنا</a>
   
@@ -340,11 +336,7 @@ body{padding-bottom:76px}
    <p>الجم وكرة القدم والأنشطة الرياضية</p>
  </a>
 
-  <a class="card" href="#" data-coming-soon="1" data-search="مواعيد حجز موعد حجوزات">
-   <div class="icon">📅</div>
-   <h2>مواعيد</h2>
-   <p>حجز وتنظيم المواعيد بسهولة</p>
- </a>
+  <a class="card" href="personal-center.html" data-search="أنا حسابي معلوماتي العمر الوزن الطول المالية"><div class="icon">👤</div><h2>أنا</h2><p>بياناتي الشخصية والقياسات والحسابات المالية الأساسية</p></a>
 
 <a class="card" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل طلب سيارة">
    <div class="icon">🚕</div>
@@ -535,6 +527,8 @@ document.addEventListener('click',function(e){
   }catch(e){console.warn('admin link',e)}
 })();
 </script>
-<div id="haOfflineBadge">📡 لا يوجد اتصال بالإنترنت</div>
-</body>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+(function(){const b=document.createElement('div');b.id='haNetBadge';b.style='position:fixed;bottom:12px;left:12px;z-index:99999;background:#111;color:#fff;padding:8px 12px;border-radius:20px;font:12px Arial;display:none;box-shadow:0 3px 12px #0003';b.textContent='📡 وضع بدون إنترنت';document.body.appendChild(b);const u=()=>b.style.display=navigator.onLine?'none':'block';addEventListener('online',u);addEventListener('offline',u);u()})();
+</script></body>
 </html>

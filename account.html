@@ -31,14 +31,14 @@ button,a.btn{width:100%;display:block;padding:13px;border:0;border-radius:9px;ma
 <div id="accountBox" style="display:none">
   <div class="card">
     <h2>بيانات الحساب</h2>
-    <label>المعرف</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="حروف إنكليزية + أرقام + رموز"><div style="font-size:13px;color:#666;margin-top:5px">يقبل @ # $ % , . _ - وباقي الرموز الإنكليزية، بدون مسافات.</div>
+    <label>المعرف</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="حروف إنكليزية + أرقام + رموز"><div id="usernameHint" style="font-size:13px;color:#666;margin-top:5px">يمكن تغيير المعرف مرة واحدة كل 30 يوم. يقبل الرموز الإنكليزية وبدون مسافات.</div>
     <label>رقم الهاتف</label><input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="07XXXXXXXXX">
     <button class="primary" onclick="saveProfile()">حفظ التغييرات</button>
   </div>
 
   <div class="card">
     <h2>تغيير الرقم السري</h2>
-    <label>الرقم السري الجديد</label><input id="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز"><div style="font-size:13px;color:#666;margin-top:5px">8 خانات على الأقل. يقبل @ # $ % & * ! ? , . _ - + = وغيرها، بدون مسافات أو حروف عربية.</div>
+    <label>الرقم السري الجديد</label><input id="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز"><label>تأكيد الرقم السري</label><input id="password2" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="أعد كتابة الرقم السري"><div style="font-size:13px;color:#666;margin-top:5px">8 خانات على الأقل، بدون مسافات أو حروف عربية.</div>
     <button class="primary" onclick="changePassword()">تغيير الرقم السري</button>
   </div>
 
@@ -127,6 +127,7 @@ async function init(){
  status.textContent='تم تسجيل الدخول';accountBox.style.display='block';
  username.value=currentProfile?.username||currentUser.user_metadata?.username||'';
  phone.value=localPhone(currentProfile?.phone||currentUser.user_metadata?.phone||'');
+ if(currentProfile?.username_changed_at){const d=new Date(currentProfile.username_changed_at);const next=new Date(d.getTime()+30*86400000);usernameHint.textContent=Date.now()<next.getTime()?'يمكن تغيير المعرف مرة أخرى بعد: '+next.toLocaleDateString('ar-IQ'):'يمكنك تغيير المعرف الآن.'}
  await loadLatestServiceOrder();
 }
 async function loadLatestServiceOrder(){const stateEl=document.getElementById('serviceOrderState'),metaEl=document.getElementById('serviceOrderMeta'),trackBtn=document.getElementById('serviceTrackBtn');stateEl.textContent='جاري تحميل الطلب...';metaEl.textContent='';trackBtn.style.display='none';const {data,error}=await db.from('service_orders').select('id,status,customer_lat,customer_lng,employee_lat,employee_lng,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);if(error){stateEl.textContent='تعذر تحميل الطلب';metaEl.textContent=error.message;return}if(!data||!data.length){stateEl.textContent='لا يوجد طلب خدمة حالياً';return}const order=data[0];stateEl.textContent=order.status||'جديد';metaEl.textContent='تاريخ الطلب: '+new Date(order.created_at).toLocaleString('ar-IQ');if(order.status==='بالطريق'){trackBtn.style.display='block';trackBtn.dataset.orderId=order.id}}
@@ -238,14 +239,14 @@ async function saveProfile(){
   }
 }
 async function changePassword(){
-  const p=password.value;
+  const p=password.value,p2=password2.value;if(p!==p2){alert('تأكيد الرقم السري غير مطابق.');return}
   if(!/^[\x21-\x7E]{8,72}$/.test(p)){alert('الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.');return}
   try{
     const session=await getLiveSession();
     if(!session) throw new Error('جلسة الحساب غير فعالة. سجل الدخول من جديد.');
-    const {error}=await db.auth.updateUser({password:p});
-    if(error) throw error;
-    password.value='';
+    let {error}=await db.auth.updateUser({password:p});
+    if(error){try{await authUpdateDirect({password:p});error=null}catch(e){throw error}}
+    password.value='';password2.value='';
     alert('تم تغيير الرقم السري بنجاح.');
   }catch(e){ alert('تعذر تغيير الرقم السري: '+(e?.message||e)); }
 }
