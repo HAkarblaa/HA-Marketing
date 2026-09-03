@@ -56,6 +56,11 @@
         <label class="row"><input type="checkbox" id="superAdmin"> <b>Super Admin — كل الأقسام والصلاحيات</b></label>
         <h3>صلاحيات الأقسام</h3>
         <div class="perm-grid" id="permGrid"></div>
+        <div id="shopPermBox" style="margin-top:14px;border:1px solid #ddd;border-radius:13px;padding:12px">
+          <h3 style="margin-top:0">🛒 صلاحيات مربعات تسوق الآن</h3>
+          <p class="small">حدد فقط المربعات التي يسمح لهذا الأدمن بإدارتها. اختيار أي مربع يفعّل قسم التسوق تلقائياً.</p>
+          <div class="perm-grid" id="shopPermGrid"></div>
+        </div>
         <div class="row" style="margin-top:12px"><button class="btn" onclick="saveAdmin()">حفظ الأدمن</button><button class="btn danger" onclick="disableAdmin()">إيقاف صلاحية الحساب</button></div>
         <div id="adminStatus" class="status">جاهز.</div>
       </div>
@@ -83,8 +88,9 @@ function migrateLegacyAuth(){
 migrateLegacyAuth();
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 let session=null,adminRow=null,myPermissions=[];
+const SHOP_SECTIONS=[['library','مكتبة','📚'],['building_materials','مواد البناء','🏗️'],['cards_credit','بطاقات وأرصدة','💳'],['yugioh','أوراق يوغي','🃏'],['markets','أسواق','🛒'],['restaurants','مطاعم','🍽️'],['flowers','ورد','💐'],['home_appliances','أجهزة منزلية','🏠'],['printers','طابعات','🖨️'],['devices','أجهزة','📱'],['device_accessories','إكسسوارات الأجهزة','🎧'],['clothes','ملابس','👕'],['shoes','أحذية','👟']];
 const SECTIONS=[
- ['shop','التسوق','🛒','shop.html'],['services','طلب خدمة','🛠️','contact.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','news.html'],
+ ['shop','التسوق','🛒','admin-shop.html'],['services','طلب خدمة','🛠️','contact.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','news.html'],
  ['religious','الأمور الدينية','🕌','religious.html'],['study','الدراسة','📚','study.html'],['entertainment','الترفيه','🎮','entertainment.html'],['sports','الرياضة','⚽','sports.html'],
  ['transport','النقل','🚕','taxi-delivery.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
  ['notifications','الإشعارات','🔔','admin-panel.html#notify'],['settings','الإعدادات','⚙️','account.html']
@@ -130,13 +136,15 @@ async function init(){
  }
  who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');
  panel.style.display='block';
- renderSections();renderPerms();
+ renderSections();renderPerms();renderShopPerms();
  if(can('study')||can('notifications')) await loadTargets(); else studyNotifyBox.innerHTML='<h2>🔒 التبليغات الدراسية</h2><p>هذا الحساب لا يملك صلاحية الدراسة أو الإشعارات.</p>';
  if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }
 function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('')}
 function renderPerms(){permGrid.innerHTML=SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
+function renderShopPerms(){shopPermGrid.innerHTML=SHOP_SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="shop-sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
+function selectedShopPerms(){return [...document.querySelectorAll('.shop-sec:checked')].map(x=>x.value)}
 async function loadTargets(){
  const {data,error}=await db.from('study_student_profiles').select('governorate,stage,school_name,grade_name').limit(10000);
  if(error){sendStatus.textContent='تعذر قراءة ملفات الطلاب: '+error.message;return}
@@ -156,9 +164,14 @@ async function sendStudyNotice(){
 }
 async function saveAdmin(){
  if(!adminRow?.is_super_admin)return;const id=identifier.value.trim();if(!id)return alert('اكتب الرقم أو المعرّف');
- const secs=[...document.querySelectorAll('.sec:checked')].map(x=>x.value);if(!superAdmin.checked&&!secs.length)return alert('اختر قسم واحد على الأقل أو فعّل Super Admin');
- adminStatus.textContent='جاري الحفظ...';const {error}=await db.rpc('admin_set_user_role',{p_identifier:id,p_super:superAdmin.checked,p_sections:secs});
- if(error){adminStatus.innerHTML='<span class="err">'+esc(error.message)+'</span>';return}adminStatus.innerHTML='<span class="ok">تم حفظ صلاحيات الأدمن.</span>';await loadAdmins();
+ const shopSecs=selectedShopPerms();let secs=[...document.querySelectorAll('.sec:checked')].map(x=>x.value);if(shopSecs.length&&!secs.includes('shop'))secs.push('shop');
+ if(!superAdmin.checked&&!secs.length)return alert('اختر قسم واحد على الأقل أو فعّل Super Admin');
+ adminStatus.textContent='جاري الحفظ...';
+ const {error}=await db.rpc('admin_set_user_role',{p_identifier:id,p_super:superAdmin.checked,p_sections:secs});
+ if(error){adminStatus.innerHTML='<span class="err">'+esc(error.message)+'</span>';return}
+ const r=await db.rpc('admin_set_shop_permissions',{p_identifier:id,p_sections:superAdmin.checked?[]:shopSecs});
+ if(r.error){adminStatus.innerHTML='<span class="err">تم حفظ الأدمن لكن تعذر حفظ صلاحيات تسوق الآن: '+esc(r.error.message)+'</span>';return}
+ adminStatus.innerHTML='<span class="ok">تم حفظ صلاحيات الأدمن ومربعات تسوق الآن.</span>';await loadAdmins();
 }
 async function disableAdmin(){
  if(!adminRow?.is_super_admin)return;const id=identifier.value.trim();if(!id)return alert('اكتب الرقم أو المعرّف');if(!confirm('تأكيد إيقاف صلاحية هذا الأدمن؟'))return;
@@ -168,7 +181,8 @@ async function loadAdmins(){
  const {data,error}=await db.from('app_admins').select('user_id,is_super_admin,is_active,created_at').order('created_at',{ascending:false});if(error){adminList.textContent='تعذر التحميل: '+error.message;return}
  const ids=(data||[]).map(x=>x.user_id);let profiles=[];if(ids.length){const r=await db.from('profiles').select('id,full_name,phone,username').in('id',ids);profiles=r.data||[]}
  const pm=Object.fromEntries(profiles.map(p=>[p.id,p]));const {data:perms}=await db.from('app_admin_permissions').select('admin_user_id,section_key');const by={};(perms||[]).forEach(p=>(by[p.admin_user_id]??=[]).push(p.section_key));
- adminList.innerHTML=(data||[]).map(a=>{const p=pm[a.user_id]||{},names=(by[a.user_id]||[]).map(k=>SECTIONS.find(s=>s[0]===k)?.[1]||k);return '<div class="admin-item"><b>'+esc(p.full_name||p.username||p.phone||a.user_id)+'</b> '+(a.is_super_admin?'<span class="badge">Super Admin</span>':'')+' '+(a.is_active?'<span class="badge">فعال</span>':'<span class="badge">متوقف</span>')+'<div class="small">'+esc(p.phone||'')+' '+esc(p.username||'')+'</div><div class="small">'+(a.is_super_admin?'كل الأقسام':esc(names.join('، ')||'بدون أقسام'))+'</div></div>'}).join('')||'لا يوجد أدمنية.';
+ const {data:shopPerms}=await db.from('shop_admin_permissions').select('admin_user_id,section_key');const sb={};(shopPerms||[]).forEach(p=>(sb[p.admin_user_id]??=[]).push(p.section_key));
+ adminList.innerHTML=(data||[]).map(a=>{const p=pm[a.user_id]||{},names=(by[a.user_id]||[]).map(k=>SECTIONS.find(s=>s[0]===k)?.[1]||k),shopNames=(sb[a.user_id]||[]).map(k=>SHOP_SECTIONS.find(s=>s[0]===k)?.[1]||k);return '<div class="admin-item"><b>'+esc(p.full_name||p.username||p.phone||a.user_id)+'</b> '+(a.is_super_admin?'<span class="badge">Super Admin</span>':'')+' '+(a.is_active?'<span class="badge">فعال</span>':'<span class="badge">متوقف</span>')+'<div class="small">'+esc(p.phone||'')+' '+esc(p.username||'')+'</div><div class="small">'+(a.is_super_admin?'كل الأقسام':esc(names.join('، ')||'بدون أقسام'))+'</div>'+(a.is_super_admin?'':'<div class="small"><b>تسوق الآن:</b> '+esc(shopNames.join('، ')||'بدون مربعات')+'</div>')+'</div>'}).join('')||'لا يوجد أدمنية.';
 }
 init();
 </script>
