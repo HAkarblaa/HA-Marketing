@@ -173,6 +173,31 @@ body{
     <h2>خدمات دراسية سريعة</h2>
     <p>قسم مخصص للخدمات الدراسية السريعة</p>
   </button>
+
+  <a class="card" href="study-language.html" style="text-decoration:none">
+    <div class="icon">🇬🇧</div>
+    <h2>الإنجليزية والترجمة</h2>
+    <p>تعلم، محادثة، قواعد، مفردات وترجمة ذكية</p>
+  </a>
+
+  <a class="card" href="math-calculator.html" style="text-decoration:none">
+    <div class="icon">🧮</div>
+    <h2>الحاسبة وحل المعادلات</h2>
+    <p>بسيطة ومتقدمة وحل المسائل من صورة</p>
+  </a>
+
+  <a class="card" href="study-directory.html" style="text-decoration:none">
+    <div class="icon">🔎</div>
+    <h2>دليل الدراسة</h2>
+    <p>مدارس، جامعات، معاهد، مدرسون ومراكز تقوية</p>
+  </a>
+
+  <button class="card" type="button" onclick="openPanel('organize')">
+    <div class="icon">🗓️</div>
+    <h2>تنظيم الدراسة</h2>
+    <p>مهام، ملاحظات وروابط سريعة محفوظة على جهازك</p>
+  </button>
+
   <a class="card" href="study-profile.html" style="text-decoration:none">
     <div class="icon">🔔</div>
     <h2>ملفي الدراسي والتبليغات</h2>
@@ -235,6 +260,16 @@ body{
   </div>
 </section>
 
+
+<section class="panel" id="organize">
+  <div class="panel-head"><h2>🗓️ تنظيم الدراسة</h2><button class="close-panel" type="button" onclick="closePanel()">×</button></div>
+  <div class="note" style="text-align:right">
+    <label><b>مهمة أو ملاحظة جديدة</b></label>
+    <div style="display:flex;gap:8px;margin-top:10px"><input id="studyNote" style="flex:1;padding:11px;border:1px solid #ccc;border-radius:10px" placeholder="مثال: مراجعة الفصل الثالث"><button onclick="addStudyNote()" style="border:0;border-radius:10px;background:#111;color:#fff;padding:0 16px">إضافة</button></div>
+    <div id="studyNotes" style="margin-top:12px"></div>
+  </div>
+</section>
+
 <script>
 let currentPanel = null;
 
@@ -253,6 +288,8 @@ function closePanel(){
   document.getElementById('mainGrid').style.display = 'grid';
   currentPanel = null;
 }
+
+function renderStudyNotes(){const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');const el=document.getElementById('studyNotes');if(!el)return;el.innerHTML=a.length?a.map((x,i)=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:9px;border-bottom:1px solid #eee"><span>${String(x).replace(/[&<>]/g,'')}</span><button onclick="delStudyNote(${i})" style="border:0;background:#eee;border-radius:7px">حذف</button></div>`).join(''):'لا توجد مهام بعد.'}function addStudyNote(){const v=document.getElementById('studyNote').value.trim();if(!v)return;const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');a.unshift(v);localStorage.setItem('ha_study_notes',JSON.stringify(a.slice(0,100)));document.getElementById('studyNote').value='';renderStudyNotes()}function delStudyNote(i){const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');a.splice(i,1);localStorage.setItem('ha_study_notes',JSON.stringify(a));renderStudyNotes()}renderStudyNotes();
 
 function goBack(){
   if(currentPanel){

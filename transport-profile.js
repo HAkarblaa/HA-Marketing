@@ -6,7 +6,7 @@
   function supa(){
     if(client)return client;
     if(!window.supabase?.createClient)throw new Error('Supabase client not loaded');
-    client=window.supabase.createClient(URL,KEY);
+    client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
     return client;
   }
   async function current(){
