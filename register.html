@@ -23,6 +23,7 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <label>الاسم الكامل *</label><input id="full_name" required>
 <label>رقم الموبايل *</label><input id="phone" inputmode="numeric" maxlength="11" pattern="07[0-9]{9}" type="tel" inputmode="numeric" placeholder="07XXXXXXXXX" required>
 <label>المعرف *</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan@123,#" required><p class="note">يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.</p>
+<label>البريد الإلكتروني (اختياري)</label><input id="contact_email" type="email" autocomplete="email" placeholder="name@example.com"><p class="note">يمكن تأكيده لاحقاً من إعدادات أمان الحساب.</p>
 <label>المحافظة *</label><select id="governorate" required><option value="">اختر المحافظة</option><option value="بغداد">بغداد</option><option value="البصرة">البصرة</option><option value="نينوى">نينوى</option><option value="أربيل">أربيل</option><option value="النجف">النجف</option><option value="كربلاء">كربلاء</option><option value="كركوك">كركوك</option><option value="الأنبار">الأنبار</option><option value="بابل">بابل</option><option value="ديالى">ديالى</option><option value="ذي قار">ذي قار</option><option value="ميسان">ميسان</option><option value="المثنى">المثنى</option><option value="القادسية">القادسية</option><option value="صلاح الدين">صلاح الدين</option><option value="واسط">واسط</option><option value="دهوك">دهوك</option><option value="السليمانية">السليمانية</option><option value="حلبجة">حلبجة</option></select>
 <div id="roleBox" class="hidden"><label>نوع العمل *</label><select id="employee_role">
 <option value="">اختر الوظيفة</option><option value="delivery">مندوب توصيل</option><option value="library">موظف المكتبة</option>
@@ -104,13 +105,13 @@ async function createAccount(){
  if(!userCheckError&&userExists?.length){hideLoading();alert('اسم المستخدم مستخدم مسبقاً. غيّره وحاول مرة ثانية.');username.focus();return}
  const {data:phoneExists,error:phoneCheckError}=await db.from('profiles').select('id').eq('phone',ph).limit(1);
  if(!phoneCheckError&&phoneExists?.length){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
- const meta={full_name:name,phone:ph,username:user,governorate:gov,account_type:accountType,employee_role_key:accountType==='employee'?employee_role.value:null,avatar_url:avatarData};
+ const meta={full_name:name,phone:ph,username:user,governorate:gov,account_type:accountType,employee_role_key:accountType==='employee'?employee_role.value:null,avatar_url:avatarData,contact_email:(document.getElementById('contact_email')?.value||'').trim()||null};
  const email=authEmail(ph);
  const {data:signup,error}=await db.auth.signUp({email,password:p,options:{data:meta}});
  if(error){hideLoading();const msg=(error.message||'').toLowerCase();alert(msg.includes('already')||msg.includes('registered')?'رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.':'تعذر إنشاء الحساب: '+error.message);return}
  let session=signup?.session||null;
  if(!session){const {data:loginData,error:loginError}=await db.auth.signInWithPassword({email,password:p});if(loginError){hideLoading();alert('تم إنشاء الحساب، لكن تعذر تثبيت تسجيل الدخول تلقائياً. افتح تسجيل الدخول واستخدم نفس الرقم السري.');location.href='login.html';return}session=loginData.session;}
- if(session?.user){await ensureProfile(session.user,meta);localStorage.setItem('ha_logged_in','1');}
+ if(session?.user){await ensureProfile(session.user,meta); if(meta.contact_email) await db.from('profiles').update({contact_email:meta.contact_email,contact_email_verified:false}).eq('id',session.user.id); localStorage.setItem('ha_logged_in','1');}
  await persistLoginFlag();
  haLoadText.textContent='تم إنشاء الحساب، جاري فتح الموقع...';
  alert(accountType==='employee'?'تم إنشاء حساب الموظف وهو بانتظار موافقة الإدارة.':'تم إنشاء الحساب وتثبيت تسجيل الدخول بنجاح.');
