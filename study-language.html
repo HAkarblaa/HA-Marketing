@@ -55,6 +55,9 @@ body.file-fullscreen #pages{padding-bottom:40px}
   <button class="btn" onclick="document.getElementById('fileInput').click()">اختيار ملف</button>
 </div>
 <div id="fileProgress" class="progress"></div>
+<div class="actions" style="margin-top:12px">
+  <button id="downloadTranslatedBtn" class="btn hidden" type="button" onclick="downloadTranslatedFile()">⬇️ تحميل الملف المترجم</button>
+</div>
 <div id="paragraphTranslation" class="paragraphTranslation"></div>
 </div></section></main>
 <script>
@@ -184,7 +187,7 @@ function speakText(text,lang){
 function speakElement(id,lang){const el=document.getElementById(id);const text=('value' in el?el.value:el.textContent);speakText(text,lang||detectSpeechLang(text))}
 function detectSpeechLang(text){return /[\u0600-\u06FF]/.test(text||'')?'ar-IQ':'en-US'}
 
-let currentFileName='', fileTranslateBusy=false;
+let currentFileName='', fileTranslateBusy=false, translatedFileParts=[];
 
 function paragraphParts(text, max=3000){
   const clean=String(text||'').replace(/\r/g,'').trim();
@@ -259,6 +262,9 @@ async function openAndTranslateFile(){
   const progress=document.getElementById('fileProgress');
   const host=document.getElementById('paragraphTranslation');
   host.innerHTML='';
+  translatedFileParts=[];
+  const downloadBtn=document.getElementById('downloadTranslatedBtn');
+  if(downloadBtn)downloadBtn.classList.add('hidden');
   fileTranslateBusy=true;
   currentFileName=f.name;
 
@@ -281,17 +287,59 @@ async function openAndTranslateFile(){
           `ترجم النص التالي إلى العربية ترجمة واضحة ودقيقة. أرجع الترجمة العربية فقط دون شرح أو عناوين إضافية، وحافظ على الأرقام والمعنى:\n${parts[i]}`
         );
         cards[i].querySelector('.translated').textContent=translated;
+        translatedFileParts[i]={original:parts[i],translated:translated};
         cards[i].classList.remove('pending');
       }catch(err){
-        cards[i].querySelector('.translated').textContent='تعذر ترجمة هذه الفقرة: '+(err.message||'خطأ');
+        const failText='تعذر ترجمة هذه الفقرة: '+(err.message||'خطأ');
+        cards[i].querySelector('.translated').textContent=failText;
+        translatedFileParts[i]={original:parts[i],translated:failText};
       }
     }
     progress.textContent=`اكتملت ترجمة الملف بالكامل إلى العربية — ${parts.length} فقرة/جزء.`;
+    if(downloadBtn)downloadBtn.classList.remove('hidden');
   }catch(e){
     progress.textContent='تعذر ترجمة الملف: '+(e.message||'خطأ غير معروف');
   }finally{
     fileTranslateBusy=false;
   }
+}
+
+
+function escapeHtmlDownload(s){
+  return String(s||'').replace(/[&<>"']/g,function(ch){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+  });
+}
+
+function downloadTranslatedFile(){
+  if(!translatedFileParts.length){
+    alert('لا توجد ترجمة جاهزة للتحميل.');
+    return;
+  }
+
+  const body=translatedFileParts.map((p,i)=>`
+    <section style="margin:0 0 24px 0;page-break-inside:avoid">
+      <div style="font-size:12px;color:#777;margin-bottom:6px">الفقرة ${i+1}</div>
+      <div dir="auto" style="text-align:start;line-height:1.8;margin-bottom:10px">${escapeHtmlDownload(p.original).replace(/\n/g,'<br>')}</div>
+      <div dir="rtl" style="text-align:right;line-height:1.9;font-weight:600;border-top:1px solid #ccc;padding-top:10px">${escapeHtmlDownload(p.translated).replace(/\n/g,'<br>')}</div>
+    </section>`).join('');
+
+  const doc=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+  <title>ترجمة ${escapeHtmlDownload(currentFileName)}</title>
+  <style>body{font-family:Arial,sans-serif;margin:32px;color:#111}h1{font-size:20px;margin-bottom:24px}</style>
+  </head><body><h1>ترجمة الملف إلى العربية</h1>${body}</body></html>`;
+
+  const blob=new Blob(['\ufeff',doc],{type:'application/msword;charset=utf-8'});
+  const base=(currentFileName||'translated-file').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'-');
+  const name=base+'-مترجم-للعربية.doc';
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},5000);
 }
 
 </script></body></html>
