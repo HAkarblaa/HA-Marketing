@@ -56,7 +56,8 @@ body.file-fullscreen #pages{padding-bottom:40px}
 </div>
 <div id="fileProgress" class="progress"></div>
 <div class="actions" style="margin-top:12px">
-  <button id="downloadTranslatedBtn" class="btn hidden" type="button" onclick="downloadTranslatedFile()">⬇️ تحميل الملف المترجم</button>
+  <button id="downloadTranslatedWordBtn" class="btn hidden" type="button" onclick="downloadTranslatedWord()">⬇️ تحميل بصيغة Word</button>
+  <button id="downloadTranslatedPdfBtn" class="btn hidden" type="button" onclick="downloadTranslatedPdf()">⬇️ تحميل بصيغة PDF</button>
 </div>
 <div id="paragraphTranslation" class="paragraphTranslation"></div>
 </div></section></main>
@@ -263,8 +264,10 @@ async function openAndTranslateFile(){
   const host=document.getElementById('paragraphTranslation');
   host.innerHTML='';
   translatedFileParts=[];
-  const downloadBtn=document.getElementById('downloadTranslatedBtn');
-  if(downloadBtn)downloadBtn.classList.add('hidden');
+  const downloadWordBtn=document.getElementById('downloadTranslatedWordBtn');
+  const downloadPdfBtn=document.getElementById('downloadTranslatedPdfBtn');
+  if(downloadWordBtn)downloadWordBtn.classList.add('hidden');
+  if(downloadPdfBtn)downloadPdfBtn.classList.add('hidden');
   fileTranslateBusy=true;
   currentFileName=f.name;
 
@@ -296,7 +299,8 @@ async function openAndTranslateFile(){
       }
     }
     progress.textContent=`اكتملت ترجمة الملف بالكامل إلى العربية — ${parts.length} فقرة/جزء.`;
-    if(downloadBtn)downloadBtn.classList.remove('hidden');
+    if(downloadWordBtn)downloadWordBtn.classList.remove('hidden');
+    if(downloadPdfBtn)downloadPdfBtn.classList.remove('hidden');
   }catch(e){
     progress.textContent='تعذر ترجمة الملف: '+(e.message||'خطأ غير معروف');
   }finally{
@@ -311,7 +315,7 @@ function escapeHtmlDownload(s){
   });
 }
 
-function downloadTranslatedFile(){
+function downloadTranslatedWord(){
   if(!translatedFileParts.length){
     alert('لا توجد ترجمة جاهزة للتحميل.');
     return;
@@ -340,6 +344,47 @@ function downloadTranslatedFile(){
   document.body.appendChild(a);
   a.click();
   setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},5000);
+}
+
+
+function downloadTranslatedPdf(){
+  if(!translatedFileParts.length){
+    alert('لا توجد ترجمة جاهزة للتحميل.');
+    return;
+  }
+  try{
+    const {jsPDF}=window.jspdf||{};
+    if(!jsPDF)throw new Error('مكتبة PDF غير جاهزة');
+
+    // Render the same paragraph-by-paragraph result to a temporary HTML area,
+    // then use jsPDF.html so Arabic text is preserved by the browser renderer.
+    const temp=document.createElement('div');
+    temp.dir='rtl';
+    temp.style.cssText='position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#111;padding:28px;font-family:Arial,sans-serif;line-height:1.8;';
+    temp.innerHTML='<h2 style="text-align:right">ترجمة الملف إلى العربية</h2>'+
+      translatedFileParts.map((p,i)=>`
+        <div style="margin:0 0 22px;page-break-inside:avoid">
+          <div style="font-size:12px;color:#777;text-align:right">الفقرة ${i+1}</div>
+          <div dir="auto" style="text-align:start;margin:7px 0 10px;white-space:pre-wrap">${escapeHtmlDownload(p.original)}</div>
+          <div dir="rtl" style="text-align:right;font-weight:600;border-top:1px solid #ccc;padding-top:9px;white-space:pre-wrap">${escapeHtmlDownload(p.translated)}</div>
+        </div>`).join('');
+    document.body.appendChild(temp);
+
+    const base=(currentFileName||'translated-file').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'-');
+    const pdf=new jsPDF({orientation:'p',unit:'pt',format:'a4'});
+    pdf.html(temp,{
+      margin:[28,28,28,28],
+      autoPaging:'text',
+      width:539,
+      windowWidth:760,
+      callback:function(doc){
+        doc.save(base+'-مترجم-للعربية.pdf');
+        temp.remove();
+      }
+    });
+  }catch(e){
+    alert('تعذر إنشاء PDF: '+(e.message||'خطأ غير معروف'));
+  }
 }
 
 </script></body></html>
