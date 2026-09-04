@@ -113,16 +113,37 @@ input[type=number],input[type=text],select{width:100%;padding:12px;border:1px so
 const $=s=>document.querySelector(s);
 function filterTools(){let q=$('#q').value.trim().toLowerCase();document.querySelectorAll('.tool').forEach(x=>x.style.display=(x.dataset.name+' '+x.innerText).toLowerCase().includes(q)?'block':'none')}
 function closeModal(){$('#modal').classList.remove('show');$('#form').innerHTML='';$('#status').className='status';$('#status').textContent=''}
-function showStatus(t){$('#status').textContent=t;$('#status').className='status show'}
+function showStatus(t){
+ const st=$('#status');
+ let txt=st.querySelector('.status-text');
+ if(!txt){txt=document.createElement('div');txt.className='status-text';st.prepend(txt)}
+ txt.textContent=t;
+ st.className='status show';
+}
 function saveBlob(blob,name){
  if(!blob||!blob.size)throw new Error('الملف الناتج فارغ.');
  const url=URL.createObjectURL(blob);
- const a=document.createElement('a');a.href=url;a.download=name;a.rel='noopener';a.style.display='none';document.body.appendChild(a);
- try{a.click()}catch(_e){}
  const st=document.getElementById('status');
- if(st){const link=document.createElement('a');link.className='download-ready';link.href=url;link.download=name;link.textContent='⬇️ حفظ الملف: '+name;st.appendChild(link);st.className='status show'}
+ if(st){
+   st.querySelectorAll('.download-ready').forEach(x=>x.remove());
+   const link=document.createElement('a');
+   link.className='download-ready';
+   link.href=url;
+   link.download=name;
+   link.rel='noopener';
+   const ext=(name.split('.').pop()||'ملف').toUpperCase();
+   link.textContent='⬇️ تنزيل الملف '+ext+' — '+name;
+   link.addEventListener('click',()=>{setTimeout(()=>URL.revokeObjectURL(url),60000)},{once:true});
+   st.appendChild(link);
+   st.className='status show';
+ }
+ // محاولة تنزيل مباشرة في المتصفح، ويبقى الزر ظاهراً إذا منع المتصفح التنزيل التلقائي.
+ const a=document.createElement('a');
+ a.href=url;a.download=name;a.rel='noopener';a.style.display='none';
+ document.body.appendChild(a);
+ try{a.click()}catch(_e){}
  setTimeout(()=>{try{a.remove()}catch(_e){}},500);
- setTimeout(()=>URL.revokeObjectURL(url),120000);
+ setTimeout(()=>{try{URL.revokeObjectURL(url)}catch(_e){}},10*60*1000);
 }
 function parsePages(s,max){const set=new Set();String(s||'').split(',').forEach(part=>{part=part.trim();if(!part)return;if(part.includes('-')){let[a,b]=part.split('-').map(Number);if(a>b)[a,b]=[b,a];for(let i=a;i<=b;i++)if(i>=1&&i<=max)set.add(i-1)}else{let n=Number(part);if(n>=1&&n<=max)set.add(n-1)}});return [...set].sort((a,b)=>a-b)}
 function basicForm(multiple=false,accept='.pdf',extra=''){return `<div class="drop"><div>اختر ${multiple?'الملفات':'الملف'}</div><label class="pickfile" for="files">📎 اختيار ${multiple?'ملفات':'ملف'}</label><input id="files" type="file" ${multiple?'multiple':''} accept="${accept}" onchange="showPickedFiles(this)"><span class="picked" id="picked">لم يتم اختيار ملف</span></div>${extra}<div class="actions"><button class="primary" id="run">تنفيذ</button><button class="secondary" onclick="closeModal()">إلغاء</button></div>`}
