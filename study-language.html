@@ -315,21 +315,40 @@ function escapeHtmlDownload(s){
   });
 }
 
-function saveTranslatedBlob(blob,name){
-  if(!blob||!blob.size){alert('الملف الناتج فارغ.');return;}
+async function saveTranslatedBlob(blob,name){
+  if(!blob||!blob.size){alert('الملف الناتج فارغ.');return false;}
+
+  // Chrome/Edge: افتح نافذة الحفظ الحقيقية عندما تكون متاحة.
+  if(window.showSaveFilePicker && window.isSecureContext){
+    try{
+      const ext=(name.split('.').pop()||'').toLowerCase();
+      const types=ext==='pdf'
+        ? [{description:'PDF',accept:{'application/pdf':['.pdf']}}]
+        : [{description:'Word',accept:{'application/msword':['.doc']}}];
+      const handle=await window.showSaveFilePicker({suggestedName:name,types});
+      const writable=await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return true;
+    }catch(e){
+      if(e && e.name==='AbortError') return false;
+      // إذا المتصفح رفض File Picker ننتقل للتنزيل الاعتيادي.
+    }
+  }
+
+  // تنزيل متصفح اعتيادي مع رابط ظاهر احتياطي.
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url;
-  a.download=name;
-  a.rel='noopener';
-  a.style.display='none';
+  a.href=url;a.download=name;a.target='_self';a.rel='noopener';
+  a.style.cssText='position:fixed;left:-9999px;top:-9999px';
   document.body.appendChild(a);
-  try{a.click()}catch(_e){}
-  setTimeout(()=>{try{a.remove()}catch(_e){}},500);
-  setTimeout(()=>{try{URL.revokeObjectURL(url)}catch(_e){}},10*60*1000);
+  a.click();
+  setTimeout(()=>a.remove(),1000);
+  setTimeout(()=>URL.revokeObjectURL(url),120000);
+  return true;
 }
 
-function downloadTranslatedWord(){
+async function downloadTranslatedWord(){
   if(!translatedFileParts.length){
     alert('لا توجد ترجمة جاهزة للتحميل.');
     return;
@@ -350,7 +369,7 @@ function downloadTranslatedWord(){
   const blob=new Blob(['\ufeff',doc],{type:'application/msword;charset=utf-8'});
   const base=(currentFileName||'translated-file').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'-');
   const name=base+'-مترجم-للعربية.doc';
-  saveTranslatedBlob(blob,name);
+  await saveTranslatedBlob(blob,name);
 }
 
 
@@ -384,9 +403,9 @@ function downloadTranslatedPdf(){
       autoPaging:'text',
       width:539,
       windowWidth:760,
-      callback:function(doc){
+      callback:async function(doc){
         const blob=doc.output('blob');
-        saveTranslatedBlob(blob,base+'-مترجم-للعربية.pdf');
+        await saveTranslatedBlob(blob,base+'-مترجم-للعربية.pdf');
         temp.remove();
       }
     });
