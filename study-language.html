@@ -44,30 +44,44 @@ function requestAIWithXHR(body,token){
 }
 
 async function callAI(prompt){
-  const token=await getAccessToken();
   const body={message:prompt};
-  const headers={'Content-Type':'application/json','apikey':SUPA_KEY};
-  if(token) headers['Authorization']='Bearer '+token;
 
-  // الاتصال المباشر هو الأكثر توافقاً مع Android WebView.
+  // الطريقة الأساسية: عميل Supabase نفسه. هذه الطريقة أنسب للموقع والتطبيق
+  // لأنها تستخدم إعدادات المشروع الحالية بدون بناء الطلب يدوياً.
   try{
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),45000);
+    const {data,error}=await db.functions.invoke('ai-assistant',{body});
+    if(error) throw error;
+    if(data?.error) throw new Error(data.error);
+    if(data?.answer) return data.answer;
+    throw new Error('لم يصل جواب من المساعد');
+  }catch(invokeError){
+    console.warn('Supabase invoke failed, trying direct request',invokeError);
+  }
+
+  // احتياط: اتصال مباشر بمفتاح المشروع فقط. Verify JWT للدالة مطفأ.
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),45000);
+  try{
     const res=await fetch(AI_URL,{
-      method:'POST',headers,body:JSON.stringify(body),
-      mode:'cors',cache:'no-store',credentials:'omit',signal:controller.signal
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+SUPA_KEY
+      },
+      body:JSON.stringify(body),
+      cache:'no-store',
+      signal:controller.signal
     });
-    clearTimeout(timer);
     let data={};
     try{data=await res.json()}catch(_e){}
     if(!res.ok) throw new Error(data?.error||data?.message||('خطأ من الخادم ('+res.status+')'));
-    if(!data?.answer) throw new Error(data?.error||'لم يصل جواب من المساعد');
+    if(!data?.answer) throw new Error('لم يصل جواب من المساعد');
     return data.answer;
-  }catch(fetchError){
-    console.warn('fetch failed, trying XHR fallback',fetchError);
-    // بعض نسخ WebView تفشل مع fetch بينما XMLHttpRequest يعمل.
-    return await requestAIWithXHR(body,token);
-  }
+  }catch(e){
+    if(e?.name==='AbortError') throw new Error('انتهت مهلة الاتصال بخادم الترجمة');
+    throw new Error(e?.message||'تعذر الاتصال بخادم الترجمة');
+  }finally{clearTimeout(timer)}
 }
 async function ai(prompt,outId){const el=document.getElementById(outId);el.classList.remove('err');el.innerHTML='<span class="loader"></span> جاري العمل...';try{el.textContent=await callAI(prompt)}catch(e){console.error(e);el.classList.add('err');if(e?.name==='AbortError'){el.textContent='انتهت مهلة الاتصال. جرّب مرة ثانية.';return}el.textContent='تعذر تشغيل الترجمة: '+(e?.message||'خطأ غير معروف')}}
 function askLearn(x){document.getElementById('learnQ').value=x;learn()}
