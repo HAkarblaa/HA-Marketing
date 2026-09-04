@@ -8,19 +8,68 @@ const SUPA_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SUPA_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
 const db=supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 function tab(id,b){document.querySelectorAll('.lesson').forEach(x=>x.classList.remove('show'));document.getElementById(id).classList.add('show');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
-async function callAI(prompt){
-  const {data:{session}}=await db.auth.getSession();
-  if(!session) throw new Error('LOGIN_REQUIRED');
-  const {data,error}=await db.functions.invoke('ai-assistant',{body:{message:prompt}});
-  if(error){
-    let msg=error.message||'تعذر الاتصال بالمساعد';
-    try{if(error.context){const j=await error.context.json();msg=j?.error||j?.message||msg}}catch(_e){}
-    throw new Error(msg);
-  }
-  if(!data?.answer) throw new Error(data?.error||'لم يصل جواب من المساعد');
-  return data.answer;
+const AI_URL=SUPA_URL+'/functions/v1/ai-assistant';
+
+async function getAccessToken(){
+  try{
+    const {data}=await db.auth.getSession();
+    return data?.session?.access_token||'';
+  }catch(_e){return ''}
 }
-async function ai(prompt,outId){const el=document.getElementById(outId);el.classList.remove('err');el.innerHTML='<span class="loader"></span> جاري العمل...';try{el.textContent=await callAI(prompt)}catch(e){console.error(e);el.classList.add('err');if(e?.message==='LOGIN_REQUIRED'){el.textContent='يجب تسجيل الدخول أولاً حتى تعمل الترجمة.';return}if(e?.name==='AbortError'){el.textContent='انتهت مهلة الاتصال. جرّب مرة ثانية.';return}el.textContent='تعذر تشغيل الترجمة: '+(e?.message||'خطأ غير معروف')}}
+
+function requestAIWithXHR(body,token){
+  return new Promise((resolve,reject)=>{
+    try{
+      const xhr=new XMLHttpRequest();
+      xhr.open('POST',AI_URL,true);
+      xhr.timeout=45000;
+      xhr.setRequestHeader('Content-Type','application/json');
+      xhr.setRequestHeader('apikey',SUPA_KEY);
+      if(token) xhr.setRequestHeader('Authorization','Bearer '+token);
+      xhr.onreadystatechange=()=>{
+        if(xhr.readyState!==4)return;
+        let data={};
+        try{data=JSON.parse(xhr.responseText||'{}')}catch(_e){}
+        if(xhr.status>=200&&xhr.status<300){
+          if(data?.answer)return resolve(data.answer);
+          return reject(new Error(data?.error||'لم يصل جواب من المساعد'));
+        }
+        reject(new Error(data?.error||data?.message||('خطأ من الخادم ('+xhr.status+')')));
+      };
+      xhr.onerror=()=>reject(new Error('تعذر الاتصال بخادم الترجمة من داخل التطبيق'));
+      xhr.ontimeout=()=>reject(new Error('انتهت مهلة الاتصال بخادم الترجمة'));
+      xhr.send(JSON.stringify(body));
+    }catch(e){reject(e)}
+  });
+}
+
+async function callAI(prompt){
+  const token=await getAccessToken();
+  const body={message:prompt};
+  const headers={'Content-Type':'application/json','apikey':SUPA_KEY};
+  if(token) headers['Authorization']='Bearer '+token;
+
+  // الاتصال المباشر هو الأكثر توافقاً مع Android WebView.
+  try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),45000);
+    const res=await fetch(AI_URL,{
+      method:'POST',headers,body:JSON.stringify(body),
+      mode:'cors',cache:'no-store',credentials:'omit',signal:controller.signal
+    });
+    clearTimeout(timer);
+    let data={};
+    try{data=await res.json()}catch(_e){}
+    if(!res.ok) throw new Error(data?.error||data?.message||('خطأ من الخادم ('+res.status+')'));
+    if(!data?.answer) throw new Error(data?.error||'لم يصل جواب من المساعد');
+    return data.answer;
+  }catch(fetchError){
+    console.warn('fetch failed, trying XHR fallback',fetchError);
+    // بعض نسخ WebView تفشل مع fetch بينما XMLHttpRequest يعمل.
+    return await requestAIWithXHR(body,token);
+  }
+}
+async function ai(prompt,outId){const el=document.getElementById(outId);el.classList.remove('err');el.innerHTML='<span class="loader"></span> جاري العمل...';try{el.textContent=await callAI(prompt)}catch(e){console.error(e);el.classList.add('err');if(e?.name==='AbortError'){el.textContent='انتهت مهلة الاتصال. جرّب مرة ثانية.';return}el.textContent='تعذر تشغيل الترجمة: '+(e?.message||'خطأ غير معروف')}}
 function askLearn(x){document.getElementById('learnQ').value=x;learn()}
 function learn(){const q=document.getElementById('learnQ').value.trim()||'اعطني درس اليوم';ai(`أنت مدرس لغة إنجليزية للعرب. المستوى: ${document.getElementById('level').value}. الموضوع: ${document.getElementById('topic').value}. الطلب: ${q}. اشرح بالعربية مع أمثلة إنجليزية وترجمة ونطق تقريبي عند الحاجة، واجعل الدرس عملياً ومختصراً.`,'learnOut')}
 async function translateText(){const text=document.getElementById('translationText').value.trim();if(!text){document.getElementById('transOut').textContent='اكتب النص أولاً.';return}const source=document.getElementById('fromLang').value==='auto'?'حدّد لغة النص تلقائياً':`لغة المصدر هي ${document.getElementById('fromLang').value}`;const target=document.getElementById('toLang').value;await ai(`${source}. ترجم النص التالي إلى ${target}. أرجع الترجمة فقط دون شرح أو مقدمة، وحافظ على الأسماء والأرقام وترتيب الأسطر قدر الإمكان:\n${text}`,'transOut')}
