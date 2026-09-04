@@ -5,18 +5,60 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#111}.top{background:#000;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:3}.top button{width:44px;height:44px;border:0;border-radius:10px;background:#fff;font-size:21px}.top h1{font-size:19px;margin:0}.wrap{width:min(900px,94%);margin:20px auto 40px}.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{flex:1;border:1px solid #ddd;background:#fff;padding:12px;border-radius:13px;font-weight:700}.tabs button.on{background:#111;color:#fff}.box{background:#fff;border-radius:18px;padding:18px;box-shadow:0 3px 14px #0001;margin-bottom:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.langrow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}.swap{width:46px;height:46px;border:1px solid #ddd;background:#fff;border-radius:50%;font-size:22px;cursor:pointer}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn.secondary{background:#fff;color:#111;border:1px solid #ccc}.hint{font-size:13px;color:#666;margin-top:6px}textarea,input,select{width:100%;border:1px solid #ccc;border-radius:12px;padding:12px;font:inherit;margin:7px 0}textarea{min-height:130px;resize:vertical}.btn{border:0;background:#111;color:#fff;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}.result{white-space:pre-wrap;line-height:1.8;background:#f8f8f8;border-radius:12px;padding:14px;min-height:60px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chips button{border:1px solid #ddd;background:#fff;border-radius:999px;padding:8px 11px}.lesson{display:none}.lesson.show{display:block}.imagePreview{display:none;width:100%;max-height:340px;object-fit:contain;border-radius:12px;border:1px solid #ddd;margin-top:10px}.ocrStatus{font-size:13px;color:#555;margin-top:8px}.loader{display:inline-block;width:18px;height:18px;border:2px solid #bbb;border-top-color:#111;border-radius:50%;animation:s .7s linear infinite;vertical-align:middle}.err{background:#fff0f0;color:#9b111e;border:1px solid #f0c7cb}@keyframes s{to{transform:rotate(360deg)}}@media(max-width:600px){.row{grid-template-columns:1fr}.langrow{grid-template-columns:1fr auto 1fr}.swap{width:40px;height:40px}.tabs{gap:6px}.tabs button{font-size:13px;padding:10px 6px}}
 
-.filePanel{margin-top:14px;border-top:1px solid #eee;padding-top:14px}.filebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.filebar input[type=file]{flex:1;min-width:220px}.editorWrap{display:none;margin-top:12px}.pageStage{position:relative;margin:12px auto;background:#fff;box-shadow:0 2px 12px #0002;overflow:hidden;max-width:100%}.pageStage canvas.base{display:block;width:100%;height:auto}.overlay{position:absolute;min-width:100px;min-height:38px;padding:6px;border:1px dashed #222;background:rgba(255,255,255,.78);cursor:move;white-space:pre-wrap;overflow-wrap:anywhere;touch-action:none}.overlay.selected{outline:2px solid #111}.tools{display:grid;grid-template-columns:1fr 120px 90px;gap:8px;margin-top:10px}.fileText{min-height:190px}.mini{font-size:12px;color:#666}.speak{border:1px solid #ccc;background:#fff;border-radius:10px;padding:9px 12px;font-weight:700}.progress{margin-top:8px;font-size:13px}.hidden{display:none!important}@media(max-width:600px){.tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}}
-</style></head><body><div class="top"><button onclick="history.back()">←</button><h1>🇬🇧 تعلم الإنجليزية والترجمة</h1></div><main class="wrap"><div class="tabs"><button class="on" onclick="tab('learn',this)">تعلم الإنجليزية</button><button onclick="tab('translate',this)">الترجمة</button><button onclick="tab('files',this)">ترجمة الملفات</button></div>
+.filePanel{margin-top:14px;border-top:1px solid #eee;padding-top:14px}.filebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.filebar input[type=file]{flex:1;min-width:220px}.editorWrap{display:none;margin-top:12px}.pageStage{position:relative;margin:12px auto;background:#fff;box-shadow:0 2px 12px #0002;overflow:hidden;max-width:100%}.pageStage canvas.base{display:block;width:100%;height:auto}.overlay{position:absolute;min-width:100px;min-height:38px;padding:6px;border:1px dashed #222;background:rgba(255,255,255,.78);cursor:move;white-space:pre-wrap;overflow-wrap:anywhere;touch-action:none}.overlay.selected{outline:2px solid #111}.tools{display:grid;grid-template-columns:1fr 120px 90px;gap:8px;margin-top:10px}.fileText{min-height:190px}.mini{font-size:12px;color:#666}.speak{border:1px solid #ccc;background:#fff;border-radius:10px;padding:9px 12px;font-weight:700}.progress{margin-top:8px;font-size:13px}.hidden{display:none!important}
+body.file-fullscreen{overflow:hidden}
+body.file-fullscreen .top,body.file-fullscreen .wrap>.tabs{display:none}
+body.file-fullscreen .wrap{width:100%;max-width:none;margin:0;height:100vh}
+body.file-fullscreen #files{display:block!important;height:100vh}
+body.file-fullscreen #files>.box{margin:0;border-radius:0;box-shadow:none;height:100vh;padding:0;display:flex;flex-direction:column}
+.fileViewerTop{display:none;position:sticky;top:0;z-index:20;background:#111;color:#fff;padding:10px;gap:8px;align-items:center}
+body.file-fullscreen .fileViewerTop{display:flex}
+.fileViewerTop button{border:0;border-radius:10px;padding:10px 13px;font-weight:700}
+.fileViewerTop .title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+body.file-fullscreen #fileIntro{display:none}
+body.file-fullscreen #fileWork{display:flex!important;flex-direction:column;flex:1;min-height:0;margin:0}
+.fileWorkspace{display:grid;grid-template-columns:minmax(280px,36%) 1fr;gap:10px;flex:1;min-height:0;padding:10px;background:#eee}
+.fileControls{overflow:auto;background:#fff;border-radius:14px;padding:12px}
+.fileDocument{overflow:auto;background:#d7d7d7;border-radius:14px;padding:10px;position:relative}
+.fileParts{display:grid;gap:8px;margin:10px 0}
+.filePart{border:1px solid #ddd;border-radius:12px;padding:10px;background:#fafafa;cursor:pointer}
+.filePart.active{outline:2px solid #111;background:#fff}
+.filePart small{display:block;color:#666;margin-bottom:5px}
+.filePartText{white-space:pre-wrap;max-height:120px;overflow:hidden;line-height:1.6}
+.fileTextView{white-space:pre-wrap;line-height:1.9;background:#fff;padding:18px;border-radius:12px;min-height:100%;user-select:text}
+body.file-fullscreen #pdfEditor{margin-top:0}
+body.file-fullscreen #pages{padding-bottom:40px}
+@media(max-width:700px){
+ .fileWorkspace{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+ .fileControls{max-height:45vh}
+ .fileDocument{min-height:0}
+ .tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}
+}
+@media(max-width:600px){.tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}}
+</style></head><body><div class="top"><button onclick="history.back()">←</button><h1>🇬🇧 تعلم الإنجليزية والترجمة</h1></div><main class="wrap"><div class="tabs"><button class="on" onclick="tab('learn',this)">تعلم الإنجليزية</button><button onclick="tab('translate',this)">الترجمة</button><button onclick="tab('files',this)">ترجمة ملف وإضافة نص عليه</button></div>
 <section id="learn" class="lesson show"><div class="box"><h2>مدرب الإنجليزية</h2><p>اختر مستواك والموضوع، والمساعد يعطيك درساً وتمارين وتصحيحاً.</p><div class="row"><select id="level"><option>مبتدئ</option><option>متوسط</option><option>متقدم</option></select><select id="topic"><option>المحادثة اليومية</option><option>القواعد</option><option>المفردات</option><option>العمل</option><option>السفر</option><option>المدرسة والجامعة</option></select></div><div class="chips"><button onclick="askLearn('اعطني درس اليوم')">درس اليوم</button><button onclick="askLearn('اختبرني 5 أسئلة')">اختبار سريع</button><button onclick="askLearn('اعطني 10 كلمات جديدة مع أمثلة')">مفردات</button><button onclick="askLearn('ابدأ محادثة إنجليزية وصحح أخطائي')">محادثة</button></div><textarea id="learnQ" placeholder="اكتب سؤالاً أو جملة بالإنجليزية حتى أصححها..."></textarea><button class="btn" onclick="learn()">إرسال للمدرب</button></div><div class="box"><h2>النتيجة</h2><div id="learnOut" class="result">جاهز.</div><div class="actions" style="margin-top:8px"><button class="speak" onclick="speakElement('learnOut',detectSpeechLang(document.getElementById('learnOut').textContent))">🔊 نطق النتيجة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div></div></section>
 <section id="translate" class="lesson"><div class="box"><h2>المترجم متعدد اللغات</h2><div class="langrow"><select id="fromLang"><option value="auto">تحديد تلقائي</option><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select><button class="swap" type="button" title="تبديل اللغتين" onclick="swapLanguages()">⇄</button><select id="toLang"><option>الإنجليزية</option><option>العربية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select></div><textarea id="translationText" placeholder="اكتب أو الصق النص المراد ترجمته..."></textarea><div class="actions"><button class="btn" id="translateBtn" onclick="translateText()">ترجمة</button><button class="btn secondary" onclick="copyTranslation()">نسخ الترجمة</button><button class="btn secondary" onclick="clearTranslation()">مسح</button></div><div class="hint">إذا كانت لغة النص غير معروفة، اترك المصدر على «تحديد تلقائي».</div></div><div class="box"><h2>الترجمة</h2><div id="transOut" class="result">—</div><div class="actions" style="margin-top:8px"><button class="speak" onclick="speakElement('translationText',langCode(document.getElementById('fromLang').value))">🔊 نطق الأصلي</button><button class="speak" onclick="speakElement('transOut',langCode(document.getElementById('toLang').value))">🔊 نطق الترجمة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div></div>
 </section>
-<section id="files" class="lesson"><div class="box filePanel"><h2>📄 ترجمة ملف وإضافة الترجمة عليه</h2><p class="hint">يدعم PDF وWord (DOCX) وTXT. اختر ترجمة الملف كامل أو حدّد جزءاً من النص، وبعدها تقدر تضيف الترجمة على الصفحة وتتحكم بمكانها وحجمها ولونها.</p>
+<section id="files" class="lesson"><div class="box filePanel">
+<div class="fileViewerTop"><button onclick="closeFileWorkspace()">← رجوع</button><div id="fileViewerTitle" class="title">ترجمة ملف وإضافة نص عليه</div><button onclick="translateFileText()">ترجمة</button></div>
+<div id="fileIntro">
+<h2>📄 ترجمة ملف وإضافة نص عليه</h2>
+<p class="hint">افتح PDF أو Word أو TXT. بعد فتحه يتحول القسم إلى شاشة ملف كاملة، وتقدر تترجم الملف كله أو تختار جزءاً منه. الملفات الطويلة تنقسم تلقائياً إلى أجزاء.</p>
 <div class="filebar"><input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"><button class="btn" onclick="openTranslationFile()">فتح الملف</button></div>
-<div id="fileWork" class="editorWrap"><div class="row"><select id="fileMode"><option value="all">ترجمة الملف كامل</option><option value="selected">ترجمة الجزء المحدد فقط</option></select><select id="fileTarget"><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الكردية</option></select></div>
-<textarea id="fileExtracted" class="fileText" placeholder="نص الملف يظهر هنا. إذا اخترت ترجمة جزء، ظلل الجزء المطلوب داخل هذا الحقل."></textarea>
-<div class="actions"><button class="btn" onclick="translateFileText()">ترجمة</button><button class="speak" onclick="speakElement('fileExtracted','')">🔊 نطق النص</button><button class="speak" onclick="speakElement('fileTranslated',langCode(document.getElementById('fileTarget').value))">🔊 نطق الترجمة</button></div>
-<div id="fileProgress" class="progress"></div><textarea id="fileTranslated" class="fileText" placeholder="الترجمة تظهر هنا..."></textarea>
-<div id="pdfEditor" class="hidden"><h3>محرر وضع الترجمة على الملف</h3><div class="tools"><input id="overlayText" class="wide" placeholder="نص مربع الترجمة"><input id="fontSize" type="number" min="8" max="72" value="20" title="حجم الخط"><input id="fontColor" type="color" value="#000000" title="لون الخط"></div><div class="actions"><button class="btn" onclick="addOverlay()">+ إضافة مربع ترجمة</button><button class="btn secondary" onclick="applyOverlayStyle()">تطبيق الحجم واللون</button><button class="btn secondary" onclick="deleteOverlay()">حذف المربع</button><button class="btn" onclick="exportEditedPdf()">حفظ PDF جديد</button></div><div class="mini">اسحب مربع الترجمة بإصبعك للمكان المطلوب. تقدر تضيف أكثر من مربع بكل صفحة.</div><div id="pages"></div></div>
+</div>
+<div id="fileWork" class="editorWrap">
+ <div class="fileWorkspace">
+  <div class="fileControls">
+   <div class="row"><select id="fileMode" onchange="syncFileMode()"><option value="all">ترجمة الملف كامل</option><option value="part">ترجمة جزء من الأجزاء</option><option value="selected">ترجمة النص المحدد فقط</option></select><select id="fileTarget"><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الكردية</option></select></div>
+   <div id="fileParts" class="fileParts"></div>
+   <textarea id="fileExtracted" class="fileText" placeholder="نص الملف..." style="display:none"></textarea>
+   <div class="actions"><button class="btn" onclick="translateFileText()">ترجمة المطلوب</button><button class="speak" onclick="speakCurrentFileSource()">🔊 نطق النص</button><button class="speak" onclick="speakElement('fileTranslated',langCode(document.getElementById('fileTarget').value))">🔊 نطق الترجمة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div>
+   <div id="fileProgress" class="progress"></div>
+   <textarea id="fileTranslated" class="fileText" placeholder="الترجمة تظهر هنا..."></textarea>
+   <div id="pdfEditor" class="hidden"><h3>إضافة الترجمة على الملف</h3><div class="tools"><input id="overlayText" class="wide" placeholder="نص مربع الترجمة"><input id="fontSize" type="number" min="8" max="72" value="20" title="حجم الخط"><input id="fontColor" type="color" value="#000000" title="لون الخط"></div><div class="actions"><button class="btn" onclick="addOverlay()">+ إضافة النص على الصفحة</button><button class="btn secondary" onclick="applyOverlayStyle()">تطبيق الحجم واللون</button><button class="btn secondary" onclick="deleteOverlay()">حذف المربع</button><button class="btn" onclick="exportEditedPdf()">حفظ PDF جديد</button></div></div>
+  </div>
+  <div class="fileDocument"><div id="textFileView" class="fileTextView hidden"></div><div id="pages"></div></div>
+ </div>
 </div></div></section></main>
 <script>
 const SUPA_URL='https://ubayrhtshgtgggxprrek.supabase.co';
@@ -108,64 +150,115 @@ function clearTranslation(){document.getElementById('translationText').value='';
 
 const LANG_CODES={'العربية':'ar-IQ','الإنجليزية':'en-US','الفارسية':'fa-IR','التركية':'tr-TR','الفرنسية':'fr-FR','الألمانية':'de-DE','الإسبانية':'es-ES','الإيطالية':'it-IT','الروسية':'ru-RU','الكردية':'ku','الأردية':'ur-PK','الصينية':'zh-CN','اليابانية':'ja-JP','الكورية':'ko-KR','الهندية':'hi-IN'};
 function langCode(x){return LANG_CODES[x]||''}
-let TTS_VOICES=[];
-function loadVoices(){
-  try{TTS_VOICES=window.speechSynthesis?window.speechSynthesis.getVoices():[]}catch(_e){TTS_VOICES=[]}
-}
-if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;setTimeout(loadVoices,700)}
-function stopSpeak(){try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(_e){}}
+let TTS_VOICES=[],speechQueue=[],speechIndex=0,speechStopped=false;
+function loadVoices(){try{TTS_VOICES=window.speechSynthesis?window.speechSynthesis.getVoices():[]}catch(_e){TTS_VOICES=[]}}
+if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;setTimeout(loadVoices,300);setTimeout(loadVoices,1200)}
+function stopSpeak(){speechStopped=true;speechQueue=[];speechIndex=0;try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(_e){}}
 function bestVoice(lang){
-  loadVoices(); if(!lang||!TTS_VOICES.length)return null;
-  const exact=TTS_VOICES.find(v=>(v.lang||'').toLowerCase()===lang.toLowerCase()); if(exact)return exact;
-  const base=lang.split('-')[0].toLowerCase(); return TTS_VOICES.find(v=>(v.lang||'').toLowerCase().startsWith(base))||null;
+ loadVoices();if(!TTS_VOICES.length)return null;
+ const wanted=(lang||'').toLowerCase(),base=wanted.split('-')[0];
+ return TTS_VOICES.find(v=>(v.lang||'').toLowerCase()===wanted)||
+        TTS_VOICES.find(v=>(v.lang||'').toLowerCase().split('-')[0]===base)||
+        TTS_VOICES.find(v=>v.default)||TTS_VOICES[0]||null;
+}
+function speechChunks(text,max=220){
+ const parts=[];for(const para of String(text||'').split(/\n+/)){let s=para.trim();if(!s)continue;
+  const sentences=s.match(/[^.!?؟。！]+[.!?؟。！]?/g)||[s];
+  for(let sentence of sentences){sentence=sentence.trim();while(sentence.length>max){let cut=sentence.lastIndexOf(' ',max);if(cut<80)cut=max;parts.push(sentence.slice(0,cut));sentence=sentence.slice(cut).trim()}if(sentence)parts.push(sentence)}
+ }return parts;
+}
+function playNextSpeech(lang){
+ if(speechStopped||speechIndex>=speechQueue.length)return;
+ const u=new SpeechSynthesisUtterance(speechQueue[speechIndex++]);if(lang)u.lang=lang;
+ const v=bestVoice(lang);if(v)u.voice=v;u.rate=.92;u.pitch=1;u.volume=1;
+ u.onend=()=>playNextSpeech(lang);
+ u.onerror=(e)=>{if(e.error!=='canceled'&&e.error!=='interrupted')alert('تعذر تشغيل الصوت على هذا الجهاز. تأكد من تفعيل محرك تحويل النص إلى كلام وصوت اللغة.');};
+ window.speechSynthesis.speak(u);
 }
 function speakText(text,lang){
-  text=(text||'').trim(); if(!text||text==='—')return;
-  if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){
-    alert('النطق غير مدعوم في نسخة التطبيق الحالية. حدّث Android System WebView وتأكد من وجود محرك تحويل النص إلى كلام بالجهاز.');return;
-  }
-  try{
-    stopSpeak(); const u=new SpeechSynthesisUtterance(text); if(lang)u.lang=lang;
-    const v=bestVoice(lang); if(v)u.voice=v; u.rate=.92;u.pitch=1;u.volume=1;
-    u.onerror=()=>alert('تعذر تشغيل النطق بهذه اللغة. تأكد من تثبيت صوت اللغة في إعدادات تحويل النص إلى كلام بالجهاز.');
-    setTimeout(()=>window.speechSynthesis.speak(u),80);
-  }catch(e){alert('تعذر تشغيل النطق: '+(e.message||'خطأ غير معروف'))}
+ text=(text||'').trim();if(!text||text==='—')return;
+ if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){alert('ميزة تحويل النص إلى كلام غير متوفرة في WebView الحالي.');return}
+ try{
+  window.speechSynthesis.cancel();speechStopped=false;speechQueue=speechChunks(text);speechIndex=0;
+  // تشغيل الصوت يتم مباشرة من ضغطة المستخدم، ولا يحتاج ملف MP3 ثابت.
+  loadVoices();playNextSpeech(lang||detectSpeechLang(text));
+ }catch(e){alert('تعذر تشغيل النطق: '+(e.message||'خطأ غير معروف'))}
 }
-function speakElement(id,lang){const el=document.getElementById(id);const text=('value' in el?el.value:el.textContent);speakText(text,lang)}
+function speakElement(id,lang){const el=document.getElementById(id);const text=('value' in el?el.value:el.textContent);speakText(text,lang||detectSpeechLang(text))}
 function detectSpeechLang(text){return /[\u0600-\u06FF]/.test(text||'')?'ar-IQ':'en-US'}
 
-let loadedPdf=null, selectedOverlay=null, currentFileName='translated';
+let loadedPdf=null, selectedOverlay=null, currentFileName='translated', filePartsData=[], activeFilePart=0;
+function splitFileIntoParts(text,max=3500){
+ const clean=String(text||'').replace(/\r/g,'').trim();if(!clean)return[];
+ const paras=clean.split(/\n{2,}/),parts=[];let cur='';
+ for(const p0 of paras){const p=p0.trim();if(!p)continue;
+  if((cur+'\n\n'+p).length<=max){cur+=(cur?'\n\n':'')+p;continue}
+  if(cur){parts.push(cur);cur=''}
+  if(p.length<=max){cur=p;continue}
+  let rest=p;while(rest.length>max){let cut=rest.lastIndexOf(' ',max);if(cut<max*.55)cut=max;parts.push(rest.slice(0,cut).trim());rest=rest.slice(cut).trim()}cur=rest;
+ }
+ if(cur)parts.push(cur);return parts;
+}
+function renderFileParts(){
+ const host=document.getElementById('fileParts');host.innerHTML='';
+ filePartsData.forEach((txt,i)=>{const d=document.createElement('div');d.className='filePart'+(i===activeFilePart?' active':'');d.onclick=()=>selectFilePart(i);
+  d.innerHTML='<small>الجزء '+(i+1)+' من '+filePartsData.length+'</small><div class="filePartText"></div>';d.querySelector('.filePartText').textContent=txt;host.appendChild(d)});
+}
+function selectFilePart(i){activeFilePart=i;renderFileParts();document.getElementById('fileMode').value='part';}
+function syncFileMode(){if(document.getElementById('fileMode').value==='part')renderFileParts()}
+function closeFileWorkspace(){stopSpeak();document.body.classList.remove('file-fullscreen');document.getElementById('fileWork').style.display='none'}
+function speakCurrentFileSource(){
+ const mode=document.getElementById('fileMode').value,box=document.getElementById('fileExtracted');let t='';
+ if(mode==='selected')t=box.value.substring(box.selectionStart,box.selectionEnd).trim();
+ else if(mode==='part')t=filePartsData[activeFilePart]||'';
+ else t=box.value;
+ speakText(t,detectSpeechLang(t));
+}
 async function openTranslationFile(){
- const f=document.getElementById('fileInput').files[0]; if(!f){alert('اختر ملف أولاً');return} currentFileName=f.name.replace(/\.[^.]+$/,'');
- const out=document.getElementById('fileExtracted'), work=document.getElementById('fileWork'), prog=document.getElementById('fileProgress'); work.style.display='block'; prog.textContent='جاري قراءة الملف...'; out.value=''; document.getElementById('pages').innerHTML=''; document.getElementById('pdfEditor').classList.add('hidden');
+ const f=document.getElementById('fileInput').files[0];if(!f){alert('اختر ملف أولاً');return}
+ currentFileName=f.name.replace(/\.[^.]+$/,'');document.getElementById('fileViewerTitle').textContent=f.name;
+ const out=document.getElementById('fileExtracted'),work=document.getElementById('fileWork'),prog=document.getElementById('fileProgress');
+ work.style.display='block';prog.textContent='جاري فتح الملف...';out.value='';document.getElementById('pages').innerHTML='';document.getElementById('textFileView').classList.add('hidden');document.getElementById('pdfEditor').classList.add('hidden');
  try{
-  if(f.name.toLowerCase().endsWith('.txt')) out.value=await f.text();
+  if(f.name.toLowerCase().endsWith('.txt'))out.value=await f.text();
   else if(f.name.toLowerCase().endsWith('.docx')){const ab=await f.arrayBuffer();const r=await mammoth.extractRawText({arrayBuffer:ab});out.value=r.value||''}
-  else if(f.name.toLowerCase().endsWith('.pdf')) await loadPdfFile(f,out);
+  else if(f.name.toLowerCase().endsWith('.pdf'))await loadPdfFile(f,out);
   else throw new Error('نوع الملف غير مدعوم حالياً');
-  prog.textContent='تم فتح الملف.';
+  filePartsData=splitFileIntoParts(out.value);activeFilePart=0;renderFileParts();
+  if(!f.name.toLowerCase().endsWith('.pdf')){const v=document.getElementById('textFileView');v.textContent=out.value;v.classList.remove('hidden')}
+  document.body.classList.add('file-fullscreen');prog.textContent='تم فتح الملف وتقسيمه تلقائياً إلى '+filePartsData.length+' جزء.';
  }catch(e){prog.textContent='تعذر قراءة الملف: '+e.message}
 }
 async function loadPdfFile(f,out){
- if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
- const ab=await f.arrayBuffer(); loadedPdf=await pdfjsLib.getDocument({data:ab}).promise; let texts=[]; const pages=document.getElementById('pages');
+ if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ const ab=await f.arrayBuffer();loadedPdf=await pdfjsLib.getDocument({data:ab}).promise;let texts=[];const pages=document.getElementById('pages');
  for(let n=1;n<=loadedPdf.numPages;n++){
-  const page=await loadedPdf.getPage(n), tc=await page.getTextContent(); texts.push(tc.items.map(i=>i.str).join(' '));
-  const vp=page.getViewport({scale:1.35}), stage=document.createElement('div'); stage.className='pageStage'; stage.dataset.page=n; stage.style.width=vp.width+'px'; stage.style.height=vp.height+'px';
-  const c=document.createElement('canvas');c.className='base';c.width=vp.width;c.height=vp.height;stage.appendChild(c);pages.appendChild(stage);await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+  const page=await loadedPdf.getPage(n),tc=await page.getTextContent();texts.push(tc.items.map(i=>i.str).join(' '));
+  const vp=page.getViewport({scale:1.35}),stage=document.createElement('div');stage.className='pageStage';stage.dataset.page=n;stage.style.width=vp.width+'px';stage.style.height=vp.height+'px';
+  const c=document.createElement('canvas');c.className='base';c.width=vp.width;c.height=vp.height;stage.appendChild(c);pages.appendChild(stage);stage.addEventListener('click',()=>{document.querySelectorAll('.pageStage').forEach(x=>x.dataset.active='');stage.dataset.active='1'});
+  await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
  }
- out.value=texts.join('\n\n--- صفحة ---\n\n'); document.getElementById('pdfEditor').classList.remove('hidden');
+ out.value=texts.join('\n\n--- صفحة '+(texts.length>1?'':'')+'---\n\n'); // replaced below with exact page text
+ out.value=texts.map((t,i)=>'صفحة '+(i+1)+'\n'+t).join('\n\n');
+ document.getElementById('pdfEditor').classList.remove('hidden');
 }
 async function translateFileText(){
- const box=document.getElementById('fileExtracted'), mode=document.getElementById('fileMode').value; let text=box.value.trim();
- if(mode==='selected'){text=box.value.substring(box.selectionStart,box.selectionEnd).trim();if(!text){alert('ظلّل الجزء الذي تريد ترجمته أولاً');return}}
- if(!text)return; const target=document.getElementById('fileTarget').value, prog=document.getElementById('fileProgress'), out=document.getElementById('fileTranslated'); out.value='';
- const chunks=[]; for(let i=0;i<text.length;i+=5000)chunks.push(text.slice(i,i+5000)); let result=[];
- for(let i=0;i<chunks.length;i++){prog.textContent=`جاري ترجمة الجزء ${i+1} من ${chunks.length}...`;result.push(await callAI(`ترجم النص التالي إلى ${target}. أرجع الترجمة فقط دون شرح، وحافظ على ترتيب الفقرات والأرقام:\n${chunks[i]}`));out.value=result.join('\n')}
- prog.textContent='اكتملت الترجمة.'; document.getElementById('overlayText').value=out.value;
+ const box=document.getElementById('fileExtracted'),mode=document.getElementById('fileMode').value;let text='';
+ if(mode==='selected'){text=box.value.substring(box.selectionStart,box.selectionEnd).trim();if(!text){alert('حدد النص الذي تريد ترجمته أولاً');return}}
+ else if(mode==='part'){text=filePartsData[activeFilePart]||''}
+ else text=box.value.trim();
+ if(!text)return;
+ const target=document.getElementById('fileTarget').value,prog=document.getElementById('fileProgress'),out=document.getElementById('fileTranslated');out.value='';
+ const chunks=splitFileIntoParts(text,4500);let result=[];
+ for(let i=0;i<chunks.length;i++){
+  prog.textContent=`جاري ترجمة الجزء ${i+1} من ${chunks.length}...`;
+  const translated=await callAI(`ترجم النص التالي إلى ${target}. أرجع الترجمة فقط دون شرح، وحافظ على ترتيب الفقرات والأرقام:\n${chunks[i]}`);
+  result.push(translated);out.value=result.join('\n\n');document.getElementById('overlayText').value=out.value;
+ }
+ prog.textContent='اكتملت الترجمة ('+chunks.length+' جزء).';
 }
 function addOverlay(){
- const stage=document.querySelector('.pageStage'); if(!stage){alert('محرر المكان متاح لملفات PDF');return} const d=document.createElement('div');d.className='overlay';d.textContent=document.getElementById('overlayText').value||document.getElementById('fileTranslated').value||'الترجمة';d.style.left='20px';d.style.top='20px';d.style.fontSize=document.getElementById('fontSize').value+'px';d.style.color=document.getElementById('fontColor').value;stage.appendChild(d);selectOverlay(d);makeDrag(d)
+ const stage=document.querySelector('.pageStage[data-active="1"]')||document.querySelector('.pageStage'); if(!stage){alert('محرر المكان متاح لملفات PDF');return} const d=document.createElement('div');d.className='overlay';d.textContent=document.getElementById('overlayText').value||document.getElementById('fileTranslated').value||'الترجمة';d.style.left='20px';d.style.top='20px';d.style.fontSize=document.getElementById('fontSize').value+'px';d.style.color=document.getElementById('fontColor').value;stage.appendChild(d);selectOverlay(d);makeDrag(d)
 }
 function selectOverlay(d){document.querySelectorAll('.overlay').forEach(x=>x.classList.remove('selected'));selectedOverlay=d;d.classList.add('selected');document.getElementById('overlayText').value=d.textContent;document.getElementById('fontSize').value=parseInt(getComputedStyle(d).fontSize)||20;document.getElementById('fontColor').value=rgbToHex(getComputedStyle(d).color)}
 function rgbToHex(c){const m=c.match(/\d+/g);if(!m)return'#000000';return'#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join('')}
