@@ -43,33 +43,13 @@ body.file-fullscreen #pages{padding-bottom:40px}
 .translationPair .partNo{font-size:12px;color:#777;margin-bottom:7px}
 .translationPair.pending .translated{color:#888;font-weight:400}
 
-
-/* ترجمة الملفات: عرض فقرات فقط */
-#fileWork,#fileWorkspace,.fileWorkspace,.fileDocument,#pages,#pdfEditor,.fileControls{
-    display:none !important;
-}
-#paragraphTranslation{
-    display:grid !important;
-    grid-template-columns:1fr !important;
-    width:100% !important;
-}
-.translationPair{
-    display:block !important;
-}
-.translationPair .original{
-    display:block !important;
-}
-.translationPair .translated{
-    display:block !important;
-    margin-top:12px;
-}
 </style></head><body><div class="top"><button onclick="history.back()">←</button><h1>🇬🇧 تعلم الإنجليزية والترجمة</h1></div><main class="wrap"><div class="tabs"><button class="on" onclick="tab('learn',this)">تعلم الإنجليزية</button><button onclick="tab('translate',this)">الترجمة</button><button onclick="tab('files',this)">ترجمة ملف وإضافة نص عليه</button></div>
 <section id="learn" class="lesson show"><div class="box"><h2>مدرب الإنجليزية</h2><p>اختر مستواك والموضوع، والمساعد يعطيك درساً وتمارين وتصحيحاً.</p><div class="row"><select id="level"><option>مبتدئ</option><option>متوسط</option><option>متقدم</option></select><select id="topic"><option>المحادثة اليومية</option><option>القواعد</option><option>المفردات</option><option>العمل</option><option>السفر</option><option>المدرسة والجامعة</option></select></div><div class="chips"><button onclick="askLearn('اعطني درس اليوم')">درس اليوم</button><button onclick="askLearn('اختبرني 5 أسئلة')">اختبار سريع</button><button onclick="askLearn('اعطني 10 كلمات جديدة مع أمثلة')">مفردات</button><button onclick="askLearn('ابدأ محادثة إنجليزية وصحح أخطائي')">محادثة</button></div><textarea id="learnQ" placeholder="اكتب سؤالاً أو جملة بالإنجليزية حتى أصححها..."></textarea><button class="btn" onclick="learn()">إرسال للمدرب</button></div><div class="box"><h2>النتيجة</h2><div id="learnOut" class="result">جاهز.</div><div class="actions" style="margin-top:8px"><button class="speak" onclick="speakElement('learnOut',detectSpeechLang(document.getElementById('learnOut').textContent))">🔊 نطق النتيجة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div></div></section>
 <section id="translate" class="lesson"><div class="box"><h2>المترجم متعدد اللغات</h2><div class="langrow"><select id="fromLang"><option value="auto">تحديد تلقائي</option><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select><button class="swap" type="button" title="تبديل اللغتين" onclick="swapLanguages()">⇄</button><select id="toLang"><option>الإنجليزية</option><option>العربية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select></div><textarea id="translationText" placeholder="اكتب أو الصق النص المراد ترجمته..."></textarea><div class="actions"><button class="btn" id="translateBtn" onclick="translateText()">ترجمة</button><button class="btn secondary" onclick="copyTranslation()">نسخ الترجمة</button><button class="btn secondary" onclick="clearTranslation()">مسح</button></div><div class="hint">إذا كانت لغة النص غير معروفة، اترك المصدر على «تحديد تلقائي».</div></div><div class="box"><h2>الترجمة</h2><div id="transOut" class="result">—</div><div class="actions" style="margin-top:8px"></div></div>
 </section>
 <section id="files" class="lesson"><div class="box">
 <h2>📄 ترجمة ملف</h2>
-<p class="hint">اختر ملف PDF أو Word أو TXT، وسيبدأ ترجمته تلقائياً إلى العربية. يتم تقسيم الملف إلى فقرات وترجمة كل فقرة أسفلها تلقائياً.</p>
+<p class="hint">اختر ملف PDF أو Word أو TXT، وسيبدأ ترجمته تلقائياً إلى العربية. يظهر كل جزء من النص الأصلي وتحته ترجمته مباشرة.</p>
 <div class="filebar">
   <input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" onchange="openAndTranslateFile()">
   <button class="btn" onclick="document.getElementById('fileInput').click()">اختيار ملف</button>
