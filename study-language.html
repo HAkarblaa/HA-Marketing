@@ -35,31 +35,28 @@ body.file-fullscreen #pages{padding-bottom:40px}
  .tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}
 }
 @media(max-width:600px){.tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}}
+
+.paragraphTranslation{display:grid;gap:12px;margin-top:14px}
+.translationPair{background:#fff;border:1px solid #ddd;border-radius:14px;padding:14px}
+.translationPair .original{white-space:pre-wrap;line-height:1.8;color:#444;direction:auto;text-align:start}
+.translationPair .translated{white-space:pre-wrap;line-height:1.9;color:#111;font-weight:600;direction:rtl;text-align:right;border-top:1px dashed #ddd;margin-top:10px;padding-top:10px}
+.translationPair .partNo{font-size:12px;color:#777;margin-bottom:7px}
+.translationPair.pending .translated{color:#888;font-weight:400}
+
 </style></head><body><div class="top"><button onclick="history.back()">←</button><h1>🇬🇧 تعلم الإنجليزية والترجمة</h1></div><main class="wrap"><div class="tabs"><button class="on" onclick="tab('learn',this)">تعلم الإنجليزية</button><button onclick="tab('translate',this)">الترجمة</button><button onclick="tab('files',this)">ترجمة ملف وإضافة نص عليه</button></div>
 <section id="learn" class="lesson show"><div class="box"><h2>مدرب الإنجليزية</h2><p>اختر مستواك والموضوع، والمساعد يعطيك درساً وتمارين وتصحيحاً.</p><div class="row"><select id="level"><option>مبتدئ</option><option>متوسط</option><option>متقدم</option></select><select id="topic"><option>المحادثة اليومية</option><option>القواعد</option><option>المفردات</option><option>العمل</option><option>السفر</option><option>المدرسة والجامعة</option></select></div><div class="chips"><button onclick="askLearn('اعطني درس اليوم')">درس اليوم</button><button onclick="askLearn('اختبرني 5 أسئلة')">اختبار سريع</button><button onclick="askLearn('اعطني 10 كلمات جديدة مع أمثلة')">مفردات</button><button onclick="askLearn('ابدأ محادثة إنجليزية وصحح أخطائي')">محادثة</button></div><textarea id="learnQ" placeholder="اكتب سؤالاً أو جملة بالإنجليزية حتى أصححها..."></textarea><button class="btn" onclick="learn()">إرسال للمدرب</button></div><div class="box"><h2>النتيجة</h2><div id="learnOut" class="result">جاهز.</div><div class="actions" style="margin-top:8px"><button class="speak" onclick="speakElement('learnOut',detectSpeechLang(document.getElementById('learnOut').textContent))">🔊 نطق النتيجة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div></div></section>
-<section id="translate" class="lesson"><div class="box"><h2>المترجم متعدد اللغات</h2><div class="langrow"><select id="fromLang"><option value="auto">تحديد تلقائي</option><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select><button class="swap" type="button" title="تبديل اللغتين" onclick="swapLanguages()">⇄</button><select id="toLang"><option>الإنجليزية</option><option>العربية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select></div><textarea id="translationText" placeholder="اكتب أو الصق النص المراد ترجمته..."></textarea><div class="actions"><button class="btn" id="translateBtn" onclick="translateText()">ترجمة</button><button class="btn secondary" onclick="copyTranslation()">نسخ الترجمة</button><button class="btn secondary" onclick="clearTranslation()">مسح</button></div><div class="hint">إذا كانت لغة النص غير معروفة، اترك المصدر على «تحديد تلقائي».</div></div><div class="box"><h2>الترجمة</h2><div id="transOut" class="result">—</div><div class="actions" style="margin-top:8px"><button class="speak" onclick="speakElement('translationText',langCode(document.getElementById('fromLang').value))">🔊 نطق الأصلي</button><button class="speak" onclick="speakElement('transOut',langCode(document.getElementById('toLang').value))">🔊 نطق الترجمة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div></div>
+<section id="translate" class="lesson"><div class="box"><h2>المترجم متعدد اللغات</h2><div class="langrow"><select id="fromLang"><option value="auto">تحديد تلقائي</option><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select><button class="swap" type="button" title="تبديل اللغتين" onclick="swapLanguages()">⇄</button><select id="toLang"><option>الإنجليزية</option><option>العربية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select></div><textarea id="translationText" placeholder="اكتب أو الصق النص المراد ترجمته..."></textarea><div class="actions"><button class="btn" id="translateBtn" onclick="translateText()">ترجمة</button><button class="btn secondary" onclick="copyTranslation()">نسخ الترجمة</button><button class="btn secondary" onclick="clearTranslation()">مسح</button></div><div class="hint">إذا كانت لغة النص غير معروفة، اترك المصدر على «تحديد تلقائي».</div></div><div class="box"><h2>الترجمة</h2><div id="transOut" class="result">—</div><div class="actions" style="margin-top:8px"></div></div>
 </section>
-<section id="files" class="lesson"><div class="box filePanel">
-<div class="fileViewerTop"><button onclick="closeFileWorkspace()">← رجوع</button><div id="fileViewerTitle" class="title">ترجمة ملف وإضافة نص عليه</div><button onclick="translateFileText()">ترجمة</button></div>
-<div id="fileIntro">
-<h2>📄 ترجمة ملف وإضافة نص عليه</h2>
-<p class="hint">افتح PDF أو Word أو TXT. بعد فتحه يتحول القسم إلى شاشة ملف كاملة، وتقدر تترجم الملف كله أو تختار جزءاً منه. الملفات الطويلة تنقسم تلقائياً إلى أجزاء.</p>
-<div class="filebar"><input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"><button class="btn" onclick="openTranslationFile()">فتح الملف</button></div>
+<section id="files" class="lesson"><div class="box">
+<h2>📄 ترجمة ملف</h2>
+<p class="hint">اختر ملف PDF أو Word أو TXT، وسيبدأ ترجمته تلقائياً إلى العربية. يظهر كل جزء من النص الأصلي وتحته ترجمته مباشرة.</p>
+<div class="filebar">
+  <input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" onchange="openAndTranslateFile()">
+  <button class="btn" onclick="document.getElementById('fileInput').click()">اختيار ملف</button>
 </div>
-<div id="fileWork" class="editorWrap">
- <div class="fileWorkspace">
-  <div class="fileControls">
-   <div class="row"><select id="fileMode" onchange="syncFileMode()"><option value="all">ترجمة الملف كامل</option><option value="part">ترجمة جزء من الأجزاء</option><option value="selected">ترجمة النص المحدد فقط</option></select><select id="fileTarget"><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الكردية</option></select></div>
-   <div id="fileParts" class="fileParts"></div>
-   <textarea id="fileExtracted" class="fileText" placeholder="نص الملف..." style="display:none"></textarea>
-   <div class="actions"><button class="btn" onclick="translateFileText()">ترجمة المطلوب</button><button class="speak" onclick="speakCurrentFileSource()">🔊 نطق النص</button><button class="speak" onclick="speakElement('fileTranslated',langCode(document.getElementById('fileTarget').value))">🔊 نطق الترجمة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div>
-   <div id="fileProgress" class="progress"></div>
-   <textarea id="fileTranslated" class="fileText" placeholder="الترجمة تظهر هنا..."></textarea>
-   <div id="pdfEditor" class="hidden"><h3>إضافة الترجمة على الملف</h3><div class="tools"><input id="overlayText" class="wide" placeholder="نص مربع الترجمة"><input id="fontSize" type="number" min="8" max="72" value="20" title="حجم الخط"><input id="fontColor" type="color" value="#000000" title="لون الخط"></div><div class="actions"><button class="btn" onclick="addOverlay()">+ إضافة النص على الصفحة</button><button class="btn secondary" onclick="applyOverlayStyle()">تطبيق الحجم واللون</button><button class="btn secondary" onclick="deleteOverlay()">حذف المربع</button><button class="btn" onclick="exportEditedPdf()">حفظ PDF جديد</button></div></div>
-  </div>
-  <div class="fileDocument"><div id="textFileView" class="fileTextView hidden"></div><div id="pages"></div></div>
- </div>
-</div></div></section></main>
+<div id="fileProgress" class="progress"></div>
+<div id="paragraphTranslation" class="paragraphTranslation"></div>
+</div></section></main>
 <script>
 const SUPA_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SUPA_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
@@ -187,88 +184,114 @@ function speakText(text,lang){
 function speakElement(id,lang){const el=document.getElementById(id);const text=('value' in el?el.value:el.textContent);speakText(text,lang||detectSpeechLang(text))}
 function detectSpeechLang(text){return /[\u0600-\u06FF]/.test(text||'')?'ar-IQ':'en-US'}
 
-let loadedPdf=null, selectedOverlay=null, currentFileName='translated', filePartsData=[], activeFilePart=0;
-function splitFileIntoParts(text,max=3500){
- const clean=String(text||'').replace(/\r/g,'').trim();if(!clean)return[];
- const paras=clean.split(/\n{2,}/),parts=[];let cur='';
- for(const p0 of paras){const p=p0.trim();if(!p)continue;
-  if((cur+'\n\n'+p).length<=max){cur+=(cur?'\n\n':'')+p;continue}
-  if(cur){parts.push(cur);cur=''}
-  if(p.length<=max){cur=p;continue}
-  let rest=p;while(rest.length>max){let cut=rest.lastIndexOf(' ',max);if(cut<max*.55)cut=max;parts.push(rest.slice(0,cut).trim());rest=rest.slice(cut).trim()}cur=rest;
- }
- if(cur)parts.push(cur);return parts;
+let currentFileName='', fileTranslateBusy=false;
+
+function paragraphParts(text, max=3000){
+  const clean=String(text||'').replace(/\r/g,'').trim();
+  if(!clean)return [];
+  let raw=clean.split(/\n\s*\n+/).map(x=>x.trim()).filter(Boolean);
+  // بعض PDF لا يحتوي فواصل فقرات؛ نقسمه بشكل آمن إلى أجزاء قابلة للترجمة.
+  if(raw.length<=1){
+    raw=clean.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  }
+  const out=[];
+  for(let p of raw){
+    if(p.length<=max){out.push(p);continue}
+    let rest=p;
+    while(rest.length>max){
+      let cut=rest.lastIndexOf(' ',max);
+      if(cut<Math.floor(max*.55))cut=max;
+      out.push(rest.slice(0,cut).trim());
+      rest=rest.slice(cut).trim();
+    }
+    if(rest)out.push(rest);
+  }
+  return out;
 }
-function renderFileParts(){
- const host=document.getElementById('fileParts');host.innerHTML='';
- filePartsData.forEach((txt,i)=>{const d=document.createElement('div');d.className='filePart'+(i===activeFilePart?' active':'');d.onclick=()=>selectFilePart(i);
-  d.innerHTML='<small>الجزء '+(i+1)+' من '+filePartsData.length+'</small><div class="filePartText"></div>';d.querySelector('.filePartText').textContent=txt;host.appendChild(d)});
+
+async function extractTranslationFile(f){
+  if(f.name.toLowerCase().endsWith('.txt')) return await f.text();
+
+  if(f.name.toLowerCase().endsWith('.docx')){
+    const ab=await f.arrayBuffer();
+    const r=await mammoth.extractRawText({arrayBuffer:ab});
+    return r.value||'';
+  }
+
+  if(f.name.toLowerCase().endsWith('.pdf')){
+    if(window.pdfjsLib){
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    const ab=await f.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+    const pages=[];
+    for(let n=1;n<=pdf.numPages;n++){
+      const page=await pdf.getPage(n);
+      const tc=await page.getTextContent();
+      // نحافظ قدر الإمكان على فواصل الأسطر/الفقرات من PDF.
+      let lines=[], line='';
+      for(const item of tc.items){
+        line += (line?' ':'') + (item.str||'');
+        if(item.hasEOL){ if(line.trim())lines.push(line.trim()); line=''; }
+      }
+      if(line.trim())lines.push(line.trim());
+      pages.push(lines.join('\n'));
+    }
+    return pages.join('\n\n');
+  }
+
+  throw new Error('نوع الملف غير مدعوم');
 }
-function selectFilePart(i){activeFilePart=i;renderFileParts();document.getElementById('fileMode').value='part';}
-function syncFileMode(){if(document.getElementById('fileMode').value==='part')renderFileParts()}
-function closeFileWorkspace(){stopSpeak();document.body.classList.remove('file-fullscreen');document.getElementById('fileWork').style.display='none'}
-function speakCurrentFileSource(){
- const mode=document.getElementById('fileMode').value,box=document.getElementById('fileExtracted');let t='';
- if(mode==='selected')t=box.value.substring(box.selectionStart,box.selectionEnd).trim();
- else if(mode==='part')t=filePartsData[activeFilePart]||'';
- else t=box.value;
- speakText(t,detectSpeechLang(t));
+
+function makeTranslationPair(original, i){
+  const d=document.createElement('div');
+  d.className='translationPair pending';
+  d.innerHTML='<div class="partNo">الفقرة '+(i+1)+'</div><div class="original"></div><div class="translated">جاري الترجمة...</div>';
+  d.querySelector('.original').textContent=original;
+  return d;
 }
-async function openTranslationFile(){
- const f=document.getElementById('fileInput').files[0];if(!f){alert('اختر ملف أولاً');return}
- currentFileName=f.name.replace(/\.[^.]+$/,'');document.getElementById('fileViewerTitle').textContent=f.name;
- const out=document.getElementById('fileExtracted'),work=document.getElementById('fileWork'),prog=document.getElementById('fileProgress');
- work.style.display='block';prog.textContent='جاري فتح الملف...';out.value='';document.getElementById('pages').innerHTML='';document.getElementById('textFileView').classList.add('hidden');document.getElementById('pdfEditor').classList.add('hidden');
- try{
-  if(f.name.toLowerCase().endsWith('.txt'))out.value=await f.text();
-  else if(f.name.toLowerCase().endsWith('.docx')){const ab=await f.arrayBuffer();const r=await mammoth.extractRawText({arrayBuffer:ab});out.value=r.value||''}
-  else if(f.name.toLowerCase().endsWith('.pdf'))await loadPdfFile(f,out);
-  else throw new Error('نوع الملف غير مدعوم حالياً');
-  filePartsData=splitFileIntoParts(out.value);activeFilePart=0;renderFileParts();
-  if(!f.name.toLowerCase().endsWith('.pdf')){const v=document.getElementById('textFileView');v.textContent=out.value;v.classList.remove('hidden')}
-  document.body.classList.add('file-fullscreen');prog.textContent='تم فتح الملف وتقسيمه تلقائياً إلى '+filePartsData.length+' جزء.';
- }catch(e){prog.textContent='تعذر قراءة الملف: '+e.message}
+
+async function openAndTranslateFile(){
+  const input=document.getElementById('fileInput');
+  const f=input.files && input.files[0];
+  if(!f || fileTranslateBusy)return;
+
+  const progress=document.getElementById('fileProgress');
+  const host=document.getElementById('paragraphTranslation');
+  host.innerHTML='';
+  fileTranslateBusy=true;
+  currentFileName=f.name;
+
+  try{
+    progress.textContent='جاري قراءة الملف...';
+    const text=await extractTranslationFile(f);
+    const parts=paragraphParts(text);
+    if(!parts.length)throw new Error('لم أجد نصاً قابلاً للترجمة داخل الملف');
+
+    const cards=parts.map((p,i)=>{
+      const c=makeTranslationPair(p,i);
+      host.appendChild(c);
+      return c;
+    });
+
+    for(let i=0;i<parts.length;i++){
+      progress.textContent=`جاري ترجمة الفقرة ${i+1} من ${parts.length} إلى العربية...`;
+      try{
+        const translated=await callAI(
+          `ترجم النص التالي إلى العربية ترجمة واضحة ودقيقة. أرجع الترجمة العربية فقط دون شرح أو عناوين إضافية، وحافظ على الأرقام والمعنى:\n${parts[i]}`
+        );
+        cards[i].querySelector('.translated').textContent=translated;
+        cards[i].classList.remove('pending');
+      }catch(err){
+        cards[i].querySelector('.translated').textContent='تعذر ترجمة هذه الفقرة: '+(err.message||'خطأ');
+      }
+    }
+    progress.textContent=`اكتملت ترجمة الملف بالكامل إلى العربية — ${parts.length} فقرة/جزء.`;
+  }catch(e){
+    progress.textContent='تعذر ترجمة الملف: '+(e.message||'خطأ غير معروف');
+  }finally{
+    fileTranslateBusy=false;
+  }
 }
-async function loadPdfFile(f,out){
- if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
- const ab=await f.arrayBuffer();loadedPdf=await pdfjsLib.getDocument({data:ab}).promise;let texts=[];const pages=document.getElementById('pages');
- for(let n=1;n<=loadedPdf.numPages;n++){
-  const page=await loadedPdf.getPage(n),tc=await page.getTextContent();texts.push(tc.items.map(i=>i.str).join(' '));
-  const vp=page.getViewport({scale:1.35}),stage=document.createElement('div');stage.className='pageStage';stage.dataset.page=n;stage.style.width=vp.width+'px';stage.style.height=vp.height+'px';
-  const c=document.createElement('canvas');c.className='base';c.width=vp.width;c.height=vp.height;stage.appendChild(c);pages.appendChild(stage);stage.addEventListener('click',()=>{document.querySelectorAll('.pageStage').forEach(x=>x.dataset.active='');stage.dataset.active='1'});
-  await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
- }
- out.value=texts.join('\n\n--- صفحة '+(texts.length>1?'':'')+'---\n\n'); // replaced below with exact page text
- out.value=texts.map((t,i)=>'صفحة '+(i+1)+'\n'+t).join('\n\n');
- document.getElementById('pdfEditor').classList.remove('hidden');
-}
-async function translateFileText(){
- const box=document.getElementById('fileExtracted'),mode=document.getElementById('fileMode').value;let text='';
- if(mode==='selected'){text=box.value.substring(box.selectionStart,box.selectionEnd).trim();if(!text){alert('حدد النص الذي تريد ترجمته أولاً');return}}
- else if(mode==='part'){text=filePartsData[activeFilePart]||''}
- else text=box.value.trim();
- if(!text)return;
- const target=document.getElementById('fileTarget').value,prog=document.getElementById('fileProgress'),out=document.getElementById('fileTranslated');out.value='';
- const chunks=splitFileIntoParts(text,4500);let result=[];
- for(let i=0;i<chunks.length;i++){
-  prog.textContent=`جاري ترجمة الجزء ${i+1} من ${chunks.length}...`;
-  const translated=await callAI(`ترجم النص التالي إلى ${target}. أرجع الترجمة فقط دون شرح، وحافظ على ترتيب الفقرات والأرقام:\n${chunks[i]}`);
-  result.push(translated);out.value=result.join('\n\n');document.getElementById('overlayText').value=out.value;
- }
- prog.textContent='اكتملت الترجمة ('+chunks.length+' جزء).';
-}
-function addOverlay(){
- const stage=document.querySelector('.pageStage[data-active="1"]')||document.querySelector('.pageStage'); if(!stage){alert('محرر المكان متاح لملفات PDF');return} const d=document.createElement('div');d.className='overlay';d.textContent=document.getElementById('overlayText').value||document.getElementById('fileTranslated').value||'الترجمة';d.style.left='20px';d.style.top='20px';d.style.fontSize=document.getElementById('fontSize').value+'px';d.style.color=document.getElementById('fontColor').value;stage.appendChild(d);selectOverlay(d);makeDrag(d)
-}
-function selectOverlay(d){document.querySelectorAll('.overlay').forEach(x=>x.classList.remove('selected'));selectedOverlay=d;d.classList.add('selected');document.getElementById('overlayText').value=d.textContent;document.getElementById('fontSize').value=parseInt(getComputedStyle(d).fontSize)||20;document.getElementById('fontColor').value=rgbToHex(getComputedStyle(d).color)}
-function rgbToHex(c){const m=c.match(/\d+/g);if(!m)return'#000000';return'#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join('')}
-function applyOverlayStyle(){if(!selectedOverlay)return;selectedOverlay.textContent=document.getElementById('overlayText').value;selectedOverlay.style.fontSize=document.getElementById('fontSize').value+'px';selectedOverlay.style.color=document.getElementById('fontColor').value}
-function deleteOverlay(){if(selectedOverlay){selectedOverlay.remove();selectedOverlay=null}}
-function makeDrag(el){let sx=0,sy=0,ox=0,oy=0,drag=false;el.addEventListener('pointerdown',e=>{selectOverlay(el);drag=true;sx=e.clientX;sy=e.clientY;ox=el.offsetLeft;oy=el.offsetTop;el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',e=>{if(!drag)return;let x=ox+e.clientX-sx,y=oy+e.clientY-sy;x=Math.max(0,Math.min(x,el.parentElement.clientWidth-el.offsetWidth));y=Math.max(0,Math.min(y,el.parentElement.clientHeight-el.offsetHeight));el.style.left=x+'px';el.style.top=y+'px'});el.addEventListener('pointerup',()=>drag=false)}
-async function exportEditedPdf(){
- const {jsPDF}=window.jspdf;const stages=[...document.querySelectorAll('.pageStage')];if(!stages.length)return;const pdf=new jsPDF({orientation:stages[0].clientWidth>stages[0].clientHeight?'l':'p',unit:'px',format:[stages[0].clientWidth,stages[0].clientHeight],hotfixes:['px_scaling']});
- for(let i=0;i<stages.length;i++){if(i){pdf.addPage([stages[i].clientWidth,stages[i].clientHeight],stages[i].clientWidth>stages[i].clientHeight?'l':'p')}const c=document.createElement('canvas');c.width=stages[i].clientWidth;c.height=stages[i].clientHeight;const ctx=c.getContext('2d');ctx.drawImage(stages[i].querySelector('canvas.base'),0,0,c.width,c.height);for(const o of stages[i].querySelectorAll('.overlay')){const x=o.offsetLeft,y=o.offsetTop,fs=parseInt(getComputedStyle(o).fontSize)||20;ctx.font=`${fs}px Arial`;ctx.fillStyle=getComputedStyle(o).color;ctx.textAlign='right';ctx.direction='rtl';const max=o.offsetWidth||c.width-x-10;wrapCanvasText(ctx,o.textContent,x+max,y+fs,max,fs*1.35)}pdf.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,0,c.width,c.height)}pdf.save(currentFileName+'-translated.pdf')
-}
-function wrapCanvasText(ctx,text,x,y,max,lineH){for(const para of text.split('\n')){let line='';for(const w of para.split(/\s+/)){const t=line?line+' '+w:w;if(ctx.measureText(t).width>max&&line){ctx.fillText(line,x,y);y+=lineH;line=w}else line=t}if(line){ctx.fillText(line,x,y);y+=lineH}y+=lineH*.2}}
 
 </script></body></html>
