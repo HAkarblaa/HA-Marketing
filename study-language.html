@@ -56,8 +56,6 @@ body.file-fullscreen #pages{padding-bottom:40px}
 </div>
 <div id="fileProgress" class="progress"></div>
 <div class="actions" style="margin-top:12px">
-  <button id="downloadTranslatedWordBtn" class="btn hidden" type="button" onclick="downloadTranslatedWord()">⬇️ تحميل بصيغة Word</button>
-  <button id="downloadTranslatedPdfBtn" class="btn hidden" type="button" onclick="downloadTranslatedPdf()">⬇️ تحميل بصيغة PDF</button>
 </div>
 <div id="paragraphTranslation" class="paragraphTranslation"></div>
 </div></section></main>
@@ -264,10 +262,6 @@ async function openAndTranslateFile(){
   const host=document.getElementById('paragraphTranslation');
   host.innerHTML='';
   translatedFileParts=[];
-  const downloadWordBtn=document.getElementById('downloadTranslatedWordBtn');
-  const downloadPdfBtn=document.getElementById('downloadTranslatedPdfBtn');
-  if(downloadWordBtn)downloadWordBtn.classList.add('hidden');
-  if(downloadPdfBtn)downloadPdfBtn.classList.add('hidden');
   fileTranslateBusy=true;
   currentFileName=f.name;
 
@@ -283,6 +277,7 @@ async function openAndTranslateFile(){
       return c;
     });
 
+    let failedParts=0;
     for(let i=0;i<parts.length;i++){
       progress.textContent=`جاري ترجمة الفقرة ${i+1} من ${parts.length} إلى العربية...`;
       try{
@@ -293,14 +288,19 @@ async function openAndTranslateFile(){
         translatedFileParts[i]={original:parts[i],translated:translated};
         cards[i].classList.remove('pending');
       }catch(err){
+        failedParts++;
         const failText='تعذر ترجمة هذه الفقرة: '+(err.message||'خطأ');
         cards[i].querySelector('.translated').textContent=failText;
         translatedFileParts[i]={original:parts[i],translated:failText};
       }
     }
-    progress.textContent=`اكتملت ترجمة الملف بالكامل إلى العربية — ${parts.length} فقرة/جزء.`;
-    if(downloadWordBtn)downloadWordBtn.classList.remove('hidden');
-    if(downloadPdfBtn)downloadPdfBtn.classList.remove('hidden');
+    if(failedParts===0){
+      progress.textContent=`اكتملت ترجمة الملف بالكامل إلى العربية — ${parts.length} فقرة/جزء. جاري تنزيل PDF تلقائياً...`;
+      await downloadTranslatedPdf();
+      progress.textContent=`اكتملت ترجمة الملف بالكامل وتم بدء تنزيل PDF تلقائياً — ${parts.length} فقرة/جزء.`;
+    }else{
+      progress.textContent=`اكتملت المحاولة، لكن تعذر ترجمة ${failedParts} فقرة/جزء. لن يتم تنزيل PDF حتى تكتمل الترجمة بالكامل.`;
+    }
   }catch(e){
     progress.textContent='تعذر ترجمة الملف: '+(e.message||'خطأ غير معروف');
   }finally{
@@ -348,32 +348,7 @@ async function saveTranslatedBlob(blob,name){
   return true;
 }
 
-async function downloadTranslatedWord(){
-  if(!translatedFileParts.length){
-    alert('لا توجد ترجمة جاهزة للتحميل.');
-    return;
-  }
-
-  const body=translatedFileParts.map((p,i)=>`
-    <section style="margin:0 0 24px 0;page-break-inside:avoid">
-      <div style="font-size:12px;color:#777;margin-bottom:6px">الفقرة ${i+1}</div>
-      <div dir="auto" style="text-align:start;line-height:1.8;margin-bottom:10px">${escapeHtmlDownload(p.original).replace(/\n/g,'<br>')}</div>
-      <div dir="rtl" style="text-align:right;line-height:1.9;font-weight:600;border-top:1px solid #ccc;padding-top:10px">${escapeHtmlDownload(p.translated).replace(/\n/g,'<br>')}</div>
-    </section>`).join('');
-
-  const doc=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
-  <title>ترجمة ${escapeHtmlDownload(currentFileName)}</title>
-  <style>body{font-family:Arial,sans-serif;margin:32px;color:#111}h1{font-size:20px;margin-bottom:24px}</style>
-  </head><body><h1>ترجمة الملف إلى العربية</h1>${body}</body></html>`;
-
-  const blob=new Blob(['\ufeff',doc],{type:'application/msword;charset=utf-8'});
-  const base=(currentFileName||'translated-file').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'-');
-  const name=base+'-مترجم-للعربية.doc';
-  await saveTranslatedBlob(blob,name);
-}
-
-
-function downloadTranslatedPdf(){
+async function downloadTranslatedPdf(){
   if(!translatedFileParts.length){
     alert('لا توجد ترجمة جاهزة للتحميل.');
     return;
