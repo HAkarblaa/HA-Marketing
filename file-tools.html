@@ -115,24 +115,15 @@ function filterTools(){let q=$('#q').value.trim().toLowerCase();document.querySe
 function closeModal(){$('#modal').classList.remove('show');$('#form').innerHTML='';$('#status').className='status';$('#status').textContent=''}
 function showStatus(t){$('#status').textContent=t;$('#status').className='status show'}
 function saveBlob(blob,name){
-if(!blob||!blob.size)throw new Error('الملف الناتج فارغ.');
-try{
+ if(!blob||!blob.size)throw new Error('الملف الناتج فارغ.');
  const url=URL.createObjectURL(blob);
  const a=document.createElement('a');
  a.href=url;
- a.download=name;
- a.style.display='none';
+ a.download=name||'HA-file';
  document.body.appendChild(a);
- a.click();
- setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},3000);
- showStatus('تم تجهيز الملف. إذا لم يبدأ التنزيل افتح قائمة المشاركة/الحفظ من الجهاز.');
-}catch(e){
- try{
-  const url=URL.createObjectURL(blob);
-  window.open(url,'_blank');
- }catch(e2){throw e2}
+ try{a.click();}catch(e){window.open(url,'_blank');}
+ setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},5000);
 }
-},3000)}
 function parsePages(s,max){const set=new Set();String(s||'').split(',').forEach(part=>{part=part.trim();if(!part)return;if(part.includes('-')){let[a,b]=part.split('-').map(Number);if(a>b)[a,b]=[b,a];for(let i=a;i<=b;i++)if(i>=1&&i<=max)set.add(i-1)}else{let n=Number(part);if(n>=1&&n<=max)set.add(n-1)}});return [...set].sort((a,b)=>a-b)}
 function basicForm(multiple=false,accept='.pdf',extra=''){return `<div class="drop">اختر ${multiple?'الملفات':'الملف'}<input id="files" type="file" ${multiple?'multiple':''} accept="${accept}"></div>${extra}<div class="actions"><button class="primary" id="run">تنفيذ</button><button class="secondary" onclick="closeModal()">إلغاء</button></div>`}
 function openTool(type){
