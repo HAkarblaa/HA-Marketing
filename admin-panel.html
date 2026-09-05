@@ -91,8 +91,8 @@ const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefr
 let session=null,adminRow=null,myPermissions=[];
 const SHOP_SECTIONS=[['library','مكتبة','📚'],['building_materials','مواد البناء','🏗️'],['cards_credit','بطاقات وأرصدة','💳'],['yugioh','أوراق يوغي','🃏'],['markets','أسواق','🛒'],['restaurants','مطاعم','🍽️'],['flowers','ورد','💐'],['home_appliances','أجهزة منزلية','🏠'],['printers','طابعات','🖨️'],['devices','أجهزة','📱'],['device_accessories','إكسسوارات الأجهزة','🎧'],['clothes','ملابس','👕'],['shoes','أحذية','👟']];
 const SECTIONS=[
- ['shop','التسوق','🛒','admin-shop.html'],['services','طلب خدمة','🛠️','admin-services.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','admin-content.html?section=news'],
- ['religious','الأمور الدينية','🕌','admin-content.html?section=religious'],['study','الدراسة','📚','admin-study.html'],['entertainment','الترفيه','🎮','admin-content.html?section=entertainment'],['sports','الرياضة','⚽','admin-content.html?section=sports'],
+ ['shop','التسوق','🛒','admin-shop.html'],['services','طلب خدمة','🛠️','admin-services.html'],['chat','الدردشة - قريباً','💬','chat.html'],['news','الأخبار','📰','admin-content.html?section=news'],
+ ['religious','الأمور الدينية','🕌','admin-content.html?section=religious'],['study','الدراسة','📚','admin-study.html'],['entertainment','الترفيه','🎮','admin-content.html?section=entertainment'],['sports','الرياضة - قريباً','⚽','admin-content.html?section=sports'],
  ['transport','النقل','🚕','taxi-delivery.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
  ['notifications','الإشعارات','🔔','admin-panel.html#notify'],['settings','الإعدادات','⚙️','account.html']
 ];
