@@ -38,85 +38,390 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a><a class="btn" href="index.html">الرجوع للرئيسية</a>
 </div></div><div id="haLoading" class="ha-loading" aria-live="polite"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري إنشاء الحساب...</div></div>
 <script>
-const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
-const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+  const SB_URL = 'https://ubayrhtshgtgggxprrek.supabase.co';
+const SB_KEY = 'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
 
-function migrateLegacyAuth(){
-  try{
-    const target='ha-marketing-auth';
-    if(localStorage.getItem(target)) return;
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i)||'';
-      if(/^sb-.*-auth-token$/.test(k)){
-        const v=localStorage.getItem(k);
-        if(v){ localStorage.setItem(target,v); break; }
-      }
-    }
-  }catch(e){ console.warn('auth migration',e); }
+const db = supabase.createClient(SB_URL, SB_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storageKey: 'ha-marketing-auth'
+  }
+});
+
+
+function normalizePhone(v){
+  let p = String(v || '').replace(/\D/g,'');
+
+  if(p.startsWith('0')){
+    p = '964' + p.substring(1);
+  }
+
+  if(!p.startsWith('964')){
+    p = '964' + p;
+  }
+
+  return '+' + p;
 }
-migrateLegacyAuth();
-const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
-function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
-function authEmail(p){return 'u'+p+'@ha.local'}
-function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
-async function persistLoginFlag(){const {data}=await db.auth.getSession();if(data.session){localStorage.setItem('ha_logged_in','1');return data.session}localStorage.removeItem('ha_logged_in');return null}
-async function ensureProfile(user, fallback={}){
-  if(!user||user.is_anonymous)return;
-  const m=user.user_metadata||{};
-  const row={
-    id:user.id,
-    full_name:fallback.full_name??m.full_name??null,
-    phone:fallback.phone??m.phone??null,
-    username:fallback.username??m.username??null,
-    avatar_url:fallback.avatar_url??m.avatar_url??null,
-    governorate:fallback.governorate??m.governorate??null,
-    account_type:fallback.account_type??m.account_type??'customer',
-    employee_role:fallback.employee_role??m.employee_role_key??m.employee_role??null,
-    employee_status:(fallback.account_type??m.account_type)==='employee'?'approved':'not_applicable'
+
+
+function localPhone(v){
+  let d = String(v || '').replace(/\D/g,'');
+
+  if(d.startsWith('964')){
+    return '0' + d.substring(3);
+  }
+
+  return d;
+}
+
+
+function validUsername(v){
+  return /^[\x21-\x7E]{6,40}$/.test(v);
+}
+
+
+let accountType = 'customer';
+let avatarData = null;
+let pendingMeta = null;
+
+
+function chooseType(t,b){
+  accountType = t;
+
+  document.querySelectorAll('.type')
+  .forEach(x=>x.classList.remove('active'));
+
+  b.classList.add('active');
+
+  roleBox.classList.toggle(
+    'hidden',
+    t !== 'employee'
+  );
+}
+
+
+avatar.addEventListener('change',()=>{
+
+  const f = avatar.files[0];
+
+  if(!f){
+    avatarData = null;
+    preview.style.display='none';
+    return;
+  }
+
+  if(f.size > 700000){
+    alert('اختار صورة أصغر من 700KB');
+    avatar.value='';
+    return;
+  }
+
+  const r = new FileReader();
+
+  r.onload=()=>{
+
+    avatarData = r.result;
+
+    preview.src = avatarData;
+    preview.style.display='block';
+
   };
-  const {data:existing}=await db.from('profiles').select('id').eq('id',user.id).maybeSingle();
-  if(existing){
-    await db.from('profiles').update({full_name:row.full_name,phone:row.phone,username:row.username,avatar_url:row.avatar_url,governorate:row.governorate}).eq('id',user.id);
-  }else{
-    await db.from('profiles').insert(row);
+
+  r.readAsDataURL(f);
+
+});
+
+
+function showLoading(text='جاري التحميل...'){
+  haLoadText.textContent=text;
+  haLoading.classList.add('show');
+
+  if(window.createBtn){
+    createBtn.disabled=true;
   }
 }
 
-let accountType='customer',avatarData=null;
-function chooseType(t,b){accountType=t;document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');roleBox.classList.toggle('hidden',t!=='employee');}
-avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
-function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.createBtn)createBtn.disabled=true}
-function hideLoading(){haLoading.classList.remove('show');if(window.createBtn)createBtn.disabled=false}
-async function createAccount(){
- const name=full_name.value.trim(),raw=phone.value.trim(),user=username.value.trim(),gov=governorate.value,p=password.value,cp=confirm_password.value;
- passError.textContent='';
- if(!name||!raw||!user||!gov||!p||!cp){alert('كل الحقول مطلوبة ما عدا الصورة');return}
- if(accountType==='employee'&&!employee_role.value){alert('اختار نوع عمل الموظف');return}
- if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين';return}
- if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، ويقبل فقط الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.');username.focus();return}
- if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.';password.focus();return}
- const lp=localPhone(raw);
- if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return}
- const ph=normalizePhone(lp);
- showLoading('جاري التحقق من البيانات...');
- try{
- const {data:userExists,error:userCheckError}=await db.from('profiles').select('id').eq('username',user).limit(1);
- if(!userCheckError&&userExists?.length){hideLoading();alert('اسم المستخدم مستخدم مسبقاً. غيّره وحاول مرة ثانية.');username.focus();return}
- const {data:phoneExists,error:phoneCheckError}=await db.from('profiles').select('id').eq('phone',ph).limit(1);
- if(!phoneCheckError&&phoneExists?.length){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
- const meta={full_name:name,phone:ph,username:user,governorate:gov,account_type:accountType,employee_role_key:accountType==='employee'?employee_role.value:null,avatar_url:avatarData,contact_email:(document.getElementById('contact_email')?.value||'').trim()||null};
- const email=authEmail(ph);
- const {data:signup,error}=await db.auth.signUp({email,password:p,options:{data:meta}});
- if(error){hideLoading();const msg=(error.message||'').toLowerCase();alert(msg.includes('already')||msg.includes('registered')?'رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.':'تعذر إنشاء الحساب: '+error.message);return}
- let session=signup?.session||null;
- if(!session){const {data:loginData,error:loginError}=await db.auth.signInWithPassword({email,password:p});if(loginError){hideLoading();alert('تم إنشاء الحساب، لكن تعذر تثبيت تسجيل الدخول تلقائياً. افتح تسجيل الدخول واستخدم نفس الرقم السري.');location.href='login.html';return}session=loginData.session;}
- if(session?.user){await ensureProfile(session.user,meta); if(meta.contact_email) await db.from('profiles').update({contact_email:meta.contact_email,contact_email_verified:false}).eq('id',session.user.id); localStorage.setItem('ha_logged_in','1');}
- await persistLoginFlag();
- haLoadText.textContent='تم إنشاء الحساب، جاري فتح الموقع...';
- alert(accountType==='employee'?'تم إنشاء حساب الموظف وتفعيله مباشرة بنجاح.':'تم إنشاء الحساب وتثبيت تسجيل الدخول بنجاح.');
- location.replace('index.html');
- }catch(e){hideLoading();console.error(e);alert('تعذر إكمال إنشاء الحساب حالياً. تحقق من الإنترنت وحاول مرة ثانية.');}
+
+function hideLoading(){
+
+  haLoading.classList.remove('show');
+
+  if(window.createBtn){
+    createBtn.disabled=false;
+  }
+
+}
+  async function ensureProfile(user, data){
+
+  if(!user) return;
+
+
+  const profile = {
+
+    id:user.id,
+
+    full_name:data.full_name,
+
+    phone:data.phone,
+
+    username:data.username,
+
+    avatar_url:data.avatar_url,
+
+    governorate:data.governorate,
+
+    account_type:data.account_type,
+
+    employee_role:data.employee_role,
+
+    employee_status:
+      data.account_type === 'employee'
+      ? 'approved'
+      : 'not_applicable'
+
+  };
+
+
+  const {data:old} = await db
+    .from('profiles')
+    .select('id')
+    .eq('id',user.id)
+    .maybeSingle();
+
+
+  if(old){
+
+    await db
+    .from('profiles')
+    .update(profile)
+    .eq('id',user.id);
+
+  }else{
+
+    await db
+    .from('profiles')
+    .insert(profile);
+
+  }
+
 }
 
-</script></body></html>
+
+
+
+async function createAccount(){
+
+
+ const name = full_name.value.trim();
+
+ const rawPhone = phone.value.trim();
+
+ const user = username.value.trim();
+
+ const gov = governorate.value;
+
+ const pass = password.value;
+
+ const confirm = confirm_password.value;
+
+
+ passError.textContent='';
+
+
+ if(!name || !rawPhone || !user || !gov || !pass || !confirm){
+
+   alert('كل الحقول مطلوبة');
+   return;
+
+ }
+
+
+ if(pass !== confirm){
+
+   passError.textContent='الرقم السري غير متطابق';
+   return;
+
+ }
+
+
+ if(!validUsername(user)){
+
+   alert('المعرف غير صحيح');
+   return;
+
+ }
+
+
+ const lp = localPhone(rawPhone);
+
+
+ if(!/^07\d{9}$/.test(lp)){
+
+   alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
+   return;
+
+ }
+
+
+ const phoneNumber = normalizePhone(lp);
+
+
+ pendingMeta = {
+
+   full_name:name,
+
+   phone:phoneNumber,
+
+   username:user,
+
+   governorate:gov,
+
+   account_type:accountType,
+
+   employee_role:
+   accountType==='employee'
+   ? employee_role.value
+   : null,
+
+   avatar_url:avatarData
+
+ };
+
+
+ showLoading('جاري إرسال رمز التأكيد...');
+
+
+
+ const {data,error}=await db.auth.signInWithOtp({
+
+   phone:phoneNumber
+
+ });
+
+
+
+ hideLoading();
+
+
+
+ if(error){
+
+   alert('خطأ بإرسال الرمز: '+error.message);
+
+   return;
+
+ }
+
+
+ otpBox.classList.remove('hidden');
+
+
+ alert('تم إرسال رمز التأكيد إلى الهاتف');
+
+}
+  async function verifyOTP(){
+
+  const code = otpCode.value.trim();
+
+
+  if(!code || code.length !== 6){
+
+    alert('ادخل رمز التأكيد الصحيح');
+    return;
+
+  }
+
+
+  if(!pendingMeta){
+
+    alert('انتهت جلسة التسجيل، حاول مرة ثانية');
+    return;
+
+  }
+
+
+  showLoading('جاري تأكيد الرقم...');
+
+
+  const {data,error} = await db.auth.verifyOtp({
+
+    phone: pendingMeta.phone,
+
+    token: code,
+
+    type: 'sms'
+
+  });
+
+
+
+  if(error){
+
+    hideLoading();
+
+    alert('رمز التأكيد غير صحيح');
+    return;
+
+  }
+
+
+
+  const user = data.user;
+
+
+
+  if(user){
+
+    await db.auth.updateUser({
+
+      data:{
+
+        full_name:pendingMeta.full_name,
+
+        phone:pendingMeta.phone,
+
+        username:pendingMeta.username,
+
+        governorate:pendingMeta.governorate,
+
+        account_type:pendingMeta.account_type,
+
+        employee_role:pendingMeta.employee_role
+
+      }
+
+    });
+
+
+
+    await ensureProfile(user,pendingMeta);
+
+
+    localStorage.setItem(
+      'ha_logged_in',
+      '1'
+    );
+
+
+  }
+
+
+
+  hideLoading();
+
+
+  alert(
+    pendingMeta.account_type==='employee'
+    ?
+    'تم إنشاء حساب الموظف بنجاح'
+    :
+    'تم إنشاء الحساب بنجاح'
+  );
+
+
+  location.replace('index.html');
+
+}
+  </script>
