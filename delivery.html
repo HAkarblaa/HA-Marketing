@@ -900,6 +900,38 @@ body.delivery-stage-1 #centerPin{
 .price-breakdown b{font-size:12px}
 
 </style>
+
+<style id="ha-mobile-confirm-button-fix">
+/* HA: keep the final request controls visible on small Android screens */
+#tripSheet.open{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding-bottom:118px !important;
+  -webkit-overflow-scrolling:touch;
+}
+#tripSheet.open #orderArea{
+  display:flex;
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:0 !important;
+  transform:translateX(-50%);
+  width:min(736px,calc(100% - 24px)) !important;
+  z-index:1605 !important;
+  margin:0 !important;
+  padding:7px 0 max(7px,env(safe-area-inset-bottom)) !important;
+  background:#fff !important;
+  border-top:1px solid #e8e8e8 !important;
+  box-shadow:0 -5px 14px rgba(0,0,0,.08);
+}
+body:not(.trip-ready) #orderArea{display:none !important;}
+@media(max-width:600px){
+  body.trip-ready #tripSheet.open{
+    overflow-y:auto !important;
+    padding-bottom:122px !important;
+  }
+}
+</style>
 </head>
 
 <body class="delivery-stage-1">
