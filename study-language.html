@@ -316,35 +316,48 @@ function escapeHtmlDownload(s){
 }
 
 async function saveTranslatedBlob(blob,name){
-  if(!blob||!blob.size){alert('الملف الناتج فارغ.');return false;}
+  if(!blob || !blob.size){
+    alert('الملف الناتج فارغ.');
+    return false;
+  }
 
-  // Chrome/Edge: افتح نافذة الحفظ الحقيقية عندما تكون متاحة.
-  if(window.showSaveFilePicker && window.isSecureContext){
+  // داخل تطبيق HA Marketing: إرسال الملف مباشرة إلى Android
+  if(window.HAAndroid && typeof window.HAAndroid.saveBase64File === 'function'){
     try{
-      const ext=(name.split('.').pop()||'').toLowerCase();
-      const types=ext==='pdf'
-        ? [{description:'PDF',accept:{'application/pdf':['.pdf']}}]
-        : [{description:'Word',accept:{'application/msword':['.doc']}}];
-      const handle=await window.showSaveFilePicker({suggestedName:name,types});
-      const writable=await handle.createWritable();
-      await writable.write(blob);
-      await writable.close();
-      return true;
+      const reader = new FileReader();
+      return await new Promise((resolve,reject)=>{
+        reader.onloadend=function(){
+          try{
+            window.HAAndroid.saveBase64File(
+              reader.result,
+              name,
+              blob.type || 'application/pdf'
+            );
+            resolve(true);
+          }catch(e){
+            reject(e);
+          }
+        };
+        reader.onerror=reject;
+        reader.readAsDataURL(blob);
+      });
     }catch(e){
-      if(e && e.name==='AbortError') return false;
-      // إذا المتصفح رفض File Picker ننتقل للتنزيل الاعتيادي.
+      console.log('Android download error:',e);
     }
   }
 
-  // تنزيل متصفح اعتيادي مع رابط ظاهر احتياطي.
+  // المتصفح العادي: تنزيل تلقائي
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url;a.download=name;a.target='_self';a.rel='noopener';
-  a.style.cssText='position:fixed;left:-9999px;top:-9999px';
+  a.href=url;
+  a.download=name;
+  a.style.display='none';
   document.body.appendChild(a);
   a.click();
-  setTimeout(()=>a.remove(),1000);
-  setTimeout(()=>URL.revokeObjectURL(url),120000);
+  setTimeout(()=>{
+    a.remove();
+    URL.revokeObjectURL(url);
+  },2000);
   return true;
 }
 
