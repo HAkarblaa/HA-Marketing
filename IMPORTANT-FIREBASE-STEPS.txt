@@ -1,0 +1,14 @@
+سبب الخطأ الحالي هو أن تسجيل الدخول صار يمر، لكن Firebase Realtime Database يرفض كتابة الطلب.
+
+الملفات taxi.html / tuktuk.html / delivery.html / transport-profile.js هي ملفات الموقع.
+
+المهم جداً:
+firebase-database.rules.json لا يكفي رفعه إلى GitHub.
+يجب نسخ محتواه إلى:
+Firebase Console > Realtime Database > Rules
+ثم الضغط على Publish.
+
+كذلك تأكد من:
+Firebase Console > Authentication > Sign-in method > Anonymous = Enabled
+
+بعد نشر القواعد، جرّب الطلب من جديد.

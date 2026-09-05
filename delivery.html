@@ -1094,7 +1094,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js?v=20260905-transport-login-2"></script>
+<script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -1682,7 +1682,7 @@ order.onclick=async()=>{
     listenDeliveryRide(activeDeliveryRideId);
   }catch(err){
     console.error(err);
-    alert('تعذر إرسال طلب المندوب. حاول مرة ثانية.');
+    alert((err && (err.code==='PERMISSION_DENIED' || String(err.message||'').toLowerCase().includes('permission'))) ? 'تعذر إرسال طلب المندوب لأن صلاحيات Firebase تمنع الحفظ. حدّث قواعد Realtime Database بالملف firebase-database.rules.json المرفق.' : 'تعذر إرسال طلب المندوب. حاول مرة ثانية.');
   }finally{
     order.disabled=false;
     order.textContent=oldText;
