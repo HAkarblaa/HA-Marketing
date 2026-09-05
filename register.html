@@ -28,7 +28,7 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <div id="roleBox" class="hidden"><label>نوع العمل *</label><select id="employee_role">
 <option value="">اختر الوظيفة</option><option value="delivery">مندوب توصيل</option><option value="library">موظف المكتبة</option>
 <option value="building_materials">موظف مواد البناء</option><option value="customer_service">خدمة العملاء</option><option value="orders">تجهيز الطلبات</option>
-</select><p class="note">حساب الموظف يبقى بانتظار موافقة الإدارة.</p></div>
+</select><p class="note">يتم تفعيل حساب الموظف مباشرة بعد إنشاء الحساب.</p></div>
 <label>الصورة الشخصية (اختياري)</label><div class="avatar"><input id="avatar" type="file" accept="image/*"><img id="preview"></div>
 <label>الرقم السري *</label><input id="password" minlength="8" maxlength="72" type="password" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز" required><p class="note">8 خانات على الأقل. يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات أو حروف عربية.</p>
 <label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="8" maxlength="72" type="password" autocomplete="new-password" required>
@@ -114,7 +114,7 @@ async function createAccount(){
  if(session?.user){await ensureProfile(session.user,meta); if(meta.contact_email) await db.from('profiles').update({contact_email:meta.contact_email,contact_email_verified:false}).eq('id',session.user.id); localStorage.setItem('ha_logged_in','1');}
  await persistLoginFlag();
  haLoadText.textContent='تم إنشاء الحساب، جاري فتح الموقع...';
- alert(accountType==='employee'?'تم إنشاء حساب الموظف وهو بانتظار موافقة الإدارة.':'تم إنشاء الحساب وتثبيت تسجيل الدخول بنجاح.');
+ alert(accountType==='employee'?'تم إنشاء حساب الموظف وتفعيله مباشرة بنجاح.':'تم إنشاء الحساب وتثبيت تسجيل الدخول بنجاح.');
  location.replace('index.html');
  }catch(e){hideLoading();console.error(e);alert('تعذر إكمال إنشاء الحساب حالياً. تحقق من الإنترنت وحاول مرة ثانية.');}
 }
