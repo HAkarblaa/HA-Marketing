@@ -73,7 +73,7 @@ async function ensureProfile(user, fallback={}){
     governorate:fallback.governorate??m.governorate??null,
     account_type:fallback.account_type??m.account_type??'customer',
     employee_role:fallback.employee_role??m.employee_role_key??m.employee_role??null,
-    employee_status:(fallback.account_type??m.account_type)==='employee'?'pending':'not_applicable'
+    employee_status:(fallback.account_type??m.account_type)==='employee'?'approved':'not_applicable'
   };
   const {data:existing}=await db.from('profiles').select('id').eq('id',user.id).maybeSingle();
   if(existing){
