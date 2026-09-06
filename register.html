@@ -147,10 +147,11 @@ async function createAccount(){
    return;
  }
  if(!id_front.files[0] || !id_back.files[0] ||
-    !res_front.files[0] || !res_back.files[0] ||
-    !vehicle_img.files[0] || !license_img.files[0]){
-   alert('يرجى رفع جميع المستمسكات الإلزامية');
-   return;
+   !res_front.files[0] || !res_back.files[0] ||
+   !vehicle_img.files[0]){
+    alert('يرجى رفع جميع المستمسكات الإلزامية');
+    return;
+}
  }
 }
  if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين';return}
