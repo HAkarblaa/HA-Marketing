@@ -235,6 +235,7 @@ const customer=L.marker([33.31,44.37]).addTo(map).bindPopup('موقع الزبو
 const destination=L.marker([33.29,44.40]).addTo(map).bindPopup('الوجهة');
 
 let available=true;
+// استقبال طلبات التكسي مباشرة عند فتح صفحة السائق
 let currentRideId=null;
 let currentRide=null;
 let driverWatch=null;
@@ -259,9 +260,9 @@ function watchPendingRides(){
   driverWatch.orderByChild('status').equalTo('searching').on('value',snap=>{
     const rides=snap.val()||{};
     const entries=Object.entries(rides).filter(([,r])=>!!r?.customerUid).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-    nearbyCount.textContent=available ? String(entries.length) : '0';
+    nearbyCount.textContent=String(entries.length);
 
-    if(!available || currentRideId)return;
+    if(currentRideId)return;
 
     if(!entries.length){
       requestCard.style.display='none';
