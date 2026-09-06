@@ -40,7 +40,7 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <h1>إنشاء حساب</h1>
 <div class="types">
 <button type="button" class="type active" onclick="chooseType('customer',this)">🛍️ عميل</button>
-<button type="button" class="type" id="employeeBtn">🧑‍💼 موظف</button>
+<button type="button" class="type" onclick="chooseType('employee',this)">🧑‍💼 موظف</button>
 </div>
 <div id="formBox">
 <label>الاسم الكامل *</label><input id="full_name" required>
@@ -176,9 +176,7 @@ let accountType='customer',avatarData=null;
 
 
 
-document.getElementById('employeeBtn').onclick=function(){
- chooseType('employee',this);
-};
+
 function chooseType(t,b){
  accountType=t;
 
