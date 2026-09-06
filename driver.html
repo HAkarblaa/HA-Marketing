@@ -261,6 +261,7 @@ function watchPendingRides(){
     const allRides=snap.val()||{};
     const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting','requested'].includes(r?.status)));
     const entries=Object.entries(rides).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+    console.log("طلبات السائق:", entries);
     nearbyCount.textContent=String(entries.length);
 
     if(currentRideId)return;
