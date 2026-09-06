@@ -537,7 +537,12 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
+initRealDriver().then(ok=>{ 
+    if(ok){
+        restoreDriverRide();
+        watchPendingRides();
+    }
+});
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
