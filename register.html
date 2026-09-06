@@ -178,20 +178,14 @@ let accountType='customer',avatarData=null;
 
 
 function chooseType(t,b){
- accountType=t;
-
- document.querySelectorAll('.type').forEach(function(x){
-   x.classList.remove('active');
- });
-
- b.classList.add('active');
+ alert(t);
 
  const box=document.getElementById('employeeBox');
 
  if(t==="employee"){
-   box.classList.remove('hidden');
+  box.style.display="block";
  }else{
-   box.classList.add('hidden');
+  box.style.display="none";
  }
 }
   function setupPreview(id){
