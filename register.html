@@ -149,6 +149,22 @@ async function uploadFile(file, folder){
 }tomer',avatarData=null;
 function chooseType(t,b){
  accountType=t;
+
+ document.querySelectorAll('.type').forEach(function(x){
+  x.classList.remove('active');
+ });
+
+ b.classList.add('active');
+
+ var box=document.getElementById('employeeBox');
+
+ if(t==='employee'){
+   box.style.display='block';
+ }else{
+   box.style.display='none';
+ }
+}
+ accountType=t;
  document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));
  b.classList.add('active');
 
