@@ -259,10 +259,8 @@ function watchPendingRides(){
   driverWatch=db.ref('rides');
   driverWatch.on('value',snap=>{
     const allRides=snap.val()||{};
-    alert("عدد الطلبات: " + Object.keys(allRides).length);
     const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting','requested'].includes(r?.status)));
     const entries=Object.entries(rides).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-    console.log("طلبات السائق:", entries);
     nearbyCount.textContent=String(entries.length);
 
     if(currentRideId)return;
@@ -538,12 +536,7 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(ok=>{ 
-    if(ok){
-        restoreDriverRide();
-        watchPendingRides();
-    }
-});
+initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
