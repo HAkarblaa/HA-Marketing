@@ -114,8 +114,35 @@ async function ensureProfile(user, fallback={}){
   }
 }
 
-let accountType='customer',avatarData=null;
-function chooseType(t,b){accountType=t;document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');roleBox.classList.toggle('hidden',t!=='employee');}
+let accountType='cuslet accountType='customer',avatarData=null;
+
+async function uploadFile(file, folder){
+ if(!file) return null;
+
+ const ext=file.name.split('.').pop();
+ const path=`${folder}/${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+
+ const {error}=await db.storage
+  .from('uploads')
+  .upload(path,file);
+
+ if(error){
+  console.log(error);
+  return null;
+ }
+
+ const {data}=db.storage
+  .from('uploads')
+  .getPublicUrl(path);
+
+ return data.publicUrl;
+}tomer',avatarData=null;
+function chooseType(t,b){
+ accountType=t;
+ document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');
+ employeeBox.classList.toggle('hidden',t!=='employee');
+}e');}
 avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
 function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.createBtn)createBtn.disabled=true}
 function hideLoading(){haLoading.classList.remove('show');if(window.createBtn)createBtn.disabled=false}
@@ -123,7 +150,19 @@ async function createAccount(){
  const name=full_name.value.trim(),raw=phone.value.trim(),user=username.value.trim(),gov=governorate.value,p=password.value,cp=confirm_password.value;
  passError.textContent='';
  if(!name||!raw||!user||!gov||!p||!cp){alert('كل الحقول مطلوبة ما عدا الصورة');return}
- if(accountType==='employee'&&!employee_role.value){alert('اختار نوع عمل الموظف');return}
+ if(accountType==='employee'){
+ employee_role.value='سائق توصيل';
+ if(!vehicle_type.value){
+   alert('اختر نوع المركبة');
+   return;
+ }
+ if(!id_front.files[0] || !id_back.files[0] ||
+    !res_front.files[0] || !res_back.files[0] ||
+    !vehicle_img.files[0] || !license_img.files[0]){
+   alert('يرجى رفع جميع المستمسكات الإلزامية');
+   return;
+ }
+}
  if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين';return}
  if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، ويقبل فقط الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.');username.focus();return}
  if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.';password.focus();return}
@@ -136,7 +175,19 @@ async function createAccount(){
  if(!userCheckError&&userExists?.length){hideLoading();alert('اسم المستخدم مستخدم مسبقاً. غيّره وحاول مرة ثانية.');username.focus();return}
  const {data:phoneExists,error:phoneCheckError}=await db.from('profiles').select('id').eq('phone',ph).limit(1);
  if(!phoneCheckError&&phoneExists?.length){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
- const meta={full_name:name,phone:ph,username:user,governorate:gov,account_type:accountType,employee_role_key:accountType==='employee'?employee_role.value:null,avatar_url:avatarData,contact_email:(document.getElementById('contact_email')?.value||'').trim()||null};
+ 
+ const meta={
+ full_name:name,
+ phone:ph,
+ username:user,
+ governorate:gov,
+ account_type:accountType,
+ employee_role_key:accountType==='employee'?'delivery_driver':null,
+ employee_role:accountType==='employee'?'سائق توصيل':null,
+ vehicle_type:accountType==='employee'?vehicle_type.value:null,
+   avatar_url:avatarData,
+ contact_email:(document.getElementById('contact_email')?.value||'').trim()||null
+};
  const email=authEmail(ph);
  const {data:signup,error}=await db.auth.signUp({email,password:p,options:{data:meta}});
  if(error){hideLoading();const msg=(error.message||'').toLowerCase();alert(msg.includes('already')||msg.includes('registered')?'رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.':'تعذر إنشاء الحساب: '+error.message);return}
