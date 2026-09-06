@@ -260,7 +260,7 @@ function watchPendingRides(){
   driverWatch.on('value',snap=>{
     const allRides=snap.val()||{};
     const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting','requested'].includes(r?.status)));
-    const entries=Object.entries(rides).filter(([,r])=>!!r?.customerUid).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+    const entries=Object.entries(rides).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
     nearbyCount.textContent=String(entries.length);
 
     if(currentRideId)return;
