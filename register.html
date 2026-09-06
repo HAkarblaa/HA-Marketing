@@ -179,7 +179,11 @@ let accountType='customer',avatarData=null;
 
 function chooseType(t,b){
  accountType=t;
+document.querySelectorAll('.type').forEach(function(x){
+ x.classList.remove('active');
+});
 
+b.classList.add('active');
  const box=document.getElementById('employeeBox');
 
  if(t==="employee"){
