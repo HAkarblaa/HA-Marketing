@@ -17,8 +17,7 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <h1>إنشاء حساب</h1>
 <div class="types">
 <button class="type active" onclick="chooseType('customer',this)">🛍️ عميل</button>
-<button type="button" class="type" onclick="document.getElementById('employeeBox').classList.remove('hidden')">
-🧑‍💼 موظف
+<button class="type" onclick="chooseType('employee',this)">🧑‍💼 موظف</button>
 </button>
 </div>
 <div id="formBox">
@@ -116,68 +115,25 @@ async function ensureProfile(user, fallback={}){
   }
 }
 
-let accountType='cuslet accountType='customer',avatarData=null;
-  window.chooseType = function(t,b){
- accountType=t;
- document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');
+let accountType='customer',avatarData=null;
 
- const box=document.getElementById('employeeBox');
- if(box){
-   box.classList.toggle('hidden', t!=='employee');
- }
-};
-
-async function uploadFile(file, folder){
- if(!file) return null;
-
- const ext=file.name.split('.').pop();
- const path=`${folder}/${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
-
- const {error}=await db.storage
-  .from('uploads')
-  .upload(path,file);
-
- if(error){
-  console.log(error);
-  return null;
- }
-
- const {data}=db.storage
-  .from('uploads')
-  .getPublicUrl(path);
-
- return data.publicUrl;
-}tomer',avatarData=null;
 function chooseType(t,b){
  accountType=t;
 
- document.querySelectorAll('.type').forEach(function(x){
+ document.querySelectorAll('.type').forEach(x=>{
   x.classList.remove('active');
  });
 
  b.classList.add('active');
 
- var box=document.getElementById('employeeBox');
-
- if(t==='employee'){
-   box.style.display='block';
- }else{
-   box.style.display='none';
- }
-}
- accountType=t;
- document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');
-
  const box=document.getElementById('employeeBox');
 
  if(t==='employee'){
-   box.classList.remove('hidden');
+  box.classList.remove('hidden');
  }else{
-   box.classList.add('hidden');
+  box.classList.add('hidden');
  }
-}e');}
+}
 avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
 function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.createBtn)createBtn.disabled=true}
 function hideLoading(){haLoading.classList.remove('show');if(window.createBtn)createBtn.disabled=false}
