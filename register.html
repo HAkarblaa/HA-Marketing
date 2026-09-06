@@ -237,7 +237,6 @@ async function createAccount(){
     alert('يرجى رفع جميع المستمسكات الإلزامية');
     return;
 }
- }
 }
  if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين';return}
  if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، ويقبل فقط الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.');username.focus();return}
