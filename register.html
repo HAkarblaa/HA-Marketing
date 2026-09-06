@@ -10,6 +10,29 @@
 input,select,button,a.btn{width:100%;padding:13px;border-radius:10px;font-size:16px}input,select{border:1px solid #ccc;background:#fff}
 button{border:0;cursor:pointer}.primary{background:#111;color:#fff;margin-top:16px}.primary:disabled{opacity:.65;cursor:not-allowed}
 a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color:#111;margin-top:9px}.hidden{display:none}
+  .upload-box{
+ border:2px dashed #ccc;
+ border-radius:15px;
+ padding:18px;
+ text-align:center;
+ background:#fafafa;
+ cursor:pointer;
+ margin:10px 0;
+}
+
+.upload-box span{
+ font-size:35px;
+ display:block;
+}
+
+.upload-preview{
+ width:90px;
+ height:90px;
+ object-fit:cover;
+ border-radius:10px;
+ margin:10px auto 0;
+ display:none;
+}
 .avatar{display:flex;align-items:center;gap:12px}#preview{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#eee;display:none}
 .note{font-size:13px;color:#666}.err{color:#a40000;font-size:13px;margin-top:4px}@media(max-width:520px){.types{grid-template-columns:1fr}}
 .ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px}@keyframes haSpin{to{transform:rotate(360deg)}}
@@ -39,25 +62,60 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 </select>
 
 <label>هوية - الوجه الأول *</label>
-<input id="id_front" type="file" accept="image/*">
+<label class="upload-box">
+<input id="id_front" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="id_front_preview" class="upload-preview">
+</label>
 
 <label>هوية - الوجه الثاني *</label>
-<input id="id_back" type="file" accept="image/*">
+<label class="upload-box">
+<input id="id_back" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="id_back_preview" class="upload-preview">
+</label>
 
-<label>بطاقة السكن - الوجه الأول *</label>
-<input id="res_front" type="file" accept="image/*">
+  <label>بطاقة السكن - الوجه الأول *</label>
+<label class="upload-box">
+<input id="res_front" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="res_front_preview" class="upload-preview">
+</label>
 
-<label>بطاقة السكن - الوجه الثاني *</label>
-<input id="res_back" type="file" accept="image/*">
+  <label>بطاقة السكن - الوجه الثاني *</label>
+<label class="upload-box">
+<input id="res_back" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="res_back_preview" class="upload-preview">
+</label>
 
-<label>صورة المركبة *</label>
-<input id="vehicle_img" type="file" accept="image/*">
+  <label>صورة المركبة *</label>
+<label class="upload-box">
+<input id="vehicle_img" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="vehicle_img_preview" class="upload-preview">
+</label>
 
-<label>صورة السنوية *</label>
-<input id="license_img" type="file" accept="image/*">
+  <label>صورة السنوية (اختياري)</label>
+<label class="upload-box">
+<input id="license_img" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="license_img_preview" class="upload-preview">
+</label>
 
-<label>صورة اللوحة (اختياري)</label>
-<input id="plate_img" type="file" accept="image/*">
+    <label>صورة اللوحة (اختياري)</label>
+<label class="upload-box">
+<input id="plate_img" type="file" accept="image/*" hidden>
+<span>📷</span>
+تصوير أو اختيار صورة
+<img id="plate_img_preview" class="upload-preview">
+</label>
 
 </div>
 <label>الصورة الشخصية (اختياري)</label><div class="avatar"><input id="avatar" type="file" accept="image/*"><img id="preview"></div>
@@ -133,6 +191,36 @@ function chooseType(t,b){
   box.classList.add('hidden');
  }
 }
+  function setupPreview(id){
+ const input=document.getElementById(id);
+ const img=document.getElementById(id+'_preview');
+
+ if(!input || !img) return;
+
+ input.addEventListener('change',()=>{
+  const file=input.files[0];
+  if(!file) return;
+
+  const reader=new FileReader();
+
+  reader.onload=()=>{
+   img.src=reader.result;
+   img.style.display='block';
+  };
+
+  reader.readAsDataURL(file);
+ });
+}
+
+[
+'id_front',
+'id_back',
+'res_front',
+'res_back',
+'vehicle_img',
+'license_img',
+'plate_img'
+].forEach(setupPreview);
 avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
 function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.createBtn)createBtn.disabled=true}
 function hideLoading(){haLoading.classList.remove('show');if(window.createBtn)createBtn.disabled=false}
