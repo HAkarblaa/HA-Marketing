@@ -259,7 +259,7 @@ function watchPendingRides(){
   driverWatch=db.ref('rides');
   driverWatch.on('value',snap=>{
     const allRides=snap.val()||{};
-    const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting'].includes(r?.status)));
+    const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting','requested'].includes(r?.status)));
     const entries=Object.entries(rides).filter(([,r])=>!!r?.customerUid).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
     nearbyCount.textContent=String(entries.length);
 
@@ -358,7 +358,7 @@ acceptBtn.onclick=async()=>{
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
-    if(ride && ride.status==='searching'){
+    if(ride && ['searching','pending','waiting','requested'].includes(ride.status)){
       ride.status='accepted';
       ride.acceptedAt=Date.now();
       ride.driverUid=firebaseDriverUser.uid;
