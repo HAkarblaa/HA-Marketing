@@ -174,21 +174,7 @@ async function ensureProfile(user, fallback={}){
 
 let accountType='customer',avatarData=null;
 
-function chooseType(t,b){
- accountType=t;
 
- document.querySelectorAll('.type').forEach(function(x){
-  x.classList.remove('active');
- });
-
- b.classList.add('active');
-
- if(t==='employee'){
-  document.getElementById('employeeBox').classList.remove('hidden');
- }else{
-  document.getElementById('employeeBox').classList.add('hidden');
- }
-}
 
 document.getElementById('employeeBtn').onclick=function(){
  chooseType('employee',this);
