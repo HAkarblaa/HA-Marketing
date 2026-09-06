@@ -17,7 +17,9 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <h1>إنشاء حساب</h1>
 <div class="types">
 <button class="type active" onclick="chooseType('customer',this)">🛍️ عميل</button>
-<button class="type" onclick="chooseType('employee',this)">🧑‍💼 موظف</button>
+<button type="button" class="type" onclick="document.getElementById('employeeBox').classList.remove('hidden')">
+🧑‍💼 موظف
+</button>
 </div>
 <div id="formBox">
 <label>الاسم الكامل *</label><input id="full_name" required>
