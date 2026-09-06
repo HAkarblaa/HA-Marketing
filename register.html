@@ -25,10 +25,41 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <label>المعرف *</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan@123,#" required><p class="note">يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.</p>
 <label>البريد الإلكتروني (اختياري)</label><input id="contact_email" type="email" autocomplete="email" placeholder="name@example.com"><p class="note">يمكن تأكيده لاحقاً من إعدادات أمان الحساب.</p>
 <label>المحافظة *</label><select id="governorate" required><option value="">اختر المحافظة</option><option value="بغداد">بغداد</option><option value="البصرة">البصرة</option><option value="نينوى">نينوى</option><option value="أربيل">أربيل</option><option value="النجف">النجف</option><option value="كربلاء">كربلاء</option><option value="كركوك">كركوك</option><option value="الأنبار">الأنبار</option><option value="بابل">بابل</option><option value="ديالى">ديالى</option><option value="ذي قار">ذي قار</option><option value="ميسان">ميسان</option><option value="المثنى">المثنى</option><option value="القادسية">القادسية</option><option value="صلاح الدين">صلاح الدين</option><option value="واسط">واسط</option><option value="دهوك">دهوك</option><option value="السليمانية">السليمانية</option><option value="حلبجة">حلبجة</option></select>
-<div id="roleBox" class="hidden"><label>نوع العمل *</label><select id="employee_role">
-<option value="">اختر الوظيفة</option><option value="delivery">مندوب توصيل</option><option value="library">موظف المكتبة</option>
-<option value="building_materials">موظف مواد البناء</option><option value="customer_service">خدمة العملاء</option><option value="orders">تجهيز الطلبات</option>
-</select><p class="note">يتم تفعيل حساب الموظف مباشرة بعد إنشاء الحساب.</p></div>
+<div id="employeeBox" class="hidden">
+
+<label>نوع الوظيفة</label>
+<input id="employee_role" value="delivery_driver" readonly>
+
+<label>نوع المركبة *</label>
+<select id="vehicle_type">
+<option value="">اختر المركبة</option>
+<option value="car">سيارة</option>
+<option value="bike">دراجة</option>
+<option value="tuktuk">تكتك</option>
+</select>
+
+<label>هوية - الوجه الأول *</label>
+<input id="id_front" type="file" accept="image/*">
+
+<label>هوية - الوجه الثاني *</label>
+<input id="id_back" type="file" accept="image/*">
+
+<label>بطاقة السكن - الوجه الأول *</label>
+<input id="res_front" type="file" accept="image/*">
+
+<label>بطاقة السكن - الوجه الثاني *</label>
+<input id="res_back" type="file" accept="image/*">
+
+<label>صورة المركبة *</label>
+<input id="vehicle_img" type="file" accept="image/*">
+
+<label>صورة السنوية *</label>
+<input id="license_img" type="file" accept="image/*">
+
+<label>صورة اللوحة (اختياري)</label>
+<input id="plate_img" type="file" accept="image/*">
+
+</div>
 <label>الصورة الشخصية (اختياري)</label><div class="avatar"><input id="avatar" type="file" accept="image/*"><img id="preview"></div>
 <label>الرقم السري *</label><input id="password" minlength="8" maxlength="72" type="password" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز" required><p class="note">8 خانات على الأقل. يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات أو حروف عربية.</p>
 <label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="8" maxlength="72" type="password" autocomplete="new-password" required>
