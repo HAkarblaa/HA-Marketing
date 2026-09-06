@@ -1241,9 +1241,7 @@ const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
 
 // خريطة فاتحة وأقل تفاصيل
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
- maxZoom:19,
- subdomains:'abcd',
- attribution:'&copy; OpenStreetMap &copy; CARTO'
+ maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
 L.control.zoom({position:'topright'}).addTo(map);
