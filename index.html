@@ -252,7 +252,30 @@ body{padding-bottom:76px}
 }
 
 .ha-page-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:100000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px}.ha-page-loading.show{display:flex}.ha-page-spinner{width:50px;height:50px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haPageSpin .8s linear infinite}.ha-page-loading-text{font-size:15px;font-weight:700;color:#222}@keyframes haPageSpin{to{transform:rotate(360deg)}}
-.search-box.searching .search-icon{animation:haPageSpin .7s linear infinite}
+.notice-bar{
+ width:94%;
+ margin:15px auto;
+ border-radius:15px;
+ overflow:hidden;
+ background:linear-gradient(90deg,#111,#777,#111);
+ color:#fff;
+ height:45px;
+ display:flex;
+ align-items:center;
+}
+
+.notice-text{
+ white-space:nowrap;
+ font-size:18px;
+ font-weight:bold;
+ animation:moveText 10s linear infinite;
+}
+
+@keyframes moveText{
+ from{transform:translateX(100%)}
+ to{transform:translateX(-100%)}
+}
+  .search-box.searching .search-icon{animation:haPageSpin .7s linear infinite}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 <script>
@@ -293,7 +316,7 @@ document.addEventListener('click',function(e){
     <a href="index.html">🏠 الرئيسية</a>
     <a href="shop.html">🛒 تسوق الآن</a>
     <a href="services.html">🛠️ طلب خدمة</a>
-    <a href="chat.html">💬 الدردشة - قريباً</a>
+    <a href="chat.html">💬 الدردشة</a>
     <a href="news.html">📰 آخر الأخبار</a>
     <a href="religious.html">🕌 الأمور الدينية</a>
     <a href="study.html">📚 دراسة</a>
@@ -308,6 +331,11 @@ document.addEventListener('click',function(e){
  </div>
  <div class="search-box"><span class="search-icon">🔍</span><input id="searchInput" type="text" placeholder="ابحث في الأقسام..." oninput="searchCards()"></div>
 </div>
+  <div class="notice-bar">
+ <div class="notice-text">
+  قريباً سوف نفعل خدمة تسوق الآن 🛒
+ </div>
+</div>
 <header class="header"><h1>HA Marketing</h1><p>اختر القسم الذي تريد الدخول إليه</p></header>
 <main class="grid">
 
@@ -315,9 +343,10 @@ document.addEventListener('click',function(e){
 
  <a class="card" href="#" data-coming-soon="1" data-search="طلب خدمة خدمات"><div class="icon">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a>
 
- <a class="card" href="#" data-coming-soon="1" data-search="الدردشة - قريباً دردشة تواصل كرة القدم الأعمال الطلاب عامة">
+<a class="card" href="#" data-coming-soon="1" data-search="الدردشة دردشة تواصل كرة القدم الأعمال الطلاب عامة">
    <div class="icon">💬</div>
-   <h2>الدردشة - قريباً</h2>
+   <h2>الدردشة</h2>
+</a>
    <p>تواصل مع الآخرين حسب الفئة</p>
  </a>
 
@@ -349,11 +378,11 @@ document.addEventListener('click',function(e){
 
   <a class="card" style="display:none" href="personal-center.html" data-search="أنا حسابي معلوماتي العمر الوزن الطول المالية"><div class="icon">👤</div><h2>أنا</h2><p>بياناتي الشخصية والقياسات والحسابات المالية الأساسية</p></a>
 
-<a class="card" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل طلب سيارة">
+<a class="card" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل طلب سيارة تكتك">
    <div class="icon">🚕</div>
-   <h2>طلب تكسي أو مندوب</h2>
-   <p>اطلب تكسي أو مندوب توصيل بسهولة</p>
- </a>
+   <h2>طلب تكسي أو مندوب أو تكتك</h2>
+   <p>اطلب تكسي أو مندوب او تكتك توصيل بسهولة</p>
+</a>
 </main>
 
 <div class="coming-soon-modal" id="comingSoonModal" aria-hidden="true">
