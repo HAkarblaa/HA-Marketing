@@ -115,6 +115,16 @@ async function ensureProfile(user, fallback={}){
 }
 
 let accountType='cuslet accountType='customer',avatarData=null;
+  window.chooseType = function(t,b){
+ accountType=t;
+ document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');
+
+ const box=document.getElementById('employeeBox');
+ if(box){
+   box.classList.toggle('hidden', t!=='employee');
+ }
+};
 
 async function uploadFile(file, folder){
  if(!file) return null;
