@@ -1270,6 +1270,7 @@ L.control.zoom({position:'topright'}).addTo(map);
 let mode='start';
 let start=null,end=null;
 let sm=null,em=null,line=null;
+ let activeRideId = null;
 let routeKm=0,routeMin=0,pickupMin=0;
 let selected=document.querySelector('.type.selected');
 
@@ -1697,9 +1698,9 @@ const session = JSON.parse(localStorage.getItem("ha_session"));
 
   const selectedType = document.querySelector('.type.selected');
 
-  const taxiData = {
-    customer_id: session.user_id
-    service_type: "taxi",
+ const taxiData = {
+ customer_id: session.user_id,
+ service_type: "taxi",
     description: JSON.stringify({
       start:{
         lat:start.lat,
