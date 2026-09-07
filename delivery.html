@@ -1805,7 +1805,6 @@ function listenDeliveryRide(rideId){
 }
 
 const deliveryPostBack=document.getElementById('deliveryPostBack');
-const deliveryPostBack=document.getElementById('deliveryPostBack');
 
 if(deliveryPostBack){
   deliveryPostBack.onclick=()=>{
@@ -2332,8 +2331,11 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
 <script>
 window.addEventListener('load',()=>{
   try{
-    const id=activeDeliveryRideId || localStorage.getItem('ha_active_delivery');
-    if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'customer');
+ const id=(typeof activeDeliveryRideId!=='undefined' && activeDeliveryRideId) || localStorage.getItem('ha_active_delivery');
+
+if(id && window.HATransportCall) {
+  HATransportCall.listenForIncoming(id,'customer');
+}
   }catch(e){console.error(e)}
 });
 </script>
