@@ -123,9 +123,15 @@ h1{text-align:center;margin-bottom:8px}
 
 <div id="balanceCodeBox" class="balance-box">
   <div class="balance-card">
+    <button class="close-balance" onclick="closeBalanceCode()">×</button>
+
     <h3>إضافة كود الرصيد</h3>
+
     <input id="balanceCodeInput" placeholder="اكتب الكود">
+
     <button onclick="addBalanceCode()">تم</button>
+
+    <p id="balanceMessage"></p>
   </div>
 </div>
   <div class="grid">
