@@ -1681,22 +1681,62 @@ document.querySelectorAll('.type').forEach(c=>{
 let activeRideId=null;
 let activeRideRef=null;
 
-order.onclick=async()=>{
-  if(!start || !end || !selected || !selected.dataset.price)return;
+document.getElementById('order').onclick = async ()=>{
 
-  order.disabled=true;
-  const oldText=order.textContent;
-  order.textContent='جاري إرسال الطلب...';
-
-  const realCustomer=await HA_TransportProfile.customerOrLogin();
-  if(!realCustomer){ order.disabled=false; order.textContent=oldText; return; }
-
-  let fbUser;
-  try{ fbUser=await HA_FirebaseAuth.ready(); }catch(err){
-    console.error(err);
-    alert('تعذر تأمين الاتصال بـ Firebase. فعّل Anonymous في Firebase Authentication ثم حاول مجددًا.');
-    order.disabled=false; order.textContent=oldText; return;
+  if(!start || !end){
+    alert("حدد الانطلاق والوصول أولاً");
+    return;
   }
+
+  const {data:{session}} = await supabase.auth.getSession();
+
+  if(!session){
+    alert("يجب تسجيل الدخول");
+    return;
+  }
+
+  const selectedType = document.querySelector('.type.selected');
+
+  const taxiData = {
+    customer_id: session.user.id,
+    service_type: "taxi",
+    description: JSON.stringify({
+      start:{
+        lat:start.lat,
+        lng:start.lng
+      },
+      end:{
+        lat:end.lat,
+        lng:end.lng
+      },
+      vehicle:selectedType ? selectedType.dataset.name : "اقتصادي",
+      distance:routeKm,
+      price:document.getElementById("tripPriceText")?.innerText || ""
+    }),
+    status:"pending",
+    created_at:new Date().toISOString()
+  };
+
+
+  const {data,error}=await supabase
+    .from("service_requests")
+    .insert(taxiData)
+    .select()
+    .single();
+
+
+  if(error){
+    console.log(error);
+    alert("خطأ بإرسال الطلب: "+error.message);
+    return;
+  }
+
+
+  alert("تم إرسال طلب التكسي للسائقين ✅");
+
+  console.log("طلب التكسي:",data);
+
+};
 
   const rideRef=db.ref('rides').push();
   activeRideId=rideRef.key;
