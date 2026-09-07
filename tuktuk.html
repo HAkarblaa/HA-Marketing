@@ -2131,21 +2131,17 @@ document.getElementById('finishRateBtn').onclick=()=>{
   HA_Rating.show({rideId:id,role:'customer',targetName:acceptedDriver.name||'السائق'});
 };
 
-2134: const cancelTripBtn=document.getElementById('cancelTripBtn');
-2135: if(cancelTripBtn){
-2136:   cancelTripBtn.onclick=()=>openCancelReason();
-2137: }
+const cancelTripBtn=document.getElementById('cancelTripBtn');
 
-2138: const searchCancelTripBtn=document.getElementById('searchCancelTripBtn');
-2139: 
-2140: if(searchCancelTripBtn){
-2141:   searchCancelTripBtn.onclick=()=>openCancelReason();
-2142: }
+if(cancelTripBtn){
+  cancelTripBtn.onclick=()=>openCancelReason();
+}
 
-2143: </script>
+const searchCancelTripBtn=document.getElementById('searchCancelTripBtn');
 
- 2147: <div id="cancelReasonSheet" class="cancel-reason-sheet">
-2148: <div class="cancel-reason-card">
+if(searchCancelTripBtn){
+  searchCancelTripBtn.onclick=()=>openCancelReason();
+}
 <div class="cancel-reason-head">
   <h3>سبب إلغاء الطلب</h3>
   <button type="button" data-close-cancel="cancelReasonSheet">×</button>
