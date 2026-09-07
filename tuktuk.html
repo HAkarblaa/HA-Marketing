@@ -2006,14 +2006,8 @@ function listenToRide(rideId){
         finished:'تم إنهاء الرحلة'
       };
       const statusText=titles[ride.status]||'تم قبول الطلب';
-      document.getElementById('postTitle').textContent=statusText;
-      const customerTripStatus=document.getElementById('customerTripStatus');
-      if(customerTripStatus) customerTripStatus.textContent=statusText;
 
-      if(ride.status==='finished'){
-        HA_Rating.show({rideId:rideId,role:'customer',targetName:acceptedDriver.name||'السائق'});
-        localStorage.removeItem('ha_active_ride');
-
+     
         // نوقف متابعة الطلب ونحوّل الزبون إلى شاشة انتهاء واضحة.
         document.getElementById('searchingBox').style.display='none';
         document.getElementById('driverCard').classList.remove('show');
