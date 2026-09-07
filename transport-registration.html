@@ -75,10 +75,17 @@ return;
 
 status.textContent='تم تفعيل الحساب بنجاح. رقم الحساب: '+appData.id;
 alert('تم تفعيل حسابك بنجاح.');
-}function changeRole(){
+}
+
+function changeRole(){
   if(role.value==="delivery_driver"){
-    deliveryTypeBox.style.display="block";
+    document.getElementById("deliveryTypeBox").style.display="block";
   }else{
-    deliveryTypeBox.style.display="none";
+    document.getElementById("deliveryTypeBox").style.display="none";
   }
-}init();</script></body></html>
+}
+
+window.save = save;
+window.changeRole = changeRole;
+
+init();
