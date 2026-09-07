@@ -1688,7 +1688,7 @@ document.getElementById('order').onclick = async ()=>{
     return;
   }
 
-  const {data:{session}} = await supabaseClient.auth.getSession();
+const session = JSON.parse(localStorage.getItem("ha_session"));
 
   if(!session){
     alert("يجب تسجيل الدخول");
@@ -1698,7 +1698,7 @@ document.getElementById('order').onclick = async ()=>{
   const selectedType = document.querySelector('.type.selected');
 
   const taxiData = {
-    customer_id: session.user.id,
+    customer_id: session.user_id
     service_type: "taxi",
     description: JSON.stringify({
       start:{
