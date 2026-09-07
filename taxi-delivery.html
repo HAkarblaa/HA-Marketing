@@ -108,6 +108,27 @@ h1{text-align:center;margin-bottom:8px}
   background:#111;
   color:#fff;
 }
+  .close-balance{
+  position:absolute;
+  top:8px;
+  left:10px;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  border:0;
+  background:#e00;
+  color:#fff;
+  font-size:20px;
+}
+
+.balance-card{
+  position:relative;
+}
+
+#balanceMessage{
+  margin-top:10px;
+  font-size:14px;
+}
 </style>
 </head>
 <body>
@@ -166,12 +187,30 @@ function openBalanceCode(){
  document.getElementById('balanceCodeBox').classList.add('show');
 }
 
-function addBalanceCode(){
- let code=document.getElementById('balanceCodeInput').value;
+function closeBalanceCode(){
+ document.getElementById('balanceCodeBox').classList.remove('show');
+}
 
- if(code.trim()!==""){
-   alert("تم إضافة الكود");
-   document.getElementById('balanceCodeBox').classList.remove('show');
+function addBalanceCode(){
+
+ let code=document.getElementById('balanceCodeInput').value.trim();
+ let msg=document.getElementById('balanceMessage');
+
+ if(code===""){
+   msg.innerHTML="⚠️ المربع فارغ";
+   return;
+ }
+
+ if(code==="HA100"){
+   msg.innerHTML="✅ تم إضافة الرصيد";
+   document.getElementById('driverBalance').innerHTML="10000 د.ع";
+
+   setTimeout(()=>{
+     closeBalanceCode();
+   },1000);
+
+ }else{
+   msg.innerHTML="❌ هذا الكود لا يعمل";
  }
 }
 </script>
