@@ -42,7 +42,7 @@ console.log("بيانات السائق:", payload);
 
 const {data:saveData,error}=await db
 .from('transport_profiles')
-.insert(payload)
+.upsert(payload,{onConflict:'user_id'})
 .select();
 
 if(error){
