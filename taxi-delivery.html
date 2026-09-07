@@ -218,38 +218,31 @@ h1{text-align:center;margin-bottom:8px}
 <a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
 
 </div>
-  <script>
+<script>
 function openBalanceCode(){
- document.getElementById('balanceCodeBox').classList.add('show');
+  document.getElementById('balanceCodeBox').classList.add('show');
 }
 
 function closeBalanceCode(){
- document.getElementById('balanceCodeBox').classList.remove('show');
+  document.getElementById('balanceCodeBox').classList.remove('show');
 }
 
 function addBalanceCode(){
+  let code=document.getElementById('balanceCodeInput').value.trim();
 
- let code=document.getElementById('balanceCodeInput').value.trim();
- let msg=document.getElementById('balanceMessage');
+  if(code===""){
+    alert("المربع فارغ");
+    return;
+  }
 
- if(code===""){
-   msg.innerHTML="⚠️ المربع فارغ";
-   return;
- }
-
- if(code==="HA100"){
-   msg.innerHTML="✅ تم إضافة الرصيد";
-   document.getElementById('driverBalance').innerHTML="10000 د.ع";
-
-   setTimeout(()=>{
-     closeBalanceCode();
-   },1000);
-
- }else{
-   msg.innerHTML="❌ هذا الكود لا يعمل";
- }
+  if(code==="HA100"){
+    alert("تم إضافة الرصيد");
+    closeBalanceCode();
+  }else{
+    alert("هذا الكود لا يعمل");
+  }
 }
-<script>
+</script>
 function showSoon(){
  alert("قريباً");
 }
