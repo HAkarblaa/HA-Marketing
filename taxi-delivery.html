@@ -182,12 +182,23 @@ h1{text-align:center;margin-bottom:8px}
    <h2>تكتك</h2>
    <p>اطلب تكتك وحدد موقع الانطلاق والوجهة</p>
  </a>
+<div class="grid">
+
+<a class="card" href="#" onclick="showSoon();return false;">
+  <div class="icon">🎓</div>
+  <h2>خط طلاب</h2>
+  <p>خدمة نقل الطلاب</p>
+</a>
+
+<a class="card" href="#" onclick="showSoon();return false;">
+  <div class="icon">👔</div>
+  <h2>خط موظفين</h2>
+  <p>خدمة نقل الموظفين</p>
+</a>
+
 </div>
 
-  <a href="student-line.html" class="back">🎓 خط طلاب</a>
-<a href="employee-line.html" class="back">👔 خط موظفين</a>
-
-  <a href="driver.html" class="back">🚚 واجهة السائق / المندوب</a>
+<a href="driver.html" class="back">🚚 واجهة السائق / المندوب</a>
 
 <a href="transport-registration.html" class="back">🚕 تسجيل سائق/مندوب</a>
 
@@ -224,6 +235,10 @@ function addBalanceCode(){
  }else{
    msg.innerHTML="❌ هذا الكود لا يعمل";
  }
+}
+<script>
+function showSoon(){
+ alert("قريباً");
 }
 </script>
 
