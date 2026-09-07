@@ -16,7 +16,23 @@ h1{text-align:center;margin-bottom:8px}
 .card h2{margin:0 0 10px;font-size:25px}
 .card p{margin:0;color:#666;line-height:1.7}
 .back{display:block;margin-top:20px;background:#eaeaea;color:#111;text-decoration:none;text-align:center;padding:13px;border-radius:10px}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.card{min-height:180px}}
+.driver-balance{
+  width:180px;
+  margin:0 auto 15px;
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+  font-size:14px;
+  box-shadow:0 3px 10px rgba(0,0,0,.10);
+}
+
+.driver-balance b{
+  display:block;
+  margin-top:4px;
+  font-size:16px;
+}
+  @media(max-width:800px){.grid{grid-template-columns:1fr}.card{min-height:180px}}
 
 /* HA Marketing mobile compact grid: 3 cards per row */
 @media (max-width: 700px){
@@ -45,6 +61,53 @@ h1{text-align:center;margin-bottom:8px}
     margin:2px 0 !important;
   }
 }
+  .driver-balance button{
+  margin-top:8px;
+  border:0;
+  background:#111;
+  color:#fff;
+  padding:7px 12px;
+  border-radius:8px;
+}
+
+.balance-box{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0006;
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+}
+
+.balance-box.show{
+  display:flex;
+}
+
+.balance-card{
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  width:260px;
+  text-align:center;
+}
+
+.balance-card input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.balance-card button{
+  width:100%;
+  padding:10px;
+  border:0;
+  border-radius:8px;
+  background:#111;
+  color:#fff;
+}
 </style>
 </head>
 <body>
@@ -52,7 +115,19 @@ h1{text-align:center;margin-bottom:8px}
 <h1>🚕 طلب تكسي أو مندوب</h1>
 <p class="subtitle">اختر نوع الخدمة التي تحتاجها</p>
 
-<div class="grid">
+<div class="driver-balance">
+  💰 رصيد السائق:
+  <b id="driverBalance">0 د.ع</b>
+  <button onclick="openBalanceCode()">+ إضافة كود رصيد</button>
+</div>
+
+<div id="balanceCodeBox" class="balance-box">
+  <div class="balance-card">
+    <h3>إضافة كود الرصيد</h3>
+    <input id="balanceCodeInput" placeholder="اكتب الكود">
+    <button onclick="addBalanceCode()">تم</button>
+  </div>
+</div>
  <a class="card" href="taxi.html">
    <div class="icon">🚕</div>
    <h2>تكسي</h2>
@@ -72,10 +147,29 @@ h1{text-align:center;margin-bottom:8px}
  </a>
 </div>
 
+<a href="driver.html" class="back">🚚 واجهة السائق / المندوب</a>
+
+<a href="transport-registration.html" class="back">🚕 تسجيل سائق/مندوب</a>
+
 <a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
+
 </div>
-<div style="position:fixed;left:14px;bottom:70px;z-index:999;display:flex;flex-direction:column;gap:8px">
-<a href="driver.html" style="display:block;background:#0c6b2a;color:#fff;text-decoration:none;padding:10px 13px;border-radius:12px;text-align:center">🚚 واجهة السائق / المندوب</a>
-<a href="transport-registration.html" style="display:block;background:#111;color:#fff;text-decoration:none;padding:10px 13px;border-radius:12px;text-align:center">🚕 تسجيل سائق/مندوب</a>
-</div></body>
+  <script>
+function openBalanceCode(){
+ document.getElementById('balanceCodeBox').classList.add('show');
+}
+
+function addBalanceCode(){
+ let code=document.getElementById('balanceCodeInput').value;
+
+ if(code.trim()!==""){
+   alert("تم إضافة الكود");
+   document.getElementById('balanceCodeBox').classList.remove('show');
+ }
+}
+</script>
+
+</body>
+</html>
+</body>
 </html>
