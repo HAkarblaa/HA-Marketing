@@ -1812,9 +1812,11 @@ if(deliveryPostBack){
     if(screen) screen.classList.remove('show');
   };
 }
+document.getElementById('deliveryCancelBtn').onclick=()=>openDeliveryCancelReason();
 document.getElementById('deliverySearchCancelBtn').onclick=()=>openDeliveryCancelReason();
 
 let activeDeliveryRideId = null;
+ 
 const savedDeliveryId=localStorage.getItem('ha_active_delivery');
 if(savedDeliveryId){
   HA_FirebaseAuth.ready().then(()=>db.ref('rides/'+savedDeliveryId).once('value')).then(s=>{
