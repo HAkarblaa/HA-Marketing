@@ -1689,17 +1689,17 @@ document.getElementById('order').onclick = async ()=>{
     return;
   }
 
-const session = JSON.parse(localStorage.getItem("ha_session"));
+const {data:{session}} = await db.auth.getSession();
 
-  if(!session){
-    alert("يجب تسجيل الدخول");
-    return;
-  }
+const user = firebase.auth().currentUser;
 
-  const selectedType = document.querySelector('.type.selected');
+if(!user){
+ alert("يرجى تسجيل الدخول");
+ return;
+}
 
- const taxiData = {
- customer_id: session.user_id,
+const taxiData = {
+ customer_id: user.uid,
  service_type: "taxi",
     description: JSON.stringify({
       start:{
