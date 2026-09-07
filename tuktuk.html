@@ -2186,7 +2186,7 @@ function closeCancelReason(){
   document.getElementById('cancelReasonSheet').classList.remove('show');
 }
 document.querySelectorAll('[data-close-cancel="cancelReasonSheet"]').forEach(b=>b.onclick=closeCancelReason);
-document.getElementById('cancelReasonSheet').addEventListener('click',e=>{
+
   if(e.target.id==='cancelReasonSheet') closeCancelReason();
 });
 document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>{
