@@ -242,6 +242,8 @@ let driverWatch=null;
 let currentRideStatusRef=null;
 
 let driverProfile=null;
+let driverSection=null;
+let deliveryType=null;
 let driverReady=false;
 let firebaseDriverUser=null;
 
@@ -355,6 +357,8 @@ acceptBtn.onclick=async()=>{
   const ident=await HA_TransportProfile.driverIdentity();
   if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
   driverProfile=ident.driver;
+  driverSection=ident.driver.role_type;
+deliveryType=ident.driver.delivery_type;
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
