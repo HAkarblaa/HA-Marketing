@@ -2101,68 +2101,7 @@ document.getElementById('chatSheet').addEventListener('click',e=>{
 });
 
 
-document.getElementById('finishHomeBtn').onclick=()=>{
-  document.getElementById('finishBox').classList.remove('show');
-  document.getElementById('postOrderScreen').classList.remove('show');
 
-  activeRideId=null;
-  activeRideRef=null;
-
-  // نرجع صفحة التكسي إلى حالة طلب جديد.
-  document.body.classList.remove('trip-ready','trip-sheet-open');
-  document.getElementById('tripSheet').classList.remove('open');
-  document.getElementById('selectionPanel').style.display='block';
-
-  start=null;
-  end=null;
-
-  if(sm){map.removeLayer(sm);sm=null}
-  if(em){map.removeLayer(em);em=null}
-  if(line){map.removeLayer(line);line=null}
-
-  setMode('start');
-  startMapPick();
-  map.setView([33.3152,44.3661],12);
-};
-
-document.getElementById('finishRateBtn').onclick=()=>{
-  const id=activeRideId||localStorage.getItem('ha_active_ride');
-  if(!id){alert('لا توجد رحلة مكتملة للتقييم.');return;}
-  HA_Rating.show({rideId:id,role:'customer',targetName:acceptedDriver.name||'السائق'});
-};
-
-const cancelTripBtn=document.getElementById('cancelTripBtn');
-
-if(cancelTripBtn){
-  cancelTripBtn.onclick=()=>openCancelReason();
-}
-
-const searchCancelTripBtn=document.getElementById('searchCancelTripBtn');
-
-if(searchCancelTripBtn){
-  searchCancelTripBtn.onclick=()=>openCancelReason();
-}
-
-
-  <input type="radio" name="cancelReasonSheet_reason" value="السعر غير مناسب" >
-  <span>السعر غير مناسب</span>
-</label>
-<label class="cancel-reason-option">
-  <input type="radio" name="cancelReasonSheet_reason" value="اخترت موقعًا خطأ" >
-  <span>اخترت موقعًا خطأ</span>
-</label>
-<label class="cancel-reason-option">
-  <input type="radio" name="cancelReasonSheet_reason" value="وجدت وسيلة أخرى" >
-  <span>وجدت وسيلة أخرى</span>
-</label>
-<label class="cancel-reason-option">
-  <input type="radio" name="cancelReasonSheet_reason" value="غير ذلك" id="cancelReasonSheet_other">
-  <span>غير ذلك</span>
-</label>
-    <input id="cancelOtherText" class="cancel-other" placeholder="اكتب سبب الإلغاء">
-    <button id="confirmCancelReason" class="confirm-cancel-btn" type="button">تأكيد الإلغاء</button>
-  </div>
-</div>
 
 <script>
 function openCancelReason(){
