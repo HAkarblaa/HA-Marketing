@@ -2131,8 +2131,15 @@ document.getElementById('finishRateBtn').onclick=()=>{
   HA_Rating.show({rideId:id,role:'customer',targetName:acceptedDriver.name||'السائق'});
 };
 
-document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
-document.getElementById('searchCancelTripBtn').onclick=()=>openCancelReason();
+const cancelTripBtn=document.getElementById('cancelTripBtn');
+if(cancelTripBtn){
+  cancelTripBtn.onclick=()=>openCancelReason();
+}
+
+const searchCancelTripBtn=document.getElementById('searchCancelTripBtn');
+if(searchCancelTripBtn){
+  searchCancelTripBtn.onclick=()=>openCancelReason();
+}
 
 // نخلي زر تأكيد التكتك يفتح واجهة البحث بعد التحقق الحالي
 
@@ -2200,6 +2207,7 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
     if(!reason){ alert('اكتب سبب الإلغاء.'); document.getElementById('cancelOtherText').focus(); return; }
   }
 
+ let activeRideId = localStorage.getItem('ha_active_ride') || null;
   if(activeRideId){
     await db.ref('rides/'+activeRideId).update({
       status:'cancelled',
@@ -2218,7 +2226,7 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
 <script>
 window.addEventListener('load',()=>{
   try{
-    const id=activeRideId || localStorage.getItem('ha_active_ride');
+  const id=(typeof activeRideId!=='undefined'&&activeRideId) || localStorage.getItem('ha_active_ride');
     if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'customer');
   }catch(e){console.error(e)}
 });
