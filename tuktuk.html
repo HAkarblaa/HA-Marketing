@@ -2103,14 +2103,7 @@ document.getElementById('chatSheet').addEventListener('click',e=>{
 
 
 
-<script>
-function openCancelReason(){
-  document.getElementById('cancelReasonSheet').classList.add('show');
-}
-function closeCancelReason(){
-  document.getElementById('cancelReasonSheet').classList.remove('show');
-}
-document.querySelectorAll('[data-close-cancel="cancelReasonSheet"]').forEach(b=>b.onclick=closeCancelReason);
+
 
   if(e.target.id==='cancelReasonSheet') closeCancelReason();
 });
