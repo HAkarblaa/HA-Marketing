@@ -21,8 +21,6 @@ role_type:role.value,
 full_name:name.value.trim(),
 phone:phone.value.trim()||null,
 vehicle_type:vehicle.value.trim()||null,
-driver_section:role.value,
-delivery_type: role.value==="delivery_driver" ? deliveryType.value : null,
 vehicle_model:model.value.trim()||null,
 vehicle_color:color.value.trim()||null,
 plate_number:plate.value.trim()||null,
@@ -31,9 +29,21 @@ status:'approved',
 updated_at:new Date().toISOString()
 };
 
-const {error}=await db.from('transport_profiles').upsert(payload);
+console.log("بيانات السائق:", payload);
 
-if(error) return alert(error.message);
+const {data:saveData,error}=await db
+.from('transport_profiles')
+.upsert(payload)
+.select();
+
+if(error){
+ alert("خطأ الحفظ: "+error.message);
+ console.log(error);
+ return;
+}
+
+alert("تم حفظ بيانات السائق داخل transport_profiles");
+console.log(saveData);
 
 const appPayload={
 user_id:me.id,
