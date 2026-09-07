@@ -1193,6 +1193,30 @@ L.control.zoom({position:'topright'}).addTo(map);
 let mode='start';
 let start=null,end=null;
 let sm=null,em=null,line=null;
+ async function drawRoute(){
+ if(!start || !end) return;
+
+ try{
+  const url=`https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
+
+  const res=await fetch(url);
+  const data=await res.json();
+
+  const coords=data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+
+  if(line) map.removeLayer(line);
+
+  line=L.polyline(coords,{
+    color:'#2563eb',
+    weight:5
+  }).addTo(map);
+
+  map.fitBounds(line.getBounds(),{padding:[40,40]});
+
+ }catch(e){
+  console.log(e);
+ }
+}
 let routeKm=0,routeMin=0,pickupMin=0;
 let selected=document.querySelector('.type.selected');
 
@@ -1253,6 +1277,7 @@ document.getElementById('stepSelectBtn').onclick=()=>{
       if(sm) map.removeLayer(sm);
       sm=L.marker(snapped,{icon:startIcon()}).addTo(map).bindPopup('الاستلام');
       calc();
+     
     }else if(currentMode==='end' && end){
       end=snapped;
       if(em) map.removeLayer(em);
@@ -1329,7 +1354,8 @@ function setPoint(kind,p,label){
    document.getElementById('placeResults').style.display='none';
  }
 
- calc();
+calc();
+drawRoute();
 }
 
 
