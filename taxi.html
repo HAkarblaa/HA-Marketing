@@ -1688,7 +1688,7 @@ document.getElementById('order').onclick = async ()=>{
     return;
   }
 
-  const {data:{session}} = await supabase.auth.getSession();
+  const {data:{session}} = await db.auth.getSession();
 
   if(!session){
     alert("يجب تسجيل الدخول");
