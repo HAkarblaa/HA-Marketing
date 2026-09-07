@@ -42,7 +42,7 @@ console.log("بيانات السائق:", payload);
 
 const {data:saveData,error}=await db
 .from('transport_profiles')
-.upsert(payload)
+.insert(payload)
 .select();
 
 if(error){
