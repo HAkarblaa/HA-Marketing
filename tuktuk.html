@@ -1366,11 +1366,34 @@ function setPoint(kind,p,label){
    document.getElementById('placeResults').style.display='none';
  }
 
- calc();
+calc();
+drawRoute();
+
+
+async function drawRoute(){
+ if(!start || !end) return;
+
+ try{
+  const url=`https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
+
+  const res=await fetch(url);
+  const data=await res.json();
+
+  const coords=data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+
+  if(line) map.removeLayer(line);
+
+  line=L.polyline(coords,{
+    color:'#2563eb',
+    weight:5
+  }).addTo(map);
+
+  map.fitBounds(line.getBounds(),{padding:[40,40]});
+
+ }catch(e){
+  console.log(e);
+ }
 }
-
-
-
 locateBtn.onclick=()=>{
  if(!navigator.geolocation){
    notice.textContent='المتصفح لا يدعم تحديد الموقع.';
