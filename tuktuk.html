@@ -1267,6 +1267,9 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 }).addTo(map);
 
 L.control.zoom({position:'topright'}).addTo(map);
+ setTimeout(()=>{
+  map.invalidateSize();
+},500);
 
 let mode='start';
 let start=null,end=null;
@@ -1379,6 +1382,9 @@ function setPoint(kind,p,label){
    document.getElementById('selectionPanel').style.display='none';
    vehicleStep.style.display='block';
    document.getElementById('tripSheet').classList.add('open');
+  setTimeout(()=>{
+  map.invalidateSize();
+},500);
    document.body.classList.add('trip-sheet-open');
    document.body.classList.add('trip-ready');
    document.getElementById('extraOptionsBtn').disabled=false;
