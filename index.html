@@ -6,151 +6,148 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="theme-color" content="#0b0b0d">
+<meta name="theme-color" content="#05080b">
 <title>HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --bg:#f4f2ed;
-  --surface:#ffffff;
-  --ink:#111113;
-  --muted:#77736c;
-  --line:#e9e4da;
-  --gold:#b78a2e;
-  --gold2:#e1c171;
-  --black:#0b0b0d;
-  --shadow:0 18px 50px rgba(25,19,8,.10);
+  --bg:#020406;
+  --panel:#0a0f14;
+  --panel2:#101720;
+  --gold:#efbd5e;
+  --gold2:#9d6a19;
+  --text:#f7f7f7;
+  --muted:#a8adb4;
+  --line:rgba(239,189,94,.38);
+  --shadow:0 16px 42px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:var(--bg)}
 body{
   margin:0;
-  color:var(--ink);
-  background:
-    radial-gradient(circle at 82% -5%,rgba(225,193,113,.23),transparent 27%),
-    radial-gradient(circle at 0 22%,rgba(183,138,46,.09),transparent 20%),
-    var(--bg);
+  min-height:100vh;
+  color:var(--text);
   font-family:"Segoe UI",Tahoma,Arial,sans-serif;
-  padding-bottom:92px;
+  background:
+    radial-gradient(circle at 82% 7%,rgba(239,189,94,.10),transparent 24%),
+    radial-gradient(circle at 9% 35%,rgba(34,110,121,.08),transparent 20%),
+    linear-gradient(180deg,#020507 0%,#05080b 42%,#020406 100%);
+  padding-bottom:108px;
+  overflow-x:hidden;
 }
-button,input{font:inherit}
-a{color:inherit}
-
-/* ===== Header ===== */
-.topbar{
-  position:sticky;top:0;z-index:1000;
-  display:flex;align-items:center;gap:12px;
-  min-height:72px;padding:10px max(14px,env(safe-area-inset-right));
-  background:rgba(244,242,237,.84);
-  backdrop-filter:blur(18px) saturate(1.2);
-  border-bottom:1px solid rgba(130,110,72,.13);
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);
+  background-size:34px 34px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 80%);
 }
-.brand{display:flex;align-items:center;gap:10px;min-width:0;margin-inline-end:auto;text-decoration:none}
-.brand-logo{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #e4dccb;box-shadow:0 8px 24px #0001}
-.brand-copy{min-width:0}
-.brand-title{font-family:Georgia,"Times New Roman",serif;font-size:23px;line-height:1;font-weight:800;letter-spacing:.2px;white-space:nowrap}
-.brand-sub{font-size:11px;color:var(--gold);margin-top:4px;white-space:nowrap}
-.top-action{width:44px;height:44px;border:1px solid #e8e1d3;border-radius:14px;background:rgba(255,255,255,.86);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px #0000000b;color:#161616}
-.top-action svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+button,input{font:inherit} a{color:inherit}
+.shell{width:min(1120px,94%);margin:auto}
 
-/* ===== Hero ===== */
-.shell{width:min(1120px,94%);margin:0 auto}
-.hero{margin-top:20px;position:relative;overflow:hidden;border-radius:30px;background:linear-gradient(125deg,#070708 0%,#181713 55%,#332817 100%);color:#fff;min-height:250px;box-shadow:0 28px 70px rgba(11,11,13,.22)}
-.hero::before{content:"";position:absolute;inset:-80px auto auto -70px;width:260px;height:260px;border-radius:50%;border:1px solid rgba(225,193,113,.27);box-shadow:0 0 0 28px rgba(225,193,113,.045),0 0 0 58px rgba(225,193,113,.025)}
-.hero::after{content:"HA";position:absolute;left:22px;bottom:-34px;font:900 170px/1 Georgia,serif;color:rgba(255,255,255,.025);letter-spacing:-12px}
-.hero-inner{position:relative;z-index:2;padding:34px 34px 30px;display:grid;grid-template-columns:1.25fr .75fr;gap:24px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:7px 12px;border-radius:999px;border:1px solid rgba(225,193,113,.30);background:rgba(225,193,113,.08);color:#f0d28d;font-size:12px;font-weight:700}
-.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#e9c979;box-shadow:0 0 12px #e9c979}
-.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin:14px 0 10px;letter-spacing:-.8px}
-.hero p{margin:0;color:#d5d0c6;line-height:1.9;font-size:15px;max-width:620px}
-.hero-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.hero-chip{padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);font-size:12px;color:#eee}
-.hero-mark{justify-self:end;width:170px;height:170px;border-radius:42px;background:linear-gradient(145deg,#f1d590,#9e7020);padding:1px;box-shadow:0 20px 44px #0007}
-.hero-mark-inner{width:100%;height:100%;border-radius:41px;background:#0d0d0f;display:flex;align-items:center;justify-content:center;flex-direction:column;border:1px solid rgba(255,255,255,.06)}
-.hero-mark .ha{font:italic 900 58px/1 Georgia,serif;background:linear-gradient(#f2db9d,#b58327);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-mark small{margin-top:8px;color:#c7aa68;letter-spacing:1.5px;font-size:10px}
+/* HERO */
+.hero{
+  position:relative;overflow:hidden;
+  min-height:370px;padding:30px 18px 28px;
+  border-bottom:1px solid rgba(239,189,94,.42);
+  background:
+    radial-gradient(circle at 84% 54%,rgba(239,189,94,.17),transparent 22%),
+    radial-gradient(circle at 18% 72%,rgba(239,189,94,.10),transparent 19%),
+    linear-gradient(180deg,#03070a 0%,#070b0f 72%,#05080b 100%);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;opacity:.55;pointer-events:none;
+  background:
+    linear-gradient(105deg,transparent 0 12%,rgba(255,255,255,.025) 12.2% 12.5%,transparent 12.7% 100%),
+    radial-gradient(ellipse at 50% 110%,rgba(239,189,94,.14),transparent 45%);
+}
+.hero::after{
+  content:"";position:absolute;left:50%;bottom:0;width:min(720px,94%);height:2px;transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,#9a681c,#ffd777,#9a681c,transparent);
+  box-shadow:0 0 18px rgba(239,189,94,.7);
+}
+.hero-controls{position:relative;z-index:6;height:58px;display:flex;align-items:center;justify-content:space-between}
+.round-btn,.menu-btn{
+  width:48px;height:48px;border:1px solid rgba(239,189,94,.68);border-radius:50%;
+  background:rgba(8,12,16,.72);color:var(--gold);display:grid;place-items:center;
+  cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 0 22px rgba(239,189,94,.04);
+}
+.menu-btn{border:0;background:transparent;font-size:32px;border-radius:14px;width:52px}
+.round-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
 
-/* ===== Search ===== */
-.search-wrap{margin:-25px auto 0;position:relative;z-index:5;width:min(880px,90%)}
-.search-box{position:relative;background:#fff;border:1px solid #eee8de;border-radius:20px;padding:7px;box-shadow:0 18px 45px rgba(33,25,10,.12)}
-.search-box input{width:100%;height:56px;border:0;outline:0;border-radius:15px;background:#faf9f6;padding:0 52px 0 18px;color:#111;font-size:15px}
-.search-icon{position:absolute;right:25px;top:50%;transform:translateY(-50%);display:grid;place-items:center;color:#8f805d}
-.search-icon svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.search-box.searching .search-icon{animation:spin .7s linear infinite}
+.hero-decoration{position:absolute;inset:55px 0 auto 0;height:250px;pointer-events:none;opacity:.9}
+.dec-laptop{position:absolute;left:-25px;bottom:18px;font-size:105px;filter:grayscale(.4) brightness(.62);transform:rotate(-7deg);opacity:.22}
+.dec-cart{position:absolute;right:-10px;bottom:18px;font-size:112px;filter:saturate(.55) sepia(.4);opacity:.30;transform:rotate(5deg)}
+.gold-orb{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffd57b;box-shadow:0 0 22px 8px rgba(239,189,94,.35)}
+.gold-orb.o1{right:14%;top:36px}.gold-orb.o2{left:17%;top:146px;width:4px;height:4px}
 
-/* ===== Sections ===== */
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:32px 4px 15px}
-.section-kicker{font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.4px;margin-bottom:5px}
-.section-head h2{font-size:25px;margin:0;letter-spacing:-.3px}
-.section-head p{margin:0;color:#88847b;font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:26px}
-.card{position:relative;min-height:176px;background:linear-gradient(160deg,#fff 0%,#fbfaf7 100%);border:1px solid #ebe5da;border-radius:24px;text-decoration:none;padding:20px;overflow:hidden;box-shadow:0 10px 30px rgba(40,30,10,.055);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.card::after{content:"";position:absolute;left:-28px;bottom:-42px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(183,138,46,.12),rgba(183,138,46,0) 68%)}
-.card:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(42,31,10,.10);border-color:#dcccaa}
-.iconbox{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:#111113;color:#e1bd67;box-shadow:0 11px 24px rgba(15,15,16,.16);margin-bottom:18px}
-.iconbox svg{width:27px;height:27px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.card h3{font-size:18px;margin:0 0 7px;line-height:1.3}
-.card p{font-size:12px;color:#817d75;line-height:1.7;margin:0;padding-left:26px}
-.card-arrow{position:absolute;left:17px;bottom:16px;width:31px;height:31px;border-radius:50%;background:#f4f0e8;border:1px solid #e8dfcf;display:grid;place-items:center;color:#9f782c;font-size:18px}
-.badge{position:absolute;left:14px;top:14px;border-radius:999px;padding:5px 8px;background:#fff6dc;color:#9b6b16;border:1px solid #eedba6;font-size:9px;font-weight:800}
-.card.featured{background:linear-gradient(145deg,#111113 0%,#252117 100%);color:#fff;border-color:#2e291f}
-.card.featured p{color:#c5beb0}.card.featured .iconbox{background:linear-gradient(145deg,#d8b460,#9e6e1e);color:#111}.card.featured .card-arrow{background:#29251d;border-color:#403929;color:#e3c270}
-.no-results{display:none;grid-column:1/-1;background:#fff;border:1px solid #e9e2d7;padding:28px;text-align:center;border-radius:20px;color:#777}
+.brand-hero{position:relative;z-index:3;text-align:center;margin-top:5px}
+.ha-logo{display:inline-block;position:relative;font:900 italic clamp(66px,12vw,112px)/.8 Arial,sans-serif;letter-spacing:-10px;background:linear-gradient(180deg,#ffe39d 0%,#e5ac43 40%,#8e5b15 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 13px rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(239,189,94,.12))}
+.ha-logo::after{content:"↗";position:absolute;font:900 32px/1 Arial;right:-22px;top:-15px;color:#f3bd58;-webkit-text-fill-color:#f3bd58;transform:rotate(-5deg);text-shadow:0 5px 10px #000}
+.brand-name{margin-top:19px;font-size:clamp(35px,7vw,62px);font-weight:850;letter-spacing:-1.6px;direction:ltr;text-shadow:0 5px 18px #000}
+.brand-name .gold{color:var(--gold)}
+.brand-sub{font-size:clamp(15px,3.7vw,22px);color:#c8c9ca;margin-top:8px}
 
-/* ===== Mini banner ===== */
-.promo{margin:6px 0 28px;border-radius:25px;padding:20px 22px;background:linear-gradient(100deg,#e6cc8d,#b3862d);display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 16px 34px rgba(113,77,12,.16);overflow:hidden;position:relative}
-.promo::after{content:"";position:absolute;left:-30px;top:-70px;width:180px;height:180px;border-radius:50%;border:1px solid #ffffff55;box-shadow:0 0 0 26px #ffffff13}
-.promo-copy{position:relative;z-index:1}.promo strong{display:block;font-size:19px;margin-bottom:4px}.promo span{font-size:12px;color:#4f3b13}
-.promo a{position:relative;z-index:1;text-decoration:none;background:#111113;color:#fff;padding:11px 17px;border-radius:13px;font-size:12px;font-weight:800;white-space:nowrap}
+.promo-pill{
+  position:relative;z-index:4;width:min(690px,92%);margin:25px auto 0;min-height:74px;
+  border:1px solid rgba(239,189,94,.72);border-radius:40px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 23px;
+  background:linear-gradient(180deg,rgba(18,20,22,.94),rgba(5,8,10,.98));
+  box-shadow:0 0 0 1px rgba(255,218,136,.08),0 0 27px rgba(239,189,94,.15),inset 0 0 25px rgba(255,255,255,.025);
+  text-decoration:none;
+}
+.promo-pill .ico{font-size:31px;filter:drop-shadow(0 0 7px rgba(239,189,94,.35))}
+.promo-pill strong{font-size:clamp(16px,4vw,23px);color:#e8b85d;text-align:center;flex:1}.promo-pill .arrow{font-size:38px;color:#e7b454;line-height:1}
 
-/* ===== Drawer ===== */
-.drawer-overlay{position:fixed;inset:0;background:rgba(3,3,4,.45);backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:.25s;z-index:1998}
-.drawer-overlay.show{opacity:1;visibility:visible}
-.shortcuts{position:fixed;top:14px;right:14px;bottom:14px;width:min(86vw,350px);z-index:1999;background:#fbfaf7;border:1px solid #e7dfd0;border-radius:28px;padding:18px;box-shadow:0 25px 70px #0005;transform:translateX(115%);transition:transform .32s cubic-bezier(.2,.8,.2,1);overflow:auto}
-.shortcuts.show{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 4px 15px;border-bottom:1px solid #e9e2d6;margin-bottom:11px}
-.drawer-title{font-size:18px;font-weight:900}.drawer-title small{display:block;font-weight:400;color:#8d877e;font-size:10px;margin-top:3px}
-.drawer-close{width:39px;height:39px;border-radius:13px;border:1px solid #e6dfd1;background:#fff;cursor:pointer;font-size:21px}
-.shortcuts a{display:flex;align-items:center;gap:11px;text-decoration:none;padding:12px 13px;margin:7px 0;border-radius:15px;background:#fff;border:1px solid #eee8dd;font-size:13px;font-weight:650}
-.shortcuts a:hover{border-color:#dcc89c;background:#fffdf7}
-.short-ico{width:31px;height:31px;border-radius:10px;background:#111;color:#d8b45e;display:grid;place-items:center;font-size:15px}
+/* SEARCH */
+.search-panel{position:fixed;z-index:2100;top:78px;right:16px;left:16px;max-width:720px;margin:auto;transform:translateY(-16px);opacity:0;visibility:hidden;transition:.22s}
+.search-panel.show{transform:none;opacity:1;visibility:visible}
+.search-box{position:relative;background:#0c1117;border:1px solid rgba(239,189,94,.50);padding:7px;border-radius:20px;box-shadow:0 20px 60px #000b}
+.search-box input{width:100%;height:54px;border:0;outline:0;background:#060a0d;color:#fff;border-radius:14px;padding:0 48px 0 15px;font-size:15px}
+.search-box input::placeholder{color:#858b91}.search-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:20px}
+
+/* CARDS */
+.content{padding-top:28px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.card{
+  position:relative;min-height:225px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;
+  padding:23px 13px 18px;border-radius:29px;text-decoration:none;overflow:hidden;
+  background:linear-gradient(145deg,rgba(17,24,31,.93),rgba(5,9,13,.97));
+  border:1px solid rgba(150,163,176,.22);box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.03);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;background:radial-gradient(circle at 50% 0,rgba(var(--glow),.13),transparent 37%);pointer-events:none}
+.card::after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--glow),.32),transparent)}
+.card:active{transform:scale(.975)}
+.card:hover{transform:translateY(-4px);border-color:rgba(239,189,94,.34);box-shadow:0 22px 52px #000b,0 0 28px rgba(var(--glow),.08)}
+.iconbox{position:relative;z-index:1;width:78px;height:78px;border-radius:24px;display:grid;place-items:center;font-size:42px;margin-bottom:14px;background:linear-gradient(145deg,rgba(var(--glow),.33),rgba(4,8,12,.85));border:1px solid rgba(var(--glow),.60);box-shadow:0 10px 25px #0007,inset 0 0 20px rgba(var(--glow),.14),0 0 22px rgba(var(--glow),.10)}
+.card h2{position:relative;z-index:1;margin:0;font-size:clamp(16px,3.6vw,23px);font-weight:850;line-height:1.25}.card h2::after{content:"";display:block;width:27px;height:2px;margin:10px auto 9px;background:linear-gradient(90deg,#87601d,#ffd16b,#87601d);border-radius:8px;box-shadow:0 0 8px rgba(239,189,94,.4)}
+.card p{position:relative;z-index:1;margin:0;color:#adb2b7;font-size:clamp(11px,2.5vw,14px);line-height:1.55;max-width:190px}
+.card .soon{position:absolute;top:11px;left:11px;border:1px solid rgba(239,189,94,.4);color:#d6a950;background:#0a0d10;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800;z-index:2}
+.c-shop{--glow:229,168,54}.c-service{--glow:28,164,183}.c-chat{--glow:76,95,220}.c-news{--glow:157,58,189}.c-religious{--glow:32,169,69}.c-study{--glow:209,55,66}.c-entertain{--glow:156,48,185}.c-sports{--glow:31,159,58}.c-taxi{--glow:213,145,28}
+.no-results{display:none;grid-column:1/-1;padding:25px;border:1px solid rgba(239,189,94,.25);border-radius:22px;text-align:center;background:#0a0e12;color:#aeb2b6}
+
+/* DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:.25s;z-index:1998}.drawer-overlay.show{opacity:1;visibility:visible}
+.shortcuts{position:fixed;top:14px;left:14px;bottom:14px;width:min(87vw,355px);z-index:1999;background:linear-gradient(160deg,#10161c,#05080b);border:1px solid rgba(239,189,94,.38);border-radius:28px;padding:17px;box-shadow:0 25px 80px #000d;transform:translateX(-115%);transition:transform .31s cubic-bezier(.2,.8,.2,1);overflow:auto}.shortcuts.show{transform:none}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 3px 14px;border-bottom:1px solid rgba(239,189,94,.20);margin-bottom:10px}.drawer-title{font-weight:900;color:#f1c56f;font-size:19px}.drawer-title small{display:block;color:#81888e;font-weight:400;font-size:10px;margin-top:3px}.drawer-close{width:39px;height:39px;border-radius:13px;border:1px solid #343b42;background:#0a0e12;color:#fff;font-size:21px;cursor:pointer}
+.shortcuts a{display:flex;align-items:center;gap:11px;text-decoration:none;padding:12px 13px;margin:7px 0;border-radius:15px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);font-size:13px}.shortcuts a:hover{border-color:rgba(239,189,94,.35);background:rgba(239,189,94,.045)}.short-ico{width:32px;height:32px;border-radius:10px;background:#080b0e;border:1px solid rgba(239,189,94,.25);display:grid;place-items:center;color:#e9b95d}
 body.drawer-open{overflow:hidden}
 
-/* ===== Splash ===== */
-#haSplash{position:fixed;inset:0;z-index:99999;background:linear-gradient(150deg,#fff 0%,#f5f1e8 100%);display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .45s ease,visibility .45s ease}
-#haSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
-.splash-card{width:min(92vw,430px);background:rgba(255,255,255,.85);border:1px solid #e9dfcc;border-radius:34px;padding:34px 24px;text-align:center;box-shadow:0 28px 70px #5c45151a;backdrop-filter:blur(12px)}
-.splash-logo{width:148px;height:148px;border-radius:50%;object-fit:cover;border:1px solid #ded4c0;box-shadow:0 16px 35px #0002;animation:logoIn .75s cubic-bezier(.2,.9,.3,1) both}
-.splash-card h2{font:800 30px/1.2 Georgia,"Times New Roman",serif;margin:19px 0 8px}.splash-card p{font-size:13px;color:#7e786f;margin:0 0 20px}
-.splash-continue{border:0;border-radius:16px;background:#111113;color:#fff;padding:13px 28px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 12px 28px #0003}
-.splash-continue span{color:#d7b45f;margin-right:5px}
-@keyframes logoIn{from{opacity:0;transform:translateY(20px) scale(.92)}to{opacity:1;transform:none}}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;z-index:1900;left:0;right:0;bottom:0;padding-bottom:max(7px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(6,9,12,.96),#020406);border-top:1px solid rgba(239,189,94,.65);box-shadow:0 -12px 38px #000b}
+.bottom-inner{width:min(820px,100%);height:88px;margin:auto;display:grid;grid-template-columns:1fr 1.25fr 1fr;align-items:center;text-align:center;position:relative}.bottom-link{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;text-decoration:none;color:#aeb3b9;font-size:12px}.bottom-link .bi{font-size:28px}.bottom-link.active{color:#f0bd5c;text-shadow:0 0 14px rgba(239,189,94,.35)}
+.bottom-brand{height:108px;margin-top:-21px;clip-path:polygon(10% 18%,25% 4%,75% 4%,90% 18%,100% 100%,0 100%);background:linear-gradient(180deg,#0d1217,#030609);border-top:1px solid #c08a31;display:flex;align-items:center;justify-content:center;flex-direction:column}.mini-ha{font:900 italic 34px/.85 Arial;background:linear-gradient(#ffe19a,#b87921);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-3px}.bottom-brand strong{font-size:16px;margin-top:6px;direction:ltr}.bottom-brand small{color:#b9a16e;font-size:9px;margin-top:3px}
 
-/* ===== Modals/loading/contact ===== */
-.coming-soon-modal{position:fixed;inset:0;z-index:100000;background:rgba(4,4,5,.58);display:none;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(5px)}
-.coming-soon-modal.show{display:flex}
-.coming-soon-box{width:min(92vw,390px);background:#fff;border-radius:28px;padding:29px 24px;text-align:center;box-shadow:0 30px 80px #0006;border:1px solid #efe6d3}
-.coming-soon-icon{width:68px;height:68px;border-radius:22px;background:#111;color:#d7b45f;display:grid;place-items:center;margin:0 auto 14px;font-size:30px}.coming-soon-box h2{margin:0 0 7px}.coming-soon-box p{margin:0 0 20px;color:#77716a;font-size:13px;line-height:1.7}.coming-soon-close{border:0;border-radius:14px;background:#111;color:#fff;padding:11px 28px;font-weight:800;cursor:pointer}
-.ha-page-loading{position:fixed;inset:0;background:rgba(250,249,246,.92);z-index:100001;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px;backdrop-filter:blur(5px)}.ha-page-loading.show{display:flex}.ha-page-spinner{width:48px;height:48px;border:4px solid #e5dfd4;border-top-color:#b78a2e;border-radius:50%;animation:spin .8s linear infinite}.ha-page-loading-text{font-size:13px;font-weight:800;color:#333}
-@keyframes spin{to{transform:rotate(360deg)}}
-.contact-bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:1800;padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom));background:rgba(11,11,13,.96);border-top:1px solid #29251d;backdrop-filter:blur(16px)}
-.contact-bottom-bar a{width:min(780px,96%);margin:auto;min-height:52px;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;color:#fff;border:1px solid rgba(225,193,113,.24);border-radius:16px;background:linear-gradient(90deg,#111,#1d1a15)}
-.contact-bottom-bar b{color:#e2c16f}.contact-icon{width:31px;height:31px;border-radius:10px;background:#d6b25c;color:#111;display:grid;place-items:center}
-#haNetBadge{position:fixed;bottom:84px;left:12px;z-index:99998;background:#111;color:#fff;padding:8px 11px;border-radius:999px;font-size:11px;display:none;box-shadow:0 4px 18px #0004}
+/* MODAL / LOADING / SPLASH */
+.coming-soon-modal{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}.coming-soon-modal.show{display:flex}.coming-soon-box{width:min(92vw,390px);background:linear-gradient(155deg,#11181e,#05080b);border:1px solid rgba(239,189,94,.42);border-radius:26px;padding:30px 22px;text-align:center;box-shadow:0 25px 80px #000}.coming-soon-icon{font-size:49px}.coming-soon-box h2{margin:10px 0 8px;color:#f0bd5c}.coming-soon-box p{color:#9da3a9;line-height:1.7}.coming-soon-close{border:1px solid rgba(239,189,94,.6);border-radius:14px;background:#0a0e12;color:#f0bd5c;padding:12px 31px;font-size:16px;font-weight:800;cursor:pointer}
+.ha-page-loading{position:fixed;inset:0;background:rgba(2,4,6,.90);z-index:100001;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px}.ha-page-loading.show{display:flex}.ha-page-spinner{width:50px;height:50px;border:4px solid #252b30;border-top-color:#eebc5d;border-radius:50%;animation:spin .8s linear infinite}.ha-page-loading-text{font-size:14px;color:#d4d5d6}@keyframes spin{to{transform:rotate(360deg)}}
+#haSplash{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 36%,#131a20,#030609 48%,#010203);display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .45s ease,visibility .45s ease}#haSplash.hide{opacity:0;visibility:hidden;pointer-events:none}.splash-card{text-align:center;width:min(92vw,430px)}.splash-card .ha-logo{font-size:95px}.splash-title{font-size:28px;font-weight:850;margin-top:23px;direction:ltr}.splash-text{color:#9aa0a5;margin-top:7px}.splash-continue{margin-top:26px;border:1px solid rgba(239,189,94,.65);background:linear-gradient(180deg,#15181a,#080b0d);color:#efbd5e;padding:14px 35px;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 0 25px rgba(239,189,94,.08)}
+#haNetBadge{position:fixed;bottom:105px;left:12px;z-index:9998;background:#11171d;color:#fff;padding:8px 12px;border:1px solid #333c43;border-radius:20px;font-size:11px;display:none;box-shadow:0 3px 12px #0007}
 
-@media(max-width:760px){
-  body{padding-bottom:84px}
-  .topbar{min-height:64px;padding:8px 10px}.brand-logo{width:40px;height:40px}.brand-title{font-size:18px}.brand-sub{font-size:9px}.top-action{width:40px;height:40px;border-radius:13px}
-  .shell{width:95%}.hero{margin-top:12px;border-radius:24px;min-height:210px}.hero-inner{grid-template-columns:1fr;padding:25px 21px 42px}.hero h1{font-size:29px;margin-top:11px}.hero p{font-size:12px;line-height:1.75}.hero-mark{display:none}.hero-stats{gap:6px;margin-top:14px}.hero-chip{font-size:9px;padding:7px 9px}.eyebrow{font-size:10px}
-  .search-wrap{margin-top:-22px;width:91%}.search-box{border-radius:17px;padding:6px}.search-box input{height:49px;border-radius:13px;font-size:12px;padding-right:45px}.search-icon{right:20px}
-  .section-head{margin:24px 3px 11px}.section-head h2{font-size:20px}.section-head p{font-size:10px}
-  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .card{min-height:124px;padding:11px 8px;border-radius:17px;text-align:center;display:flex;flex-direction:column;align-items:center}
-  .iconbox{width:42px;height:42px;border-radius:13px;margin-bottom:9px}.iconbox svg{width:21px;height:21px}.card h3{font-size:12px;margin-bottom:4px}.card p{font-size:8.5px;line-height:1.45;padding:0}.card-arrow{display:none}.badge{left:6px;top:6px;font-size:7px;padding:3px 5px}
-  .promo{border-radius:19px;padding:15px 14px}.promo strong{font-size:14px}.promo span{font-size:9px}.promo a{font-size:9px;padding:9px 11px;border-radius:11px}
-  .contact-bottom-bar{padding:8px 10px calc(8px + env(safe-area-inset-bottom))}.contact-bottom-bar a{min-height:48px;font-size:13px}
+@media(max-width:700px){
+  .shell{width:93%}.hero{min-height:350px;padding-inline:10px}.hero-controls{padding-inline:4px}.grid{gap:10px}.card{min-height:178px;padding:16px 7px 13px;border-radius:21px}.iconbox{width:61px;height:61px;border-radius:19px;font-size:34px;margin-bottom:11px}.card h2{font-size:14px}.card p{font-size:10px;line-height:1.45}.card h2::after{margin:7px auto 7px}.card .soon{font-size:7px;padding:3px 6px;top:7px;left:7px}.promo-pill{min-height:66px;margin-top:20px;padding-inline:17px}.promo-pill .ico{font-size:26px}.promo-pill .arrow{font-size:31px}.dec-laptop,.dec-cart{font-size:82px}.bottom-inner{height:80px}.bottom-brand{height:99px}.bottom-link .bi{font-size:25px}
 }
-@media(max-width:390px){.brand-sub{display:none}.brand-title{font-size:17px}.grid{gap:6px}.card{min-height:120px}.card h3{font-size:11px}.card p{font-size:8px}}
+@media(max-width:390px){.grid{gap:8px}.card{min-height:166px}.iconbox{width:56px;height:56px;font-size:31px}.card h2{font-size:13px}.card p{font-size:9px}.brand-name{font-size:36px}.ha-logo{font-size:70px}}
 </style>
 </head>
 <body>
@@ -158,110 +155,86 @@ body.drawer-open{overflow:hidden}
 
 <div id="haSplash" aria-label="شاشة الدخول">
   <div class="splash-card">
-    <img class="splash-logo" src="main.jpg" alt="HA Marketing">
-    <h2>HA Marketing</h2>
-    <p>كل ما تحتاجه في مكان واحد، بتجربة أبسط وأجمل.</p>
-    <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول <span>←</span></button>
+    <div class="ha-logo">HA</div>
+    <div class="splash-title">HA Marketing</div>
+    <div class="splash-text">مرحباً بك في عالمك الخاص</div>
+    <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button>
   </div>
 </div>
 
-<div class="topbar">
-  <button class="top-action" type="button" onclick="toggleMenu()" aria-label="القائمة">
-    <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-  </button>
-  <a class="brand" href="index.html" aria-label="HA Marketing">
-    <img class="brand-logo" src="main.jpg" alt="HA">
-    <span class="brand-copy"><span class="brand-title">HA Marketing</span><span class="brand-sub">خدمات أكثر • حياة أسهل</span></span>
-  </a>
-  <a class="top-action" href="account.html" aria-label="الحساب الشخصي">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-  </a>
+<section class="hero">
+  <div class="hero-controls">
+    <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
+    <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button>
+  </div>
+  <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div>
+  <div class="brand-hero">
+    <div class="ha-logo">HA</div>
+    <div class="brand-name"><span class="gold">HA</span> Marketing</div>
+    <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div>
+  </div>
+  <a class="promo-pill" href="#" data-coming-soon="1"><span class="arrow">‹</span><strong>قريباً سوف نفعل خدمة تسوق الآن</strong><span class="ico">🛒</span></a>
+</section>
+
+<div class="search-panel" id="searchPanel">
+  <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
 </div>
 
 <div class="shortcuts" id="shortcuts">
-  <div class="drawer-head"><div class="drawer-title">القائمة الرئيسية<small>تنقل سريع بين أقسام HA Marketing</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div>
+  <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div>
   <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a>
-  <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡</span>لوحة الإدارة</a>
+  <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a>
   <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a>
-  <a href="#" data-coming-soon="1"><span class="short-ico">🛒</span>تسوق الآن</a>
-  <a href="#" data-coming-soon="1"><span class="short-ico">⚙</span>طلب خدمة</a>
-  <a href="#" data-coming-soon="1"><span class="short-ico">✉</span>الدردشة - قريباً</a>
-  <a href="news.html"><span class="short-ico">▤</span>آخر الأخبار</a>
-  <a href="religious.html"><span class="short-ico">☪</span>الأمور الدينية</a>
-  <a href="study.html"><span class="short-ico">▦</span>دراسة</a>
-  <a href="entertainment.html"><span class="short-ico">◉</span>ترفيه</a>
-  <a href="#" data-coming-soon="1"><span class="short-ico">⚽</span>رياضة</a>
+  <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a>
+  <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a>
+  <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a>
+  <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a>
+  <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a>
+  <a href="study.html"><span class="short-ico">📚</span>دراسة</a>
+  <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a>
+  <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a>
   <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a>
   <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div>
 
-<div class="shell">
-  <section class="hero">
-    <div class="hero-inner">
-      <div>
-        <div class="eyebrow"><span class="eyebrow-dot"></span> منصتك اليومية المتكاملة</div>
-        <h1>كل خدماتك<br>أقرب مما تتخيل</h1>
-        <p>تسوق، خدمات، دراسة، أخبار، ترفيه ونقل — واجهة واحدة تجمع احتياجاتك وتوصلك إلى القسم المطلوب بسرعة.</p>
-        <div class="hero-stats"><span class="hero-chip">⚡ وصول سريع</span><span class="hero-chip">🔒 تجربة آمنة</span><span class="hero-chip">📱 مصمم للموبايل</span></div>
-      </div>
-      <div class="hero-mark"><div class="hero-mark-inner"><div class="ha">HA</div><small>MARKETING</small></div></div>
-    </div>
-  </section>
+<main class="shell content">
+  <div class="grid" id="mainGrid">
+    <a class="card c-shop" href="#" data-coming-soon="1" data-search="تسوق الآن متجر منتجات شراء"><span class="soon">قريباً</span><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a>
+    <a class="card c-service" href="#" data-coming-soon="1" data-search="طلب خدمة خدمات صيانة"><span class="soon">قريباً</span><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a>
+    <a class="card c-chat" href="#" data-coming-soon="1" data-search="الدردشة دردشة تواصل"><span class="soon">قريباً</span><div class="iconbox">💬</div><h2>الدردشة</h2><p>تواصل مع الآخرين بسهولة</p></a>
 
-  <div class="search-wrap">
-    <div class="search-box"><span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." oninput="searchCards()" autocomplete="off"></div>
+    <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a>
+    <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a>
+    <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a>
+
+    <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a>
+    <a class="card c-sports" href="#" data-coming-soon="1" data-search="رياضة كرة القدم جم لياقة"><span class="soon">قريباً</span><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a>
+    <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك"><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a>
+    <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div>
   </div>
+</main>
 
-  <div class="section-head"><div><div class="section-kicker">استكشف HA</div><h2>الأقسام الرئيسية</h2></div><p>اختر ما تحتاجه وابدأ مباشرة</p></div>
+<div class="coming-soon-modal" id="comingSoonModal" aria-hidden="true"><div class="coming-soon-box"><div class="coming-soon-icon">⌛</div><h2>قريباً</h2><p>هذا القسم قيد التجهيز وسيكون متاحاً قريباً.</p><button class="coming-soon-close" id="comingSoonClose" type="button">حسناً</button></div></div>
 
-  <main class="grid" id="mainGrid">
-    <a class="card featured" href="#" data-coming-soon="1" data-search="تسوق الآن متجر منتجات شراء">
-      <span class="badge">قريباً</span><div class="iconbox"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg></div><h3>تسوق الآن</h3><p>منتجات مختارة وتجربة تسوق أسهل.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="#" data-coming-soon="1" data-search="طلب خدمة خدمات صيانة">
-      <span class="badge">قريباً</span><div class="iconbox"><svg viewBox="0 0 24 24"><path d="M14 6a4 4 0 0 0-5 5L3 17l4 4 6-6a4 4 0 0 0 5-5l-3 3-3-3 3-3Z"/></svg></div><h3>طلب خدمة</h3><p>اطلب الخدمة المناسبة بخطوات واضحة.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="#" data-coming-soon="1" data-search="الدردشة دردشة تواصل chat">
-      <span class="badge">قريباً</span><div class="iconbox"><svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/><path d="M8 9h8M8 13h5"/></svg></div><h3>الدردشة</h3><p>تواصل حسب الفئة والاهتمام.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="news.html" data-search="آخر الأخبار اخبار جديد تحديثات">
-      <div class="iconbox"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><h3>آخر الأخبار</h3><p>آخر المستجدات والتحديثات في مكان واحد.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="religious.html" data-search="الأمور الدينية دينية القرآن ادعية زيارات">
-      <div class="iconbox"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 1 0 7 7c0-.6-.1-1.2-.2-1.8A8 8 0 1 1 12 3Z"/><path d="m17.5 3 .7 1.7L20 5.4l-1.8.7-.7 1.7-.7-1.7-1.8-.7 1.8-.7.7-1.7Z"/></svg></div><h3>الأمور الدينية</h3><p>القرآن والأدعية والزيارات والمزيد.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card featured" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل ملفات حاسبة ترجمة">
-      <div class="iconbox"><svg viewBox="0 0 24 24"><path d="m3 10 9-5 9 5-9 5-9-5Z"/><path d="M7 13v4c3 2 7 2 10 0v-4M21 10v6"/></svg></div><h3>الدراسة</h3><p>أدوات ذكية ومحتوى يساعدك على الإنجاز.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="entertainment.html" data-search="ترفيه العاب معلومات عامة اسئلة دومينو شطرنج طاولة">
-      <div class="iconbox"><svg viewBox="0 0 24 24"><path d="M8 8h8a5 5 0 0 1 5 5v3a3 3 0 0 1-5.1 2.1L14 16h-4l-1.9 2.1A3 3 0 0 1 3 16v-3a5 5 0 0 1 5-5Z"/><path d="M7 12h4M9 10v4M16 12h.01M18 14h.01"/></svg></div><h3>الترفيه</h3><p>ألعاب وأسئلة ومحتوى ممتع متنوع.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="#" data-coming-soon="1" data-search="رياضة جم جيم كرة القدم لياقة تمارين">
-      <span class="badge">قريباً</span><div class="iconbox"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-1 4h-4L9 9l3-2ZM6 10l3-1M15 9l3 1M10 13l-2 4M14 13l2 4"/></svg></div><h3>الرياضة</h3><p>كرة القدم واللياقة والأنشطة الرياضية.</p><span class="card-arrow">‹</span>
-    </a>
-    <a class="card" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل طلب سيارة تكتك">
-      <div class="iconbox"><svg viewBox="0 0 24 24"><path d="m5 11 2-5h10l2 5M4 11h16v7H4z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M7 14h.01M17 14h.01"/></svg></div><h3>تكسي أو مندوب</h3><p>طلب نقل أو توصيل بسهولة وسرعة.</p><span class="card-arrow">‹</span>
-    </a>
-    <div id="noResults" class="no-results">ما لقينا قسم مطابق للبحث.</div>
-  </main>
-
-  <div class="promo"><div class="promo-copy"><strong>كل شيء صار أقرب</strong><span>واجهة واحدة، أقسام واضحة وتجربة مصممة حتى تخلّص شغلك أسرع.</span></div><a href="account.html">حسابي ←</a></div>
-</div>
-
-<div class="coming-soon-modal" id="comingSoonModal" aria-hidden="true"><div class="coming-soon-box"><div class="coming-soon-icon">⌛</div><h2>قريباً</h2><p>هذا القسم قيد التجهيز حالياً، وراح يكون متاح ضمن تحديثات HA Marketing القادمة.</p><button class="coming-soon-close" id="comingSoonClose" type="button">حسناً</button></div></div>
-
-<div class="contact-bottom-bar"><a href="call-us.html"><span class="contact-icon">☎</span><span><b>اتصل بنا</b> — نحن هنا لخدمتك</span></a></div>
+<nav class="bottom-nav">
+  <div class="bottom-inner">
+    <a class="bottom-link" href="call-us.html"><span class="bi">☎</span><span>اتصل بنا</span></a>
+    <div class="bottom-brand"><div class="mini-ha">HA</div><strong>HA Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div>
+    <a class="bottom-link active" href="index.html"><span class="bi">⌂</span><span>الرئيسية</span></a>
+  </div>
+</nav>
 <div id="haNetBadge">📡 وضع بدون إنترنت</div>
 
 <script>
+function toggleSearch(){const p=document.getElementById('searchPanel');p.classList.toggle('show');if(p.classList.contains('show'))setTimeout(()=>document.getElementById('searchInput')?.focus(),80)}
 function toggleMenu(){const m=document.getElementById('shortcuts'),o=document.getElementById('drawerOverlay'),open=!m.classList.contains('show');m.classList.toggle('show',open);o.classList.toggle('show',open);document.body.classList.toggle('drawer-open',open);if(open)history.pushState({haMenuGuard:true},'',location.href)}
 function closeMenu(){document.getElementById('shortcuts')?.classList.remove('show');document.getElementById('drawerOverlay')?.classList.remove('show');document.body.classList.remove('drawer-open')}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();document.getElementById('searchPanel')?.classList.remove('show')}});
 window.addEventListener('popstate',()=>{const m=document.getElementById('shortcuts');if(m?.classList.contains('show')){closeMenu();history.pushState({haMenuGuard:true},'',location.href)}});
 
 let haSearchTimer=null;
-function searchCards(){const box=document.querySelector('.search-box');box?.classList.add('searching');clearTimeout(haSearchTimer);haSearchTimer=setTimeout(()=>{const v=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let n=0;document.querySelectorAll('#mainGrid .card').forEach(c=>{const ok=((c.innerText||'')+' '+(c.dataset.search||'')).toLowerCase().includes(v);c.style.display=ok?'flex':'none';if(ok)n++});const nr=document.getElementById('noResults');if(nr)nr.style.display=n?'none':'block';box?.classList.remove('searching')},100)}
+function searchCards(){clearTimeout(haSearchTimer);haSearchTimer=setTimeout(()=>{const v=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let n=0;document.querySelectorAll('#mainGrid .card').forEach(c=>{const ok=((c.innerText||'')+' '+(c.dataset.search||'')).toLowerCase().includes(v);c.style.display=ok?'flex':'none';if(ok)n++});const nr=document.getElementById('noResults');if(nr)nr.style.display=n?'none':'block'},80)}
 
 function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading'),t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;x?.classList.add('show')}
 function hidePageLoading(){document.getElementById('haPageLoading')?.classList.remove('show')}
@@ -269,7 +242,7 @@ async function continueLogin(){showPageLoading('جاري التحقق من تس�
 
 document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true);
 
-(function(){const modal=document.getElementById('comingSoonModal'),closeBtn=document.getElementById('comingSoonClose');function open(){closeMenu();modal?.classList.add('show');modal?.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}function close(){modal?.classList.remove('show');modal?.setAttribute('aria-hidden','true');document.body.style.overflow=''}document.querySelectorAll('[data-coming-soon="1"]').forEach(link=>link.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();open()}));closeBtn?.addEventListener('click',close);modal?.addEventListener('click',e=>{if(e.target===modal)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal?.classList.contains('show'))close()})})();
+(function(){const modal=document.getElementById('comingSoonModal'),closeBtn=document.getElementById('comingSoonClose');function open(){closeMenu();document.getElementById('searchPanel')?.classList.remove('show');modal?.classList.add('show');modal?.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}function close(){modal?.classList.remove('show');modal?.setAttribute('aria-hidden','true');document.body.style.overflow=''}document.querySelectorAll('[data-coming-soon="1"]').forEach(link=>link.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();open()}));closeBtn?.addEventListener('click',close);modal?.addEventListener('click',e=>{if(e.target===modal)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal?.classList.contains('show'))close()})})();
 
 (async function(){try{if(!window.supabase)return;const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const {data:{session}}=await adb.auth.getSession();if(!session)return;const {data:isAdmin}=await adb.rpc('is_app_admin');if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex'}}catch(e){console.warn('admin link',e)}})();
 
