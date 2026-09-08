@@ -147,7 +147,7 @@ body{
 <section class="hero">
   <div class="icon">📚</div>
   <h1>القسم الدراسي</h1>
-  <p>اختر القسم الذي تحتاجه من المدارس أو الجامعات أو الطلاب أو الخدمات الدراسية السريعة.</p>
+  <p>اختر القسم الذي تحتاجه من المدارس أو الجامعات أو الطلاب والأدوات الدراسية.</p>
 </section>
 
 <main class="grid" id="mainGrid">
@@ -169,11 +169,11 @@ body{
     <p>من الروضة إلى الدكتوراه</p>
   </button>
 
-  <button class="card" type="button" onclick="openPanel('quick')">
-    <div class="icon">⚡</div>
-    <h2>خدمات دراسية سريعة</h2>
-    <p>قسم مخصص للخدمات الدراسية السريعة</p>
-  </button>
+  <a class="card" href="file-tools.html" style="text-decoration:none">
+    <div class="icon">📁</div>
+    <h2>تحويل وتعديل الملفات</h2>
+    <p>تحويل وتعديل الملفات مباشرة من داخل التطبيق</p>
+  </a>
 
   <a class="card" href="study-language.html" style="text-decoration:none">
     <div class="icon">🇬🇧</div>
@@ -187,34 +187,10 @@ body{
     <p>بسيطة ومتقدمة وحل المسائل من صورة</p>
   </a>
 
-  <a class="card" href="study-directory.html" style="text-decoration:none">
-    <div class="icon">🔎</div>
-    <h2>دليل الدراسة</h2>
-    <p>مدارس، جامعات، معاهد، مدرسون ومراكز تقوية</p>
-  </a>
-
-  <button class="card" type="button" onclick="openPanel('organize')">
-    <div class="icon">🗓️</div>
-    <h2>تنظيم الدراسة</h2>
-    <p>مهام، ملاحظات وروابط سريعة محفوظة على جهازك</p>
-  </button>
-
-  <a class="card" href="study-profile.html" style="text-decoration:none">
-    <div class="icon">🔔</div>
-    <h2>ملفي الدراسي والتبليغات</h2>
-    <p>حدد مدرستك وصفك واستلم التبليغات الخاصة بك</p>
-  </a>
-
   <a class="card" href="study-planner.html" style="text-decoration:none">
     <div class="icon">📅</div>
     <h2>الجدول والتقويم</h2>
     <p>6 محاضرات يومياً من السبت للخميس ومواعيد الامتحانات</p>
-  </a>
-
-  <a class="card" href="study-library.html" style="text-decoration:none">
-    <div class="icon">📚</div>
-    <h2>المكتبة الدراسية</h2>
-    <p>كتب وملازم ومحاضرات وأسئلة حسب المرحلة والمادة</p>
   </a>
 
   <a class="card" href="education-news.html" style="text-decoration:none">
@@ -234,10 +210,7 @@ body{
     <h2>النقل الطلابي</h2>
     <p>خدمات نقل الطلبة للمدارس والجامعات</p>
   </a>
-  <a class="card" href="study-grades.html" style="text-decoration:none"><div class="icon">📊</div><h2>الدرجات والتقييم</h2><p>يومي، شهري، إملاء، سعي وامتحانات مع مستوى تلقائي</p></a>
-  <a class="card" href="parent-portal.html" style="text-decoration:none"><div class="icon">👨‍👩‍👧</div><h2>ولي أمر الطالب</h2><p>متابعة الدرجات والمعدل والمستوى الدراسي للطالب المرتبط</p></a>
   <a class="card" href="student-talents.html" style="text-decoration:none"><div class="icon">🎨</div><h2>مواهب الطلاب</h2><p>انشر صور الموهبة والتفاصيل وشاهد مواهب الطلاب</p></a>
-  <a class="card" href="study-sports-challenges.html" style="text-decoration:none"><div class="icon">🏆</div><h2>التحديات الرياضية</h2><p>تحديات طلابية رياضية، مشاركة النتائج والترتيب</p></a>
 </main>
 
 <section class="panel" id="schools">
@@ -307,43 +280,6 @@ body{
   </div>
 </section>
 
-<section class="panel" id="quick">
-  <div class="panel-head">
-    <h2>⚡ خدمات دراسية سريعة</h2>
-    <button class="close-panel" type="button" onclick="closePanel()">×</button>
-  </div>
-  <div class="subgrid">
-    <a class="subcard" href="file-tools.html" style="text-decoration:none;color:#111">
-      <div class="subicon">📁</div><strong>تحويل وتعديل الملفات</strong>
-    </a>
-    <a class="subcard" href="study-language.html" style="text-decoration:none;color:#111">
-      <div class="subicon">🌐</div><strong>الترجمة والإنجليزية</strong>
-    </a>
-    <a class="subcard" href="math-calculator.html" style="text-decoration:none;color:#111">
-      <div class="subicon">🧮</div><strong>الحاسبة والمعادلات</strong>
-    </a>
-    <a class="subcard" href="study-directory.html" style="text-decoration:none;color:#111">
-      <div class="subicon">🔎</div><strong>دليل الدراسة</strong>
-    </a>
-    <a class="subcard" href="study-library.html" style="text-decoration:none;color:#111">
-      <div class="subicon">📚</div><strong>المكتبة الدراسية</strong>
-    </a>
-    <a class="subcard" href="study-planner.html" style="text-decoration:none;color:#111">
-      <div class="subicon">📅</div><strong>الجدول والتقويم</strong>
-    </a>
-  </div>
-</section>
-
-
-<section class="panel" id="organize">
-  <div class="panel-head"><h2>🗓️ تنظيم الدراسة</h2><button class="close-panel" type="button" onclick="closePanel()">×</button></div>
-  <div class="note" style="text-align:right">
-    <label><b>مهمة أو ملاحظة جديدة</b></label>
-    <div style="display:flex;gap:8px;margin-top:10px"><input id="studyNote" style="flex:1;padding:11px;border:1px solid #ccc;border-radius:10px" placeholder="مثال: مراجعة الفصل الثالث"><button onclick="addStudyNote()" style="border:0;border-radius:10px;background:#111;color:#fff;padding:0 16px">إضافة</button></div>
-    <div id="studyNotes" style="margin-top:12px"></div>
-  </div>
-</section>
-
 <script>
 let currentPanel = null;
 
@@ -363,7 +299,6 @@ function closePanel(){
   currentPanel = null;
 }
 
-function renderStudyNotes(){const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');const el=document.getElementById('studyNotes');if(!el)return;el.innerHTML=a.length?a.map((x,i)=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:9px;border-bottom:1px solid #eee"><span>${String(x).replace(/[&<>]/g,'')}</span><button onclick="delStudyNote(${i})" style="border:0;background:#eee;border-radius:7px">حذف</button></div>`).join(''):'لا توجد مهام بعد.'}function addStudyNote(){const v=document.getElementById('studyNote').value.trim();if(!v)return;const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');a.unshift(v);localStorage.setItem('ha_study_notes',JSON.stringify(a.slice(0,100)));document.getElementById('studyNote').value='';renderStudyNotes()}function delStudyNote(i){const a=JSON.parse(localStorage.getItem('ha_study_notes')||'[]');a.splice(i,1);localStorage.setItem('ha_study_notes',JSON.stringify(a));renderStudyNotes()}renderStudyNotes();
 
 
 const STUDY_SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
