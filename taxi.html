@@ -1715,7 +1715,7 @@ document.getElementById('order').onclick = async ()=>{
     return;
   }
 
-  const rideRef = db.ref('rides').push();
+  const rideRef = db.ref.push();
 
   activeRideId = rideRef.key;
   activeRideRef = rideRef;
