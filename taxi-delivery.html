@@ -16,23 +16,7 @@ h1{text-align:center;margin-bottom:8px}
 .card h2{margin:0 0 10px;font-size:25px}
 .card p{margin:0;color:#666;line-height:1.7}
 .back{display:block;margin-top:20px;background:#eaeaea;color:#111;text-decoration:none;text-align:center;padding:13px;border-radius:10px}
-.driver-balance{
-  width:180px;
-  margin:0 auto 15px;
-  background:#fff;
-  border-radius:12px;
-  padding:10px;
-  text-align:center;
-  font-size:14px;
-  box-shadow:0 3px 10px rgba(0,0,0,.10);
-}
-
-.driver-balance b{
-  display:block;
-  margin-top:4px;
-  font-size:16px;
-}
-  @media(max-width:800px){.grid{grid-template-columns:1fr}.card{min-height:180px}}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.card{min-height:180px}}
 
 /* HA Marketing mobile compact grid: 3 cards per row */
 @media (max-width: 700px){
@@ -42,12 +26,12 @@ h1{text-align:center;margin-bottom:8px}
   }
   .card,.menu-card,.room,.category,.category-card,.service-card,.game-card,.option-card,.quick-card,.tool-card,.subcard{
     min-width:0 !important;
-    min-height:150px !important;
-    padding:15px 8px !important;
-    border-radius:16px !important;
-}
+    min-height:88px !important;
+    padding:9px 5px !important;
+    border-radius:12px !important;
+  }
   .card .icon,.menu-card .icon,.room .icon,.category .icon,.category-card .icon,.service-card .icon,.game-card .icon,.option-card .icon,.quick-card .icon,.tool-card .icon,.subcard .subicon{
-   font-size:45px !important;
+    font-size:27px !important;
     margin-bottom:4px !important;
   }
   .card h2,.card h3,.menu-card h2,.menu-card h3,.category-card h2,.category-card h3,.service-card h2,.service-card h3,.game-card h2,.game-card h3,.option-card h2,.quick-card h2,.tool-card h2,.subcard strong{
@@ -61,193 +45,40 @@ h1{text-align:center;margin-bottom:8px}
     margin:2px 0 !important;
   }
 }
-  .driver-balance button{
-  margin-top:8px;
-  border:0;
-  background:#111;
-  color:#fff;
-  padding:7px 12px;
-  border-radius:8px;
-}
-
-.balance-box{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#0006;
-  z-index:9999;
-  align-items:center;
-  justify-content:center;
-}
-
-.balance-box.show{
-  display:flex;
-}
-
-.balance-card{
-  background:#fff;
-  padding:20px;
-  border-radius:15px;
-  width:260px;
-  text-align:center;
-}
-
-.balance-card input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-
-.balance-card button{
-  width:100%;
-  padding:10px;
-  border:0;
-  border-radius:8px;
-  background:#111;
-  color:#fff;
-}
-
-
-.balance-card{
-  position:relative;
-}
-
-#balanceMessage{
-  margin-top:10px;
-  font-size:14px;
-}
-  .balance-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.close-balance{
-  width:25px;
-  height:25px;
-  border:0;
-  border-radius:6px;
-  background:#e00;
-  color:#fff;
-  font-size:18px;
-  line-height:20px;
-  cursor:pointer;
-}
 </style>
+<meta name="theme-color" content="#05080b">
+
+<link rel="stylesheet" href="css/premium-dark-gold.css?v=20260908-3">
 </head>
 <body>
 <div class="wrap">
 <h1>🚕 طلب تكسي أو مندوب</h1>
 <p class="subtitle">اختر نوع الخدمة التي تحتاجها</p>
 
-<div class="driver-balance">
-  💰 رصيد السائق:
-  <b id="driverBalance">0 د.ع</b>
-  <button onclick="openBalanceCode()">+ إضافة كود رصيد</button>
+<div class="grid">
+ <a class="card" href="taxi.html">
+   <div class="icon">🚕</div>
+   <h2>تكسي</h2>
+   <p>اطلب سيارة وحدد موقع الانطلاق والوجهة</p>
+ </a>
+
+ <a class="card" href="delivery.html">
+   <div class="icon">🛵</div>
+   <h2>مندوب</h2>
+   <p>اطلب مندوب لاستلام أو توصيل طلبك</p>
+ </a>
+
+ <a class="card" href="tuktuk.html">
+   <div class="icon">🛺</div>
+   <h2>تكتك</h2>
+   <p>اطلب تكتك وحدد موقع الانطلاق والوجهة</p>
+ </a>
 </div>
-
-<div id="balanceCodeBox" class="balance-box">
-  <div class="balance-card">
-
-    <div class="balance-head">
-      <h3>إضافة كود الرصيد</h3>
-      <button class="close-balance" onclick="closeBalanceCode()">×</button>
-    </div>
-
-    <input id="balanceCodeInput" placeholder="اكتب الكود">
-
-    <button onclick="addBalanceCode()">تم</button>
-
-    <p id="balanceMessage"></p>
-  </div>
-</div>
- 
-   <div class="grid">
-
-<a class="card" href="taxi.html">
-  <div class="icon">🚕</div>
-  <h2>تكسي</h2>
-  <p>اطلب سيارة وحدد موقع الانطلاق والوجهة</p>
-</a>
-
-<a class="card" href="delivery.html">
-  <div class="icon">🛵</div>
-  <h2>مندوب</h2>
-  <p>اطلب مندوب لاستلام أو توصيل طلبك</p>
-</a>
-
-<a class="card" href="tuktuk.html">
-  <div class="icon">🛺</div>
-  <h2>تكتك</h2>
-  <p>اطلب تكتك وحدد موقع الانطلاق والوجهة</p>
-</a>
-
-<a class="card" href="#" onclick="showSoon();return false;">
-  <div class="icon">🎓</div>
-  <h2>خط طلاب</h2>
-  <p>خدمة نقل الطلاب</p>
-</a>
-
-<a class="card" href="#" onclick="showSoon();return false;">
-  <div class="icon">👔</div>
-  <h2>خط موظفين</h2>
-  <p>خدمة نقل الموظفين</p>
-</a>
-
-<a class="card" href="driver.html">
-  <div class="icon">🚚</div>
-  <h2>واجهة السائق</h2>
-  <p>استقبال الطلبات حسب قسم السائق</p>
-</a>
-
-<a class="card" href="transport-registration.html">
-  <div class="icon">📝</div>
-  <h2>تسجيل سائق</h2>
-  <p>تسجيل سائق تكسي أو تكتك أو مندوب</p>
-</a>
-
-</div>
-
-
-
-
 
 <a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
-
 </div>
-<script>
-function openBalanceCode(){
-  document.getElementById('balanceCodeBox').classList.add('show');
-}
-
-function closeBalanceCode(){
-  document.getElementById('balanceCodeBox').classList.remove('show');
-}
-
-function addBalanceCode(){
-  let code=document.getElementById('balanceCodeInput').value.trim();
-
-  if(code===""){
-    alert("المربع فارغ");
-    return;
-  }
-
-  if(code==="HA100"){
-    alert("تم إضافة الرصيد");
-    closeBalanceCode();
-  }else{
-    alert("هذا الكود لا يعمل");
-  }
-}
-
-function showSoon(){
- alert("قريباً");
-}
-</script>
-
-</body>
+<div style="position:fixed;left:14px;bottom:70px;z-index:999;display:flex;flex-direction:column;gap:8px">
+<a href="driver.html" style="display:block;background:#0c6b2a;color:#fff;text-decoration:none;padding:10px 13px;border-radius:12px;text-align:center">🚚 واجهة السائق / المندوب</a>
+<a href="transport-registration.html" style="display:block;background:#111;color:#fff;text-decoration:none;padding:10px 13px;border-radius:12px;text-align:center">🚕 تسجيل سائق/مندوب</a>
+</div></body>
 </html>
-

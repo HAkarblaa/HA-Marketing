@@ -932,6 +932,9 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   }
 }
 </style>
+<meta name="theme-color" content="#05080b">
+
+<link rel="stylesheet" href="css/premium-dark-gold.css?v=20260908-3">
 </head>
 
 <body class="delivery-stage-1">
@@ -1183,9 +1186,10 @@ extraSheet.addEventListener('click',e=>{
 const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
 
 // خريطة فاتحة وأقل تفاصيل
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
  maxZoom:19,
- attribution:'&copy; OpenStreetMap contributors'
+ subdomains:'abcd',
+ attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
 L.control.zoom({position:'topright'}).addTo(map);
@@ -1193,30 +1197,6 @@ L.control.zoom({position:'topright'}).addTo(map);
 let mode='start';
 let start=null,end=null;
 let sm=null,em=null,line=null;
- async function drawRoute(){
- if(!start || !end) return;
-
- try{
-  const url=`https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
-
-  const res=await fetch(url);
-  const data=await res.json();
-
-  const coords=data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
-
-  if(line) map.removeLayer(line);
-
-  line=L.polyline(coords,{
-    color:'#2563eb',
-    weight:5
-  }).addTo(map);
-
-  map.fitBounds(line.getBounds(),{padding:[40,40]});
-
- }catch(e){
-  console.log(e);
- }
-}
 let routeKm=0,routeMin=0,pickupMin=0;
 let selected=document.querySelector('.type.selected');
 
@@ -1277,7 +1257,6 @@ document.getElementById('stepSelectBtn').onclick=()=>{
       if(sm) map.removeLayer(sm);
       sm=L.marker(snapped,{icon:startIcon()}).addTo(map).bindPopup('الاستلام');
       calc();
-     
     }else if(currentMode==='end' && end){
       end=snapped;
       if(em) map.removeLayer(em);
@@ -1354,8 +1333,7 @@ function setPoint(kind,p,label){
    document.getElementById('placeResults').style.display='none';
  }
 
-calc();
-drawRoute();
+ calc();
 }
 
 
@@ -1624,6 +1602,7 @@ document.querySelectorAll('.type').forEach(c=>{
  };
 });
 
+let activeDeliveryRideId=null;
 let activeDeliveryRideRef=null;
 let deliveryTrackingMap=null;
 let deliveryDriverMarker=null;
@@ -1804,18 +1783,13 @@ function listenDeliveryRide(rideId){
   });
 }
 
-const deliveryPostBack=document.getElementById('deliveryPostBack');
+document.getElementById('deliveryPostBack').onclick=()=>{
+  document.getElementById('deliveryPostScreen').classList.remove('show');
+};
 
-if(deliveryPostBack){
-  deliveryPostBack.onclick=()=>{
-    const screen=document.getElementById('deliveryPostScreen');
-    if(screen) screen.classList.remove('show');
-  };
-}
- 
+document.getElementById('deliveryCancelBtn').onclick=()=>openDeliveryCancelReason();
+document.getElementById('deliverySearchCancelBtn').onclick=()=>openDeliveryCancelReason();
 
-let activeDeliveryRideId = null;
- 
 const savedDeliveryId=localStorage.getItem('ha_active_delivery');
 if(savedDeliveryId){
   HA_FirebaseAuth.ready().then(()=>db.ref('rides/'+savedDeliveryId).once('value')).then(s=>{
@@ -2332,11 +2306,8 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
 <script>
 window.addEventListener('load',()=>{
   try{
- const id=(typeof activeDeliveryRideId!=='undefined' && activeDeliveryRideId) || localStorage.getItem('ha_active_delivery');
-
-if(id && window.HATransportCall) {
-  HATransportCall.listenForIncoming(id,'customer');
-}
+    const id=activeDeliveryRideId || localStorage.getItem('ha_active_delivery');
+    if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'customer');
   }catch(e){console.error(e)}
 });
 </script>

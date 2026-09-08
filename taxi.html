@@ -932,6 +932,9 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   }
 }
 </style>
+<meta name="theme-color" content="#05080b">
+
+<link rel="stylesheet" href="css/premium-dark-gold.css?v=20260908-3">
 </head>
 
 <body>
@@ -1026,7 +1029,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 <div class="order" id="orderArea">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
- <button id="order">تأكيد التكسي</button>
+  <button id="order" disabled>تأكيد التكسي</button>
 </div>
 
 
@@ -1260,9 +1263,10 @@ extraSheet.addEventListener('click',e=>{
 const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
 
 // خريطة فاتحة وأقل تفاصيل
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
  maxZoom:19,
- attribution:'&copy; OpenStreetMap contributors'
+ subdomains:'abcd',
+ attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
 L.control.zoom({position:'topright'}).addTo(map);
@@ -1270,7 +1274,6 @@ L.control.zoom({position:'topright'}).addTo(map);
 let mode='start';
 let start=null,end=null;
 let sm=null,em=null,line=null;
- let activeRideId = null;
 let routeKm=0,routeMin=0,pickupMin=0;
 let selected=document.querySelector('.type.selected');
 
@@ -1388,31 +1391,8 @@ function setPoint(kind,p,label){
  }
 
  calc();
-drawRoute();
 }
-async function drawRoute(){
- if(!start || !end) return;
 
- try{
-   const url=`https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
-   const res=await fetch(url);
-   const data=await res.json();
-
-   const coords=data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
-
-   if(line) map.removeLayer(line);
-
-   line=L.polyline(coords,{
-     color:'#2563eb',
-     weight:5
-   }).addTo(map);
-
-   map.fitBounds(line.getBounds(),{padding:[40,40]});
-
- }catch(e){
-   console.log('route error',e);
- }
-}
 
 
 locateBtn.onclick=()=>{
@@ -1679,137 +1659,68 @@ document.querySelectorAll('.type').forEach(c=>{
  };
 });
 
-
+let activeRideId=null;
 let activeRideRef=null;
 
-document.getElementById('order').onclick = async ()=>{
+order.onclick=async()=>{
+  if(!start || !end || !selected || !selected.dataset.price)return;
 
-  const orderBtn = document.getElementById('order');
+  order.disabled=true;
+  const oldText=order.textContent;
+  order.textContent='جاري إرسال الطلب...';
 
-  if(!start || !end || !selected || !selected.dataset.price){
-    alert('حدد الانطلاق والوصول واختر نوع السيارة');
-    return;
-  }
-
-  orderBtn.disabled = true;
-  const oldText = orderBtn.textContent;
-  orderBtn.textContent = 'جاري إرسال الطلب...';
-
-  const realCustomer = await HA_TransportProfile.customerOrLogin();
-
-  if(!realCustomer){
-    orderBtn.disabled = false;
-    orderBtn.textContent = oldText;
-    return;
-  }
+  const realCustomer=await HA_TransportProfile.customerOrLogin();
+  if(!realCustomer){ order.disabled=false; order.textContent=oldText; return; }
 
   let fbUser;
-
-  try{
-    fbUser = await HA_FirebaseAuth.ready();
-  }catch(err){
+  try{ fbUser=await HA_FirebaseAuth.ready(); }catch(err){
     console.error(err);
-    alert('تعذر الاتصال بـ Firebase');
-    orderBtn.disabled = false;
-    orderBtn.textContent = oldText;
-    return;
+    alert('تعذر تأمين الاتصال بـ Firebase. فعّل Anonymous في Firebase Authentication ثم حاول مجددًا.');
+    order.disabled=false; order.textContent=oldText; return;
   }
 
-  const rideRef = db.ref.push();
+  const rideRef=db.ref('rides').push();
+  activeRideId=rideRef.key;
+  activeRideRef=rideRef;
 
-  activeRideId = rideRef.key;
-  activeRideRef = rideRef;
-
-  const rideData = {
-    customerUid: fbUser.uid,
-    serviceType: 'taxi',
-    status: 'searching',
-    createdAt: firebase.database.ServerValue.TIMESTAMP,
-
-    customer: realCustomer,
-
-    pickup:{
-      lat:start.lat,
-      lng:start.lng
-    },
-
-    destination:{
-      lat:end.lat,
-      lng:end.lng
-    },
-
+  const rideData={
+    customerUid:fbUser.uid,
+    status:'searching',
+    createdAt:firebase.database.ServerValue.TIMESTAMP,
+    customer:realCustomer,
+    pickup:{lat:start.lat,lng:start.lng},
+    destination:{lat:end.lat,lng:end.lng},
     vehicleType:selected.dataset.name,
     price:Number(selected.dataset.price),
-
-    distanceKm:Number(routeKm || 0),
-    tripMinutes:Number(routeMin || 0),
-
+    distanceKm:Number(routeKm||0),
+    tripMinutes:Number(routeMin||0),
     pricing:{
-      routeBase:Number(
-        selected.dataset.basePrice ||
-        selected.dataset.price ||
-        0
-      ),
-      extras:Number(selected.dataset.extraPrice || 0),
-      total:Number(selected.dataset.price || 0),
+      routeBase:Number(selected.dataset.basePrice||selected.dataset.price||0),
+      extras:Number(selected.dataset.extraPrice||0),
+      total:Number(selected.dataset.price||0),
       calculatedAt:firebase.database.ServerValue.TIMESTAMP
     },
-
-    paymentMethod:
-      document.getElementById('taxiPaymentMethod')?.value || 'cash',
-
+    paymentMethod:(document.getElementById('taxiPaymentMethod')?.value||'cash'),
     extras:{
-      extraDestination:
-        extraDestinationCheck.checked
-        ? extraDestinationText.value.trim()
-        : '',
-
-      stop:
-        stopCheck.checked
-        ? stopText.value.trim()
-        : '',
-
+      extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
+      stop:stopCheck.checked ? stopText.value.trim() : '',
       luggage:!!luggageCheck.checked,
-
-      extraPassengers:
-        passengersCheck.checked
-        ? Number(extraPassengers.value)
-        : 0
+      extraPassengers:passengersCheck.checked ? Number(extraPassengers.value) : 0
     }
   };
 
   try{
-
     await rideRef.set(rideData);
-
-    await db
-      .ref('userRides/'+fbUser.uid+'/'+activeRideId)
-      .set(true)
-      .catch(()=>{});
-
-    localStorage.setItem(
-      'ha_active_ride',
-      activeRideId
-    );
-
+    await db.ref('userRides/'+fbUser.uid+'/'+activeRideId).set(true).catch(()=>{});
+    localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();
-
     listenToRide(activeRideId);
-
   }catch(err){
-
     console.error(err);
-
-    alert(
-      'تعذر إرسال طلب التكسي: ' +
-      (err?.message || 'خطأ غير معروف')
-    );
-
+    alert((err && (err.code==='PERMISSION_DENIED' || String(err.message||'').toLowerCase().includes('permission'))) ? 'تعذر إرسال الطلب لأن صلاحيات Firebase تمنع الحفظ. حدّث قواعد Realtime Database بالملف firebase-database.rules.json المرفق.' : 'تعذر إرسال الطلب إلى قاعدة البيانات. حاول مرة ثانية.');
   }finally{
-
-    orderBtn.disabled = false;
-    orderBtn.textContent = oldText;
-
+    order.disabled=false;
+    order.textContent=oldText;
   }
 };
 

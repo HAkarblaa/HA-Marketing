@@ -631,18 +631,9 @@ body:not(.trip-ready) #extraSummary{
   line-height:1.6;
 }
 .search-cancel-trip{
-  width:100%;
-  margin-top:14px;
-  border:1px solid #e0e0e0;
-  border-radius:12px;
-  padding:12px;
-  background:#f5f5f5;
-  color:#b42318;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
+  width:100%;margin-top:14px;border:1px solid #e0e0e0;border-radius:12px;
+  padding:12px;background:#f5f5f5;color:#b42318;font-size:15px;font-weight:700;cursor:pointer
 }
-.search-cancel-trip:active{transform:scale(.99)}
 .driver-card{
   display:none;
   background:#f8f8f8;
@@ -932,6 +923,9 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   }
 }
 </style>
+<meta name="theme-color" content="#05080b">
+
+<link rel="stylesheet" href="css/premium-dark-gold.css?v=20260908-3">
 </head>
 
 <body>
@@ -981,28 +975,24 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 <div id="tripSheet">
   <div class="trip-sheet-title">تفاصيل الرحلة</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px">
-    <a href="ride-history.html" style="text-decoration:none;text-align:center;background:#f3f4f6;color:#111;padding:9px;border-radius:12px;font-weight:800;font-size:12px">🕘 رحلاتي</a>
-    <button id="shareTripTopBtn" type="button" style="border:0;background:#f3f4f6;padding:9px;border-radius:12px;font-weight:800;font-size:12px">🛡️ مشاركة الرحلة</button>
-  </div>
   <div id="vehicleStep" style="display:none">
-    <div class="vehicle-title">اختر نوع السيارة</div>
+    <div class="vehicle-title">اختر نوع التكتك</div>
 
-    <div class="type selected" data-name="اقتصادي" data-base="1000" data-km="500" data-min="20">
+    <div class="type selected" data-name="تكتك اقتصادي" data-base="500" data-km="300" data-min="12">
       <div class="vehicle">🛺</div>
       <div class="info"><b>اقتصادي</b><small>أوفر</small></div>
       <div class="price">—</div>
     </div>
 
-    <div class="type" data-name="عادي" data-base="1500" data-km="650" data-min="25">
+    <div class="type" data-name="تكتك عادي" data-base="750" data-km="400" data-min="15">
       <div class="vehicle">🛺</div>
       <div class="info"><b>عادي</b><small>مريح</small></div>
       <div class="price">—</div>
     </div>
 
-    <div class="type" data-name="VIP" data-base="2500" data-km="900" data-min="35">
+    <div class="type" data-name="تكتك مميز" data-base="1000" data-km="500" data-min="18">
       <div class="vehicle">🛺</div>
-      <div class="info"><b>VIP</b><small>مميز</small></div>
+      <div class="info"><b>مميز</b><small>أفضل</small></div>
       <div class="price">—</div>
     </div>
   </div>
@@ -1016,13 +1006,6 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 حدد الانطلاق أولاً، وبعدها حدد نقطة الوصول.
 </div>
 <div id="extraSummary" class="extra-summary"></div>
-<div style="margin:10px 0;background:#f7f7f7;padding:10px;border-radius:12px">
-  <b style="display:block;margin-bottom:7px;font-size:12px">طريقة الدفع</b>
-  <select id="tuktukPaymentMethod" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:white">
-    <option value="cash">💵 الدفع نقداً عند الوصول</option>
-    <option value="electronic" hidden disabled>💳 دفع إلكتروني</option>
-  </select>
-</div>
 
 <div class="order" id="orderArea">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
@@ -1082,7 +1065,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 <div id="postOrderScreen" class="post-order-screen">
   <div class="post-head">
     <button id="postBackBtn" class="back" type="button">‹</button>
-    <h2 id="postTitle">جاري البحث عن سائق</h2>
+    <h2 id="postTitle">جاري البحث عن سائق تكتك</h2>
     <div style="width:34px"></div>
   </div>
 
@@ -1091,8 +1074,8 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   <div class="post-panel">
     <div id="searchingBox" class="searching-box">
       <div class="loader"></div>
-      <div class="status-title">جاري البحث عن أقرب سائق</div>
-      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
+      <div class="status-title">جاري البحث عن أقرب سائق تكتك</div>
+      <div class="status-sub">راح تظهر معلومات سائق التكتك هنا بعد قبول الطلب.</div>
       <button id="searchCancelTripBtn" class="search-cancel-trip" type="button">إلغاء الطلب</button>
     </div>
 
@@ -1260,10 +1243,12 @@ extraSheet.addEventListener('click',e=>{
 const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
 
 // خريطة فاتحة وأقل تفاصيل
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors'
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+ maxZoom:19,
+ subdomains:'abcd',
+ attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
+
 L.control.zoom({position:'topright'}).addTo(map);
 
 let mode='start';
@@ -1571,7 +1556,7 @@ function refreshFinalPrices(){
   if(!(start&&end))return;
   const extras=currentPricingExtras();
   document.querySelectorAll('.type').forEach(c=>{
-    const q=HA_Pricing.totalFare('taxi',c,routeKm,routeMin,extras);
+    const q=HA_Pricing.totalFare('tuktuk',c,routeKm,routeMin,extras);
     c.dataset.basePrice=q.base;
     c.dataset.extraPrice=q.extras;
     c.dataset.price=q.total;
@@ -1581,7 +1566,7 @@ function refreshFinalPrices(){
 
   const b=document.getElementById('priceBreakdown');
   if(b&&selected&&selected.dataset.price){
-    const q=HA_Pricing.totalFare('taxi',selected,routeKm,routeMin,extras);
+    const q=HA_Pricing.totalFare('tuktuk',selected,routeKm,routeMin,extras);
     let details=q.parts.map(x=>x[0]+': '+Number(x[1]).toLocaleString('ar-IQ')+' د.ع').join(' • ');
     b.innerHTML='<b>تفاصيل السعر:</b> الطريق '+q.base.toLocaleString('ar-IQ')+' د.ع'
       +(details?' • '+details:'')
@@ -1680,6 +1665,7 @@ order.onclick=async()=>{
 
   const rideData={
     customerUid:fbUser.uid,
+    serviceType:'tuktuk',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,
@@ -1695,7 +1681,6 @@ order.onclick=async()=>{
       total:Number(selected.dataset.price||0),
       calculatedAt:firebase.database.ServerValue.TIMESTAMP
     },
-    paymentMethod:(document.getElementById('tuktukPaymentMethod')?.value||'cash'),
     extras:{
       extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
       stop:stopCheck.checked ? stopText.value.trim() : '',
@@ -1706,7 +1691,6 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
-    await db.ref('userRides/'+fbUser.uid+'/'+activeRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();
     listenToRide(activeRideId);
@@ -1896,7 +1880,7 @@ async function sendInAppMessage(){
   try{
     await db.ref('rideChats/'+rideId+'/messages').push({
       senderRole:'customer',
-      senderType:'taxi',
+      senderType:'tuktuk',
       text:message,
       createdAt:firebase.database.ServerValue.TIMESTAMP
     });
@@ -1924,14 +1908,8 @@ let searchTimer=null;
 function openPostOrder(){
   const screen=document.getElementById('postOrderScreen');
   screen.classList.add('show');
-  document.getElementById('postTitle').textContent='جاري البحث عن سائق';
+  document.getElementById('postTitle').textContent='جاري البحث عن سائق تكتك';
   document.getElementById('searchingBox').style.display='block';
-  const searchLoader=document.querySelector('#searchingBox .loader');
-  if(searchLoader) searchLoader.style.display='block';
-  document.querySelector('#searchingBox .status-title').textContent='جاري البحث عن أقرب سائق';
-  document.querySelector('#searchingBox .status-sub').textContent='راح تظهر معلومات السائق هنا بعد قبول الطلب.';
-  const searchCancelBtn=document.getElementById('searchCancelTripBtn');
-  if(searchCancelBtn) searchCancelBtn.style.display='block';
   document.getElementById('driverCard').classList.remove('show');
   const finishBox=document.getElementById('finishBox');
   if(finishBox) finishBox.classList.remove('show');
@@ -1959,7 +1937,7 @@ function openPostOrder(){
 
 function listenToRide(rideId){
   HA_RideStatus.clear();
-  HA_RideStatus.watch(rideId,'taxi',{
+  HA_RideStatus.watch(rideId,'tuktuk',{
     textElement:'rideStatusLive',
     timelineElement:'rideStatusTimeline'
   });
@@ -2061,42 +2039,10 @@ function listenToRide(rideId){
     }
 
     if(ride.status==='cancelled'){
-      const cancelledBy=ride.cancelledBy||'';
-      const cancelReason=ride.cancelReason||'';
       document.getElementById('postTitle').textContent='تم إلغاء الطلب';
-      document.getElementById('driverCard').classList.remove('show');
-      document.getElementById('searchingBox').style.display='block';
-      const loader=document.querySelector('#searchingBox .loader');
-      if(loader) loader.style.display='none';
-      const title=document.querySelector('#searchingBox .status-title');
-      const sub=document.querySelector('#searchingBox .status-sub');
-      const searchCancelBtn=document.getElementById('searchCancelTripBtn');
-      if(searchCancelBtn) searchCancelBtn.style.display='none';
-
-      if(cancelledBy==='driver'){
-        if(title) title.textContent='السائق ألغى الرحلة';
-        if(sub) sub.textContent=cancelReason ? 'سبب الإلغاء: '+cancelReason : 'تم إلغاء الرحلة من طرف السائق.';
-      }else{
-        if(title) title.textContent='تم إلغاء الطلب';
-        if(sub) sub.textContent=cancelReason ? 'سبب الإلغاء: '+cancelReason : 'تم إلغاء الطلب.';
-      }
-
-      localStorage.removeItem('ha_active_ride');
-      if(activeRideRef) activeRideRef.off();
-      activeRideId=null;
-      activeRideRef=null;
     }
   });
 }
-
-
-const shareTripTopBtn=document.getElementById('shareTripTopBtn');
-if(shareTripTopBtn) shareTripTopBtn.onclick=async()=>{
-  const id=activeRideId||localStorage.getItem('ha_active_ride');
-  if(!id){alert('ما عندك رحلة فعالة حالياً.');return;}
-  const text='تفاصيل رحلة HA Marketing - رقم الرحلة: '+id;
-  try{if(navigator.share) await navigator.share({title:'مشاركة الرحلة',text}); else {await navigator.clipboard.writeText(text);alert('تم نسخ رقم الرحلة.');}}catch(e){}
-};
 
 const savedRideId=localStorage.getItem('ha_active_ride');
 if(savedRideId){
@@ -2122,7 +2068,7 @@ document.getElementById('callDriverBtn').onclick=callAcceptedDriver;
 document.getElementById('appCallDriverBtn').onclick=()=>{
   const id=activeRideId || localStorage.getItem('ha_active_ride');
   if(!id){alert('لا توجد رحلة فعالة حالياً.');return;}
-  HATransportCall.start(id,'customer','اتصال مع التكسي');
+  HATransportCall.start(id,'customer','اتصال مع التكتك');
 };
 document.getElementById('chatDriverBtn').onclick=openInAppChat;
 document.getElementById('closeChatBtn').onclick=closeInAppChat;
@@ -2228,15 +2174,10 @@ document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>{
 document.getElementById('confirmCancelReason').onclick=async()=>{
   const checked=document.querySelector('input[name="cancelReasonSheet_reason"]:checked');
   if(!checked){ alert('اختار سبب الإلغاء أولاً.'); return; }
-
   let reason=checked.value;
   if(checked.value==='غير ذلك'){
     reason=document.getElementById('cancelOtherText').value.trim();
-    if(!reason){
-      alert('اكتب سبب الإلغاء.');
-      document.getElementById('cancelOtherText').focus();
-      return;
-    }
+    if(!reason){ alert('اكتب سبب الإلغاء.'); document.getElementById('cancelOtherText').focus(); return; }
   }
 
   if(activeRideId){
@@ -2247,16 +2188,9 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
       cancelledAt:firebase.database.ServerValue.TIMESTAMP
     });
     localStorage.removeItem('ha_active_ride');
-    if(activeRideRef) activeRideRef.off();
   }
   closeCancelReason();
-  activeRideId=null;
-  activeRideRef=null;
   document.getElementById('postOrderScreen').classList.remove('show');
-
-  document.querySelectorAll('input[name="cancelReasonSheet_reason"]').forEach(r=>r.checked=false);
-  document.getElementById('cancelOtherText').value='';
-  document.getElementById('cancelOtherText').classList.remove('show');
 };
 </script>
 <script src="transport-call.js"></script>

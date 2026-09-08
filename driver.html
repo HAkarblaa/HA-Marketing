@@ -113,6 +113,9 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
 .ride-status-step.current{outline:2px solid #16a34a}
 
 </style>
+<meta name="theme-color" content="#05080b">
+
+<link rel="stylesheet" href="css/premium-dark-gold.css?v=20260908-3">
 </head>
 <body>
 <div class="app">
@@ -242,8 +245,6 @@ let driverWatch=null;
 let currentRideStatusRef=null;
 
 let driverProfile=null;
-let driverSection=null;
-let deliveryType=null;
 let driverReady=false;
 let firebaseDriverUser=null;
 
@@ -357,8 +358,6 @@ acceptBtn.onclick=async()=>{
   const ident=await HA_TransportProfile.driverIdentity();
   if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
   driverProfile=ident.driver;
-  driverSection=ident.driver.role_type;
-deliveryType=ident.driver.delivery_type;
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{

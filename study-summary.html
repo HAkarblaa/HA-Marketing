@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>تلخيص المواد - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
+.topbar{background:#000;color:#fff;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;position:sticky;top:0;z-index:20}
+.back,.home{width:44px;height:44px;border:0;border-radius:10px;background:#fff;color:#111;font-size:23px;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.title{font-size:20px;font-weight:700}
+.wrap{width:min(850px,94%);margin:24px auto 44px}
+.hero,.box,.result{background:#fff;border-radius:20px;padding:22px 18px;box-shadow:0 4px 18px rgba(0,0,0,.08);margin-bottom:16px}
+.hero{text-align:center}.hero .icon{font-size:54px}.hero h1{margin:7px 0 6px;font-size:29px}.hero p{margin:0;color:#666;line-height:1.7}
+.upload{border:2px dashed #bbb;border-radius:16px;padding:25px 15px;text-align:center;background:#fafafa;cursor:pointer;transition:.2s}
+.upload.drag{border-color:#111;background:#f1f1f1}.upload .big{font-size:46px}.upload b{display:block;font-size:20px;margin:8px 0}.upload span{color:#666;font-size:14px}
+input[type=file]{display:none}
+.file-info{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#f5f5f5;line-height:1.6}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;gap:7px}select{width:100%;padding:12px;border:1px solid #ccc;border-radius:11px;background:#fff;font-size:15px}
+.run{width:100%;margin-top:16px;border:0;border-radius:12px;background:#111;color:#fff;padding:14px 16px;font-size:17px;font-weight:700;cursor:pointer}.run:disabled{opacity:.55;cursor:not-allowed}
+.status{display:none;margin-top:14px;border-radius:12px;padding:13px;background:#f3f4f6;line-height:1.7}.progress{height:8px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:9px}.bar{height:100%;width:0;background:#111;transition:width .25s}
+.result{display:none}.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.result-head h2{margin:0;font-size:21px}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{border:0;border-radius:9px;padding:8px 11px;cursor:pointer}.summary{white-space:pre-wrap;line-height:1.95;font-size:16px;background:#fafafa;border:1px solid #eee;border-radius:14px;padding:16px;min-height:100px}.note{color:#777;font-size:12px;line-height:1.7;margin-top:10px}
+@media(max-width:600px){.controls{grid-template-columns:1fr}.hero h1{font-size:24px}.wrap{margin-top:15px}.result-head{align-items:flex-start;flex-direction:column}}
+</style>
+<meta name="theme-color" content="#05080b">
+
+<link rel="stylesheet" href="css/premium-dark-gold.css?v=20260908-3">
+</head>
+<body>
+<div class="topbar">
+  <button class="back" onclick="history.length>1?history.back():location.href='study.html'" aria-label="رجوع">→</button>
+  <div class="title">📝 تلخيص المواد</div>
+  <a class="home" href="index.html" aria-label="الرئيسية">🏠</a>
+</div>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="icon">📝</div>
+    <h1>تلخيص المواد الدراسية</h1>
+    <p>ارفع ملف المادة وسيتم استخراج النص وتلخيص أهم الأفكار والتعاريف والنقاط المهمة للمراجعة.</p>
+  </section>
+
+  <section class="box">
+    <label class="upload" id="dropArea" for="fileInput">
+      <div class="big">📄</div>
+      <b>اضغط لاختيار الملف</b>
+      <span>PDF أو Word (DOCX) أو TXT — بحد أقصى 20 MB</span>
+    </label>
+    <input id="fileInput" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+    <div class="file-info" id="fileInfo"></div>
+
+    <div class="controls">
+      <div class="field">
+        <label for="summaryLength">طول الملخص</label>
+        <select id="summaryLength">
+          <option value="short">مختصر — أهم النقاط فقط</option>
+          <option value="medium" selected>متوسط — مناسب للمراجعة</option>
+          <option value="detailed">مفصل — شرح أوسع</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="summaryStyle">طريقة التلخيص</label>
+        <select id="summaryStyle">
+          <option value="points" selected>نقاط وعناوين مرتبة</option>
+          <option value="study">ملخص دراسي + أسئلة مراجعة</option>
+          <option value="plain">شرح متسلسل</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="run" id="summarizeBtn" onclick="summarizeFile()" disabled>تلخيص الملف</button>
+    <div class="status" id="statusBox">
+      <div id="statusText">جاري تجهيز الملف...</div>
+      <div class="progress"><div class="bar" id="progressBar"></div></div>
+    </div>
+    <div class="note">يتم إرسال النص المستخرج فقط إلى المساعد الذكي لغرض التلخيص. الملفات المصورة أو PDF الممسوح ضوئياً بدون نص قد لا يمكن قراءتها حالياً.</div>
+  </section>
+
+  <section class="result" id="resultBox">
+    <div class="result-head">
+      <h2>الملخص</h2>
+      <div class="actions">
+        <button onclick="copySummary()">📋 نسخ</button>
+        <button onclick="downloadSummary()">⬇️ حفظ TXT</button>
+      </div>
+    </div>
+    <div class="summary" id="summaryText"></div>
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SUPABASE_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const MAX_FILE_SIZE=20*1024*1024;
+const MAX_TEXT_CHARS=48000;
+const CHUNK_SIZE=7500;
+let selectedFile=null;
+let lastSummary='';
+
+const fileInput=document.getElementById('fileInput');
+const dropArea=document.getElementById('dropArea');
+const fileInfo=document.getElementById('fileInfo');
+const btn=document.getElementById('summarizeBtn');
+
+fileInput.addEventListener('change',()=>setFile(fileInput.files[0]));
+['dragenter','dragover'].forEach(ev=>dropArea.addEventListener(ev,e=>{e.preventDefault();dropArea.classList.add('drag')}));
+['dragleave','drop'].forEach(ev=>dropArea.addEventListener(ev,e=>{e.preventDefault();dropArea.classList.remove('drag')}));
+dropArea.addEventListener('drop',e=>{const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)setFile(f)});
+
+function setFile(file){
+  selectedFile=null;btn.disabled=true;document.getElementById('resultBox').style.display='none';
+  if(!file)return;
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(!['pdf','docx','txt','md'].includes(ext)){alert('الملف غير مدعوم. استخدم PDF أو DOCX أو TXT.');fileInput.value='';return}
+  if(file.size>MAX_FILE_SIZE){alert('حجم الملف أكبر من 20 MB.');fileInput.value='';return}
+  selectedFile=file;btn.disabled=false;
+  fileInfo.style.display='block';
+  fileInfo.innerHTML='<b>'+escapeHtml(file.name)+'</b><br><span style="color:#666">'+formatBytes(file.size)+'</span>';
+}
+function formatBytes(n){if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';return (n/1048576).toFixed(1)+' MB'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function setProgress(text,pct){const b=document.getElementById('statusBox');b.style.display='block';document.getElementById('statusText').textContent=text;document.getElementById('progressBar').style.width=Math.max(0,Math.min(100,pct))+'%'}
+
+async function ensureSession(){
+  const {data:{session}}=await db.auth.getSession();
+  if(session)return session;
+  alert('سجّل دخولك أولاً حتى تستخدم تلخيص المواد.');
+  location.href='login.html?next=study-summary.html';
+  return null;
+}
+
+async function extractText(file){
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(ext==='txt'||ext==='md') return await file.text();
+  if(ext==='docx'){
+    const arr=await file.arrayBuffer();
+    const out=await mammoth.extractRawText({arrayBuffer:arr});
+    return out.value||'';
+  }
+  if(ext==='pdf'){
+    const arr=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:arr}).promise;
+    const pages=[];
+    for(let i=1;i<=pdf.numPages;i++){
+      setProgress('جاري قراءة صفحة '+i+' من '+pdf.numPages+'...',Math.min(28,5+(i/pdf.numPages)*23));
+      const page=await pdf.getPage(i);
+      const content=await page.getTextContent();
+      pages.push(content.items.map(x=>x.str).join(' '));
+    }
+    return pages.join('\n\n');
+  }
+  return '';
+}
+
+function cleanText(t){return String(t||'').replace(/\u0000/g,' ').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim()}
+function splitText(text,size){
+  const chunks=[];let pos=0;
+  while(pos<text.length){
+    let end=Math.min(text.length,pos+size);
+    if(end<text.length){const nl=text.lastIndexOf('\n',end);const dot=text.lastIndexOf('.',end);const cut=Math.max(nl,dot);if(cut>pos+size*.65)end=cut+1}
+    chunks.push(text.slice(pos,end));pos=end;
+  }
+  return chunks;
+}
+
+async function askAI(session,prompt){
+  const r=await fetch(SUPABASE_URL+'/functions/v1/ai-assistant',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
+    body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+  });
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok||!data.ok)throw new Error(data.error||'تعذر الاتصال بالمساعد الذكي');
+  return String(data.answer||'').trim();
+}
+
+function styleInstruction(){
+  const len=document.getElementById('summaryLength').value;
+  const style=document.getElementById('summaryStyle').value;
+  const a=len==='short'?'اجعل الملخص مختصراً جداً ويركز على الضروري فقط.':len==='detailed'?'اجعل الملخص مفصلاً مع توضيح الأفكار الأساسية دون حشو.':'اجعل الملخص متوسط الطول ومناسباً للمراجعة قبل الامتحان.';
+  const b=style==='study'?'رتبه بعناوين ونقاط، وفي النهاية أضف 5 أسئلة مراجعة قصيرة مع أجوبتها.':style==='plain'?'اكتبه بشرح عربي واضح ومتسلسل مع عناوين عند الحاجة.':'رتبه بعناوين رئيسية ونقاط واضحة، وابرز التعاريف والقوانين والمصطلحات المهمة.';
+  return a+' '+b;
+}
+
+async function summarizeFile(){
+  if(!selectedFile)return;
+  const session=await ensureSession();if(!session)return;
+  btn.disabled=true;lastSummary='';document.getElementById('resultBox').style.display='none';
+  try{
+    setProgress('جاري قراءة الملف...',5);
+    let text=cleanText(await extractText(selectedFile));
+    if(text.length<80)throw new Error('لم أتمكن من استخراج نص كافٍ من الملف. إذا كان PDF عبارة عن صور ممسوحة ضوئياً فسيحتاج OCR لاحقاً.');
+    let truncated=false;
+    if(text.length>MAX_TEXT_CHARS){text=text.slice(0,MAX_TEXT_CHARS);truncated=true}
+    const chunks=splitText(text,CHUNK_SIZE);
+    const partial=[];
+    for(let i=0;i<chunks.length;i++){
+      const pct=30+((i/chunks.length)*50);
+      setProgress('جاري تلخيص الجزء '+(i+1)+' من '+chunks.length+'...',pct);
+      const prompt='أنت مساعد دراسي عربي. لخّص الجزء التالي من مادة دراسية بدقة. لا تضف معلومات غير موجودة في النص. احتفظ بالتعاريف والأسماء والأرقام والقوانين المهمة. اجعل ملخص هذا الجزء مركزاً حتى يمكن دمجه مع بقية الأجزاء.\n\nالجزء '+(i+1)+' من '+chunks.length+':\n'+chunks[i];
+      partial.push(await askAI(session,prompt));
+    }
+    setProgress('جاري إعداد الملخص النهائي...',86);
+    let finalPrompt='أنت مساعد دراسي عربي. هذه ملخصات أجزاء من ملف واحد. ادمجها في ملخص نهائي موحد بدون تكرار، ولا تضف معلومات من خارج المحتوى. '+styleInstruction()+'\n\n';
+    finalPrompt+=partial.map((x,i)=>'--- ملخص الجزء '+(i+1)+' ---\n'+x).join('\n\n');
+    if(finalPrompt.length>30000){
+      finalPrompt='أنت مساعد دراسي عربي. ادمج الملخصات التالية في ملخص نهائي موحد بدون تكرار. '+styleInstruction()+'\n\n'+finalPrompt.slice(-28000);
+    }
+    lastSummary=await askAI(session,finalPrompt);
+    if(truncated)lastSummary+='\n\nملاحظة: الملف طويل جداً، وتم تلخيص الجزء الأول منه حتى الحد المدعوم حالياً.';
+    document.getElementById('summaryText').textContent=lastSummary;
+    document.getElementById('resultBox').style.display='block';
+    setProgress('✅ اكتمل التلخيص',100);
+    document.getElementById('resultBox').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    console.error(e);setProgress('تعذر التلخيص: '+(e.message||'خطأ غير معروف'),0);alert(e.message||'تعذر تلخيص الملف');
+  }finally{btn.disabled=false}
+}
+
+async function copySummary(){
+  if(!lastSummary)return;
+  try{await navigator.clipboard.writeText(lastSummary);alert('تم نسخ الملخص')}catch(e){alert('تعذر النسخ تلقائياً')}
+}
+function downloadSummary(){
+  if(!lastSummary)return;
+  const blob=new Blob([lastSummary],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ملخص-'+(selectedFile?selectedFile.name.replace(/\.[^.]+$/,''):'المادة')+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+}
+</script>
+</body>
+</html>
