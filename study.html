@@ -6,133 +6,144 @@
 <title>دراسة - HA Marketing</title>
 <style>
 *{box-sizing:border-box}
+:root{
+  --bg:#050607;
+  --bg2:#0a0d10;
+  --card:#0d1216;
+  --card2:#101820;
+  --gold:#f3c35c;
+  --gold2:#b77a16;
+  --text:#fff7e8;
+  --muted:#b9b5ad;
+  --line:rgba(243,195,92,.32);
+  --glow:0 0 28px rgba(232,170,54,.16);
+}
+html{background:#050607}
 body{
   margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
-  color:#111;
+  font-family:"Tahoma","Arial",sans-serif;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(225,156,34,.18),transparent 34%),
+    radial-gradient(circle at 5% 42%,rgba(29,102,124,.11),transparent 30%),
+    linear-gradient(180deg,#050607 0%,#080a0d 46%,#030405 100%);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:92px;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:linear-gradient(90deg,transparent 0 49.7%,rgba(255,193,67,.018) 50%,transparent 50.3%);
 }
 .topbar{
-  background:#000;
-  color:#fff;
-  min-height:64px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 16px;
-  position:sticky;
-  top:0;
-  z-index:20;
-}
-.back{
-  width:44px;height:44px;border:0;border-radius:10px;
-  background:#fff;color:#111;font-size:24px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-}
-.title{font-size:20px;font-weight:700}
-.home{
-  width:44px;height:44px;border-radius:10px;background:#fff;
-  color:#111;text-decoration:none;display:flex;align-items:center;
-  justify-content:center;font-size:22px;
-}
-.hero{
-  width:min(960px,94%);
-  margin:28px auto 14px;
-  background:#fff;
-  border-radius:20px;
-  padding:24px 18px;
-  text-align:center;
-  box-shadow:0 4px 18px rgba(0,0,0,.08);
-}
-.hero .icon{font-size:54px}
-.hero h1{margin:8px 0 6px;font-size:30px}
-.hero p{margin:0;color:#666;line-height:1.7}
-.grid{
-  width:min(960px,94%);
-  margin:18px auto 40px;
+  min-height:72px;
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
+  grid-template-columns:52px 1fr 52px;
+  align-items:center;
+  gap:10px;
+  padding:10px 16px;
+  position:sticky;top:0;z-index:30;
+  background:rgba(4,6,8,.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(243,195,92,.28);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+.back,.home{
+  width:46px;height:46px;border:1px solid rgba(243,195,92,.42);border-radius:14px;
+  background:linear-gradient(145deg,#12171c,#07090b);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;
+  text-decoration:none;box-shadow:inset 0 0 16px rgba(243,195,92,.04),0 6px 18px rgba(0,0,0,.25);
+}
+.back:active,.home:active{transform:scale(.96)}
+.title{text-align:center;font-weight:800;font-size:20px;color:#fff;letter-spacing:.2px}
+.title small{display:block;color:var(--gold);font-size:11px;font-weight:600;margin-top:3px}
+.hero{
+  width:min(980px,94%);margin:24px auto 12px;padding:28px 20px 24px;text-align:center;
+  border-radius:26px;position:relative;overflow:hidden;
+  background:
+    linear-gradient(135deg,rgba(12,17,22,.97),rgba(4,6,8,.97)),
+    radial-gradient(circle at 50% 0,rgba(243,195,92,.18),transparent 50%);
+  border:1px solid rgba(243,195,92,.36);
+  box-shadow:0 18px 55px rgba(0,0,0,.38),inset 0 0 40px rgba(243,195,92,.035),var(--glow);
+}
+.hero:before{content:"";position:absolute;left:8%;right:8%;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 18px var(--gold)}
+.brandmark{
+  width:76px;height:76px;margin:0 auto 10px;border-radius:24px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;font-style:italic;color:#111;
+  background:linear-gradient(135deg,#fff1b0 0%,#f3c35c 38%,#a9630a 100%);
+  box-shadow:0 0 30px rgba(243,195,92,.25),inset 0 1px 0 rgba(255,255,255,.65);
+  transform:skew(-6deg);
+}
+.hero .icon{display:none}
+.hero h1{margin:6px 0 7px;font-size:31px;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+.hero p{margin:0;color:#c8c3ba;line-height:1.8;font-size:14px}
+.goldline{width:62px;height:3px;border-radius:9px;background:linear-gradient(90deg,#8b5310,#ffd87a,#9c5b0d);margin:15px auto 0;box-shadow:0 0 12px rgba(243,195,92,.35)}
+.grid{
+  width:min(980px,94%);margin:18px auto 34px;display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
 }
 .card{
-  min-height:165px;
-  background:#fff;
-  border:0;
-  border-radius:18px;
-  padding:22px 14px;
-  box-shadow:0 4px 16px rgba(0,0,0,.09);
-  cursor:pointer;
-  text-align:center;
-  color:#111;
+  min-height:174px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(16,23,29,.98),rgba(7,10,13,.98));
+  border:1px solid rgba(189,200,211,.18);border-radius:22px;padding:18px 12px 16px;
+  cursor:pointer;text-align:center;color:#fff;text-decoration:none!important;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.30),inset 0 0 25px rgba(255,255,255,.018);
+  transition:.2s ease;
 }
-.card:active{transform:scale(.99)}
-.card .icon{font-size:46px;margin-bottom:10px}
-.card h2{margin:0 0 7px;font-size:23px}
-.card p{margin:0;color:#666;line-height:1.6}
-
-.panel{
-  display:none;
-  width:min(960px,94%);
-  margin:18px auto 42px;
+.card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 5%,rgba(243,195,92,.08),transparent 38%);pointer-events:none}
+.card:after{content:"";position:absolute;bottom:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(243,195,92,.55),transparent)}
+.card:hover{transform:translateY(-3px);border-color:rgba(243,195,92,.44);box-shadow:0 16px 38px rgba(0,0,0,.38),0 0 25px rgba(243,195,92,.08)}
+.card:active{transform:scale(.985)}
+.card .icon{
+  width:70px;height:70px;margin:0 auto 12px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+  font-size:35px;background:linear-gradient(145deg,#14202a,#070b0f);
+  border:1px solid rgba(243,195,92,.30);box-shadow:inset 0 0 20px rgba(243,195,92,.05),0 7px 18px rgba(0,0,0,.28);
 }
+.card h2{margin:0 0 8px;font-size:20px;color:#fff;line-height:1.35}
+.card h2:after{content:"";display:block;width:28px;height:2px;background:var(--gold);border-radius:2px;margin:8px auto 0;box-shadow:0 0 8px rgba(243,195,92,.32)}
+.card p{margin:0;color:#bdb9b1;line-height:1.55;font-size:13px}
+.study-banner{
+  width:min(980px,94%);margin:0 auto 32px;padding:18px 20px;border-radius:22px;display:flex;align-items:center;gap:15px;
+  background:linear-gradient(110deg,#15100a 0%,#0b0d0f 48%,#15100a 100%);border:1px solid rgba(243,195,92,.46);
+  box-shadow:0 14px 36px rgba(0,0,0,.34),inset 0 0 28px rgba(243,195,92,.04);
+}
+.study-banner .bicon{font-size:48px;filter:drop-shadow(0 0 10px rgba(243,195,92,.26))}
+.study-banner h3{margin:0 0 5px;color:#ffe09a;font-size:20px}.study-banner p{margin:0;color:#c9c4ba;font-size:13px;line-height:1.6}
+.panel{display:none;width:min(980px,94%);margin:18px auto 42px}
 .panel.show{display:block}
 .panel-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:#fff;
-  padding:15px 16px;
-  border-radius:16px;
-  box-shadow:0 4px 14px rgba(0,0,0,.07);
-  margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:linear-gradient(145deg,#12171c,#090b0e);padding:15px 16px;border-radius:18px;
+  border:1px solid rgba(243,195,92,.30);box-shadow:0 12px 28px rgba(0,0,0,.26);margin-bottom:14px;
 }
-.panel-head h2{margin:0;font-size:22px}
-.close-panel{
-  width:42px;height:42px;border:0;border-radius:10px;
-  background:#f1f1f1;font-size:22px;cursor:pointer;
-}
-.subgrid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-}
+.panel-head h2{margin:0;font-size:21px;color:#ffe19a}.close-panel{width:42px;height:42px;border:1px solid rgba(243,195,92,.30);border-radius:12px;background:#090c0f;color:var(--gold);font-size:23px;cursor:pointer}
+.subgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .subcard{
-  background:#fff;
-  border:0;
-  border-radius:15px;
-  padding:18px 12px;
-  min-height:105px;
-  box-shadow:0 3px 12px rgba(0,0,0,.07);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+  background:linear-gradient(145deg,#10171c,#080b0e);border:1px solid rgba(173,188,198,.17);border-radius:17px;padding:18px 12px;min-height:112px;
+  box-shadow:0 8px 22px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;
 }
-.subcard .subicon{font-size:34px;margin-bottom:7px}
-.subcard strong{font-size:18px}
-.note{
-  background:#fff;
-  border-radius:15px;
-  padding:18px;
-  color:#555;
-  line-height:1.8;
-  box-shadow:0 3px 12px rgba(0,0,0,.07);
-  text-align:center;
+.subcard .subicon{font-size:33px;margin-bottom:8px}.subcard strong{font-size:17px}.note{
+  background:linear-gradient(145deg,#10161b,#080b0e);border:1px solid rgba(243,195,92,.20);border-radius:18px;padding:18px;color:#d5d1c8;line-height:1.8;
+  box-shadow:0 9px 24px rgba(0,0,0,.24);text-align:center;
 }
-
-@media(max-width:600px){
-  .grid{gap:11px}
-  .card{min-height:118px;padding:12px 7px}
-  .card .icon{font-size:31px;margin-bottom:6px}
-  .card h2{font-size:15px;line-height:1.35}
-  .card p{font-size:11px;line-height:1.45}
-  .subgrid{gap:10px}
-  .subcard{min-height:96px;padding:15px 8px}
-  .subcard strong{font-size:16px}
+.note h3{color:#ffe09a}
+/* Overrides for the student form so existing functionality stays intact */
+#studentAuthMsg{background:#0b1014!important;color:#d7d2c8!important;border:1px solid rgba(243,195,92,.18)!important}
+#studentForm input,#studentForm select,#studentForm textarea{
+  background:#080c0f!important;color:#fff!important;border:1px solid rgba(243,195,92,.22)!important;border-radius:12px!important;outline:none!important;
 }
+#studentForm input::placeholder,#studentForm textarea::placeholder{color:#8f918f}
+#stSaveBtn{background:linear-gradient(135deg,#f5d27a,#bd7817)!important;color:#15110a!important;font-weight:800!important}
+#myStudents>div{border-bottom:1px solid rgba(243,195,92,.14)!important}
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;height:74px;display:grid;grid-template-columns:1fr 1.35fr 1fr;align-items:center;
+  background:rgba(4,6,8,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(243,195,92,.40);box-shadow:0 -12px 35px rgba(0,0,0,.38);
+}
+.nav-item{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#c4c0b7;text-decoration:none;font-size:12px;gap:4px}.nav-item .ni{font-size:24px}.nav-item.active{color:#ffd878}.nav-brand{height:84px;margin-top:-17px;border:1px solid rgba(243,195,92,.50);border-bottom:0;border-radius:42px 42px 0 0;background:linear-gradient(180deg,#11161a,#050708);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f5cf74;font-weight:800;box-shadow:0 -9px 22px rgba(243,195,92,.08)}.nav-brand b{font-size:20px}.nav-brand span{font-size:10px;color:#d8cfbd;margin-top:2px}
+@media(max-width:700px){
+  .grid{gap:10px}.card{min-height:148px;padding:13px 7px;border-radius:18px}.card .icon{width:58px;height:58px;font-size:29px;border-radius:17px;margin-bottom:9px}.card h2{font-size:15px}.card p{font-size:10.5px}.hero{padding:22px 14px}.hero h1{font-size:25px}.brandmark{width:65px;height:65px;font-size:25px}.subgrid{gap:9px}.subcard{min-height:100px;padding:13px 8px}.subcard strong{font-size:14px}.study-banner{padding:14px}.study-banner .bicon{font-size:40px}.study-banner h3{font-size:17px}
+}
+@media(max-width:390px){.grid{gap:8px}.card{min-height:140px}.card h2{font-size:14px}.card p{font-size:9.7px}.card .icon{width:54px;height:54px;font-size:27px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -140,14 +151,16 @@ body{
 
 <div class="topbar">
   <button class="back" type="button" onclick="goBack()" aria-label="رجوع">→</button>
-  <div class="title">📚 دراسة</div>
+  <div class="title">الدراسة<small>HA Marketing</small></div>
   <a class="home" href="index.html" aria-label="الرئيسية">🏠</a>
 </div>
 
 <section class="hero">
+  <div class="brandmark">HA</div>
   <div class="icon">📚</div>
-  <h1>القسم الدراسي</h1>
-  <p>اختر القسم الذي تحتاجه من المدارس أو الجامعات أو الطلاب والأدوات الدراسية.</p>
+  <h1>الدراسة</h1>
+  <p>محتوى دراسي وتعليمي متكامل للطلاب — اختر القسم أو الأداة التي تحتاجها.</p>
+  <div class="goldline"></div>
 </section>
 
 <main class="grid" id="mainGrid">
@@ -219,6 +232,11 @@ body{
   <a class="card" href="student-talents.html" style="text-decoration:none"><div class="icon">🎨</div><h2>مواهب الطلاب</h2><p>انشر صور الموهبة والتفاصيل وشاهد مواهب الطلاب</p></a>
 </main>
 
+<section class="study-banner" id="studyBanner">
+  <div class="bicon">🎓</div>
+  <div><h3>طوّر مستقبلك معنا</h3><p>أدوات ومحتوى دراسي مرتب في مكان واحد، بتصميم HA Marketing الجديد.</p></div>
+</section>
+
 <section class="panel" id="schools">
   <div class="panel-head">
     <h2>🏫 المدارس</h2>
@@ -286,11 +304,17 @@ body{
   </div>
 </section>
 
+<nav class="bottom-nav" aria-label="التنقل">
+  <a class="nav-item active" href="study.html"><span class="ni">📚</span><span>الدراسة</span></a>
+  <a class="nav-brand" href="index.html"><b>HA</b><span>HA Marketing</span></a>
+  <a class="nav-item" href="index.html"><span class="ni">🏠</span><span>الرئيسية</span></a>
+</nav>
 <script>
 let currentPanel = null;
 
 function openPanel(id){
   document.getElementById('mainGrid').style.display = 'none';
+  const sb=document.getElementById('studyBanner'); if(sb) sb.style.display='none';
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
   const panel = document.getElementById(id);
   panel.classList.add('show');
@@ -302,6 +326,7 @@ function openPanel(id){
 function closePanel(){
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
   document.getElementById('mainGrid').style.display = 'grid';
+  const sb=document.getElementById('studyBanner'); if(sb) sb.style.display='flex';
   currentPanel = null;
 }
 
