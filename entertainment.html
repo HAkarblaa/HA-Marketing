@@ -1,1 +1,115 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الترفيه</title><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f4f5f7}.wrap{width:min(1000px,94%);margin:18px auto}.head{display:flex;align-items:center;gap:10px}.head a{background:#fff;padding:10px;border-radius:10px;text-decoration:none;color:#111}.hero{background:#111;color:#fff;padding:22px;border-radius:20px}.search{width:100%;padding:13px;margin:12px 0;border:1px solid #ddd;border-radius:12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border-radius:17px;padding:18px;min-height:140px;text-decoration:none;color:#111;box-shadow:0 3px 12px #0001}.card .i{font-size:36px}.card h2{font-size:18px}.card p{font-size:13px;color:#777}.soon{opacity:.65}.hide{display:none}@media(max-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.card{padding:10px;min-height:105px}.card .i{font-size:28px}.card h2{font-size:13px}.card p{font-size:10px}}</style></head><body><div class="wrap"><div class="head"><a href="index.html">رجوع</a><h1>🎮 الترفيه</h1></div><div class="hero"><h2>تسلية، تحديات ومعلومات</h2><p>رتبت القسم حتى توصل للألعاب والاختبارات والأدوات بسرعة، مع الاحتفاظ بكل الصفحات السابقة.</p></div><input id="q" class="search" placeholder="ابحث داخل الترفيه..." oninput="f()"><div class="grid"><a class="card" data-k="العمر احسب عمرك" href="age-calculator.html"><div class="i">🎂</div><h2>احسب عمرك</h2><p>العمر بالسنوات والأشهر والأيام.</p></a><a class="card" data-k="معلومات عامة ثقافة" href="general-info.html"><div class="i">💡</div><h2>معلومات عامة</h2><p>معلومات وحقائق مختصرة.</p></a><a class="card" data-k="اسئلة أسئلة عامة مسابقة" href="general-quiz.html"><div class="i">🏆</div><h2>أسئلة عامة</h2><p>تحديات وأسئلة بوقت محدد.</p></a><a class="card" data-k="جزاءات كرة قدم" href="penalties.html"><div class="i">🥅</div><h2>لعبة الجزاءات</h2><p>تحدي ركلات الجزاء.</p></a><a class="card" data-k="دومينو" href="domino.html"><div class="i">🁫</div><h2>دومينو</h2><p>لعبة الدومينو.</p></a><a class="card" data-k="شطرنج" href="chess.html"><div class="i">♟️</div><h2>شطرنج</h2><p>لعبة الشطرنج.</p></a><a class="card" data-k="طاولة باكغمون" href="backgammon.html"><div class="i">🎲</div><h2>طاولة</h2><p>لعبة الطاولة.</p></a><a class="card" data-k="العاب ألعاب" href="games.html"><div class="i">🕹️</div><h2>مركز الألعاب</h2><p>كل الألعاب من مكان واحد.</p></a></div></div><script>function f(){let s=q.value.trim();document.querySelectorAll('.card').forEach(x=>x.classList.toggle('hide',s&&!x.dataset.k.includes(s)))}</script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<title>الترفيه - HA Marketing</title>
+<style>
+:root{
+  --bg:#05070a;--bg2:#09111a;--card:#0b1119;--card2:#0f1722;
+  --gold:#e3ad45;--gold2:#ffd77d;--text:#fff;--muted:#aeb7c4;
+  --line:rgba(255,208,105,.35);--blue:rgba(50,139,255,.23)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;color:var(--text);background:
+ radial-gradient(circle at 50% -10%,rgba(215,156,46,.14),transparent 30%),
+ linear-gradient(180deg,#020407 0%,#08101a 52%,#030508 100%);min-height:100vh;padding-bottom:104px}
+a{text-decoration:none;color:inherit}
+.page{width:min(1040px,100%);margin:auto;overflow:hidden}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;position:relative;z-index:5}
+.round-btn{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,204,100,.58);background:rgba(4,8,12,.74);display:grid;place-items:center;color:var(--gold2);font-size:25px;box-shadow:0 0 22px rgba(221,161,55,.12)}
+.brand{text-align:center;line-height:1}.ha{font-size:38px;font-weight:900;letter-spacing:-4px;background:linear-gradient(180deg,#ffe49b,#c67b16);-webkit-background-clip:text;color:transparent}.brand-name{font-size:20px;font-weight:800;margin-top:4px}.brand-name b{color:var(--gold)}
+.hero{margin:0 14px 18px;border-radius:0 0 30px 30px;min-height:320px;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,198,77,.42);background:
+ linear-gradient(180deg,rgba(0,0,0,.16),rgba(2,5,8,.90)),
+ radial-gradient(circle at 83% 26%,rgba(255,186,66,.26),transparent 19%),
+ radial-gradient(circle at 16% 40%,rgba(59,134,255,.14),transparent 25%),
+ linear-gradient(120deg,#0b1118,#06090e 48%,#12100b)}
+.hero:before{content:"🎮";position:absolute;left:18px;bottom:65px;font-size:118px;opacity:.13;filter:drop-shadow(0 0 22px rgba(255,198,75,.25));transform:rotate(-12deg)}
+.hero:after{content:"🍿  🎬";position:absolute;right:18px;top:78px;font-size:75px;opacity:.15;filter:drop-shadow(0 0 20px rgba(255,195,73,.22))}
+.hero-content{position:relative;z-index:2;text-align:center;padding:28px 20px 25px}
+.hero-icon{font-size:42px;margin-bottom:3px}.hero h1{margin:0;font-size:52px;line-height:1.05;background:linear-gradient(180deg,#fff0b2,#d89425);-webkit-background-clip:text;color:transparent;text-shadow:0 8px 35px rgba(230,164,50,.12)}
+.hero p{margin:12px auto 20px;color:#d6dce4;font-size:18px;max-width:520px;line-height:1.7}
+.hero-banner{max-width:700px;margin:0 auto;border:1px solid rgba(255,201,92,.75);border-radius:28px;background:rgba(4,8,12,.70);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 0 0 1px rgba(255,199,75,.12),0 0 30px rgba(230,163,52,.14)}
+.hero-banner strong{font-size:18px;color:#f7cc70}.hero-banner .sym{font-size:25px;color:#ffd36f}
+.search-wrap{margin:0 16px 17px;display:flex;align-items:center;gap:10px;background:rgba(10,15,22,.92);border:1px solid rgba(255,205,100,.18);border-radius:19px;padding:4px 13px;box-shadow:0 10px 26px rgba(0,0,0,.22)}
+.search-wrap span{font-size:22px;color:#d9ad56}.search{width:100%;border:0;outline:0;background:transparent;color:#fff;padding:13px 4px;font-size:16px}.search::placeholder{color:#7f8996}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:0 16px 24px}
+.card{position:relative;min-height:220px;border-radius:27px;padding:20px 15px 17px;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;background:linear-gradient(145deg,rgba(20,30,43,.98),rgba(5,10,16,.98));border:1px solid rgba(139,170,212,.31);box-shadow:0 18px 40px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.04);transition:.2s ease}
+.card:before{content:"";position:absolute;inset:-1px;background:radial-gradient(circle at 50% 0,var(--glow,rgba(44,128,255,.17)),transparent 45%);pointer-events:none}
+.card:hover,.card:active{transform:translateY(-3px);border-color:rgba(255,198,73,.50);box-shadow:0 22px 44px rgba(0,0,0,.35),0 0 22px rgba(221,157,43,.10)}
+.iconbox{position:relative;width:92px;height:92px;border-radius:25px;display:grid;place-items:center;font-size:48px;background:linear-gradient(150deg,rgba(24,45,74,.86),rgba(6,11,18,.94));border:1px solid rgba(73,146,255,.48);box-shadow:inset 0 0 20px rgba(36,123,255,.16),0 10px 25px rgba(0,0,0,.25)}
+.card.gold .iconbox{border-color:rgba(230,173,61,.55);box-shadow:inset 0 0 20px rgba(220,158,47,.13),0 10px 25px rgba(0,0,0,.25)}
+.card.green .iconbox{border-color:rgba(69,213,107,.44);box-shadow:inset 0 0 20px rgba(42,184,80,.12),0 10px 25px rgba(0,0,0,.25)}
+.card.purple .iconbox{border-color:rgba(193,80,255,.40);box-shadow:inset 0 0 20px rgba(165,55,232,.12),0 10px 25px rgba(0,0,0,.25)}
+.card h2{position:relative;margin:15px 0 0;font-size:20px}.tinyline{width:30px;height:3px;border-radius:4px;background:linear-gradient(90deg,#8f661c,#ffd66f);margin:10px auto}.card p{position:relative;margin:0;color:#c1c9d4;font-size:13px;line-height:1.6}.badge{position:relative;color:#f5c65c;font-weight:700;font-size:12px;margin-top:3px}
+.card.hide{display:none}
+.bottomnav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(1040px,100%);height:88px;background:rgba(4,8,12,.97);border-top:1px solid rgba(255,195,72,.45);display:grid;grid-template-columns:1fr 1fr 1fr;box-shadow:0 -12px 35px rgba(0,0,0,.38);backdrop-filter:blur(16px)}
+.navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#a7b0bc;font-size:13px;position:relative}.navitem .ni{font-size:27px}.navitem.active{color:#f4c768}.navitem.active:before{content:"";position:absolute;top:-1px;width:76%;height:2px;background:linear-gradient(90deg,transparent,#ffcf68,transparent);box-shadow:0 0 14px #e4a539}.navlogo{background:linear-gradient(180deg,rgba(31,23,12,.54),rgba(4,8,12,.98));clip-path:polygon(12% 0,88% 0,100% 100%,0 100%)}
+.navlogo .ni{font-size:25px;color:#ffd777;font-weight:900}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{min-height:305px}.hero h1{font-size:46px}}
+@media(max-width:430px){.topbar{height:66px;padding:10px 14px}.round-btn{width:43px;height:43px;font-size:22px}.ha{font-size:32px}.brand-name{font-size:17px}.hero{margin:0 10px 14px;min-height:295px}.hero-content{padding:20px 14px}.hero h1{font-size:44px}.hero p{font-size:15px;margin-top:8px}.hero-banner{padding:12px 14px}.hero-banner strong{font-size:14px}.grid{gap:10px;padding:0 10px 20px}.card{min-height:190px;padding:15px 9px;border-radius:22px}.iconbox{width:75px;height:75px;border-radius:21px;font-size:40px}.card h2{font-size:17px}.card p{font-size:11px}.bottomnav{height:82px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="round-btn" href="index.html" aria-label="رجوع">‹</a>
+    <div class="brand"><div class="ha">HA</div><div class="brand-name"><b>HA</b> Marketing</div></div>
+    <button class="round-btn" type="button" onclick="document.getElementById('q').focus()" aria-label="بحث">⌕</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-icon">🎮</div>
+      <h1>الترفيه</h1>
+      <p>متعة وألعاب ومحتوى ترفيهي للجميع</p>
+      <div class="hero-banner"><span class="sym">🎮</span><strong>استمتع بوقتك مع أفضل وسائل الترفيه</strong><span class="sym">‹</span></div>
+    </div>
+  </section>
+
+  <div class="search-wrap"><span>⌕</span><input id="q" class="search" placeholder="ابحث داخل الترفيه..." oninput="filterCards()"></div>
+
+  <main class="grid">
+    <a class="card" data-k="العمر احسب عمرك سنوات أشهر أيام" href="age-calculator.html" style="--glow:rgba(42,119,255,.20)">
+      <div class="iconbox">📅</div><h2>احسب عمرك</h2><div class="tinyline"></div><p>احسب عمرك بالسنوات<br>والأشهر والأيام</p>
+    </a>
+    <a class="card" data-k="معلومات عامة ثقافة حقائق" href="general-info.html" style="--glow:rgba(27,179,255,.16)">
+      <div class="iconbox">💡</div><h2>معلومات عامة</h2><div class="tinyline"></div><p>اكتشف معلومات ممتعة<br>ومفيدة كل يوم</p>
+    </a>
+    <a class="card" data-k="اسئلة أسئلة عامة مسابقة اختبار" href="general-quiz.html" style="--glow:rgba(29,164,255,.17)">
+      <div class="iconbox">✅</div><h2>أسئلة عامة</h2><div class="tinyline"></div><p>اختبر معلوماتك<br>وتحدى نفسك</p>
+    </a>
+    <a class="card gold" data-k="جزاءات كرة قدم لعبة الجزاءات" href="penalties.html" style="--glow:rgba(244,176,49,.18)">
+      <div class="iconbox">🥅</div><h2>لعبة الجزاءات</h2><div class="tinyline"></div><p>تحدي ركلات الجزاء<br>واختبر مهارتك</p>
+    </a>
+    <a class="card gold" data-k="دومينو لعبة دومينو" href="domino.html" style="--glow:rgba(239,176,50,.16)">
+      <div class="iconbox">🎲</div><h2>لعبة دومينو</h2><div class="tinyline"></div><p>استمتع بلعبة الدومينو<br>وتحدى الجهاز</p>
+    </a>
+    <a class="card green" data-k="شطرنج لعبة شطرنج" href="chess.html" style="--glow:rgba(39,203,82,.17)">
+      <div class="iconbox">♞</div><h2>لعبة شطرنج</h2><div class="tinyline"></div><p>تحدي الذكاء<br>والاستراتيجية</p>
+    </a>
+    <a class="card purple" data-k="طاولة باكغمون لعبة طاولة" href="backgammon.html" style="--glow:rgba(180,62,232,.17)">
+      <div class="iconbox">🎲</div><h2>لعبة طاولة</h2><div class="tinyline"></div><p>استمتع بلعبة الطاولة<br>بواجهة سهلة</p>
+    </a>
+    <a class="card" data-k="العاب ألعاب مركز الألعاب" href="games.html" style="--glow:rgba(50,128,255,.18)">
+      <div class="iconbox">🕹️</div><h2>مركز الألعاب</h2><div class="tinyline"></div><p>كل الألعاب<br>من مكان واحد</p>
+    </a>
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="navitem" href="index.html"><span class="ni">⌂</span><span>الرئيسية</span></a>
+  <a class="navitem active navlogo" href="index.html"><span class="ni">▦</span><span>الأقسام</span></a>
+  <a class="navitem" href="contact.html"><span class="ni">☎</span><span>اتصل بنا</span></a>
+</nav>
+
+<script>
+function filterCards(){
+  const s=document.getElementById('q').value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('hide',!!s&&!c.dataset.k.toLowerCase().includes(s)));
+}
+</script>
+</body>
+</html>
