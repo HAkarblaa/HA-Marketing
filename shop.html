@@ -1,133 +1,191 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسوق الآن - HA Marketing</title>
-<style>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#050607"><title>تسوق الآن - HA Marketing</title><style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
-.wrap{width:94%;max-width:900px;margin:40px auto}
-h1{text-align:center;font-size:40px;margin-bottom:10px}
-.subtitle{text-align:center;color:#666;font-size:17px;margin-bottom:28px}
-.categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.category{min-height:190px;background:#fff;border-radius:18px;padding:22px 12px;text-decoration:none;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.10);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
-.category .icon{font-size:52px;margin-bottom:14px}
-.category h2{font-size:25px;margin:0 0 8px}
-.category p{font-size:15px;color:#666;margin:0}
-.back{display:block;text-align:center;margin-top:30px;text-decoration:none;color:#111;font-size:17px}.shop-tools{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0 22px}.shop-tools a{background:#111;color:#fff;text-decoration:none;padding:10px 13px;border-radius:10px}.shop-tools a.light{background:#eee;color:#111}
-@media(max-width:600px){
- h1{font-size:31px}
- .categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
- .category{min-height:155px;padding:14px 8px}
- .category .icon{font-size:42px}
- .category h2{font-size:20px}
- .category p{font-size:13px}
+:root{
+  --bg:#050607;
+  --bg2:#0a0d10;
+  --card:#0d1216;
+  --card2:#101820;
+  --gold:#f3c35c;
+  --gold2:#b77a16;
+  --text:#fff7e8;
+  --muted:#b9b5ad;
+  --line:rgba(243,195,92,.32);
+  --glow:0 0 28px rgba(232,170,54,.16);
 }
-
-/* HA Marketing mobile compact grid: 3 cards per row */
-@media (max-width: 700px){
-  .grid,.cards,.menu-grid,.rooms,.categories,.category-grid,.services-grid,.service-grid,.games-grid,.options-grid,.quick-grid,.tools-grid,.subgrid,.main-grid,.dashboard-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    gap:7px !important;
-  }
-  .card,.menu-card,.room,.category,.category-card,.service-card,.game-card,.option-card,.quick-card,.tool-card,.subcard{
-    min-width:0 !important;
-    min-height:88px !important;
-    padding:9px 5px !important;
-    border-radius:12px !important;
-  }
-  .card .icon,.menu-card .icon,.room .icon,.category .icon,.category-card .icon,.service-card .icon,.game-card .icon,.option-card .icon,.quick-card .icon,.tool-card .icon,.subcard .subicon{
-    font-size:27px !important;
-    margin-bottom:4px !important;
-  }
-  .card h2,.card h3,.menu-card h2,.menu-card h3,.category-card h2,.category-card h3,.service-card h2,.service-card h3,.game-card h2,.game-card h3,.option-card h2,.quick-card h2,.tool-card h2,.subcard strong{
-    font-size:12px !important;
-    line-height:1.25 !important;
-    margin:2px 0 !important;
-  }
-  .card p,.menu-card p,.category-card p,.service-card p,.game-card p,.option-card p,.quick-card p,.tool-card p{
-    font-size:9px !important;
-    line-height:1.2 !important;
-    margin:2px 0 !important;
-  }
+html{background:#050607}
+body{
+  margin:0;
+  font-family:"Tahoma","Arial",sans-serif;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(225,156,34,.18),transparent 34%),
+    radial-gradient(circle at 5% 42%,rgba(29,102,124,.11),transparent 30%),
+    linear-gradient(180deg,#050607 0%,#080a0d 46%,#030405 100%);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:92px;
 }
-</style>
-</head>
-<body>
-<div class="wrap">
-<h1>🛒 تسوق الآن</h1>
-<p class="subtitle">اختر القسم الذي تريد التسوق منه</p><div style="text-align:center;margin:8px"><a href="marketplace-onboarding.html" style="display:inline-block;background:#eee;color:#111;text-decoration:none;padding:9px 12px;border-radius:10px">🏪 انضم كبائع</a></div><div style="text-align:center;margin:8px"><a href="store-accounting.html" style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:9px 12px;border-radius:10px">📒 برنامج حسابات المتاجر</a></div><div class="shop-tools"><a href="cart.html">🛒 السلة</a><a class="light" href="favorites.html">❤️ المفضلة</a><a class="light" href="shop-orders.html">📦 طلباتي</a></div>
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:linear-gradient(90deg,transparent 0 49.7%,rgba(255,193,67,.018) 50%,transparent 50.3%);
+}
+.topbar{
+  min-height:72px;
+  display:grid;
+  grid-template-columns:52px 1fr 52px;
+  align-items:center;
+  gap:10px;
+  padding:10px 16px;
+  position:sticky;top:0;z-index:30;
+  background:rgba(4,6,8,.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(243,195,92,.28);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+.back,.home{
+  width:46px;height:46px;border:1px solid rgba(243,195,92,.42);border-radius:14px;
+  background:linear-gradient(145deg,#12171c,#07090b);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;
+  text-decoration:none;box-shadow:inset 0 0 16px rgba(243,195,92,.04),0 6px 18px rgba(0,0,0,.25);
+}
+.back:active,.home:active{transform:scale(.96)}
+.title{text-align:center;font-weight:800;font-size:20px;color:#fff;letter-spacing:.2px}
+.title small{display:block;color:var(--gold);font-size:11px;font-weight:600;margin-top:3px}
+.hero{
+  width:min(980px,94%);margin:24px auto 12px;padding:28px 20px 24px;text-align:center;
+  border-radius:26px;position:relative;overflow:hidden;
+  background:
+    linear-gradient(135deg,rgba(12,17,22,.97),rgba(4,6,8,.97)),
+    radial-gradient(circle at 50% 0,rgba(243,195,92,.18),transparent 50%);
+  border:1px solid rgba(243,195,92,.36);
+  box-shadow:0 18px 55px rgba(0,0,0,.38),inset 0 0 40px rgba(243,195,92,.035),var(--glow);
+}
+.hero:before{content:"";position:absolute;left:8%;right:8%;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 18px var(--gold)}
+.brandmark{
+  width:76px;height:76px;margin:0 auto 10px;border-radius:24px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;font-style:italic;color:#111;
+  background:linear-gradient(135deg,#fff1b0 0%,#f3c35c 38%,#a9630a 100%);
+  box-shadow:0 0 30px rgba(243,195,92,.25),inset 0 1px 0 rgba(255,255,255,.65);
+  transform:skew(-6deg);
+}
+.hero .icon{display:none}
+.hero h1{margin:6px 0 7px;font-size:31px;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+.hero p{margin:0;color:#c8c3ba;line-height:1.8;font-size:14px}
+.goldline{width:62px;height:3px;border-radius:9px;background:linear-gradient(90deg,#8b5310,#ffd87a,#9c5b0d);margin:15px auto 0;box-shadow:0 0 12px rgba(243,195,92,.35)}
+.grid{
+  width:min(980px,94%);margin:18px auto 34px;display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+}
+.card{
+  min-height:174px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(16,23,29,.98),rgba(7,10,13,.98));
+  border:1px solid rgba(189,200,211,.18);border-radius:22px;padding:18px 12px 16px;
+  cursor:pointer;text-align:center;color:#fff;text-decoration:none!important;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.30),inset 0 0 25px rgba(255,255,255,.018);
+  transition:.2s ease;
+}
+.card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 5%,rgba(243,195,92,.08),transparent 38%);pointer-events:none}
+.card:after{content:"";position:absolute;bottom:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(243,195,92,.55),transparent)}
+.card:hover{transform:translateY(-3px);border-color:rgba(243,195,92,.44);box-shadow:0 16px 38px rgba(0,0,0,.38),0 0 25px rgba(243,195,92,.08)}
+.card:active{transform:scale(.985)}
+.card .icon{
+  width:70px;height:70px;margin:0 auto 12px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+  font-size:35px;background:linear-gradient(145deg,#14202a,#070b0f);
+  border:1px solid rgba(243,195,92,.30);box-shadow:inset 0 0 20px rgba(243,195,92,.05),0 7px 18px rgba(0,0,0,.28);
+}
+.card h2{margin:0 0 8px;font-size:20px;color:#fff;line-height:1.35}
+.card h2:after{content:"";display:block;width:28px;height:2px;background:var(--gold);border-radius:2px;margin:8px auto 0;box-shadow:0 0 8px rgba(243,195,92,.32)}
+.card p{margin:0;color:#bdb9b1;line-height:1.55;font-size:13px}
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;height:74px;display:grid;grid-template-columns:1fr 1.35fr 1fr;align-items:center;
+  background:rgba(4,6,8,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(243,195,92,.40);box-shadow:0 -12px 35px rgba(0,0,0,.38);
+}
+.nav-item{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#c4c0b7;text-decoration:none;font-size:12px;gap:4px}.nav-item .ni{font-size:24px}.nav-item.active{color:#ffd878}.nav-brand{height:84px;margin-top:-17px;border:1px solid rgba(243,195,92,.50);border-bottom:0;border-radius:42px 42px 0 0;background:linear-gradient(180deg,#11161a,#050708);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f5cf74;font-weight:800;box-shadow:0 -9px 22px rgba(243,195,92,.08)}.nav-brand b{font-size:20px}.nav-brand span{font-size:10px;color:#d8cfbd;margin-top:2px}
+@media(max-width:700px){
+  .grid{gap:10px}.card{min-height:148px;padding:13px 7px;border-radius:18px}.card .icon{width:58px;height:58px;font-size:29px;border-radius:17px;margin-bottom:9px}.card h2{font-size:15px}.card p{font-size:10.5px}.hero{padding:22px 14px}.hero h1{font-size:25px}.brandmark{width:65px;height:65px;font-size:25px}.subgrid{gap:9px}.subcard{min-height:100px;padding:13px 8px}.subcard strong{font-size:14px}.study-banner{padding:14px}.study-banner .bicon{font-size:40px}.study-banner h3{font-size:17px}
+}
+@media(max-width:390px){.grid{gap:8px}.card{min-height:140px}.card h2{font-size:14px}.card p{font-size:9.7px}.card .icon{width:54px;height:54px;font-size:27px}}
 
-<div class="categories">
-  <a class="category" href="shop-section.html?section=library">
+.title small,.nav-item{font-size:14px}.nav-brand span{font-size:12px}
+.hero p{font-size:16px}.card p{font-size:14px}.card h2{font-size:18px}
+.shop-tools{width:min(980px,94%);margin:0 auto 32px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.shop-tools a{padding:13px 16px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#12171c,#07090b);color:var(--text);text-decoration:none;font-size:16px}
+a:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.bottom-nav{padding-bottom:env(safe-area-inset-bottom);height:calc(74px + env(safe-area-inset-bottom))}
+body{padding-bottom:calc(105px + env(safe-area-inset-bottom))}
+@media(max-width:700px){.card{min-height:174px}.card h2{font-size:16px}.card p{font-size:14px}.hero{margin-top:26px;padding:25px 14px}.hero h1{margin:15px 0}.hero p{font-size:16px}.grid{margin-top:20px}.title small{font-size:14px}}
+@media(max-width:350px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.card{transition:none}}
+</style></head><body>
+<header class="topbar"><a class="back" href="index.html" aria-label="رجوع إلى الرئيسية">→</a><div class="title">تسوق الآن<small>HA Marketing</small></div><a class="home" href="index.html" aria-label="الرئيسية">🏠</a></header>
+<section class="hero"><div class="brandmark">HA</div><h1>تسوق الآن</h1><p>اختر القسم الذي تريد التسوق منه، وتصفح المنتجات.</p><div class="goldline"></div></section>
+<main class="grid" aria-label="أقسام التسوق">
+  <a class="card" href="shop-section.html?section=library">
     <div class="icon">📚</div>
     <h2>مكتبة</h2>
     <p>الستيكرات ومنتجات المكتبة</p>
   </a>
-  <a class="category" href="shop-section.html?section=building_materials">
+  <a class="card" href="shop-section.html?section=building_materials">
     <div class="icon">🏗️</div>
     <h2>مواد البناء</h2>
     <p>مواد ومنتجات البناء</p>
   </a>
-  <a class="category" href="shop-section.html?section=cards_credit">
+  <a class="card" href="shop-section.html?section=cards_credit">
     <div class="icon">💳</div>
     <h2>بطاقات وأرصدة</h2>
     <p>البطاقات والأرصدة الإلكترونية</p>
   </a>
-  <a class="category" href="shop-section.html?section=yugioh">
+  <a class="card" href="shop-section.html?section=yugioh">
     <div class="icon">🃏</div>
     <h2>أوراق يوغي</h2>
     <p>بطاقات وأوراق يوغي</p>
   </a>
-  <a class="category" href="shop-section.html?section=markets">
+  <a class="card" href="shop-section.html?section=markets">
     <div class="icon">🛒</div>
     <h2>أسواق</h2>
     <p>الأسواق والمواد المتنوعة</p>
   </a>
-  <a class="category" href="shop-section.html?section=restaurants">
+  <a class="card" href="shop-section.html?section=restaurants">
     <div class="icon">🍽️</div>
     <h2>مطاعم</h2>
     <p>المطاعم والوجبات</p>
   </a>
-  <a class="category" href="shop-section.html?section=flowers">
+  <a class="card" href="shop-section.html?section=flowers">
     <div class="icon">💐</div>
     <h2>ورد</h2>
     <p>الورد والهدايا</p>
   </a>
-  <a class="category" href="shop-section.html?section=home_appliances">
+  <a class="card" href="shop-section.html?section=home_appliances">
     <div class="icon">🏠</div>
     <h2>أجهزة منزلية</h2>
     <p>الأجهزة المنزلية</p>
   </a>
-  <a class="category" href="shop-section.html?section=printers">
+  <a class="card" href="shop-section.html?section=printers">
     <div class="icon">🖨️</div>
     <h2>طابعات</h2>
     <p>الطابعات ومستلزماتها</p>
   </a>
-  <a class="category" href="shop-section.html?section=devices">
+  <a class="card" href="shop-section.html?section=devices">
     <div class="icon">📱</div>
     <h2>أجهزة</h2>
     <p>الأجهزة والإلكترونيات</p>
   </a>
-  <a class="category" href="shop-section.html?section=device_accessories">
+  <a class="card" href="shop-section.html?section=device_accessories">
     <div class="icon">🎧</div>
     <h2>إكسسوارات الأجهزة</h2>
     <p>إكسسوارات ومستلزمات الأجهزة</p>
   </a>
-  <a class="category" href="shop-section.html?section=clothes">
+  <a class="card" href="shop-section.html?section=clothes">
     <div class="icon">👕</div>
     <h2>ملابس</h2>
     <p>الملابس والأزياء</p>
   </a>
-  <a class="category" href="shop-section.html?section=shoes">
+  <a class="card" href="shop-section.html?section=shoes">
     <div class="icon">👟</div>
     <h2>أحذية</h2>
     <p>الأحذية بأنواعها</p>
-  </a>
-</div>
-
-<a class="back" href="index.html">← الرجوع إلى الصفحة الرئيسية</a>
-</div>
-</body>
-</html>
+  </a></main>
+<nav class="shop-tools" aria-label="خدمات المتجر"><a href="cart.html">🛒 السلة</a><a href="favorites.html">❤️ المفضلة</a><a href="shop-orders.html">📦 طلباتي</a><a href="marketplace-onboarding.html">🏪 انضم كبائع</a><a href="store-accounting.html">📒 برنامج حسابات المتاجر</a></nav>
+<nav class="bottom-nav" aria-label="التنقل"><a class="nav-item active" href="shop.html" aria-current="page"><span class="ni">🛒</span><span>التسوق</span></a><a class="nav-brand" href="index.html"><b>HA</b><span>HA Marketing</span></a><a class="nav-item" href="index.html"><span class="ni">🏠</span><span>الرئيسية</span></a></nav>
+</body></html>
