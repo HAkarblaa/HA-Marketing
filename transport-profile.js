@@ -115,6 +115,7 @@
     cached={
       id:p?.id||user.id,
       user_id:user.id,
+      profileVerified:!!p,
       full_name:p?.full_name||meta.full_name||meta.name||'',
       username:p?.username||meta.username||'',
       phone:p?.phone||user.phone||meta.phone||'',
@@ -151,8 +152,12 @@
   async function driverIdentity(){
     const p=await current(true);
     if(!p)return {ok:false,message:'لازم تسجل الدخول بحساب الموظف أولاً.'};
+    if(!p.profileVerified)return {ok:false,message:'تعذر قراءة حالة حسابك من الخادم. تأكد من الإنترنت وأعد فتح الصفحة.'};
     if(p.account_type!=='employee')return {ok:false,message:'واجهة السائق مخصصة لحسابات الموظفين فقط.'};
-    if(p.employee_status!=='approved')return {ok:false,message:'حساب الموظف لازم يكون موافق عليه من الإدارة قبل استقبال الطلبات.'};
+    // Employee accounts activate directly; pending is a legacy approval state.
+    const status=String(p.employee_status||'').trim().toLowerCase();
+    if(['rejected','suspended','blocked','disabled','banned'].includes(status))return {ok:false,message:'حساب الموظف موقوف أو مرفوض. راجع الإدارة.'};
+    if(!['','pending','approved','active'].includes(status))return {ok:false,message:'حالة حساب الموظف غير معروفة. راجع بيانات الحساب.'};
 
     const v=vehicle()||{};
     if(!v.plate||!v.carName||!v.carColor){

@@ -119,7 +119,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
   <div class="head">
     <h1>🚖 واجهة السائق</h1>
     <div class="status-toggle">
-      <button id="availabilityBtn">متاح</button>
+      <button id="availabilityBtn" disabled>جاري التحقق</button>
     </div>
   </div>
 
@@ -128,7 +128,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
   <div id="map"></div>
 
   <div class="summary">
-    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">0</b></div>
+    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">—</b></div>
     <div class="box"><small>المسافة للزبون</small><b id="toCustomer">—</b></div>
     <div class="box"><small>السعر</small><b id="fare">—</b></div>
   </div>
@@ -201,7 +201,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script>
+<script src="transport-profile.js?v=driver-auto-20260911"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -251,6 +251,7 @@ function coordText(p){
 }
 
 function watchPendingRides(){
+  if(!driverReady || !available)return;
   if(!firebase.auth().currentUser){
     HA_FirebaseAuth.ready().then(u=>{firebaseDriverUser=u;watchPendingRides();}).catch(err=>{console.error(err);nearbyCount.textContent='—';});
     return;
@@ -258,6 +259,9 @@ function watchPendingRides(){
   if(driverWatch) driverWatch.off();
   driverWatch=db.ref('rides');
   driverWatch.on('value',snap=>{
+    if(!driverReady || !available)return;
+    availabilityBtn.textContent='متاح';
+    document.getElementById('driverGateMsg').textContent='متصل بالطلبات. يظهر الطلب هنا عند وصوله.';
     const allRides=snap.val()||{};
     const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting','requested'].includes(r?.status)));
     const entries=Object.entries(rides).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
@@ -289,6 +293,11 @@ function watchPendingRides(){
     if(ride.destination){
       destination.setLatLng([ride.destination.lat,ride.destination.lng]);
     }
+  },err=>{
+    console.error(err);
+    nearbyCount.textContent='—';
+    availabilityBtn.textContent='تعذر الاتصال';
+    document.getElementById('driverGateMsg').textContent='تعذر استقبال الطلبات من Firebase. '+(String(err.code||'').toLowerCase().includes('permission')?'صلاحيات قراءة الطلبات مرفوضة.':'تحقق من الاتصال وأعد تحميل الصفحة.');
   });
 }
 
@@ -340,6 +349,7 @@ availabilityBtn.onclick=()=>{
   availabilityBtn.textContent=available?'متاح':'غير متاح';
   availabilityBtn.classList.toggle('off',!available);
   if(!available){
+    if(driverWatch){driverWatch.off();driverWatch=null;}
     nearbyCount.textContent='0';
     requestCard.style.display='none';
   }else{
@@ -500,14 +510,16 @@ async function restoreDriverRide(){
 }
 
 requestCard.style.display='none';
-nearbyCount.textContent='0';
+nearbyCount.textContent='—';
 
 async function initRealDriver(){
   const msg=document.getElementById('driverGateMsg');
+  availabilityBtn.disabled=true;acceptBtn.disabled=true;
+  availabilityBtn.textContent='جاري التحقق';
   try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){
     console.error(err);
     msg.textContent='تعذر تأمين Firebase. فعّل Anonymous Authentication من Firebase Authentication.';
-    availabilityBtn.disabled=true;acceptBtn.disabled=true;return false;
+    availabilityBtn.disabled=true;acceptBtn.disabled=true;availabilityBtn.textContent='تعذر الاتصال';return false;
   }
   const setup=document.getElementById('vehicleSetup');
   const saved=HA_TransportProfile.vehicle()||{};
@@ -518,11 +530,15 @@ async function initRealDriver(){
   const ident=await HA_TransportProfile.driverIdentity();
   if(ident.ok){
     driverProfile=ident.driver;driverReady=true;
-    msg.textContent='تم التحقق من حساب الموظف. بيانات المركبة محفوظة ويمكنك استقبال الطلبات.';
+    availabilityBtn.disabled=false;acceptBtn.disabled=false;
+    availabilityBtn.textContent='جاري الاتصال';
+    msg.textContent='حساب الموظف مفعّل. جاري الاتصال بالطلبات...';
     setup.style.display='none';
     return true;
   }
   driverReady=false;
+  availabilityBtn.textContent=ident.needsVehicle?'أكمل بيانات المركبة':'غير جاهز';
+  nearbyCount.textContent='—';
   msg.textContent=ident.message||'تعذر التحقق من حساب السائق.';
   setup.style.display=ident.needsVehicle?'block':'none';
   if(!ident.needsVehicle){availabilityBtn.disabled=true;acceptBtn.disabled=true;}
@@ -536,7 +552,7 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
+initRealDriver().then(async ok=>{if(ok)await restoreDriverRide();}).catch(err=>{console.error(err);availabilityBtn.textContent='تعذر الاتصال';nearbyCount.textContent='—';document.getElementById('driverGateMsg').textContent='تعذر تحميل بيانات السائق أو الطلب الحالي. أعد تحميل الصفحة.';});
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
