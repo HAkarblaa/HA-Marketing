@@ -1,1 +1,225 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الألعاب - HA Marketing</title><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#07101f;color:#fff;min-height:100vh}.wrap{width:94%;max-width:980px;margin:0 auto;padding:28px 0 40px}h1{text-align:center;margin:0 0 8px}.sub{text-align:center;color:#aebbd0;margin-bottom:24px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.game{background:#0e1a2d;border:1px solid #263753;border-radius:18px;padding:24px;text-decoration:none;color:#fff;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.ico{font-size:52px}.game h2{margin:10px 0 7px}.game p{margin:0;color:#aebbd0;line-height:1.7}.back{display:block;margin-top:22px;background:#fff;color:#111;text-decoration:none;padding:12px;border-radius:12px;text-align:center}@media(max-width:620px){.grid{grid-template-columns:1fr 1fr;gap:9px}.game{padding:15px 8px;min-height:155px}.ico{font-size:40px}.game h2{font-size:18px}.game p{font-size:12px}}</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><main class="wrap"><h1>🎮 الألعاب</h1><p class="sub">اختر لعبة تعمل فعلياً داخل الموقع، بدون أرصدة أو إحصائيات وهمية.</p><div class="grid"><a class="game" href="domino.html"><div class="ico">🁫</div><h2>دومينو</h2><p>لعب محلي وغرف عبر Firebase.</p></a><a class="game" href="penalties.html"><div class="ico">⚽</div><h2>ركلات الجزاء</h2><p>لعبة ركلات الجزاء واللعب المتاح داخل الصفحة.</p></a><a class="game" href="chess.html"><div class="ico">♟️</div><h2>شطرنج</h2><p>نسخة مبسطة ضد الجهاز.</p></a><a class="game" href="backgammon.html"><div class="ico">🎲</div><h2>طاولة</h2><p>نسخة مبسطة ضد الجهاز.</p></a></div><a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a></main></body></html>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الألعاب - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#07101f;color:#fff;min-height:100vh}.wrap{width:94%;max-width:980px;margin:0 auto;padding:28px 0 40px}h1{text-align:center;margin:0 0 8px}.sub{text-align:center;color:#aebbd0;margin-bottom:24px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.game{background:#0e1a2d;border:1px solid #263753;border-radius:18px;padding:24px;text-decoration:none;color:#fff;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.ico{font-size:52px}.game h2{margin:10px 0 7px}.game p{margin:0;color:#aebbd0;line-height:1.7}.back{display:block;margin-top:22px;background:#fff;color:#111;text-decoration:none;padding:12px;border-radius:12px;text-align:center}@media(max-width:620px){.grid{grid-template-columns:1fr 1fr;gap:9px}.game{padding:15px 8px;min-height:155px}.ico{font-size:40px}.game h2{font-size:18px}.game p{font-size:12px}}
+.searchbox{margin:16px 0 18px;background:#0b1628;border:1px solid #263753;border-radius:16px;padding:12px}
+.searchbox label{display:block;font-size:12px;color:#d7c17d;margin-bottom:7px;font-weight:700}
+.searchrow{display:flex;gap:7px}
+.searchrow input{flex:1;min-width:0;padding:12px;border-radius:11px;border:1px solid #304866;background:#050c16;color:#fff;font:inherit;outline:none}
+.searchrow input:focus{border-color:#d7a944;box-shadow:0 0 0 2px rgba(215,169,68,.12)}
+.searchhint{margin-top:7px;color:#8fa0b3;font-size:10px;line-height:1.6}
+.player-results{margin-top:9px;max-height:360px;overflow:auto;border-radius:12px}
+.player-title{padding:8px 10px;color:#f0c865;font-size:11px;font-weight:800}
+.player{display:flex;align-items:center;gap:9px;padding:10px;border-top:1px solid #1e2d43;background:#091321;cursor:pointer}
+.player:hover{background:#101e30}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;font-weight:900;color:#111;background:linear-gradient(145deg,#f0c968,#8d621e)}
+.pinfo{min-width:0;flex:1}
+.pinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pmeta{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;color:#9aabba;font-size:10px}
+.pmeta span{padding:3px 6px;border:1px solid #263a52;border-radius:999px;background:#07101c}
+.pick{border:1px solid #b98b31;background:#171108;color:#f2c965;border-radius:9px;padding:7px 9px;font-size:10px}
+.selected-player{display:none;margin:10px 0 0;padding:10px;border:1px solid #795a22;border-radius:12px;background:#151108;color:#f0cb72;font-size:11px}
+.selected-player.show{display:block}
+.game.hide{display:none!important}
+.no-game{display:none;text-align:center;color:#8fa0b3;padding:16px}
+mark{background:transparent;color:#ffe28a;font-weight:900}
+</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body>
+<main class="wrap">
+  <h1>🎮 الألعاب</h1>
+  <p class="sub">ابحث عن اللعبة أو عن لاعب بالاسم أو اليوزر أو رقم الهاتف.</p>
+
+  <div class="searchbox">
+    <label>🔎 بحث الألعاب</label>
+    <div class="searchrow">
+      <input id="gameSearch" placeholder="مثال: دومينو، شطرنج، جزاءات..." oninput="filterGames()">
+    </div>
+    <div id="noGame" class="no-game">ماكو لعبة مطابقة للبحث.</div>
+  </div>
+
+  <div class="searchbox">
+    <label>👤 البحث عن لاعب</label>
+    <div class="searchrow">
+      <input id="playerSearch" placeholder="اكتب الاسم أو @اليوزر أو رقم الهاتف" oninput="schedulePlayerSearch()">
+    </div>
+    <div class="searchhint">بالاسم راح تظهر اقتراحات أكثر، وتقدر تبحث بجزء من الاسم أيضاً.</div>
+    <div id="selectedPlayer" class="selected-player"></div>
+    <div id="playerResults" class="player-results"></div>
+  </div>
+
+  <div class="grid" id="gameGrid">
+    <a class="game" data-k="دومينو domino" href="domino.html">
+      <div class="ico">🁫</div><h2>دومينو</h2><p>لعب محلي وغرف عبر Firebase.</p>
+    </a>
+    <a class="game" data-k="جزاءات ركلات الجزاء كرة قدم penalties" href="penalties.html">
+      <div class="ico">⚽</div><h2>ركلات الجزاء</h2><p>لعبة ركلات الجزاء واللعب المتاح داخل الصفحة.</p>
+    </a>
+    <a class="game" data-k="شطرنج chess" href="chess.html">
+      <div class="ico">♟️</div><h2>شطرنج</h2><p>نسخة مبسطة ضد الجهاز.</p>
+    </a>
+    <a class="game" data-k="طاولة باكغمون backgammon" href="backgammon.html">
+      <div class="ico">🎲</div><h2>طاولة</h2><p>نسخة مبسطة ضد الجهاز.</p>
+    </a>
+  </div>
+
+  <a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a>
+</main>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+let me=null, searchTimer=null, searchSeq=0;
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const digits=s=>String(s||'').replace(/\D/g,'');
+const clean=s=>String(s||'').trim().replace(/^@+/,'').replace(/\s+/g,' ');
+const safeLike=s=>String(s||'').replace(/[%_,()]/g,'');
+
+function filterGames(){
+  const v=gameSearch.value.trim().toLowerCase();
+  let shown=0;
+  document.querySelectorAll('.game').forEach(card=>{
+    const text=(card.dataset.k+' '+card.innerText).toLowerCase();
+    const ok=!v||text.includes(v);
+    card.classList.toggle('hide',!ok);
+    if(ok)shown++;
+  });
+  noGame.style.display=shown?'none':'block';
+}
+
+function scorePlayer(p,term){
+  const t=clean(term).toLowerCase();
+  if(!t)return 0;
+
+  const name=String(p.full_name||'').toLowerCase();
+  const user=String(p.username||'').replace(/^@/,'').toLowerCase();
+  const phone=digits(p.phone||'');
+  const d=digits(t);
+
+  if(user===t)return 1000;
+  if(phone&&d&&phone===d)return 990;
+  if(name===t)return 980;
+
+  if(name.startsWith(t))return 900;
+  if(user.startsWith(t))return 880;
+  if(phone&&d&&phone.startsWith(d))return 860;
+
+  if(name.includes(t))return 760;
+  if(user.includes(t))return 740;
+  if(phone&&d&&phone.includes(d))return 720;
+
+  const words=t.split(' ').filter(Boolean);
+  if(words.length>1&&words.every(w=>name.includes(w)))return 700;
+  return 0;
+}
+
+function highlight(text,term){
+  const raw=String(text||'');
+  const t=clean(term);
+  if(!t)return esc(raw);
+  const i=raw.toLowerCase().indexOf(t.toLowerCase());
+  if(i<0)return esc(raw);
+  return esc(raw.slice(0,i))+'<mark>'+esc(raw.slice(i,i+t.length))+'</mark>'+esc(raw.slice(i+t.length));
+}
+
+function renderPlayers(data,term){
+  const t=clean(term);
+
+  let arr=(data||[])
+    .map(p=>({...p,_score:scorePlayer(p,t)}))
+    .filter(p=>!t||p._score>0)
+    .sort((a,b)=>{
+      if(b._score!==a._score)return b._score-a._score;
+      return String(a.full_name||a.username||'').localeCompare(String(b.full_name||b.username||''),'ar');
+    });
+
+  const hasDigits=digits(t).length>=5;
+  const looksUser=/^[a-zA-Z0-9_.-]+$/.test(t)&&!t.includes(' ');
+  const max=!t?30:(hasDigits||looksUser?60:100);
+  arr=arr.slice(0,max);
+
+  if(!arr.length){
+    playerResults.innerHTML='<div class="player-title">ماكو نتائج. جرّب جزء من الاسم أو @اليوزر أو الرقم.</div>';
+    return;
+  }
+
+  playerResults.innerHTML=
+    `<div class="player-title">${t?'اقتراحات اللاعبين':'لاعبون مقترحون'} — ${arr.length}</div>`+
+    arr.map(p=>{
+      const name=p.full_name||p.username||'مستخدم';
+      const user=p.username?'@'+String(p.username).replace(/^@/,''):'';
+      const phone=p.phone||'';
+      const ava=esc(String(name).trim().slice(0,1)||'👤');
+      return `<div class="player" onclick="pickPlayer('${p.id}','${encodeURIComponent(name)}','${encodeURIComponent(user)}','${encodeURIComponent(phone)}')">
+        <div class="avatar">${ava}</div>
+        <div class="pinfo">
+          <b>${highlight(name,t)}</b>
+          <div class="pmeta">
+            ${user?`<span>${highlight(user,t)}</span>`:''}
+            ${phone?`<span>📱 ${highlight(phone,t)}</span>`:''}
+          </div>
+        </div>
+        <span class="pick">اختيار</span>
+      </div>`;
+    }).join('');
+}
+
+async function loadPlayers(term=''){
+  const seq=++searchSeq;
+  const t=clean(term);
+  const s=safeLike(t);
+  const d=digits(t);
+
+  let q=db.from('profiles')
+    .select('id,full_name,username,phone')
+    .limit(t?120:30);
+
+  if(me?.id)q=q.neq('id',me.id);
+
+  if(t){
+    const f=[
+      `full_name.ilike.%${s}%`,
+      `username.ilike.%${s}%`
+    ];
+    if(d)f.push(`phone.ilike.%${d}%`);
+    q=q.or(f.join(','));
+  }
+
+  const {data,error}=await q;
+  if(seq!==searchSeq)return;
+
+  if(error){
+    playerResults.innerHTML='<div class="player-title">تعذر البحث حالياً: '+esc(error.message)+'</div>';
+    return;
+  }
+
+  renderPlayers(data||[],t);
+}
+
+function schedulePlayerSearch(){
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>loadPlayers(playerSearch.value),180);
+}
+
+function pickPlayer(id,nameEnc,userEnc,phoneEnc){
+  const p={
+    id,
+    name:decodeURIComponent(nameEnc),
+    username:decodeURIComponent(userEnc),
+    phone:decodeURIComponent(phoneEnc)
+  };
+  localStorage.setItem('ha_game_selected_player',JSON.stringify(p));
+  selectedPlayer.classList.add('show');
+  selectedPlayer.innerHTML='✅ اللاعب المختار: <b>'+esc(p.name)+'</b>'+(p.username?' — '+esc(p.username):'')+'<br><span style="color:#9fa9b7">اختيار اللاعب محفوظ حتى تستخدمه بالتحدي داخل الألعاب الأونلاين.</span>';
+}
+
+async function init(){
+  try{
+    const {data:{session}}=await db.auth.getSession();
+    me=session?.user||null;
+  }catch(e){}
+  loadPlayers('');
+}
+init();
+</script>
+</body></html>
