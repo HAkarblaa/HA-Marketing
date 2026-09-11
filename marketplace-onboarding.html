@@ -14,7 +14,7 @@
   .driver-type-choice b{font-size:11px}
 }
 
-</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="top"><a class="btn light" href="index.html">← الرئيسية</a><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="account.html">حسابي</a></div><div class="hero"><h1>🚀 بوابة الانضمام للمنصة</h1><p>اختر صلاحية العمل التي تريدها من داخل التطبيق. تقدر تقدم أكثر من طلب: بائع، مقدم خدمة، صاحب ملعب/جم، أو سائق/مندوب. بعد موافقة الإدارة تفتح لك لوحة الإضافة والإدارة الخاصة بالقسم.</p></div><div class="grid" id="roles"><a class="role" href="#" onclick="pick('seller',this);return false"><div class="ico">🏪</div><h2>بائع / صاحب متجر</h2><p>أنشئ متجرك، أضف المنتجات، تابع الطلبات واستخدم برنامج الحسابات.</p><div class="chips"><span class="chip">منتجات</span><span class="chip">طلبات</span><span class="chip">حسابات</span></div></a><a class="role" href="#" onclick="pick('service_provider',this);return false"><div class="ico">🛠️</div><h2>مقدم خدمة</h2><p>اعرض خدماتك وأسعارك ومواعيدك واستقبل طلبات العملاء.</p><div class="chips"><span class="chip">خدمات</span><span class="chip">مواعيد</span></div></a><a class="role" href="#" onclick="pick('sports_manager',this);return false"><div class="ico">🏟️</div><h2>صاحب ملعب / جم</h2><p>أضف ملعب أو مركز رياضي، الأسعار والمواعيد واستقبل الحجوزات والاشتراكات.</p><div class="chips"><span class="chip">ملاعب</span><span class="chip">جم</span><span class="chip">حجوزات</span></div></a><a class="role" href="#" onclick="pick('driver',this);return false"><div class="ico">🚕</div><h2>سائق / مندوب</h2><p>اختر نوع العمل: سائق تكسي، سائق تكتك، أو مندوب توصيل.</p><div class="chips"><span class="chip">تكسي</span><span class="chip">تكتك</span><span class="chip">مندوب</span></div></a></div><div class="card"><h2 id="formTitle">اختر نوع الانضمام من البطاقات أعلاه</h2>
+</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="top"><a class="btn light" href="index.html">← الرئيسية</a><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="account.html">حسابي</a></div><div class="hero"><h1>🚀 بوابة الانضمام للمنصة</h1><p>اختر صلاحية العمل التي تريدها من داخل التطبيق. تقدر تقدم أكثر من طلب: بائع، مقدم خدمة، صاحب ملعب/جم، أو سائق/مندوب. بعد موافقة الإدارة تفتح لك لوحة الإضافة والإدارة الخاصة بالقسم.</p></div><div class="grid" id="roles"><a class="role" href="#" onclick="pick('seller',this);return false"><div class="ico">🏪</div><h2>بائع / صاحب متجر</h2><p>أنشئ متجرك، أضف المنتجات، تابع الطلبات واستخدم برنامج الحسابات.</p><div class="chips"><span class="chip">منتجات</span><span class="chip">طلبات</span><span class="chip">حسابات</span></div></a><a class="role" href="#" onclick="pick('service_provider',this);return false"><div class="ico">🛠️</div><h2>مقدم خدمة</h2><p>اعرض خدماتك وأسعارك ومواعيدك واستقبل طلبات العملاء.</p><div class="chips"><span class="chip">خدمات</span><span class="chip">مواعيد</span></div></a><a class="role" href="#" onclick="pick('sports_manager',this);return false"><div class="ico">🏟️</div><h2>صاحب ملعب / جم</h2><p>أضف ملعب أو مركز رياضي، الأسعار والمواعيد واستقبل الحجوزات والاشتراكات.</p><div class="chips"><span class="chip">ملاعب</span><span class="chip">جم</span><span class="chip">حجوزات</span></div></a><a class="role" href="#" onclick="pick('games_manager',this);return false"><div class="ico">🎮</div><h2>إدارة الألعاب</h2><p>أضف ألعاب جديدة إلى مركز الألعاب وعدّلها أو فعّلها وأوقفها من داخل التطبيق.</p><div class="chips"><span class="chip">ألعاب</span><span class="chip">إضافة</span><span class="chip">إدارة</span></div></a><a class="role" href="#" onclick="pick('driver',this);return false"><div class="ico">🚕</div><h2>سائق / مندوب</h2><p>اختر نوع العمل: سائق تكسي، سائق تكتك، أو مندوب توصيل.</p><div class="chips"><span class="chip">تكسي</span><span class="chip">تكتك</span><span class="chip">مندوب</span></div></a></div><div class="card"><h2 id="formTitle">اختر نوع الانضمام من البطاقات أعلاه</h2>
 <div id="driverTypeBox" style="display:none;margin:0 0 12px">
 <label style="display:block;margin-bottom:6px;font-weight:800;color:#f2b544">نوع السائق / المندوب</label>
 <div class="driver-type-choices">
@@ -49,6 +49,7 @@ const labels={
   seller:'بائع / صاحب متجر',
   service_provider:'مقدم خدمة',
   sports_manager:'صاحب ملعب / جم',
+  games_manager:'إدارة الألعاب',
   driver:'سائق / مندوب',
   taxi_driver:'سائق تكسي',
   tuktuk_driver:'سائق تكتك',
@@ -74,12 +75,17 @@ function pick(r,el){
 }async function auth(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html?next='+encodeURIComponent('marketplace-onboarding.html');return null}return session.user}async function submitApp(){
   const u=await auth();
   if(!u||!role)return alert('اختر نوع الانضمام أولاً');
-  if(!name.value.trim())return alert('اكتب الاسم');
-  if(!phone.value.trim())return alert('اكتب رقم الهاتف');
-  if(!gov.value.trim())return alert('اكتب المحافظة');
+
+  const fullName=name.value.trim();
+  const ph=phone.value.trim();
+  const governorate=gov.value.trim();
+  if(!fullName)return alert('اكتب الاسم');
+  if(!ph)return alert('اكتب رقم الهاتف');
+  if(!governorate)return alert('اكتب المحافظة');
 
   let selectedRole=role;
   let roleNote='';
+  let vehicleType=null;
 
   if(role==='driver'){
     if(!driverType.value)return alert('اختر: سائق تكسي أو سائق تكتك أو مندوب');
@@ -91,21 +97,22 @@ function pick(r,el){
     if(driverType.value==='tuktuk_driver'){
       selectedRole='taxi_driver';
       roleNote='نوع السائق: سائق تكتك';
+      vehicleType='تكتك';
     }else if(driverType.value==='taxi_driver'){
       selectedRole='taxi_driver';
       roleNote='نوع السائق: سائق تكسي';
+      vehicleType=vehicle.value.trim();
     }else{
       selectedRole='delivery_driver';
       roleNote='نوع العمل: مندوب توصيل';
+      vehicleType=vehicle.value.trim();
     }
   }
-
-  status.textContent='جاري إرسال الطلب...';
 
   const extra=[];
   if(role==='driver'){
     extra.push(roleNote);
-    extra.push('نوع المركبة: '+vehicle.value.trim());
+    extra.push('نوع المركبة: '+vehicleType);
     extra.push('الموديل: '+model.value.trim());
     extra.push('اللون: '+color.value.trim());
     extra.push('رقم اللوحة: '+plate.value.trim());
@@ -114,72 +121,35 @@ function pick(r,el){
   }
   if(details.value.trim())extra.push(details.value.trim());
 
-  const appPayload={
-    user_id:u.id,
-    role_type:selectedRole,
-    display_name:name.value.trim(),
-    phone:phone.value.trim()||null,
-    governorate:gov.value.trim()||null,
-    address:address.value.trim()||null,
-    details:extra.join(' | ')||null,
-    status:'pending',
-    updated_at:new Date().toISOString()
-  };
+  status.textContent='جاري إرسال طلب الصلاحية...';
 
-  const {error:appError}=await db
-    .from('marketplace_applications')
-    .upsert(appPayload,{onConflict:'user_id,role_type'});
+  const {data,error}=await db.rpc('request_marketplace_role',{
+    p_role:selectedRole,
+    p_display_name:fullName,
+    p_phone:ph,
+    p_governorate:governorate,
+    p_address:address.value.trim()||null,
+    p_details:extra.join(' | ')||null,
+    p_vehicle_type:role==='driver'?vehicleType:null,
+    p_vehicle_model:role==='driver'?(model.value.trim()||null):null,
+    p_vehicle_color:role==='driver'?(color.value.trim()||null):null,
+    p_plate_number:role==='driver'?(plate.value.trim()||null):null
+  });
 
-  if(appError){
-    status.textContent='تعذر إرسال الطلب: '+appError.message;
+  if(error){
+    console.error(error);
+    status.textContent='❌ تعذر إرسال طلب الصلاحية: '+error.message;
+    alert('تعذر إرسال الطلب: '+error.message);
     return;
   }
 
-  // إذا كان سائق/مندوب نخزن معلومات المركبة أيضاً حتى تكون جاهزة داخل التطبيق.
-  if(role==='driver'){
-    const transportPayload={
-      user_id:u.id,
-      role_type:selectedRole,
-      full_name:name.value.trim(),
-      phone:phone.value.trim()||null,
-      vehicle_type:driverType.value==='tuktuk_driver'?'تكتك':vehicle.value.trim(),
-      vehicle_model:model.value.trim()||null,
-      vehicle_color:color.value.trim()||null,
-      plate_number:plate.value.trim()||null,
-      governorate:gov.value.trim()||null,
-      status:'pending',
-      updated_at:new Date().toISOString()
-    };
-
-    const {data:existing,error:findError}=await db
-      .from('transport_profiles')
-      .select('user_id')
-      .eq('user_id',u.id)
-      .maybeSingle();
-
-    let transportError=null;
-    if(!findError && existing){
-      const r=await db.from('transport_profiles').update(transportPayload).eq('user_id',u.id);
-      transportError=r.error;
-    }else{
-      const r=await db.from('transport_profiles').insert(transportPayload);
-      transportError=r.error;
-    }
-
-    if(transportError){
-      console.error(transportError);
-      status.textContent='✅ تم إرسال طلب الانضمام، لكن تعذر حفظ بعض معلومات المركبة: '+transportError.message;
-      await load();
-      return;
-    }
-  }
-
-  status.textContent='✅ تم إرسال الطلب والمعلومات كاملة، وهو الآن قيد مراجعة الإدارة.';
+  status.textContent='✅ تم إرسال طلب الصلاحية بنجاح وهو الآن قيد مراجعة الإدارة.';
   await load();
 }async function load(){const u=await auth();if(!u)return;const {data,error}=await db.from('marketplace_applications').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error){mine.textContent='تعذر تحميل الطلبات: '+error.message;return}mine.innerHTML=(data||[]).map(x=>`<div style="padding:12px 0;border-bottom:1px solid #eef0f3"><b>${x.role_type==='taxi_driver' && String(x.details||'').includes('سائق تكتك') ? 'سائق تكتك' : (labels[x.role_type]||x.role_type)}</b> <span class="badge">${x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':x.status==='suspended'?'⏸️ موقوف':'⏳ قيد المراجعة'}</span><div style="color:#667;margin-top:6px">${esc(x.admin_note||'')}</div>${x.status==='approved'?`<div style="margin-top:8px">${
 x.role_type==='seller'?'<a class="btn" href="seller-dashboard.html">فتح لوحة البائع</a>':
 x.role_type==='service_provider'?'<a class="btn" href="provider-dashboard.html">فتح لوحة مقدم الخدمة</a>':
 x.role_type==='sports_manager'?'<a class="btn" href="sports-owner.html">فتح إدارة الملاعب والجم</a>':
+x.role_type==='games_manager'?'<a class="btn" href="games.html#manageGames">فتح إدارة الألعاب</a>':
 '<a class="btn" href="transport-registration.html">فتح لوحة النقل</a>'
 }</div>`:''}</div>`).join('')||'لا توجد طلبات.'}
 async function prefillAccount(){
