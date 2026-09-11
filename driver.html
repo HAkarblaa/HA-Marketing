@@ -5,137 +5,455 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>واجهة السائق - HA Marketing</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
+:root{
+  --bg:#050708;
+  --panel:#0b1013;
+  --panel2:#0f1519;
+  --gold:#f2b544;
+  --gold2:#ffd46a;
+  --gold-dim:#8c6724;
+  --text:#f7f7f7;
+  --muted:#aab0b4;
+  --line:rgba(242,181,68,.34);
+  --danger:#ff4d4f;
+  --green:#35c76f;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
-.app{width:100%;max-width:760px;margin:auto;background:#fff;min-height:100vh}
-.head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #eee}
-.head h1{font-size:17px;margin:0}
-.status-toggle{display:flex;align-items:center;gap:8px}
-.status-toggle button{border:0;border-radius:999px;padding:9px 14px;font-weight:700;cursor:pointer;background:#111;color:#fff}
-.status-toggle button.off{background:#e5e5e5;color:#555}
-
-#map{height:42vh;min-height:300px}
-
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px}
-.summary .box{background:#f7f7f7;border-radius:12px;padding:10px;text-align:center}
-.summary small{display:block;color:#777;font-size:10px;margin-bottom:3px}
-.summary b{font-size:14px}
-
-.section{padding:10px 12px}
-.section h2{font-size:16px;margin:0 0 8px}
-.request-card{background:#fff;border:1px solid #e8e8e8;border-radius:16px;padding:12px;box-shadow:0 3px 12px #0001}
+html{background:var(--bg)}
+body{
+  margin:0;
+  font-family:Arial,Tahoma,sans-serif;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(242,181,68,.12),transparent 32%),
+    linear-gradient(180deg,#050708 0%,#080b0d 100%);
+  color:var(--text);
+}
+button,input{font-family:inherit}
+button{-webkit-tap-highlight-color:transparent}
+.app{
+  width:100%;
+  max-width:760px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:98px;
+  background:transparent;
+}
+.head{
+  position:sticky;
+  top:0;
+  z-index:2500;
+  display:grid;
+  grid-template-columns:64px 1fr 64px;
+  align-items:center;
+  gap:10px;
+  padding:14px 16px 12px;
+  background:rgba(5,7,8,.94);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 9px 30px rgba(0,0,0,.35);
+}
+.head-brand{text-align:center;line-height:1.2}
+.head h1{font-size:23px;margin:0;font-weight:900;letter-spacing:-.5px}
+.head-brand small{display:block;color:var(--gold);font-size:13px;font-weight:800;margin-top:4px}
+.head-home,.head-back{
+  width:54px;height:54px;border-radius:18px;
+  border:1px solid rgba(242,181,68,.6);
+  background:linear-gradient(145deg,#10161a,#070a0c);
+  color:var(--gold2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:25px;text-decoration:none;
+  box-shadow:inset 0 0 20px rgba(242,181,68,.04),0 7px 20px rgba(0,0,0,.28);
+}
+.driver-hero{
+  margin:14px 14px 10px;
+  padding:14px;
+  border:1px solid rgba(242,181,68,.62);
+  border-radius:25px;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(242,181,68,.09),transparent 34%),
+    linear-gradient(145deg,#0b1013,#080b0d);
+  box-shadow:inset 0 0 35px rgba(242,181,68,.04),0 12px 32px rgba(0,0,0,.3);
+}
+.hero-title{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:13px;
+}
+.hero-title b{font-size:17px}
+.status-toggle{display:flex;align-items:center;gap:7px}
+.status-toggle button{
+  border:1px solid rgba(242,181,68,.72);
+  border-radius:999px;
+  padding:9px 14px;
+  font-weight:800;
+  cursor:pointer;
+  background:rgba(242,181,68,.09);
+  color:var(--gold2);
+  box-shadow:0 0 18px rgba(242,181,68,.08);
+}
+.status-toggle button::before{content:"●";color:var(--green);font-size:10px;margin-left:7px}
+.status-toggle button.off{background:#11171a;color:#8f969b;border-color:#3a4145}
+.status-toggle button.off::before{color:#70777b}
+.driver-grid{
+  display:grid;
+  grid-template-columns:1.1fr repeat(3,1fr);
+  gap:8px;
+  align-items:stretch;
+}
+.driver-profile-box,.driver-data{
+  min-height:72px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.025);
+  border-radius:17px;
+  padding:10px;
+}
+.driver-profile-box{display:flex;align-items:center;gap:10px}
+.driver-avatar{
+  width:53px;height:53px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:28px;
+  border:2px solid var(--gold);
+  background:#10161a;
+  box-shadow:0 0 22px rgba(242,181,68,.2);
+}
+.driver-profile-box strong{display:block;font-size:14px}
+.driver-profile-box span{display:block;color:var(--green);font-size:11px;margin-top:5px}
+.driver-data small{display:block;color:#bca066;font-size:10px;margin-bottom:7px}
+.driver-data b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#driverGate{padding:0;margin-top:8px}
+#driverGate .request-card{
+  margin:0;border:1px dashed rgba(242,181,68,.32);
+  box-shadow:none;background:rgba(255,255,255,.02);
+}
+#driverGateMsg{margin:7px 0 0!important;color:#bfc4c7!important;font-size:12px}
+#vehicleSetup input{
+  width:100%!important;padding:11px!important;margin:5px 0!important;
+  border:1px solid rgba(242,181,68,.28)!important;border-radius:12px!important;
+  background:#080c0e!important;color:#fff!important;outline:none;
+}
+#saveVehicleBtn{background:linear-gradient(135deg,var(--gold2),#d99822)!important;color:#111!important}
+.map-shell{
+  margin:10px 14px 0;
+  border-radius:26px;
+  padding:2px;
+  background:linear-gradient(135deg,var(--gold2),#5b4316 38%,#dba33b);
+  box-shadow:0 12px 34px rgba(0,0,0,.38),0 0 24px rgba(242,181,68,.06);
+  overflow:hidden;
+}
+#map{
+  height:50vh;
+  min-height:390px;
+  max-height:570px;
+  border-radius:24px;
+  overflow:hidden;
+  background:#0c1114;
+}
+.leaflet-control-zoom a{
+  background:#0a0f12!important;color:#fff!important;border-color:#30383d!important
+}
+.leaflet-control-attribution{
+  background:rgba(5,7,8,.72)!important;color:#bfc4c7!important
+}
+.leaflet-control-attribution a{color:var(--gold2)!important}
+.ha-marker{background:transparent!important;border:0!important}
+.ha-pin{
+  width:33px;height:33px;border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  border:3px solid #fff;
+  box-shadow:0 5px 16px #0008,0 0 18px currentColor;
+  display:grid;place-items:center;
+}
+.ha-pin::after{
+  content:"";width:9px;height:9px;border-radius:50%;
+  background:#fff;transform:rotate(45deg)
+}
+.ha-pin.driver{background:#f2b544;color:#f2b544}
+.ha-pin.customer{background:#2f8fff;color:#2f8fff}
+.ha-pin.destination{background:#ff4d4f;color:#ff4d4f}
+.summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  padding:12px 14px 6px;
+}
+.summary .box{
+  position:relative;
+  min-height:82px;
+  display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(145deg,#0d1317,#090d10);
+  border:1px solid #3a4247;
+  border-radius:20px;
+  padding:12px 8px;
+  text-align:center;
+  overflow:hidden;
+}
+.summary .box::before{
+  content:"";
+  position:absolute;top:-26px;right:-26px;
+  width:70px;height:70px;border-radius:50%;
+  background:rgba(242,181,68,.07);
+}
+.summary small{display:block;color:#c7c9ca;font-size:10px;margin-bottom:6px}
+.summary b{font-size:17px;color:#fff}
+.summary .box:nth-child(1) b{color:var(--gold2)}
+.section{padding:10px 14px}
+.section h2{
+  font-size:18px;margin:2px 0 10px;padding-right:8px;
+  border-right:3px solid var(--gold);
+}
+.request-card{
+  background:
+    radial-gradient(circle at 100% 0,rgba(242,181,68,.06),transparent 32%),
+    linear-gradient(145deg,#0e1418,#090d10);
+  border:1px solid rgba(242,181,68,.5);
+  border-radius:24px;
+  padding:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.32);
+}
 .customer{display:flex;align-items:center;gap:10px}
-.avatar{width:44px;height:44px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:23px}
-.customer-info{flex:1}.customer-info b{display:block}.customer-info span{color:#777;font-size:12px}
-
-.route-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.route-info .item{background:#f8f8f8;border-radius:10px;padding:9px}
-.route-info small{display:block;color:#777;font-size:10px;margin-bottom:3px}
-.route-info b{font-size:12px}
-
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.actions button{border:0;border-radius:11px;padding:12px;font-size:14px;font-weight:700;cursor:pointer}
-.accept{background:#1769e0;color:#fff}
-.reject{background:#eee;color:#111}
-
+.avatar{
+  width:48px;height:48px;border-radius:50%;
+  border:1px solid rgba(242,181,68,.55);
+  background:#11181c;
+  display:flex;align-items:center;justify-content:center;font-size:24px
+}
+.customer-info{flex:1}
+.customer-info b{display:block;font-size:15px}
+.customer-info span{color:#aab0b4;font-size:11px;margin-top:4px;display:block}
+#requestVehicle{
+  color:var(--gold2);font-size:14px;
+  padding:8px 10px;border-radius:13px;
+  border:1px solid rgba(242,181,68,.22);
+  background:rgba(242,181,68,.06)
+}
+.route-info{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px
+}
+.route-info .item{
+  background:#0a0f12;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:11px
+}
+.route-info small{display:block;color:#b99758;font-size:10px;margin-bottom:5px}
+.route-info b{font-size:12px;color:#f2f2f2;line-height:1.45}
+.actions{display:grid;grid-template-columns:1.55fr .95fr;gap:9px;margin-top:13px}
+.actions button{
+  border-radius:15px;padding:13px;font-size:15px;font-weight:900;cursor:pointer
+}
+.accept{
+  border:1px solid #ffd46a!important;
+  background:linear-gradient(135deg,#ffd46a,#d99521)!important;
+  color:#111!important;
+  box-shadow:0 7px 18px rgba(242,181,68,.14);
+}
+.reject{
+  border:1px solid rgba(255,77,79,.75)!important;
+  background:#0c1114!important;color:#ff5a5d!important;
+}
 .accepted-panel{display:none}
 .accepted-panel.show{display:block}
-.state{background:#eef4ff;border-radius:12px;padding:10px;text-align:center;font-weight:700;margin-bottom:10px}
-.trip-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.trip-actions button{border:0;border-radius:11px;padding:11px;font-weight:700;cursor:pointer}
-.arrive{background:#111;color:#fff}
-.start-trip{background:#1769e0;color:#fff}
-.finish-trip{background:#16803b;color:#fff;grid-column:1/-1}
-
-.contact{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
-.contact button{border:0;border-radius:10px;padding:9px;background:#f4f4f4;cursor:pointer;font-size:12px}
-
-@media(max-width:560px){
-  #map{height:40vh}
-  .summary{grid-template-columns:repeat(3,1fr)}
+.state{
+  background:linear-gradient(135deg,rgba(242,181,68,.15),rgba(242,181,68,.04));
+  border:1px solid rgba(242,181,68,.42);
+  color:var(--gold2);
+  border-radius:15px;padding:11px;text-align:center;font-weight:900;margin-bottom:10px
 }
-
-/* ===== نافذة إلغاء الطلب ===== */
-.cancel-reason-sheet{
-  position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.42);
+.trip-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.trip-actions button{border:0;border-radius:14px;padding:12px;font-weight:800;cursor:pointer}
+.arrive{background:#1b2226;color:#fff;border:1px solid #3e484e!important}
+.start-trip{background:linear-gradient(135deg,#f5c55b,#d89522);color:#111}
+.finish-trip{background:#1f9a50;color:#fff;grid-column:1/-1}
+.contact{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.contact button{
+  border:1px solid rgba(242,181,68,.18);border-radius:12px;padding:10px 6px;
+  background:#0a0f12;color:#fff;cursor:pointer;font-size:11px
+}
+#driverAppCallBtn{background:#15222d;color:#fff}
+#driverChatBtn{background:#11251a;color:#fff}
+.ride-status-box{
+  margin:11px 0;background:#090e11;border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;padding:11px
+}
+.ride-status-live{font-weight:800;text-align:center;margin-bottom:9px;color:var(--gold2)}
+.ride-status-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.ride-status-step{font-size:10px;text-align:center;padding:8px 4px;border-radius:10px;background:#161d21;color:#8f989e}
+.ride-status-step.done{background:#13301f;color:#60db89;font-weight:800}
+.ride-status-step.current{outline:2px solid var(--gold)}
+.cancel-reason-sheet,.driver-chat-sheet{
+  position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.72);
   display:none;align-items:flex-end;justify-content:center
 }
-.cancel-reason-sheet.show{display:flex}
-.cancel-reason-card{
-  width:min(760px,100%);background:#fff;border-radius:22px 22px 0 0;
-  padding:16px 14px 18px
+.cancel-reason-sheet.show,.driver-chat-sheet.show{display:flex}
+.cancel-reason-card,.driver-chat-box{
+  width:min(760px,100%);
+  background:#0d1317;color:#fff;
+  border:1px solid rgba(242,181,68,.45);
+  border-radius:25px 25px 0 0;
+  padding:17px 14px 20px;
+  box-shadow:0 -20px 50px #0009
 }
-.cancel-reason-head{
+.cancel-reason-head,.driver-chat-head{
   display:flex;align-items:center;justify-content:space-between;margin-bottom:10px
 }
 .cancel-reason-head h3{margin:0;font-size:18px}
-.cancel-reason-head button{
-  width:36px;height:36px;border:0;border-radius:50%;background:#eee;font-size:20px
+.cancel-reason-head button,.driver-chat-head button{
+  width:36px;height:36px;border:1px solid #333;border-radius:50%;
+  background:#161d21;color:#fff;font-size:20px
 }
 .cancel-reason-option{
   display:flex;align-items:center;gap:9px;padding:12px 10px;
-  border:1px solid #eee;border-radius:11px;margin:7px 0;background:#fafafa
+  border:1px solid #242c31;border-radius:12px;margin:7px 0;background:#0a0f12
 }
-.cancel-reason-option input{width:18px;height:18px}
+.cancel-reason-option input{width:18px;height:18px;accent-color:var(--gold)}
 .cancel-other{
-  display:none;width:100%;padding:10px;border:1px solid #ccc;
-  border-radius:10px;margin-top:7px;font-size:14px
+  display:none;width:100%;padding:10px;border:1px solid #3b4449;
+  background:#070a0c;color:#fff;border-radius:10px;margin-top:7px;font-size:14px
 }
 .cancel-other.show{display:block}
 .confirm-cancel-btn{
-  width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;
-  background:#c62828;color:#fff;font-size:15px;font-weight:700
+  width:100%;border:1px solid #ff5a5d;border-radius:13px;padding:13px;margin-top:10px;
+  background:#351214;color:#fff;font-size:15px;font-weight:700
 }
-
-
-.driver-chat-sheet{position:fixed;inset:0;background:#0008;z-index:8000;display:none;align-items:flex-end;justify-content:center}
-.driver-chat-sheet.show{display:flex}
-.driver-chat-box{width:min(520px,100%);background:#fff;border-radius:20px 20px 0 0;padding:14px}
-.driver-chat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.driver-chat-head button{border:0;background:#eee;border-radius:50%;width:34px;height:34px;font-size:20px}
-.driver-chat-messages{height:240px;overflow:auto;background:#f5f5f5;border-radius:12px;padding:10px}
+.driver-chat-messages{height:240px;overflow:auto;background:#080c0e;border-radius:14px;padding:10px}
 .driver-msg{max-width:82%;padding:9px 11px;border-radius:12px;margin:6px 0}
-.driver-msg.me{margin-right:auto;background:#dbeafe}
-.driver-msg.customer{margin-left:auto;background:#e5e7eb}
+.driver-msg.me{margin-right:auto;background:#59471e;color:#fff}
+.driver-msg.customer{margin-left:auto;background:#192126;color:#fff}
 .driver-chat-send{display:flex;gap:7px;margin-top:9px}
-.driver-chat-send input{flex:1;padding:11px;border:1px solid #ddd;border-radius:10px}
-.driver-chat-send button{border:0;border-radius:10px;padding:0 16px;background:#111;color:#fff;font-weight:700}
-#driverAppCallBtn{background:#2563eb;color:#fff}
-#driverChatBtn{background:#16a34a;color:#fff}
-
-
-.ride-status-box{margin:10px 0;background:#f7f7f7;border-radius:14px;padding:10px}
-.ride-status-live{font-weight:800;text-align:center;margin-bottom:9px}
-.ride-status-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.ride-status-step{font-size:10px;text-align:center;padding:8px 4px;border-radius:10px;background:#e5e7eb;color:#555}
-.ride-status-step.done{background:#dff6e7;color:#136b35;font-weight:800}
-.ride-status-step.current{outline:2px solid #16a34a}
-
+.driver-chat-send input{
+  flex:1;padding:11px;border:1px solid #30383d;border-radius:10px;
+  background:#080c0e;color:#fff
+}
+.driver-chat-send button{
+  border:0;border-radius:10px;padding:0 16px;
+  background:linear-gradient(135deg,#ffd46a,#d99521);color:#111;font-weight:700
+}
+.bottom-nav{
+  position:fixed;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:min(760px,100%);
+  z-index:3500;
+  height:78px;
+  padding:7px 12px max(7px,env(safe-area-inset-bottom));
+  display:grid;grid-template-columns:1fr 1.15fr 1fr;
+  align-items:center;
+  background:rgba(5,7,8,.96);
+  backdrop-filter:blur(18px);
+  border-top:1px solid rgba(242,181,68,.5);
+  box-shadow:0 -12px 34px rgba(0,0,0,.45)
+}
+.bottom-nav a{
+  color:#d7d9da;text-decoration:none;text-align:center;font-size:11px
+}
+.bottom-nav a span{display:block;font-size:23px;margin-bottom:4px}
+.bottom-logo{
+  align-self:stretch;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1px solid rgba(242,181,68,.6);
+  border-bottom:0;border-radius:30px 30px 0 0;
+  color:var(--gold2)!important;
+  background:linear-gradient(180deg,#10161a,#07090b)
+}
+.bottom-logo strong{font-size:21px;line-height:1}
+.bottom-logo small{font-size:10px;margin-top:3px}
+.shop-courier-link{
+  position:fixed;left:12px;bottom:88px;z-index:3600;
+  background:#11181c;color:#ffd46a;text-decoration:none;padding:9px 11px;
+  border:1px solid rgba(242,181,68,.38);border-radius:999px;
+  box-shadow:0 4px 14px #0008;font-weight:700;font-size:11px
+}
+@media(max-width:620px){
+  .head{grid-template-columns:52px 1fr 52px;padding:10px 12px}
+  .head-home,.head-back{width:46px;height:46px;border-radius:15px;font-size:21px}
+  .head h1{font-size:20px}
+  .driver-hero{margin:10px 10px 8px;padding:11px;border-radius:21px}
+  .driver-grid{grid-template-columns:1.22fr 1fr 1fr;gap:6px}
+  .driver-data:nth-of-type(4){display:none}
+  .driver-profile-box,.driver-data{min-height:64px;padding:8px}
+  .driver-avatar{width:45px;height:45px;font-size:23px}
+  .map-shell{margin:8px 10px 0;border-radius:22px}
+  #map{height:49vh;min-height:360px;border-radius:20px}
+  .summary{padding:10px 10px 5px;gap:6px}
+  .summary .box{min-height:72px;border-radius:16px}
+  .summary b{font-size:15px}
+  .section{padding:9px 10px}
+  .request-card{border-radius:20px;padding:12px}
+  .route-info{gap:6px}
+  .actions{grid-template-columns:1.45fr .85fr}
+}
+@media(max-width:390px){
+  #map{height:46vh;min-height:340px}
+  .driver-grid{grid-template-columns:1.2fr 1fr}
+  .driver-data:nth-of-type(3),.driver-data:nth-of-type(4){display:none}
+  .summary small{font-size:9px}
+  .summary b{font-size:13px}
+}
 </style>
+
 </head>
 <body>
+
 <div class="app">
-  <div class="head">
-    <h1>🚖 واجهة السائق</h1>
-    <div class="status-toggle">
-      <button id="availabilityBtn" disabled>جاري التحقق</button>
+  <header class="head">
+    <a class="head-home" href="index.html" aria-label="الرئيسية">🏠</a>
+    <div class="head-brand">
+      <h1>واجهة السائق</h1>
+      <small>HA Marketing</small>
     </div>
-  </div>
+    <a class="head-back" href="javascript:history.back()" aria-label="رجوع">←</a>
+  </header>
 
+  <section class="driver-hero">
+    <div class="hero-title">
+      <b>👤 بيانات السائق والمركبة</b>
+      <div class="status-toggle"><button id="availabilityBtn">متاح</button></div>
+    </div>
 
-  <div id="driverGate" class="section"><div class="request-card"><b>بيانات السائق والمركبة</b><p id="driverGateMsg" style="color:#666;line-height:1.7">جاري التحقق من الحساب...</p><div id="vehicleSetup" style="display:none"><input id="vehiclePlate" placeholder="رقم المركبة / اللوحة" style="width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:10px"><input id="vehicleName" placeholder="اسم المركبة، مثال: تويوتا كورولا" style="width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:10px"><input id="vehicleColor" placeholder="لون المركبة" style="width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:10px"><button id="saveVehicleBtn" class="accept" style="width:100%;border:0;border-radius:10px;padding:11px">حفظ بيانات المركبة</button></div></div></div>
-  <div id="map"></div>
+    <div class="driver-grid">
+      <div class="driver-profile-box">
+        <div class="driver-avatar">👨🏻</div>
+        <div>
+          <strong id="driverDisplayName">السائق</strong>
+          <span>● متصل الآن</span>
+        </div>
+      </div>
+      <div class="driver-data">
+        <small>نوع المركبة</small>
+        <b id="driverDisplayVehicle">🚕 —</b>
+      </div>
+      <div class="driver-data">
+        <small>لون المركبة</small>
+        <b id="driverDisplayColor">🎨 —</b>
+      </div>
+      <div class="driver-data">
+        <small>رقم اللوحة</small>
+        <b id="driverDisplayPlate">—</b>
+      </div>
+    </div>
+
+    <div id="driverGate" class="section">
+      <div class="request-card">
+        <p id="driverGateMsg" style="line-height:1.7">جاري التحقق من الحساب...</p>
+        <div id="vehicleSetup" style="display:none">
+          <input id="vehiclePlate" placeholder="رقم المركبة / اللوحة">
+          <input id="vehicleName" placeholder="اسم المركبة، مثال: تويوتا كورولا">
+          <input id="vehicleColor" placeholder="لون المركبة">
+          <button id="saveVehicleBtn" class="accept" style="width:100%;border-radius:12px;padding:11px">حفظ بيانات المركبة</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="map-shell"><div id="map"></div></div>
 
   <div class="summary">
-    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">—</b></div>
+    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">0</b></div>
     <div class="box"><small>المسافة للزبون</small><b id="toCustomer">—</b></div>
     <div class="box"><small>السعر</small><b id="fare">—</b></div>
   </div>
 
   <div class="section" id="requestsSection">
     <h2>الطلبات القريبة</h2>
-
     <div class="request-card" id="requestCard">
       <div class="customer">
         <div class="avatar">👤</div>
@@ -147,8 +465,8 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
       </div>
 
       <div class="route-info">
-        <div class="item"><small>الانطلاق</small><b id="requestPickup">—</b></div>
-        <div class="item"><small>الوصول</small><b id="requestDestination">—</b></div>
+        <div class="item"><small>🟢 الانطلاق</small><b id="requestPickup">—</b></div>
+        <div class="item"><small>🔴 الوصول</small><b id="requestDestination">—</b></div>
         <div class="item"><small>مدة الوصول للزبون</small><b id="requestPickupEta">—</b></div>
         <div class="item"><small>مدة الرحلة</small><b id="requestTripTime">—</b></div>
       </div>
@@ -177,31 +495,31 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
       <div class="contact">
         <button id="driverDirectCallBtn" type="button">📞 اتصال مباشر</button>
         <button id="driverAppCallBtn" type="button">☎️ اتصال التطبيق</button>
-        <button id="driverChatBtn" type="button">💬 رسائل داخل التطبيق</button>
+        <button id="driverChatBtn" type="button">💬 الرسائل</button>
       </div>
 
       <div class="ride-status-box">
-  <div id="driverRideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
-  <div id="driverRideStatusTimeline" class="ride-status-steps">
-    <div class="ride-status-step" data-ride-step>تم القبول</div>
-    <div class="ride-status-step" data-ride-step>وصل</div>
-    <div class="ride-status-step" data-ride-step>بدأت</div>
-    <div class="ride-status-step" data-ride-step>انتهت</div>
-  </div>
-</div>
-<div class="trip-actions" style="margin-top:10px">
+        <div id="driverRideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
+        <div id="driverRideStatusTimeline" class="ride-status-steps">
+          <div class="ride-status-step" data-ride-step>تم القبول</div>
+          <div class="ride-status-step" data-ride-step>وصل</div>
+          <div class="ride-status-step" data-ride-step>بدأت</div>
+          <div class="ride-status-step" data-ride-step>انتهت</div>
+        </div>
+      </div>
+
+      <div class="trip-actions" style="margin-top:10px">
         <button id="arriveBtn" class="arrive">وصلت للزبون</button>
         <button id="startTripBtn" class="start-trip" disabled>ابدأ الرحلة</button>
         <button id="finishTripBtn" class="finish-trip" disabled>إنهاء الرحلة</button>
-<button id="driverCancelCurrentBtn" class="reject" type="button" style="grid-column:1/-1">إلغاء الطلب</button>
+        <button id="driverCancelCurrentBtn" class="reject" type="button" style="grid-column:1/-1">إلغاء الطلب</button>
       </div>
     </div>
   </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js?v=driver-auto-20260911"></script>
+<script src="transport-profile.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -226,13 +544,16 @@ const db = firebase.database();
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map=L.map('map').setView([33.3152,44.3661],13);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
   maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
-const driver=L.marker([33.325,44.35]).addTo(map).bindPopup('موقع السائق');
-const customer=L.marker([33.31,44.37]).addTo(map).bindPopup('موقع الزبون');
-const destination=L.marker([33.29,44.40]).addTo(map).bindPopup('الوجهة');
+const driverIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin driver"></div>',iconSize:[36,36],iconAnchor:[18,34]});
+const customerIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin customer"></div>',iconSize:[36,36],iconAnchor:[18,34]});
+const destinationIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin destination"></div>',iconSize:[36,36],iconAnchor:[18,34]});
+const driver=L.marker([33.325,44.35],{icon:driverIcon}).addTo(map).bindPopup('موقع السائق');
+const customer=L.marker([33.31,44.37],{icon:customerIcon}).addTo(map).bindPopup('موقع الزبون');
+const destination=L.marker([33.29,44.40],{icon:destinationIcon}).addTo(map).bindPopup('الوجهة');
 
 let available=true;
 // استقبال طلبات التكسي مباشرة عند فتح صفحة السائق
@@ -251,20 +572,15 @@ function coordText(p){
 }
 
 function watchPendingRides(){
-  if(!driverReady || !available)return;
   if(!firebase.auth().currentUser){
     HA_FirebaseAuth.ready().then(u=>{firebaseDriverUser=u;watchPendingRides();}).catch(err=>{console.error(err);nearbyCount.textContent='—';});
     return;
   }
   if(driverWatch) driverWatch.off();
   driverWatch=db.ref('rides');
-  driverWatch.on('value',snap=>{
-    if(!driverReady || !available)return;
-    availabilityBtn.textContent='متاح';
-    document.getElementById('driverGateMsg').textContent='متصل بالطلبات. يظهر الطلب هنا عند وصوله.';
-    const allRides=snap.val()||{};
-    const rides=Object.fromEntries(Object.entries(allRides).filter(([,r])=>['searching','pending','waiting','requested'].includes(r?.status)));
-    const entries=Object.entries(rides).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+  driverWatch.orderByChild('status').equalTo('searching').on('value',snap=>{
+    const rides=snap.val()||{};
+    const entries=Object.entries(rides).filter(([,r])=>!!r?.customerUid).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
     nearbyCount.textContent=String(entries.length);
 
     if(currentRideId)return;
@@ -293,11 +609,12 @@ function watchPendingRides(){
     if(ride.destination){
       destination.setLatLng([ride.destination.lat,ride.destination.lng]);
     }
-  },err=>{
-    console.error(err);
-    nearbyCount.textContent='—';
-    availabilityBtn.textContent='تعذر الاتصال';
-    document.getElementById('driverGateMsg').textContent='تعذر استقبال الطلبات من Firebase. '+(String(err.code||'').toLowerCase().includes('permission')?'صلاحيات قراءة الطلبات مرفوضة.':'تحقق من الاتصال وأعد تحميل الصفحة.');
+
+    if(ride.pickup){
+      const km=driver.getLatLng().distanceTo(customer.getLatLng())/1000;
+      toCustomer.textContent=km.toFixed(1)+' كم';
+      requestPickupEta.textContent=Math.max(1,Math.round(km*2.2))+' دقيقة';
+    }
   });
 }
 
@@ -349,7 +666,6 @@ availabilityBtn.onclick=()=>{
   availabilityBtn.textContent=available?'متاح':'غير متاح';
   availabilityBtn.classList.toggle('off',!available);
   if(!available){
-    if(driverWatch){driverWatch.off();driverWatch=null;}
     nearbyCount.textContent='0';
     requestCard.style.display='none';
   }else{
@@ -368,7 +684,7 @@ acceptBtn.onclick=async()=>{
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
-    if(ride && ['searching','pending','waiting','requested'].includes(ride.status)){
+    if(ride && ride.status==='searching'){
       ride.status='accepted';
       ride.acceptedAt=Date.now();
       ride.driverUid=firebaseDriverUser.uid;
@@ -404,7 +720,7 @@ acceptBtn.onclick=async()=>{
   fetch(`https://router.project-osrm.org/route/v1/driving/${driver.getLatLng().lng},${driver.getLatLng().lat};${customer.getLatLng().lng},${customer.getLatLng().lat}?overview=full&geometries=geojson`)
     .then(r=>r.json()).then(j=>{
       if(j.code==='Ok'){
-        const layer=L.geoJSON(j.routes[0].geometry,{style:{weight:5}}).addTo(map);
+        const layer=L.geoJSON(j.routes[0].geometry,{style:{color:'#f2b544',weight:6,opacity:.95}}).addTo(map);
         map.fitBounds(layer.getBounds(),{padding:[30,30]});
       }
     });
@@ -435,7 +751,7 @@ startTripBtn.onclick=async()=>{
   fetch(`https://router.project-osrm.org/route/v1/driving/${customer.getLatLng().lng},${customer.getLatLng().lat};${destination.getLatLng().lng},${destination.getLatLng().lat}?overview=full&geometries=geojson`)
     .then(r=>r.json()).then(j=>{
       if(j.code==='Ok'){
-        const layer=L.geoJSON(j.routes[0].geometry,{style:{weight:5}}).addTo(map);
+        const layer=L.geoJSON(j.routes[0].geometry,{style:{color:'#f2b544',weight:6,opacity:.95}}).addTo(map);
         map.fitBounds(layer.getBounds(),{padding:[30,30]});
       }
     });
@@ -510,35 +826,49 @@ async function restoreDriverRide(){
 }
 
 requestCard.style.display='none';
-nearbyCount.textContent='—';
+nearbyCount.textContent='0';
+
+
+function refreshDriverHero(profile){
+  const saved=HA_TransportProfile.vehicle()||{};
+  const p=profile||driverProfile||{};
+  const name=p.name||p.fullName||p.driverName||'السائق';
+  const vehicle=p.carName||p.vehicleName||saved.carName||'—';
+  const color=p.carColor||p.vehicleColor||saved.carColor||'—';
+  const plate=p.plate||p.vehiclePlate||saved.plate||'—';
+  const n=document.getElementById('driverDisplayName');
+  const v=document.getElementById('driverDisplayVehicle');
+  const c=document.getElementById('driverDisplayColor');
+  const pl=document.getElementById('driverDisplayPlate');
+  if(n)n.textContent=name;
+  if(v)v.textContent='🚕 '+vehicle;
+  if(c)c.textContent='🎨 '+color;
+  if(pl)pl.textContent=plate;
+}
 
 async function initRealDriver(){
   const msg=document.getElementById('driverGateMsg');
-  availabilityBtn.disabled=true;acceptBtn.disabled=true;
-  availabilityBtn.textContent='جاري التحقق';
   try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){
     console.error(err);
     msg.textContent='تعذر تأمين Firebase. فعّل Anonymous Authentication من Firebase Authentication.';
-    availabilityBtn.disabled=true;acceptBtn.disabled=true;availabilityBtn.textContent='تعذر الاتصال';return false;
+    availabilityBtn.disabled=true;acceptBtn.disabled=true;return false;
   }
   const setup=document.getElementById('vehicleSetup');
   const saved=HA_TransportProfile.vehicle()||{};
   if(saved.plate)vehiclePlate.value=saved.plate;
   if(saved.carName)vehicleName.value=saved.carName;
   if(saved.carColor)vehicleColor.value=saved.carColor;
+  refreshDriverHero(driverProfile);
 
   const ident=await HA_TransportProfile.driverIdentity();
   if(ident.ok){
     driverProfile=ident.driver;driverReady=true;
-    availabilityBtn.disabled=false;acceptBtn.disabled=false;
-    availabilityBtn.textContent='جاري الاتصال';
-    msg.textContent='حساب الموظف مفعّل. جاري الاتصال بالطلبات...';
+    refreshDriverHero(driverProfile);
+    msg.textContent='تم التحقق من الحساب. أنت جاهز لاستقبال الطلبات.';
     setup.style.display='none';
     return true;
   }
   driverReady=false;
-  availabilityBtn.textContent=ident.needsVehicle?'أكمل بيانات المركبة':'غير جاهز';
-  nearbyCount.textContent='—';
   msg.textContent=ident.message||'تعذر التحقق من حساب السائق.';
   setup.style.display=ident.needsVehicle?'block':'none';
   if(!ident.needsVehicle){availabilityBtn.disabled=true;acceptBtn.disabled=true;}
@@ -552,7 +882,7 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(async ok=>{if(ok)await restoreDriverRide();}).catch(err=>{console.error(err);availabilityBtn.textContent='تعذر الاتصال';nearbyCount.textContent='—';document.getElementById('driverGateMsg').textContent='تعذر تحميل بيانات السائق أو الطلب الحالي. أعد تحميل الصفحة.';});
+initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
@@ -783,6 +1113,13 @@ window.addEventListener('load',()=>{
 });
 </script>
 
-<a href="shop-courier.html" style="position:fixed;left:12px;bottom:14px;z-index:9999;background:#111;color:#fff;text-decoration:none;padding:11px 13px;border-radius:999px;box-shadow:0 4px 14px #0004;font-weight:700">📦 توصيل المتاجر</a>
+<a href="shop-courier.html" class="shop-courier-link">📦 توصيل المتاجر</a>
+
+<nav class="bottom-nav">
+  <a href="index.html"><span>🏠</span>الرئيسية</a>
+  <a href="driver.html" class="bottom-logo"><strong>HA</strong><small>HA Marketing</small></a>
+  <a href="profile.html"><span>👤</span>الحساب</a>
+</nav>
+
 </body>
 </html>
