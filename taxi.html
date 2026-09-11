@@ -1682,6 +1682,8 @@ order.onclick=async()=>{
 
   const rideData={
     customerUid:fbUser.uid,
+    serviceType:'taxi',
+    dispatchType:'taxi',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,

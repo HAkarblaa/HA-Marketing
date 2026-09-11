@@ -217,9 +217,25 @@
     const details=String(approvedApp?.details||'');
     const vehicleText=String(transport?.vehicle_type||v.carName||'');
     const isTuktuk=/تكتك|tuktuk/i.test(details+' '+vehicleText);
-    const workLabel=workType==='delivery_driver'?'مندوب توصيل':(isTuktuk?'سائق تكتك':'سائق تكسي');
 
-    return {ok:true,profile:p,workType,workLabel,driver:{
+    // نوع السائق المسجل يحدد أي طلبات تظهر له داخل واجهة السائق.
+    // تكسي: رحلات التكسي + توصيل بسيارة.
+    // تكتك: رحلات التكتك + توصيل بتكتك.
+    // مندوب: توصيل المندوب/الدراجة فقط.
+    const driverKind=
+      workType==='delivery_driver' ? 'delivery' :
+      isTuktuk ? 'tuktuk' : 'taxi';
+
+    const dispatchTypes=
+      driverKind==='delivery' ? ['delivery_courier'] :
+      driverKind==='tuktuk' ? ['tuktuk','delivery_tuktuk'] :
+      ['taxi','delivery_car'];
+
+    const workLabel=
+      driverKind==='delivery' ? 'مندوب توصيل' :
+      driverKind==='tuktuk' ? 'سائق تكتك' : 'سائق تكسي';
+
+    return {ok:true,profile:p,workType,workLabel,driverKind,dispatchTypes,isTuktuk,driver:{
       userId:p.id,
       name:transport?.full_name||approvedApp?.display_name||p.full_name||p.username||'السائق',
       phone:transport?.phone||approvedApp?.phone||p.phone||'',

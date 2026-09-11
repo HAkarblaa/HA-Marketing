@@ -987,7 +987,7 @@ button{-webkit-tap-highlight-color:transparent}
 
 </style>
 
-<link rel="stylesheet" href="ha-premium-theme.css"></head>
+</head>
 <body>
 
 <div class="app">
@@ -1145,10 +1145,53 @@ let currentPendingIndex=0;
 let driverProfile=null;
 let driverReady=false;
 let firebaseDriverUser=null;
+let driverKind=null;
+let driverDispatchTypes=[];
 
 function coordText(p){
   if(!p)return '—';
   return Number(p.lat).toFixed(5)+', '+Number(p.lng).toFixed(5);
+}
+
+
+function normalizeRideDispatch(ride){
+  if(!ride)return '';
+
+  // الطلبات الجديدة تحمل dispatchType بشكل صريح.
+  if(ride.dispatchType)return String(ride.dispatchType);
+
+  // توافق احتياطي مع الطلبات القديمة التي تحمل serviceType فقط.
+  const service=String(ride.serviceType||'').toLowerCase();
+  const vehicle=String(ride.vehicleType||'').toLowerCase();
+
+  if(service==='taxi')return 'taxi';
+  if(service==='tuktuk')return 'tuktuk';
+
+  if(service==='delivery'){
+    if(/تكتك|tuktuk/.test(vehicle))return 'delivery_tuktuk';
+    if(/سيارة|car/.test(vehicle))return 'delivery_car';
+    return 'delivery_courier';
+  }
+
+  // الطلبات القديمة جداً التي لا نعرف نوعها لا نظهرها عشوائياً لأي سائق.
+  return '';
+}
+
+function rideMatchesThisDriver(ride){
+  const type=normalizeRideDispatch(ride);
+  return !!type && driverDispatchTypes.includes(type);
+}
+
+function rideDisplayLabel(ride){
+  const type=normalizeRideDispatch(ride);
+  const vehicle=ride?.vehicleType||'';
+
+  if(type==='taxi')return '🚕 تكسي'+(vehicle?' — '+vehicle:'');
+  if(type==='tuktuk')return '🛺 تكتك'+(vehicle?' — '+vehicle:'');
+  if(type==='delivery_courier')return '🛵 مندوب'+(vehicle?' — '+vehicle:'');
+  if(type==='delivery_tuktuk')return '🛺 توصيل تكتك';
+  if(type==='delivery_car')return '🚗 توصيل سيارة';
+  return vehicle||'طلب نقل';
 }
 
 function renderPendingRide(index){
@@ -1168,7 +1211,7 @@ function renderPendingRide(index){
 
   requestCustomerName.textContent=ride.customer?.name||'الزبون';
   if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
-  requestVehicle.textContent='🚕 '+(ride.vehicleType||'تكسي');
+  requestVehicle.textContent=rideDisplayLabel(ride);
   requestPickup.textContent=coordText(ride.pickup);
   requestDestination.textContent=coordText(ride.destination);
   requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
@@ -1220,6 +1263,7 @@ function watchPendingRides(){
 
     pendingEntries=Object.entries(rides)
       .filter(([,r])=>!!r?.customerUid)
+      .filter(([,r])=>rideMatchesThisDriver(r))
       .sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
 
     nearbyCount.textContent=String(pendingEntries.length);
@@ -1308,6 +1352,16 @@ acceptBtn.onclick=async()=>{
   const ident=await HA_TransportProfile.driverIdentity();
   if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
   driverProfile=ident.driver;
+  driverKind=ident.driverKind||null;
+  driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
+
+  if(!rideMatchesThisDriver(currentRide)){
+    alert('هذا الطلب مو مخصص لنوع تسجيلك.');
+    currentRideId=null;
+    currentRide=null;
+    watchPendingRides();
+    return;
+  }
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
@@ -1333,7 +1387,7 @@ acceptBtn.onclick=async()=>{
   await db.ref('driverRides/'+firebaseDriverUser.uid+'/'+currentRideId).set(true).catch(()=>{});
   localStorage.setItem('ha_driver_active_ride',currentRideId);
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,currentRide.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -1453,7 +1507,7 @@ async function restoreDriverRide(){
   currentRideId=saved;
   currentRide=ride;
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,(ride.vehicleType||'').includes('مندوب')?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,ride.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -1515,7 +1569,10 @@ async function initRealDriver(){
 
   const ident=await HA_TransportProfile.driverIdentity();
   if(ident.ok){
-    driverProfile=ident.driver;driverReady=true;
+    driverProfile=ident.driver;
+    driverKind=ident.driverKind||null;
+    driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
+    driverReady=true;
     refreshDriverHero(driverProfile);
     if(msg) msg.textContent='';
     setup.style.display='none';

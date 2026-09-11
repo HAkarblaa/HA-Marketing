@@ -988,19 +988,19 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر وسيلة المندوب</div>
 
-    <div class="type selected" data-name="دراجة" data-base="750" data-km="350" data-min="12">
+    <div class="type selected" data-name="مندوب" data-dispatch="delivery_courier" data-base="750" data-km="350" data-min="12">
       <div class="vehicle">🛵</div>
-      <div class="info"><b>دراجة</b><small>للطرود الصغيرة</small></div>
+      <div class="info"><b>مندوب</b><small>دراجة / دراجة نارية للطرود الصغيرة</small></div>
       <div class="price">—</div>
     </div>
 
-    <div class="type" data-name="تكتك توصيل" data-base="1000" data-km="450" data-min="15">
+    <div class="type" data-name="تكتك توصيل" data-dispatch="delivery_tuktuk" data-base="1000" data-km="450" data-min="15">
       <div class="vehicle">🛺</div>
       <div class="info"><b>تكتك</b><small>للأغراض المتوسطة</small></div>
       <div class="price">—</div>
     </div>
 
-    <div class="type" data-name="سيارة توصيل" data-base="1750" data-km="650" data-min="20">
+    <div class="type" data-name="سيارة توصيل" data-dispatch="delivery_car" data-base="1750" data-km="650" data-min="20">
       <div class="vehicle">🚗</div>
       <div class="info"><b>سيارة</b><small>للأغراض الكبيرة</small></div>
       <div class="price">—</div>
@@ -1646,6 +1646,7 @@ order.onclick=async()=>{
   const rideData={
     customerUid:fbUser.uid,
     serviceType:'delivery',
+    dispatchType:selected.dataset.dispatch||'delivery_courier',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,
