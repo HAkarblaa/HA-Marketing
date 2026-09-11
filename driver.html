@@ -593,6 +593,96 @@ button{-webkit-tap-highlight-color:transparent}
   }
 }
 
+
+/* ===== تعديل HA: الخريطة مباشرة تحت "متصل الآن" بدون فراغ أسود ===== */
+#driverGate,
+.driver-gate-compact{
+  display:none !important;
+  position:absolute !important;
+  width:0 !important;
+  height:0 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:0 !important;
+  max-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  overflow:hidden !important;
+  visibility:hidden !important;
+}
+
+.driver-status-only{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  padding:5px 8px 1px !important;
+  min-height:0 !important;
+}
+
+.driver-status-only .status-toggle{
+  margin:0 !important;
+  padding:0 !important;
+  width:100% !important;
+  display:flex !important;
+  justify-content:center !important;
+}
+
+.driver-status-only .status-toggle button{
+  margin:0 !important;
+}
+
+.map-shell{
+  display:block !important;
+  position:relative !important;
+  z-index:2 !important;
+  width:calc(100% - 10px) !important;
+  margin:0 5px 0 !important;
+  padding:2px !important;
+  border-radius:24px !important;
+  overflow:hidden !important;
+  background:linear-gradient(135deg,var(--gold2),#5b4316 38%,#dba33b) !important;
+}
+
+#map{
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  height:68vh !important;
+  min-height:520px !important;
+  max-height:790px !important;
+  margin:0 !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+  background:#11181c !important;
+}
+
+/* نخلي خريطة Voyager أغمق حتى تبقى مناسبة للأسود والذهبي */
+#map .leaflet-tile-pane{
+  filter:brightness(.58) contrast(1.16) saturate(.82);
+}
+
+@media(max-width:620px){
+  .driver-status-only{padding:4px 6px 1px !important}
+  .map-shell{
+    width:calc(100% - 8px) !important;
+    margin:0 4px !important;
+  }
+  #map{
+    height:66vh !important;
+    min-height:500px !important;
+    max-height:730px !important;
+  }
+}
+
+@media(max-width:390px){
+  #map{
+    height:64vh !important;
+    min-height:475px !important;
+  }
+}
+
 </style>
 
 </head>
@@ -724,10 +814,13 @@ const db = firebase.database();
 <script src="transport-rating.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map=L.map('map').setView([33.3152,44.3661],13);
-setTimeout(()=>map.invalidateSize(),80);
-window.addEventListener('load',()=>setTimeout(()=>map.invalidateSize(),180));
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+const map=L.map('map',{zoomControl:true}).setView([33.3152,44.3661],13);
+[60,180,450,900].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
+window.addEventListener('load',()=>{
+  [80,300,800].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
+});
+window.addEventListener('resize',()=>setTimeout(()=>map.invalidateSize(true),120));
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
   maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
