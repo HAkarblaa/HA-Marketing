@@ -1,45 +1,56 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تسجيل سائق أو مندوب</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.status{padding:10px;border-radius:10px;background:#f1f1f1;white-space:pre-wrap}@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{padding:10px}.grid .card{font-size:12px}}</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="top"><a class="btn light" href="taxi-delivery.html">← النقل</a><h1>🚕🛵 تسجيل السائق والمندوب</h1><a class="btn light" href="marketplace-onboarding.html">طلبات الانضمام</a></div><div class="card"><select id="role"><option value="taxi_driver">🚕 سائق تكسي</option><option value="tuktuk_driver">🛺 سائق تكتك</option><option value="delivery_driver">🛵 مندوب توصيل</option></select><input id="name" placeholder="الاسم الكامل"><input id="phone" placeholder="رقم الهاتف"><input id="vehicle" placeholder="نوع المركبة"><input id="model" placeholder="موديل المركبة"><input id="color" placeholder="اللون"><input id="plate" placeholder="رقم اللوحة"><input id="gov" placeholder="المحافظة"><button onclick="save()">حفظ/إرسال بيانات الاعتماد</button><div id="status" class="status">الحساب فعال مباشرة ويمكن استقبال الطلبات.</div></div><div class="card" id="go"></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-let me=null;function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:x}=await db.from('transport_profiles').select('*').eq('user_id',me.id).maybeSingle();if(x){role.value=(x.role_type==='taxi_driver'&&String(x.vehicle_type||'').includes('تكتك'))?'tuktuk_driver':x.role_type;name.value=x.full_name;phone.value=x.phone||'';vehicle.value=x.vehicle_type||'';model.value=x.vehicle_model||'';color.value=x.vehicle_color||'';plate.value=x.plate_number||'';gov.value=x.governorate||'';status.textContent='الحالة: '+(x.status==='approved'?'مقبول ✅':x.status==='rejected'?'مرفوض':'قيد المراجعة');if(x.status==='approved')go.innerHTML=x.role_type==='taxi_driver'?'<a class="btn" href="driver.html">فتح واجهة السائق</a>':'<a class="btn" href="driver.html">فتح واجهة المندوب/السائق</a>'}}async function save(){
-  if(!name.value.trim())return alert('اكتب الاسم');
-  if(!phone.value.trim())return alert('اكتب رقم الهاتف');
-  if(!gov.value.trim())return alert('اكتب المحافظة');
-  if(!vehicle.value.trim())return alert('اكتب نوع المركبة');
-  if(!model.value.trim())return alert('اكتب موديل المركبة');
-  if(!color.value.trim())return alert('اكتب لون المركبة');
-  if(!plate.value.trim())return alert('اكتب رقم اللوحة');
+let me=null;
+const el=id=>document.getElementById(id);
+const roleEl=el('role');
+const nameEl=el('name');
+const phoneEl=el('phone');
+const vehicleEl=el('vehicle');
+const modelEl=el('model');
+const colorEl=el('color');
+const plateEl=el('plate');
+const govEl=el('gov');
+const statusEl=el('status');
+const goEl=el('go');function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:x}=await db.from('transport_profiles').select('*').eq('user_id',me.id).maybeSingle();if(x){roleEl.value=(x.role_type==='taxi_driver'&&String(x.vehicle_type||'').includes('تكتك'))?'tuktuk_driver':x.role_type;nameEl.value=x.full_name;phoneEl.value=x.phone||'';vehicleEl.value=x.vehicle_type||'';modelEl.value=x.vehicle_model||'';colorEl.value=x.vehicle_color||'';plateEl.value=x.plate_number||'';govEl.value=x.governorate||'';statusEl.textContent='الحالة: '+(x.status==='approved'?'مقبول ✅':x.status==='rejected'?'مرفوض':'قيد المراجعة');if(x.status==='approved')goEl.innerHTML=x.role_type==='taxi_driver'?'<a class="btn" href="driver.html">فتح واجهة السائق</a>':'<a class="btn" href="driver.html">فتح واجهة المندوب/السائق</a>'}}async function save(){
+  if(!nameEl.value.trim())return alert('اكتب الاسم');
+  if(!phoneEl.value.trim())return alert('اكتب رقم الهاتف');
+  if(!govEl.value.trim())return alert('اكتب المحافظة');
+  if(!vehicleEl.value.trim())return alert('اكتب نوع المركبة');
+  if(!modelEl.value.trim())return alert('اكتب موديل المركبة');
+  if(!colorEl.value.trim())return alert('اكتب لون المركبة');
+  if(!plateEl.value.trim())return alert('اكتب رقم اللوحة');
 
-  const selectedRole=role.value;
+  const selectedRole=roleEl.value;
   const dbRole=selectedRole==='tuktuk_driver'?'taxi_driver':selectedRole;
-  const vehicleType=selectedRole==='tuktuk_driver'?'تكتك':vehicle.value.trim();
+  const vehicleType=selectedRole==='tuktuk_driver'?'تكتك':vehicleEl.value.trim();
   const note=selectedRole==='tuktuk_driver'
     ?'نوع السائق: سائق تكتك'
     :selectedRole==='taxi_driver'
       ?'نوع السائق: سائق تكسي'
       :'نوع العمل: مندوب توصيل';
 
-  status.textContent='جاري إرسال طلب الصلاحية...';
+  statusEl.textContent='جاري إرسال طلب الصلاحية...';
 
   const {data,error}=await db.rpc('request_marketplace_role',{
     p_role:dbRole,
-    p_display_name:name.value.trim(),
-    p_phone:phone.value.trim(),
-    p_governorate:gov.value.trim(),
+    p_display_name:nameEl.value.trim(),
+    p_phone:phoneEl.value.trim(),
+    p_governorate:govEl.value.trim(),
     p_address:null,
-    p_details:[note,vehicleType,model.value.trim(),color.value.trim(),plate.value.trim()].filter(Boolean).join(' - '),
+    p_details:[note,vehicleType,modelEl.value.trim(),colorEl.value.trim(),plateEl.value.trim()].filter(Boolean).join(' - '),
     p_vehicle_type:vehicleType,
-    p_vehicle_model:model.value.trim()||null,
-    p_vehicle_color:color.value.trim()||null,
-    p_plate_number:plate.value.trim()||null
+    p_vehicle_model:modelEl.value.trim()||null,
+    p_vehicle_color:colorEl.value.trim()||null,
+    p_plate_number:plateEl.value.trim()||null
   });
 
   if(error){
     console.error(error);
-    status.textContent='❌ فشل إرسال طلب الصلاحية: '+error.message;
+    statusEl.textContent='❌ فشل إرسال طلب الصلاحية: '+error.message;
     alert(error.message);
     return;
   }
 
-  status.textContent='✅ تم إرسال الطلب للإدارة — الحالة: قيد المراجعة';
+  statusEl.textContent='✅ تم إرسال الطلب للإدارة — الحالة: قيد المراجعة';
   alert('تم إرسال طلب السائق/المندوب إلى الإدارة.');
   await init();
 }

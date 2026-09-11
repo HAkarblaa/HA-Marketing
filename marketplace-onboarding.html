@@ -45,6 +45,24 @@
 <textarea id="details" placeholder="اكتب التفاصيل الإضافية: الخبرة، أوقات العمل، المناطق التي تعمل بها أو أي معلومة تساعد الإدارة على مراجعة الطلب."></textarea>
 </div><button onclick="submitApp()" style="width:100%;margin-top:10px">إرسال طلب الانضمام</button><div id="status" class="status">بعد موافقة الإدارة تتفعل لوحة العمل والإضافة داخل التطبيق حسب القسم الذي تم اعتماده.</div></div><div class="card"><h2>طلباتي السابقة</h2><div id="mine">جاري التحميل...</div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 let role='';
+const el=id=>document.getElementById(id);
+const nameEl=el('name');
+const phoneEl=el('phone');
+const govEl=el('gov');
+const addressEl=el('address');
+const detailsEl=el('details');
+const statusEl=el('status');
+const mineEl=el('mine');
+const formTitleEl=el('formTitle');
+const driverTypeBoxEl=el('driverTypeBox');
+const driverTypeEl=el('driverType');
+const driverFullFieldsEl=el('driverFullFields');
+const vehicleEl=el('vehicle');
+const modelEl=el('model');
+const colorEl=el('color');
+const plateEl=el('plate');
+const vehicleYearEl=el('vehicleYear');
+const licenseNoEl=el('licenseNo');
 const labels={
   seller:'بائع / صاحب متجر',
   service_provider:'مقدم خدمة',
@@ -55,20 +73,20 @@ const labels={
   tuktuk_driver:'سائق تكتك',
   delivery_driver:'مندوب توصيل'
 };function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function chooseDriverType(v,el){
-  driverType.value=v;
+  driverTypeEl.value=v;
   document.querySelectorAll('.driver-type-choice').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
-  driverFullFields.classList.add('show');
+  driverFullFieldsEl.classList.add('show');
 }
 function pick(r,el){
   role=r;
   document.querySelectorAll('.role').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
-  formTitle.textContent='طلب انضمام: '+labels[r];
-  driverTypeBox.style.display=r==='driver'?'block':'none';
+  formTitleEl.textContent='طلب انضمام: '+labels[r];
+  driverTypeBoxEl.style.display=r==='driver'?'block':'none';
   if(r!=='driver'){
-    driverType.value='';
-    driverFullFields.classList.remove('show');
+    driverTypeEl.value='';
+    driverFullFieldsEl.classList.remove('show');
     document.querySelectorAll('.driver-type-choice').forEach(x=>x.classList.remove('on'));
   }
   document.querySelector('.card').scrollIntoView({behavior:'smooth',block:'center'});
@@ -76,9 +94,9 @@ function pick(r,el){
   const u=await auth();
   if(!u||!role)return alert('اختر نوع الانضمام أولاً');
 
-  const fullName=name.value.trim();
-  const ph=phone.value.trim();
-  const governorate=gov.value.trim();
+  const fullName=nameEl.value.trim();
+  const ph=phoneEl.value.trim();
+  const governorate=govEl.value.trim();
   if(!fullName)return alert('اكتب الاسم');
   if(!ph)return alert('اكتب رقم الهاتف');
   if(!governorate)return alert('اكتب المحافظة');
@@ -88,24 +106,24 @@ function pick(r,el){
   let vehicleType=null;
 
   if(role==='driver'){
-    if(!driverType.value)return alert('اختر: سائق تكسي أو سائق تكتك أو مندوب');
-    if(!vehicle.value.trim())return alert('اكتب نوع المركبة');
-    if(!model.value.trim())return alert('اكتب موديل المركبة');
-    if(!color.value.trim())return alert('اكتب لون المركبة');
-    if(!plate.value.trim())return alert('اكتب رقم اللوحة');
+    if(!driverTypeEl.value)return alert('اختر: سائق تكسي أو سائق تكتك أو مندوب');
+    if(!vehicleEl.value.trim())return alert('اكتب نوع المركبة');
+    if(!modelEl.value.trim())return alert('اكتب موديل المركبة');
+    if(!colorEl.value.trim())return alert('اكتب لون المركبة');
+    if(!plateEl.value.trim())return alert('اكتب رقم اللوحة');
 
-    if(driverType.value==='tuktuk_driver'){
+    if(driverTypeEl.value==='tuktuk_driver'){
       selectedRole='taxi_driver';
       roleNote='نوع السائق: سائق تكتك';
       vehicleType='تكتك';
-    }else if(driverType.value==='taxi_driver'){
+    }else if(driverTypeEl.value==='taxi_driver'){
       selectedRole='taxi_driver';
       roleNote='نوع السائق: سائق تكسي';
-      vehicleType=vehicle.value.trim();
+      vehicleType=vehicleEl.value.trim();
     }else{
       selectedRole='delivery_driver';
       roleNote='نوع العمل: مندوب توصيل';
-      vehicleType=vehicle.value.trim();
+      vehicleType=vehicleEl.value.trim();
     }
   }
 
@@ -113,39 +131,42 @@ function pick(r,el){
   if(role==='driver'){
     extra.push(roleNote);
     extra.push('نوع المركبة: '+vehicleType);
-    extra.push('الموديل: '+model.value.trim());
-    extra.push('اللون: '+color.value.trim());
-    extra.push('رقم اللوحة: '+plate.value.trim());
-    if(vehicleYear.value.trim())extra.push('سنة الصنع: '+vehicleYear.value.trim());
-    if(licenseNo.value.trim())extra.push('إجازة السوق: '+licenseNo.value.trim());
+    extra.push('الموديل: '+modelEl.value.trim());
+    extra.push('اللون: '+colorEl.value.trim());
+    extra.push('رقم اللوحة: '+plateEl.value.trim());
+    if(vehicleYearEl.value.trim())extra.push('سنة الصنع: '+vehicleYearEl.value.trim());
+    if(licenseNoEl.value.trim())extra.push('إجازة السوق: '+licenseNoEl.value.trim());
   }
-  if(details.value.trim())extra.push(details.value.trim());
+  if(detailsEl.value.trim())extra.push(detailsEl.value.trim());
 
-  status.textContent='جاري إرسال طلب الصلاحية...';
+  statusEl.textContent='جاري إرسال طلب الصلاحية...';
 
-  const {data,error}=await db.rpc('request_marketplace_role',{
-    p_role:selectedRole,
-    p_display_name:fullName,
-    p_phone:ph,
-    p_governorate:governorate,
-    p_address:address.value.trim()||null,
-    p_details:extra.join(' | ')||null,
-    p_vehicle_type:role==='driver'?vehicleType:null,
-    p_vehicle_model:role==='driver'?(model.value.trim()||null):null,
-    p_vehicle_color:role==='driver'?(color.value.trim()||null):null,
-    p_plate_number:role==='driver'?(plate.value.trim()||null):null
-  });
+  try{
+    const {data,error}=await db.rpc('request_marketplace_role',{
+      p_role:selectedRole,
+      p_display_name:fullName,
+      p_phone:ph,
+      p_governorate:governorate,
+      p_address:addressEl.value.trim()||null,
+      p_details:extra.join(' | ')||null,
+      p_vehicle_type:role==='driver'?vehicleType:null,
+      p_vehicle_model:role==='driver'?(modelEl.value.trim()||null):null,
+      p_vehicle_color:role==='driver'?(colorEl.value.trim()||null):null,
+      p_plate_number:role==='driver'?(plateEl.value.trim()||null):null
+    });
 
-  if(error){
-    console.error(error);
-    status.textContent='❌ تعذر إرسال طلب الصلاحية: '+error.message;
-    alert('تعذر إرسال الطلب: '+error.message);
-    return;
+    if(error) throw error;
+
+    statusEl.textContent='✅ تم إرسال طلب الصلاحية بنجاح وهو الآن قيد مراجعة الإدارة.';
+    alert('تم إرسال طلب الانضمام بنجاح وهو قيد المراجعة.');
+    await load();
+  }catch(e){
+    console.error(e);
+    const msg=e?.message||String(e);
+    statusEl.textContent='❌ تعذر إرسال طلب الصلاحية: '+msg;
+    alert('تعذر إرسال الطلب: '+msg);
   }
-
-  status.textContent='✅ تم إرسال طلب الصلاحية بنجاح وهو الآن قيد مراجعة الإدارة.';
-  await load();
-}async function load(){const u=await auth();if(!u)return;const {data,error}=await db.from('marketplace_applications').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error){mine.textContent='تعذر تحميل الطلبات: '+error.message;return}mine.innerHTML=(data||[]).map(x=>`<div style="padding:12px 0;border-bottom:1px solid #eef0f3"><b>${x.role_type==='taxi_driver' && String(x.details||'').includes('سائق تكتك') ? 'سائق تكتك' : (labels[x.role_type]||x.role_type)}</b> <span class="badge">${x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':x.status==='suspended'?'⏸️ موقوف':'⏳ قيد المراجعة'}</span><div style="color:#667;margin-top:6px">${esc(x.admin_note||'')}</div>${x.status==='approved'?`<div style="margin-top:8px">${
+}async function load(){const u=await auth();if(!u)return;const {data,error}=await db.from('marketplace_applications').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error){mineEl.textContent='تعذر تحميل الطلبات: '+error.message;return}mineEl.innerHTML=(data||[]).map(x=>`<div style="padding:12px 0;border-bottom:1px solid #eef0f3"><b>${x.role_type==='taxi_driver' && String(x.details||'').includes('سائق تكتك') ? 'سائق تكتك' : (labels[x.role_type]||x.role_type)}</b> <span class="badge">${x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':x.status==='suspended'?'⏸️ موقوف':'⏳ قيد المراجعة'}</span><div style="color:#667;margin-top:6px">${esc(x.admin_note||'')}</div>${x.status==='approved'?`<div style="margin-top:8px">${
 x.role_type==='seller'?'<a class="btn" href="seller-dashboard.html">فتح لوحة البائع</a>':
 x.role_type==='service_provider'?'<a class="btn" href="provider-dashboard.html">فتح لوحة مقدم الخدمة</a>':
 x.role_type==='sports_manager'?'<a class="btn" href="sports-owner.html">فتح إدارة الملاعب والجم</a>':
@@ -158,16 +179,16 @@ async function prefillAccount(){
   try{
     const {data:p}=await db.from('profiles').select('full_name,phone,governorate').eq('id',u.id).maybeSingle();
     if(p){
-      if(!name.value)name.value=p.full_name||'';
-      if(!phone.value)phone.value=p.phone||'';
-      if(!gov.value)gov.value=p.governorate||'';
+      if(!nameEl.value)nameEl.value=p.full_name||'';
+      if(!phoneEl.value)phoneEl.value=p.phone||'';
+      if(!govEl.value)govEl.value=p.governorate||'';
     }
     const {data:t}=await db.from('transport_profiles').select('*').eq('user_id',u.id).maybeSingle();
     if(t){
-      if(!vehicle.value)vehicle.value=t.vehicle_type||'';
-      if(!model.value)model.value=t.vehicle_model||'';
-      if(!color.value)color.value=t.vehicle_color||'';
-      if(!plate.value)plate.value=t.plate_number||'';
+      if(!vehicleEl.value)vehicleEl.value=t.vehicle_type||'';
+      if(!modelEl.value)modelEl.value=t.vehicle_model||'';
+      if(!colorEl.value)colorEl.value=t.vehicle_color||'';
+      if(!plateEl.value)plateEl.value=t.plate_number||'';
     }
   }catch(e){console.warn(e)}
 }
