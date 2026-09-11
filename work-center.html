@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>مركز العمل - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#03070b;--panel:#081018;--gold:#f4c45f;--text:#fff;--muted:#aeb8c4;--line:#263747}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#12212d 0,#05090d 35%,#020405 75%);color:#fff}
+a{text-decoration:none;color:inherit}.w{width:min(100%,920px);margin:auto;padding:14px 10px 100px}.top{display:flex;gap:8px;align-items:center;justify-content:space-between}.b{border:1px solid #8f6827;background:#0a0f14;color:#fff;border-radius:12px;padding:10px 13px}
+.hero{text-align:center;padding:24px 10px}.hero h1{color:#f7d879;font-size:30px;margin:0 0 7px}.hero p{color:var(--muted);line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{background:linear-gradient(145deg,#0b151f,#050a0f);border:1px solid #35485b;border-radius:18px;padding:16px;min-height:160px}.card.on{border-color:#d69b34;box-shadow:0 0 20px rgba(214,155,52,.12)}.ico{font-size:36px}.card h2{font-size:18px;margin:8px 0;color:#f7d879}.muted{color:var(--muted);font-size:12px;line-height:1.6}.status{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;border:1px solid #4b5a69;font-size:11px}.go{display:block;margin-top:12px;text-align:center;background:linear-gradient(135deg,#ffdc78,#e99d19);color:#111;padding:10px;border-radius:11px;font-weight:900}.wait{display:block;margin-top:12px;text-align:center;border:1px solid #715a2d;padding:10px;border-radius:11px;color:#f2cb72}
+@media(max-width:540px){.grid{grid-template-columns:1fr 1fr;gap:6px}.card{padding:11px;min-height:145px}.card h2{font-size:14px}.ico{font-size:30px}.muted{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="top"><a class="b" href="index.html">← الرئيسية</a><b>HA Marketing</b><a class="b" href="marketplace-onboarding.html">طلب صلاحية</a></div>
+  <div class="hero"><h1>🧰 مركز العمل</h1><p>من هنا تظهر كل صلاحيات العمل المفعلة لحسابك وتقدر تضيف وتدير المحتوى من داخل التطبيق.</p></div>
+  <div id="msg" class="card">جاري تحميل صلاحيات حسابك...</div>
+  <div id="grid" class="grid" style="display:none"></div>
+</div>
+<script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const defs=[
+ {role:'seller',ico:'🏪',title:'التسوق والبائع',desc:'إضافة متجر، المنتجات، الأسعار والمخزون ومتابعة الطلبات.',href:'seller-dashboard.html'},
+ {role:'service_provider',ico:'🛠️',title:'طلب الخدمة',desc:'إضافة ملف الخدمة والأسعار والمواعيد واستقبال طلبات الزبائن.',href:'provider-dashboard.html'},
+ {role:'sports_manager',ico:'🏟️',title:'الملاعب والجم',desc:'إضافة ملعب أو جم ودوري وإدارة الحجوزات والاشتراكات.',href:'sports-owner.html'},
+ {role:'taxi_driver',ico:'🚕',title:'سائق تكسي / تكتك',desc:'إدارة بيانات المركبة واستقبال طلبات النقل.',href:'transport-registration.html'},
+ {role:'delivery_driver',ico:'🛵',title:'المندوب والتوصيل',desc:'إدارة بيانات المندوب والتوصيل والنقل المرتبط به.',href:'transport-registration.html'}
+];
+async function init(){
+ const {data:{session}}=await db.auth.getSession();
+ if(!session){location.href='login.html?next=work-center.html';return}
+ const {data,error}=await db.from('marketplace_applications').select('role_type,status,details').eq('user_id',session.user.id);
+ if(error){msg.textContent='تعذر تحميل الصلاحيات: '+error.message;return}
+ const apps=data||[];
+ msg.style.display='none';grid.style.display='grid';
+ grid.innerHTML=defs.map(d=>{
+   const a=apps.find(x=>x.role_type===d.role && (d.role!=='taxi_driver'||!String(x.details||'').includes('مندوب')));
+   const approved=a?.status==='approved';
+   const pending=a?.status==='pending';
+   const rejected=a?.status==='rejected';
+   const label=approved?'✅ مفعلة':pending?'⏳ قيد المراجعة':rejected?'❌ مرفوضة':'غير مفعلة';
+   return `<div class="card ${approved?'on':''}">
+     <div class="ico">${d.ico}</div><h2>${d.title}</h2><div class="muted">${d.desc}</div>
+     <span class="status">${label}</span>
+     ${approved?`<a class="go" href="${d.href}">فتح لوحة الإضافة والإدارة</a>`:`<a class="wait" href="marketplace-onboarding.html">طلب / متابعة الصلاحية</a>`}
+   </div>`;
+ }).join('');
+}
+init();
+</script>
+</body>
+</html>

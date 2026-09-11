@@ -1,42 +1,93 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>بوابة الانضمام للمنصة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:linear-gradient(180deg,#f7f9ff,#f7fff9);color:#17202a}.wrap{width:min(1100px,94%);margin:20px auto 44px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:14px;padding:11px 15px;background:#17202a;color:#fff;text-decoration:none;cursor:pointer;font:inherit}.light{background:#fff;color:#17202a;box-shadow:0 2px 10px #0001}.hero{margin:14px 0 18px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#17202a,#345);color:#fff}.hero h1{margin:0 0 8px}.hero p{margin:0;line-height:1.8;color:#e7edf5}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.role{display:block;text-decoration:none;color:#17202a;background:#fff;border:2px solid transparent;border-radius:20px;padding:16px;box-shadow:0 6px 24px #0000000d;transition:.2s;min-height:185px}.role:hover,.role.on{transform:translateY(-2px);border-color:#5b7cfa}.ico{font-size:36px}.role h2{font-size:17px;margin:8px 0}.role p{font-size:13px;line-height:1.7;color:#607080}.chips{display:flex;gap:5px;flex-wrap:wrap}.chip{font-size:11px;padding:5px 8px;background:#eef3ff;border-radius:999px}.card{background:#fff;border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 6px 24px #0000000d}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}input,textarea{width:100%;padding:12px;border:1px solid #d7dde5;border-radius:12px;font:inherit}textarea{min-height:100px;grid-column:1/-1}.status{padding:11px;border-radius:12px;background:#f4f7fb;margin-top:10px;white-space:pre-wrap}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef2f6;font-size:12px}@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr);gap:7px}.role{padding:11px;min-height:165px}.role h2{font-size:14px}.role p{font-size:11px}.formgrid{grid-template-columns:1fr}textarea{grid-column:auto}}
-</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="top"><a class="btn light" href="index.html">← الرئيسية</a><a class="btn light" href="account.html">حسابي</a></div><div class="hero"><h1>🚀 بوابة الانضمام للمنصة</h1><p>اختر نوع العمل المناسب. اختر نوع العمل المناسب. بعد موافقة الإدارة تتفعل صلاحيات العمل المرتبطة بنوعك في جميع أقسامه.</p></div><div class="grid" id="roles"><a class="role" href="#" onclick="pick('seller',this);return false"><div class="ico">🏪</div><h2>بائع / صاحب متجر</h2><p>أنشئ متجرك، أضف المنتجات، تابع الطلبات واستخدم برنامج الحسابات.</p><div class="chips"><span class="chip">منتجات</span><span class="chip">طلبات</span><span class="chip">حسابات</span></div></a><a class="role" href="#" onclick="pick('service_provider',this);return false"><div class="ico">🛠️</div><h2>مقدم خدمة</h2><p>اعرض خدماتك وأسعارك ومواعيدك واستقبل طلبات العملاء.</p><div class="chips"><span class="chip">خدمات</span><span class="chip">مواعيد</span></div></a><a class="role" href="#" onclick="pick('driver',this);return false"><div class="ico">🚕</div><h2>سائق / مندوب</h2><p>اختر نوع العمل: سائق تكسي، سائق تكتك، أو مندوب توصيل.</p><div class="chips"><span class="chip">تكسي</span><span class="chip">تكتك</span><span class="chip">مندوب</span></div></a></div><div class="card"><h2 id="formTitle">اختر نوع الانضمام من البطاقات أعلاه</h2>
+
+.driver-type-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.driver-type-choice{border:1px solid rgba(242,181,68,.45);background:#0b1013;color:#fff;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;font:inherit}
+.driver-type-choice b{display:block;font-size:13px;margin-top:4px}
+.driver-type-choice.on{border-color:#f2b544;background:linear-gradient(180deg,#17130b,#0b1013);box-shadow:0 0 0 1px rgba(242,181,68,.25),0 0 18px rgba(242,181,68,.13)}
+.driver-full{display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(242,181,68,.22)}
+.driver-full.show{display:block}
+.driver-full-title{font-weight:900;color:#f2b544;margin:0 0 9px}
+@media(max-width:520px){
+  .driver-type-choices{grid-template-columns:1fr 1fr 1fr;gap:5px}
+  .driver-type-choice{padding:10px 4px;font-size:11px}
+  .driver-type-choice b{font-size:11px}
+}
+
+</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="top"><a class="btn light" href="index.html">← الرئيسية</a><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="account.html">حسابي</a></div><div class="hero"><h1>🚀 بوابة الانضمام للمنصة</h1><p>اختر صلاحية العمل التي تريدها من داخل التطبيق. تقدر تقدم أكثر من طلب: بائع، مقدم خدمة، صاحب ملعب/جم، أو سائق/مندوب. بعد موافقة الإدارة تفتح لك لوحة الإضافة والإدارة الخاصة بالقسم.</p></div><div class="grid" id="roles"><a class="role" href="#" onclick="pick('seller',this);return false"><div class="ico">🏪</div><h2>بائع / صاحب متجر</h2><p>أنشئ متجرك، أضف المنتجات، تابع الطلبات واستخدم برنامج الحسابات.</p><div class="chips"><span class="chip">منتجات</span><span class="chip">طلبات</span><span class="chip">حسابات</span></div></a><a class="role" href="#" onclick="pick('service_provider',this);return false"><div class="ico">🛠️</div><h2>مقدم خدمة</h2><p>اعرض خدماتك وأسعارك ومواعيدك واستقبل طلبات العملاء.</p><div class="chips"><span class="chip">خدمات</span><span class="chip">مواعيد</span></div></a><a class="role" href="#" onclick="pick('sports_manager',this);return false"><div class="ico">🏟️</div><h2>صاحب ملعب / جم</h2><p>أضف ملعب أو مركز رياضي، الأسعار والمواعيد واستقبل الحجوزات والاشتراكات.</p><div class="chips"><span class="chip">ملاعب</span><span class="chip">جم</span><span class="chip">حجوزات</span></div></a><a class="role" href="#" onclick="pick('driver',this);return false"><div class="ico">🚕</div><h2>سائق / مندوب</h2><p>اختر نوع العمل: سائق تكسي، سائق تكتك، أو مندوب توصيل.</p><div class="chips"><span class="chip">تكسي</span><span class="chip">تكتك</span><span class="chip">مندوب</span></div></a></div><div class="card"><h2 id="formTitle">اختر نوع الانضمام من البطاقات أعلاه</h2>
 <div id="driverTypeBox" style="display:none;margin:0 0 12px">
 <label style="display:block;margin-bottom:6px;font-weight:800;color:#f2b544">نوع السائق / المندوب</label>
-<select id="driverType" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(242,181,68,.45);background:#0b1013;color:#fff;font:inherit">
-<option value="">اختر النوع</option>
-<option value="taxi_driver">🚕 سائق تكسي</option>
-<option value="tuktuk_driver">🛺 سائق تكتك</option>
-<option value="delivery_driver">🛵 مندوب توصيل</option>
-</select>
+<div class="driver-type-choices">
+  <button type="button" class="driver-type-choice" data-driver-type="taxi_driver" onclick="chooseDriverType('taxi_driver',this)">🚕<b>سائق تكسي</b></button>
+  <button type="button" class="driver-type-choice" data-driver-type="tuktuk_driver" onclick="chooseDriverType('tuktuk_driver',this)">🛺<b>سائق تكتك</b></button>
+  <button type="button" class="driver-type-choice" data-driver-type="delivery_driver" onclick="chooseDriverType('delivery_driver',this)">🛵<b>مندوب</b></button>
 </div>
-<div class="formgrid"><input id="name" placeholder="الاسم الكامل / اسم النشاط"><input id="phone" placeholder="رقم الهاتف"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><textarea id="details" placeholder="اكتب التفاصيل المهمة: نوع النشاط، الخبرة، المركبة، أوقات العمل أو أي معلومة تساعد الإدارة على مراجعة الطلب."></textarea></div><button onclick="submitApp()" style="width:100%;margin-top:10px">إرسال طلب الانضمام</button><div id="status" class="status">بعد موافقة الإدارة تتفعل صلاحيات العمل بكل الأقسام المرتبطة بنوع الحساب.</div></div><div class="card"><h2>طلباتي السابقة</h2><div id="mine">جاري التحميل...</div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+<input type="hidden" id="driverType" value="">
+</div>
+<div class="formgrid">
+<input id="name" placeholder="الاسم الكامل / اسم النشاط">
+<input id="phone" inputmode="tel" placeholder="رقم الهاتف">
+<input id="gov" placeholder="المحافظة">
+<input id="address" placeholder="العنوان">
+
+<div id="driverFullFields" class="driver-full" style="grid-column:1/-1">
+  <div class="driver-full-title">معلومات السائق والمركبة</div>
+  <div class="formgrid">
+    <input id="vehicle" placeholder="نوع المركبة - مثال: تويوتا / تكتك / دراجة">
+    <input id="model" placeholder="موديل المركبة">
+    <input id="color" placeholder="لون المركبة">
+    <input id="plate" placeholder="رقم اللوحة">
+    <input id="vehicleYear" inputmode="numeric" placeholder="سنة الصنع">
+    <input id="licenseNo" placeholder="رقم إجازة السوق">
+  </div>
+</div>
+
+<textarea id="details" placeholder="اكتب التفاصيل الإضافية: الخبرة، أوقات العمل، المناطق التي تعمل بها أو أي معلومة تساعد الإدارة على مراجعة الطلب."></textarea>
+</div><button onclick="submitApp()" style="width:100%;margin-top:10px">إرسال طلب الانضمام</button><div id="status" class="status">بعد موافقة الإدارة تتفعل لوحة العمل والإضافة داخل التطبيق حسب القسم الذي تم اعتماده.</div></div><div class="card"><h2>طلباتي السابقة</h2><div id="mine">جاري التحميل...</div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 let role='';
 const labels={
   seller:'بائع / صاحب متجر',
   service_provider:'مقدم خدمة',
+  sports_manager:'صاحب ملعب / جم',
   driver:'سائق / مندوب',
   taxi_driver:'سائق تكسي',
   tuktuk_driver:'سائق تكتك',
   delivery_driver:'مندوب توصيل'
-};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function pick(r,el){
+};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function chooseDriverType(v,el){
+  driverType.value=v;
+  document.querySelectorAll('.driver-type-choice').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  driverFullFields.classList.add('show');
+}
+function pick(r,el){
   role=r;
   document.querySelectorAll('.role').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
   formTitle.textContent='طلب انضمام: '+labels[r];
   driverTypeBox.style.display=r==='driver'?'block':'none';
-  if(r!=='driver') driverType.value='';
+  if(r!=='driver'){
+    driverType.value='';
+    driverFullFields.classList.remove('show');
+    document.querySelectorAll('.driver-type-choice').forEach(x=>x.classList.remove('on'));
+  }
   document.querySelector('.card').scrollIntoView({behavior:'smooth',block:'center'});
 }async function auth(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html?next='+encodeURIComponent('marketplace-onboarding.html');return null}return session.user}async function submitApp(){
   const u=await auth();
   if(!u||!role)return alert('اختر نوع الانضمام أولاً');
   if(!name.value.trim())return alert('اكتب الاسم');
+  if(!phone.value.trim())return alert('اكتب رقم الهاتف');
+  if(!gov.value.trim())return alert('اكتب المحافظة');
 
   let selectedRole=role;
   let roleNote='';
 
   if(role==='driver'){
-    if(!driverType.value)return alert('اختر نوع السائق أو المندوب');
+    if(!driverType.value)return alert('اختر: سائق تكسي أو سائق تكتك أو مندوب');
+    if(!vehicle.value.trim())return alert('اكتب نوع المركبة');
+    if(!model.value.trim())return alert('اكتب موديل المركبة');
+    if(!color.value.trim())return alert('اكتب لون المركبة');
+    if(!plate.value.trim())return alert('اكتب رقم اللوحة');
+
     if(driverType.value==='tuktuk_driver'){
       selectedRole='taxi_driver';
       roleNote='نوع السائق: سائق تكتك';
@@ -49,21 +100,106 @@ const labels={
     }
   }
 
-  status.textContent='جاري الإرسال...';
-  const originalDetails=details.value.trim();
-  const finalDetails=[roleNote,originalDetails].filter(Boolean).join(' | ');
-  const payload={
+  status.textContent='جاري إرسال الطلب...';
+
+  const extra=[];
+  if(role==='driver'){
+    extra.push(roleNote);
+    extra.push('نوع المركبة: '+vehicle.value.trim());
+    extra.push('الموديل: '+model.value.trim());
+    extra.push('اللون: '+color.value.trim());
+    extra.push('رقم اللوحة: '+plate.value.trim());
+    if(vehicleYear.value.trim())extra.push('سنة الصنع: '+vehicleYear.value.trim());
+    if(licenseNo.value.trim())extra.push('إجازة السوق: '+licenseNo.value.trim());
+  }
+  if(details.value.trim())extra.push(details.value.trim());
+
+  const appPayload={
     user_id:u.id,
     role_type:selectedRole,
     display_name:name.value.trim(),
     phone:phone.value.trim()||null,
     governorate:gov.value.trim()||null,
     address:address.value.trim()||null,
-    details:finalDetails||null,
+    details:extra.join(' | ')||null,
     status:'pending',
     updated_at:new Date().toISOString()
   };
-  const {error}=await db.from('marketplace_applications').upsert(payload,{onConflict:'user_id,role_type'});
-  status.textContent=error?'تعذر الإرسال: '+error.message:'✅ تم إرسال الطلب وهو الآن قيد مراجعة الإدارة.';
-  load();
-}async function load(){const u=await auth();if(!u)return;const {data,error}=await db.from('marketplace_applications').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error){mine.textContent='تعذر تحميل الطلبات: '+error.message;return}mine.innerHTML=(data||[]).map(x=>`<div style="padding:12px 0;border-bottom:1px solid #eef0f3"><b>${x.role_type==='taxi_driver' && String(x.details||'').includes('سائق تكتك') ? 'سائق تكتك' : (labels[x.role_type]||x.role_type)}</b> <span class="badge">${x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':x.status==='suspended'?'⏸️ موقوف':'⏳ قيد المراجعة'}</span><div style="color:#667;margin-top:6px">${esc(x.admin_note||'')}</div>${x.status==='approved'?`<div style="margin-top:8px">${x.role_type==='seller'?'<a class="btn" href="seller-dashboard.html">فتح لوحة البائع</a>':x.role_type==='service_provider'?'<a class="btn" href="provider-dashboard.html">فتح لوحة مقدم الخدمة</a>':'<a class="btn" href="transport-registration.html">فتح لوحة النقل</a>'}</div>`:''}</div>`).join('')||'لا توجد طلبات.'}load();</script></body></html>
+
+  const {error:appError}=await db
+    .from('marketplace_applications')
+    .upsert(appPayload,{onConflict:'user_id,role_type'});
+
+  if(appError){
+    status.textContent='تعذر إرسال الطلب: '+appError.message;
+    return;
+  }
+
+  // إذا كان سائق/مندوب نخزن معلومات المركبة أيضاً حتى تكون جاهزة داخل التطبيق.
+  if(role==='driver'){
+    const transportPayload={
+      user_id:u.id,
+      role_type:selectedRole,
+      full_name:name.value.trim(),
+      phone:phone.value.trim()||null,
+      vehicle_type:driverType.value==='tuktuk_driver'?'تكتك':vehicle.value.trim(),
+      vehicle_model:model.value.trim()||null,
+      vehicle_color:color.value.trim()||null,
+      plate_number:plate.value.trim()||null,
+      governorate:gov.value.trim()||null,
+      status:'pending',
+      updated_at:new Date().toISOString()
+    };
+
+    const {data:existing,error:findError}=await db
+      .from('transport_profiles')
+      .select('user_id')
+      .eq('user_id',u.id)
+      .maybeSingle();
+
+    let transportError=null;
+    if(!findError && existing){
+      const r=await db.from('transport_profiles').update(transportPayload).eq('user_id',u.id);
+      transportError=r.error;
+    }else{
+      const r=await db.from('transport_profiles').insert(transportPayload);
+      transportError=r.error;
+    }
+
+    if(transportError){
+      console.error(transportError);
+      status.textContent='✅ تم إرسال طلب الانضمام، لكن تعذر حفظ بعض معلومات المركبة: '+transportError.message;
+      await load();
+      return;
+    }
+  }
+
+  status.textContent='✅ تم إرسال الطلب والمعلومات كاملة، وهو الآن قيد مراجعة الإدارة.';
+  await load();
+}async function load(){const u=await auth();if(!u)return;const {data,error}=await db.from('marketplace_applications').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error){mine.textContent='تعذر تحميل الطلبات: '+error.message;return}mine.innerHTML=(data||[]).map(x=>`<div style="padding:12px 0;border-bottom:1px solid #eef0f3"><b>${x.role_type==='taxi_driver' && String(x.details||'').includes('سائق تكتك') ? 'سائق تكتك' : (labels[x.role_type]||x.role_type)}</b> <span class="badge">${x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':x.status==='suspended'?'⏸️ موقوف':'⏳ قيد المراجعة'}</span><div style="color:#667;margin-top:6px">${esc(x.admin_note||'')}</div>${x.status==='approved'?`<div style="margin-top:8px">${
+x.role_type==='seller'?'<a class="btn" href="seller-dashboard.html">فتح لوحة البائع</a>':
+x.role_type==='service_provider'?'<a class="btn" href="provider-dashboard.html">فتح لوحة مقدم الخدمة</a>':
+x.role_type==='sports_manager'?'<a class="btn" href="sports-owner.html">فتح إدارة الملاعب والجم</a>':
+'<a class="btn" href="transport-registration.html">فتح لوحة النقل</a>'
+}</div>`:''}</div>`).join('')||'لا توجد طلبات.'}
+async function prefillAccount(){
+  const u=await auth();
+  if(!u)return;
+  try{
+    const {data:p}=await db.from('profiles').select('full_name,phone,governorate').eq('id',u.id).maybeSingle();
+    if(p){
+      if(!name.value)name.value=p.full_name||'';
+      if(!phone.value)phone.value=p.phone||'';
+      if(!gov.value)gov.value=p.governorate||'';
+    }
+    const {data:t}=await db.from('transport_profiles').select('*').eq('user_id',u.id).maybeSingle();
+    if(t){
+      if(!vehicle.value)vehicle.value=t.vehicle_type||'';
+      if(!model.value)model.value=t.vehicle_model||'';
+      if(!color.value)color.value=t.vehicle_color||'';
+      if(!plate.value)plate.value=t.plate_number||'';
+    }
+  }catch(e){console.warn(e)}
+}
+prefillAccount();
+load();</script></body></html>
