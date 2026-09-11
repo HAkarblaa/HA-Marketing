@@ -237,7 +237,7 @@ button{-webkit-tap-highlight-color:transparent}
 }
 .route-info small{display:block;color:#b99758;font-size:10px;margin-bottom:5px}
 .route-info b{font-size:12px;color:#f2f2f2;line-height:1.45}
-.actions{display:grid;grid-template-columns:1.55fr .95fr;gap:9px;margin-top:13px}
+.actions{display:grid;grid-template-columns:1.5fr 1fr .8fr;gap:8px;margin-top:13px}
 .actions button{
   border-radius:15px;padding:13px;font-size:15px;font-weight:900;cursor:pointer
 }
@@ -246,6 +246,11 @@ button{-webkit-tap-highlight-color:transparent}
   background:linear-gradient(135deg,#ffd46a,#d99521)!important;
   color:#111!important;
   box-shadow:0 7px 18px rgba(242,181,68,.14);
+}
+.change-request{
+  border:1px solid rgba(242,181,68,.62)!important;
+  background:linear-gradient(145deg,#15130d,#0b0f11)!important;
+  color:var(--gold2)!important;
 }
 .reject{
   border:1px solid rgba(255,77,79,.75)!important;
@@ -379,7 +384,7 @@ button{-webkit-tap-highlight-color:transparent}
   .section{padding:9px 10px}
   .request-card{border-radius:20px;padding:12px}
   .route-info{gap:6px}
-  .actions{grid-template-columns:1.45fr .85fr}
+  .actions{grid-template-columns:1.4fr 1fr .8fr}
 }
 @media(max-width:390px){
   #map{height:46vh;min-height:340px}
@@ -388,6 +393,12 @@ button{-webkit-tap-highlight-color:transparent}
   .summary small{font-size:9px}
   .summary b{font-size:13px}
 }
+
+@media(max-width:360px){
+  .actions{grid-template-columns:1fr 1fr}
+  .actions .accept{grid-column:1/-1}
+}
+
 </style>
 
 </head>
@@ -473,6 +484,7 @@ button{-webkit-tap-highlight-color:transparent}
 
       <div class="actions">
         <button id="acceptBtn" class="accept">قبول الطلب</button>
+        <button id="changeRequestBtn" class="change-request">🔄 تغيير الطلب</button>
         <button id="rejectBtn" class="reject">رفض</button>
       </div>
     </div>
@@ -561,6 +573,8 @@ let currentRideId=null;
 let currentRide=null;
 let driverWatch=null;
 let currentRideStatusRef=null;
+let pendingEntries=[];
+let currentPendingIndex=0;
 
 let driverProfile=null;
 let driverReady=false;
@@ -571,50 +585,96 @@ function coordText(p){
   return Number(p.lat).toFixed(5)+', '+Number(p.lng).toFixed(5);
 }
 
-function watchPendingRides(){
-  if(!firebase.auth().currentUser){
-    HA_FirebaseAuth.ready().then(u=>{firebaseDriverUser=u;watchPendingRides();}).catch(err=>{console.error(err);nearbyCount.textContent='—';});
+function renderPendingRide(index){
+  if(!pendingEntries.length){
+    currentRideId=null;
+    currentRide=null;
+    requestCard.style.display='none';
     return;
   }
+
+  currentPendingIndex=((index%pendingEntries.length)+pendingEntries.length)%pendingEntries.length;
+  const [id,ride]=pendingEntries[currentPendingIndex];
+
+  currentRideId=id;
+  currentRide=ride;
+  requestCard.style.display='block';
+
+  requestCustomerName.textContent=ride.customer?.name||'الزبون';
+  if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
+  requestVehicle.textContent='🚕 '+(ride.vehicleType||'تكسي');
+  requestPickup.textContent=coordText(ride.pickup);
+  requestDestination.textContent=coordText(ride.destination);
+  requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
+  fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
+
+  if(ride.pickup){
+    customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
+  }
+  if(ride.destination){
+    destination.setLatLng([ride.destination.lat,ride.destination.lng]);
+  }
+
+  if(ride.pickup){
+    const km=driver.getLatLng().distanceTo(customer.getLatLng())/1000;
+    toCustomer.textContent=km.toFixed(1)+' كم';
+    requestPickupEta.textContent=Math.max(1,Math.round(km*2.2))+' دقيقة';
+  }else{
+    toCustomer.textContent='—';
+    requestPickupEta.textContent='—';
+  }
+
+  // إذا عدنا نقطتي الانطلاق والوصول، نوسّط الخريطة عليهما.
+  if(ride.pickup && ride.destination){
+    try{
+      const bounds=L.latLngBounds(
+        [ride.pickup.lat,ride.pickup.lng],
+        [ride.destination.lat,ride.destination.lng]
+      );
+      map.fitBounds(bounds,{padding:[55,55],maxZoom:14});
+    }catch(e){}
+  }
+}
+
+function watchPendingRides(){
+  if(!firebase.auth().currentUser){
+    HA_FirebaseAuth.ready().then(u=>{firebaseDriverUser=u;watchPendingRides();}).catch(err=>{
+      console.error(err);
+      nearbyCount.textContent='—';
+    });
+    return;
+  }
+
   if(driverWatch) driverWatch.off();
   driverWatch=db.ref('rides');
+
   driverWatch.orderByChild('status').equalTo('searching').on('value',snap=>{
     const rides=snap.val()||{};
-    const entries=Object.entries(rides).filter(([,r])=>!!r?.customerUid).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-    nearbyCount.textContent=String(entries.length);
+    const oldSelectedId=(currentRide && currentRide.status==='searching') ? currentRideId : null;
 
-    if(currentRideId)return;
+    pendingEntries=Object.entries(rides)
+      .filter(([,r])=>!!r?.customerUid)
+      .sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
 
-    if(!entries.length){
+    nearbyCount.textContent=String(pendingEntries.length);
+
+    // إذا عند السائق رحلة مقبولة حالياً، لا نغيّر بياناتها بسبب تحديث قائمة الطلبات.
+    if(currentRide && currentRide.status && currentRide.status!=='searching') return;
+
+    if(!pendingEntries.length){
+      currentRideId=null;
+      currentRide=null;
+      currentPendingIndex=0;
       requestCard.style.display='none';
+      toCustomer.textContent='—';
+      fare.textContent='—';
       return;
     }
 
-    const [id,ride]=entries[0];
-    currentRideId=id;
-    currentRide=ride;
-    requestCard.style.display='block';
-
-    requestCustomerName.textContent=ride.customer?.name||'الزبون';
-    if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
-    requestVehicle.textContent='🚕 '+(ride.vehicleType||'تكسي');
-    requestPickup.textContent=coordText(ride.pickup);
-    requestDestination.textContent=coordText(ride.destination);
-    requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
-    fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
-
-    if(ride.pickup){
-      customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
-    }
-    if(ride.destination){
-      destination.setLatLng([ride.destination.lat,ride.destination.lng]);
-    }
-
-    if(ride.pickup){
-      const km=driver.getLatLng().distanceTo(customer.getLatLng())/1000;
-      toCustomer.textContent=km.toFixed(1)+' كم';
-      requestPickupEta.textContent=Math.max(1,Math.round(km*2.2))+' دقيقة';
-    }
+    // نبقي نفس الطلب المحدد إذا ما زال متاحاً، وإلا نعرض أقرب طلب في القائمة.
+    let idx=oldSelectedId ? pendingEntries.findIndex(([id])=>id===oldSelectedId) : -1;
+    if(idx<0) idx=Math.min(currentPendingIndex,pendingEntries.length-1);
+    renderPendingRide(idx);
   });
 }
 
@@ -668,6 +728,7 @@ availabilityBtn.onclick=()=>{
   if(!available){
     nearbyCount.textContent='0';
     requestCard.style.display='none';
+    currentPendingIndex=0;
   }else{
     currentRideId=null;
     currentRide=null;
@@ -726,11 +787,35 @@ acceptBtn.onclick=async()=>{
     });
 };
 
+
+changeRequestBtn.onclick=()=>{
+  if(!available)return;
+  if(!pendingEntries.length){
+    alert('ماكو طلبات متاحة حالياً.');
+    return;
+  }
+  if(pendingEntries.length===1){
+    alert('حالياً هذا الطلب الوحيد المتاح. من يوصل طلب ثاني راح يظهر هنا.');
+    return;
+  }
+
+  const previousId=currentRideId;
+  let nextIndex=(currentPendingIndex+1)%pendingEntries.length;
+
+  // حماية بسيطة حتى لا يرجع لنفس الطلب إذا تغير ترتيب القائمة.
+  if(pendingEntries[nextIndex]?.[0]===previousId && pendingEntries.length>1){
+    nextIndex=(nextIndex+1)%pendingEntries.length;
+  }
+
+  renderPendingRide(nextIndex);
+};
+
 rejectBtn.onclick=async()=>{
   if(!currentRideId)return;
   await db.ref('rides/'+currentRideId).update({status:'rejected',rejectedAt:Date.now()});
   currentRideId=null;
   currentRide=null;
+  currentPendingIndex=0;
   requestCard.style.display='none';
   watchPendingRides();
 };
