@@ -1,491 +1,285 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#05080b">
 <title>HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
-.topbar{background:#000;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
-.search-box{flex:1;max-width:850px;margin:auto;position:relative}
-.search-box input{width:100%;padding:14px 45px 14px 15px;border:0;border-radius:10px;font-size:17px;outline:none}
-.search-icon{position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:20px}
-.menu-wrap{position:relative}.menu-btn{width:48px;height:48px;border:0;border-radius:10px;background:#fff;font-size:25px;cursor:pointer}
-.shortcuts{display:none;position:absolute;left:0;top:58px;width:190px;background:#fff;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.2);overflow:hidden;z-index:20}
-.shortcuts.show{display:block}.shortcuts a{display:block;padding:14px 16px;color:#111;text-decoration:none;border-bottom:1px solid #eee}
-.header{text-align:center;padding:35px 15px 20px}.header h1{margin:0;font-size:38px}.header p{color:#666}
-.grid{width:min(900px,92%);margin:15px auto 45px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{min-height:190px;background:#fff;border-radius:18px;padding:25px 15px;text-decoration:none;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.10);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
-.card .icon{font-size:48px;margin-bottom:14px}.card h2{margin:0 0 8px;font-size:24px}.card p{margin:0;color:#666}
-.no-results{display:none;grid-column:1/-1;background:#fff;padding:25px;text-align:center;border-radius:14px}
-@media(max-width:600px){.topbar{padding:10px}.header h1{font-size:30px}.grid{gap:12px;width:94%}.card{min-height:155px;padding:18px 10px}.card .icon{font-size:38px}.card h2{font-size:20px}.card p{font-size:14px}}
+:root{ --bg:#020406; --panel:#0a0f14; --panel2:#101720; --gold:#efbd5e; --gold2:#9d6a19; --text:#f7f7f7; --muted:#a8adb4; --line:rgba(239,189,94,.38); --shadow:0 16px 42px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{ margin:0; min-height:100vh; color:var(--text); font-family:"Segoe UI",Tahoma,Arial,sans-serif; background: radial-gradient(circle at 82% 7%,rgba(239,189,94,.10),transparent 24%), radial-gradient(circle at 9% 35%,rgba(34,110,121,.08),transparent 20%), linear-gradient(180deg,#020507 0%,#05080b 42%,#020406 100%); padding-bottom:108px; overflow-x:hidden;
+}
+body::before{ content:"";position:fixed;inset:0;pointer-events:none;z-index:-1; background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px); background-size:34px 34px; mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 80%);
+}
+button,input{font:inherit} a{color:inherit}
+.shell{width:min(1120px,94%);margin:auto} /* HERO */
+.hero{ position:relative;overflow:hidden; min-height:370px;padding:30px 18px 28px; border-bottom:1px solid rgba(239,189,94,.42); background: radial-gradient(circle at 84% 54%,rgba(239,189,94,.17),transparent 22%), radial-gradient(circle at 18% 72%,rgba(239,189,94,.10),transparent 19%), linear-gradient(180deg,#03070a 0%,#070b0f 72%,#05080b 100%);
+}
+.hero::before{ content:"";position:absolute;inset:0;opacity:.55;pointer-events:none; background: linear-gradient(105deg,transparent 0 12%,rgba(255,255,255,.025) 12.2% 12.5%,transparent 12.7% 100%), radial-gradient(ellipse at 50% 110%,rgba(239,189,94,.14),transparent 45%);
+}
+.hero::after{ content:"";position:absolute;left:50%;bottom:0;width:min(720px,94%);height:2px;transform:translateX(-50%); background:linear-gradient(90deg,transparent,#9a681c,#ffd777,#9a681c,transparent); box-shadow:0 0 18px rgba(239,189,94,.7);
+}
+.hero-controls{position:relative;z-index:6;height:58px;display:flex;align-items:center;justify-content:space-between}
+.round-btn,.menu-btn{ width:48px;height:48px;border:1px solid rgba(239,189,94,.68);border-radius:50%; background:rgba(8,12,16,.72);color:var(--gold);display:grid;place-items:center; cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 0 22px rgba(239,189,94,.04);
+}
+.menu-btn{border:0;background:transparent;font-size:32px;border-radius:14px;width:52px}
+.round-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round} .hero-decoration{position:absolute;inset:55px 0 auto 0;height:250px;pointer-events:none;opacity:.9}
+.dec-laptop{position:absolute;left:-25px;bottom:18px;font-size:105px;filter:grayscale(.4) brightness(.62);transform:rotate(-7deg);opacity:.22}
+.dec-cart{position:absolute;right:-10px;bottom:18px;font-size:112px;filter:saturate(.55) sepia(.4);opacity:.30;transform:rotate(5deg)}
+.gold-orb{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffd57b;box-shadow:0 0 22px 8px rgba(239,189,94,.35)}
+.gold-orb.o1{right:14%;top:36px}.gold-orb.o2{left:17%;top:146px;width:4px;height:4px} .brand-hero{position:relative;z-index:3;text-align:center;margin-top:5px}
+.ha-logo{display:inline-block;position:relative;font:900 italic clamp(66px,12vw,112px)/.8 Arial,sans-serif;letter-spacing:-10px;background:linear-gradient(180deg,#ffe39d 0%,#e5ac43 40%,#8e5b15 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 13px rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(239,189,94,.12))}
+.ha-logo::after{content:"↗";position:absolute;font:900 32px/1 Arial;right:-22px;top:-15px;color:#f3bd58;-webkit-text-fill-color:#f3bd58;transform:rotate(-5deg);text-shadow:0 5px 10px #000}
+.brand-name{margin-top:19px;font-size:clamp(35px,7vw,62px);font-weight:850;letter-spacing:-1.6px;direction:ltr;text-shadow:0 5px 18px #000}
+.brand-name .gold{color:var(--gold)}
+.brand-sub{font-size:clamp(15px,3.7vw,22px);color:#c8c9ca;margin-top:8px} .promo-pill{ position:relative;z-index:4;width:min(690px,92%);margin:25px auto 0;min-height:74px; border:1px solid rgba(239,189,94,.72);border-radius:40px; display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 23px; background:linear-gradient(180deg,rgba(18,20,22,.94),rgba(5,8,10,.98)); box-shadow:0 0 0 1px rgba(255,218,136,.08),0 0 27px rgba(239,189,94,.15),inset 0 0 25px rgba(255,255,255,.025); text-decoration:none;
+}
+.promo-pill .ico{font-size:31px;filter:drop-shadow(0 0 7px rgba(239,189,94,.35))}
+.promo-pill strong{font-size:clamp(16px,4vw,23px);color:#e8b85d;text-align:center;flex:1}.promo-pill .arrow{font-size:38px;color:#e7b454;line-height:1} /* SEARCH */
+.search-panel{position:fixed;z-index:2100;top:78px;right:16px;left:16px;max-width:720px;margin:auto;transform:translateY(-16px);opacity:0;visibility:hidden;transition:.22s}
+.search-panel.show{transform:none;opacity:1;visibility:visible}
+.search-box{position:relative;background:#0c1117;border:1px solid rgba(239,189,94,.50);padding:7px;border-radius:20px;box-shadow:0 20px 60px #000b}
+.search-box input{width:100%;height:54px;border:0;outline:0;background:#060a0d;color:#fff;border-radius:14px;padding:0 48px 0 15px;font-size:15px}
+.search-box input::placeholder{color:#858b91}.search-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:20px} /* CARDS */
+.content{padding-top:28px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.card{ position:relative;min-height:225px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center; padding:23px 13px 18px;border-radius:29px;text-decoration:none;overflow:hidden; background:linear-gradient(145deg,rgba(17,24,31,.93),rgba(5,9,13,.97)); border:1px solid rgba(150,163,176,.22);box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.03); transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;background:radial-gradient(circle at 50% 0,rgba(var(--glow),.13),transparent 37%);pointer-events:none}
+.card::after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--glow),.32),transparent)}
+.card:active{transform:scale(.975)}
+.card:hover{transform:translateY(-4px);border-color:rgba(239,189,94,.34);box-shadow:0 22px 52px #000b,0 0 28px rgba(var(--glow),.08)}
+.iconbox{position:relative;z-index:1;width:78px;height:78px;border-radius:24px;display:grid;place-items:center;font-size:42px;margin-bottom:14px;background:linear-gradient(145deg,rgba(var(--glow),.33),rgba(4,8,12,.85));border:1px solid rgba(var(--glow),.60);box-shadow:0 10px 25px #0007,inset 0 0 20px rgba(var(--glow),.14),0 0 22px rgba(var(--glow),.10)}
+.card h2{position:relative;z-index:1;margin:0;font-size:clamp(16px,3.6vw,23px);font-weight:850;line-height:1.25}.card h2::after{content:"";display:block;width:27px;height:2px;margin:10px auto 9px;background:linear-gradient(90deg,#87601d,#ffd16b,#87601d);border-radius:8px;box-shadow:0 0 8px rgba(239,189,94,.4)}
+.card p{position:relative;z-index:1;margin:0;color:#adb2b7;font-size:clamp(11px,2.5vw,14px);line-height:1.55;max-width:190px}
+.card .soon{position:absolute;top:11px;left:11px;border:1px solid rgba(239,189,94,.4);color:#d6a950;background:#0a0d10;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800;z-index:2}
+.c-shop{--glow:229,168,54}.c-service{--glow:28,164,183}.c-chat{--glow:76,95,220}.c-news{--glow:157,58,189}.c-religious{--glow:32,169,69}.c-study{--glow:209,55,66}.c-entertain{--glow:156,48,185}.c-sports{--glow:31,159,58}.c-taxi{--glow:213,145,28}
+.no-results{display:none;grid-column:1/-1;padding:25px;border:1px solid rgba(239,189,94,.25);border-radius:22px;text-align:center;background:#0a0e12;color:#aeb2b6} /* DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:.25s;z-index:1998}.drawer-overlay.show{opacity:1;visibility:visible}
+.shortcuts{position:fixed;top:14px;left:14px;bottom:14px;width:min(87vw,355px);z-index:1999;background:linear-gradient(160deg,#10161c,#05080b);border:1px solid rgba(239,189,94,.38);border-radius:28px;padding:17px;box-shadow:0 25px 80px #000d;transform:translateX(-115%);transition:transform .31s cubic-bezier(.2,.8,.2,1);overflow:auto}.shortcuts.show{transform:none}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 3px 14px;border-bottom:1px solid rgba(239,189,94,.20);margin-bottom:10px}.drawer-title{font-weight:900;color:#f1c56f;font-size:19px}.drawer-title small{display:block;color:#81888e;font-weight:400;font-size:10px;margin-top:3px}.drawer-close{width:39px;height:39px;border-radius:13px;border:1px solid #343b42;background:#0a0e12;color:#fff;font-size:21px;cursor:pointer}
+.shortcuts a{display:flex;align-items:center;gap:11px;text-decoration:none;padding:12px 13px;margin:7px 0;border-radius:15px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);font-size:13px}.shortcuts a:hover{border-color:rgba(239,189,94,.35);background:rgba(239,189,94,.045)}.short-ico{width:32px;height:32px;border-radius:10px;background:#080b0e;border:1px solid rgba(239,189,94,.25);display:grid;place-items:center;color:#e9b95d}
+body.drawer-open{overflow:hidden} /* BOTTOM NAV */
+.bottom-nav{position:fixed;z-index:1900;left:0;right:0;bottom:0;padding-bottom:max(7px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(6,9,12,.96),#020406);border-top:1px solid rgba(239,189,94,.65);box-shadow:0 -12px 38px #000b}
+.bottom-inner{width:min(820px,100%);height:88px;margin:auto;display:grid;grid-template-columns:1fr 1.25fr 1fr;align-items:center;text-align:center;position:relative}.bottom-link{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;text-decoration:none;color:#aeb3b9;font-size:12px}.bottom-link .bi{font-size:28px}.bottom-link.active{color:#f0bd5c;text-shadow:0 0 14px rgba(239,189,94,.35)}
+.bottom-brand{height:108px;margin-top:-21px;clip-path:polygon(10% 18%,25% 4%,75% 4%,90% 18%,100% 100%,0 100%);background:linear-gradient(180deg,#0d1217,#030609);border-top:1px solid #c08a31;display:flex;align-items:center;justify-content:center;flex-direction:column}.mini-ha{font:900 italic 34px/.85 Arial;background:linear-gradient(#ffe19a,#b87921);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-3px}.bottom-brand strong{font-size:16px;margin-top:6px;direction:ltr}.bottom-brand small{color:#b9a16e;font-size:9px;margin-top:3px} /* MODAL / LOADING / SPLASH */
+.coming-soon-modal{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}.coming-soon-modal.show{display:flex}.coming-soon-box{width:min(92vw,390px);background:linear-gradient(155deg,#11181e,#05080b);border:1px solid rgba(239,189,94,.42);border-radius:26px;padding:30px 22px;text-align:center;box-shadow:0 25px 80px #000}.coming-soon-icon{font-size:49px}.coming-soon-box h2{margin:10px 0 8px;color:#f0bd5c}.coming-soon-box p{color:#9da3a9;line-height:1.7}.coming-soon-close{border:1px solid rgba(239,189,94,.6);border-radius:14px;background:#0a0e12;color:#f0bd5c;padding:12px 31px;font-size:16px;font-weight:800;cursor:pointer}
+.ha-page-loading{position:fixed;inset:0;background:rgba(2,4,6,.90);z-index:100001;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px}.ha-page-loading.show{display:flex}.ha-page-spinner{width:50px;height:50px;border:4px solid #252b30;border-top-color:#eebc5d;border-radius:50%;animation:spin .8s linear infinite}.ha-page-loading-text{font-size:14px;color:#d4d5d6}@keyframes spin{to{transform:rotate(360deg)}}
+#haSplash{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 36%,#131a20,#030609 48%,#010203);display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .45s ease,visibility .45s ease}#haSplash.hide{opacity:0;visibility:hidden;pointer-events:none}.splash-card{text-align:center;width:min(92vw,430px)}.splash-card .ha-logo{font-size:95px}.splash-title{font-size:28px;font-weight:850;margin-top:23px;direction:ltr}.splash-text{color:#9aa0a5;margin-top:7px}.splash-continue{margin-top:26px;border:1px solid rgba(239,189,94,.65);background:linear-gradient(180deg,#15181a,#080b0d);color:#efbd5e;padding:14px 35px;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 0 25px rgba(239,189,94,.08)}
+#haNetBadge{position:fixed;bottom:105px;left:12px;z-index:9998;background:#11171d;color:#fff;padding:8px 12px;border:1px solid #333c43;border-radius:20px;font-size:11px;display:none;box-shadow:0 3px 12px #0007} @media(max-width:700px){ .shell{width:93%}.hero{min-height:350px;padding-inline:10px}.hero-controls{padding-inline:4px}.grid{gap:10px}.card{min-height:178px;padding:16px 7px 13px;border-radius:21px}.iconbox{width:61px;height:61px;border-radius:19px;font-size:34px;margin-bottom:11px}.card h2{font-size:14px}.card p{font-size:10px;line-height:1.45}.card h2::after{margin:7px auto 7px}.card .soon{font-size:7px;padding:3px 6px;top:7px;left:7px}.promo-pill{min-height:66px;margin-top:20px;padding-inline:17px}.promo-pill .ico{font-size:26px}.promo-pill .arrow{font-size:31px}.dec-laptop,.dec-cart{font-size:82px}.bottom-inner{height:80px}.bottom-brand{height:99px}.bottom-link .bi{font-size:25px}
+}
+@media(max-width:390px){.grid{gap:8px}.card{min-height:166px}.iconbox{width:56px;height:56px;font-size:31px}.card h2{font-size:13px}.card p{font-size:9px}.brand-name{font-size:36px}.ha-logo{font-size:70px}}
 
-/* ===== قائمة الاختصارات الجانبية ===== */
-.menu-wrap{position:relative;z-index:1002}
-.menu-btn{
-  border:0;background:#111;color:#fff;border-radius:10px;
-  width:44px;height:44px;font-size:24px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
+/* ===== الشريط السفلي الرئيسي: 5 مربعات ===== */
+body{
+  padding-bottom:92px !important;
 }
-.drawer-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.35);
-  opacity:0;visibility:hidden;transition:opacity .28s ease,visibility .28s ease;
-  z-index:1998;
-}
-.drawer-overlay.show{opacity:1;visibility:visible}
-.shortcuts{
-  position:fixed;top:0;left:0;height:100vh;width:min(86vw,340px);
-  background:#fff;z-index:1999;
-  transform:translateX(-105%);
-  transition:transform .32s cubic-bezier(.22,.61,.36,1);
-  box-shadow:8px 0 24px rgba(0,0,0,.16);
-  padding:18px 14px 28px;
-  overflow-y:auto;
-  display:block!important;
-}
-.shortcuts.show{transform:translateX(0)}
-.drawer-head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;padding:4px 4px 14px;border-bottom:1px solid #e7e7e7;margin-bottom:10px;
-}
-.drawer-title{font-size:20px;font-weight:700}
-.drawer-close{
-  width:40px;height:40px;border:0;border-radius:10px;background:#f1f1f1;
-  font-size:22px;cursor:pointer;
-}
-.shortcuts a{
-  display:flex!important;align-items:center;gap:10px;
-  text-decoration:none;color:#111;background:#f7f7f7;
-  padding:14px 12px;margin:8px 0;border-radius:12px;
-  font-size:16px;transition:transform .15s ease,background .15s ease;
-}
-.shortcuts a:hover{background:#ededed;transform:translateX(2px)}
-body.drawer-open{overflow:hidden}
 
+.bottom-nav.bottom-nav-five{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  z-index:1900 !important;
+  padding:5px 5px max(6px,env(safe-area-inset-bottom)) !important;
+  background:linear-gradient(180deg,rgba(6,9,12,.98),#020406) !important;
+  border-top:1px solid rgba(239,189,94,.62) !important;
+  box-shadow:0 -10px 30px rgba(0,0,0,.58) !important;
+}
 
-/* ===== شكل السحابة للاختصارات ===== */
-.shortcuts{
-  top:72px !important;
-  left:14px !important;
+.bottom-inner.bottom-inner-five{
+  width:min(760px,100%) !important;
   height:auto !important;
-  max-height:calc(100vh - 92px) !important;
-  width:min(88vw,360px) !important;
-  border-radius:34px 46px 38px 50px !important;
-  padding:20px 18px 22px !important;
-  transform:translateX(-125%) scale(.92) !important;
-  transform-origin:left center;
-  opacity:0;
-  visibility:hidden;
-  transition:
-    transform .38s cubic-bezier(.18,.89,.32,1.28),
-    opacity .25s ease,
-    visibility .25s ease !important;
-  overflow-y:auto;
+  min-height:62px !important;
+  margin:0 auto !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:5px !important;
+  align-items:stretch !important;
 }
-.shortcuts::before,
-.shortcuts::after{
-  content:"";
-  position:absolute;
-  background:#fff;
-  border-radius:50%;
-  z-index:-1;
-  box-shadow:0 4px 16px rgba(0,0,0,.05);
+
+.bottom-nav-five .bottom-link{
+  min-width:0 !important;
+  min-height:54px !important;
+  padding:5px 2px !important;
+  border:1px solid rgba(239,189,94,.30) !important;
+  border-radius:12px !important;
+  background:linear-gradient(180deg,#10171d,#060a0d) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  color:#f5f5f5 !important;
+  text-decoration:none !important;
+  font-size:9px !important;
+  font-weight:800 !important;
+  line-height:1.1 !important;
+  text-align:center !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.025) !important;
 }
-.shortcuts::before{
-  width:92px;height:92px;
-  right:-25px;top:34px;
+
+.bottom-nav-five .bottom-link .bi{
+  font-size:20px !important;
+  line-height:1 !important;
+  margin:0 !important;
 }
-.shortcuts::after{
-  width:72px;height:72px;
-  right:18px;bottom:-22px;
+
+.bottom-nav-five .bottom-link.active{
+  border-color:#f0bd5d !important;
+  background:linear-gradient(145deg,#2a2112,#11100c) !important;
+  color:#f5ca72 !important;
+  box-shadow:0 0 16px rgba(239,189,94,.15),inset 0 0 18px rgba(239,189,94,.06) !important;
 }
-.shortcuts.show{
-  transform:translateX(0) scale(1) !important;
-  opacity:1;
-  visibility:visible;
-}
-.drawer-head{
-  border-bottom:0 !important;
-  margin-bottom:12px !important;
-}
-.shortcuts a{
-  border-radius:18px !important;
-  padding:14px 14px !important;
-  margin:9px 0 !important;
-  background:#f6f6f6 !important;
-}
-.shortcuts a:hover{
-  background:#ececec !important;
-  transform:translateX(3px) scale(1.01) !important;
-}
-.drawer-overlay{
-  backdrop-filter:blur(2px);
-}
-@media(max-width:600px){
-  .shortcuts{
-    top:66px !important;
-    left:10px !important;
-    width:calc(100vw - 28px) !important;
-    border-radius:30px 42px 34px 44px !important;
+
+@media(max-width:420px){
+  body{padding-bottom:86px !important}
+  .bottom-nav.bottom-nav-five{
+    padding-left:3px !important;
+    padding-right:3px !important;
+  }
+  .bottom-inner.bottom-inner-five{
+    gap:3px !important;
+    min-height:58px !important;
+  }
+  .bottom-nav-five .bottom-link{
+    min-height:50px !important;
+    border-radius:10px !important;
+    padding:4px 1px !important;
+    font-size:8px !important;
+  }
+  .bottom-nav-five .bottom-link .bi{
+    font-size:18px !important;
   }
 }
 
 
-/* ===== شاشة الدخول الافتتاحية ===== */
-#haSplash{
-  position:fixed;inset:0;z-index:99999;background:#fff;
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;transition:opacity .45s ease,visibility .45s ease;
-}
-#haSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
-.splash-inner{width:min(92vw,520px);text-align:center}
-.splash-logo{
-  width:min(76vw,330px);max-height:48vh;object-fit:contain;
-  opacity:0;transform:translateX(-140px) scale(.96);
-  animation:slideLogo 1.15s cubic-bezier(.22,.61,.36,1) forwards;
-}
-.splash-welcome{
-  margin:18px 0 0;
-  font-size:22px;
-  font-weight:700;
-  color:#111;
-  opacity:0;
-  transform:translateY(12px);
-  animation:showContinue .55s ease 1.25s forwards;
-}
-.splash-continue{
-  margin-top:24px;padding:14px 34px;border:0;border-radius:14px;
-  background:#111;color:#fff;font-size:18px;font-weight:700;cursor:pointer;
-  opacity:0;transform:translateY(16px);
-  animation:showContinue .55s ease 1.55s forwards;
-  box-shadow:0 7px 22px rgba(0,0,0,.16)
-}
-@keyframes slideLogo{
-  0%{opacity:0;transform:translateX(-140px) scale(.96)}
-  65%{opacity:1;transform:translateX(12px) scale(1.01)}
-  100%{opacity:1;transform:translateX(0) scale(1)}
-}
-@keyframes showContinue{
-  to{opacity:1;transform:translateY(0)}
-}
+/* وضع عدم الاتصال يحافظ على نفس التصميم بالكامل */
+.ha-offline-mode body{background:inherit}
+.ha-offline-mode .bottom-nav,
+.ha-offline-mode .card,
+.ha-offline-mode .hero{filter:none !important;opacity:1 !important}
 
-
-/* ===== شريط اتصل بنا السفلي الثابت ===== */
-body{padding-bottom:76px}
-.contact-bottom-bar{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:2000;
-  background:#000;
-  padding:12px 16px;
-  border-top:1px solid #222;
-}
-.contact-bottom-bar a{
-  width:min(900px,94%);
-  margin:auto;
-  min-height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  background:#fff;
-  color:#111;
-  text-decoration:none;
-  border-radius:10px;
-  font-size:17px;
-  font-weight:700;
-}
-.contact-bottom-bar .contact-icon{font-size:21px}
-
-
-
-.coming-soon-modal{
-  position:fixed;inset:0;z-index:100000;
-  background:rgba(0,0,0,.45);
-  display:none;align-items:center;justify-content:center;padding:22px;
-}
-.coming-soon-modal.show{display:flex}
-.coming-soon-box{
-  width:min(92vw,390px);background:#fff;border-radius:20px;
-  padding:30px 22px;text-align:center;box-shadow:0 12px 35px rgba(0,0,0,.22)
-}
-.coming-soon-icon{font-size:52px;margin-bottom:10px}
-.coming-soon-box h2{margin:0 0 8px;font-size:27px}
-.coming-soon-box p{margin:0 0 20px;color:#666}
-.coming-soon-close{
-  border:0;border-radius:12px;background:#111;color:#fff;
-  padding:12px 30px;font-size:17px;font-weight:700;cursor:pointer
-}
-
-
-/* HA Marketing mobile compact grid: 3 cards per row */
-@media (max-width: 700px){
-  .grid,.cards,.menu-grid,.rooms,.categories,.category-grid,.services-grid,.service-grid,.games-grid,.options-grid,.quick-grid,.tools-grid,.subgrid,.main-grid,.dashboard-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    gap:7px !important;
-  }
-  .card,.menu-card,.room,.category,.category-card,.service-card,.game-card,.option-card,.quick-card,.tool-card,.subcard{
-    min-width:0 !important;
-    min-height:88px !important;
-    padding:9px 5px !important;
-    border-radius:12px !important;
-  }
-  .card .icon,.menu-card .icon,.room .icon,.category .icon,.category-card .icon,.service-card .icon,.game-card .icon,.option-card .icon,.quick-card .icon,.tool-card .icon,.subcard .subicon{
-    font-size:27px !important;
-    margin-bottom:4px !important;
-  }
-  .card h2,.card h3,.menu-card h2,.menu-card h3,.category-card h2,.category-card h3,.service-card h2,.service-card h3,.game-card h2,.game-card h3,.option-card h2,.quick-card h2,.tool-card h2,.subcard strong{
-    font-size:12px !important;
-    line-height:1.25 !important;
-    margin:2px 0 !important;
-  }
-  .card p,.menu-card p,.category-card p,.service-card p,.game-card p,.option-card p,.quick-card p,.tool-card p{
-    font-size:9px !important;
-    line-height:1.2 !important;
-    margin:2px 0 !important;
-  }
-}
-
-.ha-page-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:100000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px}.ha-page-loading.show{display:flex}.ha-page-spinner{width:50px;height:50px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haPageSpin .8s linear infinite}.ha-page-loading-text{font-size:15px;font-weight:700;color:#222}@keyframes haPageSpin{to{transform:rotate(360deg)}}
-.search-box.searching .search-icon{animation:haPageSpin .7s linear infinite}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-<script>
-document.addEventListener('click',function(e){
- const c=e.target.closest('a[data-coming-soon="1"]');
- if(c){
-   e.preventDefault();
-   const m=document.getElementById('comingSoonModal');
-   if(m){m.classList.add('show');m.setAttribute('aria-hidden','false');}
- }
-});
-</script>
-</script>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
-<div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div>
-
-<div id="haSplash" aria-label="شاشة الدخول">
-  <div class="splash-inner">
-    <img class="splash-logo" src="main.jpg" alt="HA Marketing">
-    <div class="splash-welcome">مرحباً بك في عالمك الخاص</div>
-    <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button>
-  </div>
+<div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo">HA</div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
+</div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="ha-logo">HA</div> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <a class="promo-pill" href="shop.html"><span class="arrow">‹</span><strong>تسوق الآن</strong><span class="ico">🛒</span></a>
+</section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
+</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
-
-<div class="topbar">
- <div class="menu-wrap">
-  <button class="menu-btn" type="button" onclick="toggleMenu()">☰</button>
-  <div class="shortcuts" id="shortcuts">
-    <div class="drawer-head">
-      <div class="drawer-title">☁️ الاختصارات</div>
-      <button class="drawer-close" type="button" onclick="closeMenu()" aria-label="إغلاق">×</button>
-    </div>
-
-    <a href="account.html">👤 الحساب الشخصي</a>
-    <a id="adminPanelLink" href="admin-panel.html" style="display:none">🛡️ لوحة الإدارة</a>
-    <a href="payments.html" style="display:none" aria-hidden="true">💳 الدفع الإلكتروني</a>
-    <a href="index.html">🏠 الرئيسية</a>
-    <a href="shop.html">🛒 تسوق الآن</a>
-    <a href="services.html">🛠️ طلب خدمة</a>
-    <a href="chat.html">💬 الدردشة</a>
-    <a href="news.html">📰 آخر الأخبار</a>
-    <a href="religious.html">🕌 الأمور الدينية</a>
-    <a href="study.html">📚 دراسة</a>
-    <a href="entertainment.html">🎮 ترفيه</a>
-    <a href="sports.html">⚽ رياضة</a>
-    <a href="personal-center.html">👤 أنا</a>
-    <a href="taxi-delivery.html">🚕 طلب مندوب أو تكسي</a>
-    <a href="call-us.html">📞 اتصل بنا</a>
-  
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat" href="chat.html" data-search="الدردشة دردشة تواصل"><div class="iconbox">💬</div><h2>الدردشة</h2><p>تواصل مع الآخرين بسهولة</p></a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك"><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
+</main> <nav class="bottom-nav bottom-nav-five" aria-label="القائمة السفلية">
+  <div class="bottom-inner bottom-inner-five">
+    <a class="bottom-link active" href="index.html">
+      <span class="bi">⌂</span>
+      <span>الرئيسية</span>
+    </a>
+    <a class="bottom-link" href="notifications-center.html">
+      <span class="bi">🔔</span>
+      <span>الإشعارات</span>
+    </a>
+    <a class="bottom-link" href="orders-center.html">
+      <span class="bi">📋</span>
+      <span>الطلبات</span>
+    </a>
+    <a class="bottom-link" href="account.html">
+      <span class="bi">👤</span>
+      <span>حسابي</span>
+    </a>
+    <a class="bottom-link" href="call-us.html">
+      <span class="bi">☎</span>
+      <span>اتصل بنا</span>
+    </a>
   </div>
-  <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div>
- </div>
- <div class="search-box"><span class="search-icon">🔍</span><input id="searchInput" type="text" placeholder="ابحث في الأقسام..." oninput="searchCards()"></div>
-</div>
-<header class="header"><h1>HA Marketing</h1><p>اختر القسم الذي تريد الدخول إليه</p></header>
-<main class="grid">
-
- <a class="card" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="icon">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a>
-
- <a class="card" href="services.html" data-search="طلب خدمة خدمات"><div class="icon">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a>
-
- <a class="card" href="chat.html" data-search="الدردشة دردشة تواصل كرة القدم الأعمال الطلاب عامة">
-   <div class="icon">💬</div>
-   <h2>الدردشة</h2>
-   <p>تواصل مع الآخرين حسب الفئة</p>
- </a>
-
- <a class="card" href="news.html" data-search="آخر الأخبار اخبار جديد تحديثات"><div class="icon">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a>
-
- <a class="card" href="religious.html" data-search="الأمور الدينية دينية القرآن الكريم">
-   <div class="icon">🕌</div>
-   <h2>الأمور الدينية</h2>
-   <p>القرآن الكريم ومحتوى ديني آخر</p>
- </a>
-
- <a class="card" href="study.html" data-search="دراسة تعليم طلاب كورسات كتب محاضرات">
-   <div class="icon">📚</div>
-   <h2>دراسة</h2>
-   <p>محتوى دراسي وتعليمي للطلاب</p>
- </a>
-
- <a class="card" href="entertainment.html" data-search="ترفيه العاب احسب عمرك معلومات عامة اسئلة عامة دومينو شطرنج طاولة">
-   <div class="icon">🎮</div>
-   <h2>ترفيه</h2>
-   <p>ألعاب ومحتوى ترفيهي متنوع</p>
- </a>
-
- <a class="card" href="sports.html" data-search="رياضة جم جيم كرة القدم لياقة تمارين نادي">
-   <div class="icon">⚽</div>
-   <h2>رياضة</h2>
-   <p>الجم وكرة القدم والأنشطة الرياضية</p>
- </a>
-
-  <a class="card" style="display:none" href="personal-center.html" data-search="أنا حسابي معلوماتي العمر الوزن الطول المالية"><div class="icon">👤</div><h2>أنا</h2><p>بياناتي الشخصية والقياسات والحسابات المالية الأساسية</p></a>
-
-<a class="card" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل طلب سيارة">
-   <div class="icon">🚕</div>
-   <h2>طلب تكسي أو مندوب</h2>
-   <p>اطلب تكسي أو مندوب توصيل بسهولة</p>
- </a>
-</main>
-
-<script>
-function toggleMenu(){
-  const menu = document.getElementById('shortcuts');
-  const overlay = document.getElementById('drawerOverlay');
-  const open = !menu.classList.contains('show');
-
-  menu.classList.toggle('show', open);
-  overlay.classList.toggle('show', open);
-  document.body.classList.toggle('drawer-open', open);
-}
-
-function closeMenu(){
-  document.getElementById('shortcuts').classList.remove('show');
-  document.getElementById('drawerOverlay').classList.remove('show');
-  document.body.classList.remove('drawer-open');
-}
-
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape') closeMenu();
-});
-
-/* زر الرجوع: إذا قائمة الاختصارات مفتوحة يغلقها فقط ولا يخرج من الصفحة */
-window.addEventListener('popstate', function(){
-  const menu = document.getElementById('shortcuts');
-  if(menu && menu.classList.contains('show')){
-    closeMenu();
-    history.pushState({haMenuGuard:true}, '', location.href);
-  }
-});
-
-const originalToggleMenu = toggleMenu;
-toggleMenu = function(){
-  const menu = document.getElementById('shortcuts');
-  const wasOpen = menu.classList.contains('show');
-  originalToggleMenu();
-
-  if(!wasOpen && menu.classList.contains('show')){
-    history.pushState({haMenuGuard:true}, '', location.href);
-  }
-};
-
-let haSearchTimer=null;
-function searchCards(){
-  const box=document.querySelector('.search-box');
-  if(box)box.classList.add('searching');
-  clearTimeout(haSearchTimer);
-  haSearchTimer=setTimeout(function(){
-    const v = document.getElementById('searchInput').value.trim().toLowerCase();
-    const cards = document.querySelectorAll('.card');
-    let n = 0;
-    cards.forEach(function(c){
-      const ok = (c.innerText + ' ' + (c.dataset.search || '')).toLowerCase().includes(v);
-      c.style.display = ok ? 'flex' : 'none';
-      if(ok) n++;
-    });
-    const nr=document.getElementById('noResults');if(nr)nr.style.display = n ? 'none' : 'block';
-    if(box)box.classList.remove('searching');
-  },120);
-}
-
-/* شاشة البداية تظهر في كل مرة يتم فتح الصفحة الرئيسية من الرابط */
-function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading');const t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;if(x)x.classList.add('show')}
-function hidePageLoading(){const x=document.getElementById('haPageLoading');if(x)x.classList.remove('show')}
+</nav>
+<div id="haNetBadge">📡 وضع بدون إنترنت</div> <script>
+function toggleSearch(){const p=document.getElementById('searchPanel');p.classList.toggle('show');if(p.classList.contains('show'))setTimeout(()=>document.getElementById('searchInput')?.focus(),80)}
+function toggleMenu(){const m=document.getElementById('shortcuts'),o=document.getElementById('drawerOverlay'),open=!m.classList.contains('show');m.classList.toggle('show',open);o.classList.toggle('show',open);document.body.classList.toggle('drawer-open',open);if(open)history.pushState({haMenuGuard:true},'',location.href)}
+function closeMenu(){document.getElementById('shortcuts')?.classList.remove('show');document.getElementById('drawerOverlay')?.classList.remove('show');document.body.classList.remove('drawer-open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();document.getElementById('searchPanel')?.classList.remove('show')}});
+window.addEventListener('popstate',()=>{const m=document.getElementById('shortcuts');if(m?.classList.contains('show')){closeMenu();history.pushState({haMenuGuard:true},'',location.href)}}); let haSearchTimer=null;
+function searchCards(){clearTimeout(haSearchTimer);haSearchTimer=setTimeout(()=>{const v=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let n=0;document.querySelectorAll('#mainGrid .card').forEach(c=>{const ok=((c.innerText||'')+' '+(c.dataset.search||'')).toLowerCase().includes(v);c.style.display=ok?'flex':'none';if(ok)n++});const nr=document.getElementById('noResults');if(nr)nr.style.display=n?'none':'block'},80)} function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading'),t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;x?.classList.add('show')}
+function hidePageLoading(){document.getElementById('haPageLoading')?.classList.remove('show')}
 async function continueLogin(){
   showPageLoading('جاري التحقق من تسجيل الدخول...');
-  try{
-    const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-    const {data:{session}}=await adb.auth.getSession();
-    if(session && !session.user?.is_anonymous){
-      localStorage.setItem('ha_logged_in','1');
-      document.getElementById('haSplash').classList.add('hide');
-      hidePageLoading();
-    }else{
-      if(session?.user?.is_anonymous)await adb.auth.signOut();
-      localStorage.removeItem('ha_logged_in');
-      document.getElementById('haPageLoadingText').textContent='جاري فتح تسجيل الدخول...';
-      window.location.href = 'login.html';
-    }
-  }catch(e){
-    localStorage.removeItem('ha_logged_in');
-    document.getElementById('haPageLoadingText').textContent='جاري فتح تسجيل الدخول...';
-    window.location.href='login.html';
+
+  // بدون إنترنت: لا نغيّر الواجهة ولا نحوّل المستخدم لصفحة ثانية.
+  if(!navigator.onLine){
+    localStorage.setItem('ha_logged_in','1');
+    document.getElementById('haSplash')?.classList.add('hide');
+    hidePageLoading();
+    return;
   }
-}
 
-
-
-
-/* مؤشر انتظار عند الانتقال بين الصفحات */
-document.addEventListener('click',function(e){
-  const a=e.target.closest('a[href]');
-  if(!a)return;
-  const href=a.getAttribute('href')||'';
-  if(!href || href==='#' || a.dataset.comingSoon==='1' || href.startsWith('javascript:') || a.target==='_blank')return;
-  if(href.endsWith('.html') || (!href.includes('://') && !href.startsWith('mailto:') && !href.startsWith('tel:'))){
-    showPageLoading('جاري فتح الصفحة...');
-  }
-},true);
-
-</script>
-
-<div class="contact-bottom-bar">
-  <a href="call-us.html" aria-label="فتح قائمة أرقام الاتصال">
-    <span class="contact-icon">📞</span>
-    <span>اتصل بنا</span>
-  </a>
-</div>
-
-
-
-
-
-<script>
-(async function(){
   try{
-    if(!window.supabase)return;
+    if(!window.supabase)throw new Error('supabase unavailable');
     const adb=supabase.createClient(
       'https://ubayrhtshgtgggxprrek.supabase.co',
       'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
       {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
     );
     const {data:{session}}=await adb.auth.getSession();
-    if(!session)return;
-    const {data:isAdmin}=await adb.rpc('is_app_admin');
-    if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex';}
-  }catch(e){console.warn('admin link',e)}
+
+    if(session&&!session.user?.is_anonymous){
+      localStorage.setItem('ha_logged_in','1');
+      document.getElementById('haSplash')?.classList.add('hide');
+      hidePageLoading();
+    }else{
+      if(session?.user?.is_anonymous)await adb.auth.signOut();
+      localStorage.removeItem('ha_logged_in');
+      location.href='login.html';
+    }
+  }catch(e){
+    // إذا انقطع النت أثناء الفحص، نبقى على نفس واجهة التطبيق.
+    if(!navigator.onLine){
+      localStorage.setItem('ha_logged_in','1');
+      document.getElementById('haSplash')?.classList.add('hide');
+      hidePageLoading();
+      return;
+    }
+    localStorage.removeItem('ha_logged_in');
+    location.href='login.html';
+  }
+}
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true); (async function(){try{if(!window.supabase)return;const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const {data:{session}}=await adb.auth.getSession();if(!session)return;const {data:isAdmin}=await adb.rpc('is_app_admin');if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex'}}catch(e){console.warn('admin link',e)}})(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
+(function(){const b=document.getElementById('haNetBadge');const u=()=>{if(b)b.style.display=navigator.onLine?'none':'block'};addEventListener('online',u);addEventListener('offline',u);u()})();
+
+/* ===== تشغيل الواجهة نفسها بدون إنترنت ===== */
+(function(){
+  function openHomeOffline(){
+    const splash=document.getElementById('haSplash');
+    const loading=document.getElementById('haPageLoading');
+    if(splash) splash.classList.add('hide');
+    if(loading) loading.classList.remove('show');
+  }
+
+  function applyOfflineHome(){
+    if(!navigator.onLine){
+      openHomeOffline();
+      document.documentElement.classList.add('ha-offline-mode');
+    }else{
+      document.documentElement.classList.remove('ha-offline-mode');
+    }
+  }
+
+  window.addEventListener('offline',applyOfflineHome);
+  window.addEventListener('online',applyOfflineHome);
+  window.addEventListener('DOMContentLoaded',()=>{
+    if(!navigator.onLine || localStorage.getItem('ha_logged_in')==='1'){
+      openHomeOffline();
+    }
+    applyOfflineHome();
+  });
 })();
+
 </script>
-<script>
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
-(function(){const b=document.createElement('div');b.id='haNetBadge';b.style='position:fixed;bottom:12px;left:12px;z-index:99999;background:#111;color:#fff;padding:8px 12px;border-radius:20px;font:12px Arial;display:none;box-shadow:0 3px 12px #0003';b.textContent='📡 وضع بدون إنترنت';document.body.appendChild(b);const u=()=>b.style.display=navigator.onLine?'none':'block';addEventListener('online',u);addEventListener('offline',u);u()})();
-</script></body>
+</body>
 </html>

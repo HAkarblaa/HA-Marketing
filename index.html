@@ -160,6 +160,13 @@ body{
   }
 }
 
+
+/* وضع عدم الاتصال يحافظ على نفس التصميم بالكامل */
+.ha-offline-mode body{background:inherit}
+.ha-offline-mode .bottom-nav,
+.ha-offline-mode .card,
+.ha-offline-mode .hero{filter:none !important;opacity:1 !important}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
@@ -201,8 +208,78 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();documen
 window.addEventListener('popstate',()=>{const m=document.getElementById('shortcuts');if(m?.classList.contains('show')){closeMenu();history.pushState({haMenuGuard:true},'',location.href)}}); let haSearchTimer=null;
 function searchCards(){clearTimeout(haSearchTimer);haSearchTimer=setTimeout(()=>{const v=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let n=0;document.querySelectorAll('#mainGrid .card').forEach(c=>{const ok=((c.innerText||'')+' '+(c.dataset.search||'')).toLowerCase().includes(v);c.style.display=ok?'flex':'none';if(ok)n++});const nr=document.getElementById('noResults');if(nr)nr.style.display=n?'none':'block'},80)} function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading'),t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;x?.classList.add('show')}
 function hidePageLoading(){document.getElementById('haPageLoading')?.classList.remove('show')}
-async function continueLogin(){showPageLoading('جاري التحقق من تسجيل الدخول...');try{if(!window.supabase)throw new Error('supabase unavailable');const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const {data:{session}}=await adb.auth.getSession();if(session&&!session.user?.is_anonymous){localStorage.setItem('ha_logged_in','1');document.getElementById('haSplash')?.classList.add('hide');hidePageLoading()}else{if(session?.user?.is_anonymous)await adb.auth.signOut();localStorage.removeItem('ha_logged_in');location.href='login.html'}}catch(e){localStorage.removeItem('ha_logged_in');location.href='login.html'}} document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true); (async function(){try{if(!window.supabase)return;const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const {data:{session}}=await adb.auth.getSession();if(!session)return;const {data:isAdmin}=await adb.rpc('is_app_admin');if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex'}}catch(e){console.warn('admin link',e)}})(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
+async function continueLogin(){
+  showPageLoading('جاري التحقق من تسجيل الدخول...');
+
+  // بدون إنترنت: لا نغيّر الواجهة ولا نحوّل المستخدم لصفحة ثانية.
+  if(!navigator.onLine){
+    localStorage.setItem('ha_logged_in','1');
+    document.getElementById('haSplash')?.classList.add('hide');
+    hidePageLoading();
+    return;
+  }
+
+  try{
+    if(!window.supabase)throw new Error('supabase unavailable');
+    const adb=supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+    const {data:{session}}=await adb.auth.getSession();
+
+    if(session&&!session.user?.is_anonymous){
+      localStorage.setItem('ha_logged_in','1');
+      document.getElementById('haSplash')?.classList.add('hide');
+      hidePageLoading();
+    }else{
+      if(session?.user?.is_anonymous)await adb.auth.signOut();
+      localStorage.removeItem('ha_logged_in');
+      location.href='login.html';
+    }
+  }catch(e){
+    // إذا انقطع النت أثناء الفحص، نبقى على نفس واجهة التطبيق.
+    if(!navigator.onLine){
+      localStorage.setItem('ha_logged_in','1');
+      document.getElementById('haSplash')?.classList.add('hide');
+      hidePageLoading();
+      return;
+    }
+    localStorage.removeItem('ha_logged_in');
+    location.href='login.html';
+  }
+}
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true); (async function(){try{if(!window.supabase)return;const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const {data:{session}}=await adb.auth.getSession();if(!session)return;const {data:isAdmin}=await adb.rpc('is_app_admin');if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex'}}catch(e){console.warn('admin link',e)}})(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
 (function(){const b=document.getElementById('haNetBadge');const u=()=>{if(b)b.style.display=navigator.onLine?'none':'block'};addEventListener('online',u);addEventListener('offline',u);u()})();
+
+/* ===== تشغيل الواجهة نفسها بدون إنترنت ===== */
+(function(){
+  function openHomeOffline(){
+    const splash=document.getElementById('haSplash');
+    const loading=document.getElementById('haPageLoading');
+    if(splash) splash.classList.add('hide');
+    if(loading) loading.classList.remove('show');
+  }
+
+  function applyOfflineHome(){
+    if(!navigator.onLine){
+      openHomeOffline();
+      document.documentElement.classList.add('ha-offline-mode');
+    }else{
+      document.documentElement.classList.remove('ha-offline-mode');
+    }
+  }
+
+  window.addEventListener('offline',applyOfflineHome);
+  window.addEventListener('online',applyOfflineHome);
+  window.addEventListener('DOMContentLoaded',()=>{
+    if(!navigator.onLine || localStorage.getItem('ha_logged_in')==='1'){
+      openHomeOffline();
+    }
+    applyOfflineHome();
+  });
+})();
+
 </script>
 </body>
 </html>
