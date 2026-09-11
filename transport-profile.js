@@ -150,19 +150,79 @@
 
   async function driverIdentity(){
     const p=await current(true);
-    if(!p)return {ok:false,message:'لازم تسجل الدخول بحساب الموظف أولاً.'};
-    if(p.account_type!=='employee')return {ok:false,message:'واجهة السائق مخصصة لحسابات الموظفين فقط.'};
-    if(p.employee_status!=='approved')return {ok:false,message:'حساب الموظف لازم يكون موافق عليه من الإدارة قبل استقبال الطلبات.'};
+    if(!p)return {ok:false,message:'لازم تسجل الدخول أولاً.'};
 
-    const v=vehicle()||{};
-    if(!v.plate||!v.carName||!v.carColor){
-      return {ok:false,needsVehicle:true,profile:p,message:'أدخل معلومات المركبة الحقيقية أولاً.'};
+    const db=supa();
+
+    // صلاحية السائق ممكن تجي من حساب موظف قديم أو من بوابة الانضمام الجديدة.
+    const employeeApproved=(p.account_type==='employee' && p.employee_status==='approved');
+
+    let transport=null;
+    try{
+      const r=await db.from('transport_profiles')
+        .select('user_id,role_type,full_name,phone,vehicle_type,vehicle_model,vehicle_color,plate_number,governorate,status')
+        .eq('user_id',p.id)
+        .maybeSingle();
+      if(!r.error&&r.data)transport=r.data;
+    }catch(e){}
+
+    let approvedApp=null;
+    try{
+      const r=await db.from('marketplace_applications')
+        .select('role_type,display_name,phone,governorate,details,status')
+        .eq('user_id',p.id)
+        .in('role_type',['taxi_driver','delivery_driver'])
+        .eq('status','approved')
+        .order('updated_at',{ascending:false})
+        .limit(1);
+      if(!r.error&&r.data?.length)approvedApp=r.data[0];
+    }catch(e){}
+
+    const marketplaceApproved=!!approvedApp || transport?.status==='approved';
+
+    if(!employeeApproved && !marketplaceApproved){
+      return {
+        ok:false,
+        message:'لا توجد صلاحية عمل مفعّلة لهذا الحساب. قدّم طلب سائق/مندوب وانتظر موافقة الإدارة.'
+      };
     }
 
-    return {ok:true,profile:p,driver:{
+    const local=vehicle()||{};
+    const dbVehicle={
+      plate:transport?.plate_number||'',
+      carName:transport?.vehicle_model||transport?.vehicle_type||'',
+      carColor:transport?.vehicle_color||''
+    };
+    const v={
+      plate:local.plate||dbVehicle.plate,
+      carName:local.carName||dbVehicle.carName,
+      carColor:local.carColor||dbVehicle.carColor
+    };
+
+    // إذا كانت البيانات موجودة في Supabase نخزنها محلياً حتى تستخدمها واجهة السائق.
+    if(v.plate||v.carName||v.carColor){
+      try{saveVehicle(v)}catch(e){}
+    }
+
+    if(!v.plate||!v.carName||!v.carColor){
+      return {
+        ok:false,
+        needsVehicle:true,
+        profile:p,
+        message:'صلاحية العمل فعالة. أكمل معلومات المركبة أولاً.'
+      };
+    }
+
+    let workType=approvedApp?.role_type||transport?.role_type||'taxi_driver';
+    const details=String(approvedApp?.details||'');
+    const vehicleText=String(transport?.vehicle_type||v.carName||'');
+    const isTuktuk=/تكتك|tuktuk/i.test(details+' '+vehicleText);
+    const workLabel=workType==='delivery_driver'?'مندوب توصيل':(isTuktuk?'سائق تكتك':'سائق تكسي');
+
+    return {ok:true,profile:p,workType,workLabel,driver:{
       userId:p.id,
-      name:p.full_name||p.username||'السائق',
-      phone:p.phone||'',
+      name:transport?.full_name||approvedApp?.display_name||p.full_name||p.username||'السائق',
+      phone:transport?.phone||approvedApp?.phone||p.phone||'',
       plate:v.plate,
       carName:v.carName,
       carColor:v.carColor,
