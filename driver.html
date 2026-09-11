@@ -1092,7 +1092,7 @@ button{-webkit-tap-highlight-color:transparent}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script>
+<script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -1147,6 +1147,8 @@ let driverReady=false;
 let firebaseDriverUser=null;
 let driverKind=null;
 let driverDispatchTypes=[];
+let driverRealPos=null;
+let driverLocationWatchId=null;
 
 function coordText(p){
   if(!p)return '—';
@@ -1154,6 +1156,34 @@ function coordText(p){
 }
 
 
+
+function rideDistanceFromDriver(ride){
+  if(!driverRealPos || !ride?.pickup)return Infinity;
+  return HA_Nearby.distanceKm(driverRealPos,{lat:ride.pickup.lat,lng:ride.pickup.lng});
+}
+
+function sortPendingByNearest(){
+  if(!Array.isArray(pendingEntries)||!pendingEntries.length)return;
+  pendingEntries.sort((a,b)=>{
+    const da=rideDistanceFromDriver(a[1]);
+    const dbb=rideDistanceFromDriver(b[1]);
+    if(da!==dbb)return da-dbb;
+    return (a[1].createdAt||0)-(b[1].createdAt||0);
+  });
+}
+
+function startDriverNearbyWatch(){
+  if(driverLocationWatchId!=null || !window.HA_Nearby)return;
+  driverLocationWatchId=HA_Nearby.watch(pos=>{
+    driverRealPos=pos;
+    driver.setLatLng([pos.lat,pos.lng]);
+    if(!currentRide || currentRide.status==='searching'){
+      sortPendingByNearest();
+      currentPendingIndex=0;
+      if(pendingEntries.length)renderPendingRide(0);
+    }
+  },()=>{});
+}
 function normalizeRideDispatch(ride){
   if(!ride)return '';
 
@@ -1225,8 +1255,10 @@ function renderPendingRide(index){
   }
 
   if(ride.pickup){
-    const km=driver.getLatLng().distanceTo(customer.getLatLng())/1000;
-    toCustomer.textContent=km.toFixed(1)+' كم';
+    const km=driverRealPos
+      ? HA_Nearby.distanceKm(driverRealPos,{lat:ride.pickup.lat,lng:ride.pickup.lng})
+      : driver.getLatLng().distanceTo(customer.getLatLng())/1000;
+    toCustomer.textContent=km<1?Math.round(km*1000)+' م':km.toFixed(1)+' كم';
     requestPickupEta.textContent=Math.max(1,Math.round(km*2.2))+' دقيقة';
   }else{
     toCustomer.textContent='—';
@@ -1263,8 +1295,12 @@ function watchPendingRides(){
 
     pendingEntries=Object.entries(rides)
       .filter(([,r])=>!!r?.customerUid)
-      .filter(([,r])=>rideMatchesThisDriver(r))
-      .sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+      .filter(([,r])=>rideMatchesThisDriver(r));
+
+    sortPendingByNearest();
+    if(!driverRealPos){
+      pendingEntries.sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+    }
 
     nearbyCount.textContent=String(pendingEntries.length);
 
@@ -1592,7 +1628,7 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
+initRealDriver().then(ok=>{ if(ok){startDriverNearbyWatch();restoreDriverRide();} });
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">

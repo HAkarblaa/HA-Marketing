@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>إدارة الملاعب والجم - HA Marketing</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script>
 <style>
 :root{--bg:#03070b;--panel:#081018;--gold:#f4c45f;--gold2:#a87520;--text:#fff;--muted:#aeb8c4;--line:#263747;--red:#d83a47;--green:#1e9b59}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#12212d 0,#05090d 35%,#020405 75%);color:var(--text)}
@@ -51,7 +51,7 @@ input,select,textarea{width:100%;padding:11px;border-radius:11px;border:1px soli
           <input id="facilityHours" placeholder="ساعات العمل">
           <input id="facilityPrice" type="number" min="0" placeholder="السعر / الاشتراك">
           <input id="facilityPhone" placeholder="رقم التواصل">
-          <input id="facilitySlots" placeholder="الأوقات المتاحة">
+          <input id="facilitySlots" placeholder="الأوقات المتاحة"><button type="button" id="ownerFacilityLocate" class="b">📍 تحديد موقع المرفق</button><div id="ownerFacilityLocStatus" class="muted"></div>
         </div>
         <textarea id="facilityDetails" placeholder="الخدمات، نوع الأرضية، الأجهزة، المدربين، أقسام الرجال/النساء أو أي تفاصيل"></textarea>
         <button class="primary" onclick="saveFacility()" style="width:100%">حفظ وإضافة داخل التطبيق</button>
@@ -86,7 +86,7 @@ const db=supabase.createClient(
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
   {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
 );
-let me=null;
+let me=null,facilityLat=null,facilityLng=null;
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function showTab(id,b){document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
 async function init(){
@@ -112,6 +112,14 @@ async function init(){
   app.style.display='block';
   await Promise.all([loadFacilities(),loadLeagues(),loadBookings()]);
 }
+ownerFacilityLocate.onclick=async()=>{
+  ownerFacilityLocStatus.textContent='جاري تحديد الموقع...';
+  try{
+    const z=await HA_Nearby.getCurrent({allowCache:false});
+    facilityLat=z.lat;facilityLng=z.lng;
+    ownerFacilityLocStatus.textContent='✅ تم تحديد الموقع';
+  }catch(e){ownerFacilityLocStatus.textContent='تعذر تحديد الموقع'}
+};
 async function saveFacility(){
   const row={
     owner_user_id:me.id,
@@ -124,9 +132,17 @@ async function saveFacility(){
     phone:facilityPhone.value.trim()||null,
     details:facilityDetails.value.trim()||null,
     available_slots:facilitySlots.value.trim()||null,
+    lat:facilityLat,
+    lng:facilityLng,
     is_active:true
   };
   if(!row.name||!row.address)return alert('أكمل الاسم والعنوان');
+  if(facilityLat==null||facilityLng==null){
+    try{
+      const z=await HA_Nearby.getCurrent({allowCache:false});
+      facilityLat=z.lat;facilityLng=z.lng;row.lat=facilityLat;row.lng=facilityLng;
+    }catch(e){return alert('حدد موقع الملعب/الجم من GPS أولاً حتى يظهر حسب الأقرب.')}
+  }
   const {error}=await db.from('sports_facilities').insert(row);
   if(error)return alert(error.message);
   facilityName.value=facilityAddress.value=facilityDetails.value=facilitySlots.value='';

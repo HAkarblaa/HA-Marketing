@@ -1171,7 +1171,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script>
+<script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -2284,5 +2284,29 @@ window.addEventListener('load',()=>{
   }catch(e){console.error(e)}
 });
 </script>
+
+<script>
+(function(){
+  let autoDone=false;
+  async function autoUseCurrentLocation(){
+    if(autoDone || start) return;
+    autoDone=true;
+    try{
+      const z=await HA_Nearby.getCurrent({allowCache:false,timeout:12000});
+      const p=await snap(L.latLng(z.lat,z.lng));
+      try{detectProvinceFromPoint(p)}catch(e){}
+      setPoint('start',p,'موقعك الحالي');
+      map.setView(p,16);
+      window.pendingStartLabel='موقعك الحالي';
+      notice.textContent='✅ تم اعتماد موقعك الحالي كنقطة الانطلاق. تقدر ترجع وتغيّره إذا تريد.';
+    }catch(e){
+      autoDone=false;
+      notice.textContent='📍 فعّل GPS حتى نحدد نقطة الانطلاق تلقائياً، أو حددها من الخريطة.';
+    }
+  }
+  window.addEventListener('load',()=>setTimeout(autoUseCurrentLocation,450));
+})();
+</script>
+
 </body>
 </html>
