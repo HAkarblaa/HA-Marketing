@@ -1,9 +1,191 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الدردشة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;background:linear-gradient(135deg,#eff7ff,#fff3f8,#f2fff6);color:#111}.app{height:100vh;display:grid;grid-template-columns:360px 1fr;max-width:1200px;margin:auto;background:#fff}.side{border-left:1px solid #ddd;display:flex;flex-direction:column;min-width:0}.head{padding:14px;border-bottom:1px solid #eee}.headrow{display:flex;gap:8px;align-items:center}.back,.new{border:0;border-radius:10px;padding:10px 12px;cursor:pointer}.new{background:#111;color:#fff}.search{width:100%;margin-top:10px;padding:12px;border:1px solid #ddd;border-radius:12px}.tabs{display:flex;gap:6px;margin-top:9px}.tabs button{flex:1;border:0;padding:9px;border-radius:10px;background:#eee}.tabs .on{background:#111;color:#fff}.list{overflow:auto;flex:1}.item{display:flex;gap:10px;padding:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;align-items:center}.item:hover,.item.active{background:#f5f6f7}.ava{width:48px;height:48px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-weight:bold;flex:none}.txt{min-width:0;flex:1}.txt b,.txt span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.txt span{font-size:13px;color:#777;margin-top:4px}.badge{background:#d21f2b;color:#fff;border-radius:20px;padding:3px 7px;font-size:11px}.main{display:flex;flex-direction:column;min-width:0}.chathead{padding:13px 16px;border-bottom:1px solid #eee;font-weight:bold}.msgs{flex:1;overflow:auto;padding:18px;background:linear-gradient(180deg,#f9fbff,#fff7fb)}.bubble{max-width:75%;padding:10px 12px;border-radius:15px;background:#fff;margin:7px 0;box-shadow:0 1px 3px #0001}.mine{margin-right:auto;background:linear-gradient(135deg,#dff7ff,#e9ffe8)}.meta{font-size:11px;color:#777;margin-bottom:5px}.send{display:flex;gap:8px;padding:12px;border-top:1px solid #eee;position:relative;background:#fff}.send input{flex:1;padding:13px;border:1px solid #ddd;border-radius:12px}.send button{border:0;background:linear-gradient(135deg,#5b63ff,#8d5bff);color:#fff;border-radius:12px;padding:0 18px}.emojiBtn{font-size:22px!important;background:#fff4c7!important;color:#111!important;padding:0 12px!important}.emojiBox{display:none;position:absolute;bottom:62px;right:12px;left:12px;background:#fff;border:1px solid #eee;border-radius:16px;padding:10px;box-shadow:0 8px 25px #0002;z-index:5;grid-template-columns:repeat(10,1fr);gap:4px}.emojiBox.show{display:grid}.emojiBox button{background:#f8f8f8!important;color:#111!important;padding:7px!important;font-size:20px!important}.empty{margin:auto;text-align:center;color:#777}.modal{display:none;position:fixed;inset:0;background:#0007;z-index:10;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.card{background:#fff;width:min(500px,96vw);max-height:80vh;overflow:auto;border-radius:18px;padding:18px}.result{padding:10px;border-bottom:1px solid #eee;cursor:pointer}.member{display:flex;gap:8px;align-items:center}.member input{width:auto}.hint{font-size:12px;color:#777}.close{float:left;border:0;background:#eee;border-radius:9px;padding:8px 11px}@media(max-width:760px){.app{grid-template-columns:1fr}.main{display:none}.app.open .side{display:none}.app.open .main{display:flex}.bubble{max-width:88%}}
-</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div id="app" class="app"><aside class="side"><div class="head"><div class="headrow"><button class="back" onclick="location.href='index.html'">⌂</button><b style="flex:1">💬 الدردشة</b><button class="new" onclick="openNew()">＋ جديد</button></div><input id="q" class="search" placeholder="بحث بالمحادثات أو الأشخاص..." oninput="searchAll()"><div class="tabs"><button id="tChats" class="on" onclick="setTab('chats')">المحادثات</button><button id="tPeople" onclick="setTab('people')">الأشخاص</button></div></div><div id="list" class="list"></div></aside><main class="main"><div id="chatHead" class="chathead">اختر محادثة</div><div id="msgs" class="msgs"><div class="empty">اختر شخصاً أو كروباً لبدء الدردشة</div></div><div class="send"><button class="emojiBtn" onclick="toggleEmoji()" type="button">😊</button><input id="msg" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')send()" disabled><button onclick="send()">إرسال</button><div id="emojiBox" class="emojiBox"></div></div></main></div>
-<div id="modal" class="modal"><div class="card"><button class="close" onclick="modal.classList.remove('show')">✕</button><h2>محادثة جديدة</h2><input id="peopleQ" class="search" placeholder="ابحث بالاسم أو المعرف أو الرقم" oninput="loadPeople(peopleQ.value)"><div id="people"></div><hr><h3>إنشاء كروب</h3><input id="groupName" class="search" placeholder="اسم الكروب"><p class="hint">حدد الأعضاء من النتائج أعلاه ثم اضغط إنشاء.</p><button class="new" onclick="createGroup()">إنشاء الكروب</button></div></div>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الدردشة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+:root{--gold:#f4c45f;--muted:#aeb8c4;--panel:#09131d;--panel2:#050b11}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#102131,#05090d 38%,#020405 76%);color:#fff}.page{width:min(100%,980px);margin:auto;padding:0 12px 105px}.hero{min-height:390px;padding:20px 16px 25px;border-radius:0 0 34px 34px;background:radial-gradient(circle at 84% 30%,rgba(244,196,95,.17),transparent 25%),radial-gradient(circle at 10% 45%,rgba(35,126,180,.14),transparent 23%),linear-gradient(180deg,#0a151f,#05090e);border-bottom:1px solid #9f6d23;box-shadow:0 22px 60px #0009}.topbar{display:flex;align-items:center;justify-content:space-between}.round{width:48px;height:48px;border-radius:50%;border:1px solid #a97b31;background:#080d12;color:#f4ce6a;display:grid;place-items:center;font-size:25px;text-decoration:none}.brand{text-align:center}.logo{font-size:50px;font-weight:900;letter-spacing:-5px;line-height:.9;background:linear-gradient(#ffe9a4,#c48625);-webkit-background-clip:text;color:transparent}.brand strong{font-size:28px;display:block}.brand small{display:block;color:#d3d8df;font-size:13px;margin-top:8px}.hero-content{text-align:center;padding-top:25px}.decor{display:flex;justify-content:center;gap:28px;font-size:48px}.hero h1{font-size:52px;margin:8px 0 0;background:linear-gradient(90deg,#fff5d0,#d69732,#fff);-webkit-background-clip:text;color:transparent}.hero p{font-size:20px;color:#d2d9e2}.cta{max-width:720px;margin:24px auto 0;min-height:70px;border:1px solid #efbe5a;border-radius:36px;background:linear-gradient(#0a0f14,#05080b);display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#f4d37b;font-weight:800;font-size:20px;box-shadow:0 0 28px rgba(244,196,95,.14)}.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.qcard{cursor:pointer;position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(145deg,#101e2c,#050b11);border:1px solid #31465a;box-shadow:0 12px 30px #0007;text-align:center;padding:17px 12px;min-height:170px}.qcard:after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent,#d9a63d),transparent)}.qicon{width:82px;height:82px;margin:0 auto 11px;border-radius:22px;display:grid;place-items:center;font-size:44px;background:#09131d;border:1px solid var(--accent,#d9a63d);box-shadow:0 0 24px color-mix(in srgb,var(--accent,#d9a63d) 18%,transparent)}.qcard h3{font-size:22px;margin:3px 0 6px}.qcard p{margin:0;color:#aeb8c4;line-height:1.6}.blue{--accent:#34a7ec}.green{--accent:#46cf74}.red{--accent:#ec5a63}.purple{--accent:#a85ee8}.gold{--accent:#efbf58}.section-title{display:flex;align-items:center;gap:10px;margin:32px 4px 14px;font-size:25px}.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#28465e,transparent)}
+.app{height:min(76vh,760px);min-height:560px;display:grid;grid-template-columns:340px 1fr;max-width:980px;margin:auto;background:#060c12;border:1px solid #26394b;border-radius:25px;overflow:hidden;box-shadow:0 18px 50px #0009}.side{border-left:1px solid #26394b;display:flex;flex-direction:column;min-width:0;background:linear-gradient(180deg,#0d1823,#060c12)}.head{padding:14px;border-bottom:1px solid #26394b}.headrow{display:flex;gap:8px;align-items:center}.back,.new{border:1px solid #2f4355;border-radius:11px;padding:10px 12px;cursor:pointer;background:#0a121a;color:#fff}.new{border-color:#a97b31;color:#f4d37c}.search{width:100%;margin-top:10px;padding:12px;border:1px solid #30465b;border-radius:12px;background:#04090e;color:#fff;outline:none}.tabs{display:flex;gap:6px;margin-top:9px}.tabs button{flex:1;border:1px solid #26394b;padding:9px;border-radius:10px;background:#09121b;color:#aeb8c4}.tabs .on{border-color:#a97b31;color:#f4d37c;background:#17130b}.list{overflow:auto;flex:1}.item{display:flex;gap:10px;padding:12px;border-bottom:1px solid #1b2a38;cursor:pointer;align-items:center}.item:hover,.item.active{background:#101d29}.ava{width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#dfad48,#7b4d11);color:#111;display:grid;place-items:center;font-weight:bold;flex:none}.txt{min-width:0;flex:1}.txt b,.txt span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.txt span{font-size:13px;color:#7f8f9e;margin-top:4px}.main{display:flex;flex-direction:column;min-width:0;background:#050a0f}.chathead{padding:13px 16px;border-bottom:1px solid #26394b;font-weight:bold;color:#f4d37c}.msgs{flex:1;overflow:auto;padding:18px;background:radial-gradient(circle at 80% 0,#0e1b28,#050a0f 42%)}.bubble{max-width:75%;padding:10px 12px;border-radius:15px;background:#101b25;border:1px solid #26394b;margin:7px 0;box-shadow:0 3px 12px #0004}.mine{margin-right:auto;background:linear-gradient(145deg,#2c2412,#171208);border-color:#77591e}.meta{font-size:11px;color:#8c9aa7;margin-bottom:5px}.send{display:flex;gap:8px;padding:12px;border-top:1px solid #26394b;position:relative;background:#070d13}.send input{flex:1;padding:13px;border:1px solid #30465b;border-radius:12px;background:#03080c;color:#fff}.send button{border:1px solid #a97b31;background:linear-gradient(#dca846,#8c5d18);color:#111;font-weight:bold;border-radius:12px;padding:0 18px}.emojiBtn{font-size:22px!important;background:#111820!important;color:#fff!important;padding:0 12px!important}.emojiBox{display:none;position:absolute;bottom:62px;right:12px;left:12px;background:#0a121a;border:1px solid #30465b;border-radius:16px;padding:10px;box-shadow:0 8px 25px #0008;z-index:5;grid-template-columns:repeat(10,1fr);gap:4px}.emojiBox.show{display:grid}.emojiBox button{background:#111c26!important;color:#fff!important;padding:7px!important;font-size:20px!important}.empty{margin:auto;text-align:center;color:#7f8f9e}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:50;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.card{background:#09131d;border:1px solid #31465a;width:min(500px,96vw);max-height:80vh;overflow:auto;border-radius:20px;padding:18px;color:#fff}.result{padding:10px;border-bottom:1px solid #26394b;cursor:pointer}.member{display:flex;gap:8px;align-items:center}.member input{width:auto}.hint{font-size:12px;color:#8b9aa7}.close{float:left;border:1px solid #30465b;background:#111820;color:#fff;border-radius:9px;padding:8px 11px}.bottom{position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,980px);height:86px;background:linear-gradient(#080e14f5,#030608);border-top:1px solid #b47a23;display:grid;grid-template-columns:1fr 1.25fr 1fr}.bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#9da9b5;text-decoration:none}.bottom span{font-size:25px}.bottom .active{color:#f5ce6a;border-left:1px solid #7b551d;border-right:1px solid #7b551d;border-radius:30px 30px 0 0;background:radial-gradient(circle at 50% 100%,rgba(244,196,95,.18),transparent 55%)}
+@media(max-width:760px){.page{padding:0 7px 95px}.hero{min-height:345px;padding:16px 10px 20px}.round{width:42px;height:42px}.logo{font-size:43px}.brand strong{font-size:23px}.brand small{font-size:11px}.hero h1{font-size:42px}.hero p{font-size:16px}.decor{font-size:40px}.cta{font-size:16px;min-height:60px;padding:0 16px}.qcard{min-height:145px;padding:12px 7px}.qicon{width:68px;height:68px;font-size:37px}.qcard h3{font-size:18px}.qcard p{font-size:12px}.app{grid-template-columns:1fr;height:75vh;min-height:520px;border-radius:20px}.main{display:none}.app.open .side{display:none}.app.open .main{display:flex}.bubble{max-width:88%}.bottom{height:78px}}
+
+/* ===== تحسينات واجهة الدردشة ===== */
+.chat-statusbar{
+  max-width:980px;
+  margin:14px auto 0;
+  padding:10px 12px;
+  border:1px solid #2b3d4e;
+  border-radius:14px;
+  background:linear-gradient(145deg,#0b151e,#050a0f);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  color:#aeb8c4;
+  font-size:12px;
+}
+.chat-statusbar .online{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:#74e6a6;
+  font-weight:800;
+}
+.chat-statusbar .online i{
+  width:8px;height:8px;border-radius:50%;background:#4cdb87;box-shadow:0 0 9px #4cdb87;
+}
+.chat-statusbar.offline .online{color:#ffb0b0}
+.chat-statusbar.offline .online i{background:#ef5d67;box-shadow:0 0 9px #ef5d67}
+
+.chat-stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  max-width:980px;
+  margin:10px auto 0;
+}
+.chat-stat{
+  border:1px solid #2c3e4e;
+  border-radius:14px;
+  padding:10px 8px;
+  text-align:center;
+  background:linear-gradient(145deg,#0b151f,#050a0f);
+}
+.chat-stat b{display:block;color:#f5cf77;font-size:18px}
+.chat-stat span{font-size:10px;color:#91a0ae}
+
+.quick .qcard{
+  transition:.18s transform,.18s border-color,.18s box-shadow;
+}
+.quick .qcard:active{transform:scale(.985)}
+
+.thread-meta{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  margin-top:4px;
+  color:#7f8f9e;
+  font-size:11px;
+}
+.thread-preview{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+}
+.unread-badge{
+  min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  background:#e44652;color:#fff;display:grid;place-items:center;
+  font-size:10px;font-weight:900;
+}
+.last-time{font-size:9px;color:#697989;white-space:nowrap}
+
+.chathead{
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.chathead .titlepart{
+  min-width:0;
+  display:flex;align-items:center;gap:8px;
+}
+.chathead .titlepart b{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.chathead .actions{
+  display:flex;gap:6px;
+}
+.chathead .actions button{
+  border:1px solid #31495c;background:#0b141c;color:#d9e0e7;
+  border-radius:10px;padding:8px 9px;cursor:pointer;
+}
+
+.quick-replies{
+  display:none;
+  gap:6px;
+  overflow:auto;
+  padding:8px 12px 0;
+  border-top:1px solid #1e2d39;
+  background:#070d13;
+}
+.app.open .quick-replies{display:flex}
+.quick-replies button{
+  flex:none;border:1px solid #2e4356;background:#0c151d;color:#c9d2dc;
+  border-radius:999px;padding:7px 10px;font-size:11px;cursor:pointer;
+}
+
+.new-dot{
+  width:8px;height:8px;border-radius:50%;background:#54df8f;box-shadow:0 0 8px #54df8f;
+}
+
+.bottom.bottom-five{
+  grid-template-columns:repeat(5,1fr) !important;
+  height:78px !important;
+}
+.bottom.bottom-five a{
+  font-size:9px;
+  gap:3px !important;
+  border:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+}
+.bottom.bottom-five a span{font-size:20px !important}
+.bottom.bottom-five .active{
+  color:#f5ce6a !important;
+  background:linear-gradient(180deg,rgba(244,196,95,.07),rgba(244,196,95,.13)) !important;
+  border-top:2px solid #e4b658 !important;
+}
+
+@media(max-width:760px){
+  .chat-statusbar,.chat-stats{margin-left:2px;margin-right:2px}
+  .chat-stats{gap:5px}
+  .chat-stat{padding:8px 5px}
+  .chat-stat b{font-size:15px}
+  .bottom.bottom-five{height:72px !important}
+  .bottom.bottom-five a{font-size:8px}
+  .bottom.bottom-five a span{font-size:18px !important}
+}
+
+</style></head><body><div class="page"><section class="hero"><div class="topbar"><a class="round" href="index.html">‹</a><div class="brand"><div class="logo">HA</div><strong><span style="color:#d69b34">HA</span> Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div><a class="round" href="#chatHub">⌕</a></div><div class="hero-content"><div class="decor"><span>💬</span><span>📱</span><span>🔔</span></div><h1>الدردشة</h1><p>تواصل بسهولة مع الجميع</p><a class="cta" href="#chatHub"><span>💬</span><b>ابدأ المحادثة وابقَ على تواصل دائم</b><span>‹</span></a></div></section>
+<div id="chatStatusbar" class="chat-statusbar">
+  <span class="online"><i></i><b id="connectionText">متصل الآن</b></span>
+  <span>الرسائل والمجموعات الخاصة بحسابك</span>
+</div>
+<div class="chat-stats">
+  <div class="chat-stat"><b id="statThreads">0</b><span>محادثة</span></div>
+  <div class="chat-stat"><b id="statUnread">0</b><span>غير مقروءة</span></div>
+  <div class="chat-stat"><b id="statGroups">0</b><span>كروب</span></div>
+</div>
+<section class="quick">
+  <div class="qcard gold" onclick="jumpChat('chats')">
+    <div class="qicon">💬</div><h3>المحادثات</h3><p>تابع الرسائل وآخر المحادثات</p>
+  </div>
+  <div class="qcard blue" onclick="jumpChat('people')">
+    <div class="qicon">👤</div><h3>الأشخاص</h3><p>ابحث وابدأ محادثة خاصة</p>
+  </div>
+  <div class="qcard green" onclick="newGroupChat()">
+    <div class="qicon">👥</div><h3>الكروبات</h3><p>أنشئ كروب وحدد الأعضاء</p>
+  </div>
+  <div class="qcard purple" onclick="openNew()">
+    <div class="qicon">➕</div><h3>محادثة جديدة</h3><p>ابدأ بسرعة مع شخص أو كروب</p>
+  </div>
+  <div class="qcard red" onclick="jumpChat('chats')">
+    <div class="qicon">🔔</div><h3>الجديدة</h3><p>ركز على الرسائل غير المقروءة</p>
+  </div>
+  <div class="qcard blue" onclick="location.href='contact.html'">
+    <div class="qicon">🎧</div><h3>الدعم</h3><p>تواصل مع دعم HA Marketing</p>
+  </div>
+</section>
+<div id="chatHub class="section-title"><b>المحادثات</b></div>
+<div id="app" class="app"><aside class="side"><div class="head"><div class="headrow"><button class="back" onclick="location.href='index.html'">⌂</button><b style="flex:1">💬 الدردشة</b><button class="new" onclick="openNew()">＋ جديد</button></div><input id="q" class="search" placeholder="بحث بالمحادثات أو الأشخاص..." oninput="searchAll()"><div class="tabs"><button id="tChats" class="on" onclick="setTab('chats')">المحادثات</button><button id="tPeople" onclick="setTab('people')">الأشخاص</button></div></div><div id="list" class="list"></div></aside><main class="main"><div id="chatHead" class="chathead">اختر محادثة</div><div id="msgs" class="msgs"><div class="empty">اختر شخصاً أو كروباً لبدء الدردشة</div></div><div class="quick-replies" id="quickReplies">
+      <button type="button" onclick="quickReply('السلام عليكم')">السلام عليكم</button>
+      <button type="button" onclick="quickReply('تمام، شكراً')">تمام، شكراً</button>
+      <button type="button" onclick="quickReply('وين موقعك؟')">وين موقعك؟</button>
+      <button type="button" onclick="shareMyLocation()">📍 موقعي</button>
+    </div>
+    <div class="send"><button class="emojiBtn"  onclick="toggleEmoji()" type="button">😊</button><input id="msg" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')send()" disabled><button onclick="send()">إرسال</button><div id="emojiBox" class="emojiBox"></div></div></main></div></div>
+<div id="modal" class="modal"><div class="card"><button class="close" onclick="modal.classList.remove('show')">✕</button><h2>محادثة جديدة</h2><input id="peopleQ" class="search" placeholder="ابحث بالاسم أو المعرف أو الرقم" oninput="loadPeople(peopleQ.value)"><div id="people"></div><hr style="border-color:#26394b"><h3>إنشاء كروب</h3><input id="groupName" class="search" placeholder="اسم الكروب"><p class="hint">حدد الأعضاء من النتائج أعلاه ثم اضغط إنشاء.</p><button class="new" onclick="createGroup()">إنشاء الكروب</button></div></div>
+<nav class="bottom bottom-five">
+  <a href="index.html"><span>⌂</span>الرئيسية</a>
+  <a href="notifications-center.html"><span>🔔</span>الإشعارات</a>
+  <a class="active" href="chat.html"><span>💬</span>الدردشة</a>
+  <a href="account.html"><span>👤</span>حسابي</a>
+  <a href="call-us.html"><span>☎</span>اتصل بنا</a>
+</nav>
 <script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let me=null,threads=[],active=null,channel=null,tab='chats',selected=new Set();
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let me=null,threads=[],active=null,channel=null,tab='chats',selected=new Set(),lastReadByThread={},allMessages=[];
 async function init(){
   let session=null;
   try{({data:{session}}=await db.auth.getSession())}catch(e){}
@@ -19,10 +201,133 @@ async function init(){
   await loadThreads();
 }
 async function profileMap(ids){if(!ids.length)return{};let {data}=await db.from('profiles').select('id,full_name,username,phone').in('id',[...new Set(ids)]);return Object.fromEntries((data||[]).map(x=>[x.id,x]));}
-async function loadThreads(){let {data:mem}=await db.from('chat_members').select('thread_id,last_read_at').eq('user_id',me.id);let ids=(mem||[]).map(x=>x.thread_id);if(!ids.length){threads=[];renderThreads();return}let {data:t}=await db.from('chat_threads').select('*').in('id',ids).order('updated_at',{ascending:false});let {data:allm}=await db.from('chat_members').select('thread_id,user_id,role').in('thread_id',ids);let pmap=await profileMap((allm||[]).map(x=>x.user_id));threads=(t||[]).map(x=>{let members=(allm||[]).filter(m=>m.thread_id===x.id),other=members.find(m=>m.user_id!==me.id),name=x.type==='group'?(x.title||'كروب'):(pmap[other?.user_id]?.full_name||pmap[other?.user_id]?.username||pmap[other?.user_id]?.phone||'مستخدم');return {...x,name,members,pmap}});renderThreads();}
-function renderThreads(){let qv=q.value.trim().toLowerCase(),arr=threads.filter(x=>x.name.toLowerCase().includes(qv));list.innerHTML=arr.map(x=>`<div class="item ${active===x.id?'active':''}" onclick="openThread('${x.id}')"><div class="ava">${x.type==='group'?'👥':esc(x.name.slice(0,1))}</div><div class="txt"><b>${esc(x.name)}</b><span>${x.type==='group'?'كروب':'محادثة خاصة'}</span></div></div>`).join('')||'<div class="empty" style="padding:30px">لا توجد محادثات بعد</div>';}
-async function openThread(id){active=id;app.classList.add('open');let t=threads.find(x=>x.id===id);chatHead.innerHTML=`<button class="back" onclick="app.classList.remove('open')">رجوع</button> ${esc(t?.name||'الدردشة')}`;msg.disabled=false;await loadMessages();if(channel)db.removeChannel(channel);channel=db.channel('thread-'+id).on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages',filter:'thread_id=eq.'+id},()=>loadMessages()).subscribe();await db.from('chat_members').update({last_read_at:new Date().toISOString()}).eq('thread_id',id).eq('user_id',me.id);}
-async function loadMessages(){let {data}=await db.from('chat_messages').select('*').eq('thread_id',active).order('created_at').limit(300),pmap=await profileMap((data||[]).map(x=>x.sender_id));msgs.innerHTML=(data||[]).map(m=>`<div class="bubble ${m.sender_id===me.id?'mine':''}"><div class="meta">${esc(pmap[m.sender_id]?.full_name||pmap[m.sender_id]?.username||'مستخدم')} · ${new Date(m.created_at).toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})}</div>${esc(m.body)}</div>`).join('')||'<div class="empty">ابدأ المحادثة</div>';msgs.scrollTop=msgs.scrollHeight;}
+
+async function loadThreads(){
+  let {data:mem,error:memErr}=await db.from('chat_members')
+    .select('thread_id,last_read_at').eq('user_id',me.id);
+
+  if(memErr){
+    list.innerHTML='<div class="empty" style="padding:30px">تعذر تحميل المحادثات</div>';
+    return;
+  }
+
+  lastReadByThread=Object.fromEntries((mem||[]).map(x=>[x.thread_id,x.last_read_at]));
+  let ids=(mem||[]).map(x=>x.thread_id);
+
+  if(!ids.length){
+    threads=[];
+    allMessages=[];
+    updateStats();
+    renderThreads();
+    return;
+  }
+
+  let [{data:t},{data:allm},{data:msgsData}]=await Promise.all([
+    db.from('chat_threads').select('*').in('id',ids).order('updated_at',{ascending:false}),
+    db.from('chat_members').select('thread_id,user_id,role').in('thread_id',ids),
+    db.from('chat_messages').select('id,thread_id,sender_id,body,created_at').in('thread_id',ids).order('created_at',{ascending:false}).limit(500)
+  ]);
+
+  allMessages=msgsData||[];
+  let pmap=await profileMap((allm||[]).map(x=>x.user_id));
+
+  threads=(t||[]).map(x=>{
+    let members=(allm||[]).filter(m=>m.thread_id===x.id);
+    let other=members.find(m=>m.user_id!==me.id);
+    let name=x.type==='group'
+      ?(x.title||'كروب')
+      :(pmap[other?.user_id]?.full_name||pmap[other?.user_id]?.username||pmap[other?.user_id]?.phone||'مستخدم');
+
+    let threadMsgs=allMessages.filter(m=>m.thread_id===x.id);
+    let last=threadMsgs[0]||null;
+    let readAt=lastReadByThread[x.id] ? new Date(lastReadByThread[x.id]).getTime() : 0;
+    let unread=threadMsgs.filter(m=>m.sender_id!==me.id && new Date(m.created_at).getTime()>readAt).length;
+
+    return {...x,name,members,pmap,lastMessage:last,unread};
+  });
+
+  updateStats();
+  renderThreads();
+}
+
+function updateStats(){
+  statThreads.textContent=String(threads.length);
+  statGroups.textContent=String(threads.filter(x=>x.type==='group').length);
+  statUnread.textContent=String(threads.reduce((n,x)=>n+(x.unread||0),0));
+}
+
+function renderThreads(){
+  let qv=q.value.trim().toLowerCase();
+  let arr=threads.filter(x=>x.name.toLowerCase().includes(qv));
+
+  list.innerHTML=arr.map(x=>{
+    const p=x.lastMessage?.body|| (x.type==='group'?'كروب':'محادثة خاصة');
+    const tm=x.lastMessage?.created_at
+      ?new Date(x.lastMessage.created_at).toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})
+      :'';
+    return `<div class="item ${active===x.id?'active':''}" onclick="openThread('${x.id}')">
+      <div class="ava">${x.type==='group'?'👥':esc(x.name.slice(0,1))}</div>
+      <div class="txt">
+        <b>${esc(x.name)}</b>
+        <div class="thread-meta">
+          <span class="thread-preview">${esc(p)}</span>
+          ${tm?`<span class="last-time">${esc(tm)}</span>`:''}
+          ${x.unread?`<span class="unread-badge">${x.unread>99?'99+':x.unread}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty" style="padding:30px">لا توجد محادثات بعد</div>';
+}
+
+async function openThread(id){
+  active=id;
+  app.classList.add('open');
+  let t=threads.find(x=>x.id===id);
+  chatHead.innerHTML=`<div class="titlepart">
+    <button class="back" onclick="app.classList.remove('open')">رجوع</button>
+    <span class="new-dot"></span>
+    <b>${esc(t?.name||'الدردشة')}</b>
+  </div>
+  <div class="actions">
+    <button type="button" onclick="quickReply('السلام عليكم')">💬</button>
+    <button type="button" onclick="shareMyLocation()">📍</button>
+  </div>`;
+  msg.disabled=false;
+  await loadMessages();
+
+  if(channel)db.removeChannel(channel);
+  channel=db.channel('thread-'+id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages',filter:'thread_id=eq.'+id},async()=>{
+      await loadMessages();
+      await loadThreads();
+    }).subscribe();
+
+  await db.from('chat_members').update({last_read_at:new Date().toISOString()})
+    .eq('thread_id',id).eq('user_id',me.id);
+
+  if(t)t.unread=0;
+  updateStats();
+  renderThreads();
+}
+
+async function loadMessages(){
+  let {data}=await db.from('chat_messages').select('*')
+    .eq('thread_id',active).order('created_at').limit(300);
+
+  let pmap=await profileMap((data||[]).map(x=>x.sender_id));
+
+  msgs.innerHTML=(data||[]).map(m=>`<div class="bubble ${m.sender_id===me.id?'mine':''}">
+    <div class="meta">
+      ${esc(pmap[m.sender_id]?.full_name||pmap[m.sender_id]?.username||'مستخدم')}
+      ·
+      ${new Date(m.created_at).toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})}
+    </div>
+    ${esc(m.body)}
+  </div>`).join('')||'<div class="empty">ابدأ المحادثة</div>';
+
+  msgs.scrollTop=msgs.scrollHeight;
+}
+=await db.from('chat_messages').select('*').eq('thread_id',active).order('created_at').limit(300),pmap=await profileMap((data||[]).map(x=>x.sender_id));msgs.innerHTML=(data||[]).map(m=>`<div class="bubble ${m.sender_id===me.id?'mine':''}"><div class="meta">${esc(pmap[m.sender_id]?.full_name||pmap[m.sender_id]?.username||'مستخدم')} · ${new Date(m.created_at).toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})}</div>${esc(m.body)}</div>`).join('')||'<div class="empty">ابدأ المحادثة</div>';msgs.scrollTop=msgs.scrollHeight;}
 const EMOJIS=['😀','😃','😄','😁','😂','🥰','😍','😊','😉','😎','🤩','😘','😇','🙂','🙃','🤗','🤔','😴','😭','😢','😡','👍','👎','👏','🙏','❤️','💙','💚','💛','🔥','⭐','🎉','✅','💯','🌹','⚽','📚','🛍️','🚕','🫶'];emojiBox.innerHTML=EMOJIS.map(e=>`<button type="button" onclick="addEmoji('${e}')">${e}</button>`).join('');function toggleEmoji(){emojiBox.classList.toggle('show')}function addEmoji(e){msg.value+=e;msg.focus()}
 async function send(){let body=msg.value.trim();if(!body||!active)return;msg.value='';let {error}=await db.from('chat_messages').insert({thread_id:active,sender_id:me.id,body});if(error)alert(error.message);else{await db.from('chat_threads').update({updated_at:new Date().toISOString()}).eq('id',active);loadMessages();}}
 function setTab(x){tab=x;tChats.classList.toggle('on',x==='chats');tPeople.classList.toggle('on',x==='people');if(x==='people')loadPeople(q.value,true);else renderThreads()}
@@ -31,5 +336,32 @@ async function loadPeople(term='',intoList=false){let query=db.from('profiles').
 function pick(id,on){on?selected.add(id):selected.delete(id)}function openNew(){selected.clear();modal.classList.add('show');loadPeople('')}
 async function startPrivate(id){let {data,error}=await db.rpc('start_private_chat',{other_user:id});if(error)return alert(error.message);modal.classList.remove('show');await loadThreads();openThread(data)}
 async function createGroup(){let name=groupName.value.trim();if(!name)return alert('اكتب اسم الكروب');let {data,error}=await db.rpc('create_group_chat',{p_title:name,p_members:[...selected]});if(error)return alert(error.message);groupName.value='';modal.classList.remove('show');await loadThreads();openThread(data)}
+function jumpChat(x){document.getElementById('chatHub').scrollIntoView({behavior:'smooth'});setTimeout(()=>setTab(x||'chats'),250)}
+function newGroupChat(){document.getElementById('chatHub').scrollIntoView({behavior:'smooth'});setTimeout(()=>openNew(),250)}
+
+function quickReply(text){
+  if(!active)return alert('اختر محادثة أولاً');
+  msg.value=text;
+  msg.focus();
+}
+
+function shareMyLocation(){
+  if(!active)return alert('اختر محادثة أولاً');
+  if(!navigator.geolocation)return alert('الموقع غير مدعوم على هذا الجهاز');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    msg.value=`📍 موقعي: https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+    msg.focus();
+  },()=>alert('تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.'));
+}
+
+function updateConnection(){
+  const online=navigator.onLine;
+  chatStatusbar.classList.toggle('offline',!online);
+  connectionText.textContent=online?'متصل الآن':'بدون اتصال';
+}
+window.addEventListener('online',()=>{updateConnection();loadThreads()});
+window.addEventListener('offline',updateConnection);
+updateConnection();
+
 init();
 </script></body></html>
