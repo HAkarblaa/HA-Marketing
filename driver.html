@@ -399,6 +399,131 @@ button{-webkit-tap-highlight-color:transparent}
   .actions .accept{grid-column:1/-1}
 }
 
+
+.driver-status-only{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:14px 14px 6px;
+}
+.driver-status-only .status-toggle{
+  display:flex;
+  justify-content:center;
+  width:100%;
+}
+.driver-status-only .status-toggle button{
+  min-width:190px;
+  border:1px solid rgba(242,181,68,.82);
+  border-radius:999px;
+  padding:12px 24px;
+  font-size:16px;
+  font-weight:900;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(242,181,68,.10),transparent 65%),
+    linear-gradient(145deg,#12181b,#080b0d);
+  color:var(--gold2);
+  box-shadow:
+    0 0 0 4px rgba(242,181,68,.05),
+    0 0 24px rgba(242,181,68,.14),
+    inset 0 0 16px rgba(242,181,68,.04);
+}
+.driver-status-only .status-toggle button::before{
+  content:"●";
+  color:var(--green);
+  font-size:14px;
+  margin-left:9px;
+  text-shadow:0 0 12px rgba(53,199,111,.8);
+}
+.driver-status-only .status-toggle button.off{
+  color:#9ea5a9;
+  border-color:#394146;
+  background:#0b1013;
+  box-shadow:none;
+}
+.driver-status-only .status-toggle button.off::before{
+  color:#777;
+  text-shadow:none;
+}
+.driver-gate-compact{
+  padding:0 14px 4px;
+}
+.driver-gate-compact:empty{display:none}
+.driver-gate-compact .request-card{
+  margin-top:4px;
+}
+
+
+.driver-gate-compact{display:none !important;}
+
+/* الخريطة تصعد مباشرة مكان المربعات المحذوفة */
+.driver-status-only{
+  padding-bottom:4px !important;
+}
+.driver-gate-compact{
+  display:none !important;
+  height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+.map-shell{
+  margin-top:2px !important;
+}
+#map{
+  height:58vh !important;
+  min-height:440px !important;
+  max-height:650px !important;
+}
+@media(max-width:620px){
+  #map{
+    height:56vh !important;
+    min-height:420px !important;
+  }
+}
+@media(max-width:390px){
+  #map{
+    height:54vh !important;
+    min-height:400px !important;
+  }
+}
+
+
+/* التعديل الجديد: الخريطة أكبر وقريبة جداً من زر متصل الآن */
+.driver-status-only{
+  padding:8px 10px 2px !important;
+  margin:0 !important;
+}
+.driver-status-only .status-toggle{
+  margin:0 !important;
+}
+.map-shell{
+  margin:2px 10px 0 !important;
+}
+#map{
+  height:66vh !important;
+  min-height:500px !important;
+  max-height:760px !important;
+}
+@media(max-width:620px){
+  .driver-status-only{
+    padding:6px 10px 1px !important;
+  }
+  .map-shell{
+    margin:1px 8px 0 !important;
+  }
+  #map{
+    height:63vh !important;
+    min-height:470px !important;
+    max-height:690px !important;
+  }
+}
+@media(max-width:390px){
+  #map{
+    height:61vh !important;
+    min-height:450px !important;
+  }
+}
+
 </style>
 
 </head>
@@ -414,35 +539,13 @@ button{-webkit-tap-highlight-color:transparent}
     <a class="head-back" href="javascript:history.back()" aria-label="رجوع">←</a>
   </header>
 
-  <section class="driver-hero">
-    <div class="hero-title">
-      <b>👤 بيانات السائق والمركبة</b>
-      <div class="status-toggle"><button id="availabilityBtn">متاح</button></div>
+  <section class="driver-status-only">
+    <div class="status-toggle">
+      <button id="availabilityBtn">متصل الآن</button>
     </div>
+  </section>
 
-    <div class="driver-grid">
-      <div class="driver-profile-box">
-        <div class="driver-avatar">👨🏻</div>
-        <div>
-          <strong id="driverDisplayName">السائق</strong>
-          <span>● متصل الآن</span>
-        </div>
-      </div>
-      <div class="driver-data">
-        <small>نوع المركبة</small>
-        <b id="driverDisplayVehicle">🚕 —</b>
-      </div>
-      <div class="driver-data">
-        <small>لون المركبة</small>
-        <b id="driverDisplayColor">🎨 —</b>
-      </div>
-      <div class="driver-data">
-        <small>رقم اللوحة</small>
-        <b id="driverDisplayPlate">—</b>
-      </div>
-    </div>
-
-    <div id="driverGate" class="section">
+  <div id="driverGate" class="section driver-gate-compact">
       <div class="request-card">
         <p id="driverGateMsg" style="line-height:1.7">جاري التحقق من الحساب...</p>
         <div id="vehicleSetup" style="display:none">
@@ -453,7 +556,7 @@ button{-webkit-tap-highlight-color:transparent}
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <div class="map-shell"><div id="map"></div></div>
 
@@ -723,7 +826,7 @@ function watchCurrentRideStatus(rideId){
 
 availabilityBtn.onclick=()=>{
   available=!available;
-  availabilityBtn.textContent=available?'متاح':'غير متاح';
+  availabilityBtn.textContent=available?'متصل الآن':'غير متصل';
   availabilityBtn.classList.toggle('off',!available);
   if(!available){
     nearbyCount.textContent='0';
@@ -933,9 +1036,11 @@ function refreshDriverHero(profile){
 
 async function initRealDriver(){
   const msg=document.getElementById('driverGateMsg');
+  const gate=document.getElementById('driverGate');
+  if(gate) gate.style.display='none';
   try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){
     console.error(err);
-    msg.textContent='تعذر تأمين Firebase. فعّل Anonymous Authentication من Firebase Authentication.';
+    if(msg) msg.textContent='';
     availabilityBtn.disabled=true;acceptBtn.disabled=true;return false;
   }
   const setup=document.getElementById('vehicleSetup');
@@ -949,13 +1054,13 @@ async function initRealDriver(){
   if(ident.ok){
     driverProfile=ident.driver;driverReady=true;
     refreshDriverHero(driverProfile);
-    msg.textContent='تم التحقق من الحساب. أنت جاهز لاستقبال الطلبات.';
+    if(msg) msg.textContent='';
     setup.style.display='none';
     return true;
   }
   driverReady=false;
-  msg.textContent=ident.message||'تعذر التحقق من حساب السائق.';
-  setup.style.display=ident.needsVehicle?'block':'none';
+  if(msg) msg.textContent='';
+  setup.style.display='none';
   if(!ident.needsVehicle){availabilityBtn.disabled=true;acceptBtn.disabled=true;}
   return false;
 }
