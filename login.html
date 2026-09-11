@@ -7,7 +7,7 @@ button:disabled{opacity:.65;cursor:not-allowed}
 .ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
 .ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px;color:#222}
 @keyframes haSpin{to{transform:rotate(360deg)}}
-</style></head><body><div class="box">
+</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="box">
 <h1>تسجيل الدخول</h1><input id="phone" type="tel" placeholder="رقم الموبايل"><input id="password" type="password" placeholder="الرقم السري">
 <button id="loginBtn" onclick="login()">تسجيل الدخول</button><a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a>
 <a href="register.html">إنشاء حساب جديد</a><a href="index.html">الرجوع للرئيسية</a></div><div id="haLoading" class="ha-loading" aria-live="polite"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري التحقق...</div></div>
