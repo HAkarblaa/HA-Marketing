@@ -740,6 +740,251 @@ button{-webkit-tap-highlight-color:transparent}
   }
 }
 
+
+/* ===== وضع موبايل مضغوط: تصغير الكتابات والمربعات حتى تكفي الشاشة ===== */
+@media(max-width:620px){
+  body{font-size:12px !important}
+  .app{padding-bottom:70px !important}
+
+  /* الهيدر */
+  .head{
+    grid-template-columns:40px 1fr 40px !important;
+    gap:6px !important;
+    padding:6px 8px !important;
+  }
+  .head-home,.head-back{
+    width:36px !important;
+    height:36px !important;
+    border-radius:11px !important;
+    font-size:17px !important;
+  }
+  .head h1{
+    font-size:16px !important;
+    line-height:1.05 !important;
+  }
+  .head-brand small{
+    font-size:9px !important;
+    margin-top:2px !important;
+  }
+
+  /* زر متصل الآن */
+  .driver-status-only{
+    padding:3px 5px 1px !important;
+  }
+  .driver-status-only .status-toggle button{
+    min-width:140px !important;
+    padding:7px 14px !important;
+    font-size:12px !important;
+  }
+  .driver-status-only .status-toggle button::before{
+    font-size:10px !important;
+    margin-left:6px !important;
+  }
+
+  /* الخريطة */
+  .map-shell{
+    width:calc(100% - 8px) !important;
+    margin:0 4px !important;
+    padding:1px !important;
+    border-radius:16px !important;
+  }
+  #map{
+    height:39vh !important;
+    min-height:275px !important;
+    max-height:335px !important;
+    border-radius:15px !important;
+  }
+  .leaflet-control-zoom a{
+    width:28px !important;
+    height:28px !important;
+    line-height:28px !important;
+    font-size:16px !important;
+  }
+
+  /* مربعات الملخص */
+  .summary{
+    gap:4px !important;
+    padding:5px 5px 2px !important;
+  }
+  .summary .box{
+    min-height:48px !important;
+    border-radius:11px !important;
+    padding:5px 3px !important;
+  }
+  .summary small{
+    font-size:8px !important;
+    margin-bottom:2px !important;
+  }
+  .summary b{
+    font-size:11px !important;
+  }
+
+  /* قسم الطلب */
+  .section{
+    padding:4px 5px !important;
+  }
+  .section h2{
+    font-size:13px !important;
+    margin:1px 0 5px !important;
+    padding-right:5px !important;
+    border-right-width:2px !important;
+  }
+  .request-card{
+    border-radius:13px !important;
+    padding:7px !important;
+  }
+
+  .customer{
+    gap:6px !important;
+  }
+  .avatar{
+    width:32px !important;
+    height:32px !important;
+    font-size:16px !important;
+  }
+  .customer-info b{
+    font-size:11px !important;
+  }
+  .customer-info span{
+    font-size:8px !important;
+    margin-top:2px !important;
+  }
+  #requestVehicle{
+    font-size:9px !important;
+    padding:5px 6px !important;
+    border-radius:8px !important;
+  }
+
+  /* تفاصيل الانطلاق والوصول */
+  .route-info{
+    gap:4px !important;
+    margin-top:6px !important;
+  }
+  .route-info .item{
+    border-radius:9px !important;
+    padding:6px !important;
+  }
+  .route-info small{
+    font-size:7.5px !important;
+    margin-bottom:2px !important;
+  }
+  .route-info b{
+    font-size:9px !important;
+    line-height:1.25 !important;
+  }
+
+  /* أزرار الطلب */
+  .actions{
+    grid-template-columns:1.2fr 1fr .75fr !important;
+    gap:4px !important;
+    margin-top:6px !important;
+  }
+  .actions .accept{
+    grid-column:auto !important;
+  }
+  .actions button,
+  #changeRequestBtn,
+  #rejectBtn{
+    padding:8px 4px !important;
+    border-radius:9px !important;
+    font-size:10px !important;
+    min-height:34px !important;
+  }
+
+  /* الطلب الحالي */
+  .state{
+    border-radius:10px !important;
+    padding:7px !important;
+    margin-bottom:5px !important;
+    font-size:11px !important;
+  }
+  .contact{
+    gap:4px !important;
+    margin-top:5px !important;
+  }
+  .contact button{
+    padding:7px 3px !important;
+    border-radius:8px !important;
+    font-size:8px !important;
+  }
+  .ride-status-box{
+    margin:6px 0 !important;
+    border-radius:10px !important;
+    padding:6px !important;
+  }
+  .ride-status-live{
+    font-size:10px !important;
+    margin-bottom:5px !important;
+  }
+  .ride-status-steps{
+    gap:3px !important;
+  }
+  .ride-status-step{
+    font-size:7px !important;
+    padding:5px 2px !important;
+    border-radius:7px !important;
+  }
+  .trip-actions{
+    gap:4px !important;
+  }
+  .trip-actions button{
+    padding:8px 4px !important;
+    border-radius:9px !important;
+    font-size:9px !important;
+  }
+
+  /* الشريط السفلي */
+  .bottom-nav{
+    height:58px !important;
+    padding:4px 6px max(4px,env(safe-area-inset-bottom)) !important;
+  }
+  .bottom-nav a{
+    font-size:8px !important;
+  }
+  .bottom-nav a span{
+    font-size:17px !important;
+    margin-bottom:1px !important;
+  }
+  .bottom-logo{
+    border-radius:20px 20px 0 0 !important;
+  }
+  .bottom-logo strong{
+    font-size:15px !important;
+  }
+  .bottom-logo small{
+    font-size:7px !important;
+  }
+
+  .shop-courier-link{
+    left:6px !important;
+    bottom:64px !important;
+    padding:5px 7px !important;
+    font-size:8px !important;
+  }
+}
+
+/* هواتف صغيرة جداً */
+@media(max-width:390px){
+  #map{
+    height:37vh !important;
+    min-height:255px !important;
+    max-height:305px !important;
+  }
+  .summary .box{
+    min-height:44px !important;
+  }
+  .summary small{font-size:7px !important}
+  .summary b{font-size:10px !important}
+  .route-info small{font-size:7px !important}
+  .route-info b{font-size:8.5px !important}
+  .actions button,
+  #changeRequestBtn,
+  #rejectBtn{
+    font-size:9px !important;
+    padding:7px 3px !important;
+  }
+}
+
 </style>
 
 </head>
