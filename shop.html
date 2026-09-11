@@ -1,191 +1,48 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#050607"><title>تسوق الآن - HA Marketing</title><style>
-*{box-sizing:border-box}
-:root{
-  --bg:#050607;
-  --bg2:#0a0d10;
-  --card:#0d1216;
-  --card2:#101820;
-  --gold:#f3c35c;
-  --gold2:#b77a16;
-  --text:#fff7e8;
-  --muted:#b9b5ad;
-  --line:rgba(243,195,92,.32);
-  --glow:0 0 28px rgba(232,170,54,.16);
-}
-html{background:#050607}
-body{
-  margin:0;
-  font-family:"Tahoma","Arial",sans-serif;
-  background:
-    radial-gradient(circle at 50% -15%,rgba(225,156,34,.18),transparent 34%),
-    radial-gradient(circle at 5% 42%,rgba(29,102,124,.11),transparent 30%),
-    linear-gradient(180deg,#050607 0%,#080a0d 46%,#030405 100%);
-  color:var(--text);
-  min-height:100vh;
-  padding-bottom:92px;
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background:linear-gradient(90deg,transparent 0 49.7%,rgba(255,193,67,.018) 50%,transparent 50.3%);
-}
-.topbar{
-  min-height:72px;
-  display:grid;
-  grid-template-columns:52px 1fr 52px;
-  align-items:center;
-  gap:10px;
-  padding:10px 16px;
-  position:sticky;top:0;z-index:30;
-  background:rgba(4,6,8,.92);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(243,195,92,.28);
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
-}
-.back,.home{
-  width:46px;height:46px;border:1px solid rgba(243,195,92,.42);border-radius:14px;
-  background:linear-gradient(145deg,#12171c,#07090b);color:var(--gold);
-  display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;
-  text-decoration:none;box-shadow:inset 0 0 16px rgba(243,195,92,.04),0 6px 18px rgba(0,0,0,.25);
-}
-.back:active,.home:active{transform:scale(.96)}
-.title{text-align:center;font-weight:800;font-size:20px;color:#fff;letter-spacing:.2px}
-.title small{display:block;color:var(--gold);font-size:11px;font-weight:600;margin-top:3px}
-.hero{
-  width:min(980px,94%);margin:24px auto 12px;padding:28px 20px 24px;text-align:center;
-  border-radius:26px;position:relative;overflow:hidden;
-  background:
-    linear-gradient(135deg,rgba(12,17,22,.97),rgba(4,6,8,.97)),
-    radial-gradient(circle at 50% 0,rgba(243,195,92,.18),transparent 50%);
-  border:1px solid rgba(243,195,92,.36);
-  box-shadow:0 18px 55px rgba(0,0,0,.38),inset 0 0 40px rgba(243,195,92,.035),var(--glow);
-}
-.hero:before{content:"";position:absolute;left:8%;right:8%;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 18px var(--gold)}
-.brandmark{
-  width:76px;height:76px;margin:0 auto 10px;border-radius:24px;display:flex;align-items:center;justify-content:center;
-  font-size:28px;font-weight:900;font-style:italic;color:#111;
-  background:linear-gradient(135deg,#fff1b0 0%,#f3c35c 38%,#a9630a 100%);
-  box-shadow:0 0 30px rgba(243,195,92,.25),inset 0 1px 0 rgba(255,255,255,.65);
-  transform:skew(-6deg);
-}
-.hero .icon{display:none}
-.hero h1{margin:6px 0 7px;font-size:31px;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.hero p{margin:0;color:#c8c3ba;line-height:1.8;font-size:14px}
-.goldline{width:62px;height:3px;border-radius:9px;background:linear-gradient(90deg,#8b5310,#ffd87a,#9c5b0d);margin:15px auto 0;box-shadow:0 0 12px rgba(243,195,92,.35)}
-.grid{
-  width:min(980px,94%);margin:18px auto 34px;display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
-}
-.card{
-  min-height:174px;position:relative;overflow:hidden;
-  background:linear-gradient(145deg,rgba(16,23,29,.98),rgba(7,10,13,.98));
-  border:1px solid rgba(189,200,211,.18);border-radius:22px;padding:18px 12px 16px;
-  cursor:pointer;text-align:center;color:#fff;text-decoration:none!important;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.30),inset 0 0 25px rgba(255,255,255,.018);
-  transition:.2s ease;
-}
-.card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 5%,rgba(243,195,92,.08),transparent 38%);pointer-events:none}
-.card:after{content:"";position:absolute;bottom:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(243,195,92,.55),transparent)}
-.card:hover{transform:translateY(-3px);border-color:rgba(243,195,92,.44);box-shadow:0 16px 38px rgba(0,0,0,.38),0 0 25px rgba(243,195,92,.08)}
-.card:active{transform:scale(.985)}
-.card .icon{
-  width:70px;height:70px;margin:0 auto 12px;border-radius:20px;display:flex;align-items:center;justify-content:center;
-  font-size:35px;background:linear-gradient(145deg,#14202a,#070b0f);
-  border:1px solid rgba(243,195,92,.30);box-shadow:inset 0 0 20px rgba(243,195,92,.05),0 7px 18px rgba(0,0,0,.28);
-}
-.card h2{margin:0 0 8px;font-size:20px;color:#fff;line-height:1.35}
-.card h2:after{content:"";display:block;width:28px;height:2px;background:var(--gold);border-radius:2px;margin:8px auto 0;box-shadow:0 0 8px rgba(243,195,92,.32)}
-.card p{margin:0;color:#bdb9b1;line-height:1.55;font-size:13px}
-.bottom-nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:40;height:74px;display:grid;grid-template-columns:1fr 1.35fr 1fr;align-items:center;
-  background:rgba(4,6,8,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(243,195,92,.40);box-shadow:0 -12px 35px rgba(0,0,0,.38);
-}
-.nav-item{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#c4c0b7;text-decoration:none;font-size:12px;gap:4px}.nav-item .ni{font-size:24px}.nav-item.active{color:#ffd878}.nav-brand{height:84px;margin-top:-17px;border:1px solid rgba(243,195,92,.50);border-bottom:0;border-radius:42px 42px 0 0;background:linear-gradient(180deg,#11161a,#050708);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f5cf74;font-weight:800;box-shadow:0 -9px 22px rgba(243,195,92,.08)}.nav-brand b{font-size:20px}.nav-brand span{font-size:10px;color:#d8cfbd;margin-top:2px}
-@media(max-width:700px){
-  .grid{gap:10px}.card{min-height:148px;padding:13px 7px;border-radius:18px}.card .icon{width:58px;height:58px;font-size:29px;border-radius:17px;margin-bottom:9px}.card h2{font-size:15px}.card p{font-size:10.5px}.hero{padding:22px 14px}.hero h1{font-size:25px}.brandmark{width:65px;height:65px;font-size:25px}.subgrid{gap:9px}.subcard{min-height:100px;padding:13px 8px}.subcard strong{font-size:14px}.study-banner{padding:14px}.study-banner .bicon{font-size:40px}.study-banner h3{font-size:17px}
-}
-@media(max-width:390px){.grid{gap:8px}.card{min-height:140px}.card h2{font-size:14px}.card p{font-size:9.7px}.card .icon{width:54px;height:54px;font-size:27px}}
-
-.title small,.nav-item{font-size:14px}.nav-brand span{font-size:12px}
-.hero p{font-size:16px}.card p{font-size:14px}.card h2{font-size:18px}
-.shop-tools{width:min(980px,94%);margin:0 auto 32px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-.shop-tools a{padding:13px 16px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#12171c,#07090b);color:var(--text);text-decoration:none;font-size:16px}
-a:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
-.bottom-nav{padding-bottom:env(safe-area-inset-bottom);height:calc(74px + env(safe-area-inset-bottom))}
-body{padding-bottom:calc(105px + env(safe-area-inset-bottom))}
-@media(max-width:700px){.card{min-height:174px}.card h2{font-size:16px}.card p{font-size:14px}.hero{margin-top:26px;padding:25px 14px}.hero h1{margin:15px 0}.hero p{font-size:16px}.grid{margin-top:20px}.title small{font-size:14px}}
-@media(max-width:350px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(prefers-reduced-motion:reduce){.card{transition:none}}
-</style></head><body>
-<header class="topbar"><a class="back" href="index.html" aria-label="رجوع إلى الرئيسية">→</a><div class="title">تسوق الآن<small>HA Marketing</small></div><a class="home" href="index.html" aria-label="الرئيسية">🏠</a></header>
-<section class="hero"><div class="brandmark">HA</div><h1>تسوق الآن</h1><p>اختر القسم الذي تريد التسوق منه، وتصفح المنتجات.</p><div class="goldline"></div></section>
-<main class="grid" aria-label="أقسام التسوق">
-  <a class="card" href="shop-section.html?section=library">
-    <div class="icon">📚</div>
-    <h2>مكتبة</h2>
-    <p>الستيكرات ومنتجات المكتبة</p>
-  </a>
-  <a class="card" href="shop-section.html?section=building_materials">
-    <div class="icon">🏗️</div>
-    <h2>مواد البناء</h2>
-    <p>مواد ومنتجات البناء</p>
-  </a>
-  <a class="card" href="shop-section.html?section=cards_credit">
-    <div class="icon">💳</div>
-    <h2>بطاقات وأرصدة</h2>
-    <p>البطاقات والأرصدة الإلكترونية</p>
-  </a>
-  <a class="card" href="shop-section.html?section=yugioh">
-    <div class="icon">🃏</div>
-    <h2>أوراق يوغي</h2>
-    <p>بطاقات وأوراق يوغي</p>
-  </a>
-  <a class="card" href="shop-section.html?section=markets">
-    <div class="icon">🛒</div>
-    <h2>أسواق</h2>
-    <p>الأسواق والمواد المتنوعة</p>
-  </a>
-  <a class="card" href="shop-section.html?section=restaurants">
-    <div class="icon">🍽️</div>
-    <h2>مطاعم</h2>
-    <p>المطاعم والوجبات</p>
-  </a>
-  <a class="card" href="shop-section.html?section=flowers">
-    <div class="icon">💐</div>
-    <h2>ورد</h2>
-    <p>الورد والهدايا</p>
-  </a>
-  <a class="card" href="shop-section.html?section=home_appliances">
-    <div class="icon">🏠</div>
-    <h2>أجهزة منزلية</h2>
-    <p>الأجهزة المنزلية</p>
-  </a>
-  <a class="card" href="shop-section.html?section=printers">
-    <div class="icon">🖨️</div>
-    <h2>طابعات</h2>
-    <p>الطابعات ومستلزماتها</p>
-  </a>
-  <a class="card" href="shop-section.html?section=devices">
-    <div class="icon">📱</div>
-    <h2>أجهزة</h2>
-    <p>الأجهزة والإلكترونيات</p>
-  </a>
-  <a class="card" href="shop-section.html?section=device_accessories">
-    <div class="icon">🎧</div>
-    <h2>إكسسوارات الأجهزة</h2>
-    <p>إكسسوارات ومستلزمات الأجهزة</p>
-  </a>
-  <a class="card" href="shop-section.html?section=clothes">
-    <div class="icon">👕</div>
-    <h2>ملابس</h2>
-    <p>الملابس والأزياء</p>
-  </a>
-  <a class="card" href="shop-section.html?section=shoes">
-    <div class="icon">👟</div>
-    <h2>أحذية</h2>
-    <p>الأحذية بأنواعها</p>
-  </a></main>
-<nav class="shop-tools" aria-label="خدمات المتجر"><a href="cart.html">🛒 السلة</a><a href="favorites.html">❤️ المفضلة</a><a href="shop-orders.html">📦 طلباتي</a><a href="marketplace-onboarding.html">🏪 انضم كبائع</a><a href="store-accounting.html">📒 برنامج حسابات المتاجر</a></nav>
-<nav class="bottom-nav" aria-label="التنقل"><a class="nav-item active" href="shop.html" aria-current="page"><span class="ni">🛒</span><span>التسوق</span></a><a class="nav-brand" href="index.html"><b>HA</b><span>HA Marketing</span></a><a class="nav-item" href="index.html"><span class="ni">🏠</span><span>الرئيسية</span></a></nav>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تسوق الآن - HA Marketing</title>
+<style>
+:root{--bg:#03070b;--panel:#07111b;--panel2:#0a1622;--gold:#f4c45f;--gold2:#a87520;--text:#fff;--muted:#aeb8c4;--line:#203244}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#102131 0,#050a0f 34%,#020406 72%);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}.page{width:min(100%,980px);margin:auto;padding:0 14px 110px}.hero{position:relative;overflow:hidden;border-radius:0 0 34px 34px;padding:22px 16px 26px;min-height:410px;background:radial-gradient(circle at 82% 24%,rgba(244,196,95,.18),transparent 22%),radial-gradient(circle at 15% 44%,rgba(53,125,178,.16),transparent 24%),linear-gradient(180deg,#09131d 0,#05090d 100%);border-bottom:1px solid rgba(244,196,95,.55);box-shadow:0 24px 60px #0008}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);opacity:.9}.hero:before{width:180px;height:180px;left:-70px;bottom:20px;background:radial-gradient(circle,#7a5420 0,transparent 68%)}.hero:after{width:240px;height:240px;right:-90px;top:80px;background:radial-gradient(circle,#1a5d82 0,transparent 70%)}.topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between}.round{width:48px;height:48px;border-radius:50%;border:1px solid rgba(244,196,95,.65);display:grid;place-items:center;background:#080d12;color:var(--gold);font-size:25px;box-shadow:0 0 22px rgba(244,196,95,.10)}.brand{text-align:center;line-height:1}.logo{font-size:52px;font-weight:900;letter-spacing:-5px;background:linear-gradient(180deg,#ffe9a4,#c58625);-webkit-background-clip:text;color:transparent}.brand strong{display:block;font-size:28px;margin-top:-2px}.brand small{display:block;color:#d8dde3;margin-top:9px;font-size:13px}.hero-content{position:relative;z-index:2;text-align:center;padding-top:28px}.hero-title{font-size:52px;margin:0;font-weight:900;background:linear-gradient(90deg,#fff4cf,#d79a34,#fff2bd);-webkit-background-clip:text;color:transparent;text-shadow:0 0 30px rgba(244,196,95,.10)}.hero-sub{font-size:20px;color:#d5dce4;margin:10px 0 24px}.decor{display:flex;justify-content:center;gap:30px;font-size:50px;filter:drop-shadow(0 8px 14px #000);margin-bottom:14px}.cta{margin:auto;max-width:720px;min-height:72px;border:1px solid var(--gold);border-radius:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:linear-gradient(180deg,#0a0f14,#05080b);box-shadow:0 0 0 2px rgba(244,196,95,.08),0 0 28px rgba(244,196,95,.16);font-size:20px;font-weight:800;color:#f6d786}.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.qcard,.category{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(16,32,47,.97),rgba(4,10,16,.98));border:1px solid #31465c;border-radius:24px;padding:18px 14px;text-align:center;box-shadow:inset 0 1px 0 #ffffff0c,0 10px 28px #0007;min-height:180px}.qcard:before,.category:before{content:"";position:absolute;inset:auto 0 0;height:3px;background:linear-gradient(90deg,transparent,var(--accent,var(--gold)),transparent);opacity:.9}.qicon,.category .icon{width:88px;height:88px;margin:0 auto 12px;border-radius:22px;display:grid;place-items:center;font-size:48px;background:linear-gradient(145deg,#121a25,#06090e);border:1px solid color-mix(in srgb,var(--accent,var(--gold)) 65%,#2d4050);box-shadow:0 0 26px color-mix(in srgb,var(--accent,var(--gold)) 18%,transparent)}.qcard h3,.category h2{margin:4px 0 7px;font-size:24px}.qcard p,.category p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}.gold{--accent:#f1bb4d}.red{--accent:#e74857}.blue{--accent:#2da5ef}.green{--accent:#4fca69}.purple{--accent:#a75bea}.orange{--accent:#f29a45}.section-title{display:flex;align-items:center;gap:10px;margin:34px 4px 14px;font-size:25px}.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#26445b,transparent)}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tool{padding:10px 14px;border:1px solid #2a3c4e;border-radius:14px;background:#0a121a;color:#e7edf4}.tool.primary{border-color:#a97927;color:#f4d37c}.categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.category{min-height:155px;padding:15px 8px}.category .icon{width:64px;height:64px;font-size:34px;border-radius:17px}.category h2{font-size:17px}.category p{font-size:11px}.bottom{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,980px);height:86px;background:linear-gradient(180deg,#080e14f5,#030608);border-top:1px solid #b47a23;display:grid;grid-template-columns:1fr 1.25fr 1fr;box-shadow:0 -10px 32px #000a}.bottom a{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;color:#9da9b5}.bottom a span{font-size:25px}.bottom .active{color:#f5ce6a;background:radial-gradient(circle at 50% 100%,rgba(244,196,95,.18),transparent 55%);border-left:1px solid #7b551d;border-right:1px solid #7b551d;border-radius:30px 30px 0 0}
+@media(max-width:560px){.page{padding:0 8px 100px}.hero{min-height:360px;padding:16px 10px 22px}.round{width:42px;height:42px}.logo{font-size:44px}.brand strong{font-size:23px}.brand small{font-size:11px}.hero-title{font-size:42px}.hero-sub{font-size:16px}.decor{font-size:40px}.cta{min-height:62px;font-size:16px;padding:0 18px}.qcard{min-height:155px;padding:13px 8px;border-radius:19px}.qicon{width:72px;height:72px;font-size:39px}.qcard h3{font-size:19px}.qcard p{font-size:12px}.categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.category{min-height:128px;border-radius:17px;padding:11px 5px}.category .icon{width:55px;height:55px;font-size:29px;margin-bottom:8px}.category h2{font-size:13px}.category p{font-size:9px}.bottom{height:78px}}
+</style>
+<link rel="stylesheet" href="ha-premium-theme.css"></head>
+<body>
+<div class="page">
+<section class="hero">
+  <div class="topbar"><a class="round" href="index.html">‹</a><div class="brand"><div class="logo">HA</div><strong><span style="color:#d69b34">HA</span> Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div><a class="round" href="#categories">⌕</a></div>
+  <div class="hero-content"><div class="decor"><span>🛍️</span><span>📦</span><span>🛒</span></div><h1 class="hero-title">تسوق الآن</h1><div class="hero-sub">منتجات مميزة وتسوق سهل وسريع</div><a class="cta" href="#categories"><span>🛒</span><b>تسوق بسهولة واختر ما يناسبك</b><span>‹</span></a></div>
+</section>
+<section class="quick">
+ <a class="qcard gold" href="#categories"><div class="qicon">📦</div><h3>المنتجات</h3><p>تصفح كل المنتجات بسهولة</p></a>
+ <a class="qcard gold" href="cart.html"><div class="qicon">🛒</div><h3>السلة</h3><p>أضف وراجع طلباتك</p></a>
+ <a class="qcard red" href="favorites.html"><div class="qicon">❤️</div><h3>المفضلة</h3><p>احفظ منتجاتك المفضلة</p></a>
+ <a class="qcard blue" href="shop-orders.html"><div class="qicon">🚚</div><h3>تتبع الطلب</h3><p>تابع حالة الشحن والطلب</p></a>
+ <a class="qcard orange" href="#categories"><div class="qicon">🏷️</div><h3>العروض</h3><p>اكتشف المنتجات والخصومات</p></a>
+ <a class="qcard green" href="cart.html"><div class="qicon">📋</div><h3>قوائم التسوق</h3><p>رتب مشترياتك بسهولة</p></a>
+</section>
+<div class="section-title"><b>خيارات المتجر</b></div>
+<div class="tools"><a class="tool primary" href="marketplace-onboarding.html">🏪 انضم كبائع</a><a class="tool" href="store-accounting.html">📒 برنامج حسابات المتاجر</a><a class="tool" href="shop-orders.html">📦 طلباتي</a></div>
+<div id="categories" class="section-title"><b>أقسام التسوق</b></div>
+<section class="categories">
+  <a class="category gold" href="shop-section.html?section=library"><div class="icon">📚</div><h2>مكتبة</h2><p>الستيكرات ومنتجات المكتبة</p></a>
+  <a class="category orange" href="shop-section.html?section=building_materials"><div class="icon">🏗️</div><h2>مواد البناء</h2><p>مواد ومنتجات البناء</p></a>
+  <a class="category blue" href="shop-section.html?section=cards_credit"><div class="icon">💳</div><h2>بطاقات وأرصدة</h2><p>البطاقات والأرصدة الإلكترونية</p></a>
+  <a class="category purple" href="shop-section.html?section=yugioh"><div class="icon">🃏</div><h2>أوراق يوغي</h2><p>بطاقات وأوراق يوغي</p></a>
+  <a class="category green" href="shop-section.html?section=markets"><div class="icon">🛒</div><h2>أسواق</h2><p>الأسواق والمواد المتنوعة</p></a>
+  <a class="category red" href="shop-section.html?section=restaurants"><div class="icon">🍽️</div><h2>مطاعم</h2><p>المطاعم والوجبات</p></a>
+  <a class="category purple" href="shop-section.html?section=flowers"><div class="icon">💐</div><h2>ورد</h2><p>الورد والهدايا</p></a>
+  <a class="category blue" href="shop-section.html?section=home_appliances"><div class="icon">🏠</div><h2>أجهزة منزلية</h2><p>الأجهزة المنزلية</p></a>
+  <a class="category gold" href="shop-section.html?section=printers"><div class="icon">🖨️</div><h2>طابعات</h2><p>الطابعات ومستلزماتها</p></a>
+  <a class="category green" href="shop-section.html?section=devices"><div class="icon">📱</div><h2>أجهزة</h2><p>الأجهزة والإلكترونيات</p></a>
+  <a class="category blue" href="shop-section.html?section=device_accessories"><div class="icon">🎧</div><h2>إكسسوارات</h2><p>إكسسوارات الأجهزة</p></a>
+  <a class="category red" href="shop-section.html?section=clothes"><div class="icon">👕</div><h2>ملابس</h2><p>الملابس والأزياء</p></a>
+  <a class="category orange" href="shop-section.html?section=shoes"><div class="icon">👟</div><h2>أحذية</h2><p>الأحذية بأنواعها</p></a>
+</section>
+</div>
+<nav class="bottom"><a href="index.html"><span>⌂</span>الرئيسية</a><a class="active" href="index.html"><span>▦</span>الأقسام</a><a href="tel:"><span>☎</span>اتصل بنا</a></nav>
 </body></html>
