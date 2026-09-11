@@ -683,6 +683,63 @@ button{-webkit-tap-highlight-color:transparent}
   }
 }
 
+
+/* ===== إصلاح الموبايل: حجم الخريطة + إظهار تغيير الطلب ===== */
+#changeRequestBtn{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+@media(max-width:620px){
+  /* الخريطة مهيأة لشاشة الموبايل حتى تبقى معلومات الطلب والأزرار ظاهرة */
+  #map{
+    height:46vh !important;
+    min-height:345px !important;
+    max-height:430px !important;
+  }
+
+  .map-shell{
+    width:calc(100% - 8px) !important;
+    margin:0 4px !important;
+  }
+
+  .driver-status-only{
+    padding:4px 6px 1px !important;
+  }
+
+  /* قبول الطلب بسطر كامل، وتغيير الطلب + رفض تحته */
+  .actions{
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+  }
+
+  .actions .accept{
+    grid-column:1 / -1 !important;
+  }
+
+  #changeRequestBtn,
+  #rejectBtn{
+    grid-column:auto !important;
+    min-width:0 !important;
+    padding:12px 7px !important;
+    font-size:14px !important;
+  }
+}
+
+@media(max-width:390px){
+  #map{
+    height:43vh !important;
+    min-height:320px !important;
+    max-height:385px !important;
+  }
+
+  #changeRequestBtn,
+  #rejectBtn{
+    font-size:13px !important;
+  }
+}
+
 </style>
 
 </head>
