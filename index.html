@@ -167,15 +167,233 @@ body{
 .ha-offline-mode .card,
 .ha-offline-mode .hero{filter:none !important;opacity:1 !important}
 
+
+/* ===== مربع الدردشة المطور ===== */
+.chat-card-premium{
+  justify-content:flex-start !important;
+  padding:18px 12px 13px !important;
+  border-color:rgba(96,112,255,.38) !important;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(79,96,230,.22),transparent 48%),
+    linear-gradient(145deg,rgba(16,23,38,.97),rgba(5,9,15,.98)) !important;
+  box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.035),0 0 22px rgba(76,95,220,.06) !important;
+}
+
+.chat-card-premium::before{
+  background:
+    radial-gradient(circle at 50% 0,rgba(94,112,255,.19),transparent 44%),
+    linear-gradient(135deg,rgba(255,255,255,.02),transparent 35%) !important;
+}
+
+.chat-live-badge{
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 7px;
+  border-radius:999px;
+  border:1px solid rgba(95,224,151,.34);
+  background:rgba(10,31,22,.82);
+  color:#84e8ad;
+  font-size:8px;
+  font-weight:850;
+  box-shadow:0 0 12px rgba(64,210,120,.08);
+}
+
+.chat-live-badge i{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#52dd8b;
+  box-shadow:0 0 7px #52dd8b;
+}
+
+.chat-iconbox{
+  width:66px !important;
+  height:66px !important;
+  margin-bottom:9px !important;
+  border-radius:21px !important;
+  font-size:34px !important;
+  position:relative;
+}
+
+.chat-main-icon{
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.4));
+}
+
+.chat-mini-dot{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  right:-4px;
+  bottom:-3px;
+  font-size:9px;
+  color:#59e38d;
+  background:#07110d;
+  border:1px solid rgba(89,227,141,.6);
+  box-shadow:0 0 10px rgba(89,227,141,.22);
+}
+
+.chat-card-premium h2::after{
+  margin:6px auto 6px !important;
+  background:linear-gradient(90deg,#4b5fe0,#92a0ff,#4b5fe0) !important;
+  box-shadow:0 0 9px rgba(98,113,255,.5) !important;
+}
+
+.chat-subtitle{
+  font-size:10px !important;
+  line-height:1.35 !important;
+  color:#bbc2cf !important;
+  max-width:100% !important;
+}
+
+.chat-preview-row{
+  position:relative;
+  z-index:2;
+  margin-top:8px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  direction:ltr;
+}
+
+.chat-avatar,
+.chat-count{
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  margin-left:-5px;
+  border:1px solid rgba(255,255,255,.13);
+  background:linear-gradient(145deg,#202a38,#0a0f16);
+  font-size:11px;
+  box-shadow:0 4px 10px rgba(0,0,0,.35);
+}
+
+.chat-count{
+  color:#aeb8ff;
+  border-color:rgba(99,114,255,.4);
+  font-size:8px;
+  font-weight:900;
+}
+
+.chat-features{
+  position:relative;
+  z-index:2;
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  margin-top:8px;
+}
+
+.chat-features span{
+  padding:5px 2px;
+  border-radius:8px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(117,130,255,.18);
+  color:#bfc5d4;
+  font-size:7px;
+  font-weight:750;
+  white-space:nowrap;
+}
+
+.chat-open-line{
+  position:relative;
+  z-index:2;
+  width:100%;
+  margin-top:7px;
+  padding:6px 8px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:linear-gradient(90deg,rgba(71,86,202,.12),rgba(96,111,255,.18));
+  border:1px solid rgba(95,111,255,.24);
+  color:#d7dbff;
+  font-size:8px;
+  font-weight:850;
+}
+
+.chat-open-line b{
+  color:#93a1ff;
+  font-size:13px;
+}
+
+@media(max-width:520px){
+  .chat-card-premium{
+    padding:15px 8px 10px !important;
+  }
+  .chat-live-badge{
+    top:8px;
+    right:8px;
+    font-size:7px;
+    padding:3px 5px;
+  }
+  .chat-iconbox{
+    width:58px !important;
+    height:58px !important;
+    font-size:30px !important;
+  }
+  .chat-subtitle{
+    font-size:8px !important;
+  }
+  .chat-avatar,.chat-count{
+    width:22px;
+    height:22px;
+    font-size:9px;
+  }
+  .chat-features{
+    gap:2px;
+  }
+  .chat-features span{
+    font-size:6px;
+    padding:4px 1px;
+  }
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo">HA</div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
 </div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="ha-logo">HA</div> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <a class="promo-pill" href="shop.html"><span class="arrow">‹</span><strong>تسوق الآن</strong><span class="ico">🛒</span></a>
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
-</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
+</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat" href="chat.html" data-search="الدردشة دردشة تواصل"><div class="iconbox">💬</div><h2>الدردشة</h2><p>تواصل مع الآخرين بسهولة</p></a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك"><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
+      <span class="chat-live-badge"><i></i> متاح الآن</span>
+      <div class="iconbox chat-iconbox">
+        <span class="chat-main-icon">💬</span>
+        <span class="chat-mini-dot">●</span>
+      </div>
+      <h2>الدردشة</h2>
+      <p class="chat-subtitle">تواصل بسرعة داخل HA Marketing</p>
+
+      <div class="chat-preview-row" aria-hidden="true">
+        <span class="chat-avatar">👤</span>
+        <span class="chat-avatar">👥</span>
+        <span class="chat-avatar">🎧</span>
+        <span class="chat-count">+3</span>
+      </div>
+
+      <div class="chat-features">
+        <span>💬 خاصة</span>
+        <span>👥 مجموعات</span>
+        <span>🎧 دعم</span>
+      </div>
+
+      <div class="chat-open-line">
+        <span>فتح الدردشة</span>
+        <b>←</b>
+      </div>
+    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك"><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
 </main> <nav class="bottom-nav bottom-nav-five" aria-label="القائمة السفلية">
   <div class="bottom-inner bottom-inner-five">
     <a class="bottom-link active" href="index.html">
@@ -249,7 +467,44 @@ async function continueLogin(){
     location.href='login.html';
   }
 }
-document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true); (async function(){try{if(!window.supabase)return;const adb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const {data:{session}}=await adb.auth.getSession();if(!session)return;const {data:isAdmin}=await adb.rpc('is_app_admin');if(isAdmin){const a=document.getElementById('adminPanelLink');if(a)a.style.display='flex'}}catch(e){console.warn('admin link',e)}})(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true); (async function(){
+  try{
+    if(!window.supabase)return;
+
+    const adb=supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const {data:{session}}=await adb.auth.getSession();
+    if(!session)return;
+
+    let isAdmin=false;
+
+    try{
+      const r=await adb.rpc('is_app_admin');
+      if(!r.error && r.data===true)isAdmin=true;
+    }catch(_e){}
+
+    if(!isAdmin){
+      try{
+        const r2=await adb.rpc('ha_is_admin');
+        if(!r2.error && r2.data===true)isAdmin=true;
+      }catch(_e){}
+    }
+
+    if(isAdmin){
+      const adminLink=document.getElementById('adminPanelLink');
+      const requestsLink=document.getElementById('marketplaceRequestsLink');
+
+      if(adminLink)adminLink.style.display='flex';
+      if(requestsLink)requestsLink.style.display='flex';
+    }
+  }catch(e){
+    console.warn('admin shortcuts',e);
+  }
+})(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
 (function(){const b=document.getElementById('haNetBadge');const u=()=>{if(b)b.style.display=navigator.onLine?'none':'block'};addEventListener('online',u);addEventListener('offline',u);u()})();
 
 /* ===== تشغيل الواجهة نفسها بدون إنترنت ===== */
