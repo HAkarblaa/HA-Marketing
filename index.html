@@ -359,13 +359,26 @@ body{
   }
 }
 
+
+/* ===== عداد الإشعارات ===== */
+.ha-notification-icon{position:relative;display:inline-grid;place-items:center}
+.ha-notification-badge{
+  position:absolute;top:-7px;left:-10px;min-width:18px;height:18px;padding:0 5px;
+  border-radius:999px;background:#e53935;color:#fff;border:2px solid #05080b;
+  font:800 10px/14px Arial;box-shadow:0 0 12px rgba(229,57,53,.45);
+}
+.ha-drawer-notif-badge{
+  margin-right:auto;min-width:22px;height:22px;padding:0 7px;border-radius:999px;
+  background:#e53935;color:#fff;font:800 11px/22px Arial;text-align:center;
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo">HA</div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
 </div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="ha-logo">HA</div> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <a class="promo-pill" href="shop.html"><span class="arrow">‹</span><strong>تسوق الآن</strong><span class="ico">🛒</span></a>
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
-</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
+</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
       <span class="chat-live-badge"><i></i> متاح الآن</span>
@@ -401,7 +414,7 @@ body{
       <span>الرئيسية</span>
     </a>
     <a class="bottom-link" href="notifications-center.html">
-      <span class="bi">🔔</span>
+      <span class="bi ha-notification-icon">🔔<b id="haNotificationBadge" class="ha-notification-badge" style="display:none">0</b></span>
       <span>الإشعارات</span>
     </a>
     <a class="bottom-link" href="orders-center.html">
@@ -533,6 +546,62 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
     }
     applyOfflineHome();
   });
+})();
+
+
+/* ===== عداد الإشعارات + Realtime ===== */
+(async function setupHANotificationsBadge(){
+  try{
+    if(!window.supabase || !navigator.onLine) return;
+
+    const ndb=supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const {data:{session}}=await ndb.auth.getSession();
+    const user=session?.user;
+    if(!user || user.is_anonymous) return;
+
+    const badge=document.getElementById('haNotificationBadge');
+    const drawerBadge=document.getElementById('haDrawerNotificationBadge');
+
+    function paintCount(count){
+      const n=Number(count||0);
+      const label=n>99?'99+':String(n);
+      [badge,drawerBadge].forEach(el=>{
+        if(!el) return;
+        el.textContent=label;
+        el.style.display=n>0?'inline-block':'none';
+      });
+    }
+
+    async function loadUnread(){
+      const {count,error}=await ndb
+        .from('notifications')
+        .select('id',{count:'exact',head:true})
+        .eq('is_read',false);
+
+      if(error){
+        console.warn('notification count',error);
+        return;
+      }
+      paintCount(count||0);
+    }
+
+    await loadUnread();
+
+    ndb.channel('ha-home-notifications-'+user.id)
+      .on('postgres_changes',
+        {event:'*',schema:'public',table:'notifications',filter:`user_id=eq.${user.id}`},
+        ()=>loadUnread()
+      )
+      .subscribe();
+
+  }catch(e){
+    console.warn('notifications badge',e);
+  }
 })();
 
 </script>
