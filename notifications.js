@@ -1,28 +1,36 @@
-// HA Marketing - Firebase Web Push registration + Supabase token sync
+// HA Marketing - Web Push / FCM
 (function(){
   const cfg=window.HA_PUSH_CONFIG;
   if(!cfg)return;
 
-  const STORAGE_KEY='ha_notifications_enabled';
-  const TOKEN_KEY='ha_web_push_token';
   const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
   const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-  let db=null;
+  const STORAGE_KEY='ha_notifications_enabled';
+  const TOKEN_KEY='ha_web_push_token';
+  let pushDb=null;
+  let messagingRef=null;
+
+  function getDb(){
+    if(pushDb)return pushDb;
+    if(!window.supabase)throw new Error('Supabase غير محمّل');
+    pushDb=window.supabase.createClient(SB_URL,SB_KEY,{
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true,
+        storageKey:'ha-marketing-auth'
+      }
+    });
+    return pushDb;
+  }
 
   function load(src){
     return new Promise((ok,bad)=>{
+      if([...document.scripts].some(s=>s.src===src)){ok();return;}
       const s=document.createElement('script');
       s.src=src;s.onload=ok;s.onerror=bad;
       document.head.appendChild(s);
     });
-  }
-
-  async function ensureSupabase(){
-    if(!window.supabase || !window.supabase.createClient){
-      await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
-    }
-    if(!db) db=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-    return db;
   }
 
   async function ensureFirebase(){
@@ -31,89 +39,88 @@
       await load('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
     }
     if(!firebase.apps.length)firebase.initializeApp(cfg.firebaseConfig);
-    return firebase.messaging();
+    messagingRef=firebase.messaging();
+    return messagingRef;
+  }
+
+  async function sessionUser(){
+    const {data:{session},error}=await getDb().auth.getSession();
+    if(error)throw error;
+    return {session,user:session?.user||null};
   }
 
   function isEnabled(){
-    return localStorage.getItem(STORAGE_KEY)==='1' && Notification.permission==='granted';
+    return localStorage.getItem(STORAGE_KEY)==='1' &&
+      typeof Notification!=='undefined' &&
+      Notification.permission==='granted' &&
+      !!localStorage.getItem(TOKEN_KEY);
   }
 
   function updateBell(){
-    const b=document.getElementById('haPushButton');
-    if(!b)return;
-    b.classList.toggle('on',isEnabled());
-    b.title=isEnabled()?'الإشعارات مفعّلة':'تشغيل الإشعارات';
-    b.setAttribute('aria-label',b.title);
+    const buttons=document.querySelectorAll('[data-ha-push-button],#haPushButton');
+    buttons.forEach(b=>{
+      const on=isEnabled();
+      b.classList.toggle('on',on);
+      b.textContent=on?'🔔 الإشعارات الخارجية مفعّلة':'🔕 تشغيل إشعارات الموبايل';
+      b.title=on?'الإشعارات الخارجية مفعّلة':'تشغيل إشعارات الموبايل';
+      b.setAttribute('aria-label',b.title);
+    });
   }
 
   async function saveToken(token){
-    if(!token)return false;
-    const client=await ensureSupabase();
-    const {data:{user}}=await client.auth.getUser();
-    if(!user || user.is_anonymous)return false;
+    const {session,user}=await sessionUser();
+    if(!session||!user||user.is_anonymous){
+      throw new Error('سجل الدخول أولاً حتى نربط الإشعارات بحسابك.');
+    }
 
     const payload={
       user_id:user.id,
       token,
       platform:'web',
-      user_agent:navigator.userAgent,
-      updated_at:new Date().toISOString()
+      user_agent:navigator.userAgent||'HA Marketing Web',
+      enabled:true,
+      last_seen_at:new Date().toISOString()
     };
 
-    const {error}=await client.from('push_tokens').upsert(payload,{onConflict:'token'});
-    if(error){
-      console.warn('Could not save push token',error);
-      return false;
-    }
-    localStorage.setItem(TOKEN_KEY,token);
-    return true;
+    const {error}=await getDb()
+      .from('push_tokens')
+      .upsert(payload,{onConflict:'token'});
+
+    if(error)throw error;
   }
 
-  async function removeStoredToken(){
-    const token=localStorage.getItem(TOKEN_KEY);
+  async function disableDbToken(token){
     if(!token)return;
     try{
-      const client=await ensureSupabase();
-      await client.from('push_tokens').delete().eq('token',token);
-    }catch(e){console.warn(e)}
-  }
-
-  async function getCurrentToken(){
-    if(!('serviceWorker' in navigator) || Notification.permission!=='granted')return null;
-    const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js');
-    const messaging=await ensureFirebase();
-    return await messaging.getToken({
-      vapidKey:cfg.vapidKey,
-      serviceWorkerRegistration:reg
-    });
-  }
-
-  async function syncStoredToken(){
-    try{
-      if(Notification.permission!=='granted')return;
-      const token=await getCurrentToken();
-      if(token){
-        await saveToken(token);
-        localStorage.setItem(STORAGE_KEY,'1');
-        updateBell();
-      }
-    }catch(e){console.warn('Push token sync failed',e)}
+      const {session,user}=await sessionUser();
+      if(!session||!user)return;
+      await getDb()
+        .from('push_tokens')
+        .update({enabled:false,last_seen_at:new Date().toISOString()})
+        .eq('token',token)
+        .eq('user_id',user.id);
+    }catch(e){
+      console.warn('push disable db',e);
+    }
   }
 
   async function enableNotifications(){
-    if(!('serviceWorker' in navigator)||!('Notification' in window)){
-      alert('هذا المتصفح لا يدعم الإشعارات.');
+    if(!navigator.onLine){
+      alert('تحتاج إنترنت لتشغيل الإشعارات.');
       return;
     }
-    if(!cfg.vapidKey||cfg.vapidKey.includes('PUT_YOUR')){
-      alert('إعداد الإشعارات غير مكتمل بعد.');
+    if(!('serviceWorker' in navigator)||!('Notification' in window)){
+      alert('هذا المتصفح لا يدعم إشعارات الويب.');
+      return;
+    }
+    if(!cfg.vapidKey){
+      alert('مفتاح Web Push غير موجود.');
       return;
     }
 
-    const client=await ensureSupabase();
-    const {data:{user}}=await client.auth.getUser();
-    if(!user || user.is_anonymous){
-      alert('سجّل دخولك بحسابك أولاً حتى يتم ربط الإشعارات بحسابك.');
+    const {user}=await sessionUser();
+    if(!user||user.is_anonymous){
+      alert('سجل الدخول أولاً، وبعدها شغّل الإشعارات.');
       return;
     }
 
@@ -121,42 +128,75 @@
     if(permission!=='granted'){
       localStorage.setItem(STORAGE_KEY,'0');
       updateBell();
-      alert('لم يتم السماح بالإشعارات.');
+      alert('لم يتم السماح بالإشعارات. فعّلها من إعدادات المتصفح إذا كنت تريدها.');
       return;
     }
 
-    const token=await getCurrentToken();
-    if(!token)throw new Error('لم يتم إنشاء رمز الإشعارات');
+    // نطاق مستقل حتى لا يستبدل Service Worker الخاص بالأوفلاين.
+    const reg=await navigator.serviceWorker.register(
+      './firebase-messaging-sw.js',
+      {scope:'./fcm/'}
+    );
 
-    const saved=await saveToken(token);
-    if(!saved)throw new Error('تعذر ربط الإشعارات بالحساب');
+    const messaging=await ensureFirebase();
+    const token=await messaging.getToken({
+      vapidKey:cfg.vapidKey,
+      serviceWorkerRegistration:reg
+    });
 
+    if(!token)throw new Error('Firebase لم يرجع توكن إشعارات.');
+
+    await saveToken(token);
+
+    localStorage.setItem(TOKEN_KEY,token);
     localStorage.setItem(STORAGE_KEY,'1');
     updateBell();
-    alert('تم تشغيل الإشعارات وربط هذا الجهاز بحسابك.');
+
+    // إشعارات أثناء فتح الصفحة.
+    if(!window.__haForegroundPushBound){
+      window.__haForegroundPushBound=true;
+      messaging.onMessage(payload=>{
+        const title=payload?.notification?.title||payload?.data?.title||'HA Marketing';
+        const body=payload?.notification?.body||payload?.data?.body||'وصلك إشعار جديد';
+        try{
+          if(Notification.permission==='granted'){
+            new Notification(title,{
+              body,
+              icon:'./icon-192.png',
+              badge:'./icon-192.png',
+              data:{url:payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html'}
+            });
+          }
+        }catch(e){console.warn(e)}
+      });
+    }
+
+    alert('✅ تم تشغيل إشعارات الموبايل وربط هذا الجهاز بحسابك.');
   }
 
   async function disableNotifications(){
+    const token=localStorage.getItem(TOKEN_KEY);
+    await disableDbToken(token);
+
     try{
-      await removeStoredToken();
-      if(window.firebase&&firebase.messaging){
-        try{
-          const messaging=firebase.messaging();
-          if(messaging.deleteToken) await messaging.deleteToken();
-        }catch(e){console.warn(e)}
+      const messaging=await ensureFirebase();
+      if(token && messaging.deleteToken){
+        await messaging.deleteToken();
       }
-    }finally{
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.setItem(STORAGE_KEY,'0');
-      updateBell();
-      alert('تم إيقاف إشعارات هذا الجهاز.');
+    }catch(e){
+      console.warn('delete push token',e);
     }
+
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.setItem(STORAGE_KEY,'0');
+    updateBell();
+    alert('تم إيقاف الإشعارات على هذا الجهاز.');
   }
 
   async function toggleNotifications(){
     try{
       if(isEnabled()){
-        if(confirm('الإشعارات مفعّلة حالياً. هل تريد إيقافها على هذا الجهاز؟')){
+        if(confirm('الإشعارات مفعّلة على هذا الجهاز. تريد إيقافها؟')){
           await disableNotifications();
         }
       }else{
@@ -164,22 +204,23 @@
       }
     }catch(e){
       console.error(e);
-      alert('تعذر تغيير حالة الإشعارات حالياً: '+(e?.message||''));
+      alert('تعذر تشغيل الإشعارات: '+(e?.message||'خطأ غير معروف'));
     }
   }
 
   function bind(){
-    const b=document.getElementById('haPushButton');
-    if(b)b.onclick=toggleNotifications;
+    document.querySelectorAll('[data-ha-push-button],#haPushButton').forEach(b=>{
+      b.onclick=toggleNotifications;
+    });
     updateBell();
-    // If permission was already granted, refresh/reattach the token to the currently signed-in account.
-    syncStoredToken();
   }
 
   window.HA_EnableNotifications=enableNotifications;
   window.HA_ToggleNotifications=toggleNotifications;
-  window.HA_SyncPushToken=syncStoredToken;
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);
-  else bind();
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',bind);
+  }else{
+    bind();
+  }
 })();

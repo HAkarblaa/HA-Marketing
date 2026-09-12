@@ -2,45 +2,54 @@ importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey:'AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE',
-  authDomain:'ha-marketing.firebaseapp.com',
-  databaseURL:'https://ha-marketing-default-rtdb.europe-west1.firebasedatabase.app',
-  projectId:'ha-marketing',
-  storageBucket:'ha-marketing.firebasestorage.app',
-  messagingSenderId:'558520139704',
-  appId:'1:558520139704:web:526f8026dac658403b594d'
+  apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
+  authDomain: "ha-marketing.firebaseapp.com",
+  databaseURL: "https://ha-marketing-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ha-marketing",
+  storageBucket: "ha-marketing.firebasestorage.app",
+  messagingSenderId: "558520139704",
+  appId: "1:558520139704:web:526f8026dac658403b594d"
 });
 
 const messaging=firebase.messaging();
 
 messaging.onBackgroundMessage((payload)=>{
-  // When FCM already supplies a notification payload, browsers may display it automatically.
-  // We only render data-only payloads here to avoid duplicate notifications.
-  if(payload?.notification)return;
-  const d=payload?.data||{};
-  const title=d.title||'HA Marketing';
-  const body=d.message||d.body||'لديك إشعار جديد';
-  const link=d.link||d.url||'./';
-  return self.registration.showNotification(title,{
-    body,
-    icon:'./main.jpg',
-    badge:'./main.jpg',
-    data:{url:link},
-    tag:d.notification_id?('ha-notification-'+d.notification_id):undefined
-  });
+  const title=payload?.notification?.title || payload?.data?.title || 'HA Marketing';
+  const options={
+    body:payload?.notification?.body || payload?.data?.body || 'وصلك إشعار جديد',
+    icon:'../icon-192.png',
+    badge:'../icon-192.png',
+    tag:payload?.data?.tag || 'ha-marketing',
+    renotify:true,
+    data:{
+      url:payload?.data?.link || '../notifications-center.html'
+    }
+  };
+  self.registration.showNotification(title,options);
 });
 
 self.addEventListener('notificationclick',(event)=>{
   event.notification.close();
-  const target=event.notification?.data?.url||'./';
-  event.waitUntil((async()=>{
-    const list=await clients.matchAll({type:'window',includeUncontrolled:true});
-    for(const c of list){
-      if('focus' in c){
-        try{await c.navigate(target)}catch(_e){}
-        return c.focus();
+  const target=new URL(
+    event.notification?.data?.url || '../notifications-center.html',
+    self.location.origin + self.location.pathname
+  ).href;
+
+  event.waitUntil(
+    clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{
+      for(const c of list){
+        if('focus' in c){
+          try{
+            const u=new URL(c.url);
+            const t=new URL(target);
+            if(u.origin===t.origin){
+              c.navigate(target);
+              return c.focus();
+            }
+          }catch(_e){}
+        }
       }
-    }
-    return clients.openWindow(target);
-  })());
+      if(clients.openWindow)return clients.openWindow(target);
+    })
+  );
 });
