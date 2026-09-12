@@ -13,6 +13,11 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 .avatar{display:flex;align-items:center;gap:12px}#preview{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#eee;display:none}
 .note{font-size:13px;color:#666}.err{color:#a40000;font-size:13px;margin-top:4px}@media(max-width:520px){.types{grid-template-columns:1fr}}
 .ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px}@keyframes haSpin{to{transform:rotate(360deg)}}
+.wa-box{border:1px solid #d6a62b;background:#fffaf0;border-radius:14px;padding:12px;margin:10px 0}
+.wa-title{font-weight:800;margin-bottom:6px}
+.wa-note{font-size:12px;line-height:1.6;color:#705500;margin-top:6px}
+.wa-ok{color:#087a35;font-weight:700;font-size:13px;margin-top:6px}
+.wa-btn{background:#19a64a!important;color:#fff!important;margin-top:8px}
 </style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="card">
 <h1>إنشاء حساب</h1>
 <div class="types">
@@ -21,7 +26,12 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 </div>
 <div id="formBox">
 <label>الاسم الكامل *</label><input id="full_name" required>
-<label>رقم الموبايل *</label><input id="phone" inputmode="numeric" maxlength="11" pattern="07[0-9]{9}" type="tel" inputmode="numeric" placeholder="07XXXXXXXXX" required>
+<label>رقم الموبايل *</label><input id="phone" inputmode="numeric" maxlength="11" pattern="07[0-9]{9}" type="tel" placeholder="07XXXXXXXXX" required>
+<div class="wa-box">
+  <div class="wa-title">📲 تأكيد واتساب</div>
+  <button id="waSendBtn" class="wa-btn" type="button" onclick="sendWhatsAppCheck()">إرسال رسالة التأكيد على واتساب</button>
+  <div id="waStatus" class="wa-note">حالياً هذا وضع التجربة المجانية. يجب أن ينجح إرسال رسالة واتساب لنفس الرقم قبل إنشاء الحساب.</div>
+</div>
 <label>المعرف *</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan@123,#" required><p class="note">يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.</p>
 <label>البريد الإلكتروني (اختياري)</label><input id="contact_email" type="email" autocomplete="email" placeholder="name@example.com"><p class="note">يمكن تأكيده لاحقاً من إعدادات أمان الحساب.</p>
 <label>المحافظة *</label><select id="governorate" required><option value="">اختر المحافظة</option><option value="بغداد">بغداد</option><option value="البصرة">البصرة</option><option value="نينوى">نينوى</option><option value="أربيل">أربيل</option><option value="النجف">النجف</option><option value="كربلاء">كربلاء</option><option value="كركوك">كركوك</option><option value="الأنبار">الأنبار</option><option value="بابل">بابل</option><option value="ديالى">ديالى</option><option value="ذي قار">ذي قار</option><option value="ميسان">ميسان</option><option value="المثنى">المثنى</option><option value="القادسية">القادسية</option><option value="صلاح الدين">صلاح الدين</option><option value="واسط">واسط</option><option value="دهوك">دهوك</option><option value="السليمانية">السليمانية</option><option value="حلبجة">حلبجة</option></select>
@@ -59,6 +69,57 @@ const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefr
 function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
 function authEmail(p){return 'u'+p+'@ha.local'}
+let waConfirmedPhone='';
+
+function resetWhatsAppCheck(){
+  waConfirmedPhone='';
+  const st=document.getElementById('waStatus');
+  if(st){
+    st.className='wa-note';
+    st.textContent='حالياً هذا وضع التجربة المجانية. يجب أن ينجح إرسال رسالة واتساب لنفس الرقم قبل إنشاء الحساب.';
+  }
+}
+
+document.getElementById('phone')?.addEventListener('input',resetWhatsAppCheck);
+
+async function sendWhatsAppCheck(){
+  const raw=document.getElementById('phone').value.trim();
+  const lp=localPhone(raw);
+
+  if(!/^07\d{9}$/.test(lp)){
+    alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');
+    document.getElementById('phone').focus();
+    return;
+  }
+
+  const btn=document.getElementById('waSendBtn');
+  const st=document.getElementById('waStatus');
+  btn.disabled=true;
+  st.className='wa-note';
+  st.textContent='جاري إرسال رسالة التأكيد إلى واتساب...';
+
+  try{
+    const {data,error}=await db.functions.invoke('send-whatsapp-otp',{
+      body:{phone:lp}
+    });
+
+    if(error) throw error;
+    if(!data?.ok) throw new Error(data?.error||'تعذر إرسال رسالة واتساب');
+
+    waConfirmedPhone=lp;
+    st.className='wa-ok';
+    st.textContent='✅ تم إرسال رسالة التأكيد إلى واتساب بنجاح. يمكنك الآن إنشاء الحساب.';
+  }catch(e){
+    console.error(e);
+    waConfirmedPhone='';
+    st.className='wa-note';
+    st.textContent='❌ تعذر إرسال رسالة واتساب: '+(e?.message||'خطأ غير معروف');
+    alert('تعذر إرسال رسالة التأكيد على واتساب.');
+  }finally{
+    btn.disabled=false;
+  }
+}
+
 function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
 async function persistLoginFlag(){const {data}=await db.auth.getSession();if(data.session){localStorage.setItem('ha_logged_in','1');return data.session}localStorage.removeItem('ha_logged_in');return null}
 async function ensureProfile(user, fallback={}){
@@ -98,6 +159,10 @@ async function createAccount(){
  if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.';password.focus();return}
  const lp=localPhone(raw);
  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return}
+ if(waConfirmedPhone!==lp){
+   alert('لازم ترسل رسالة التأكيد على واتساب لنفس الرقم أولاً.');
+   return;
+ }
  const ph=normalizePhone(lp);
  showLoading('جاري التحقق من البيانات...');
  try{
