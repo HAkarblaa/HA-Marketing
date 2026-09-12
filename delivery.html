@@ -932,7 +932,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   }
 }
 </style>
-<link rel="stylesheet" href="ha-premium-theme.css"></head>
+</head>
 
 <body class="delivery-stage-1">
 <div class="app">
@@ -988,19 +988,19 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر وسيلة المندوب</div>
 
-    <div class="type selected" data-name="مندوب" data-dispatch="delivery_courier" data-base="750" data-km="350" data-min="12">
+    <div class="type selected" data-name="دراجة" data-base="750" data-km="350" data-min="12">
       <div class="vehicle">🛵</div>
-      <div class="info"><b>مندوب</b><small>دراجة / دراجة نارية للطرود الصغيرة</small></div>
+      <div class="info"><b>دراجة</b><small>للطرود الصغيرة</small></div>
       <div class="price">—</div>
     </div>
 
-    <div class="type" data-name="تكتك توصيل" data-dispatch="delivery_tuktuk" data-base="1000" data-km="450" data-min="15">
+    <div class="type" data-name="تكتك توصيل" data-base="1000" data-km="450" data-min="15">
       <div class="vehicle">🛺</div>
       <div class="info"><b>تكتك</b><small>للأغراض المتوسطة</small></div>
       <div class="price">—</div>
     </div>
 
-    <div class="type" data-name="سيارة توصيل" data-dispatch="delivery_car" data-base="1750" data-km="650" data-min="20">
+    <div class="type" data-name="سيارة توصيل" data-base="1750" data-km="650" data-min="20">
       <div class="vehicle">🚗</div>
       <div class="info"><b>سيارة</b><small>للأغراض الكبيرة</small></div>
       <div class="price">—</div>
@@ -1094,7 +1094,64 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
+<script src="transport-profile.js"></script>
+
+<script>
+/* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
+(function(){
+  if(window.HA_NotifyMe || !window.supabase) return;
+
+  const haNotificationClient = window.supabase.createClient(
+    'https://ubayrhtshgtgggxprrek.supabase.co',
+    'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true,
+        storageKey:'ha-marketing-auth'
+      }
+    }
+  );
+
+  const sentThisSession = new Set();
+
+  window.HA_NotifyMe = async function({
+    title,
+    body,
+    type='general',
+    link=null,
+    eventKey=null
+  }){
+    try{
+      if(eventKey && sentThisSession.has(eventKey)) return true;
+
+      const {data:{session}} = await haNotificationClient.auth.getSession();
+      if(!session?.user || session.user.is_anonymous) return false;
+
+      const {error} = await haNotificationClient.rpc('ha_notify_me',{
+        p_title:title,
+        p_body:body,
+        p_type:type,
+        p_link:link,
+        p_event_key:eventKey
+      });
+
+      if(error){
+        console.warn('HA notification:',error);
+        return false;
+      }
+
+      if(eventKey) sentThisSession.add(eventKey);
+      return true;
+    }catch(e){
+      console.warn('HA notification bridge:',e);
+      return false;
+    }
+  };
+})();
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -1646,7 +1703,6 @@ order.onclick=async()=>{
   const rideData={
     customerUid:fbUser.uid,
     serviceType:'delivery',
-    dispatchType:selected.dataset.dispatch||'delivery_courier',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,
@@ -1738,6 +1794,43 @@ function listenDeliveryRide(rideId){
   activeDeliveryRideRef.on('value',ss=>{
     const ride=ss.val();
     if(!ride)return;
+
+    const haDeliveryNotice={
+      accepted:['✅ تم قبول طلب التوصيل','تم قبول طلبك والمندوب بالطريق إلى نقطة الاستلام.'],
+      arrived:['📍 المندوب وصل','وصل المندوب إلى نقطة الاستلام.'],
+      started:['🛵 الطلب بالطريق','تم استلام الطلب والمندوب بالطريق إلى نقطة التسليم.'],
+      finished:['✅ تم تسليم الطلب','تم إنهاء طلب التوصيل بنجاح.']
+    }[ride.status];
+
+    if(haDeliveryNotice){
+      window.HA_NotifyMe?.({
+        title:haDeliveryNotice[0],
+        body:haDeliveryNotice[1],
+        type:'delivery',
+        link:'delivery.html',
+        eventKey:'ride:'+rideId+':customer:'+ride.status
+      });
+    }
+
+    if(ride.status==='cancelled' && ride.cancelledBy==='driver'){
+      window.HA_NotifyMe?.({
+        title:'❌ المندوب ألغى الطلب',
+        body:ride.cancelReason ? 'سبب الإلغاء: '+ride.cancelReason : 'تم إلغاء الطلب من طرف المندوب.',
+        type:'delivery',
+        link:'delivery.html',
+        eventKey:'ride:'+rideId+':customer:driver-cancelled'
+      });
+    }
+
+    if(ride.status==='rejected'){
+      window.HA_NotifyMe?.({
+        title:'⚠️ لم يتم قبول طلب التوصيل',
+        body:'تم رفض طلب التوصيل. يمكنك إرسال طلب جديد.',
+        type:'delivery',
+        link:'delivery.html',
+        eventKey:'ride:'+rideId+':customer:rejected'
+      });
+    }
 
     const states={
       accepted:'تم قبول الطلب',
@@ -2320,29 +2413,5 @@ window.addEventListener('load',()=>{
   }catch(e){console.error(e)}
 });
 </script>
-
-<script>
-(function(){
-  let autoDone=false;
-  async function autoUseCurrentLocation(){
-    if(autoDone || start) return;
-    autoDone=true;
-    try{
-      const z=await HA_Nearby.getCurrent({allowCache:false,timeout:12000});
-      const p=await snap(L.latLng(z.lat,z.lng));
-      try{detectProvinceFromPoint(p)}catch(e){}
-      setPoint('start',p,'موقعك الحالي');
-      map.setView(p,16);
-      window.pendingStartLabel='موقعك الحالي';
-      notice.textContent='✅ تم اعتماد موقعك الحالي كنقطة الاستلام. تقدر ترجع وتغيّره إذا تريد.';
-    }catch(e){
-      autoDone=false;
-      notice.textContent='📍 فعّل GPS حتى نحدد نقطة الاستلام تلقائياً، أو حددها من الخريطة.';
-    }
-  }
-  window.addEventListener('load',()=>setTimeout(autoUseCurrentLocation,450));
-})();
-</script>
-
 </body>
 </html>

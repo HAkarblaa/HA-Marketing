@@ -696,7 +696,7 @@ body:not(.trip-ready) #extraSummary{
   font-size:13px;
   cursor:pointer;
 }
-.call-driver{background:#111;color:#fff}.app-call-driver{background:#2563eb;color:#fff}
+.call-driver{background:#111;color:#fff}
 .cancel-trip{background:#eee;color:#111}
 
 
@@ -886,53 +886,8 @@ body:not(.trip-ready) #extraSummary{
   background:#c62828;color:#fff;font-size:15px;font-weight:700
 }
 
-
-.ride-status-box{margin:10px 0;background:#f7f7f7;border-radius:14px;padding:10px}
-.ride-status-live{font-weight:800;text-align:center;margin-bottom:9px}
-.ride-status-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.ride-status-step{font-size:10px;text-align:center;padding:8px 4px;border-radius:10px;background:#e5e7eb;color:#555}
-.ride-status-step.done{background:#dff6e7;color:#136b35;font-weight:800}
-.ride-status-step.current{outline:2px solid #16a34a}
-
-
-.price-breakdown{margin:8px 14px;padding:10px;border-radius:12px;background:#f7f7f7;font-size:11px;line-height:1.7;display:none}
-.price-breakdown.show{display:block}
-.price-breakdown b{font-size:12px}
-
 </style>
-
-<style id="ha-mobile-confirm-button-fix">
-/* HA: keep the final request controls visible on small Android screens */
-#tripSheet.open{
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-  padding-bottom:118px !important;
-  -webkit-overflow-scrolling:touch;
-}
-#tripSheet.open #orderArea{
-  display:flex;
-  position:fixed !important;
-  left:50% !important;
-  right:auto !important;
-  bottom:0 !important;
-  transform:translateX(-50%);
-  width:min(736px,calc(100% - 24px)) !important;
-  z-index:1605 !important;
-  margin:0 !important;
-  padding:7px 0 max(7px,env(safe-area-inset-bottom)) !important;
-  background:#fff !important;
-  border-top:1px solid #e8e8e8 !important;
-  box-shadow:0 -5px 14px rgba(0,0,0,.08);
-}
-body:not(.trip-ready) #orderArea{display:none !important;}
-@media(max-width:600px){
-  body.trip-ready #tripSheet.open{
-    overflow-y:auto !important;
-    padding-bottom:122px !important;
-  }
-}
-</style>
-<link rel="stylesheet" href="ha-premium-theme.css"></head>
+</head>
 
 <body>
 <div class="app">
@@ -981,10 +936,6 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 <div id="tripSheet">
   <div class="trip-sheet-title">تفاصيل الرحلة</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px">
-    <a href="ride-history.html" style="text-decoration:none;text-align:center;background:#f3f4f6;color:#111;padding:9px;border-radius:12px;font-weight:800;font-size:12px">🕘 رحلاتي</a>
-    <button id="shareTripTopBtn" type="button" style="border:0;background:#f3f4f6;padding:9px;border-radius:12px;font-weight:800;font-size:12px">🛡️ مشاركة الرحلة</button>
-  </div>
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر نوع السيارة</div>
 
@@ -1016,13 +967,6 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 حدد الانطلاق أولاً، وبعدها حدد نقطة الوصول.
 </div>
 <div id="extraSummary" class="extra-summary"></div>
-<div style="margin:10px 0;background:#f7f7f7;padding:10px;border-radius:12px">
-  <b style="display:block;margin-bottom:7px;font-size:12px">طريقة الدفع</b>
-  <select id="taxiPaymentMethod" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:white">
-    <option value="cash">💵 الدفع نقداً عند الوصول</option>
-    <option value="electronic" hidden disabled>💳 دفع إلكتروني</option>
-  </select>
-</div>
 
 <div class="order" id="orderArea">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
@@ -1107,44 +1051,35 @@ body:not(.trip-ready) #orderArea{display:none !important;}
       </div>
     </div>
 
-    <div class="ride-status-box">
-  <div id="rideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
-  <div id="rideStatusTimeline" class="ride-status-steps">
-    <div class="ride-status-step" data-ride-step>تم القبول</div>
-    <div class="ride-status-step" data-ride-step>وصل</div>
-    <div class="ride-status-step" data-ride-step>بدأت</div>
-    <div class="ride-status-step" data-ride-step>انتهت</div>
-  </div>
-</div>
-<div id="driverCard" class="driver-card">
+    <div id="driverCard" class="driver-card">
       <div id="customerTripStatus" style="background:#eef4ff;border-radius:11px;padding:9px;text-align:center;font-weight:700;margin-bottom:9px">تم قبول الطلب</div>
       <div class="driver-top">
         <div class="driver-avatar">
           <img id="driverPhoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='%23e5e7eb'/><circle cx='60' cy='43' r='23' fill='%239ca3af'/><path d='M20 112c5-27 21-40 40-40s35 13 40 40' fill='%239ca3af'/></svg>" alt="صورة السائق">
         </div>
         <div class="driver-info">
-          <b id="driverName">السائق</b>
-          <span id="driverCarSummary">—</span>
+          <b id="driverName">أحمد علي</b>
+          <span id="driverCarSummary">تويوتا كورولا • أبيض</span>
         </div>
-        <strong>⭐ <span id="driverRating">—</span></strong>
+        <strong>⭐ <span id="driverRating">4.9</span></strong>
       </div>
 
       <div class="driver-details">
-        <div class="driver-detail"><small>رقم السيارة</small><b id="driverPlate">—</b></div>
-        <div class="driver-detail"><small>السيارة</small><b id="driverCarName">—</b></div>
-        <div class="driver-detail"><small>اللون</small><b id="driverCarColor">—</b></div>
-        <div class="driver-detail"><small>رقم السائق</small><b id="driverPhoneView">—</b></div>
+        <div class="driver-detail"><small>رقم السيارة</small><b id="driverPlate">بغداد 12345</b></div>
+        <div class="driver-detail"><small>السيارة</small><b id="driverCarName">تويوتا كورولا</b></div>
+        <div class="driver-detail"><small>اللون</small><b id="driverCarColor">أبيض</b></div>
+        <div class="driver-detail"><small>رقم السائق</small><b id="driverPhoneView">0770 123 4567</b></div>
       </div>
 
       <div class="driver-meta">
-        <div><small>الوصول إليك</small><b id="pickupEtaText">—</b></div>
+        <div><small>الوصول إليك</small><b id="pickupEtaText">5 د</b></div>
         <div><small>الرحلة</small><b id="tripEtaText">—</b></div>
         <div><small>السعر</small><b id="tripPriceText">—</b></div>
       </div>
 
       <div class="post-actions">
         <button id="callDriverBtn" class="call-driver" type="button">📞 اتصال مباشر</button>
-        <button id="appCallDriverBtn" class="app-call-driver" type="button">☎️ اتصال التطبيق</button>
+        <button id="whatsappDriverBtn" class="whatsapp-driver" type="button">🟢 واتساب</button>
         <button id="chatDriverBtn" class="chat-driver" type="button">💬 رسائل داخل التطبيق</button>
         <button id="cancelTripBtn" class="cancel-trip" type="button">إلغاء الطلب</button>
       </div>
@@ -1171,11 +1106,65 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
+
+<script>
+/* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
+(function(){
+  if(window.HA_NotifyMe || !window.supabase) return;
+
+  const haNotificationClient = window.supabase.createClient(
+    'https://ubayrhtshgtgggxprrek.supabase.co',
+    'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true,
+        storageKey:'ha-marketing-auth'
+      }
+    }
+  );
+
+  const sentThisSession = new Set();
+
+  window.HA_NotifyMe = async function({
+    title,
+    body,
+    type='general',
+    link=null,
+    eventKey=null
+  }){
+    try{
+      if(eventKey && sentThisSession.has(eventKey)) return true;
+
+      const {data:{session}} = await haNotificationClient.auth.getSession();
+      if(!session?.user || session.user.is_anonymous) return false;
+
+      const {error} = await haNotificationClient.rpc('ha_notify_me',{
+        p_title:title,
+        p_body:body,
+        p_type:type,
+        p_link:link,
+        p_event_key:eventKey
+      });
+
+      if(error){
+        console.warn('HA notification:',error);
+        return false;
+      }
+
+      if(eventKey) sentThisSession.add(eventKey);
+      return true;
+    }catch(e){
+      console.warn('HA notification bridge:',e);
+      return false;
+    }
+  };
+})();
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="firebase-auth-secure.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
@@ -1190,10 +1179,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 </script>
 
-<script src="transport-live-tracking.js"></script>
-<script src="transport-ride-status.js"></script>
-<script src="transport-rating.js"></script>
-<script src="transport-pricing.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== الخيارات الإضافية =====
@@ -1247,7 +1232,6 @@ saveExtra.onclick=()=>{
     extraSummary.style.display='none';
     extraSummary.textContent='';
   }
-  refreshFinalPrices();
   closeExtraSheet();
 };
 
@@ -1559,40 +1543,6 @@ function round250(x){
  return Math.ceil(x/250)*250;
 }
 
-
-function currentPricingExtras(){
-  return {
-    extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
-    stop:stopCheck.checked ? stopText.value.trim() : '',
-    luggage:!!luggageCheck.checked,
-    extraPassengers:passengersCheck.checked ? Number(extraPassengers.value) : 0
-  };
-}
-
-function refreshFinalPrices(){
-  if(!(start&&end))return;
-  const extras=currentPricingExtras();
-  document.querySelectorAll('.type').forEach(c=>{
-    const q=HA_Pricing.totalFare('taxi',c,routeKm,routeMin,extras);
-    c.dataset.basePrice=q.base;
-    c.dataset.extraPrice=q.extras;
-    c.dataset.price=q.total;
-    const pe=c.querySelector('.price');
-    if(pe)pe.textContent=q.total.toLocaleString('ar-IQ')+' د.ع';
-  });
-
-  const b=document.getElementById('priceBreakdown');
-  if(b&&selected&&selected.dataset.price){
-    const q=HA_Pricing.totalFare('taxi',selected,routeKm,routeMin,extras);
-    let details=q.parts.map(x=>x[0]+': '+Number(x[1]).toLocaleString('ar-IQ')+' د.ع').join(' • ');
-    b.innerHTML='<b>تفاصيل السعر:</b> الطريق '+q.base.toLocaleString('ar-IQ')+' د.ع'
-      +(details?' • '+details:'')
-      +' • <b>المجموع '+q.total.toLocaleString('ar-IQ')+' د.ع</b>';
-    b.classList.add('show');
-  }
-  updateOrder();
-}
-
 async function calc(){
  if(line){
    map.removeLayer(line);
@@ -1623,10 +1573,29 @@ async function calc(){
 
    distance.textContent=routeKm.toFixed(1)+' كم';
    tripTime.textContent=fm(routeMin);
-   pickupMin=0;
-   driverTime.textContent='بعد قبول السائق';
 
-   refreshFinalPrices();
+   const demo=L.latLng(start.lat+.008,start.lng+.008);
+
+   try{
+     const dr=await route(demo,start);
+     pickupMin=dr.duration/60;
+   }catch(e){
+     pickupMin=5;
+   }
+
+   driverTime.textContent='~ '+fm(pickupMin);
+
+   document.querySelectorAll('.type').forEach(c=>{
+     const p=round250(
+       +c.dataset.base
+       +routeKm*(+c.dataset.km)
+       +routeMin*(+c.dataset.min)
+     );
+
+     c.dataset.price=p;
+     c.querySelector('.price').textContent=
+       p.toLocaleString('ar-IQ')+' د.ع';
+   });
 
    notice.textContent='جاهز للطلب.';
    order.disabled=false;
@@ -1652,7 +1621,7 @@ document.querySelectorAll('.type').forEach(c=>{
    document.querySelectorAll('.type').forEach(x=>x.classList.remove('selected'));
    c.classList.add('selected');
    selected=c;
-   refreshFinalPrices();
+   updateOrder();
  };
 });
 
@@ -1666,40 +1635,23 @@ order.onclick=async()=>{
   const oldText=order.textContent;
   order.textContent='جاري إرسال الطلب...';
 
-  const realCustomer=await HA_TransportProfile.customerOrLogin();
-  if(!realCustomer){ order.disabled=false; order.textContent=oldText; return; }
-
-  let fbUser;
-  try{ fbUser=await HA_FirebaseAuth.ready(); }catch(err){
-    console.error(err);
-    alert('تعذر تأمين الاتصال بـ Firebase. فعّل Anonymous في Firebase Authentication ثم حاول مجددًا.');
-    order.disabled=false; order.textContent=oldText; return;
-  }
-
   const rideRef=db.ref('rides').push();
   activeRideId=rideRef.key;
   activeRideRef=rideRef;
 
   const rideData={
-    customerUid:fbUser.uid,
-    serviceType:'taxi',
-    dispatchType:'taxi',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
-    customer:realCustomer,
+    customer:{
+      name:'زبون',
+      phone:''
+    },
     pickup:{lat:start.lat,lng:start.lng},
     destination:{lat:end.lat,lng:end.lng},
     vehicleType:selected.dataset.name,
     price:Number(selected.dataset.price),
     distanceKm:Number(routeKm||0),
     tripMinutes:Number(routeMin||0),
-    pricing:{
-      routeBase:Number(selected.dataset.basePrice||selected.dataset.price||0),
-      extras:Number(selected.dataset.extraPrice||0),
-      total:Number(selected.dataset.price||0),
-      calculatedAt:firebase.database.ServerValue.TIMESTAMP
-    },
-    paymentMethod:(document.getElementById('taxiPaymentMethod')?.value||'cash'),
     extras:{
       extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
       stop:stopCheck.checked ? stopText.value.trim() : '',
@@ -1710,13 +1662,12 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
-    await db.ref('userRides/'+fbUser.uid+'/'+activeRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();
     listenToRide(activeRideId);
   }catch(err){
     console.error(err);
-    alert((err && (err.code==='PERMISSION_DENIED' || String(err.message||'').toLowerCase().includes('permission'))) ? 'تعذر إرسال الطلب لأن صلاحيات Firebase تمنع الحفظ. حدّث قواعد Realtime Database بالملف firebase-database.rules.json المرفق.' : 'تعذر إرسال الطلب إلى قاعدة البيانات. حاول مرة ثانية.');
+    alert('تعذر إرسال الطلب إلى قاعدة البيانات. حاول مرة ثانية.');
   }finally{
     order.disabled=false;
     order.textContent=oldText;
@@ -1810,8 +1761,18 @@ setMode('start');
 startMapPick();
 
 
-// بيانات السائق لا تظهر إلا بعد قبول الطلب، وتأتي من السائق الحقيقي.
-const acceptedDriver={name:'السائق',phoneLocal:'',phoneInternational:'',plate:'—',carName:'—',carColor:'—',rating:'—',photo:''};
+// بيانات السائق التجريبية حالياً.
+// لاحقاً تأتي هذه البيانات من حساب السائق المقبول من قاعدة البيانات.
+const acceptedDriver={
+  name:'أحمد علي',
+  phoneLocal:'07701234567',
+  phoneInternational:'9647701234567',
+  plate:'بغداد 12345',
+  carName:'تويوتا كورولا',
+  carColor:'أبيض',
+  rating:'4.9',
+  photo:''
+};
 
 function fillAcceptedDriver(){
   document.getElementById('driverName').textContent=acceptedDriver.name;
@@ -1831,92 +1792,44 @@ function fillAcceptedDriver(){
 
 function callAcceptedDriver(){
   // على الهاتف يفتح تطبيق الاتصال مباشرة.
-  if(!acceptedDriver.phoneLocal){alert('رقم السائق غير متوفر.');return;}
   window.location.href='tel:'+acceptedDriver.phoneLocal;
 }
 
-
-
-let haChatRef=null;
-let haChatListener=null;
-
-function getCurrentRideForChat(){
-  return activeRideId || localStorage.getItem('ha_active_ride') || null;
-}
-
-function renderRideChatMessage(msg){
-  const box=document.getElementById('chatMessages');
-  if(!box || !msg || !msg.text)return;
-  const el=document.createElement('div');
-  el.className='msg '+(msg.senderRole==='customer'?'me':'driver');
-  el.textContent=msg.text;
-  box.appendChild(el);
-  box.scrollTop=box.scrollHeight;
-}
-
-function attachRideChat(){
-  const rideId=getCurrentRideForChat();
-  if(!rideId){
-    alert('لا توجد رحلة فعالة حالياً.');
-    return false;
-  }
-
-  if(haChatRef)haChatRef.off();
-  haChatRef=db.ref('rideChats/'+rideId+'/messages');
-
-  const box=document.getElementById('chatMessages');
-  if(box)box.innerHTML='';
-
-  haChatRef.limitToLast(100).on('child_added',snap=>{
-    renderRideChatMessage(snap.val());
-  });
-
-  return true;
+function whatsappAcceptedDriver(){
+  const msg=encodeURIComponent('السلام عليكم، أنا صاحب طلب التكسي.');
+  window.open('https://wa.me/'+acceptedDriver.phoneInternational+'?text='+msg,'_blank');
 }
 
 function openInAppChat(){
-  if(!attachRideChat())return;
   document.getElementById('chatSheet').classList.add('show');
 }
 
 function closeInAppChat(){
   document.getElementById('chatSheet').classList.remove('show');
-  if(haChatRef)haChatRef.off();
-  haChatRef=null;
 }
 
-async function sendInAppMessage(){
+function sendInAppMessage(){
   const input=document.getElementById('chatInput');
   const message=input.value.trim();
   if(!message)return;
 
-  const rideId=getCurrentRideForChat();
-  if(!rideId){
-    alert('لا توجد رحلة فعالة حالياً.');
-    return;
-  }
+  const el=document.createElement('div');
+  el.className='msg me';
+  el.textContent=message;
+  document.getElementById('chatMessages').appendChild(el);
+  input.value='';
+  document.getElementById('chatMessages').scrollTop=
+    document.getElementById('chatMessages').scrollHeight;
 
-  input.disabled=true;
-  try{
-    await db.ref('rideChats/'+rideId+'/messages').push({
-      senderRole:'customer',
-      senderType:'taxi',
-      text:message,
-      createdAt:firebase.database.ServerValue.TIMESTAMP
-    });
-    await db.ref('rideChats/'+rideId+'/meta').update({
-      lastMessage:message,
-      lastSender:'customer',
-      updatedAt:firebase.database.ServerValue.TIMESTAMP
-    });
-    input.value='';
-  }catch(err){
-    console.error(err);
-    alert('تعذر إرسال الرسالة. تحقق من الإنترنت.');
-  }finally{
-    input.disabled=false;
-    input.focus();
-  }
+  // رد تجريبي فقط إلى أن نربط حساب السائق والرسائل الفعلية.
+  setTimeout(()=>{
+    const reply=document.createElement('div');
+    reply.className='msg driver';
+    reply.textContent='تم، وصلتني رسالتك.';
+    document.getElementById('chatMessages').appendChild(reply);
+    document.getElementById('chatMessages').scrollTop=
+      document.getElementById('chatMessages').scrollHeight;
+  },700);
 }
 
 // ===== واجهة البحث والمتابعة =====
@@ -1962,30 +1875,30 @@ function openPostOrder(){
 }
 
 function listenToRide(rideId){
-  HA_RideStatus.clear();
-  HA_RideStatus.watch(rideId,'taxi',{
-    textElement:'rideStatusLive',
-    timelineElement:'rideStatusTimeline'
-  });
   if(activeRideRef) activeRideRef.off();
   activeRideRef=db.ref('rides/'+rideId);
-
-  HA_LiveTracking.watchCustomer(rideId,{
-    statusElement:'customerTripStatus',
-    onLocation:(p,loc)=>{
-      if(!trackingMap)return;
-      if(trackingDriverMarker) trackingDriverMarker.setLatLng(p);
-      else trackingDriverMarker=L.marker(p).addTo(trackingMap).bindPopup(acceptedDriver.name||'السائق');
-
-      // Keep the live marker visible without constantly forcing the user's zoom.
-      const b=trackingMap.getBounds();
-      if(!b.contains(p)) trackingMap.panTo(p,{animate:true,duration:.5});
-    }
-  });
 
   activeRideRef.on('value',snapShot=>{
     const ride=snapShot.val();
     if(!ride)return;
+
+    // نحفظ كل تغيير مهم بحالة الرحلة في مركز الإشعارات.
+    const haRideNotice={
+      accepted:['✅ تم قبول طلب التكسي','تم قبول طلبك والسائق بالطريق إليك.'],
+      arrived:['📍 السائق وصل','السائق وصل إلى نقطة الانطلاق.'],
+      started:['🚗 بدأت الرحلة','بدأت رحلتك الآن.'],
+      finished:['✅ انتهت الرحلة','تم إنهاء الرحلة بنجاح.']
+    }[ride.status];
+
+    if(haRideNotice){
+      window.HA_NotifyMe?.({
+        title:haRideNotice[0],
+        body:haRideNotice[1],
+        type:'taxi',
+        link:'taxi.html',
+        eventKey:'ride:'+rideId+':customer:'+ride.status
+      });
+    }
 
     if(ride.status==='accepted' || ride.status==='arrived' || ride.status==='started' || ride.status==='finished'){
       document.getElementById('searchingBox').style.display='none';
@@ -2017,7 +1930,6 @@ function listenToRide(rideId){
       if(customerTripStatus) customerTripStatus.textContent=statusText;
 
       if(ride.status==='finished'){
-        HA_Rating.show({rideId:rideId,role:'customer',targetName:acceptedDriver.name||'السائق'});
         localStorage.removeItem('ha_active_ride');
 
         // نوقف متابعة الطلب ونحوّل الزبون إلى شاشة انتهاء واضحة.
@@ -2029,7 +1941,6 @@ function listenToRide(rideId){
           ride.price ? 'الأجرة: '+Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : 'تم إنهاء الرحلة';
 
         if(activeRideRef) activeRideRef.off();
-        HA_LiveTracking.clearCustomer();
       }
 
       if(ride.driverLocation && trackingMap){
@@ -2059,12 +1970,28 @@ function listenToRide(rideId){
     }
 
     if(ride.status==='rejected'){
+      window.HA_NotifyMe?.({
+        title:'⚠️ لم يتم قبول الطلب',
+        body:'السائق رفض طلب التكسي. يمكنك إرسال طلب جديد.',
+        type:'taxi',
+        link:'taxi.html',
+        eventKey:'ride:'+rideId+':customer:rejected'
+      });
       document.getElementById('postTitle').textContent='لم يتم قبول الطلب';
       document.querySelector('#searchingBox .status-title').textContent='السائق رفض الطلب';
       document.querySelector('#searchingBox .status-sub').textContent='يمكنك الرجوع وإرسال طلب جديد.';
     }
 
     if(ride.status==='cancelled'){
+      if(ride.cancelledBy==='driver'){
+        window.HA_NotifyMe?.({
+          title:'❌ السائق ألغى الرحلة',
+          body:ride.cancelReason ? 'سبب الإلغاء: '+ride.cancelReason : 'تم إلغاء الرحلة من طرف السائق.',
+          type:'taxi',
+          link:'taxi.html',
+          eventKey:'ride:'+rideId+':customer:driver-cancelled'
+        });
+      }
       const cancelledBy=ride.cancelledBy||'';
       const cancelReason=ride.cancelReason||'';
       document.getElementById('postTitle').textContent='تم إلغاء الطلب';
@@ -2093,18 +2020,9 @@ function listenToRide(rideId){
   });
 }
 
-
-const shareTripTopBtn=document.getElementById('shareTripTopBtn');
-if(shareTripTopBtn) shareTripTopBtn.onclick=async()=>{
-  const id=activeRideId||localStorage.getItem('ha_active_ride');
-  if(!id){alert('ما عندك رحلة فعالة حالياً.');return;}
-  const text='تفاصيل رحلة HA Marketing - رقم الرحلة: '+id;
-  try{if(navigator.share) await navigator.share({title:'مشاركة الرحلة',text}); else {await navigator.clipboard.writeText(text);alert('تم نسخ رقم الرحلة.');}}catch(e){}
-};
-
 const savedRideId=localStorage.getItem('ha_active_ride');
 if(savedRideId){
-  HA_FirebaseAuth.ready().then(()=>db.ref('rides/'+savedRideId).once('value')).then(s=>{
+  db.ref('rides/'+savedRideId).once('value').then(s=>{
     if(s.exists() && !['finished','cancelled','rejected'].includes(s.val().status)){
       activeRideId=savedRideId;
       openPostOrder();
@@ -2123,11 +2041,7 @@ document.getElementById('postBackBtn').onclick=()=>{
 
 
 document.getElementById('callDriverBtn').onclick=callAcceptedDriver;
-document.getElementById('appCallDriverBtn').onclick=()=>{
-  const id=activeRideId || localStorage.getItem('ha_active_ride');
-  if(!id){alert('لا توجد رحلة فعالة حالياً.');return;}
-  HATransportCall.start(id,'customer','اتصال مع التكسي');
-};
+document.getElementById('whatsappDriverBtn').onclick=whatsappAcceptedDriver;
 document.getElementById('chatDriverBtn').onclick=openInAppChat;
 document.getElementById('closeChatBtn').onclick=closeInAppChat;
 document.getElementById('sendChatBtn').onclick=sendInAppMessage;
@@ -2164,9 +2078,14 @@ document.getElementById('finishHomeBtn').onclick=()=>{
 };
 
 document.getElementById('finishRateBtn').onclick=()=>{
-  const id=activeRideId||localStorage.getItem('ha_active_ride');
-  if(!id){alert('لا توجد رحلة مكتملة للتقييم.');return;}
-  HA_Rating.show({rideId:id,role:'customer',targetName:acceptedDriver.name||'السائق'});
+  const rating=prompt('قيّم السائق من 1 إلى 5');
+  if(!rating)return;
+  const n=Number(rating);
+  if(n<1 || n>5 || !Number.isFinite(n)){
+    alert('اكتب رقم من 1 إلى 5.');
+    return;
+  }
+  alert('شكراً لتقييمك ⭐ '+n);
 };
 
 document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
@@ -2263,50 +2182,5 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   document.getElementById('cancelOtherText').classList.remove('show');
 };
 </script>
-<script src="transport-call.js"></script>
-
-<script>
-window.addEventListener('load',()=>{
-  try{
-    const id=activeRideId || localStorage.getItem('ha_active_ride');
-    if(id && window.HATransportCall) HATransportCall.listenForIncoming(id,'customer');
-  }catch(e){console.error(e)}
-});
-</script>
-<script src="transport-notifications.js"></script>
-
-<script>
-window.addEventListener('load',()=>{
-  try{
-    if(!window.HATransportNotify)return;
-    const id=(typeof activeRideId!=='undefined'&&activeRideId) || localStorage.getItem('ha_active_ride');
-    if(id)HATransportNotify.watchRide(id,'customer');
-  }catch(e){console.error(e)}
-});
-</script>
-
-<script>
-(function(){
-  let autoDone=false;
-  async function autoUseCurrentLocation(){
-    if(autoDone || start) return;
-    autoDone=true;
-    try{
-      const z=await HA_Nearby.getCurrent({allowCache:false,timeout:12000});
-      const p=await snap(L.latLng(z.lat,z.lng));
-      try{detectProvinceFromPoint(p)}catch(e){}
-      setPoint('start',p,'موقعك الحالي');
-      map.setView(p,16);
-      window.pendingStartLabel='موقعك الحالي';
-      notice.textContent='✅ تم اعتماد موقعك الحالي كنقطة الانطلاق. تقدر ترجع وتغيّره إذا تريد.';
-    }catch(e){
-      autoDone=false;
-      notice.textContent='📍 فعّل GPS حتى نحدد نقطة الانطلاق تلقائياً، أو حددها من الخريطة.';
-    }
-  }
-  window.addEventListener('load',()=>setTimeout(autoUseCurrentLocation,450));
-})();
-</script>
-
 </body>
 </html>
