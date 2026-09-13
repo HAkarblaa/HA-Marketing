@@ -1328,7 +1328,7 @@ extraSheet.addEventListener('click',e=>{
 
 </script>
 <script>
-const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
+const map=L.map('map',{zoomControl:false}).setView([33.2232,43.6793],6);
 
 // خريطة فاتحة وأقل تفاصيل
 // خريطة OpenStreetMap الفاتحة - مجانية وبدون API Key
@@ -1509,6 +1509,49 @@ locateBtn.onclick=()=>{
    timeout:10000
  });
 };
+
+// ===== فتح الخريطة مباشرة على موقع المستخدم الحقيقي =====
+let haAutoLocationCentered=false;
+function autoCenterOnCurrentLocation(){
+  if(haAutoLocationCentered || !navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const raw=L.latLng(pos.coords.latitude,pos.coords.longitude);
+
+    // ننقل الخريطة فوراً إلى GPS بدون انتظار خدمات الطرق أو البحث.
+    setMode('start');
+    map.setView(raw,16);
+    startMapPick();
+    window.pendingStartLabel='موقعك الحالي';
+    haAutoLocationCentered=true;
+
+    // تحديد المحافظة بالخلفية.
+    try{ detectProvinceFromPoint(raw); }catch(e){}
+
+    // نحاول تقريب النقطة إلى أقرب شارع بدون تعطيل الانتقال الفوري.
+    try{
+      snap(raw).then(p=>{
+        if(p && Number.isFinite(p.lat) && Number.isFinite(p.lng)){
+          map.setView(p,16);
+        }
+      }).catch(()=>{});
+    }catch(e){}
+
+    notice.textContent='تم نقل الخريطة تلقائياً إلى موقعك الحالي. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق.';
+  },()=>{
+    // إذا المستخدم رفض الموقع تبقى الخريطة على عرض العراق بدل محافظة خاطئة.
+    notice.textContent='فعّل GPS واسمح للتطبيق باستخدام الموقع حتى تفتح الخريطة على مكانك تلقائياً.';
+  },{
+    enableHighAccuracy:true,
+    timeout:12000,
+    maximumAge:15000
+  });
+}
+
+// التشغيل التلقائي عند فتح الصفحة.
+setTimeout(autoCenterOnCurrentLocation,180);
+window.addEventListener('load',()=>setTimeout(autoCenterOnCurrentLocation,120));
+
 
 async function searchCurrentPlace(){
  const q=document.getElementById('placeSearch').value.trim();

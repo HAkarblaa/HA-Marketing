@@ -1458,7 +1458,7 @@ const db = firebase.database();
 <script src="transport-rating.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map=L.map('map',{zoomControl:true}).setView([33.3152,44.3661],13);
+const map=L.map('map',{zoomControl:true}).setView([33.2232,43.6793],6);
 [60,180,450,900].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
 window.addEventListener('load',()=>{
   [80,300,800].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
@@ -1473,9 +1473,36 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 const driverIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin driver"></div>',iconSize:[36,36],iconAnchor:[18,34]});
 const customerIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin customer"></div>',iconSize:[36,36],iconAnchor:[18,34]});
 const destinationIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin destination"></div>',iconSize:[36,36],iconAnchor:[18,34]});
-const driver=L.marker([33.325,44.35],{icon:driverIcon}).addTo(map).bindPopup('موقع السائق');
-const customer=L.marker([33.31,44.37],{icon:customerIcon}).addTo(map).bindPopup('موقع الزبون');
-const destination=L.marker([33.29,44.40],{icon:destinationIcon}).addTo(map).bindPopup('الوجهة');
+// لا نظهر نقاطاً تجريبية بمحافظة أخرى عند فتح الصفحة.
+const driver=L.marker([33.2232,43.6793],{icon:driverIcon}).bindPopup('موقع السائق');
+const customer=L.marker([33.2232,43.6793],{icon:customerIcon}).bindPopup('موقع الزبون');
+const destination=L.marker([33.2232,43.6793],{icon:destinationIcon}).bindPopup('الوجهة');
+
+function placeDriverMapMarker(marker,latlng){
+  marker.setLatLng(latlng);
+  if(!map.hasLayer(marker)) marker.addTo(map);
+}
+
+let haDriverMapCentered=false;
+function centerDriverMapOnCurrentLocation(){
+  if(haDriverMapCentered || !navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const p={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    driverRealPos=p;
+    placeDriverMapMarker(driver,[p.lat,p.lng]);
+    map.setView([p.lat,p.lng],16);
+    haDriverMapCentered=true;
+  },()=>{},{
+    enableHighAccuracy:true,
+    timeout:12000,
+    maximumAge:15000
+  });
+}
+
+// أول ما تفتح واجهة السائق تنتقل الخريطة لموقعه الحقيقي.
+setTimeout(centerDriverMapOnCurrentLocation,120);
+window.addEventListener('load',()=>setTimeout(centerDriverMapOnCurrentLocation,100));
 
 let available=true;
 // استقبال طلبات التكسي مباشرة عند فتح صفحة السائق
@@ -1521,7 +1548,11 @@ function startDriverNearbyWatch(){
   if(driverLocationWatchId!=null || !window.HA_Nearby)return;
   driverLocationWatchId=HA_Nearby.watch(pos=>{
     driverRealPos=pos;
-    driver.setLatLng([pos.lat,pos.lng]);
+    placeDriverMapMarker(driver,[pos.lat,pos.lng]);
+    if(!haDriverMapCentered){
+      map.setView([pos.lat,pos.lng],16);
+      haDriverMapCentered=true;
+    }
     if(!currentRide || currentRide.status==='searching'){
       sortPendingByNearest();
       currentPendingIndex=0;
@@ -1583,6 +1614,8 @@ function renderPendingRide(index){
   if(!pendingEntries.length){
     currentRideId=null;
     currentRide=null;
+    if(map.hasLayer(customer)) map.removeLayer(customer);
+    if(map.hasLayer(destination)) map.removeLayer(destination);
     requestCard.style.display='none';
     if(emptyState)emptyState.style.display='flex';
     if(pager)pager.textContent='0 / 0';
@@ -1607,10 +1640,10 @@ function renderPendingRide(index){
   fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
   if(ride.pickup){
-    customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
+    placeDriverMapMarker(customer,[ride.pickup.lat,ride.pickup.lng]);
   }
   if(ride.destination){
-    destination.setLatLng([ride.destination.lat,ride.destination.lng]);
+    placeDriverMapMarker(destination,[ride.destination.lat,ride.destination.lng]);
   }
 
   if(ride.pickup){
@@ -1936,8 +1969,8 @@ async function restoreDriverRide(){
   acceptedPanel.classList.add('show');
   currentFare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
-  if(ride.pickup) customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
-  if(ride.destination) destination.setLatLng([ride.destination.lat,ride.destination.lng]);
+  if(ride.pickup) placeDriverMapMarker(customer,[ride.pickup.lat,ride.pickup.lng]);
+  if(ride.destination) placeDriverMapMarker(destination,[ride.destination.lat,ride.destination.lng]);
 
   const stateText={
     accepted:'بالطريق إلى الزبون',
