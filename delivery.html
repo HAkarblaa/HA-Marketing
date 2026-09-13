@@ -1331,10 +1331,10 @@ extraSheet.addEventListener('click',e=>{
 const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
 
 // خريطة فاتحة وأقل تفاصيل
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
- maxZoom:19,
- subdomains:'abcd',
- attribution:'&copy; OpenStreetMap &copy; CARTO'
+// خريطة OpenStreetMap الفاتحة - مجانية وبدون API Key
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:19,
+  attribution:'&copy; OpenStreetMap contributors'
 }).addTo(map);
 
 L.control.zoom({position:'topright'}).addTo(map);
@@ -1521,7 +1521,7 @@ async function searchCurrentPlace(){
 
  try{
    const r=await fetch(
-     'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=ar&q='
+     'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=7&addressdetails=1&countrycodes=iq&accept-language=ar&q='
      +encodeURIComponent(q)
    );
    const j=await r.json();
@@ -1857,9 +1857,11 @@ function openDeliveryPostOrder(){
       deliveryTrackingMap=L.map('deliveryPostMap',{zoomControl:false}).setView(
         start ? [start.lat,start.lng] : [33.3152,44.3661],14
       );
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-        maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
-      }).addTo(deliveryTrackingMap);
+      // خريطة OpenStreetMap الفاتحة - مجانية وبدون API Key
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:19,
+  attribution:'&copy; OpenStreetMap contributors'
+}).addTo(deliveryTrackingMap);
       L.control.zoom({position:'topright'}).addTo(deliveryTrackingMap);
     }else deliveryTrackingMap.invalidateSize();
 
