@@ -4,118 +4,251 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>إدارة الانضمام والمنصة</title>
+<title>طلبات الانضمام - HA Marketing</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box
+}
+
+:root{
+  --bg:#050505;
+  --card:#0d0d0d;
+  --border:#322b1a;
+  --gold:#d3a13a;
+  --text:#f7f7f7;
+  --muted:#aaa;
+}
 
 body{
   margin:0;
-  font-family:Arial,Tahoma;
-  background:#f5f5f5;
-  color:#111
+  background:
+    radial-gradient(circle at top,#181306 0,#070707 28%,#020202 75%);
+  color:var(--text);
+  font-family:Arial,Tahoma,sans-serif;
+  min-height:100vh;
 }
 
 .wrap{
   width:94%;
-  max-width:1050px;
-  margin:22px auto
+  max-width:900px;
+  margin:0 auto;
+  padding:18px 0 40px;
 }
 
-.top,.row{
+.top{
   display:flex;
-  gap:10px;
   align-items:center;
   justify-content:space-between;
-  flex-wrap:wrap
+  gap:12px;
+  margin-bottom:18px;
 }
 
-.btn,button{
-  border:0;
-  border-radius:11px;
-  padding:11px 14px;
-  background:#111;
-  color:#fff;
+.back{
   text-decoration:none;
+  color:#17120a;
+  background:linear-gradient(135deg,#e0b14a,#b98224);
+  border:1px solid #f0ca70;
+  border-radius:13px;
+  padding:12px 17px;
+  font-weight:bold;
+}
+
+.title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0;
+  font-size:30px;
+  color:#fff;
+}
+
+.admin-badge{
+  background:#0c0c0c;
+  border:1px solid #342b17;
+  border-radius:18px;
+  padding:15px 18px;
+  margin-bottom:14px;
+  color:#ddd;
+  box-shadow:0 8px 25px #0008;
+  font-size:18px;
+}
+
+.main-card{
+  background:linear-gradient(180deg,#111,#080808);
+  border:1px solid #3b3018;
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 10px 30px #0009;
+}
+
+.main-card h2{
+  margin:0 0 8px;
+  font-size:23px;
+}
+
+.main-card p{
+  color:var(--muted);
+  line-height:1.8;
+  margin:0 0 14px;
+}
+
+.refresh{
+  width:100%;
+  border:1px solid #80611f;
+  border-radius:13px;
+  padding:13px;
+  font:inherit;
+  font-weight:bold;
+  color:#17120a;
+  background:linear-gradient(135deg,#e5b74f,#bd8525);
   cursor:pointer;
-  font:inherit
 }
 
-.light{
-  background:#eee;
-  color:#111
+.request{
+  background:linear-gradient(180deg,#111,#090909);
+  border:1px solid #2f291b;
+  border-right:5px solid var(--gold);
+  border-radius:18px;
+  margin:14px 0;
+  padding:16px;
+  box-shadow:0 8px 24px #0008;
 }
 
-.danger{
-  background:#9b1028
+.request-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.ok{
-  background:#0c6b2a
-}
-
-.card{
-  background:#fff;
-  border-radius:16px;
-  padding:15px;
-  margin:12px 0;
-  box-shadow:0 4px 16px #0001
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px
-}
-
-.muted{
-  color:#666;
-  line-height:1.7
+.name{
+  font-size:20px;
+  font-weight:bold;
 }
 
 .badge{
-  display:inline-block;
-  padding:5px 9px;
   border-radius:999px;
-  background:#eee;
-  font-size:12px
+  padding:7px 11px;
+  font-size:12px;
+  border:1px solid #4d4124;
+  background:#18150e;
+  color:#f0cf7e;
 }
 
-input,select,textarea{
-  width:100%;
-  padding:11px;
-  border:1px solid #ccc;
-  border-radius:10px;
+.info{
+  color:#ddd;
+  margin-top:11px;
+  line-height:1.8;
+}
+
+.details{
+  color:#999;
+  margin-top:7px;
+  line-height:1.7;
+  font-size:14px;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  margin-top:14px;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:12px 10px;
+  cursor:pointer;
   font:inherit;
-  margin:5px 0 10px
+  font-weight:bold;
 }
 
-textarea{
-  min-height:90px
+.approve{
+  background:#126a3a;
+  color:#fff;
+  border:1px solid #2aa463;
 }
 
-.status{
-  padding:10px;
-  border-radius:10px;
-  background:#f1f1f1;
-  white-space:pre-wrap
+.reject{
+  background:#721d29;
+  color:#fff;
+  border:1px solid #b73b4c;
 }
 
-@media(max-width:720px){
-  .grid{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:6px
+.stop{
+  background:#3d321b;
+  color:#f2ca69;
+  border:1px solid #7e6427;
+  width:100%;
+  margin-top:9px;
+}
+
+.result{
+  margin-top:13px;
+  border-radius:12px;
+  padding:12px;
+  font-weight:bold;
+}
+
+.result.approved{
+  background:#0e291b;
+  border:1px solid #1e7145;
+  color:#60dc91;
+}
+
+.result.rejected{
+  background:#2b1015;
+  border:1px solid #7d2936;
+  color:#ff7d8b;
+}
+
+.result.suspended{
+  background:#272014;
+  border:1px solid #6e5622;
+  color:#e8bd5d;
+}
+
+.empty,
+.error{
+  background:#101010;
+  border:1px solid #30291a;
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  color:#bbb;
+  line-height:1.8;
+}
+
+.error{
+  color:#ff8d98;
+  border-color:#6f2831;
+}
+
+@media(max-width:600px){
+
+  .wrap{
+    width:95%;
   }
 
-  .card{
-    padding:10px
+  .title{
+    font-size:25px;
   }
 
-  .grid .card{
-    font-size:12px
+  .back{
+    padding:10px 12px;
+    font-size:14px;
   }
+
+  .main-card h2{
+    font-size:21px;
+  }
+
 }
 </style>
 </head>
@@ -125,85 +258,46 @@ textarea{
 <div class="wrap">
 
   <div class="top">
-    <a class="btn light" href="admin-panel.html">
+
+    <a class="back" href="admin-panel.html">
       ← لوحة الإدارة
     </a>
 
-    <h1>🛡️ طلبات الانضمام</h1>
+    <h1 class="title">
+      🛡️ طلبات الانضمام
+    </h1>
 
-    <span></span>
   </div>
 
 
-  <div id="gate" class="card">
+  <div id="gate" class="admin-badge">
     جاري التحقق...
   </div>
 
 
-  <div class="card" style="border:2px solid #111">
+  <div class="main-card">
 
-    <div class="row">
+    <h2>
+      🛡️ جميع طلبات صلاحيات العمل
+    </h2>
 
-      <div>
-        <h2 style="margin:0 0 6px">
-          🚚 طلبات السائقين والمندوبين
-        </h2>
+    <p>
+      التاجر، مقدم الخدمة، صاحب الملعب، الجيم،
+      إدارة الألعاب، السائق والمندوب تظهر طلباتهم هنا.
+    </p>
 
-        <div class="muted">
-          طلبات الانضمام الجديدة تظهر هنا للأدمن الرئيسي.
-        </div>
-      </div>
-
-      <button onclick="load()">
-        تحديث الطلبات
-      </button>
-
-    </div>
+    <button class="refresh" onclick="load()">
+      🔄 تحديث الطلبات
+    </button>
 
   </div>
 
 
   <div id="list">
 
-    <div class="card">
+    <div class="empty">
       جاري تحميل الطلبات...
     </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h2>
-      إضافة مادة للمكتبة الدراسية
-    </h2>
-
-    <input id="stage" placeholder="المرحلة">
-
-    <input id="grade" placeholder="الصف/المرحلة">
-
-    <input id="subject" placeholder="المادة">
-
-    <input id="title" placeholder="العنوان">
-
-    <select id="type">
-      <option value="lesson">محاضرة</option>
-      <option value="book">كتاب</option>
-      <option value="notes">ملزمة</option>
-      <option value="questions">أسئلة</option>
-      <option value="exam">امتحان</option>
-      <option value="video">فيديو</option>
-    </select>
-
-    <input id="url" placeholder="رابط الملف أو الفيديو">
-
-    <textarea id="desc" placeholder="وصف"></textarea>
-
-    <button onclick="addMaterial()">
-      إضافة
-    </button>
-
-    <div id="mstatus" class="status"></div>
 
   </div>
 
@@ -225,7 +319,6 @@ const db = supabase.createClient(
   }
 );
 
-
 let me = null;
 
 
@@ -245,18 +338,69 @@ function esc(s){
 }
 
 
+function roleName(role){
+
+  const map = {
+
+    merchant:'تاجر',
+    trader:'تاجر',
+    shop_owner:'تاجر',
+
+    provider:'مقدم خدمة',
+    service_provider:'مقدم خدمة',
+
+    stadium_owner:'صاحب ملعب',
+    stadium:'صاحب ملعب',
+
+    gym_owner:'صاحب جيم',
+    gym:'صاحب جيم',
+
+    games_admin:'إدارة الألعاب',
+    game_admin:'إدارة الألعاب',
+
+    taxi_driver:'سائق تكسي',
+    delivery_driver:'مندوب توصيل'
+
+  };
+
+  return map[role] || role || 'طلب صلاحية';
+
+}
+
+
+function statusName(status){
+
+  if(status === 'pending'){
+    return 'قيد المراجعة';
+  }
+
+  if(status === 'approved'){
+    return 'مقبول';
+  }
+
+  if(status === 'rejected'){
+    return 'مرفوض';
+  }
+
+  if(status === 'suspended'){
+    return 'موقوف';
+  }
+
+  return status || 'غير محدد';
+
+}
+
+
 async function init(){
 
   const {
-    data:{
-      session
-    }
+    data:{session}
   } = await db.auth.getSession();
 
 
   if(!session){
 
-    location.href = 'login.html';
+    location.href='login.html';
 
     return;
   }
@@ -266,32 +410,33 @@ async function init(){
 
 
   const {
-    data:ok
+    data:ok,
+    error
   } = await db.rpc('is_super_admin');
 
 
-  if(!ok){
+  if(error || !ok){
 
-    gate.textContent =
-      'هذه الصفحة للـSuper Admin فقط.';
+    gate.textContent=
+      '❌ هذه الصفحة للـ Super Admin فقط.';
 
     return;
   }
 
 
-  gate.textContent =
-    '✅ Super Admin';
+  gate.textContent=
+    'Super Admin ✅';
 
 
-  load();
+  await load();
 
 }
 
 
 async function load(){
 
-  list.innerHTML =
-    '<div class="card">جاري تحميل طلبات الانضمام...</div>';
+  list.innerHTML=
+    '<div class="empty">جاري تحميل الطلبات...</div>';
 
 
   try{
@@ -302,7 +447,10 @@ async function load(){
 
   }catch(e){
 
-    console.warn(e);
+    console.warn(
+      'sync skipped',
+      e
+    );
 
   }
 
@@ -313,13 +461,6 @@ async function load(){
   } = await db
     .from('marketplace_applications')
     .select('*')
-    .in(
-      'role_type',
-      [
-        'taxi_driver',
-        'delivery_driver'
-      ]
-    )
     .order(
       'created_at',
       {
@@ -330,123 +471,241 @@ async function load(){
 
   if(error){
 
-    list.innerHTML =
-      '<div class="card danger">' +
-      'خطأ في جلب الطلبات: ' +
-      esc(error.message) +
+    list.innerHTML=
+      '<div class="error">'+
+      'تعذر تحميل الطلبات:<br>'+
+      esc(error.message)+
       '</div>';
 
     return;
   }
 
 
-  list.innerHTML =
-    (data || []).map(x => `
+  if(!data || !data.length){
 
-      <div
-        class="card"
-        style="border-right:5px solid #111"
-      >
+    list.innerHTML=`
 
-        <div class="row">
+      <div class="empty">
 
-          <b>
-            ${esc(x.display_name || 'بدون اسم')}
-          </b>
-
-          <span class="badge">
-
-            ${x.role_type === 'delivery_driver'
-              ? 'مندوب توصيل'
-              : 'سائق تكسي'}
-
-            —
-
-            ${x.status === 'pending'
-              ? 'قيد المراجعة'
-              : x.status === 'approved'
-              ? 'مقبول'
-              : x.status === 'rejected'
-              ? 'مرفوض'
-              : 'موقوف'}
-
-          </span>
-
-        </div>
-
-
-        <div>
-
-          ${esc(x.phone || 'بدون هاتف')}
-
-          —
-
-          ${esc(x.governorate || '')}
-
-        </div>
-
-
-        <div class="muted">
-
-          ${esc(x.details || '')}
-
-        </div>
-
-
-        <div
-          class="row"
-          style="margin-top:8px"
-        >
-
-          <button
-            class="ok"
-            onclick="review(${x.id},'approved')"
-          >
-            موافقة
-          </button>
-
-          <button
-            class="danger"
-            onclick="review(${x.id},'rejected')"
-          >
-            رفض
-          </button>
-
-          <button
-            class="light"
-            onclick="review(${x.id},'suspended')"
-          >
-            إيقاف
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join('') ||
-
-    `
-
-      <div class="card">
-
-        <b>
-          لا توجد طلبات سائقين أو مندوبين حالياً.
-        </b>
+        لا توجد طلبات صلاحيات عمل حالياً.
 
         <br>
 
-        <span class="muted">
-          إذا أرسل مستخدم طلباً جديداً اضغط تحديث الطلبات.
-        </span>
+        إذا أرسل مستخدم طلباً جديداً
+        اضغط تحديث الطلبات.
 
       </div>
 
     `;
 
+    return;
+  }
+
+
+  list.innerHTML = data.map(x => {
+
+
+    let actions = '';
+
+
+    if(x.status === 'pending'){
+
+      actions = `
+
+        <div class="actions">
+
+          <button
+            class="approve"
+            onclick="review(${x.id},'approved')"
+          >
+            ✅ موافقة
+          </button>
+
+
+          <button
+            class="reject"
+            onclick="review(${x.id},'rejected')"
+          >
+            ❌ رفض
+          </button>
+
+        </div>
+
+      `;
+
+    }
+
+
+    else if(x.status === 'approved'){
+
+      actions = `
+
+        <div class="result approved">
+
+          ✅ تمت الموافقة على هذا الطلب
+
+        </div>
+
+
+        <button
+          class="stop"
+          onclick="review(${x.id},'suspended')"
+        >
+          ⛔ إيقاف الصلاحية
+        </button>
+
+      `;
+
+    }
+
+
+    else if(x.status === 'rejected'){
+
+      actions = `
+
+        <div class="result rejected">
+
+          ❌ تم رفض هذا الطلب
+
+        </div>
+
+      `;
+
+    }
+
+
+    else if(x.status === 'suspended'){
+
+      actions = `
+
+        <div class="result suspended">
+
+          ⛔ تم إيقاف هذه الصلاحية
+
+        </div>
+
+      `;
+
+    }
+
+
+    return `
+
+      <div class="request">
+
+        <div class="request-head">
+
+          <div class="name">
+
+            ${esc(
+              x.display_name ||
+              'بدون اسم'
+            )}
+
+          </div>
+
+
+          <div class="badge">
+
+            ${esc(
+              roleName(
+                x.role_type
+              )
+            )}
+
+            —
+
+            ${esc(
+              statusName(
+                x.status
+              )
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="info">
+
+          📱
+          ${esc(
+            x.phone ||
+            'بدون هاتف'
+          )}
+
+          ${
+            x.governorate
+              ? ' — 📍 '+esc(x.governorate)
+              : ''
+          }
+
+        </div>
+
+
+        ${
+          x.details
+
+            ? `<div class="details">
+                 ${esc(x.details)}
+               </div>`
+
+            : ''
+        }
+
+
+        ${actions}
+
+
+      </div>
+
+    `;
+
+  }).join('');
+
 }
 
 
-async function review(id,s){
+async function review(id,status){
+
+  let actionText='';
+
+
+  if(status === 'approved'){
+
+    actionText=
+      'الموافقة على هذا الطلب';
+
+  }
+
+  else if(status === 'rejected'){
+
+    actionText=
+      'رفض هذا الطلب';
+
+  }
+
+  else if(status === 'suspended'){
+
+    actionText=
+      'إيقاف هذه الصلاحية';
+
+  }
+
+
+  const sure = confirm(
+    'هل أنت متأكد من '+
+    actionText+
+    '؟'
+  );
+
+
+  if(!sure){
+
+    return;
+
+  }
+
 
   const note =
     prompt(
@@ -461,9 +720,13 @@ async function review(id,s){
     'admin_review_marketplace_application',
 
     {
+
       p_id:id,
-      p_status:s,
+
+      p_status:status,
+
       p_note:note
+
     }
 
   );
@@ -472,79 +735,41 @@ async function review(id,s){
   if(error){
 
     alert(
+      '❌ تعذر تنفيذ العملية:\n'+
       error.message
     );
 
-  }else{
-
-    load();
+    return;
 
   }
 
-}
 
+  if(status === 'approved'){
 
-async function addMaterial(){
+    alert(
+      '✅ تمت الموافقة على الطلب بنجاح.'
+    );
 
-  const payload = {
+  }
 
-    stage:
-      stage.value.trim(),
+  else if(status === 'rejected'){
 
-    grade:
-      grade.value.trim() ||
-      null,
+    alert(
+      '✅ تم رفض الطلب.'
+    );
 
-    subject:
-      subject.value.trim(),
+  }
 
-    title:
-      title.value.trim(),
+  else if(status === 'suspended'){
 
-    material_type:
-      type.value,
-
-    description:
-      desc.value.trim() ||
-      null,
-
-    external_url:
-      url.value.trim() ||
-      null,
-
-    created_by:
-      me.id,
-
-    is_active:
-      true
-
-  };
-
-
-  if(
-    !payload.stage ||
-    !payload.subject ||
-    !payload.title
-  ){
-
-    return alert(
-      'أكمل المرحلة والمادة والعنوان'
+    alert(
+      '✅ تم إيقاف الصلاحية.'
     );
 
   }
 
 
-  const {
-    error
-  } = await db
-    .from('study_materials')
-    .insert(payload);
-
-
-  mstatus.textContent =
-    error
-      ? error.message
-      : 'تمت إضافة المادة.';
+  await load();
 
 }
 
