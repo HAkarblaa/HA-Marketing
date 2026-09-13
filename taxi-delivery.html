@@ -45,6 +45,12 @@ h1{text-align:center;margin-bottom:8px}
     margin:2px 0 !important;
   }
 }
+
+.driver-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.driver-tools a{display:block!important;visibility:visible!important;opacity:1!important;text-decoration:none!important;text-align:center!important;padding:14px 10px!important;border-radius:14px!important;font-weight:900!important;font-size:15px!important;position:relative!important;z-index:5!important}
+.driver-open-btn{background:linear-gradient(135deg,#ffd46a,#d99521)!important;color:#111!important;border:1px solid #ffd46a!important;box-shadow:0 8px 22px rgba(242,181,68,.22)!important}
+.driver-register-btn{background:#111!important;color:#fff!important;border:1px solid #444!important}
+@media(max-width:700px){.driver-tools{grid-template-columns:1fr;margin-top:12px}.driver-tools a{font-size:14px!important;padding:13px 9px!important}}
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
@@ -72,10 +78,12 @@ h1{text-align:center;margin-bottom:8px}
  </a>
 </div>
 
+<div class="driver-tools">
+  <a class="driver-open-btn" href="driver.html">🚕 فتح واجهة السائق</a>
+  <a class="driver-register-btn" href="transport-registration.html">📝 تسجيل سائق / مندوب</a>
+</div>
+
 <a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
 </div>
-<div style="position:fixed;left:14px;bottom:70px;z-index:999;display:flex;flex-direction:column;gap:8px">
-<a href="driver.html" style="display:block;background:#0c6b2a;color:#fff;text-decoration:none;padding:10px 13px;border-radius:12px;text-align:center">🚚 واجهة السائق / المندوب</a>
-<a href="transport-registration.html" style="display:block;background:#111;color:#fff;text-decoration:none;padding:10px 13px;border-radius:12px;text-align:center">🚕 تسجيل سائق/مندوب</a>
-</div></body>
+</body>
 </html>
