@@ -1288,6 +1288,56 @@ button{-webkit-tap-highlight-color:transparent}
   border-top:1px solid #ececec !important;
 }
 
+
+/* زر فتح المسار في تطبيقات خرائط أخرى - للسائق فقط */
+.map-shell{position:relative!important}
+.driver-external-map-btn{
+  position:absolute;
+  left:14px;
+  bottom:76px;
+  z-index:720;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:1px solid rgba(242,181,68,.38);
+  background:#fff;
+  color:#626a75;
+  box-shadow:0 4px 15px rgba(0,0,0,.28);
+  font-size:25px;
+  font-weight:900;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.driver-external-map-menu{
+  position:absolute;
+  left:74px;
+  bottom:74px;
+  z-index:730;
+  width:190px;
+  display:none;
+  background:#fff;
+  border:1px solid #e8e8e8;
+  border-radius:15px;
+  padding:7px;
+  box-shadow:0 10px 28px rgba(0,0,0,.32);
+}
+.driver-external-map-menu.show{display:block}
+.driver-external-map-menu button{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:#111;
+  border-radius:10px;
+  padding:10px 9px;
+  text-align:right;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+.driver-external-map-menu button+button{margin-top:3px}
+
 </style>
 
 </head>
@@ -1337,7 +1387,17 @@ button{-webkit-tap-highlight-color:transparent}
     </div>
   </section>
 
-  <div class="map-shell animated-map"><div id="map"></div></div>
+  <div class="map-shell animated-map">
+    <div id="map"></div>
+    <button id="driverExternalMapBtn" class="driver-external-map-btn" type="button"
+            title="فتح في تطبيق خرائط آخر" aria-label="فتح في تطبيق خرائط آخر">↗</button>
+    <div id="driverExternalMapMenu" class="driver-external-map-menu">
+      <button type="button" data-map-app="chooser">🗺️ اختيار تطبيق الخرائط</button>
+      <button type="button" data-map-app="google">📍 Google Maps</button>
+      <button type="button" data-map-app="waze">🚗 Waze</button>
+      <button type="button" data-map-app="apple"> Apple Maps</button>
+    </div>
+  </div>
 
   <div id="driverGate" style="display:none!important;width:0;height:0;overflow:hidden;position:absolute">
     <p id="driverGateMsg"></p>
@@ -2290,6 +2350,84 @@ window.addEventListener('load',()=>{
   <a href="account.html"><span>👤</span><b>حسابي</b></a>
   <a href="contact.html"><span>☎️</span><b>اتصل بنا</b></a>
 </nav>
+
+
+<script>
+(function(){
+  const btn=document.getElementById('driverExternalMapBtn');
+  const menu=document.getElementById('driverExternalMapMenu');
+  if(!btn||!menu)return;
+
+  function point(x){
+    if(!x)return null;
+    const lat=Number(x.lat), lng=Number(x.lng);
+    return Number.isFinite(lat)&&Number.isFinite(lng)?{lat,lng}:null;
+  }
+
+  window.openDriverMapApp=function(kind){
+    let origin=point(typeof driverRealPos!=='undefined'?driverRealPos:null);
+    if(!origin){
+      try{
+        const c=map.getCenter();
+        origin={lat:c.lat,lng:c.lng};
+      }catch(e){}
+    }
+
+    let destination=null;
+    try{
+      if(currentRide){
+        // قبل بدء الرحلة يفتح الطريق إلى الزبون،
+        // وبعد بدء الرحلة يفتح الطريق إلى وجهة الزبون.
+        destination = currentRide.status==='started'
+          ? point(currentRide.destination)
+          : point(currentRide.pickup);
+      }
+    }catch(e){}
+
+    const target=destination||origin;
+    if(!target)return;
+
+    const tl=target.lat+','+target.lng;
+    const ol=origin?(origin.lat+','+origin.lng):tl;
+    let url='';
+
+    if(kind==='chooser'){
+      url='geo:'+tl+'?q='+encodeURIComponent(tl);
+    }else if(kind==='google'){
+      url=destination
+        ? 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(ol)+'&destination='+encodeURIComponent(tl)+'&travelmode=driving'
+        : 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(tl);
+    }else if(kind==='waze'){
+      url='https://www.waze.com/ul?ll='+encodeURIComponent(tl)+'&navigate=yes';
+    }else if(kind==='apple'){
+      url=destination
+        ? 'https://maps.apple.com/?saddr='+encodeURIComponent(ol)+'&daddr='+encodeURIComponent(tl)+'&dirflg=d'
+        : 'https://maps.apple.com/?ll='+encodeURIComponent(tl)+'&q='+encodeURIComponent('الموقع المحدد');
+    }
+
+    menu.classList.remove('show');
+    if(url)window.location.href=url;
+  };
+
+  btn.addEventListener('click',function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    menu.classList.toggle('show');
+  });
+
+  menu.addEventListener('click',function(e){
+    const x=e.target.closest('[data-map-app]');
+    if(!x)return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.openDriverMapApp(x.dataset.mapApp);
+  });
+
+  document.addEventListener('click',function(e){
+    if(!menu.contains(e.target)&&e.target!==btn)menu.classList.remove('show');
+  });
+})();
+</script>
 
 </body>
 </html>
