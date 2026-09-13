@@ -55,6 +55,66 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
   .full{grid-column:auto}
   .top h1{font-size:20px}
 }
+
+/* ===== طلبات الزبائن: خطوط الطلاب/الموظفين/الكراج فقط ===== */
+.request-card{
+  background:#fff;border-radius:17px;padding:14px;margin:12px 0;
+  box-shadow:0 4px 16px #0001;border:1px solid #eee
+}
+.request-card h2,.requests-board h2{font-size:18px;margin:0 0 8px}
+.request-form{display:none;margin-top:10px}
+.request-form.show{display:block}
+.request-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.request-grid input,.request-grid select,.request-grid textarea{
+  width:100%;padding:12px;border:1px solid #ccc;border-radius:11px;background:#fff;font:inherit
+}
+.request-grid textarea{min-height:90px;resize:vertical}
+.request-full{grid-column:1/-1}
+.request-submit{
+  width:100%;margin-top:9px;border:0;border-radius:11px;padding:12px 15px;
+  background:#111;color:#fff;font:inherit;font-weight:800;cursor:pointer
+}
+.request-status{font-size:13px;margin-top:8px;white-space:pre-wrap}
+.requests-board{margin:16px 0}
+.requests-board-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.requests-board-head button{
+  border:0;background:#111;color:#fff;border-radius:10px;padding:8px 11px;cursor:pointer;font-weight:700
+}
+.request-list{display:grid;gap:10px}
+.req-item{
+  background:#fff;border:1px solid #eee;border-radius:16px;padding:13px;
+  box-shadow:0 4px 15px #0001
+}
+.req-item.accepted{border-color:#8ed3a7}
+.req-item.cancelled{opacity:.7}
+.req-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.req-head h3{margin:0;font-size:16px}
+.req-state{font-size:11px;padding:5px 8px;border-radius:999px;background:#f1f1f1;white-space:nowrap}
+.req-route{margin-top:9px;background:#f8f8f8;border-radius:10px;padding:10px;font-size:13px;font-weight:700}
+.req-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:8px}
+.req-meta div{background:#fafafa;border-radius:9px;padding:8px}
+.req-meta small{display:block;color:#777;font-size:10px;margin-bottom:3px}
+.req-meta b{font-size:12px}
+.req-details{margin-top:8px;color:#555;font-size:12px;line-height:1.7;white-space:pre-wrap}
+.req-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.req-actions button,.req-actions a{
+  border:0;border-radius:10px;padding:10px;text-align:center;text-decoration:none;
+  font:inherit;font-size:12px;font-weight:800;cursor:pointer
+}
+.req-accept{background:#138a43;color:#fff}
+.req-cancel{background:#fee;color:#9b1028}
+.req-call{background:#111;color:#fff}
+.req-wa{background:#eaf8ef;color:#087a35}
+.driver-approved-note{
+  display:none;margin:10px 0;padding:10px 12px;border-radius:12px;
+  background:#eaf8ef;color:#087a35;font-size:12px;font-weight:700
+}
+.driver-approved-note.show{display:block}
+@media(max-width:720px){
+  .request-grid{grid-template-columns:1fr}
+  .request-full{grid-column:auto}
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css">
 </head>
@@ -79,6 +139,45 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
       <option>دهوك</option><option>السليمانية</option>
     </select>
     <button type="button" onclick="loadListings()">تحديث</button>
+  </div>
+
+
+  <div class="request-card">
+    <h2 id="customerRequestTitle">📣 أضف طلبك</h2>
+    <div class="hint">إذا تحتاج خط أو نقل من هذا القسم، اكتب المكان والوقت والتفاصيل. يظهر طلبك للسواق المقبولين بهذا القسم فقط.</div>
+    <button class="primary" id="openRequestBtn" type="button" style="margin-top:10px">إضافة طلب جديد</button>
+
+    <div id="requestForm" class="request-form">
+      <div class="request-grid">
+        <input id="reqName" placeholder="اسم الزبون">
+        <input id="reqPhone" placeholder="رقم الهاتف 07xxxxxxxxx" inputmode="tel">
+        <select id="reqGovernorate">
+          <option value="">اختر المحافظة</option>
+          <option>بغداد</option><option>البصرة</option><option>نينوى</option><option>أربيل</option>
+          <option>النجف</option><option>كربلاء</option><option>بابل</option><option>كركوك</option>
+          <option>الأنبار</option><option>ديالى</option><option>ذي قار</option><option>واسط</option>
+          <option>ميسان</option><option>المثنى</option><option>القادسية</option><option>صلاح الدين</option>
+          <option>دهوك</option><option>السليمانية</option>
+        </select>
+        <input id="reqPassengers" type="number" min="1" placeholder="عدد الأشخاص">
+        <input id="reqFrom" placeholder="منطقة الانطلاق / من وين">
+        <input id="reqTo" placeholder="الوجهة / إلى وين">
+        <input id="reqDate" type="date" aria-label="التاريخ">
+        <input id="reqTime" type="time" aria-label="الوقت">
+        <textarea id="reqDetails" class="request-full" placeholder="تفاصيل إضافية: اسم المدرسة أو الجامعة، مكان الدائرة، أيام الدوام، وقت الرجوع، اسم الكراج أو أي ملاحظة أخرى"></textarea>
+      </div>
+      <button id="submitRequestBtn" class="request-submit" type="button">إرسال الطلب للسواق بهذا القسم</button>
+      <div id="requestStatus" class="request-status"></div>
+    </div>
+  </div>
+
+  <div class="requests-board">
+    <div class="requests-board-head">
+      <h2>📋 طلبات الزبائن</h2>
+      <button id="refreshRequestsBtn" type="button">تحديث</button>
+    </div>
+    <div id="approvedDriverNote" class="driver-approved-note">✅ أنت سائق مقبول بهذا القسم وتكدر تقبل الطلبات المتاحة.</div>
+    <div id="requestsList" class="request-list"><div class="loading">جاري تحميل الطلبات...</div></div>
   </div>
 
   <div id="adminReviewLink" style="display:none;margin:0 0 12px">
@@ -137,6 +236,7 @@ const params=new URLSearchParams(location.search);
 let currentType=TYPES[params.get('type')]?params.get('type'):'student_line';
 let me=null;
 let editingId=null;
+let approvedDriverListing=null;
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function digits(s){return String(s||'').replace(/\D/g,'')}
@@ -153,6 +253,8 @@ function setType(type,push=true){
   $('subtitle').textContent=TYPES[type].desc;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.type===type));
   loadMyExisting();
+  loadApprovedDriver();
+  loadCustomerRequests();
   loadListings();
 }
 function renderTabs(){
@@ -179,8 +281,19 @@ async function init(){
       $('fullName').value=p.full_name||'';
       $('phone').value=p.phone||'';
       $('governorate').value=p.governorate||'';
+      $('reqName').value=p.full_name||'';
+      $('reqPhone').value=p.phone||'';
+      $('reqGovernorate').value=p.governorate||'';
     }
   }
+
+  $('openRequestBtn').onclick=()=>{
+    if(!me){ location.href='login.html?next='+encodeURIComponent(location.href); return; }
+    $('requestForm').classList.toggle('show');
+  };
+  $('submitRequestBtn').onclick=submitCustomerRequest;
+  $('refreshRequestsBtn').onclick=loadCustomerRequests;
+
   $('openFormBtn').onclick=async()=>{
     if(!me){ location.href='login.html?next='+encodeURIComponent(location.href); return; }
     $('form').classList.toggle('show');
@@ -228,6 +341,230 @@ async function loadMyExisting(){
   $('details').value=data.details||'';
   $('saveBtn').textContent='إرسال التعديل للموافقة';
 }
+
+
+async function loadApprovedDriver(){
+  approvedDriverListing=null;
+  $('approvedDriverNote').classList.remove('show');
+  if(!me)return;
+
+  const {data,error}=await db.from('transport_directory')
+    .select('id,user_id,service_type,full_name,phone,whatsapp,vehicle_type,vehicle_model,status,is_active')
+    .eq('user_id',me.id)
+    .eq('service_type',currentType)
+    .eq('status','approved')
+    .eq('is_active',true)
+    .maybeSingle();
+
+  if(!error && data){
+    approvedDriverListing=data;
+    $('approvedDriverNote').classList.add('show');
+  }
+}
+
+async function submitCustomerRequest(){
+  if(!me){
+    location.href='login.html?next='+encodeURIComponent(location.href);
+    return;
+  }
+
+  const name=$('reqName').value.trim();
+  const phone=$('reqPhone').value.trim();
+  const gov=$('reqGovernorate').value.trim();
+  const from=$('reqFrom').value.trim();
+  const to=$('reqTo').value.trim();
+
+  if(!name)return alert('اكتب اسم الزبون');
+  if(!/^07\d{9}$/.test(digits(phone)))return alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
+  if(!gov)return alert('اختر المحافظة');
+  if(!from)return alert('اكتب منطقة الانطلاق');
+  if(!to)return alert('اكتب الوجهة');
+
+  $('submitRequestBtn').disabled=true;
+  $('requestStatus').textContent='جاري إرسال الطلب...';
+
+  const payload={
+    customer_id:me.id,
+    service_type:currentType,
+    customer_name:name,
+    customer_phone:phone,
+    governorate:gov,
+    from_area:from,
+    to_area:to,
+    request_date:$('reqDate').value||null,
+    request_time:$('reqTime').value||null,
+    passengers:$('reqPassengers').value?Number($('reqPassengers').value):null,
+    details:$('reqDetails').value.trim()||null,
+    status:'pending'
+  };
+
+  const {error}=await db.from('transport_line_requests').insert(payload);
+  $('submitRequestBtn').disabled=false;
+
+  if(error){
+    console.error(error);
+    $('requestStatus').textContent='❌ '+error.message;
+    alert('تعذر إرسال الطلب: '+error.message);
+    return;
+  }
+
+  $('requestStatus').textContent='✅ تم إرسال طلبك للسواق المختصين بهذا القسم.';
+  $('reqFrom').value='';
+  $('reqTo').value='';
+  $('reqDate').value='';
+  $('reqTime').value='';
+  $('reqPassengers').value='';
+  $('reqDetails').value='';
+  await loadCustomerRequests();
+}
+
+function requestStateLabel(s){
+  if(s==='accepted')return '✅ تم قبول الطلب';
+  if(s==='cancelled')return '🚫 ملغي';
+  if(s==='completed')return '🏁 مكتمل';
+  return '⏳ بانتظار سائق';
+}
+
+async function loadCustomerRequests(){
+  const box=$('requestsList');
+  if(!me){
+    box.innerHTML='<div class="empty">سجل دخولك حتى تضيف طلب وتشوف حالته.</div>';
+    return;
+  }
+
+  box.innerHTML='<div class="loading">جاري تحميل الطلبات...</div>';
+
+  // RLS يرجع للزبون طلباته، وللسائق الموافق عليه طلبات قسمه فقط.
+  let q=db.from('transport_line_requests')
+    .select('*')
+    .eq('service_type',currentType)
+    .order('created_at',{ascending:false})
+    .limit(50);
+
+  const {data,error}=await q;
+  if(error){
+    box.innerHTML='<div class="empty">تعذر تحميل طلبات الزبائن. شغّل ملف SQL المرفق أولاً.</div>';
+    return;
+  }
+
+  let rows=data||[];
+
+  // السائق يشوف الطلبات المتاحة + الطلب الذي قبله هو.
+  // الزبون العادي أساساً RLS لا يرجع له إلا طلباته.
+  if(approvedDriverListing){
+    rows=rows.filter(x=>x.status==='pending' || x.driver_id===me.id || x.customer_id===me.id);
+  }
+
+  if(!rows.length){
+    box.innerHTML='<div class="empty">لا توجد طلبات حالياً بهذا القسم.</div>';
+    return;
+  }
+
+  box.innerHTML=rows.map(requestCardHtml).join('');
+
+  box.querySelectorAll('[data-accept-request]').forEach(b=>{
+    b.onclick=()=>acceptCustomerRequest(b.dataset.acceptRequest);
+  });
+  box.querySelectorAll('[data-cancel-request]').forEach(b=>{
+    b.onclick=()=>cancelCustomerRequest(b.dataset.cancelRequest);
+  });
+}
+
+function requestCardHtml(x){
+  const own=me&&x.customer_id===me.id;
+  const mineAsDriver=me&&x.driver_id===me.id;
+  const canAccept=!!approvedDriverListing && x.status==='pending' && !own;
+  const route=esc(x.from_area)+' ← '+esc(x.to_area);
+  const dateTime=[
+    x.request_date?esc(x.request_date):'',
+    x.request_time?esc(String(x.request_time).slice(0,5)):''
+  ].filter(Boolean).join(' • ')||'غير محدد';
+
+  const customerPhone=esc(x.customer_phone||'');
+  const driverPhone=esc(x.driver_phone||'');
+  const driverWa=waNumber(x.driver_whatsapp||x.driver_phone||'');
+
+  let acceptedBlock='';
+  if(own && x.status==='accepted'){
+    acceptedBlock=`<div class="note" style="margin-top:9px;background:#eefaf2;padding:10px;border-radius:10px">
+      <b>✅ السائق الذي قبل طلبك:</b><br>
+      ${esc(x.driver_name||'السائق')} ${x.driver_vehicle?'• '+esc(x.driver_vehicle):''}
+    </div>
+    <div class="req-actions">
+      <a class="req-call" href="tel:${driverPhone}">📞 اتصال بالسائق</a>
+      <a class="req-wa" href="https://wa.me/${driverWa}" target="_blank" rel="noopener">💬 واتساب</a>
+    </div>`;
+  }
+
+  let driverCustomerContact='';
+  if((canAccept || mineAsDriver) && x.customer_phone){
+    driverCustomerContact=`<div class="req-actions">
+      <a class="req-call" href="tel:${customerPhone}">📞 اتصال بالزبون</a>
+      <a class="req-wa" href="https://wa.me/${waNumber(x.customer_phone)}" target="_blank" rel="noopener">💬 واتساب</a>
+    </div>`;
+  }
+
+  return `<div class="req-item ${esc(x.status)}">
+    <div class="req-head">
+      <h3>${TYPES[x.service_type]?.icon||'🚐'} ${esc(x.customer_name)}</h3>
+      <span class="req-state">${requestStateLabel(x.status)}</span>
+    </div>
+
+    <div class="req-route">📍 ${route}</div>
+
+    <div class="req-meta">
+      <div><small>المحافظة</small><b>${esc(x.governorate)}</b></div>
+      <div><small>التاريخ والوقت</small><b>${dateTime}</b></div>
+      <div><small>عدد الأشخاص</small><b>${esc(x.passengers||'غير محدد')}</b></div>
+      <div><small>القسم</small><b>${esc(TYPES[x.service_type]?.name||x.service_type)}</b></div>
+    </div>
+
+    ${x.details?`<div class="req-details">${esc(x.details)}</div>`:''}
+
+    ${canAccept?`<div class="req-actions">
+      <button class="req-accept" data-accept-request="${esc(x.id)}">✅ قبول الطلب</button>
+      <a class="req-call" href="tel:${customerPhone}">📞 اتصال قبل القبول</a>
+    </div>`:''}
+
+    ${driverCustomerContact}
+    ${acceptedBlock}
+
+    ${own&&x.status==='pending'?`<div class="req-actions">
+      <button class="req-cancel" data-cancel-request="${esc(x.id)}">إلغاء طلبي</button>
+    </div>`:''}
+  </div>`;
+}
+
+async function acceptCustomerRequest(id){
+  if(!approvedDriverListing){
+    alert('يجب أن تكون سائقاً مقبولاً من الإدارة في هذا القسم.');
+    return;
+  }
+  if(!confirm('تريد قبول هذا الطلب والارتباط بالزبون؟'))return;
+
+  const {data,error}=await db.rpc('accept_transport_line_request',{p_request_id:id});
+  if(error){
+    alert(error.message);
+    await loadCustomerRequests();
+    return;
+  }
+
+  alert('✅ تم قبول الطلب وربطك بالزبون.');
+  await loadCustomerRequests();
+}
+
+async function cancelCustomerRequest(id){
+  if(!confirm('تريد إلغاء طلبك؟'))return;
+
+  const {error}=await db.rpc('cancel_transport_line_request',{p_request_id:id});
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await loadCustomerRequests();
+}
+
 
 async function saveListing(){
   if(!me){ location.href='login.html?next='+encodeURIComponent(location.href); return; }
