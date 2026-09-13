@@ -17,7 +17,7 @@
 
     <div id="registerStep">
       <h1>إنشاء حساب</h1>
-      <div class="sub">اكتب بياناتك. إذا كانت صحيحة وغير مستخدمة نرسل لك رمز تأكيد على واتساب.</div>
+      <div class="sub">اكتب جميع بيانات الحساب. يتم التحقق من الشروط وعدم تكرار المعرّف أو رقم الموبايل، ثم يُنشأ الحساب مباشرة.</div>
 
       <label>الاسم الكامل *</label>
       <input id="full_name" autocomplete="name" placeholder="الاسم الكامل">
@@ -48,23 +48,14 @@
       <input id="confirm_password" type="password" minlength="8" maxlength="72" autocomplete="new-password">
       <div id="passError" class="err"></div>
 
-      <button id="continueBtn" class="primary" type="button" onclick="startVerification()">متابعة وإرسال رمز واتساب</button>
+      <div class="wa">
+        <b>⚠️ تأكيد واتساب معطّل مؤقتاً</b>
+        <p>سيتم إنشاء الحساب مباشرة بعد نجاح فحص البيانات والتأكد من أن رقم الموبايل والمُعرّف غير مستخدمين.</p>
+      </div>
+
+      <button id="continueBtn" class="primary" type="button" onclick="createAccount()">إنشاء الحساب</button>
       <a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a>
       <a class="btn" href="index.html">الرجوع للرئيسية</a>
-    </div>
-
-    <div id="otpStep" class="hidden">
-      <div class="otp-title">📲 تأكيد رقم واتساب</div>
-      <div class="otp-phone">أرسلنا رمزاً من 6 أرقام إلى <b id="otpPhoneView"></b></div>
-      <div class="wa"><b>أدخل الرمز الذي وصلك</b><p>لن يتم إنشاء الحساب نهائياً إلا بعد نجاح رمز التأكيد.</p></div>
-      <label>رمز التأكيد *</label>
-      <input id="otpCode" class="otp-input" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••">
-      <div id="otpStatus" class="note"></div>
-      <button id="verifyBtn" class="primary" type="button" onclick="verifyAndCreate()">تأكيد وإنشاء الحساب</button>
-      <div class="otp-actions">
-        <button id="resendBtn" class="secondary" type="button" onclick="resendCode()">إعادة إرسال الرمز</button>
-        <button class="secondary" type="button" onclick="backToEdit()">تعديل البيانات</button>
-      </div>
     </div>
   </div>
 </div>
@@ -74,15 +65,12 @@ const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 
-let pending=null;
-let resendTimer=null;
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
 function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function authEmail(p){return 'u'+p+'@ha.local'}
 function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
 function showLoading(t){haLoadText.textContent=t||'جاري التحميل...';haLoading.classList.add('show')}
 function hideLoading(){haLoading.classList.remove('show')}
-function maskPhone(lp){return lp.slice(0,4)+'•••'+lp.slice(-4)}
 
 function collectAndValidate(){
   passError.textContent='';
@@ -120,48 +108,6 @@ async function checkDuplicates(data){
   return {usernameTaken:!!u?.length,phoneTaken:!!p?.length};
 }
 
-async function sendCode(data){
-  const {data:r,error}=await db.functions.invoke('ha-send-whatsapp-otp',{body:{phone:data.localPhone}});
-  if(error) throw error;
-  if(!r?.ok) throw new Error(r?.error||'تعذر إرسال رمز واتساب');
-}
-
-function startResendCountdown(){
-  let n=60;resendBtn.disabled=true;resendBtn.textContent='إعادة الإرسال بعد '+n+'ث';
-  clearInterval(resendTimer);
-  resendTimer=setInterval(()=>{n--;if(n<=0){clearInterval(resendTimer);resendBtn.disabled=false;resendBtn.textContent='إعادة إرسال الرمز'}else resendBtn.textContent='إعادة الإرسال بعد '+n+'ث';},1000);
-}
-
-async function startVerification(){
-  const data=collectAndValidate();if(!data)return;
-  showLoading('جاري التحقق من البيانات...');
-  try{
-    const d=await checkDuplicates(data);
-    if(d.usernameTaken){hideLoading();alert('هذا المعرّف مستخدم مسبقاً. اختار معرف آخر.');username.focus();return}
-    if(d.phoneTaken){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
-    haLoadText.textContent='جاري إرسال رمز واتساب...';
-    await sendCode(data);
-    pending=data;
-    registerStep.classList.add('hidden');otpStep.classList.remove('hidden');
-    otpPhoneView.textContent=maskPhone(data.localPhone);
-    otpCode.value='';otpStatus.textContent='تم إرسال الرمز. تحقق من واتساب.';
-    startResendCountdown();
-    setTimeout(()=>otpCode.focus(),100);
-  }catch(e){console.error(e);alert('تعذر إرسال رمز واتساب: '+(e?.message||e));}
-  finally{hideLoading()}
-}
-
-async function resendCode(){
-  if(!pending)return backToEdit();
-  showLoading('جاري إعادة إرسال الرمز...');
-  try{await sendCode(pending);otpStatus.textContent='تم إرسال رمز جديد إلى واتساب.';startResendCountdown();}
-  catch(e){alert('تعذر إعادة الإرسال: '+(e?.message||e));}
-  finally{hideLoading()}
-}
-
-function backToEdit(){
-  clearInterval(resendTimer);otpStep.classList.add('hidden');registerStep.classList.remove('hidden');otpStatus.textContent='';otpCode.value='';pending=null;
-}
 
 async function saveProfile(user,data){
   const base={id:user.id,full_name:data.name,phone:data.phone,username:data.username,account_type:'customer',employee_status:'not_applicable'};
@@ -173,40 +119,76 @@ async function saveProfile(user,data){
   if(error) throw error;
 }
 
-async function verifyAndCreate(){
-  if(!pending){alert('ارجع واكتب البيانات من جديد.');return backToEdit()}
-  const code=otpCode.value.replace(/\D/g,'');
-  if(!/^\d{6}$/.test(code)){alert('اكتب رمز التأكيد المكوّن من 6 أرقام.');otpCode.focus();return}
-  showLoading('جاري تأكيد الرمز...');
+async function createAccount(){
+  const data=collectAndValidate();
+  if(!data)return;
+
+  continueBtn.disabled=true;
+  showLoading('جاري التحقق من البيانات...');
   try{
-    const {data:v,error:ve}=await db.functions.invoke('ha-verify-whatsapp-otp',{body:{phone:pending.localPhone,code}});
-    if(ve) throw ve;
-    if(!v?.ok) throw new Error(v?.error||'رمز التأكيد غير صحيح');
+    const d=await checkDuplicates(data);
+    if(d.usernameTaken){
+      alert('هذا المعرّف مستخدم مسبقاً. اختار معرف آخر.');
+      username.focus();
+      return;
+    }
+    if(d.phoneTaken){
+      alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');
+      phone.focus();
+      return;
+    }
 
-    haLoadText.textContent='تم التأكيد، جاري إنشاء الحساب...';
-    // فحص نهائي بعد OTP لتقليل احتمال التكرار إذا سجل شخص آخر بنفس البيانات خلال الانتظار.
-    const d=await checkDuplicates(pending);
-    if(d.usernameTaken) throw new Error('المعرّف أصبح مستخدماً. ارجع واختار معرفاً آخر.');
-    if(d.phoneTaken) throw new Error('رقم الموبايل أصبح مستخدماً بحساب آخر.');
+    haLoadText.textContent='جاري إنشاء الحساب...';
 
-    const meta={full_name:pending.name,age:pending.age,gender:pending.gender,phone:pending.phone,username:pending.username,account_type:'customer',whatsapp_verified:true};
-    const email=authEmail(pending.phone);
-    const {data:s,error:se}=await db.auth.signUp({email,password:pending.password,options:{data:meta}});
+    const meta={
+      full_name:data.name,
+      age:data.age,
+      gender:data.gender,
+      phone:data.phone,
+      username:data.username,
+      account_type:'customer',
+      whatsapp_verified:false
+    };
+
+    const email=authEmail(data.phone);
+    const {data:s,error:se}=await db.auth.signUp({
+      email,
+      password:data.password,
+      options:{data:meta}
+    });
     if(se) throw se;
+
     let session=s?.session||null;
     let user=s?.user||null;
+
     if(!session){
-      const {data:l,error:le}=await db.auth.signInWithPassword({email,password:pending.password});
-      if(le) throw le;session=l.session;user=l.user;
+      const {data:l,error:le}=await db.auth.signInWithPassword({
+        email,
+        password:data.password
+      });
+      if(le) throw le;
+      session=l.session;
+      user=l.user;
     }
+
     if(!session||!user) throw new Error('تم إنشاء الحساب لكن تعذر تثبيت جلسة الدخول.');
-    await saveProfile(user,pending);
+
+    await saveProfile(user,data);
     localStorage.setItem('ha_logged_in','1');
     haLoadText.textContent='تم إنشاء الحساب بنجاح...';
     location.replace('index.html');
   }catch(e){
-    console.error(e);otpStatus.textContent='❌ '+(e?.message||'تعذر تأكيد الرمز');alert(e?.message||'تعذر إكمال إنشاء الحساب.');
-  }finally{hideLoading()}
+    console.error(e);
+    const m=e?.message||String(e);
+    if(/already|registered|exists/i.test(m)){
+      alert('رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.');
+    }else{
+      alert('تعذر إنشاء الحساب: '+m);
+    }
+  }finally{
+    hideLoading();
+    continueBtn.disabled=false;
+  }
 }
 </script>
 </body>
