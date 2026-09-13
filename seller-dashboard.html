@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0)}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
 .image-picker{border:1px dashed #bbb;border-radius:12px;padding:10px;margin:5px 0 10px;background:#fafafa}
 .image-picker label{display:block;font-weight:700;margin-bottom:7px}
 .image-preview{display:none;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:8px;border:1px solid #ddd}
@@ -31,7 +31,7 @@
 <img id="storeImagePreview" class="image-preview" alt="معاينة صورة المتجر">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="desc" placeholder="وصف المتجر"></textarea><button onclick="saveStore()">حفظ المتجر</button><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><select id="category"></select><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
+<textarea id="desc" placeholder="وصف المتجر"></textarea><button id="saveStoreBtn" type="button">حفظ المتجر</button><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><select id="category"></select><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
 <label>صورة المنتج</label>
 <div class="image-actions">
   <input id="productImageFile" type="file" accept="image/*" capture="environment">
@@ -52,6 +52,7 @@ const stockEl=document.getElementById('stock');
 const pdescEl=document.getElementById('pdesc');
 const productsEl=document.getElementById('products');
 const storeSaveStatus=document.getElementById('storeSaveStatus');
+const saveStoreBtn=document.getElementById('saveStoreBtn');
 const storeLocateBtn=document.getElementById('storeLocateBtn');
 const storeImageFile=document.getElementById('storeImageFile');
 const storeImagePreview=document.getElementById('storeImagePreview');
@@ -110,39 +111,52 @@ if(productImageFile){
     }
   });
 }
-const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');categoryEl.innerHTML=(c||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');loadProducts();loadOrders()}async function saveStore(){
+const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');categoryEl.innerHTML=(c||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');loadProducts();loadOrders()}let saveStoreBusy=false;
+
+function withTimeout(promise,ms=15000){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error('انتهت مهلة الاتصال بقاعدة البيانات. تحقق من الإنترنت وحاول مرة ثانية.')),ms))
+  ]);
+}
+
+async function saveStore(){
+  if(saveStoreBusy)return;
+
   if(!me){
     alert('جلسة الدخول غير جاهزة. اغلق الصفحة وافتحها من جديد.');
     return;
   }
 
   const storeNameValue=(storeNameEl?.value||'').trim();
+
   if(!storeNameValue){
     alert('اكتب اسم المتجر');
     storeNameEl?.focus();
     return;
   }
 
-  const saveBtn=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('حفظ المتجر'));
+  saveStoreBusy=true;
 
   try{
-    if(saveBtn){
-      saveBtn.disabled=true;
-      saveBtn.textContent='جاري الحفظ...';
-    }
-    if(storeSaveStatus){
-      storeSaveStatus.style.display='block';
-      storeSaveStatus.textContent='جاري حفظ المتجر...';
+    if(saveStoreBtn){
+      saveStoreBtn.disabled=true;
+      saveStoreBtn.textContent='جاري الحفظ...';
     }
 
-    const payload={
+    if(storeSaveStatus){
+      storeSaveStatus.style.display='block';
+      storeSaveStatus.textContent='⏳ جاري حفظ المتجر...';
+    }
+
+    // نحفظ بيانات المتجر أولاً بدون الصورة حتى لا توقف الصورة عملية الحفظ.
+    const basePayload={
       owner_user_id:me.id,
       section_key:sectionEl?.value||'markets',
       name:storeNameValue,
       location_text:(locationEl?.value||'').trim()||null,
       lat:storeLat,
       lng:storeLng,
-      image_url:storeImageData||null,
       description:(descEl?.value||'').trim()||null,
       is_active:true
     };
@@ -150,47 +164,101 @@ const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',p
     let r;
 
     if(store?.id){
-      r=await db
-        .from('shop_businesses')
-        .update(payload)
-        .eq('id',store.id)
-        .eq('owner_user_id',me.id)
-        .select()
-        .single();
+      r=await withTimeout(
+        db.from('shop_businesses')
+          .update(basePayload)
+          .eq('id',store.id)
+          .eq('owner_user_id',me.id)
+          .select('*')
+          .single()
+      );
     }else{
-      r=await db
-        .from('shop_businesses')
-        .insert(payload)
-        .select()
-        .single();
+      r=await withTimeout(
+        db.from('shop_businesses')
+          .insert(basePayload)
+          .select('*')
+          .single()
+      );
     }
 
-    if(r.error) throw r.error;
-    if(!r.data) throw new Error('لم ترجع قاعدة البيانات بيانات المتجر بعد الحفظ.');
+    if(r?.error)throw r.error;
+    if(!r?.data)throw new Error('قاعدة البيانات لم ترجع بيانات المتجر بعد الحفظ.');
 
     store=r.data;
+
+    // بعد نجاح حفظ المتجر نحاول حفظ الصورة بشكل منفصل.
+    if(storeImageData){
+      if(storeSaveStatus)storeSaveStatus.textContent='✅ تم حفظ المتجر — جاري حفظ الصورة...';
+
+      const imgResult=await withTimeout(
+        db.from('shop_businesses')
+          .update({image_url:storeImageData})
+          .eq('id',store.id)
+          .eq('owner_user_id',me.id),
+        15000
+      );
+
+      if(imgResult?.error){
+        console.warn('store image save failed',imgResult.error);
+        if(storeSaveStatus){
+          storeSaveStatus.textContent='✅ تم حفظ المتجر، لكن تعذر حفظ الصورة: '+imgResult.error.message;
+        }
+        alert('✅ تم حفظ المتجر.\n⚠️ تعذر حفظ الصورة فقط: '+imgResult.error.message);
+        return;
+      }
+
+      store.image_url=storeImageData;
+    }
 
     if(storeSaveStatus){
       storeSaveStatus.textContent='✅ تم حفظ المتجر بنجاح';
     }
+
     alert('✅ تم حفظ المتجر بنجاح');
 
   }catch(e){
     console.error('saveStore error:',e);
     const msg=e?.message||String(e);
+
     if(storeSaveStatus){
       storeSaveStatus.style.display='block';
       storeSaveStatus.textContent='❌ تعذر حفظ المتجر: '+msg;
     }
-    alert('❌ تعذر حفظ المتجر: '+msg);
+
+    alert('❌ تعذر حفظ المتجر:\n'+msg);
 
   }finally{
-    if(saveBtn){
-      saveBtn.disabled=false;
-      saveBtn.textContent='حفظ المتجر';
+    saveStoreBusy=false;
+
+    if(saveStoreBtn){
+      saveStoreBtn.disabled=false;
+      saveStoreBtn.textContent='حفظ المتجر';
     }
   }
 }
+
+function bindSaveStoreButton(){
+  if(!saveStoreBtn)return;
+
+  let lastTouch=0;
+
+  saveStoreBtn.addEventListener('touchend',function(e){
+    lastTouch=Date.now();
+    e.preventDefault();
+    e.stopPropagation();
+    saveStore();
+  },{passive:false});
+
+  saveStoreBtn.addEventListener('click',function(e){
+    // Android يطلق click بعد touchend؛ نتجنب الحفظ مرتين.
+    if(Date.now()-lastTouch<700)return;
+    e.preventDefault();
+    e.stopPropagation();
+    saveStore();
+  });
+}
+bindSaveStoreButton();
+
 if(storeLocateBtn){storeLocateBtn.onclick=async()=>{
   storeLocStatus.textContent='جاري تحديد الموقع...';
   try{
