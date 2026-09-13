@@ -31,7 +31,7 @@
 <img id="storeImagePreview" class="image-preview" alt="معاينة صورة المتجر">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="desc" placeholder="وصف المتجر"></textarea><button id="saveStoreBtn" type="button">حفظ المتجر</button><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><select id="category"></select><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
+<textarea id="desc" placeholder="وصف المتجر"></textarea><button id="saveStoreBtn" type="button">حفظ المتجر</button><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
 <label>صورة المنتج</label>
 <div class="image-actions">
   <input id="productImageFile" type="file" accept="image/*" capture="environment">
@@ -45,7 +45,6 @@ const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
 const locationEl=document.getElementById('location');
 const descEl=document.getElementById('desc');
-const categoryEl=document.getElementById('category');
 const pnameEl=document.getElementById('pname');
 const priceEl=document.getElementById('price');
 const stockEl=document.getElementById('stock');
@@ -53,6 +52,31 @@ const pdescEl=document.getElementById('pdesc');
 const productsEl=document.getElementById('products');
 const storeSaveStatus=document.getElementById('storeSaveStatus');
 const saveStoreBtn=document.getElementById('saveStoreBtn');
+let productCategoriesCache=[];
+let autoCategoryId=null;
+
+const SECTION_AR={
+  markets:'أسواق',
+  restaurants:'مطاعم',
+  flowers:'ورد',
+  home_appliances:'أجهزة منزلية',
+  printers:'طابعات',
+  devices:'أجهزة',
+  device_accessories:'ملحقات الأجهزة',
+  clothes:'ملابس',
+  shoes:'أحذية',
+  library:'مكتبة',
+  building_materials:'مواد البناء',
+  cards_credit:'بطاقات وأرصدة',
+  yugioh:'أوراق يوغي'
+};
+
+function syncAutoCategory(){
+  const key=(store?.section_key || sectionEl?.value || '').trim();
+  const wanted=SECTION_AR[key]||'';
+  const exact=productCategoriesCache.find(x=>String(x.name||'').trim()===wanted);
+  autoCategoryId=exact?.id ?? productCategoriesCache[0]?.id ?? null;
+}
 const storeLocateBtn=document.getElementById('storeLocateBtn');
 const storeImageFile=document.getElementById('storeImageFile');
 const storeImagePreview=document.getElementById('storeImagePreview');
@@ -111,7 +135,7 @@ if(productImageFile){
     }
   });
 }
-const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');categoryEl.innerHTML=(c||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');loadProducts();loadOrders()}let saveStoreBusy=false;
+const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();loadProducts();loadOrders()}let saveStoreBusy=false;
 
 function withTimeout(promise,ms=15000){
   return Promise.race([
@@ -185,6 +209,7 @@ async function saveStore(){
     if(!r?.data)throw new Error('قاعدة البيانات لم ترجع بيانات المتجر بعد الحفظ.');
 
     store=r.data;
+    syncAutoCategory();
 
     // بعد نجاح حفظ المتجر نحاول حفظ الصورة بشكل منفصل.
     if(storeImageData){
@@ -273,7 +298,7 @@ async function addProduct(){
   if(!store)return alert('احفظ المتجر أولاً');
 
   const payload={
-    category_id:Number(categoryEl?.value),
+    category_id:autoCategoryId,
     name:(pnameEl?.value||'').trim(),
     description:(pdescEl?.value||'').trim()||null,
     price:Number(priceEl?.value),
@@ -286,6 +311,9 @@ async function addProduct(){
 
   if(!payload.name||!Number.isFinite(payload.price))
     return alert('أكمل اسم المنتج والسعر');
+
+  if(payload.category_id==null)
+    return alert('تعذر تحديد تصنيف المتجر تلقائياً. احفظ المتجر أولاً ثم حاول مرة ثانية.');
 
   const {error}=await db.from('products').insert(payload);
 
