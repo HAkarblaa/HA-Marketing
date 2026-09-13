@@ -33,6 +33,30 @@
         <option value="أنثى">أنثى</option>
       </select>
 
+      <label>المحافظة *</label>
+      <select id="governorate">
+        <option value="">اختر المحافظة</option>
+        <option value="بغداد">بغداد</option>
+        <option value="البصرة">البصرة</option>
+        <option value="نينوى">نينوى</option>
+        <option value="أربيل">أربيل</option>
+        <option value="الأنبار">الأنبار</option>
+        <option value="بابل">بابل</option>
+        <option value="كربلاء">كربلاء</option>
+        <option value="النجف">النجف</option>
+        <option value="القادسية">القادسية</option>
+        <option value="المثنى">المثنى</option>
+        <option value="ذي قار">ذي قار</option>
+        <option value="ميسان">ميسان</option>
+        <option value="واسط">واسط</option>
+        <option value="ديالى">ديالى</option>
+        <option value="كركوك">كركوك</option>
+        <option value="صلاح الدين">صلاح الدين</option>
+        <option value="دهوك">دهوك</option>
+        <option value="السليمانية">السليمانية</option>
+        <option value="حلبجة">حلبجة</option>
+      </select>
+
       <label>المعرّف *</label>
       <input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan123">
       <div class="note">6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، بدون مسافات.</div>
@@ -78,6 +102,7 @@ function collectAndValidate(){
   const name=full_name.value.trim();
   const a=Number(age.value);
   const g=gender.value;
+  const gov=governorate.value;
   const user=username.value.trim();
   const lp=localPhone(phone.value.trim());
   const p=password.value;
@@ -85,11 +110,12 @@ function collectAndValidate(){
   if(name.length<2){alert('اكتب الاسم الكامل.');full_name.focus();return null}
   if(!Number.isInteger(a)||a<13||a>120){alert('العمر يجب أن يكون بين 13 و120 سنة.');age.focus();return null}
   if(!g){alert('اختر الجنس.');gender.focus();return null}
+  if(!gov){alert('اختر المحافظة.');governorate.focus();return null}
   if(!validUsername(user)){alert('المعرّف لازم يكون من 6 إلى 40 خانة إنكليزية/أرقام/رموز وبدون مسافات.');username.focus();return null}
   if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return null}
   if(!/^[\x21-\x7E]{6,72}$/.test(p)){passError.textContent='الرقم السري من 6 إلى 72 خانة إنكليزية/أرقام/رموز، بدون مسافات أو حروف عربية.';password.focus();return null}
   if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين.';confirm_password.focus();return null}
-  return {name,age:a,gender:g,username:user,localPhone:lp,phone:normalizePhone(lp),password:p};
+  return {name,age:a,gender:g,governorate:gov,username:user,localPhone:lp,phone:normalizePhone(lp),password:p};
 }
 
 async function checkDuplicates(data){
@@ -121,7 +147,7 @@ async function checkDuplicates(data){
 
 
 async function saveProfile(user,data){
-  const base={id:user.id,full_name:data.name,phone:data.phone,username:data.username,account_type:'customer'};
+  const base={id:user.id,full_name:data.name,phone:data.phone,username:data.username,governorate:data.governorate,account_type:'customer'};
   // نحاول حفظ العمر والجنس إذا أضيفت الأعمدة، ونرجع تلقائياً للتوافق مع المخطط القديم إذا لم تكن موجودة.
   let {error}=await db.from('profiles').upsert({...base,age:data.age,gender:data.gender});
   if(error && /(age|gender)/i.test(error.message||'')){
@@ -155,6 +181,7 @@ async function createAccount(){
       full_name:data.name,
       age:data.age,
       gender:data.gender,
+      governorate:data.governorate,
       phone:data.phone,
       username:data.username,
       account_type:'customer',
