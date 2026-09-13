@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
     // Load an existing legitimate notification. The caller cannot supply title/user/message.
     const { data: n, error: nErr } = await admin
       .from("notifications")
-      .select("id,user_id,title,message,order_id,kind,push_sent_at,push_attempted_at")
+      .select("id,user_id,title,message,order_id,kind,link,push_sent_at,push_attempted_at")
       .eq("id", notificationId)
       .maybeSingle();
 
@@ -89,7 +89,8 @@ Deno.serve(async (req) => {
     const { data: tokens, error: tErr } = await admin
       .from("push_tokens")
       .select("id,token")
-      .eq("user_id", n.user_id);
+      .eq("user_id", n.user_id)
+      .eq("enabled", true);
     if (tErr) throw tErr;
 
     if (!tokens?.length) {
@@ -104,9 +105,12 @@ Deno.serve(async (req) => {
     let sent = 0;
     const errors: string[] = [];
     const invalidTokenIds: number[] = [];
-    const link = n.order_id
-      ? `https://hakarblaa.github.io/HA-Marketing/account.html#order-${n.order_id}`
-      : "https://hakarblaa.github.io/HA-Marketing/notifications-center.html";
+    const siteBase = "https://hakarblaa.github.io/HA-Marketing/";
+    const rawLink = n.link
+      || (n.order_id ? `account.html#order-${n.order_id}` : "notifications-center.html");
+    const link = /^https?:\/\//i.test(rawLink)
+      ? rawLink
+      : siteBase + String(rawLink).replace(/^\.\//,"").replace(/^\//,"");
 
     for (const row of tokens) {
       const r = await fetch(`https://fcm.googleapis.com/v1/projects/${firebaseProjectId}/messages:send`, {

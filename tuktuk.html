@@ -1188,6 +1188,7 @@ body:not(.trip-ready) #extraSummary{
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="transport-push-dispatch.js"></script>
 
 <script>
 /* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
@@ -1803,6 +1804,7 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
+    if(window.HA_TransportPush){HA_TransportPush.dispatch(activeRideId,rideData).catch(()=>{});}
     await db.ref('userRides/'+fbUser.uid+'/'+activeRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();

@@ -1581,6 +1581,7 @@ let driverKind=null;
 let driverDispatchTypes=[];
 let driverRealPos=null;
 let driverLocationWatchId=null;
+const haRequestedRideId=new URLSearchParams(location.search).get('ride')||'';
 
 function coordText(p){
   if(!p)return '—';
@@ -1788,7 +1789,8 @@ function watchPendingRides(){
     }
 
     // نبقي نفس الطلب المحدد إذا ما زال متاحاً، وإلا نعرض أقرب طلب في القائمة.
-    let idx=oldSelectedId ? pendingEntries.findIndex(([id])=>id===oldSelectedId) : -1;
+    let idx=haRequestedRideId ? pendingEntries.findIndex(([id])=>id===haRequestedRideId) : -1;
+    if(idx<0) idx=oldSelectedId ? pendingEntries.findIndex(([id])=>id===oldSelectedId) : -1;
     if(idx<0) idx=Math.min(currentPendingIndex,pendingEntries.length-1);
     renderPendingRide(idx);
   });
@@ -1841,6 +1843,7 @@ availabilityBtn.onclick=()=>{
   available=!available;
   availabilityBtn.textContent=available?'متصل الآن':'غير متصل';
   availabilityBtn.classList.toggle('off',!available);
+  if(window.HA_TransportDriverPush)HA_TransportDriverPush.setAvailable(available).catch(()=>{});
   if(!available){
     nearbyCount.textContent='0';
     requestCard.style.display='none';
@@ -2328,6 +2331,9 @@ window.addEventListener('load',()=>{
 });
 </script>
 <script src="transport-notifications.js"></script>
+<script src="push-config.js"></script>
+<script src="notifications.js"></script>
+<script src="transport-driver-push.js"></script>
 
 <script>
 window.addEventListener('load',()=>{
