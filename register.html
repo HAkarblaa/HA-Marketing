@@ -1,189 +1,213 @@
-<!doctype html><html lang="ar" dir="rtl"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>إنشاء حساب - HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:650px;margin:35px auto}
-.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 5px 20px #0001}h1{text-align:center}
-.types{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:16px 0}.type{border:1px solid #ddd;background:#f7f7f7;padding:14px 5px;border-radius:12px;cursor:pointer}
-.type.active{background:#111;color:#fff}label{display:block;font-weight:700;margin:12px 0 6px}
-input,select,button,a.btn{width:100%;padding:13px;border-radius:10px;font-size:16px}input,select{border:1px solid #ccc;background:#fff}
-button{border:0;cursor:pointer}.primary{background:#111;color:#fff;margin-top:16px}.primary:disabled{opacity:.65;cursor:not-allowed}
-a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color:#111;margin-top:9px}.hidden{display:none}
-.avatar{display:flex;align-items:center;gap:12px}#preview{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#eee;display:none}
-.note{font-size:13px;color:#666}.err{color:#a40000;font-size:13px;margin-top:4px}@media(max-width:520px){.types{grid-template-columns:1fr}}
-.ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px}@keyframes haSpin{to{transform:rotate(360deg)}}
-.wa-box{border:1px solid #d6a62b;background:#fffaf0;border-radius:14px;padding:12px;margin:10px 0}
-.wa-title{font-weight:800;margin-bottom:6px}
-.wa-note{font-size:12px;line-height:1.6;color:#705500;margin-top:6px}
-.wa-ok{color:#087a35;font-weight:700;font-size:13px;margin-top:6px}
-.wa-btn{background:#19a64a!important;color:#fff!important;margin-top:8px}
-</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="card">
-<h1>إنشاء حساب</h1>
-<div class="types">
-<button class="type active" onclick="chooseType('customer',this)">🛍️ عميل</button>
-<button class="type" onclick="chooseType('employee',this)">🧑‍💼 موظف</button>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:580px;margin:34px auto}.card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 6px 26px #00000012;border:1px solid #ececec}h1{text-align:center;margin:0 0 6px}.sub{text-align:center;color:#666;font-size:14px;line-height:1.7;margin-bottom:18px}.brand{text-align:center;font-weight:900;font-size:20px;margin-bottom:8px}.brand span{color:#bd871d}label{display:block;font-weight:800;margin:13px 0 6px}input,select,button,a.btn{width:100%;padding:13px;border-radius:11px;font-size:16px}input,select{border:1px solid #ccc;background:#fff;outline:none}input:focus,select:focus{border-color:#bd871d;box-shadow:0 0 0 3px #d9a62e18}button{border:0;cursor:pointer}.primary{background:#111;color:#fff;margin-top:16px;font-weight:800}.primary:disabled{opacity:.6;cursor:not-allowed}.secondary{background:#eee;color:#111;margin-top:9px;font-weight:700}.wa{background:#fff9e9;border:1px solid #d6a62b;border-radius:15px;padding:14px;margin-top:15px}.wa b{display:block;margin-bottom:5px}.wa p{margin:0;color:#705500;font-size:13px;line-height:1.7}.note{font-size:12px;color:#6c6c6c;line-height:1.6;margin-top:5px}.err{color:#a40000;font-size:13px;margin-top:5px}.ok{color:#087a35;font-size:13px;font-weight:800;margin-top:8px}.hidden{display:none!important}.otp-title{text-align:center;font-size:22px;font-weight:900;margin:4px 0 8px}.otp-phone{text-align:center;color:#666;margin-bottom:16px}.otp-input{font-size:26px!important;text-align:center;letter-spacing:9px;font-weight:900;direction:ltr}.otp-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.otp-actions button{margin:0}.ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite}.ha-load-text{font-weight:800}@keyframes spin{to{transform:rotate(360deg)}}a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color:#111;margin-top:9px}@media(max-width:520px){.wrap{margin:18px auto}.card{padding:18px}.otp-actions{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="ha-premium-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="brand">HA <span>Marketing</span></div>
+
+    <div id="registerStep">
+      <h1>إنشاء حساب</h1>
+      <div class="sub">اكتب بياناتك. إذا كانت صحيحة وغير مستخدمة نرسل لك رمز تأكيد على واتساب.</div>
+
+      <label>الاسم الكامل *</label>
+      <input id="full_name" autocomplete="name" placeholder="الاسم الكامل">
+
+      <label>العمر *</label>
+      <input id="age" type="number" inputmode="numeric" min="13" max="120" placeholder="مثال: 25">
+
+      <label>الجنس *</label>
+      <select id="gender">
+        <option value="">اختر الجنس</option>
+        <option value="ذكر">ذكر</option>
+        <option value="أنثى">أنثى</option>
+      </select>
+
+      <label>المعرّف *</label>
+      <input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan123">
+      <div class="note">6 إلى 40 خانة، حروف إنكليزية أو أرقام أو رموز، بدون مسافات.</div>
+
+      <label>رقم الموبايل *</label>
+      <input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="07XXXXXXXXX">
+      <div class="note">يبدأ بـ 07 ويتكون من 11 رقم.</div>
+
+      <label>الرقم السري *</label>
+      <input id="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="8 خانات أو أكثر">
+      <div class="note">حروف إنكليزية وأرقام ورموز، بدون مسافات أو حروف عربية.</div>
+
+      <label>تأكيد الرقم السري *</label>
+      <input id="confirm_password" type="password" minlength="8" maxlength="72" autocomplete="new-password">
+      <div id="passError" class="err"></div>
+
+      <button id="continueBtn" class="primary" type="button" onclick="startVerification()">متابعة وإرسال رمز واتساب</button>
+      <a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a>
+      <a class="btn" href="index.html">الرجوع للرئيسية</a>
+    </div>
+
+    <div id="otpStep" class="hidden">
+      <div class="otp-title">📲 تأكيد رقم واتساب</div>
+      <div class="otp-phone">أرسلنا رمزاً من 6 أرقام إلى <b id="otpPhoneView"></b></div>
+      <div class="wa"><b>أدخل الرمز الذي وصلك</b><p>لن يتم إنشاء الحساب نهائياً إلا بعد نجاح رمز التأكيد.</p></div>
+      <label>رمز التأكيد *</label>
+      <input id="otpCode" class="otp-input" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••">
+      <div id="otpStatus" class="note"></div>
+      <button id="verifyBtn" class="primary" type="button" onclick="verifyAndCreate()">تأكيد وإنشاء الحساب</button>
+      <div class="otp-actions">
+        <button id="resendBtn" class="secondary" type="button" onclick="resendCode()">إعادة إرسال الرمز</button>
+        <button class="secondary" type="button" onclick="backToEdit()">تعديل البيانات</button>
+      </div>
+    </div>
+  </div>
 </div>
-<div id="formBox">
-<label>الاسم الكامل *</label><input id="full_name" required>
-<label>رقم الموبايل *</label><input id="phone" inputmode="numeric" maxlength="11" pattern="07[0-9]{9}" type="tel" placeholder="07XXXXXXXXX" required>
-<div class="wa-box">
-  <div class="wa-title">📲 تأكيد واتساب</div>
-  <button id="waSendBtn" class="wa-btn" type="button" onclick="sendWhatsAppCheck()" style="display:none">إرسال رسالة التأكيد على واتساب</button>
-  <div id="waStatus" class="wa-note">🧪 وضع الاختبار: تأكيد واتساب معطّل مؤقتاً لكل أنواع الحسابات حتى نكمل الاختبار.</div>
-</div>
-<label>المعرف *</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan@123,#" required><p class="note">يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.</p>
-<label>البريد الإلكتروني (اختياري)</label><input id="contact_email" type="email" autocomplete="email" placeholder="name@example.com"><p class="note">يمكن تأكيده لاحقاً من إعدادات أمان الحساب.</p>
-<label>المحافظة *</label><select id="governorate" required><option value="">اختر المحافظة</option><option value="بغداد">بغداد</option><option value="البصرة">البصرة</option><option value="نينوى">نينوى</option><option value="أربيل">أربيل</option><option value="النجف">النجف</option><option value="كربلاء">كربلاء</option><option value="كركوك">كركوك</option><option value="الأنبار">الأنبار</option><option value="بابل">بابل</option><option value="ديالى">ديالى</option><option value="ذي قار">ذي قار</option><option value="ميسان">ميسان</option><option value="المثنى">المثنى</option><option value="القادسية">القادسية</option><option value="صلاح الدين">صلاح الدين</option><option value="واسط">واسط</option><option value="دهوك">دهوك</option><option value="السليمانية">السليمانية</option><option value="حلبجة">حلبجة</option></select>
-<div id="roleBox" class="hidden"><label>نوع العمل *</label><select id="employee_role">
-<option value="">اختر الوظيفة</option><option value="delivery">مندوب توصيل</option><option value="library">موظف المكتبة</option>
-<option value="building_materials">موظف مواد البناء</option><option value="customer_service">خدمة العملاء</option><option value="orders">تجهيز الطلبات</option>
-</select><p class="note">يتم تفعيل حساب الموظف مباشرة بعد إنشاء الحساب.</p></div>
-<label>الصورة الشخصية (اختياري)</label><div class="avatar"><input id="avatar" type="file" accept="image/*"><img id="preview"></div>
-<label>الرقم السري *</label><input id="password" minlength="8" maxlength="72" type="password" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز" required><p class="note">8 خانات على الأقل. يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات أو حروف عربية.</p>
-<label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="8" maxlength="72" type="password" autocomplete="new-password" required>
-<div id="passError" class="err"></div>
-<div class="wa-ok" style="margin-top:12px">🧪 للاختبار فقط: يمكن إنشاء العميل أو الموظف حالياً بدون تأكيد واتساب.</div>
-<button id="createBtn" class="primary" onclick="createAccount()">إنشاء الحساب</button>
-</div>
-<a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a><a class="btn" href="index.html">الرجوع للرئيسية</a>
-</div></div><div id="haLoading" class="ha-loading" aria-live="polite"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري إنشاء الحساب...</div></div>
+<div id="haLoading" class="ha-loading"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري التحميل...</div></div>
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-
-function migrateLegacyAuth(){
-  try{
-    const target='ha-marketing-auth';
-    if(localStorage.getItem(target)) return;
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i)||'';
-      if(/^sb-.*-auth-token$/.test(k)){
-        const v=localStorage.getItem(k);
-        if(v){ localStorage.setItem(target,v); break; }
-      }
-    }
-  }catch(e){ console.warn('auth migration',e); }
-}
-migrateLegacyAuth();
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
+
+let pending=null;
+let resendTimer=null;
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
+function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function authEmail(p){return 'u'+p+'@ha.local'}
-let waConfirmedPhone='';
-const HA_TEST_BYPASS_WHATSAPP_ALL = true;
-
-function resetWhatsAppCheck(){
-  waConfirmedPhone='';
-  const st=document.getElementById('waStatus');
-  if(st){
-    st.className='wa-note';
-    st.textContent='🧪 وضع الاختبار: تأكيد واتساب معطّل مؤقتاً لكل أنواع الحسابات حتى نكمل الاختبار.';
-  }
-}
-
-document.getElementById('phone')?.addEventListener('input',resetWhatsAppCheck);
-
-async function sendWhatsAppCheck(){
-  const raw=document.getElementById('phone').value.trim();
-  const lp=localPhone(raw);
-
-  if(!/^07\d{9}$/.test(lp)){
-    alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');
-    document.getElementById('phone').focus();
-    return;
-  }
-
-  const btn=document.getElementById('waSendBtn');
-  const st=document.getElementById('waStatus');
-  btn.disabled=true;
-  st.className='wa-note';
-  st.textContent='جاري إرسال رسالة التأكيد إلى واتساب...';
-
-  try{
-    const {data,error}=await db.functions.invoke('send-whatsapp-otp',{
-      body:{phone:lp}
-    });
-
-    if(error) throw error;
-    if(!data?.ok) throw new Error(data?.error||'تعذر إرسال رسالة واتساب');
-
-    waConfirmedPhone=lp;
-    st.className='wa-ok';
-    st.textContent='✅ تم إرسال رسالة التأكيد إلى واتساب بنجاح. يمكنك الآن إنشاء الحساب.';
-  }catch(e){
-    console.error(e);
-    waConfirmedPhone='';
-    st.className='wa-note';
-    st.textContent='❌ تعذر إرسال رسالة واتساب: '+(e?.message||'خطأ غير معروف');
-    alert('تعذر إرسال رسالة التأكيد على واتساب.');
-  }finally{
-    btn.disabled=false;
-  }
-}
-
 function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
-async function persistLoginFlag(){const {data}=await db.auth.getSession();if(data.session){localStorage.setItem('ha_logged_in','1');return data.session}localStorage.removeItem('ha_logged_in');return null}
-async function ensureProfile(user, fallback={}){
-  if(!user||user.is_anonymous)return;
-  const m=user.user_metadata||{};
-  const row={
-    id:user.id,
-    full_name:fallback.full_name??m.full_name??null,
-    phone:fallback.phone??m.phone??null,
-    username:fallback.username??m.username??null,
-    avatar_url:fallback.avatar_url??m.avatar_url??null,
-    governorate:fallback.governorate??m.governorate??null,
-    account_type:fallback.account_type??m.account_type??'customer',
-    employee_role:fallback.employee_role??m.employee_role_key??m.employee_role??null,
-    employee_status:(fallback.account_type??m.account_type)==='employee'?'approved':'not_applicable'
-  };
-  const {data:existing}=await db.from('profiles').select('id').eq('id',user.id).maybeSingle();
-  if(existing){
-    await db.from('profiles').update({full_name:row.full_name,phone:row.phone,username:row.username,avatar_url:row.avatar_url,governorate:row.governorate}).eq('id',user.id);
-  }else{
-    await db.from('profiles').insert(row);
+function showLoading(t){haLoadText.textContent=t||'جاري التحميل...';haLoading.classList.add('show')}
+function hideLoading(){haLoading.classList.remove('show')}
+function maskPhone(lp){return lp.slice(0,4)+'•••'+lp.slice(-4)}
+
+function collectAndValidate(){
+  passError.textContent='';
+  const name=full_name.value.trim();
+  const a=Number(age.value);
+  const g=gender.value;
+  const user=username.value.trim();
+  const lp=localPhone(phone.value.trim());
+  const p=password.value;
+  const cp=confirm_password.value;
+  if(name.length<2){alert('اكتب الاسم الكامل.');full_name.focus();return null}
+  if(!Number.isInteger(a)||a<13||a>120){alert('العمر يجب أن يكون بين 13 و120 سنة.');age.focus();return null}
+  if(!g){alert('اختر الجنس.');gender.focus();return null}
+  if(!validUsername(user)){alert('المعرّف لازم يكون من 6 إلى 40 خانة إنكليزية/أرقام/رموز وبدون مسافات.');username.focus();return null}
+  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return null}
+  if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري من 8 إلى 72 خانة إنكليزية/أرقام/رموز، بدون مسافات أو حروف عربية.';password.focus();return null}
+  if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين.';confirm_password.focus();return null}
+  return {name,age:a,gender:g,username:user,localPhone:lp,phone:normalizePhone(lp),password:p};
+}
+
+async function checkDuplicates(data){
+  // المسار الأفضل: RPC لا يحتاج فتح قراءة جدول profiles للزائر.
+  try{
+    const {data:r,error}=await db.rpc('ha_check_registration',{p_username:data.username,p_phone:data.phone});
+    if(!error&&r){
+      const x=typeof r==='string'?JSON.parse(r):r;
+      return {usernameTaken:!!x.username_taken,phoneTaken:!!x.phone_taken};
+    }
+  }catch(_e){}
+  // توافق احتياطي إذا الـ RPC بعده غير مثبت.
+  const {data:u,error:ue}=await db.from('profiles').select('id').ilike('username',data.username).limit(1);
+  if(ue) throw new Error('تعذر التحقق من المعرّف. ثبّت ملف SUPABASE-AUTH-SETUP.sql ثم حاول من جديد.');
+  const {data:p,error:pe}=await db.from('profiles').select('id').eq('phone',data.phone).limit(1);
+  if(pe) throw new Error('تعذر التحقق من رقم الموبايل. ثبّت ملف SUPABASE-AUTH-SETUP.sql ثم حاول من جديد.');
+  return {usernameTaken:!!u?.length,phoneTaken:!!p?.length};
+}
+
+async function sendCode(data){
+  const {data:r,error}=await db.functions.invoke('ha-send-whatsapp-otp',{body:{phone:data.localPhone}});
+  if(error) throw error;
+  if(!r?.ok) throw new Error(r?.error||'تعذر إرسال رمز واتساب');
+}
+
+function startResendCountdown(){
+  let n=60;resendBtn.disabled=true;resendBtn.textContent='إعادة الإرسال بعد '+n+'ث';
+  clearInterval(resendTimer);
+  resendTimer=setInterval(()=>{n--;if(n<=0){clearInterval(resendTimer);resendBtn.disabled=false;resendBtn.textContent='إعادة إرسال الرمز'}else resendBtn.textContent='إعادة الإرسال بعد '+n+'ث';},1000);
+}
+
+async function startVerification(){
+  const data=collectAndValidate();if(!data)return;
+  showLoading('جاري التحقق من البيانات...');
+  try{
+    const d=await checkDuplicates(data);
+    if(d.usernameTaken){hideLoading();alert('هذا المعرّف مستخدم مسبقاً. اختار معرف آخر.');username.focus();return}
+    if(d.phoneTaken){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
+    haLoadText.textContent='جاري إرسال رمز واتساب...';
+    await sendCode(data);
+    pending=data;
+    registerStep.classList.add('hidden');otpStep.classList.remove('hidden');
+    otpPhoneView.textContent=maskPhone(data.localPhone);
+    otpCode.value='';otpStatus.textContent='تم إرسال الرمز. تحقق من واتساب.';
+    startResendCountdown();
+    setTimeout(()=>otpCode.focus(),100);
+  }catch(e){console.error(e);alert('تعذر إرسال رمز واتساب: '+(e?.message||e));}
+  finally{hideLoading()}
+}
+
+async function resendCode(){
+  if(!pending)return backToEdit();
+  showLoading('جاري إعادة إرسال الرمز...');
+  try{await sendCode(pending);otpStatus.textContent='تم إرسال رمز جديد إلى واتساب.';startResendCountdown();}
+  catch(e){alert('تعذر إعادة الإرسال: '+(e?.message||e));}
+  finally{hideLoading()}
+}
+
+function backToEdit(){
+  clearInterval(resendTimer);otpStep.classList.add('hidden');registerStep.classList.remove('hidden');otpStatus.textContent='';otpCode.value='';pending=null;
+}
+
+async function saveProfile(user,data){
+  const base={id:user.id,full_name:data.name,phone:data.phone,username:data.username,account_type:'customer',employee_status:'not_applicable'};
+  // نحاول حفظ العمر والجنس إذا أضيفت الأعمدة، ونرجع تلقائياً للتوافق مع المخطط القديم إذا لم تكن موجودة.
+  let {error}=await db.from('profiles').upsert({...base,age:data.age,gender:data.gender});
+  if(error && /(age|gender)/i.test(error.message||'')){
+    const r=await db.from('profiles').upsert(base);error=r.error;
   }
+  if(error) throw error;
 }
 
-let accountType='customer',avatarData=null;
-function chooseType(t,b){accountType=t;document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');roleBox.classList.toggle('hidden',t!=='employee');}
-avatar.addEventListener('change',()=>{const f=avatar.files[0];if(!f){avatarData=null;preview.style.display='none';return}if(f.size>700000){alert('اختار صورة أصغر من 700KB');avatar.value='';return}const r=new FileReader();r.onload=()=>{avatarData=r.result;preview.src=avatarData;preview.style.display='block'};r.readAsDataURL(f);});
-function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.createBtn)createBtn.disabled=true}
-function hideLoading(){haLoading.classList.remove('show');if(window.createBtn)createBtn.disabled=false}
-async function createAccount(){
- const name=full_name.value.trim(),raw=phone.value.trim(),user=username.value.trim(),gov=governorate.value,p=password.value,cp=confirm_password.value;
- passError.textContent='';
- if(!name||!raw||!user||!gov||!p||!cp){alert('كل الحقول مطلوبة ما عدا الصورة');return}
- if(accountType==='employee'&&!employee_role.value){alert('اختار نوع عمل الموظف');return}
- if(p!==cp){passError.textContent='الرقم السري وتأكيده غير متطابقين';return}
- if(!validUsername(user)){alert('المعرّف لازم يكون 6 إلى 40 خانة، ويقبل فقط الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.');username.focus();return}
- if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.';password.focus();return}
- const lp=localPhone(raw);
- if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return}
- if(!HA_TEST_BYPASS_WHATSAPP_ALL && waConfirmedPhone!==lp){
-   alert('لازم ترسل رسالة التأكيد على واتساب لنفس الرقم أولاً.');
-   return;
- }
- const ph=normalizePhone(lp);
- showLoading('جاري التحقق من البيانات...');
- try{
- const {data:userExists,error:userCheckError}=await db.from('profiles').select('id').eq('username',user).limit(1);
- if(!userCheckError&&userExists?.length){hideLoading();alert('اسم المستخدم مستخدم مسبقاً. غيّره وحاول مرة ثانية.');username.focus();return}
- const {data:phoneExists,error:phoneCheckError}=await db.from('profiles').select('id').eq('phone',ph).limit(1);
- if(!phoneCheckError&&phoneExists?.length){hideLoading();alert('رقم الموبايل مستخدم مسبقاً. استخدم رقم آخر.');phone.focus();return}
- const meta={full_name:name,phone:ph,username:user,governorate:gov,account_type:accountType,employee_role_key:accountType==='employee'?employee_role.value:null,avatar_url:avatarData,contact_email:(document.getElementById('contact_email')?.value||'').trim()||null};
- const email=authEmail(ph);
- const {data:signup,error}=await db.auth.signUp({email,password:p,options:{data:meta}});
- if(error){hideLoading();const msg=(error.message||'').toLowerCase();alert(msg.includes('already')||msg.includes('registered')?'رقم الموبايل أو بيانات الحساب مستخدمة مسبقاً.':'تعذر إنشاء الحساب: '+error.message);return}
- let session=signup?.session||null;
- if(!session){const {data:loginData,error:loginError}=await db.auth.signInWithPassword({email,password:p});if(loginError){hideLoading();alert('تم إنشاء الحساب، لكن تعذر تثبيت تسجيل الدخول تلقائياً. افتح تسجيل الدخول واستخدم نفس الرقم السري.');location.href='login.html';return}session=loginData.session;}
- if(session?.user){await ensureProfile(session.user,meta); if(meta.contact_email) await db.from('profiles').update({contact_email:meta.contact_email,contact_email_verified:false}).eq('id',session.user.id); localStorage.setItem('ha_logged_in','1');}
- await persistLoginFlag();
- haLoadText.textContent='تم إنشاء الحساب، جاري فتح الموقع...';
- alert(accountType==='employee'?'تم إنشاء حساب الموظف وتفعيله مباشرة بنجاح.':'تم إنشاء الحساب وتثبيت تسجيل الدخول بنجاح.');
- location.replace('index.html');
- }catch(e){hideLoading();console.error(e);alert('تعذر إكمال إنشاء الحساب حالياً. تحقق من الإنترنت وحاول مرة ثانية.');}
-}
+async function verifyAndCreate(){
+  if(!pending){alert('ارجع واكتب البيانات من جديد.');return backToEdit()}
+  const code=otpCode.value.replace(/\D/g,'');
+  if(!/^\d{6}$/.test(code)){alert('اكتب رمز التأكيد المكوّن من 6 أرقام.');otpCode.focus();return}
+  showLoading('جاري تأكيد الرمز...');
+  try{
+    const {data:v,error:ve}=await db.functions.invoke('ha-verify-whatsapp-otp',{body:{phone:pending.localPhone,code}});
+    if(ve) throw ve;
+    if(!v?.ok) throw new Error(v?.error||'رمز التأكيد غير صحيح');
 
-</script></body></html>
+    haLoadText.textContent='تم التأكيد، جاري إنشاء الحساب...';
+    // فحص نهائي بعد OTP لتقليل احتمال التكرار إذا سجل شخص آخر بنفس البيانات خلال الانتظار.
+    const d=await checkDuplicates(pending);
+    if(d.usernameTaken) throw new Error('المعرّف أصبح مستخدماً. ارجع واختار معرفاً آخر.');
+    if(d.phoneTaken) throw new Error('رقم الموبايل أصبح مستخدماً بحساب آخر.');
+
+    const meta={full_name:pending.name,age:pending.age,gender:pending.gender,phone:pending.phone,username:pending.username,account_type:'customer',whatsapp_verified:true};
+    const email=authEmail(pending.phone);
+    const {data:s,error:se}=await db.auth.signUp({email,password:pending.password,options:{data:meta}});
+    if(se) throw se;
+    let session=s?.session||null;
+    let user=s?.user||null;
+    if(!session){
+      const {data:l,error:le}=await db.auth.signInWithPassword({email,password:pending.password});
+      if(le) throw le;session=l.session;user=l.user;
+    }
+    if(!session||!user) throw new Error('تم إنشاء الحساب لكن تعذر تثبيت جلسة الدخول.');
+    await saveProfile(user,pending);
+    localStorage.setItem('ha_logged_in','1');
+    haLoadText.textContent='تم إنشاء الحساب بنجاح...';
+    location.replace('index.html');
+  }catch(e){
+    console.error(e);otpStatus.textContent='❌ '+(e?.message||'تعذر تأكيد الرمز');alert(e?.message||'تعذر إكمال إنشاء الحساب.');
+  }finally{hideLoading()}
+}
+</script>
+</body>
+</html>

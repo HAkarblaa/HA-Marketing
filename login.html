@@ -1,156 +1,80 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تسجيل الدخول - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.box{width:92%;max-width:480px;margin:60px auto;background:#fff;padding:25px;border-radius:18px;box-shadow:0 5px 20px #0001}
-h1{text-align:center}input,button,a{width:100%;padding:13px;margin:7px 0;border-radius:10px;font-size:16px;box-sizing:border-box}input{border:1px solid #ccc}button{border:0;background:#111;color:#fff;cursor:pointer}
-a{display:block;text-align:center;text-decoration:none;background:#eee;color:#111}
-button:disabled{opacity:.65;cursor:not-allowed}
-.ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
-.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:haSpin .8s linear infinite}.ha-load-text{font-weight:700;font-size:16px;color:#222}
-@keyframes haSpin{to{transform:rotate(360deg)}}
-.wa-box{border:1px solid #d6a62b;background:#fffaf0;border-radius:14px;padding:12px;margin:10px 0}
-.wa-title{font-weight:800;margin-bottom:6px}
-.wa-note{font-size:12px;line-height:1.6;color:#705500;margin-top:6px}
-.wa-ok{color:#087a35;font-weight:700;font-size:13px;margin-top:6px}
-.wa-btn{background:#19a64a!important;color:#fff!important}
-</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="box">
-<h1>تسجيل الدخول</h1>
-<input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="رقم الموبايل 07XXXXXXXXX">
-<input id="password" type="password" placeholder="الرقم السري">
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تسجيل الدخول - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}.box{width:92%;max-width:480px;margin:60px auto;background:#fff;padding:25px;border-radius:20px;box-shadow:0 6px 26px #00000012;border:1px solid #ececec}.brand{text-align:center;font-weight:900;font-size:21px;margin-bottom:8px}.brand span{color:#bd871d}h1{text-align:center;margin:0 0 5px}.sub{text-align:center;color:#666;font-size:13px;line-height:1.7;margin-bottom:16px}label{display:block;font-weight:800;margin:12px 0 5px}input,button,a{width:100%;padding:13px;margin:5px 0;border-radius:11px;font-size:16px;box-sizing:border-box}input{border:1px solid #ccc;outline:none}input:focus{border-color:#bd871d;box-shadow:0 0 0 3px #d9a62e18}button{border:0;background:#111;color:#fff;cursor:pointer;font-weight:800;margin-top:14px}button:disabled{opacity:.65;cursor:not-allowed}a{display:block;text-align:center;text-decoration:none;background:#eee;color:#111}.note{font-size:12px;color:#666;margin-top:3px}.ha-loading{position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}.ha-loading.show{display:flex}.ha-spinner{width:54px;height:54px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite}.ha-load-text{font-weight:800}@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+<link rel="stylesheet" href="ha-premium-theme.css">
+</head>
+<body>
+<div class="box">
+  <div class="brand">HA <span>Marketing</span></div>
+  <h1>تسجيل الدخول</h1>
+  <div class="sub">ادخل برقم الموبايل أو المعرّف والرقم السري. لا نطلب تأكيد واتساب عند تسجيل الدخول.</div>
 
-<div class="wa-box">
-  <div class="wa-title">📲 تأكيد واتساب</div>
-  <button id="waSendBtn" class="wa-btn" type="button" onclick="sendWhatsAppCheck()">إرسال رسالة التأكيد على واتساب</button>
-  <div id="waStatus" class="wa-note">حالياً هذا وضع التجربة المجانية. يجب أن ينجح إرسال رسالة واتساب لنفس الرقم قبل متابعة تسجيل الدخول.</div>
+  <label>رقم الموبايل أو المعرّف</label>
+  <input id="identifier" autocomplete="username" placeholder="07XXXXXXXXX أو اسم المستخدم">
+  <div class="note">تقدر تستخدم رقم الموبايل أو نفس المعرّف الذي سجلت به.</div>
+
+  <label>الرقم السري</label>
+  <input id="password" type="password" autocomplete="current-password" placeholder="الرقم السري">
+
+  <button id="loginBtn" type="button" onclick="login()">تسجيل الدخول</button>
+  <a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a>
+  <a href="register.html">إنشاء حساب جديد</a>
+  <a href="index.html">الرجوع للرئيسية</a>
 </div>
-
-<button id="loginBtn" onclick="login()">تسجيل الدخول</button><a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a>
-<a href="register.html">إنشاء حساب جديد</a><a href="index.html">الرجوع للرئيسية</a></div><div id="haLoading" class="ha-loading" aria-live="polite"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري التحقق...</div></div>
+<div id="haLoading" class="ha-loading"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري تسجيل الدخول...</div></div>
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-
-function migrateLegacyAuth(){
-  try{
-    const target='ha-marketing-auth';
-    if(localStorage.getItem(target)) return;
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i)||'';
-      if(/^sb-.*-auth-token$/.test(k)){
-        const v=localStorage.getItem(k);
-        if(v){ localStorage.setItem(target,v); break; }
-      }
-    }
-  }catch(e){ console.warn('auth migration',e); }
-}
-migrateLegacyAuth();
 const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
+function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith('0'))p='964'+p.slice(1);if(!p.startsWith('964'))p='964'+p;return p}
 function authEmail(p){return 'u'+p+'@ha.local'}
-let waConfirmedPhone='';
-
-function resetWhatsAppCheck(){
-  waConfirmedPhone='';
-  const st=document.getElementById('waStatus');
-  if(st){
-    st.className='wa-note';
-    st.textContent='حالياً هذا وضع التجربة المجانية. يجب أن ينجح إرسال رسالة واتساب لنفس الرقم قبل متابعة تسجيل الدخول.';
-  }
-}
-
-document.getElementById('phone')?.addEventListener('input',resetWhatsAppCheck);
-
-async function sendWhatsAppCheck(){
-  const raw=document.getElementById('phone').value.trim();
-  const lp=localPhone(raw);
-
-  if(!/^07\d{9}$/.test(lp)){
-    alert('اكتب رقم موبايل عراقي صحيح يبدأ بـ 07 ويتكون من 11 رقم.');
-    document.getElementById('phone').focus();
-    return;
-  }
-
-  const btn=document.getElementById('waSendBtn');
-  const st=document.getElementById('waStatus');
-  btn.disabled=true;
-  st.className='wa-note';
-  st.textContent='جاري إرسال رسالة التأكيد إلى واتساب...';
-
-  try{
-    const {data,error}=await db.functions.invoke('send-whatsapp-otp',{
-      body:{phone:lp}
-    });
-
-    if(error) throw error;
-    if(!data?.ok) throw new Error(data?.error||'تعذر إرسال رسالة واتساب');
-
-    waConfirmedPhone=lp;
-    st.className='wa-ok';
-    st.textContent='✅ تم إرسال رسالة التأكيد إلى واتساب بنجاح. يمكنك الآن متابعة تسجيل الدخول.';
-  }catch(e){
-    console.error(e);
-    waConfirmedPhone='';
-    st.className='wa-note';
-    st.textContent='❌ تعذر إرسال رسالة واتساب: '+(e?.message||'خطأ غير معروف');
-    alert('تعذر إرسال رسالة التأكيد على واتساب.');
-  }finally{
-    btn.disabled=false;
-  }
-}
-
 function validUsername(v){return /^[\x21-\x7E]{6,40}$/.test(v)}
-async function persistLoginFlag(){const {data}=await db.auth.getSession();if(data.session){localStorage.setItem('ha_logged_in','1');return data.session}localStorage.removeItem('ha_logged_in');return null}
-async function ensureProfile(user, fallback={}){
-  if(!user||user.is_anonymous)return;
-  const m=user.user_metadata||{};
-  const row={
-    id:user.id,
-    full_name:fallback.full_name??m.full_name??null,
-    phone:fallback.phone??m.phone??null,
-    username:fallback.username??m.username??null,
-    avatar_url:fallback.avatar_url??m.avatar_url??null,
-    governorate:fallback.governorate??m.governorate??null,
-    account_type:fallback.account_type??m.account_type??'customer',
-    employee_role:fallback.employee_role??m.employee_role_key??m.employee_role??null,
-    employee_status:(fallback.account_type??m.account_type)==='employee'?'pending':'not_applicable'
-  };
-  const {data:existing}=await db.from('profiles').select('id').eq('id',user.id).maybeSingle();
-  if(existing){
-    await db.from('profiles').update({full_name:row.full_name,phone:row.phone,username:row.username,avatar_url:row.avatar_url,governorate:row.governorate}).eq('id',user.id);
-  }else{
-    await db.from('profiles').insert(row);
-  }
+function showLoading(t){haLoadText.textContent=t||'جاري تسجيل الدخول...';haLoading.classList.add('show');loginBtn.disabled=true}
+function hideLoading(){haLoading.classList.remove('show');loginBtn.disabled=false}
+
+async function resolveEmail(raw){
+  const lp=localPhone(raw);
+  if(/^07\d{9}$/.test(lp)) return authEmail(normalizePhone(lp));
+  if(!validUsername(raw)) throw new Error('اكتب رقم موبايل صحيح أو معرّف صحيح.');
+
+  // الأفضل: RPC حتى لا نفتح جدول profiles للزائر.
+  try{
+    const {data:r,error}=await db.rpc('ha_resolve_login_email',{p_identifier:raw});
+    if(!error&&r) return r;
+  }catch(_e){}
+
+  // توافق احتياطي إذا الـ RPC غير مثبت بعد.
+  const {data:p,error}=await db.from('profiles').select('phone').ilike('username',raw).maybeSingle();
+  if(error) throw new Error('تعذر البحث عن المعرّف. ثبّت ملف SUPABASE-AUTH-SETUP.sql.');
+  if(!p?.phone) throw new Error('المعرّف أو الرقم السري غير صحيح.');
+  return authEmail(normalizePhone(p.phone));
 }
 
-function showLoading(text='جاري التحميل...'){haLoadText.textContent=text;haLoading.classList.add('show');if(window.loginBtn)loginBtn.disabled=true}
-function hideLoading(){haLoading.classList.remove('show');if(window.loginBtn)loginBtn.disabled=false}
 async function login(){
- const raw=phone.value.trim(),pass=password.value;
- if(!raw||!pass){alert('اكتب رقم الموبايل والرقم السري');return}
- const lp=localPhone(raw);if(!/^07\d{9}$/.test(lp)){alert('اكتب رقم موبايل عراقي صحيح يبدأ بـ 07 ويتكون من 11 رقم.');return}
- if(waConfirmedPhone!==lp){
-   alert('لازم ترسل رسالة التأكيد على واتساب لنفس الرقم أولاً.');
-   return;
- }
- const p=normalizePhone(lp);
- showLoading('جاري تسجيل الدخول...');
- try{
-  const {data,error}=await db.auth.signInWithPassword({email:authEmail(p),password:pass});
-  if(error||!data.session){localStorage.removeItem('ha_logged_in');hideLoading();alert('بيانات الدخول غير صحيحة');return}
-  if(data.user?.is_anonymous){await db.auth.signOut();localStorage.removeItem('ha_logged_in');hideLoading();alert('الدخول كضيف غير متاح. سجّل دخول بحسابك.');return}
-  await ensureProfile(data.user);
-  await persistLoginFlag();
-  haLoadText.textContent='تم تسجيل الدخول، جاري فتح الموقع...';
-  location.replace('index.html');
- }catch(e){hideLoading();alert('تعذر تسجيل الدخول حالياً. تحقق من الإنترنت وحاول مرة ثانية.');}
+  const raw=identifier.value.trim();const pass=password.value;
+  if(!raw||!pass){alert('اكتب رقم الموبايل أو المعرّف والرقم السري.');return}
+  showLoading('جاري تسجيل الدخول...');
+  try{
+    const email=await resolveEmail(raw);
+    const {data,error}=await db.auth.signInWithPassword({email,password:pass});
+    if(error||!data?.session) throw new Error('بيانات الدخول غير صحيحة.');
+    if(data.user?.is_anonymous){await db.auth.signOut();throw new Error('الدخول كضيف غير متاح.');}
+    localStorage.setItem('ha_logged_in','1');
+    haLoadText.textContent='تم تسجيل الدخول...';
+    location.replace('index.html');
+  }catch(e){console.error(e);localStorage.removeItem('ha_logged_in');alert(e?.message||'تعذر تسجيل الدخول.');}
+  finally{hideLoading()}
 }
-(async()=>{
- showLoading('جاري التحقق من الحساب...');
- try{
-  const s=await persistLoginFlag();
-  if(s?.user?.is_anonymous){await db.auth.signOut();localStorage.removeItem('ha_logged_in');}
- }catch(e){}
- hideLoading();
-})();
 
-</script></body></html>
+identifier.addEventListener('keydown',e=>{if(e.key==='Enter')password.focus()});
+password.addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+</script>
+</body>
+</html>
