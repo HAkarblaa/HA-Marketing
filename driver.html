@@ -593,6 +593,658 @@ button{-webkit-tap-highlight-color:transparent}
   }
 }
 
+
+/* ===== تعديل HA: الخريطة مباشرة تحت "متصل الآن" بدون فراغ أسود ===== */
+#driverGate,
+.driver-gate-compact{
+  display:none !important;
+  position:absolute !important;
+  width:0 !important;
+  height:0 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:0 !important;
+  max-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  overflow:hidden !important;
+  visibility:hidden !important;
+}
+
+.driver-status-only{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  padding:5px 8px 1px !important;
+  min-height:0 !important;
+}
+
+.driver-status-only .status-toggle{
+  margin:0 !important;
+  padding:0 !important;
+  width:100% !important;
+  display:flex !important;
+  justify-content:center !important;
+}
+
+.driver-status-only .status-toggle button{
+  margin:0 !important;
+}
+
+.map-shell{
+  display:block !important;
+  position:relative !important;
+  z-index:2 !important;
+  width:calc(100% - 10px) !important;
+  margin:0 5px 0 !important;
+  padding:2px !important;
+  border-radius:24px !important;
+  overflow:hidden !important;
+  background:linear-gradient(135deg,var(--gold2),#5b4316 38%,#dba33b) !important;
+}
+
+#map{
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  height:68vh !important;
+  min-height:520px !important;
+  max-height:790px !important;
+  margin:0 !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+  background:#11181c !important;
+}
+
+/* نخلي خريطة Voyager أغمق حتى تبقى مناسبة للأسود والذهبي */
+#map .leaflet-tile-pane{
+  filter:brightness(.58) contrast(1.16) saturate(.82);
+}
+
+@media(max-width:620px){
+  .driver-status-only{padding:4px 6px 1px !important}
+  .map-shell{
+    width:calc(100% - 8px) !important;
+    margin:0 4px !important;
+  }
+  #map{
+    height:66vh !important;
+    min-height:500px !important;
+    max-height:730px !important;
+  }
+}
+
+@media(max-width:390px){
+  #map{
+    height:64vh !important;
+    min-height:475px !important;
+  }
+}
+
+
+/* ===== إصلاح الموبايل: حجم الخريطة + إظهار تغيير الطلب ===== */
+#changeRequestBtn{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+@media(max-width:620px){
+  /* الخريطة مهيأة لشاشة الموبايل حتى تبقى معلومات الطلب والأزرار ظاهرة */
+  #map{
+    height:46vh !important;
+    min-height:345px !important;
+    max-height:430px !important;
+  }
+
+  .map-shell{
+    width:calc(100% - 8px) !important;
+    margin:0 4px !important;
+  }
+
+  .driver-status-only{
+    padding:4px 6px 1px !important;
+  }
+
+  /* قبول الطلب بسطر كامل، وتغيير الطلب + رفض تحته */
+  .actions{
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+  }
+
+  .actions .accept{
+    grid-column:1 / -1 !important;
+  }
+
+  #changeRequestBtn,
+  #rejectBtn{
+    grid-column:auto !important;
+    min-width:0 !important;
+    padding:12px 7px !important;
+    font-size:14px !important;
+  }
+}
+
+@media(max-width:390px){
+  #map{
+    height:43vh !important;
+    min-height:320px !important;
+    max-height:385px !important;
+  }
+
+  #changeRequestBtn,
+  #rejectBtn{
+    font-size:13px !important;
+  }
+}
+
+
+/* ===== وضع موبايل مضغوط: تصغير الكتابات والمربعات حتى تكفي الشاشة ===== */
+@media(max-width:620px){
+  body{font-size:12px !important}
+  .app{padding-bottom:70px !important}
+
+  /* الهيدر */
+  .head{
+    grid-template-columns:40px 1fr 40px !important;
+    gap:6px !important;
+    padding:6px 8px !important;
+  }
+  .head-home,.head-back{
+    width:36px !important;
+    height:36px !important;
+    border-radius:11px !important;
+    font-size:17px !important;
+  }
+  .head h1{
+    font-size:16px !important;
+    line-height:1.05 !important;
+  }
+  .head-brand small{
+    font-size:9px !important;
+    margin-top:2px !important;
+  }
+
+  /* زر متصل الآن */
+  .driver-status-only{
+    padding:3px 5px 1px !important;
+  }
+  .driver-status-only .status-toggle button{
+    min-width:140px !important;
+    padding:7px 14px !important;
+    font-size:12px !important;
+  }
+  .driver-status-only .status-toggle button::before{
+    font-size:10px !important;
+    margin-left:6px !important;
+  }
+
+  /* الخريطة */
+  .map-shell{
+    width:calc(100% - 8px) !important;
+    margin:0 4px !important;
+    padding:1px !important;
+    border-radius:16px !important;
+  }
+  #map{
+    height:39vh !important;
+    min-height:275px !important;
+    max-height:335px !important;
+    border-radius:15px !important;
+  }
+  .leaflet-control-zoom a{
+    width:28px !important;
+    height:28px !important;
+    line-height:28px !important;
+    font-size:16px !important;
+  }
+
+  /* مربعات الملخص */
+  .summary{
+    gap:4px !important;
+    padding:5px 5px 2px !important;
+  }
+  .summary .box{
+    min-height:48px !important;
+    border-radius:11px !important;
+    padding:5px 3px !important;
+  }
+  .summary small{
+    font-size:8px !important;
+    margin-bottom:2px !important;
+  }
+  .summary b{
+    font-size:11px !important;
+  }
+
+  /* قسم الطلب */
+  .section{
+    padding:4px 5px !important;
+  }
+  .section h2{
+    font-size:13px !important;
+    margin:1px 0 5px !important;
+    padding-right:5px !important;
+    border-right-width:2px !important;
+  }
+  .request-card{
+    border-radius:13px !important;
+    padding:7px !important;
+  }
+
+  .customer{
+    gap:6px !important;
+  }
+  .avatar{
+    width:32px !important;
+    height:32px !important;
+    font-size:16px !important;
+  }
+  .customer-info b{
+    font-size:11px !important;
+  }
+  .customer-info span{
+    font-size:8px !important;
+    margin-top:2px !important;
+  }
+  #requestVehicle{
+    font-size:9px !important;
+    padding:5px 6px !important;
+    border-radius:8px !important;
+  }
+
+  /* تفاصيل الانطلاق والوصول */
+  .route-info{
+    gap:4px !important;
+    margin-top:6px !important;
+  }
+  .route-info .item{
+    border-radius:9px !important;
+    padding:6px !important;
+  }
+  .route-info small{
+    font-size:7.5px !important;
+    margin-bottom:2px !important;
+  }
+  .route-info b{
+    font-size:9px !important;
+    line-height:1.25 !important;
+  }
+
+  /* أزرار الطلب */
+  .actions{
+    grid-template-columns:1.2fr 1fr .75fr !important;
+    gap:4px !important;
+    margin-top:6px !important;
+  }
+  .actions .accept{
+    grid-column:auto !important;
+  }
+  .actions button,
+  #changeRequestBtn,
+  #rejectBtn{
+    padding:8px 4px !important;
+    border-radius:9px !important;
+    font-size:10px !important;
+    min-height:34px !important;
+  }
+
+  /* الطلب الحالي */
+  .state{
+    border-radius:10px !important;
+    padding:7px !important;
+    margin-bottom:5px !important;
+    font-size:11px !important;
+  }
+  .contact{
+    gap:4px !important;
+    margin-top:5px !important;
+  }
+  .contact button{
+    padding:7px 3px !important;
+    border-radius:8px !important;
+    font-size:8px !important;
+  }
+  .ride-status-box{
+    margin:6px 0 !important;
+    border-radius:10px !important;
+    padding:6px !important;
+  }
+  .ride-status-live{
+    font-size:10px !important;
+    margin-bottom:5px !important;
+  }
+  .ride-status-steps{
+    gap:3px !important;
+  }
+  .ride-status-step{
+    font-size:7px !important;
+    padding:5px 2px !important;
+    border-radius:7px !important;
+  }
+  .trip-actions{
+    gap:4px !important;
+  }
+  .trip-actions button{
+    padding:8px 4px !important;
+    border-radius:9px !important;
+    font-size:9px !important;
+  }
+
+  /* الشريط السفلي */
+  .bottom-nav{
+    height:58px !important;
+    padding:4px 6px max(4px,env(safe-area-inset-bottom)) !important;
+  }
+  .bottom-nav a{
+    font-size:8px !important;
+  }
+  .bottom-nav a span{
+    font-size:17px !important;
+    margin-bottom:1px !important;
+  }
+  .bottom-logo{
+    border-radius:20px 20px 0 0 !important;
+  }
+  .bottom-logo strong{
+    font-size:15px !important;
+  }
+  .bottom-logo small{
+    font-size:7px !important;
+  }
+
+  .shop-courier-link{
+    left:6px !important;
+    bottom:64px !important;
+    padding:5px 7px !important;
+    font-size:8px !important;
+  }
+}
+
+/* هواتف صغيرة جداً */
+@media(max-width:390px){
+  #map{
+    height:37vh !important;
+    min-height:255px !important;
+    max-height:305px !important;
+  }
+  .summary .box{
+    min-height:44px !important;
+  }
+  .summary small{font-size:7px !important}
+  .summary b{font-size:10px !important}
+  .route-info small{font-size:7px !important}
+  .route-info b{font-size:8.5px !important}
+  .actions button,
+  #changeRequestBtn,
+  #rejectBtn{
+    font-size:9px !important;
+    padding:7px 3px !important;
+  }
+}
+
+
+/* ===== الشريط السفلي الجديد: 5 مربعات ===== */
+.bottom-nav.bottom-nav-five{
+  position:fixed !important;
+  left:50% !important;
+  bottom:0 !important;
+  transform:translateX(-50%) !important;
+  width:min(760px,100%) !important;
+  height:auto !important;
+  min-height:66px !important;
+  padding:6px 6px max(6px,env(safe-area-inset-bottom)) !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:5px !important;
+  align-items:stretch !important;
+  background:rgba(4,7,9,.97) !important;
+  border-top:1px solid rgba(242,181,68,.55) !important;
+  box-shadow:0 -10px 28px rgba(0,0,0,.48) !important;
+  z-index:3500 !important;
+}
+
+.bottom-nav.bottom-nav-five a{
+  min-width:0 !important;
+  min-height:54px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:2px !important;
+  padding:5px 2px !important;
+  margin:0 !important;
+  border:1px solid rgba(242,181,68,.32) !important;
+  border-radius:12px !important;
+  background:linear-gradient(180deg,#10161a,#070a0d) !important;
+  color:#f2f2f2 !important;
+  text-decoration:none !important;
+  text-align:center !important;
+  font-size:9px !important;
+  font-weight:800 !important;
+  line-height:1.1 !important;
+}
+
+.bottom-nav.bottom-nav-five a span{
+  display:block !important;
+  margin:0 !important;
+  font-size:19px !important;
+  line-height:1 !important;
+}
+
+.bottom-nav.bottom-nav-five a b{
+  display:block !important;
+  font-size:9px !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  max-width:100% !important;
+}
+
+.bottom-nav.bottom-nav-five a.active{
+  color:#111 !important;
+  border-color:#ffd46a !important;
+  background:linear-gradient(135deg,#ffe28a,#d99a25) !important;
+  box-shadow:0 0 14px rgba(242,181,68,.2) !important;
+}
+
+@media(max-width:420px){
+  .bottom-nav.bottom-nav-five{
+    gap:3px !important;
+    padding-left:4px !important;
+    padding-right:4px !important;
+  }
+  .bottom-nav.bottom-nav-five a{
+    min-height:50px !important;
+    border-radius:10px !important;
+    padding:4px 1px !important;
+  }
+  .bottom-nav.bottom-nav-five a span{
+    font-size:17px !important;
+  }
+  .bottom-nav.bottom-nav-five a b{
+    font-size:8px !important;
+  }
+}
+
+/* ارفع زر توصيل المتاجر فوق الشريط الجديد */
+.shop-courier-link{
+  bottom:78px !important;
+}
+
+/* ===== واجهة السائق الحية: حركة الطلبات والخريطة ===== */
+.live-hero{
+  position:relative;
+  overflow:hidden;
+  animation:heroEnter .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.live-hero::after{
+  content:"";
+  position:absolute;
+  inset:-80% auto -80% -45%;
+  width:34%;
+  transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,214,106,.09),transparent);
+  animation:heroShine 5.2s linear infinite;
+  pointer-events:none;
+}
+.hero-live-note{
+  display:block;
+  margin-top:4px;
+  color:#8f989e;
+  font-size:11px;
+}
+.driver-avatar{animation:driverGlow 2.2s ease-in-out infinite}
+
+.animated-map{position:relative!important}
+.animated-map::after{
+  content:"";
+  position:absolute;
+  z-index:600;
+  left:10%;right:10%;top:12%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,212,106,.75),transparent);
+  box-shadow:0 0 18px rgba(242,181,68,.42);
+  pointer-events:none;
+  animation:mapScan 5.5s ease-in-out infinite;
+  opacity:.45;
+}
+.ha-pin.driver::before{
+  content:"";
+  position:absolute;
+  width:42px;height:42px;
+  border:2px solid rgba(242,181,68,.6);
+  border-radius:50%;
+  transform:rotate(45deg);
+  animation:pinPulse 1.8s ease-out infinite;
+}
+
+.request-deck{
+  position:relative;
+  z-index:25;
+  margin-top:-8px;
+}
+.request-section-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.request-section-head h2{margin-bottom:8px!important}
+.request-pager{
+  min-width:58px;
+  text-align:center;
+  padding:6px 9px;
+  border-radius:999px;
+  border:1px solid rgba(242,181,68,.35);
+  background:#0d1317;
+  color:var(--gold2);
+  font-size:11px;
+  font-weight:900;
+}
+.request-empty{
+  min-height:108px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:1px dashed rgba(242,181,68,.34);
+  border-radius:20px;
+  background:linear-gradient(145deg,#0c1114,#080b0d);
+  color:#d8dcde;
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+.request-empty small{color:#858d92;font-size:10px;text-align:center}
+.search-radar{position:relative;width:38px;height:38px;margin-bottom:2px}
+.search-radar span{
+  position:absolute;inset:50%;
+  width:8px;height:8px;margin:-4px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 12px rgba(242,181,68,.7);
+}
+.search-radar span:nth-child(2),.search-radar span:nth-child(3){
+  inset:0;margin:0;width:100%;height:100%;background:transparent;
+  border:1px solid rgba(242,181,68,.55);
+  animation:radarPulse 1.8s ease-out infinite;
+}
+.search-radar span:nth-child(3){animation-delay:.9s}
+
+.request-live-card{
+  position:relative;
+  overflow:hidden;
+  transform-origin:50% 100%;
+}
+.request-live-card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.035) 42%,transparent 58%);
+  transform:translateX(-120%);
+  animation:cardSweep 4.8s ease-in-out infinite;
+}
+.request-new-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  margin:0 0 9px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(53,199,111,.12);
+  border:1px solid rgba(53,199,111,.36);
+  color:#69dc93;
+  font-size:10px;font-weight:900;
+}
+.request-new-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#35c76f;box-shadow:0 0 10px #35c76f;animation:chipBlink 1.2s ease-in-out infinite}
+.request-avatar{animation:avatarFloat 2.6s ease-in-out infinite}
+.request-actions{grid-template-columns:1.35fr 1fr!important}
+.request-actions .accept{grid-column:auto!important}
+.request-actions .change-request{position:relative;overflow:hidden}
+.request-actions .change-request::after{
+  content:"";position:absolute;top:0;bottom:0;width:35%;left:-50%;
+  background:linear-gradient(90deg,transparent,rgba(255,212,106,.13),transparent);
+  animation:skipShine 2.7s ease-in-out infinite;
+}
+.request-pop-in{animation:requestIn .38s cubic-bezier(.18,.82,.22,1) both}
+.request-swipe-out{animation:requestOut .18s ease-in both}
+.accepted-panel.panel-enter{animation:acceptedIn .46s cubic-bezier(.2,.8,.2,1) both}
+
+@keyframes heroEnter{from{opacity:0;transform:translateY(-14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes heroShine{0%{left:-45%}55%,100%{left:125%}}
+@keyframes driverGlow{0%,100%{box-shadow:0 0 18px rgba(242,181,68,.16)}50%{box-shadow:0 0 30px rgba(242,181,68,.36)}}
+@keyframes mapScan{0%,100%{top:12%;opacity:.15}50%{top:84%;opacity:.52}}
+@keyframes pinPulse{0%{opacity:.8;transform:rotate(45deg) scale(.5)}100%{opacity:0;transform:rotate(45deg) scale(1.65)}}
+@keyframes radarPulse{0%{opacity:.8;transform:scale(.25)}100%{opacity:0;transform:scale(1.35)}}
+@keyframes cardSweep{0%,68%{transform:translateX(-120%)}92%,100%{transform:translateX(140%)}}
+@keyframes chipBlink{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes avatarFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes skipShine{0%,35%{left:-50%}70%,100%{left:130%}}
+@keyframes requestIn{from{opacity:0;transform:translateX(-18px) translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes requestOut{to{opacity:0;transform:translateX(22px) scale(.96)}}
+@keyframes acceptedIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+
+@media(max-width:620px){
+  .driver-hero{margin:7px 6px 5px!important;padding:8px!important;border-radius:17px!important}
+  .hero-title{margin-bottom:7px!important}
+  .hero-title b{font-size:12px!important}
+  .hero-live-note{font-size:8px!important}
+  .driver-grid{grid-template-columns:1.35fr 1fr 1fr!important}
+  .driver-data:nth-of-type(4){display:none!important}
+  .driver-profile-box,.driver-data{min-height:48px!important;padding:6px!important;border-radius:11px!important}
+  .driver-avatar{width:34px!important;height:34px!important;font-size:18px!important}
+  .driver-profile-box strong{font-size:10px!important}
+  .driver-profile-box span{font-size:8px!important;margin-top:2px!important}
+  .driver-data small{font-size:7px!important;margin-bottom:3px!important}
+  .driver-data b{font-size:9px!important}
+  .status-toggle button{min-width:108px!important;padding:7px 10px!important;font-size:9px!important}
+  .request-deck{margin-top:-2px!important}
+  .request-pager{font-size:9px;padding:4px 7px;min-width:48px}
+  .request-empty{min-height:82px;border-radius:13px}
+  .request-live-card{box-shadow:0 10px 26px rgba(0,0,0,.4),0 0 0 1px rgba(242,181,68,.06)!important}
+  .request-actions{grid-template-columns:1.25fr 1fr!important}
+  .request-actions button{font-size:10px!important;padding:8px 5px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}
+
 </style>
 
 </head>
@@ -608,13 +1260,41 @@ button{-webkit-tap-highlight-color:transparent}
     <a class="head-back" href="javascript:history.back()" aria-label="رجوع">←</a>
   </header>
 
-  <section class="driver-status-only">
-    <div class="status-toggle">
-      <button id="availabilityBtn">متصل الآن</button>
+  <section class="driver-hero live-hero">
+    <div class="hero-title">
+      <div>
+        <b>السائق</b>
+        <small class="hero-live-note">جاهز لاستقبال الطلبات القريبة</small>
+      </div>
+      <div class="status-toggle">
+        <button id="availabilityBtn">متصل الآن</button>
+      </div>
+    </div>
+
+    <div class="driver-grid">
+      <div class="driver-profile-box">
+        <div class="driver-avatar">🚕</div>
+        <div>
+          <strong id="driverDisplayName">السائق</strong>
+          <span>● متصل بالخدمة</span>
+        </div>
+      </div>
+      <div class="driver-data">
+        <small>المركبة</small>
+        <b id="driverDisplayVehicle">🚕 —</b>
+      </div>
+      <div class="driver-data">
+        <small>اللون</small>
+        <b id="driverDisplayColor">🎨 —</b>
+      </div>
+      <div class="driver-data">
+        <small>اللوحة</small>
+        <b id="driverDisplayPlate">—</b>
+      </div>
     </div>
   </section>
 
-  <div class="map-shell"><div id="map"></div></div>
+  <div class="map-shell animated-map"><div id="map"></div></div>
 
   <div id="driverGate" style="display:none!important;width:0;height:0;overflow:hidden;position:absolute">
     <p id="driverGateMsg"></p>
@@ -632,11 +1312,22 @@ button{-webkit-tap-highlight-color:transparent}
     <div class="box"><small>السعر</small><b id="fare">—</b></div>
   </div>
 
-  <div class="section" id="requestsSection">
-    <h2>الطلبات القريبة</h2>
-    <div class="request-card" id="requestCard">
+  <div class="section request-deck" id="requestsSection">
+    <div class="request-section-head">
+      <h2>الطلبات القريبة</h2>
+      <span id="requestPager" class="request-pager">0 / 0</span>
+    </div>
+
+    <div id="requestEmptyState" class="request-empty">
+      <div class="search-radar"><span></span><span></span><span></span></div>
+      <b>جاري البحث عن طلب قريب...</b>
+      <small>أي طلب مناسب لنوع تسجيلك راح يظهر هنا مباشرة</small>
+    </div>
+
+    <div class="request-card request-live-card" id="requestCard">
+      <div class="request-new-chip">طلب جديد</div>
       <div class="customer">
-        <div class="avatar">👤</div>
+        <div class="avatar request-avatar">👤</div>
         <div class="customer-info">
           <b id="requestCustomerName">بانتظار طلب...</b>
           <span id="requestCustomerPhone">—</span>
@@ -651,10 +1342,10 @@ button{-webkit-tap-highlight-color:transparent}
         <div class="item"><small>مدة الرحلة</small><b id="requestTripTime">—</b></div>
       </div>
 
-      <div class="actions">
-        <button id="acceptBtn" class="accept">قبول الطلب</button>
-        <button id="changeRequestBtn" class="change-request">🔄 تغيير الطلب</button>
-        <button id="rejectBtn" class="reject">رفض</button>
+      <div class="actions request-actions">
+        <button id="acceptBtn" class="accept">✓ قبول الطلب</button>
+        <button id="changeRequestBtn" class="change-request">تخطي الطلب ←</button>
+        <button id="rejectBtn" class="reject" style="display:none!important">رفض</button>
       </div>
     </div>
   </div>
@@ -700,64 +1391,7 @@ button{-webkit-tap-highlight-color:transparent}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script>
-
-<script>
-/* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
-(function(){
-  if(window.HA_NotifyMe || !window.supabase) return;
-
-  const haNotificationClient = window.supabase.createClient(
-    'https://ubayrhtshgtgggxprrek.supabase.co',
-    'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-    {
-      auth:{
-        persistSession:true,
-        autoRefreshToken:true,
-        detectSessionInUrl:true,
-        storageKey:'ha-marketing-auth'
-      }
-    }
-  );
-
-  const sentThisSession = new Set();
-
-  window.HA_NotifyMe = async function({
-    title,
-    body,
-    type='general',
-    link=null,
-    eventKey=null
-  }){
-    try{
-      if(eventKey && sentThisSession.has(eventKey)) return true;
-
-      const {data:{session}} = await haNotificationClient.auth.getSession();
-      if(!session?.user || session.user.is_anonymous) return false;
-
-      const {error} = await haNotificationClient.rpc('ha_notify_me',{
-        p_title:title,
-        p_body:body,
-        p_type:type,
-        p_link:link,
-        p_event_key:eventKey
-      });
-
-      if(error){
-        console.warn('HA notification:',error);
-        return false;
-      }
-
-      if(eventKey) sentThisSession.add(eventKey);
-      return true;
-    }catch(e){
-      console.warn('HA notification bridge:',e);
-      return false;
-    }
-  };
-})();
-</script>
-
+<script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -781,10 +1415,13 @@ const db = firebase.database();
 <script src="transport-rating.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map=L.map('map').setView([33.3152,44.3661],13);
-setTimeout(()=>map.invalidateSize(),80);
-window.addEventListener('load',()=>setTimeout(()=>map.invalidateSize(),180));
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+const map=L.map('map',{zoomControl:true}).setView([33.3152,44.3661],13);
+[60,180,450,900].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
+window.addEventListener('load',()=>{
+  [80,300,800].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
+});
+window.addEventListener('resize',()=>setTimeout(()=>map.invalidateSize(true),120));
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
   maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
@@ -803,21 +1440,107 @@ let driverWatch=null;
 let currentRideStatusRef=null;
 let pendingEntries=[];
 let currentPendingIndex=0;
+let lastPendingCount=0;
 
 let driverProfile=null;
 let driverReady=false;
 let firebaseDriverUser=null;
+let driverKind=null;
+let driverDispatchTypes=[];
+let driverRealPos=null;
+let driverLocationWatchId=null;
 
 function coordText(p){
   if(!p)return '—';
   return Number(p.lat).toFixed(5)+', '+Number(p.lng).toFixed(5);
 }
 
+
+
+function rideDistanceFromDriver(ride){
+  if(!driverRealPos || !ride?.pickup)return Infinity;
+  return HA_Nearby.distanceKm(driverRealPos,{lat:ride.pickup.lat,lng:ride.pickup.lng});
+}
+
+function sortPendingByNearest(){
+  if(!Array.isArray(pendingEntries)||!pendingEntries.length)return;
+  pendingEntries.sort((a,b)=>{
+    const da=rideDistanceFromDriver(a[1]);
+    const dbb=rideDistanceFromDriver(b[1]);
+    if(da!==dbb)return da-dbb;
+    return (a[1].createdAt||0)-(b[1].createdAt||0);
+  });
+}
+
+function startDriverNearbyWatch(){
+  if(driverLocationWatchId!=null || !window.HA_Nearby)return;
+  driverLocationWatchId=HA_Nearby.watch(pos=>{
+    driverRealPos=pos;
+    driver.setLatLng([pos.lat,pos.lng]);
+    if(!currentRide || currentRide.status==='searching'){
+      sortPendingByNearest();
+      currentPendingIndex=0;
+      if(pendingEntries.length)renderPendingRide(0);
+    }
+  },()=>{});
+}
+function normalizeRideDispatch(ride){
+  if(!ride)return '';
+
+  // الطلبات الجديدة تحمل dispatchType بشكل صريح.
+  if(ride.dispatchType)return String(ride.dispatchType);
+
+  // توافق احتياطي مع الطلبات القديمة التي تحمل serviceType فقط.
+  const service=String(ride.serviceType||'').toLowerCase();
+  const vehicle=String(ride.vehicleType||'').toLowerCase();
+
+  if(service==='taxi')return 'taxi';
+  if(service==='tuktuk')return 'tuktuk';
+
+  if(service==='delivery'){
+    if(/تكتك|tuktuk/.test(vehicle))return 'delivery_tuktuk';
+    if(/سيارة|car/.test(vehicle))return 'delivery_car';
+    return 'delivery_courier';
+  }
+
+  // الطلبات القديمة جداً التي لا نعرف نوعها لا نظهرها عشوائياً لأي سائق.
+  return '';
+}
+
+function rideMatchesThisDriver(ride){
+  const type=normalizeRideDispatch(ride);
+  return !!type && driverDispatchTypes.includes(type);
+}
+
+function rideDisplayLabel(ride){
+  const type=normalizeRideDispatch(ride);
+  const vehicle=ride?.vehicleType||'';
+
+  if(type==='taxi')return '🚕 تكسي'+(vehicle?' — '+vehicle:'');
+  if(type==='tuktuk')return '🛺 تكتك'+(vehicle?' — '+vehicle:'');
+  if(type==='delivery_courier')return '🛵 مندوب'+(vehicle?' — '+vehicle:'');
+  if(type==='delivery_tuktuk')return '🛺 توصيل تكتك';
+  if(type==='delivery_car')return '🚗 توصيل سيارة';
+  return vehicle||'طلب نقل';
+}
+
+function animateRequestCard(){
+  if(!window.requestCard)return;
+  requestCard.classList.remove('request-pop-in','request-swipe-out');
+  void requestCard.offsetWidth;
+  requestCard.classList.add('request-pop-in');
+}
+
 function renderPendingRide(index){
+  const emptyState=document.getElementById('requestEmptyState');
+  const pager=document.getElementById('requestPager');
+
   if(!pendingEntries.length){
     currentRideId=null;
     currentRide=null;
     requestCard.style.display='none';
+    if(emptyState)emptyState.style.display='flex';
+    if(pager)pager.textContent='0 / 0';
     return;
   }
 
@@ -826,25 +1549,17 @@ function renderPendingRide(index){
 
   currentRideId=id;
   currentRide=ride;
+  if(emptyState)emptyState.style.display='none';
   requestCard.style.display='block';
+  if(pager)pager.textContent=(currentPendingIndex+1)+' / '+pendingEntries.length;
 
   requestCustomerName.textContent=ride.customer?.name||'الزبون';
   if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
-  requestVehicle.textContent='🚕 '+(ride.vehicleType||'تكسي');
+  requestVehicle.textContent=rideDisplayLabel(ride);
   requestPickup.textContent=coordText(ride.pickup);
   requestDestination.textContent=coordText(ride.destination);
   requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
   fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
-
-  // إشعار داخل حساب السائق عند ظهور طلب جديد.
-  window.HA_NotifyMe?.({
-    title:'🚕 طلب رحلة جديد',
-    body:'وصلك طلب جديد من '+(ride.customer?.name||'زبون')+
-         (ride.price ? ' • الأجرة '+Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : ''),
-    type:'taxi',
-    link:'driver.html',
-    eventKey:'ride:'+id+':driver:new'
-  });
 
   if(ride.pickup){
     customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
@@ -854,15 +1569,16 @@ function renderPendingRide(index){
   }
 
   if(ride.pickup){
-    const km=driver.getLatLng().distanceTo(customer.getLatLng())/1000;
-    toCustomer.textContent=km.toFixed(1)+' كم';
+    const km=driverRealPos
+      ? HA_Nearby.distanceKm(driverRealPos,{lat:ride.pickup.lat,lng:ride.pickup.lng})
+      : driver.getLatLng().distanceTo(customer.getLatLng())/1000;
+    toCustomer.textContent=km<1?Math.round(km*1000)+' م':km.toFixed(1)+' كم';
     requestPickupEta.textContent=Math.max(1,Math.round(km*2.2))+' دقيقة';
   }else{
     toCustomer.textContent='—';
     requestPickupEta.textContent='—';
   }
 
-  // إذا عدنا نقطتي الانطلاق والوصول، نوسّط الخريطة عليهما.
   if(ride.pickup && ride.destination){
     try{
       const bounds=L.latLngBounds(
@@ -872,6 +1588,8 @@ function renderPendingRide(index){
       map.fitBounds(bounds,{padding:[55,55],maxZoom:14});
     }catch(e){}
   }
+
+  animateRequestCard();
 }
 
 function watchPendingRides(){
@@ -892,9 +1610,25 @@ function watchPendingRides(){
 
     pendingEntries=Object.entries(rides)
       .filter(([,r])=>!!r?.customerUid)
-      .sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+      .filter(([,r])=>rideMatchesThisDriver(r));
+
+    sortPendingByNearest();
+    if(!driverRealPos){
+      pendingEntries.sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+    }
 
     nearbyCount.textContent=String(pendingEntries.length);
+
+    if(pendingEntries.length>lastPendingCount && available){
+      try{if(navigator.vibrate)navigator.vibrate([70,45,70]);}catch(e){}
+      const section=document.getElementById('requestsSection');
+      if(section){
+        section.classList.remove('request-pop-in');
+        void section.offsetWidth;
+        section.classList.add('request-pop-in');
+      }
+    }
+    lastPendingCount=pendingEntries.length;
 
     // إذا عند السائق رحلة مقبولة حالياً، لا نغيّر بياناتها بسبب تحديث قائمة الطلبات.
     if(currentRide && currentRide.status && currentRide.status!=='searching') return;
@@ -904,6 +1638,10 @@ function watchPendingRides(){
       currentRide=null;
       currentPendingIndex=0;
       requestCard.style.display='none';
+      const emptyState=document.getElementById('requestEmptyState');
+      const pager=document.getElementById('requestPager');
+      if(emptyState)emptyState.style.display='flex';
+      if(pager)pager.textContent='0 / 0';
       toCustomer.textContent='—';
       fare.textContent='—';
       return;
@@ -934,14 +1672,6 @@ function watchCurrentRideStatus(rideId){
 
     if(ride.status==='cancelled' && ride.cancelledBy==='customer'){
       const reason=ride.cancelReason||'بدون سبب محدد';
-
-      window.HA_NotifyMe?.({
-        title:'❌ الزبون ألغى الرحلة',
-        body:'تم إلغاء الرحلة من الزبون. السبب: '+reason,
-        type:'taxi',
-        link:'driver.html',
-        eventKey:'ride:'+rideId+':driver:customer-cancelled'
-      });
       stopCurrentRideStatusWatch();
       HA_LiveTracking.stopDriver();
       HA_RideStatus.clear();
@@ -984,10 +1714,27 @@ availabilityBtn.onclick=()=>{
 
 acceptBtn.onclick=async()=>{
   if(!currentRideId)return;
-  try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){ alert('تعذر التحقق الآمن من Firebase. فعّل Anonymous Authentication.'); return; }
+  const oldAcceptText=acceptBtn.textContent;
+  acceptBtn.disabled=true;
+  acceptBtn.textContent='جاري القبول...';
+  try{ firebaseDriverUser=await HA_FirebaseAuth.ready(); }catch(err){
+    acceptBtn.disabled=false;acceptBtn.textContent=oldAcceptText;
+    alert('تعذر التحقق الآمن من Firebase. فعّل Anonymous Authentication.'); return;
+  }
   const ident=await HA_TransportProfile.driverIdentity();
-  if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
+  if(!ident.ok){acceptBtn.disabled=false;acceptBtn.textContent=oldAcceptText;alert(ident.message||'بيانات السائق غير مكتملة.');return;}
   driverProfile=ident.driver;
+  driverKind=ident.driverKind||null;
+  driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
+
+  if(!rideMatchesThisDriver(currentRide)){
+    alert('هذا الطلب مو مخصص لنوع تسجيلك.');
+    currentRideId=null;
+    currentRide=null;
+    acceptBtn.disabled=false;acceptBtn.textContent=oldAcceptText;
+    watchPendingRides();
+    return;
+  }
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
@@ -1005,6 +1752,7 @@ acceptBtn.onclick=async()=>{
     alert('هذا الطلب تم أخذه أو إلغاؤه.');
     currentRideId=null;
     currentRide=null;
+    acceptBtn.disabled=false;acceptBtn.textContent=oldAcceptText;
     watchPendingRides();
     return;
   }
@@ -1013,10 +1761,13 @@ acceptBtn.onclick=async()=>{
   await db.ref('driverRides/'+firebaseDriverUser.uid+'/'+currentRideId).set(true).catch(()=>{});
   localStorage.setItem('ha_driver_active_ride',currentRideId);
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,currentRide.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
-  acceptedPanel.classList.add('show');
+  acceptBtn.disabled=false;
+  acceptBtn.textContent=oldAcceptText;
+  acceptedPanel.classList.add('show','panel-enter');
+  setTimeout(()=>acceptedPanel.classList.remove('panel-enter'),520);
   tripState.textContent='بالطريق إلى الزبون';
   currentFare.textContent=currentRide.price ? Number(currentRide.price).toLocaleString('ar-IQ')+' د.ع' : '—';
   if(window.activeCustomerName)activeCustomerName.textContent=currentRide.customer?.name||'الزبون';
@@ -1048,15 +1799,16 @@ changeRequestBtn.onclick=()=>{
   const previousId=currentRideId;
   let nextIndex=(currentPendingIndex+1)%pendingEntries.length;
 
-  // حماية بسيطة حتى لا يرجع لنفس الطلب إذا تغير ترتيب القائمة.
   if(pendingEntries[nextIndex]?.[0]===previousId && pendingEntries.length>1){
     nextIndex=(nextIndex+1)%pendingEntries.length;
   }
 
-  renderPendingRide(nextIndex);
+  requestCard.classList.remove('request-pop-in');
+  requestCard.classList.add('request-swipe-out');
+  setTimeout(()=>renderPendingRide(nextIndex),170);
 };
 
-rejectBtn.onclick=async()=>{
+if(window.rejectBtn)rejectBtn.onclick=async()=>{
   if(!currentRideId)return;
   await db.ref('rides/'+currentRideId).update({status:'rejected',rejectedAt:Date.now()});
   currentRideId=null;
@@ -1133,7 +1885,7 @@ async function restoreDriverRide(){
   currentRideId=saved;
   currentRide=ride;
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,(ride.vehicleType||'').includes('مندوب')?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,ride.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -1157,6 +1909,8 @@ async function restoreDriverRide(){
 }
 
 requestCard.style.display='none';
+const initialEmptyState=document.getElementById('requestEmptyState');
+if(initialEmptyState)initialEmptyState.style.display='flex';
 nearbyCount.textContent='0';
 
 
@@ -1195,7 +1949,10 @@ async function initRealDriver(){
 
   const ident=await HA_TransportProfile.driverIdentity();
   if(ident.ok){
-    driverProfile=ident.driver;driverReady=true;
+    driverProfile=ident.driver;
+    driverKind=ident.driverKind||null;
+    driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
+    driverReady=true;
     refreshDriverHero(driverProfile);
     if(msg) msg.textContent='';
     setup.style.display='none';
@@ -1215,7 +1972,7 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
+initRealDriver().then(ok=>{ if(ok){startDriverNearbyWatch();restoreDriverRide();} });
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
@@ -1448,10 +2205,12 @@ window.addEventListener('load',()=>{
 
 <a href="shop-courier.html" class="shop-courier-link">📦 توصيل المتاجر</a>
 
-<nav class="bottom-nav">
-  <a href="index.html"><span>🏠</span>الرئيسية</a>
-  <a href="driver.html" class="bottom-logo"><strong>HA</strong><small>HA Marketing</small></a>
-  <a href="profile.html"><span>👤</span>الحساب</a>
+<nav class="bottom-nav bottom-nav-five">
+  <a href="index.html"><span>🏠</span><b>الرئيسية</b></a>
+  <a href="notifications-center.html"><span>🔔</span><b>الإشعارات</b></a>
+  <a href="driver.html#requestsSection" class="active"><span>📋</span><b>الطلبات</b></a>
+  <a href="account.html"><span>👤</span><b>حسابي</b></a>
+  <a href="contact.html"><span>☎️</span><b>اتصل بنا</b></a>
 </nav>
 
 </body>
