@@ -1,8 +1,3 @@
-استرجاع صفحات النقل إلى النسخة الأخيرة قبل تعديلات الإشعارات.
-استبدل فقط:
-- driver.html
-- taxi.html
-- tuktuk.html
-- delivery.html
-ولا تضف transport-push.js حالياً.
-بعد التأكد أن الطلب يصل للسائق ويعمل القبول، نضيف الإشعارات خطوة بخطوة بدون تغيير منطق الطلب.
+HA Marketing - Translation WebView Fix
+استبدل ملف study-language.html فقط بالملف الموجود هنا.
+الإصلاح يشمل الترجمة ومدرب اللغة لأن الاثنين يستخدمان ai-assistant.
