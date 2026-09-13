@@ -757,6 +757,7 @@ button{-webkit-tap-highlight-color:transparent}
   };
 })();
 </script>
+<script src="transport-push.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
@@ -807,6 +808,35 @@ let currentPendingIndex=0;
 let driverProfile=null;
 let driverReady=false;
 let firebaseDriverUser=null;
+let driverDispatchTypes=[];
+
+function rideDispatchType(ride){
+  if(ride?.dispatchType) return ride.dispatchType;
+  if(ride?.serviceType==='tuktuk') return 'tuktuk';
+  if(ride?.serviceType==='delivery'){
+    const v=String(ride?.vehicleType||'');
+    if(/تكتك|tuktuk/i.test(v)) return 'delivery_tuktuk';
+    if(/سيارة|car/i.test(v)) return 'delivery_car';
+    return 'delivery_courier';
+  }
+  return 'taxi';
+}
+
+async function notifyRideCustomer(ride,rideId,event,title,body){
+  const targetUserId=ride?.customerUserId;
+  if(!targetUserId || !rideId) return false;
+  const type=ride?.serviceType==='delivery' ? 'delivery' : 'taxi';
+  const link=ride?.serviceType==='delivery' ? 'delivery.html' : (ride?.serviceType==='tuktuk' ? 'tuktuk.html' : 'taxi.html');
+  return window.HA_TransportPush?.notifyPeer({
+    targetUserId,
+    rideId,
+    event,
+    title,
+    body,
+    type,
+    link
+  });
+}
 
 function coordText(p){
   if(!p)return '—';
@@ -835,16 +865,6 @@ function renderPendingRide(index){
   requestDestination.textContent=coordText(ride.destination);
   requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
   fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
-
-  // إشعار داخل حساب السائق عند ظهور طلب جديد.
-  window.HA_NotifyMe?.({
-    title:'🚕 طلب رحلة جديد',
-    body:'وصلك طلب جديد من '+(ride.customer?.name||'زبون')+
-         (ride.price ? ' • الأجرة '+Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : ''),
-    type:'taxi',
-    link:'driver.html',
-    eventKey:'ride:'+id+':driver:new'
-  });
 
   if(ride.pickup){
     customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
@@ -892,6 +912,7 @@ function watchPendingRides(){
 
     pendingEntries=Object.entries(rides)
       .filter(([,r])=>!!r?.customerUid)
+      .filter(([,r])=>!driverDispatchTypes.length || driverDispatchTypes.includes(rideDispatchType(r)))
       .sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
 
     nearbyCount.textContent=String(pendingEntries.length);
@@ -1011,9 +1032,18 @@ acceptBtn.onclick=async()=>{
 
   currentRide=tx.snapshot.val();
   await db.ref('driverRides/'+firebaseDriverUser.uid+'/'+currentRideId).set(true).catch(()=>{});
+
+  await notifyRideCustomer(
+    currentRide,
+    currentRideId,
+    'customer:accepted',
+    currentRide?.serviceType==='delivery' ? '✅ تم قبول طلب التوصيل' : (currentRide?.serviceType==='tuktuk' ? '✅ تم قبول طلب التكتك' : '✅ تم قبول طلب التكسي'),
+    'تم قبول طلبك والسائق بالطريق إليك.'
+  );
+
   localStorage.setItem('ha_driver_active_ride',currentRideId);
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,currentRide?.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -1058,7 +1088,16 @@ changeRequestBtn.onclick=()=>{
 
 rejectBtn.onclick=async()=>{
   if(!currentRideId)return;
-  await db.ref('rides/'+currentRideId).update({status:'rejected',rejectedAt:Date.now()});
+  const rejectedRideId=currentRideId;
+  const rejectedRide=currentRide;
+  await db.ref('rides/'+rejectedRideId).update({status:'rejected',rejectedAt:Date.now()});
+  await notifyRideCustomer(
+    rejectedRide,
+    rejectedRideId,
+    'customer:rejected',
+    '⚠️ لم يتم قبول الطلب',
+    'تم رفض الطلب. يمكنك إرسال طلب جديد.'
+  );
   currentRideId=null;
   currentRide=null;
   currentPendingIndex=0;
@@ -1070,14 +1109,32 @@ arriveBtn.onclick=async()=>{
   tripState.textContent='وصلت إلى الزبون';
   arriveBtn.disabled=true;
   startTripBtn.disabled=false;
-  if(currentRideId) await db.ref('rides/'+currentRideId).update({status:'arrived',arrivedAt:Date.now()});
+  if(currentRideId){
+    await db.ref('rides/'+currentRideId).update({status:'arrived',arrivedAt:Date.now()});
+    await notifyRideCustomer(
+      currentRide,
+      currentRideId,
+      'customer:arrived',
+      '📍 السائق وصل',
+      currentRide?.serviceType==='delivery' ? 'وصل المندوب إلى نقطة الاستلام.' : 'وصل السائق إلى موقع الانطلاق.'
+    );
+  }
 };
 
 startTripBtn.onclick=async()=>{
   tripState.textContent='الرحلة بدأت';
   startTripBtn.disabled=true;
   finishTripBtn.disabled=false;
-  if(currentRideId) await db.ref('rides/'+currentRideId).update({status:'started',startedAt:Date.now()});
+  if(currentRideId){
+    await db.ref('rides/'+currentRideId).update({status:'started',startedAt:Date.now()});
+    await notifyRideCustomer(
+      currentRide,
+      currentRideId,
+      'customer:started',
+      currentRide?.serviceType==='delivery' ? '🛵 الطلب بالطريق' : '🚕 بدأت الرحلة',
+      currentRide?.serviceType==='delivery' ? 'تم استلام الطلب والمندوب بالطريق إلى نقطة التسليم.' : 'بدأ السائق الرحلة إلى الوجهة.'
+    );
+  }
 
   fetch(`https://router.project-osrm.org/route/v1/driving/${customer.getLatLng().lng},${customer.getLatLng().lat};${destination.getLatLng().lng},${destination.getLatLng().lat}?overview=full&geometries=geojson`)
     .then(r=>r.json()).then(j=>{
@@ -1094,7 +1151,17 @@ finishTripBtn.onclick=async()=>{
   if(currentRideId){
     await db.ref('rides/'+currentRideId).update({status:'finished',finishedAt:Date.now()});
     const finishedRideId=currentRideId;
+    const finishedRide=currentRide;
     const customerName=currentRide?.customer?.name||'الزبون';
+
+    await notifyRideCustomer(
+      finishedRide,
+      finishedRideId,
+      'customer:finished',
+      finishedRide?.serviceType==='delivery' ? '✅ تم تسليم الطلب' : '✅ انتهت الرحلة',
+      finishedRide?.serviceType==='delivery' ? 'تم إنهاء طلب التوصيل بنجاح.' : 'تم إنهاء الرحلة. يمكنك الآن تقييم السائق.'
+    );
+
     HA_Rating.show({rideId:finishedRideId,role:'driver',targetName:customerName});
     localStorage.removeItem('ha_driver_active_ride');
     stopCurrentRideStatusWatch();
@@ -1196,6 +1263,7 @@ async function initRealDriver(){
   const ident=await HA_TransportProfile.driverIdentity();
   if(ident.ok){
     driverProfile=ident.driver;driverReady=true;
+    driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
     refreshDriverHero(driverProfile);
     if(msg) msg.textContent='';
     setup.style.display='none';
@@ -1285,12 +1353,23 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   }
 
   if(currentRideId){
-    await db.ref('rides/'+currentRideId).update({
+    const cancelledRideId=currentRideId;
+    const cancelledRide=currentRide;
+    await db.ref('rides/'+cancelledRideId).update({
       status:'cancelled',
       cancelledBy:'driver',
       cancelReason:reason,
       cancelledAt:firebase.database.ServerValue.TIMESTAMP
     });
+
+    await notifyRideCustomer(
+      cancelledRide,
+      cancelledRideId,
+      'customer:driver-cancelled',
+      '❌ السائق ألغى الطلب',
+      'سبب الإلغاء: '+reason
+    );
+
     localStorage.removeItem('ha_driver_active_ride');
   }
 
