@@ -1097,7 +1097,6 @@ body:not(.trip-ready) #extraSummary{
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script>
 
 <script>
 /* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
@@ -1154,12 +1153,9 @@ body:not(.trip-ready) #extraSummary{
   };
 })();
 </script>
-<script src="transport-push.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="firebase-auth-secure.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
@@ -1630,36 +1626,18 @@ order.onclick=async()=>{
   const oldText=order.textContent;
   order.textContent='جاري إرسال الطلب...';
 
-  const realCustomer=await HA_TransportProfile.customerOrLogin();
-  if(!realCustomer){
-    order.disabled=false;
-    order.textContent=oldText;
-    return;
-  }
-
-  let fbUser;
-  try{
-    fbUser=await HA_FirebaseAuth.ready();
-  }catch(err){
-    console.error(err);
-    alert('تعذر تأمين الاتصال بـ Firebase. حاول مرة ثانية.');
-    order.disabled=false;
-    order.textContent=oldText;
-    return;
-  }
-
   const rideRef=db.ref('rides').push();
   activeRideId=rideRef.key;
   activeRideRef=rideRef;
 
   const rideData={
-    customerUid:fbUser.uid,
-    customerUserId:realCustomer.id,
     serviceType:'tuktuk',
-    dispatchType:'tuktuk',
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
-    customer:realCustomer,
+    customer:{
+      name:'زبون',
+      phone:''
+    },
     pickup:{lat:start.lat,lng:start.lng},
     destination:{lat:end.lat,lng:end.lng},
     vehicleType:selected.dataset.name,
@@ -1676,17 +1654,6 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
-
-    await window.HA_TransportPush?.notifyDrivers({
-      rideId:activeRideId,
-      dispatchType:'tuktuk',
-      title:'🛺 طلب تكتك جديد',
-      body:'طلب جديد من '+(realCustomer.name||realCustomer.full_name||'زبون')+
-           (rideData.price ? ' • الأجرة '+Number(rideData.price).toLocaleString('ar-IQ')+' د.ع' : ''),
-      type:'taxi',
-      link:'driver.html'
-    });
-
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();
     listenToRide(activeRideId);
@@ -2161,33 +2128,12 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   }
 
   if(activeRideId){
-    const cancelledRideId=activeRideId;
-    let rideBeforeCancel=null;
-    try{
-      const beforeSnap=await db.ref('rides/'+cancelledRideId).once('value');
-      rideBeforeCancel=beforeSnap.val();
-    }catch(_e){}
-
-    await db.ref('rides/'+cancelledRideId).update({
+    await db.ref('rides/'+activeRideId).update({
       status:'cancelled',
       cancelledBy:'customer',
       cancelReason:reason,
       cancelledAt:firebase.database.ServerValue.TIMESTAMP
     });
-
-    const driverUserId=rideBeforeCancel?.driver?.userId;
-    if(driverUserId){
-      await window.HA_TransportPush?.notifyPeer({
-        targetUserId:driverUserId,
-        rideId:cancelledRideId,
-        event:'driver:customer-cancelled',
-        title:'❌ الزبون ألغى طلب التكتك',
-        body:'سبب الإلغاء: '+reason,
-        type:'taxi',
-        link:'driver.html'
-      });
-    }
-
     localStorage.removeItem('ha_active_ride');
   }
   closeCancelReason();

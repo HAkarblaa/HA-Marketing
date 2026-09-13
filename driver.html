@@ -593,487 +593,6 @@ button{-webkit-tap-highlight-color:transparent}
   }
 }
 
-
-/* ===== تعديل HA: الخريطة مباشرة تحت "متصل الآن" بدون فراغ أسود ===== */
-#driverGate,
-.driver-gate-compact{
-  display:none !important;
-  position:absolute !important;
-  width:0 !important;
-  height:0 !important;
-  min-width:0 !important;
-  min-height:0 !important;
-  max-width:0 !important;
-  max-height:0 !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  overflow:hidden !important;
-  visibility:hidden !important;
-}
-
-.driver-status-only{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  margin:0 !important;
-  padding:5px 8px 1px !important;
-  min-height:0 !important;
-}
-
-.driver-status-only .status-toggle{
-  margin:0 !important;
-  padding:0 !important;
-  width:100% !important;
-  display:flex !important;
-  justify-content:center !important;
-}
-
-.driver-status-only .status-toggle button{
-  margin:0 !important;
-}
-
-.map-shell{
-  display:block !important;
-  position:relative !important;
-  z-index:2 !important;
-  width:calc(100% - 10px) !important;
-  margin:0 5px 0 !important;
-  padding:2px !important;
-  border-radius:24px !important;
-  overflow:hidden !important;
-  background:linear-gradient(135deg,var(--gold2),#5b4316 38%,#dba33b) !important;
-}
-
-#map{
-  display:block !important;
-  position:relative !important;
-  width:100% !important;
-  height:68vh !important;
-  min-height:520px !important;
-  max-height:790px !important;
-  margin:0 !important;
-  border-radius:22px !important;
-  overflow:hidden !important;
-  background:#11181c !important;
-}
-
-/* نخلي خريطة Voyager أغمق حتى تبقى مناسبة للأسود والذهبي */
-#map .leaflet-tile-pane{
-  filter:brightness(.58) contrast(1.16) saturate(.82);
-}
-
-@media(max-width:620px){
-  .driver-status-only{padding:4px 6px 1px !important}
-  .map-shell{
-    width:calc(100% - 8px) !important;
-    margin:0 4px !important;
-  }
-  #map{
-    height:66vh !important;
-    min-height:500px !important;
-    max-height:730px !important;
-  }
-}
-
-@media(max-width:390px){
-  #map{
-    height:64vh !important;
-    min-height:475px !important;
-  }
-}
-
-
-/* ===== إصلاح الموبايل: حجم الخريطة + إظهار تغيير الطلب ===== */
-#changeRequestBtn{
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-}
-
-@media(max-width:620px){
-  /* الخريطة مهيأة لشاشة الموبايل حتى تبقى معلومات الطلب والأزرار ظاهرة */
-  #map{
-    height:46vh !important;
-    min-height:345px !important;
-    max-height:430px !important;
-  }
-
-  .map-shell{
-    width:calc(100% - 8px) !important;
-    margin:0 4px !important;
-  }
-
-  .driver-status-only{
-    padding:4px 6px 1px !important;
-  }
-
-  /* قبول الطلب بسطر كامل، وتغيير الطلب + رفض تحته */
-  .actions{
-    grid-template-columns:1fr 1fr !important;
-    gap:8px !important;
-  }
-
-  .actions .accept{
-    grid-column:1 / -1 !important;
-  }
-
-  #changeRequestBtn,
-  #rejectBtn{
-    grid-column:auto !important;
-    min-width:0 !important;
-    padding:12px 7px !important;
-    font-size:14px !important;
-  }
-}
-
-@media(max-width:390px){
-  #map{
-    height:43vh !important;
-    min-height:320px !important;
-    max-height:385px !important;
-  }
-
-  #changeRequestBtn,
-  #rejectBtn{
-    font-size:13px !important;
-  }
-}
-
-
-/* ===== وضع موبايل مضغوط: تصغير الكتابات والمربعات حتى تكفي الشاشة ===== */
-@media(max-width:620px){
-  body{font-size:12px !important}
-  .app{padding-bottom:70px !important}
-
-  /* الهيدر */
-  .head{
-    grid-template-columns:40px 1fr 40px !important;
-    gap:6px !important;
-    padding:6px 8px !important;
-  }
-  .head-home,.head-back{
-    width:36px !important;
-    height:36px !important;
-    border-radius:11px !important;
-    font-size:17px !important;
-  }
-  .head h1{
-    font-size:16px !important;
-    line-height:1.05 !important;
-  }
-  .head-brand small{
-    font-size:9px !important;
-    margin-top:2px !important;
-  }
-
-  /* زر متصل الآن */
-  .driver-status-only{
-    padding:3px 5px 1px !important;
-  }
-  .driver-status-only .status-toggle button{
-    min-width:140px !important;
-    padding:7px 14px !important;
-    font-size:12px !important;
-  }
-  .driver-status-only .status-toggle button::before{
-    font-size:10px !important;
-    margin-left:6px !important;
-  }
-
-  /* الخريطة */
-  .map-shell{
-    width:calc(100% - 8px) !important;
-    margin:0 4px !important;
-    padding:1px !important;
-    border-radius:16px !important;
-  }
-  #map{
-    height:39vh !important;
-    min-height:275px !important;
-    max-height:335px !important;
-    border-radius:15px !important;
-  }
-  .leaflet-control-zoom a{
-    width:28px !important;
-    height:28px !important;
-    line-height:28px !important;
-    font-size:16px !important;
-  }
-
-  /* مربعات الملخص */
-  .summary{
-    gap:4px !important;
-    padding:5px 5px 2px !important;
-  }
-  .summary .box{
-    min-height:48px !important;
-    border-radius:11px !important;
-    padding:5px 3px !important;
-  }
-  .summary small{
-    font-size:8px !important;
-    margin-bottom:2px !important;
-  }
-  .summary b{
-    font-size:11px !important;
-  }
-
-  /* قسم الطلب */
-  .section{
-    padding:4px 5px !important;
-  }
-  .section h2{
-    font-size:13px !important;
-    margin:1px 0 5px !important;
-    padding-right:5px !important;
-    border-right-width:2px !important;
-  }
-  .request-card{
-    border-radius:13px !important;
-    padding:7px !important;
-  }
-
-  .customer{
-    gap:6px !important;
-  }
-  .avatar{
-    width:32px !important;
-    height:32px !important;
-    font-size:16px !important;
-  }
-  .customer-info b{
-    font-size:11px !important;
-  }
-  .customer-info span{
-    font-size:8px !important;
-    margin-top:2px !important;
-  }
-  #requestVehicle{
-    font-size:9px !important;
-    padding:5px 6px !important;
-    border-radius:8px !important;
-  }
-
-  /* تفاصيل الانطلاق والوصول */
-  .route-info{
-    gap:4px !important;
-    margin-top:6px !important;
-  }
-  .route-info .item{
-    border-radius:9px !important;
-    padding:6px !important;
-  }
-  .route-info small{
-    font-size:7.5px !important;
-    margin-bottom:2px !important;
-  }
-  .route-info b{
-    font-size:9px !important;
-    line-height:1.25 !important;
-  }
-
-  /* أزرار الطلب */
-  .actions{
-    grid-template-columns:1.2fr 1fr .75fr !important;
-    gap:4px !important;
-    margin-top:6px !important;
-  }
-  .actions .accept{
-    grid-column:auto !important;
-  }
-  .actions button,
-  #changeRequestBtn,
-  #rejectBtn{
-    padding:8px 4px !important;
-    border-radius:9px !important;
-    font-size:10px !important;
-    min-height:34px !important;
-  }
-
-  /* الطلب الحالي */
-  .state{
-    border-radius:10px !important;
-    padding:7px !important;
-    margin-bottom:5px !important;
-    font-size:11px !important;
-  }
-  .contact{
-    gap:4px !important;
-    margin-top:5px !important;
-  }
-  .contact button{
-    padding:7px 3px !important;
-    border-radius:8px !important;
-    font-size:8px !important;
-  }
-  .ride-status-box{
-    margin:6px 0 !important;
-    border-radius:10px !important;
-    padding:6px !important;
-  }
-  .ride-status-live{
-    font-size:10px !important;
-    margin-bottom:5px !important;
-  }
-  .ride-status-steps{
-    gap:3px !important;
-  }
-  .ride-status-step{
-    font-size:7px !important;
-    padding:5px 2px !important;
-    border-radius:7px !important;
-  }
-  .trip-actions{
-    gap:4px !important;
-  }
-  .trip-actions button{
-    padding:8px 4px !important;
-    border-radius:9px !important;
-    font-size:9px !important;
-  }
-
-  /* الشريط السفلي */
-  .bottom-nav{
-    height:58px !important;
-    padding:4px 6px max(4px,env(safe-area-inset-bottom)) !important;
-  }
-  .bottom-nav a{
-    font-size:8px !important;
-  }
-  .bottom-nav a span{
-    font-size:17px !important;
-    margin-bottom:1px !important;
-  }
-  .bottom-logo{
-    border-radius:20px 20px 0 0 !important;
-  }
-  .bottom-logo strong{
-    font-size:15px !important;
-  }
-  .bottom-logo small{
-    font-size:7px !important;
-  }
-
-  .shop-courier-link{
-    left:6px !important;
-    bottom:64px !important;
-    padding:5px 7px !important;
-    font-size:8px !important;
-  }
-}
-
-/* هواتف صغيرة جداً */
-@media(max-width:390px){
-  #map{
-    height:37vh !important;
-    min-height:255px !important;
-    max-height:305px !important;
-  }
-  .summary .box{
-    min-height:44px !important;
-  }
-  .summary small{font-size:7px !important}
-  .summary b{font-size:10px !important}
-  .route-info small{font-size:7px !important}
-  .route-info b{font-size:8.5px !important}
-  .actions button,
-  #changeRequestBtn,
-  #rejectBtn{
-    font-size:9px !important;
-    padding:7px 3px !important;
-  }
-}
-
-
-/* ===== الشريط السفلي الجديد: 5 مربعات ===== */
-.bottom-nav.bottom-nav-five{
-  position:fixed !important;
-  left:50% !important;
-  bottom:0 !important;
-  transform:translateX(-50%) !important;
-  width:min(760px,100%) !important;
-  height:auto !important;
-  min-height:66px !important;
-  padding:6px 6px max(6px,env(safe-area-inset-bottom)) !important;
-  display:grid !important;
-  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-  gap:5px !important;
-  align-items:stretch !important;
-  background:rgba(4,7,9,.97) !important;
-  border-top:1px solid rgba(242,181,68,.55) !important;
-  box-shadow:0 -10px 28px rgba(0,0,0,.48) !important;
-  z-index:3500 !important;
-}
-
-.bottom-nav.bottom-nav-five a{
-  min-width:0 !important;
-  min-height:54px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:2px !important;
-  padding:5px 2px !important;
-  margin:0 !important;
-  border:1px solid rgba(242,181,68,.32) !important;
-  border-radius:12px !important;
-  background:linear-gradient(180deg,#10161a,#070a0d) !important;
-  color:#f2f2f2 !important;
-  text-decoration:none !important;
-  text-align:center !important;
-  font-size:9px !important;
-  font-weight:800 !important;
-  line-height:1.1 !important;
-}
-
-.bottom-nav.bottom-nav-five a span{
-  display:block !important;
-  margin:0 !important;
-  font-size:19px !important;
-  line-height:1 !important;
-}
-
-.bottom-nav.bottom-nav-five a b{
-  display:block !important;
-  font-size:9px !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-  max-width:100% !important;
-}
-
-.bottom-nav.bottom-nav-five a.active{
-  color:#111 !important;
-  border-color:#ffd46a !important;
-  background:linear-gradient(135deg,#ffe28a,#d99a25) !important;
-  box-shadow:0 0 14px rgba(242,181,68,.2) !important;
-}
-
-@media(max-width:420px){
-  .bottom-nav.bottom-nav-five{
-    gap:3px !important;
-    padding-left:4px !important;
-    padding-right:4px !important;
-  }
-  .bottom-nav.bottom-nav-five a{
-    min-height:50px !important;
-    border-radius:10px !important;
-    padding:4px 1px !important;
-  }
-  .bottom-nav.bottom-nav-five a span{
-    font-size:17px !important;
-  }
-  .bottom-nav.bottom-nav-five a b{
-    font-size:8px !important;
-  }
-}
-
-/* ارفع زر توصيل المتاجر فوق الشريط الجديد */
-.shop-courier-link{
-  bottom:78px !important;
-}
-
 </style>
 
 </head>
@@ -1181,8 +700,64 @@ button{-webkit-tap-highlight-color:transparent}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
-<script src="transport-push.js"></script>
+<script src="transport-profile.js"></script>
+
+<script>
+/* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
+(function(){
+  if(window.HA_NotifyMe || !window.supabase) return;
+
+  const haNotificationClient = window.supabase.createClient(
+    'https://ubayrhtshgtgggxprrek.supabase.co',
+    'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true,
+        storageKey:'ha-marketing-auth'
+      }
+    }
+  );
+
+  const sentThisSession = new Set();
+
+  window.HA_NotifyMe = async function({
+    title,
+    body,
+    type='general',
+    link=null,
+    eventKey=null
+  }){
+    try{
+      if(eventKey && sentThisSession.has(eventKey)) return true;
+
+      const {data:{session}} = await haNotificationClient.auth.getSession();
+      if(!session?.user || session.user.is_anonymous) return false;
+
+      const {error} = await haNotificationClient.rpc('ha_notify_me',{
+        p_title:title,
+        p_body:body,
+        p_type:type,
+        p_link:link,
+        p_event_key:eventKey
+      });
+
+      if(error){
+        console.warn('HA notification:',error);
+        return false;
+      }
+
+      if(eventKey) sentThisSession.add(eventKey);
+      return true;
+    }catch(e){
+      console.warn('HA notification bridge:',e);
+      return false;
+    }
+  };
+})();
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -1206,13 +781,10 @@ const db = firebase.database();
 <script src="transport-rating.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map=L.map('map',{zoomControl:true}).setView([33.3152,44.3661],13);
-[60,180,450,900].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
-window.addEventListener('load',()=>{
-  [80,300,800].forEach(ms=>setTimeout(()=>map.invalidateSize(true),ms));
-});
-window.addEventListener('resize',()=>setTimeout(()=>map.invalidateSize(true),120));
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+const map=L.map('map').setView([33.3152,44.3661],13);
+setTimeout(()=>map.invalidateSize(),80);
+window.addEventListener('load',()=>setTimeout(()=>map.invalidateSize(),180));
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
   maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'
 }).addTo(map);
 
@@ -1235,102 +807,10 @@ let currentPendingIndex=0;
 let driverProfile=null;
 let driverReady=false;
 let firebaseDriverUser=null;
-let driverKind=null;
-let driverDispatchTypes=[];
-let driverRealPos=null;
-let driverLocationWatchId=null;
-
-async function notifyRideCustomer(ride,rideId,event,title,body){
-  const targetUserId=ride?.customerUserId;
-  if(!targetUserId || !rideId || !window.HA_TransportPush) return false;
-
-  const dispatch=normalizeRideDispatch(ride);
-  const type=dispatch.startsWith('delivery_') ? 'delivery' : (dispatch==='tuktuk' ? 'tuktuk' : 'taxi');
-  const link=dispatch.startsWith('delivery_') ? 'delivery.html' : (dispatch==='tuktuk' ? 'tuktuk.html' : 'taxi.html');
-
-  return window.HA_TransportPush.notifyPeer({
-    targetUserId,
-    rideId,
-    event,
-    title,
-    body,
-    type,
-    link
-  });
-}
 
 function coordText(p){
   if(!p)return '—';
   return Number(p.lat).toFixed(5)+', '+Number(p.lng).toFixed(5);
-}
-
-
-
-function rideDistanceFromDriver(ride){
-  if(!driverRealPos || !ride?.pickup)return Infinity;
-  return HA_Nearby.distanceKm(driverRealPos,{lat:ride.pickup.lat,lng:ride.pickup.lng});
-}
-
-function sortPendingByNearest(){
-  if(!Array.isArray(pendingEntries)||!pendingEntries.length)return;
-  pendingEntries.sort((a,b)=>{
-    const da=rideDistanceFromDriver(a[1]);
-    const dbb=rideDistanceFromDriver(b[1]);
-    if(da!==dbb)return da-dbb;
-    return (a[1].createdAt||0)-(b[1].createdAt||0);
-  });
-}
-
-function startDriverNearbyWatch(){
-  if(driverLocationWatchId!=null || !window.HA_Nearby)return;
-  driverLocationWatchId=HA_Nearby.watch(pos=>{
-    driverRealPos=pos;
-    driver.setLatLng([pos.lat,pos.lng]);
-    if(!currentRide || currentRide.status==='searching'){
-      sortPendingByNearest();
-      currentPendingIndex=0;
-      if(pendingEntries.length)renderPendingRide(0);
-    }
-  },()=>{});
-}
-function normalizeRideDispatch(ride){
-  if(!ride)return '';
-
-  // الطلبات الجديدة تحمل dispatchType بشكل صريح.
-  if(ride.dispatchType)return String(ride.dispatchType);
-
-  // توافق احتياطي مع الطلبات القديمة التي تحمل serviceType فقط.
-  const service=String(ride.serviceType||'').toLowerCase();
-  const vehicle=String(ride.vehicleType||'').toLowerCase();
-
-  if(service==='taxi')return 'taxi';
-  if(service==='tuktuk')return 'tuktuk';
-
-  if(service==='delivery'){
-    if(/تكتك|tuktuk/.test(vehicle))return 'delivery_tuktuk';
-    if(/سيارة|car/.test(vehicle))return 'delivery_car';
-    return 'delivery_courier';
-  }
-
-  // الطلبات القديمة جداً التي لا نعرف نوعها لا نظهرها عشوائياً لأي سائق.
-  return '';
-}
-
-function rideMatchesThisDriver(ride){
-  const type=normalizeRideDispatch(ride);
-  return !!type && driverDispatchTypes.includes(type);
-}
-
-function rideDisplayLabel(ride){
-  const type=normalizeRideDispatch(ride);
-  const vehicle=ride?.vehicleType||'';
-
-  if(type==='taxi')return '🚕 تكسي'+(vehicle?' — '+vehicle:'');
-  if(type==='tuktuk')return '🛺 تكتك'+(vehicle?' — '+vehicle:'');
-  if(type==='delivery_courier')return '🛵 مندوب'+(vehicle?' — '+vehicle:'');
-  if(type==='delivery_tuktuk')return '🛺 توصيل تكتك';
-  if(type==='delivery_car')return '🚗 توصيل سيارة';
-  return vehicle||'طلب نقل';
 }
 
 function renderPendingRide(index){
@@ -1350,11 +830,21 @@ function renderPendingRide(index){
 
   requestCustomerName.textContent=ride.customer?.name||'الزبون';
   if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
-  requestVehicle.textContent=rideDisplayLabel(ride);
+  requestVehicle.textContent='🚕 '+(ride.vehicleType||'تكسي');
   requestPickup.textContent=coordText(ride.pickup);
   requestDestination.textContent=coordText(ride.destination);
   requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
   fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
+
+  // إشعار داخل حساب السائق عند ظهور طلب جديد.
+  window.HA_NotifyMe?.({
+    title:'🚕 طلب رحلة جديد',
+    body:'وصلك طلب جديد من '+(ride.customer?.name||'زبون')+
+         (ride.price ? ' • الأجرة '+Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : ''),
+    type:'taxi',
+    link:'driver.html',
+    eventKey:'ride:'+id+':driver:new'
+  });
 
   if(ride.pickup){
     customer.setLatLng([ride.pickup.lat,ride.pickup.lng]);
@@ -1364,10 +854,8 @@ function renderPendingRide(index){
   }
 
   if(ride.pickup){
-    const km=driverRealPos
-      ? HA_Nearby.distanceKm(driverRealPos,{lat:ride.pickup.lat,lng:ride.pickup.lng})
-      : driver.getLatLng().distanceTo(customer.getLatLng())/1000;
-    toCustomer.textContent=km<1?Math.round(km*1000)+' م':km.toFixed(1)+' كم';
+    const km=driver.getLatLng().distanceTo(customer.getLatLng())/1000;
+    toCustomer.textContent=km.toFixed(1)+' كم';
     requestPickupEta.textContent=Math.max(1,Math.round(km*2.2))+' دقيقة';
   }else{
     toCustomer.textContent='—';
@@ -1404,12 +892,7 @@ function watchPendingRides(){
 
     pendingEntries=Object.entries(rides)
       .filter(([,r])=>!!r?.customerUid)
-      .filter(([,r])=>rideMatchesThisDriver(r));
-
-    sortPendingByNearest();
-    if(!driverRealPos){
-      pendingEntries.sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-    }
+      .sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
 
     nearbyCount.textContent=String(pendingEntries.length);
 
@@ -1451,6 +934,14 @@ function watchCurrentRideStatus(rideId){
 
     if(ride.status==='cancelled' && ride.cancelledBy==='customer'){
       const reason=ride.cancelReason||'بدون سبب محدد';
+
+      window.HA_NotifyMe?.({
+        title:'❌ الزبون ألغى الرحلة',
+        body:'تم إلغاء الرحلة من الزبون. السبب: '+reason,
+        type:'taxi',
+        link:'driver.html',
+        eventKey:'ride:'+rideId+':driver:customer-cancelled'
+      });
       stopCurrentRideStatusWatch();
       HA_LiveTracking.stopDriver();
       HA_RideStatus.clear();
@@ -1497,16 +988,6 @@ acceptBtn.onclick=async()=>{
   const ident=await HA_TransportProfile.driverIdentity();
   if(!ident.ok){alert(ident.message||'بيانات السائق غير مكتملة.');return;}
   driverProfile=ident.driver;
-  driverKind=ident.driverKind||null;
-  driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
-
-  if(!rideMatchesThisDriver(currentRide)){
-    alert('هذا الطلب مو مخصص لنوع تسجيلك.');
-    currentRideId=null;
-    currentRide=null;
-    watchPendingRides();
-    return;
-  }
 
   const ref=db.ref('rides/'+currentRideId);
   const tx=await ref.transaction(ride=>{
@@ -1530,18 +1011,9 @@ acceptBtn.onclick=async()=>{
 
   currentRide=tx.snapshot.val();
   await db.ref('driverRides/'+firebaseDriverUser.uid+'/'+currentRideId).set(true).catch(()=>{});
-
-  await notifyRideCustomer(
-    currentRide,
-    currentRideId,
-    'customer:accepted',
-    normalizeRideDispatch(currentRide).startsWith('delivery_') ? '✅ تم قبول طلب التوصيل' : (normalizeRideDispatch(currentRide)==='tuktuk' ? '✅ تم قبول طلب التكتك' : '✅ تم قبول طلب التكسي'),
-    'تم قبول طلبك والسائق بالطريق إليك.'
-  );
-
   localStorage.setItem('ha_driver_active_ride',currentRideId);
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,currentRide.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -1586,18 +1058,7 @@ changeRequestBtn.onclick=()=>{
 
 rejectBtn.onclick=async()=>{
   if(!currentRideId)return;
-  const rejectedRideId=currentRideId;
-  const rejectedRide=currentRide;
-  await db.ref('rides/'+rejectedRideId).update({status:'rejected',rejectedAt:Date.now()});
-
-  await notifyRideCustomer(
-    rejectedRide,
-    rejectedRideId,
-    'customer:rejected',
-    '⚠️ لم يتم قبول الطلب',
-    'تم رفض الطلب. يمكنك إرسال طلب جديد.'
-  );
-
+  await db.ref('rides/'+currentRideId).update({status:'rejected',rejectedAt:Date.now()});
   currentRideId=null;
   currentRide=null;
   currentPendingIndex=0;
@@ -1609,32 +1070,14 @@ arriveBtn.onclick=async()=>{
   tripState.textContent='وصلت إلى الزبون';
   arriveBtn.disabled=true;
   startTripBtn.disabled=false;
-  if(currentRideId){
-    await db.ref('rides/'+currentRideId).update({status:'arrived',arrivedAt:Date.now()});
-    await notifyRideCustomer(
-      currentRide,
-      currentRideId,
-      'customer:arrived',
-      '📍 السائق وصل',
-      normalizeRideDispatch(currentRide).startsWith('delivery_') ? 'وصل المندوب إلى نقطة الاستلام.' : 'وصل السائق إلى موقع الانطلاق.'
-    );
-  }
+  if(currentRideId) await db.ref('rides/'+currentRideId).update({status:'arrived',arrivedAt:Date.now()});
 };
 
 startTripBtn.onclick=async()=>{
   tripState.textContent='الرحلة بدأت';
   startTripBtn.disabled=true;
   finishTripBtn.disabled=false;
-  if(currentRideId){
-    await db.ref('rides/'+currentRideId).update({status:'started',startedAt:Date.now()});
-    await notifyRideCustomer(
-      currentRide,
-      currentRideId,
-      'customer:started',
-      normalizeRideDispatch(currentRide).startsWith('delivery_') ? '🛵 الطلب بالطريق' : '🚕 بدأت الرحلة',
-      normalizeRideDispatch(currentRide).startsWith('delivery_') ? 'تم استلام الطلب والمندوب بالطريق إلى نقطة التسليم.' : 'بدأ السائق الرحلة إلى الوجهة.'
-    );
-  }
+  if(currentRideId) await db.ref('rides/'+currentRideId).update({status:'started',startedAt:Date.now()});
 
   fetch(`https://router.project-osrm.org/route/v1/driving/${customer.getLatLng().lng},${customer.getLatLng().lat};${destination.getLatLng().lng},${destination.getLatLng().lat}?overview=full&geometries=geojson`)
     .then(r=>r.json()).then(j=>{
@@ -1651,17 +1094,7 @@ finishTripBtn.onclick=async()=>{
   if(currentRideId){
     await db.ref('rides/'+currentRideId).update({status:'finished',finishedAt:Date.now()});
     const finishedRideId=currentRideId;
-    const finishedRide=currentRide;
     const customerName=currentRide?.customer?.name||'الزبون';
-
-    await notifyRideCustomer(
-      finishedRide,
-      finishedRideId,
-      'customer:finished',
-      normalizeRideDispatch(finishedRide).startsWith('delivery_') ? '✅ تم تسليم الطلب' : '✅ انتهت الرحلة',
-      normalizeRideDispatch(finishedRide).startsWith('delivery_') ? 'تم إنهاء طلب التوصيل بنجاح.' : 'تم إنهاء الرحلة. يمكنك الآن تقييم السائق.'
-    );
-
     HA_Rating.show({rideId:finishedRideId,role:'driver',targetName:customerName});
     localStorage.removeItem('ha_driver_active_ride');
     stopCurrentRideStatusWatch();
@@ -1700,7 +1133,7 @@ async function restoreDriverRide(){
   currentRideId=saved;
   currentRide=ride;
   HA_RideStatus.clear();
-  HA_RideStatus.watch(currentRideId,ride.serviceType==='delivery'?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
+  HA_RideStatus.watch(currentRideId,(ride.vehicleType||'').includes('مندوب')?'delivery':'taxi',{textElement:'driverRideStatusLive',timelineElement:'driverRideStatusTimeline'});
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
@@ -1762,10 +1195,7 @@ async function initRealDriver(){
 
   const ident=await HA_TransportProfile.driverIdentity();
   if(ident.ok){
-    driverProfile=ident.driver;
-    driverKind=ident.driverKind||null;
-    driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
-    driverReady=true;
+    driverProfile=ident.driver;driverReady=true;
     refreshDriverHero(driverProfile);
     if(msg) msg.textContent='';
     setup.style.display='none';
@@ -1785,7 +1215,7 @@ document.getElementById('saveVehicleBtn').onclick=async()=>{
   if(ok){availabilityBtn.disabled=false;acceptBtn.disabled=false;watchPendingRides();}
 };
 
-initRealDriver().then(ok=>{ if(ok){startDriverNearbyWatch();restoreDriverRide();} });
+initRealDriver().then(ok=>{ if(ok) restoreDriverRide(); });
 </script>
 
 <div id="driverCancelReasonSheet" class="cancel-reason-sheet">
@@ -1855,24 +1285,12 @@ document.getElementById('confirmDriverCancelReason').onclick=async()=>{
   }
 
   if(currentRideId){
-    const cancelledRideId=currentRideId;
-    const cancelledRide=currentRide;
-
-    await db.ref('rides/'+cancelledRideId).update({
+    await db.ref('rides/'+currentRideId).update({
       status:'cancelled',
       cancelledBy:'driver',
       cancelReason:reason,
       cancelledAt:firebase.database.ServerValue.TIMESTAMP
     });
-
-    await notifyRideCustomer(
-      cancelledRide,
-      cancelledRideId,
-      'customer:driver-cancelled',
-      '❌ السائق ألغى الطلب',
-      'سبب الإلغاء: '+reason
-    );
-
     localStorage.removeItem('ha_driver_active_ride');
   }
 
@@ -2030,12 +1448,10 @@ window.addEventListener('load',()=>{
 
 <a href="shop-courier.html" class="shop-courier-link">📦 توصيل المتاجر</a>
 
-<nav class="bottom-nav bottom-nav-five">
-  <a href="index.html"><span>🏠</span><b>الرئيسية</b></a>
-  <a href="notifications-center.html"><span>🔔</span><b>الإشعارات</b></a>
-  <a href="driver.html#requestsSection" class="active"><span>📋</span><b>الطلبات</b></a>
-  <a href="account.html"><span>👤</span><b>حسابي</b></a>
-  <a href="contact.html"><span>☎️</span><b>اتصل بنا</b></a>
+<nav class="bottom-nav">
+  <a href="index.html"><span>🏠</span>الرئيسية</a>
+  <a href="driver.html" class="bottom-logo"><strong>HA</strong><small>HA Marketing</small></a>
+  <a href="profile.html"><span>👤</span>الحساب</a>
 </nav>
 
 </body>

@@ -1151,7 +1151,6 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   };
 })();
 </script>
-<script src="transport-push.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
@@ -1701,17 +1700,9 @@ order.onclick=async()=>{
   activeDeliveryRideId=rideRef.key;
   activeDeliveryRideRef=rideRef;
 
-  const dispatchType=/تكتك/i.test(selected.dataset.name||'')
-    ? 'delivery_tuktuk'
-    : /سيارة/i.test(selected.dataset.name||'')
-      ? 'delivery_car'
-      : 'delivery_courier';
-
   const rideData={
     customerUid:fbUser.uid,
-    customerUserId:realCustomer.id,
     serviceType:'delivery',
-    dispatchType:dispatchType,
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,
@@ -1743,17 +1734,6 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
-
-    await window.HA_TransportPush?.notifyDrivers({
-      rideId:activeDeliveryRideId,
-      dispatchType:dispatchType,
-      title:'📦 طلب توصيل جديد',
-      body:'طلب توصيل جديد من '+(realCustomer.name||realCustomer.full_name||'زبون')+
-           (rideData.price ? ' • الأجرة '+Number(rideData.price).toLocaleString('ar-IQ')+' د.ع' : ''),
-      type:'delivery',
-      link:'driver.html'
-    });
-
     localStorage.setItem('ha_active_delivery',activeDeliveryRideId);
     openDeliveryPostOrder();
     listenDeliveryRide(activeDeliveryRideId);
@@ -2318,33 +2298,12 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   }
 
   if(activeDeliveryRideId){
-    const cancelledRideId=activeDeliveryRideId;
-    let rideBeforeCancel=null;
-    try{
-      const beforeSnap=await db.ref('rides/'+cancelledRideId).once('value');
-      rideBeforeCancel=beforeSnap.val();
-    }catch(_e){}
-
-    await db.ref('rides/'+cancelledRideId).update({
+    await db.ref('rides/'+activeDeliveryRideId).update({
       status:'cancelled',
       cancelledBy:'customer',
       cancelReason:reason,
       cancelledAt:firebase.database.ServerValue.TIMESTAMP
     });
-
-    const driverUserId=rideBeforeCancel?.driver?.userId;
-    if(driverUserId){
-      await window.HA_TransportPush?.notifyPeer({
-        targetUserId:driverUserId,
-        rideId:cancelledRideId,
-        event:'driver:customer-cancelled',
-        title:'❌ الزبون ألغى طلب التوصيل',
-        body:'سبب الإلغاء: '+reason,
-        type:'delivery',
-        link:'driver.html'
-      });
-    }
-
     localStorage.removeItem('ha_active_delivery');
   }
   closeDeliveryCancelReason();
