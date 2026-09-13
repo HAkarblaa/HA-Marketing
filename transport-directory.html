@@ -128,15 +128,13 @@ const db=supabase.createClient(
 );
 
 const TYPES={
-  stoota:{name:'الستوتة',icon:'🛻',desc:'أصحاب الستوتات المتوفرون للتواصل المباشر.'},
-  cargo:{name:'سيارة حمل',icon:'🚚',desc:'سيارات الحمل ونقل الأغراض حسب المحافظة والمنطقة.'},
   student_line:{name:'خط الطلاب',icon:'🎒',desc:'خطوط المدارس والجامعات — اضغط على معلومات السائق للتواصل.'},
   employee_line:{name:'خط الموظفين',icon:'🧑‍💼',desc:'خطوط نقل الموظفين حسب مناطق الانطلاق والوجهات.'},
   garage:{name:'الكراج الموحد',icon:'🅿️',desc:'السواق والخطوط المسجلة في الكراجات ومعلومات التواصل.'}
 };
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
-let currentType=TYPES[params.get('type')]?params.get('type'):'stoota';
+let currentType=TYPES[params.get('type')]?params.get('type'):'student_line';
 let me=null;
 let editingId=null;
 
@@ -208,7 +206,7 @@ async function loadMyExisting(){
     $('saveStatus').textContent='';
   }
   if(!data){
-    $('vehicleType').value=currentType==='stoota'?'ستوتة':currentType==='cargo'?'سيارة حمل':'';
+    $('vehicleType').value='';
     $('fromArea').value='';$('toArea').value='';$('vehicleModel').value='';$('plateNumber').value='';
     $('seats').value='';$('workTimes').value='';$('priceNotes').value='';$('details').value='';
     $('whatsapp').value='';

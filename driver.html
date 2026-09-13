@@ -1657,6 +1657,8 @@ function rideDisplayLabel(ride){
   if(type==='delivery_courier')return '🛵 مندوب'+(vehicle?' — '+vehicle:'');
   if(type==='delivery_tuktuk')return '🛺 توصيل تكتك';
   if(type==='delivery_car')return '🚗 توصيل سيارة';
+  if(type==='stoota')return '🛻 طلب ستوتة'+(vehicle?' — '+vehicle:'');
+  if(type==='cargo')return '🚚 طلب سيارة حمل'+(vehicle?' — '+vehicle:'');
   return vehicle||'طلب نقل';
 }
 

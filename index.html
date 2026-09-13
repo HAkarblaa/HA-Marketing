@@ -379,6 +379,46 @@ body{
 }
 .ha-push-toggle.on{background:linear-gradient(135deg,#2c6b34,#17461e);border-color:#58b765}
 
+
+/* ===== تنبيه طلبات النقل للسائق في الرئيسية ===== */
+.ha-driver-order-alert{
+  display:none;
+  width:min(930px,94%);
+  margin:12px auto 4px;
+  background:linear-gradient(135deg,#17120a,#0b1013);
+  border:1px solid rgba(242,181,68,.68);
+  border-radius:18px;
+  padding:12px 14px;
+  color:#fff;
+  text-decoration:none;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 8px 28px rgba(0,0,0,.25),0 0 20px rgba(242,181,68,.08);
+}
+.ha-driver-order-alert.show{display:flex}
+.ha-driver-order-alert .bell{
+  width:48px;height:48px;border-radius:15px;
+  background:#f2b544;color:#111;
+  display:grid;place-items:center;font-size:25px;
+  flex:0 0 48px;
+}
+.ha-driver-order-alert .txt{flex:1;min-width:0}
+.ha-driver-order-alert .txt b{display:block;font-size:15px;color:#ffd46a}
+.ha-driver-order-alert .txt small{display:block;margin-top:4px;color:#d1d5d8;font-size:11px;line-height:1.5}
+.ha-driver-order-alert .count{
+  min-width:34px;height:34px;padding:0 8px;border-radius:999px;
+  background:#e53935;color:#fff;display:grid;place-items:center;
+  font-weight:900;font-size:13px;
+}
+.c-taxi{position:relative}
+.ha-transport-order-badge{
+  display:none;position:absolute;top:8px;left:8px;z-index:4;
+  min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+  background:#e53935;color:#fff;font:900 11px/24px Arial;
+  box-shadow:0 0 12px rgba(229,57,53,.45)
+}
+.ha-transport-order-badge.show{display:block}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
@@ -387,7 +427,11 @@ body{
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
 </div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <a id="haDriverOrderAlert" class="ha-driver-order-alert" href="driver.html">
+  <span class="bell">🔔</span>
+  <span class="txt"><b id="haDriverOrderTitle">عندك طلب نقل جديد</b><small id="haDriverOrderText">اضغط حتى تفتح واجهة السائق وتشوف الطلب.</small></span>
+  <span id="haDriverOrderCount" class="count">1</span>
+</a> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
       <span class="chat-live-badge"><i></i> متاح الآن</span>
       <div class="iconbox chat-iconbox">
         <span class="chat-main-icon">💬</span>
@@ -413,7 +457,7 @@ body{
         <span>فتح الدردشة</span>
         <b>←</b>
       </div>
-    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك"><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
+    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل"><b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
 </main> <nav class="bottom-nav bottom-nav-five" aria-label="القائمة السفلية">
   <div class="bottom-inner bottom-inner-five">
     <a class="bottom-link active" href="index.html">
@@ -611,6 +655,116 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
   }
 })();
 
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="firebase-auth-secure.js"></script>
+<script>
+(async function setupDriverHomeOrderAlert(){
+  try{
+    if(!window.supabase || !navigator.onLine) return;
+
+    const sdb=supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const {data:{session}}=await sdb.auth.getSession();
+    const user=session?.user;
+    if(!user || user.is_anonymous) return;
+
+    // فقط المندوب/سائق الستوتة/سائق سيارة الحمل المقبول من الإدارة.
+    const {data:profiles,error:pErr}=await sdb
+      .from('transport_profiles')
+      .select('role_type,vehicle_type,status')
+      .eq('user_id',user.id)
+      .eq('status','approved')
+      .in('role_type',['delivery_driver','stoota_driver','cargo_driver']);
+
+    if(pErr || !profiles?.length) return;
+
+    const allowed=new Set();
+    profiles.forEach(p=>{
+      if(p.role_type==='delivery_driver')allowed.add('delivery_courier');
+      if(p.role_type==='stoota_driver')allowed.add('stoota');
+      if(p.role_type==='cargo_driver')allowed.add('cargo');
+    });
+    if(!allowed.size) return;
+
+    const cfg={
+      apiKey:"AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
+      authDomain:"ha-marketing.firebaseapp.com",
+      databaseURL:"https://ha-marketing-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId:"ha-marketing",
+      storageBucket:"ha-marketing.firebasestorage.app",
+      messagingSenderId:"558520139704",
+      appId:"1:558520139704:web:526f8026dac658403b594d"
+    };
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    await HA_FirebaseAuth.ready();
+    const rdb=firebase.database();
+
+    const alertBox=document.getElementById('haDriverOrderAlert');
+    const countEl=document.getElementById('haDriverOrderCount');
+    const badge=document.getElementById('haTransportOrderBadge');
+    const title=document.getElementById('haDriverOrderTitle');
+    const text=document.getElementById('haDriverOrderText');
+    let lastCount=0;
+
+    function dispatchOf(r){
+      if(r?.dispatchType)return String(r.dispatchType);
+      const service=String(r?.serviceType||'').toLowerCase();
+      if(service==='stoota')return 'stoota';
+      if(service==='cargo')return 'cargo';
+      if(service==='delivery')return 'delivery_courier';
+      return '';
+    }
+
+    function paint(entries){
+      const matches=entries.filter(([,r])=>allowed.has(dispatchOf(r)));
+      const n=matches.length;
+
+      if(!n){
+        alertBox?.classList.remove('show');
+        badge?.classList.remove('show');
+        lastCount=0;
+        return;
+      }
+
+      const kinds=[...new Set(matches.map(([,r])=>dispatchOf(r)))];
+      let label='طلب نقل جديد';
+      if(kinds.length===1 && kinds[0]==='delivery_courier')label='طلب مندوب جديد';
+      if(kinds.length===1 && kinds[0]==='stoota')label='طلب ستوتة جديد';
+      if(kinds.length===1 && kinds[0]==='cargo')label='طلب سيارة حمل جديد';
+
+      if(title)title.textContent=n===1?'🔔 '+label:'🔔 عندك '+n+' طلبات جديدة';
+      if(text)text.textContent='اضغط هنا حتى تفتح واجهة السائق وتشوف الطلبات المتاحة.';
+      if(countEl)countEl.textContent=n>99?'99+':String(n);
+      if(badge){
+        badge.textContent=n>99?'99+':String(n);
+        badge.classList.add('show');
+      }
+      alertBox?.classList.add('show');
+
+      if(n>lastCount){
+        try{ if(navigator.vibrate) navigator.vibrate([90,45,90]); }catch(e){}
+      }
+      lastCount=n;
+    }
+
+    rdb.ref('rides').orderByChild('status').equalTo('searching').on('value',snap=>{
+      const rides=snap.val()||{};
+      paint(Object.entries(rides).filter(([,r])=>r && r.customerUid));
+    },err=>console.warn('home transport alert',err));
+
+  }catch(e){
+    console.warn('driver home order alert',e);
+  }
+})();
 </script>
 
 <script src="push-config.js"></script>

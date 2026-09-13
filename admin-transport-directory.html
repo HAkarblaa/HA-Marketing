@@ -63,8 +63,6 @@ select{padding:11px;border-radius:11px;border:1px solid #333;background:#101519;
     </select>
     <select id="typeFilter">
       <option value="">كل الخدمات</option>
-      <option value="stoota">الستوتة</option>
-      <option value="cargo">سيارة حمل</option>
       <option value="student_line">خط الطلاب</option>
       <option value="employee_line">خط الموظفين</option>
       <option value="garage">الكراج الموحد</option>
@@ -89,9 +87,7 @@ const db=supabase.createClient(
 );
 const $=id=>document.getElementById(id);
 const TYPES={
- stoota:['الستوتة','🛻'],
- cargo:['سيارة حمل','🚚'],
- student_line:['خط الطلاب','🎒'],
+student_line:['خط الطلاب','🎒'],
  employee_line:['خط الموظفين','🧑‍💼'],
  garage:['الكراج الموحد','🅿️']
 };

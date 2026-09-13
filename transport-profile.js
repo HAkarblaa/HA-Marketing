@@ -171,7 +171,7 @@
       const r=await db.from('marketplace_applications')
         .select('role_type,display_name,phone,governorate,details,status')
         .eq('user_id',p.id)
-        .in('role_type',['taxi_driver','delivery_driver'])
+        .in('role_type',['taxi_driver','delivery_driver','stoota_driver','cargo_driver'])
         .eq('status','approved')
         .order('updated_at',{ascending:false})
         .limit(1);
@@ -224,15 +224,21 @@
     // مندوب: توصيل المندوب/الدراجة فقط.
     const driverKind=
       workType==='delivery_driver' ? 'delivery' :
+      workType==='stoota_driver' ? 'stoota' :
+      workType==='cargo_driver' ? 'cargo' :
       isTuktuk ? 'tuktuk' : 'taxi';
 
     const dispatchTypes=
       driverKind==='delivery' ? ['delivery_courier'] :
+      driverKind==='stoota' ? ['stoota'] :
+      driverKind==='cargo' ? ['cargo'] :
       driverKind==='tuktuk' ? ['tuktuk','delivery_tuktuk'] :
       ['taxi','delivery_car'];
 
     const workLabel=
       driverKind==='delivery' ? 'مندوب توصيل' :
+      driverKind==='stoota' ? 'سائق ستوتة' :
+      driverKind==='cargo' ? 'سائق سيارة حمل' :
       driverKind==='tuktuk' ? 'سائق تكتك' : 'سائق تكسي';
 
     return {ok:true,profile:p,workType,workLabel,driverKind,dispatchTypes,isTuktuk,driver:{
