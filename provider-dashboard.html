@@ -13,7 +13,16 @@ if(catError){
   console.error(catError);
 }else{
   cat.innerHTML=(cats||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
-  cat.innerHTML += '<option value="other">➕ أخرى / غير ذلك</option>';
+  cat.innerHTML += `
+    <option value="manual_haddad">حداد</option>
+    <option value="manual_najjar">نجار</option>
+    <option value="manual_binaa">بناء</option>
+    <option value="manual_electric">كهربائي</option>
+    <option value="manual_plumber">سباك</option>
+    <option value="manual_paint">صباغ</option>
+    <option value="manual_ac">تبريد وتكييف</option>
+    <option value="manual_clean">تنظيف</option>
+    <option value="other">➕ أخرى / غير ذلك</option>`;
 }
 cat.onchange=()=>{
   otherCatBox.style.display=cat.value==='other'?'block':'none';
