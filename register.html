@@ -30,7 +30,7 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <div class="wa-box">
   <div class="wa-title">📲 تأكيد واتساب</div>
   <button id="waSendBtn" class="wa-btn" type="button" onclick="sendWhatsAppCheck()" style="display:none">إرسال رسالة التأكيد على واتساب</button>
-  <div id="waStatus" class="wa-note">🧪 وضع الاختبار: تأكيد واتساب معطّل مؤقتاً لحساب العميل فقط حتى نختبر الطلبات والإشعارات.</div>
+  <div id="waStatus" class="wa-note">🧪 وضع الاختبار: تأكيد واتساب معطّل مؤقتاً لكل أنواع الحسابات حتى نكمل الاختبار.</div>
 </div>
 <label>المعرف *</label><input id="username" minlength="6" maxlength="40" autocapitalize="none" autocomplete="username" placeholder="مثال: hassan@123,#" required><p class="note">يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات.</p>
 <label>البريد الإلكتروني (اختياري)</label><input id="contact_email" type="email" autocomplete="email" placeholder="name@example.com"><p class="note">يمكن تأكيده لاحقاً من إعدادات أمان الحساب.</p>
@@ -43,7 +43,7 @@ a.btn{display:block;text-align:center;text-decoration:none;background:#eee;color
 <label>الرقم السري *</label><input id="password" minlength="8" maxlength="72" type="password" autocomplete="new-password" placeholder="حروف إنكليزية + أرقام + رموز" required><p class="note">8 خانات على الأقل. يقبل الحروف الإنكليزية والأرقام والرموز مثل @ # $ % , . _ - وغيرها، بدون مسافات أو حروف عربية.</p>
 <label>تأكيد الرقم السري *</label><input id="confirm_password" minlength="8" maxlength="72" type="password" autocomplete="new-password" required>
 <div id="passError" class="err"></div>
-<div class="wa-ok" style="margin-top:12px">🧪 للاختبار فقط: حساب العميل يمكن إنشاؤه حالياً بدون تأكيد واتساب.</div>
+<div class="wa-ok" style="margin-top:12px">🧪 للاختبار فقط: يمكن إنشاء العميل أو الموظف حالياً بدون تأكيد واتساب.</div>
 <button id="createBtn" class="primary" onclick="createAccount()">إنشاء الحساب</button>
 </div>
 <a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a><a class="btn" href="index.html">الرجوع للرئيسية</a>
@@ -71,14 +71,14 @@ function normalizePhone(v){let p=String(v||'').replace(/\D/g,'');if(p.startsWith
 function localPhone(v){const d=String(v||'').replace(/\D/g,'');if(d.startsWith('964'))return '0'+d.slice(3);return d}
 function authEmail(p){return 'u'+p+'@ha.local'}
 let waConfirmedPhone='';
-const HA_TEST_BYPASS_WHATSAPP_CUSTOMER = true;
+const HA_TEST_BYPASS_WHATSAPP_ALL = true;
 
 function resetWhatsAppCheck(){
   waConfirmedPhone='';
   const st=document.getElementById('waStatus');
   if(st){
     st.className='wa-note';
-    st.textContent='🧪 وضع الاختبار: تأكيد واتساب معطّل مؤقتاً لحساب العميل فقط حتى نختبر الطلبات والإشعارات.';
+    st.textContent='🧪 وضع الاختبار: تأكيد واتساب معطّل مؤقتاً لكل أنواع الحسابات حتى نكمل الاختبار.';
   }
 }
 
@@ -161,7 +161,7 @@ async function createAccount(){
  if(!/^[\x21-\x7E]{8,72}$/.test(p)){passError.textContent='الرقم السري لازم يكون من 8 إلى 72 خانة، ويقبل الحروف الإنكليزية والأرقام والرموز، بدون مسافات أو حروف عربية.';password.focus();return}
  const lp=localPhone(raw);
  if(!/^07\d{9}$/.test(lp)){alert('رقم الموبايل يجب أن يبدأ بـ 07 ويتكون من 11 رقم حصراً.');phone.focus();return}
- if(!(HA_TEST_BYPASS_WHATSAPP_CUSTOMER && accountType==='customer') && waConfirmedPhone!==lp){
+ if(!HA_TEST_BYPASS_WHATSAPP_ALL && waConfirmedPhone!==lp){
    alert('لازم ترسل رسالة التأكيد على واتساب لنفس الرقم أولاً.');
    return;
  }
