@@ -32,21 +32,20 @@
 
     <section id="notifyView" class="view">
       <div class="box"><h2>📚 إدارة دليل الدراسة</h2><p class="small">إضافة وحذف وتعديل المدارس والجامعات والمعاهد والمدرسين ومراكز التقوية.</p><a class="btn" href="admin-study.html" style="display:inline-block;text-decoration:none">فتح إدارة الدراسة</a></div>
-      <div class="box" id="studyNotifyBox">
-        <h2>📚 تبليغ دراسي مستهدف</h2>
-        <p class="small">يظهر هذا الإرسال للـSuper Admin أو الأدمن الذي لديه صلاحية الدراسة. يمكن تحديد المحافظة والمرحلة والمدرسة والصف، ويصل فقط للطلاب المطابقين.</p>
+      <div class="box" id="generalNotifyBox">
+        <h2>🔔 إرسال تبليغ / خبر</h2>
+        <p class="small">تظهر لك فقط الأقسام التي لديك صلاحية عليها. الـSuper Admin يستطيع الإرسال لكل الأقسام. يصل التبليغ إلى مركز الإشعارات للمستخدمين ويظهر فيه القسم والعنوان والنص والمحتوى والصورة.</p>
         <div class="grid">
-          <div class="field"><label>المحافظة</label><select id="gov"><option value="">كل المحافظات</option></select></div>
-          <div class="field"><label>المرحلة</label><select id="stage"><option value="">كل المراحل</option></select></div>
-          <div class="field"><label>المدرسة / الجامعة</label><select id="school"><option value="">كل المؤسسات</option></select></div>
-          <div class="field"><label>الصف / المرحلة الدراسية</label><select id="grade"><option value="">كل الصفوف</option></select></div>
+          <div class="field"><label>القسم</label><select id="noticeSection"></select></div>
+          <div class="field"><label>نوع المنشور</label><select id="noticeType"><option value="announcement">🔔 تبليغ</option><option value="news">📰 خبر</option></select></div>
         </div>
-        <div class="field"><label>العنوان</label><input id="noticeTitle" maxlength="100" placeholder="مثال: تعطيل الدوام غداً"></div>
-        <div class="field"><label>نص التبليغ</label><textarea id="noticeBody" maxlength="1200" placeholder="اكتب تفاصيل التبليغ..."></textarea></div>
-        <div class="row"><button class="btn" onclick="sendStudyNotice()">إرسال الإشعار</button><button class="btn alt" onclick="loadTargets()">تحديث المدارس</button></div>
+        <div class="field"><label>عنوان التبليغ / الخبر</label><input id="noticeTitle" maxlength="120" placeholder="اكتب عنواناً واضحاً"></div>
+        <div class="field"><label>نص التبليغ المختصر</label><textarea id="noticeBody" maxlength="500" placeholder="هذا النص يظهر مباشرة في بطاقة الإشعار وعلى إشعار الموبايل."></textarea></div>
+        <div class="field"><label>المحتوى الكامل</label><textarea id="noticeContent" maxlength="6000" placeholder="اكتب التفاصيل الكاملة التي تظهر عند فتح التبليغ."></textarea></div>
+        <div class="field"><label>الصورة (اختياري)</label><input id="noticeImage" type="file" accept="image/*"><div class="small" style="margin-top:6px">الحد الأعلى 6MB.</div><img id="noticeImagePreview" alt="معاينة الصورة" style="display:none;width:100%;max-height:260px;object-fit:cover;border-radius:14px;margin-top:10px;border:1px solid #ddd"></div>
+        <div class="row"><button class="btn" id="sendNoticeBtn" onclick="sendGeneralNotice()">إرسال التبليغ</button><button class="btn alt" type="button" onclick="clearNoticeForm()">تفريغ الحقول</button></div>
         <div id="sendStatus" class="status">جاهز للإرسال.</div>
       </div>
-      <div class="box"><b>ملاحظة:</b> الإرسال المستهدف الفعلي المجهز حالياً هو للدراسة. بقية الأقسام تظهر ضمن صلاحيات الإدارة، ونضيف لكل قسم أدواته الحقيقية عندما يكون Backend الخاص به موجوداً، بدون إنشاء أزرار وهمية.</div>
     </section>
 
     <section id="adminsView" class="view">
@@ -96,6 +95,27 @@ const SECTIONS=[
  ['transport','النقل','🚕','taxi-delivery.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
  ['notifications','الإشعارات','🔔','admin-panel.html#notify'],['settings','الإعدادات','⚙️','account.html']
 ];
+const NOTICE_SECTIONS=[
+ ['general','عام','🔔',null],
+ ['shop','تسوق الآن','🛒','shop.html'],
+ ['services','طلب خدمة','🛠️','services.html'],
+ ['chat','الدردشة','💬','chat.html'],
+ ['news','آخر الأخبار','📰','news.html'],
+ ['religious','الأمور الدينية','🕌','religious.html'],
+ ['study','الدراسة','📚','study.html'],
+ ['entertainment','الترفيه','🎮','entertainment.html'],
+ ['sports','الرياضة','⚽','sports.html'],
+ ['transport','التكسي والمندوب','🚕','taxi-delivery.html'],
+ ['appointments','المواعيد','📅','coming-soon.html']
+];
+function canSendNoticeSection(k){return !!adminRow?.is_super_admin || (k==='general'?can('notifications'):can(k))}
+function renderNoticeSections(){
+ const allowed=NOTICE_SECTIONS.filter(([k])=>canSendNoticeSection(k));
+ noticeSection.innerHTML=allowed.map(([k,n,i])=>'<option value="'+k+'">'+i+' '+n+'</option>').join('');
+ if(!allowed.length){generalNotifyBox.innerHTML='<h2>🔒 التبليغات</h2><p>هذا الحساب لا يملك صلاحية إرسال تبليغات لأي قسم.</p>';}
+}
+function noticeLinkFor(k){return NOTICE_SECTIONS.find(x=>x[0]===k)?.[3]||null}
+
 function showTab(id,b){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');b.classList.add('active')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fillSelect(id,values){const el=document.getElementById(id),old=el.value,label=el.options[0]?.text||'الكل';el.innerHTML='<option value="">'+label+'</option>'+values.map(v=>'<option>'+esc(v)+'</option>').join('');if([...el.options].some(o=>o.value===old))el.value=old}
@@ -137,8 +157,7 @@ async function init(){
  }
  who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');
  panel.style.display='block';
- renderSections();renderPerms();renderShopPerms();
- if(can('study')||can('notifications')) await loadTargets(); else studyNotifyBox.innerHTML='<h2>🔒 التبليغات الدراسية</h2><p>هذا الحساب لا يملك صلاحية الدراسة أو الإشعارات.</p>';
+ renderSections();renderPerms();renderShopPerms();renderNoticeSections();
  if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }
@@ -146,23 +165,44 @@ function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{co
 function renderPerms(){permGrid.innerHTML=SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
 function renderShopPerms(){shopPermGrid.innerHTML=SHOP_SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="shop-sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
 function selectedShopPerms(){return [...document.querySelectorAll('.shop-sec:checked')].map(x=>x.value)}
-async function loadTargets(){
- const {data,error}=await db.from('study_student_profiles').select('governorate,stage,school_name,grade_name').limit(10000);
- if(error){sendStatus.textContent='تعذر قراءة ملفات الطلاب: '+error.message;return}
- const uniq=k=>[...new Set((data||[]).map(x=>x[k]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'ar'));
- fillSelect('gov',uniq('governorate'));fillSelect('stage',uniq('stage'));fillSelect('school',uniq('school_name'));fillSelect('grade',uniq('grade_name'));
- sendStatus.textContent='تم تحميل '+(data||[]).length+' ملف طالب للاستهداف.';
+function clearNoticeForm(){
+ noticeTitle.value='';noticeBody.value='';noticeContent.value='';noticeImage.value='';noticeImagePreview.src='';noticeImagePreview.style.display='none';sendStatus.textContent='جاهز للإرسال.';
 }
-async function sendStudyNotice(){
- if(!(can('study')||can('notifications')))return alert('لا توجد صلاحية لإرسال تبليغات الدراسة');
- const t=noticeTitle.value.trim(),b=noticeBody.value.trim();if(!t||!b)return alert('اكتب العنوان ونص التبليغ');
- if(!confirm('تأكيد إرسال هذا التبليغ للفئة المحددة؟'))return;sendStatus.textContent='جاري الإرسال...';
- const payload={title:t,body:b,stages:stage.value?[stage.value]:[],governorates:gov.value?[gov.value]:[],schools:school.value?[school.value]:[],grades:grade.value?[grade.value]:[],url:'https://hakarblaa.github.io/HA-Marketing/study-profile.html'};
- const {data,error}=await db.functions.invoke('send-study-notification',{body:payload});
- if(error){sendStatus.innerHTML='<span class="err">تعذر الإرسال: '+esc(error.message)+'</span>';return}
- sendStatus.innerHTML='<span class="ok">تم إنشاء التبليغ.</span>\nالطلاب المطابقون: '+(data?.matched_users??0)+'\nالأجهزة المسجلة: '+(data?.registered_devices??0)+'\nتم الإرسال: '+(data?.sent??0)+'\nفشل: '+(data?.failed??0);
- if((data?.sent??0)>0){noticeTitle.value='';noticeBody.value=''}
+async function uploadNoticeImage(){
+ const f=noticeImage.files?.[0];if(!f)return null;
+ if(!String(f.type||'').startsWith('image/'))throw new Error('الملف المختار يجب أن يكون صورة.');
+ if(f.size>6*1024*1024)throw new Error('حجم الصورة يجب أن يكون أقل من 6MB.');
+ const ext=(f.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';
+ const path=(noticeSection.value||'general')+'/'+session.user.id+'-'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+ const {error}=await db.storage.from('notification-images').upload(path,f,{cacheControl:'3600',upsert:false,contentType:f.type||undefined});
+ if(error)throw error;
+ return db.storage.from('notification-images').getPublicUrl(path).data.publicUrl;
 }
+async function sendGeneralNotice(){
+ const section=noticeSection.value,type=noticeType.value,t=noticeTitle.value.trim(),b=noticeBody.value.trim(),c=noticeContent.value.trim();
+ if(!section||!canSendNoticeSection(section))return alert('لا توجد صلاحية لإرسال تبليغ لهذا القسم.');
+ if(!t||!b||!c)return alert('اكتب القسم والعنوان ونص التبليغ والمحتوى الكامل.');
+ if(!confirm('تأكيد إرسال هذا '+(type==='news'?'الخبر':'التبليغ')+' إلى المستخدمين؟'))return;
+ sendNoticeBtn.disabled=true;sendStatus.textContent='جاري تجهيز وإرسال التبليغ...';
+ try{
+   const imageUrl=await uploadNoticeImage();
+   const {data,error}=await db.rpc('admin_send_section_notification',{
+     p_section:section,p_notice_type:type,p_title:t,p_summary:b,p_content:c,p_image_url:imageUrl
+   });
+   if(error)throw error;
+   const count=(data&&typeof data==='object')?(data.recipients??data.sent??0):(data??0);
+   sendStatus.innerHTML='<span class="ok">تم إرسال '+(type==='news'?'الخبر':'التبليغ')+' بنجاح.</span>\nعدد الحسابات المستلمة: '+count;
+   clearNoticeForm();
+   sendStatus.innerHTML='<span class="ok">تم إرسال '+(type==='news'?'الخبر':'التبليغ')+' بنجاح.</span>\nعدد الحسابات المستلمة: '+count;
+ }catch(e){sendStatus.innerHTML='<span class="err">تعذر الإرسال: '+esc(e?.message||e)+'</span>'}
+ finally{sendNoticeBtn.disabled=false}
+}
+noticeImage.addEventListener('change',()=>{
+ const f=noticeImage.files?.[0];
+ if(!f){noticeImagePreview.src='';noticeImagePreview.style.display='none';return}
+ if(!String(f.type||'').startsWith('image/')){noticeImage.value='';alert('اختر ملف صورة فقط.');return}
+ const u=URL.createObjectURL(f);noticeImagePreview.src=u;noticeImagePreview.style.display='block';noticeImagePreview.onload=()=>URL.revokeObjectURL(u);
+});
 async function saveAdmin(){
  if(!adminRow?.is_super_admin)return;const id=identifier.value.trim();if(!id)return alert('اكتب الرقم أو المعرّف');
  const shopSecs=selectedShopPerms();let secs=[...document.querySelectorAll('.sec:checked')].map(x=>x.value);if(shopSecs.length&&!secs.includes('shop'))secs.push('shop');
