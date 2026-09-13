@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دليل النقل - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
+.wrap{width:94%;max-width:980px;margin:22px auto 50px}
+.top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px}
+.top h1{text-align:center;font-size:25px;margin:5px 0}
+.back,.home{width:42px;height:42px;border-radius:50%;background:#fff;color:#111;text-decoration:none;display:grid;place-items:center;box-shadow:0 3px 12px #0001}
+.sub{text-align:center;color:#666;line-height:1.7;margin:5px 0 18px}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:14px}
+.tab{border:1px solid #ddd;background:#fff;border-radius:12px;padding:10px 5px;font-size:12px;font-weight:700;cursor:pointer}
+.tab.active{background:#111;color:#fff;border-color:#111}
+.tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin:12px 0}
+.tools select,.tools input,.form input,.form textarea,.form select{width:100%;padding:12px;border:1px solid #ccc;border-radius:11px;background:#fff;font:inherit}
+.tools button,.primary,.save{border:0;border-radius:11px;padding:12px 15px;background:#111;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.register-card{background:#fff;border-radius:17px;padding:14px;margin:12px 0;box-shadow:0 4px 16px #0001}
+.register-card h2{font-size:18px;margin:0 0 8px}
+.form{display:none;margin-top:10px}
+.form.show{display:block}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.full{grid-column:1/-1}
+.hint{font-size:12px;color:#777;line-height:1.6}
+.status{font-size:13px;margin-top:8px;white-space:pre-wrap}
+.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.person{background:#fff;border-radius:18px;padding:15px;box-shadow:0 4px 16px #0001;border:1px solid #eee}
+.person-head{display:flex;align-items:center;gap:10px}
+.avatar{width:48px;height:48px;border-radius:15px;background:#f1f1f1;display:grid;place-items:center;font-size:27px}
+.person-head .info{flex:1}
+.person h3{margin:0;font-size:17px}
+.badge{display:inline-block;margin-top:5px;background:#f1f1f1;border-radius:999px;padding:4px 8px;font-size:11px}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.item{background:#f8f8f8;border-radius:10px;padding:9px}
+.item small{display:block;color:#777;font-size:10px;margin-bottom:4px}
+.item b{font-size:12px;line-height:1.5}
+.note{margin-top:9px;color:#555;font-size:12px;line-height:1.7;white-space:pre-wrap}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.actions a,.actions button{border:0;border-radius:11px;padding:11px;text-align:center;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer}
+.call{background:#111;color:#fff}
+.whatsapp{background:#eaf8ef;color:#087a35}
+.manage{margin-top:8px;display:flex;gap:7px}
+.manage button{flex:1;border:0;border-radius:9px;padding:9px;font-size:12px;cursor:pointer}
+.edit{background:#eee}.delete{background:#fee;color:#9b1028}
+.empty{text-align:center;background:#fff;border-radius:16px;padding:26px;color:#777}
+.loading{text-align:center;padding:20px;color:#777}
+@media(max-width:720px){
+  .tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .list{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .top h1{font-size:20px}
+}
+</style>
+<link rel="stylesheet" href="ha-premium-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="taxi-delivery.html">←</a>
+    <h1 id="title">دليل النقل</h1>
+    <a class="home" href="index.html">🏠</a>
+  </div>
+  <p class="sub" id="subtitle">شاهد معلومات أصحاب الخدمة وتواصل معهم مباشرة.</p>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="tools">
+    <select id="govFilter">
+      <option value="">كل المحافظات</option>
+      <option>بغداد</option><option>البصرة</option><option>نينوى</option><option>أربيل</option>
+      <option>النجف</option><option>كربلاء</option><option>بابل</option><option>كركوك</option>
+      <option>الأنبار</option><option>ديالى</option><option>ذي قار</option><option>واسط</option>
+      <option>ميسان</option><option>المثنى</option><option>القادسية</option><option>صلاح الدين</option>
+      <option>دهوك</option><option>السليمانية</option>
+    </select>
+    <button type="button" onclick="loadListings()">تحديث</button>
+  </div>
+
+  <div class="register-card">
+    <h2>➕ تسجيل خدمتي</h2>
+    <div class="hint">إذا عندك خط أو سيارة أو تعمل بالكراج، سجل معلوماتك حتى تظهر للناس بهذا القسم.</div>
+    <button class="primary" id="openFormBtn" type="button" style="margin-top:10px">فتح استمارة التسجيل</button>
+
+    <div id="form" class="form">
+      <div class="form-grid">
+        <input id="fullName" placeholder="الاسم الكامل">
+        <input id="phone" placeholder="رقم الهاتف 07xxxxxxxxx" inputmode="tel">
+        <input id="whatsapp" placeholder="رقم واتساب - اختياري" inputmode="tel">
+        <select id="governorate">
+          <option value="">اختر المحافظة</option>
+          <option>بغداد</option><option>البصرة</option><option>نينوى</option><option>أربيل</option>
+          <option>النجف</option><option>كربلاء</option><option>بابل</option><option>كركوك</option>
+          <option>الأنبار</option><option>ديالى</option><option>ذي قار</option><option>واسط</option>
+          <option>ميسان</option><option>المثنى</option><option>القادسية</option><option>صلاح الدين</option>
+          <option>دهوك</option><option>السليمانية</option>
+        </select>
+        <input id="fromArea" placeholder="منطقة الانطلاق / مكان الكراج">
+        <input id="toArea" placeholder="الوجهة أو المنطقة التي تخدمها">
+        <input id="vehicleType" placeholder="نوع السيارة / المركبة">
+        <input id="vehicleModel" placeholder="الموديل - اختياري">
+        <input id="plateNumber" placeholder="رقم اللوحة - اختياري">
+        <input id="seats" type="number" min="1" placeholder="عدد المقاعد - للخطوط">
+        <input id="workTimes" placeholder="أوقات العمل / الانطلاق">
+        <input id="priceNotes" placeholder="السعر أو ملاحظات الأجرة">
+        <textarea id="details" class="full" placeholder="تفاصيل إضافية: المدرسة/الجامعة/الدائرة/مسار الخط/نوع الحمل أو أي معلومات مهمة"></textarea>
+      </div>
+      <button class="save" id="saveBtn" type="button">حفظ ونشر المعلومات</button>
+      <div id="saveStatus" class="status"></div>
+    </div>
+  </div>
+
+  <div id="list" class="list"><div class="loading">جاري تحميل المعلومات...</div></div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const TYPES={
+  stoota:{name:'الستوتة',icon:'🛻',desc:'أصحاب الستوتات المتوفرون للتواصل المباشر.'},
+  cargo:{name:'سيارة حمل',icon:'🚚',desc:'سيارات الحمل ونقل الأغراض حسب المحافظة والمنطقة.'},
+  student_line:{name:'خط الطلاب',icon:'🎒',desc:'خطوط المدارس والجامعات — اضغط على معلومات السائق للتواصل.'},
+  employee_line:{name:'خط الموظفين',icon:'🧑‍💼',desc:'خطوط نقل الموظفين حسب مناطق الانطلاق والوجهات.'},
+  garage:{name:'الكراج الموحد',icon:'🅿️',desc:'السواق والخطوط المسجلة في الكراجات ومعلومات التواصل.'}
+};
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+let currentType=TYPES[params.get('type')]?params.get('type'):'stoota';
+let me=null;
+let editingId=null;
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function digits(s){return String(s||'').replace(/\D/g,'')}
+function waNumber(s){
+  let d=digits(s);
+  if(d.startsWith('07')&&d.length===11)d='964'+d.slice(1);
+  return d;
+}
+function setType(type,push=true){
+  if(!TYPES[type])return;
+  currentType=type;
+  if(push)history.replaceState(null,'','transport-directory.html?type='+encodeURIComponent(type));
+  $('title').textContent=TYPES[type].icon+' '+TYPES[type].name;
+  $('subtitle').textContent=TYPES[type].desc;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.type===type));
+  loadMyExisting();
+  loadListings();
+}
+function renderTabs(){
+  $('tabs').innerHTML=Object.entries(TYPES).map(([k,v])=>
+    `<button type="button" class="tab ${k===currentType?'active':''}" data-type="${k}">${v.icon} ${v.name}</button>`
+  ).join('');
+  $('tabs').onclick=e=>{
+    const b=e.target.closest('[data-type]');
+    if(b)setType(b.dataset.type);
+  };
+}
+async function init(){
+  renderTabs();
+  const {data:{session}}=await db.auth.getSession();
+  me=session?.user||null;
+  if(me){
+    const {data:p}=await db.from('profiles').select('full_name,phone,governorate').eq('id',me.id).maybeSingle();
+    if(p){
+      $('fullName').value=p.full_name||'';
+      $('phone').value=p.phone||'';
+      $('governorate').value=p.governorate||'';
+    }
+  }
+  $('openFormBtn').onclick=async()=>{
+    if(!me){ location.href='login.html?next='+encodeURIComponent(location.href); return; }
+    $('form').classList.toggle('show');
+    if($('form').classList.contains('show'))await loadMyExisting();
+  };
+  $('saveBtn').onclick=saveListing;
+  $('govFilter').onchange=loadListings;
+  setType(currentType,false);
+}
+
+async function loadMyExisting(){
+  if(!me)return;
+  const {data}=await db.from('transport_directory')
+    .select('*').eq('user_id',me.id).eq('service_type',currentType).maybeSingle();
+  editingId=data?.id||null;
+  if(!data){
+    $('vehicleType').value=currentType==='stoota'?'ستوتة':currentType==='cargo'?'سيارة حمل':'';
+    $('fromArea').value='';$('toArea').value='';$('vehicleModel').value='';$('plateNumber').value='';
+    $('seats').value='';$('workTimes').value='';$('priceNotes').value='';$('details').value='';
+    $('whatsapp').value='';
+    $('saveBtn').textContent='حفظ ونشر المعلومات';
+    return;
+  }
+  $('fullName').value=data.full_name||'';
+  $('phone').value=data.phone||'';
+  $('whatsapp').value=data.whatsapp||'';
+  $('governorate').value=data.governorate||'';
+  $('fromArea').value=data.from_area||'';
+  $('toArea').value=data.to_area||'';
+  $('vehicleType').value=data.vehicle_type||'';
+  $('vehicleModel').value=data.vehicle_model||'';
+  $('plateNumber').value=data.plate_number||'';
+  $('seats').value=data.seats||'';
+  $('workTimes').value=data.work_times||'';
+  $('priceNotes').value=data.price_notes||'';
+  $('details').value=data.details||'';
+  $('saveBtn').textContent='تحديث ونشر المعلومات';
+}
+
+async function saveListing(){
+  if(!me){ location.href='login.html?next='+encodeURIComponent(location.href); return; }
+  const name=$('fullName').value.trim(), phone=$('phone').value.trim(), gov=$('governorate').value.trim();
+  if(!name)return alert('اكتب الاسم الكامل');
+  if(!/^07\d{9}$/.test(digits(phone)))return alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
+  if(!gov)return alert('اختر المحافظة');
+
+  $('saveBtn').disabled=true;
+  $('saveStatus').textContent='جاري حفظ المعلومات...';
+
+  const payload={
+    user_id:me.id,
+    service_type:currentType,
+    full_name:name,
+    phone:phone,
+    whatsapp:$('whatsapp').value.trim()||null,
+    governorate:gov,
+    from_area:$('fromArea').value.trim()||null,
+    to_area:$('toArea').value.trim()||null,
+    vehicle_type:$('vehicleType').value.trim()||null,
+    vehicle_model:$('vehicleModel').value.trim()||null,
+    plate_number:$('plateNumber').value.trim()||null,
+    seats:$('seats').value?Number($('seats').value):null,
+    work_times:$('workTimes').value.trim()||null,
+    price_notes:$('priceNotes').value.trim()||null,
+    details:$('details').value.trim()||null,
+    is_active:true,
+    updated_at:new Date().toISOString()
+  };
+
+  let q;
+  if(editingId) q=db.from('transport_directory').update(payload).eq('id',editingId).eq('user_id',me.id);
+  else q=db.from('transport_directory').insert(payload);
+
+  const {error}=await q;
+  $('saveBtn').disabled=false;
+  if(error){
+    console.error(error);
+    $('saveStatus').textContent='❌ '+error.message;
+    alert('تعذر حفظ المعلومات: '+error.message);
+    return;
+  }
+  $('saveStatus').textContent='✅ تم نشر معلوماتك وتظهر الآن للمستخدمين.';
+  await loadMyExisting();
+  await loadListings();
+}
+
+async function loadListings(){
+  $('list').innerHTML='<div class="loading">جاري تحميل المعلومات...</div>';
+  let q=db.from('transport_directory').select('*')
+    .eq('service_type',currentType).eq('is_active',true).order('updated_at',{ascending:false});
+  const gov=$('govFilter').value;
+  if(gov)q=q.eq('governorate',gov);
+  const {data,error}=await q;
+  if(error){
+    $('list').innerHTML='<div class="empty">تعذر تحميل المعلومات. تأكد من تشغيل ملف SQL المرفق.</div>';
+    return;
+  }
+  if(!data?.length){
+    $('list').innerHTML='<div class="empty">لا توجد تسجيلات بهذا القسم حالياً.<br>إذا كنت تقدم هذه الخدمة، اضغط «تسجيل خدمتي».</div>';
+    return;
+  }
+  $('list').innerHTML=data.map(cardHtml).join('');
+  $('list').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteMine(b.dataset.delete));
+}
+
+function cardHtml(x){
+  const own=me&&x.user_id===me.id;
+  const phone=esc(x.phone||'');
+  const wa=waNumber(x.whatsapp||x.phone||'');
+  const route=[x.from_area,x.to_area].filter(Boolean).map(esc).join(' ← ')||'—';
+  return `<div class="person">
+    <div class="person-head">
+      <div class="avatar">${TYPES[x.service_type]?.icon||'🚗'}</div>
+      <div class="info">
+        <h3>${esc(x.full_name)}</h3>
+        <span class="badge">${esc(TYPES[x.service_type]?.name||x.service_type)} • ${esc(x.governorate)}</span>
+      </div>
+    </div>
+    <div class="details">
+      <div class="item"><small>المسار / المنطقة</small><b>${route}</b></div>
+      <div class="item"><small>المركبة</small><b>${esc(x.vehicle_type||'—')} ${x.vehicle_model?'• '+esc(x.vehicle_model):''}</b></div>
+      <div class="item"><small>أوقات العمل</small><b>${esc(x.work_times||'—')}</b></div>
+      <div class="item"><small>الأجرة</small><b>${esc(x.price_notes||'حسب الاتفاق')}</b></div>
+      ${x.seats?`<div class="item"><small>المقاعد</small><b>${esc(x.seats)}</b></div>`:''}
+      ${x.plate_number?`<div class="item"><small>رقم اللوحة</small><b>${esc(x.plate_number)}</b></div>`:''}
+    </div>
+    ${x.details?`<div class="note">${esc(x.details)}</div>`:''}
+    <div class="actions">
+      <a class="call" href="tel:${phone}">📞 اتصال بالسائق</a>
+      <a class="whatsapp" href="https://wa.me/${wa}" target="_blank" rel="noopener">💬 واتساب</a>
+    </div>
+    ${own?`<div class="manage"><button class="edit" onclick="document.getElementById('form').classList.add('show');window.scrollTo({top:0,behavior:'smooth'})">✏️ تعديل معلوماتي</button><button class="delete" data-delete="${esc(x.id)}">🗑️ إيقاف الظهور</button></div>`:''}
+  </div>`;
+}
+
+async function deleteMine(id){
+  if(!me||!confirm('هل تريد إيقاف ظهور معلوماتك بهذا القسم؟'))return;
+  const {error}=await db.from('transport_directory').update({is_active:false,updated_at:new Date().toISOString()}).eq('id',id).eq('user_id',me.id);
+  if(error){alert(error.message);return}
+  editingId=null;
+  await loadListings();
+  await loadMyExisting();
+}
+init();
+</script>
+</body>
+</html>
