@@ -1,3 +1,16 @@
-HA Marketing - Translation WebView Fix
-استبدل ملف study-language.html فقط بالملف الموجود هنا.
-الإصلاح يشمل الترجمة ومدرب اللغة لأن الاثنين يستخدمان ai-assistant.
+HA Marketing - Push طلب الخدمة فقط
+
+هذا التحديث لا يحتوي index.html ولا يضيف أي إشعار للواجهة الرئيسية.
+
+التركيب:
+1) شغّل HA-SERVICE-PUSH-ONLY-FIX.sql داخل Supabase > SQL Editor > Run.
+2) استبدل service-category.html.
+3) استبدل provider-dashboard.html.
+4) ملفات push-config.js و notifications.js و firebase-messaging-sw.js تبقى نفس الملفات التي رفعتها سابقاً لنظام إشعارات النقل.
+5) مقدم الخدمة يفتح لوحة مقدم الخدمة مرة واحدة ويضغط تشغيل إشعارات الموبايل ويسمح بالإشعارات.
+
+النتيجة:
+- طلب كهربائي -> Push فقط لمقدمي خدمة الكهربائي المعتمدين والمتاحين.
+- طلب حداد -> فقط للحدادين.
+- وهكذا لكل قسم.
+- لا يظهر تنبيه داخل الصفحة الرئيسية.

@@ -1,14 +1,41 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مقدمو الخدمة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:1100px;margin:22px auto}.btn{display:inline-block;background:#111;color:#fff;text-decoration:none;padding:10px 13px;border-radius:10px}.light{background:#eee;color:#111}.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;background:#fff;padding:12px;border-radius:15px;margin:14px 0}.filters input,.filters select{padding:11px;border:1px solid #ccc;border-radius:10px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 16px #0001}.img{width:100%;height:190px;object-fit:cover;border-radius:12px;background:#eee}.row{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.muted{color:#666;line-height:1.7}.badge{background:#eee;padding:5px 8px;border-radius:999px}@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr}}@media(max-width:480px){.grid{grid-template-columns:1fr}}</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="row"><a class="btn light" href="services.html">← الأقسام</a><a class="btn" href="service-orders.html">📋 طلباتي</a></div><h1 id="title">مقدمو الخدمة</h1><div class="filters"><input id="q" placeholder="🔎 الاسم أو المنطقة"><select id="gov"><option value="">كل المحافظات</option></select><select id="avail"><option value="all">الكل</option><option value="yes">متوفر الآن</option></select></div><div id="nearbyStatus" class="card" style="margin-bottom:10px">📍 جاري تحديد موقعك لعرض الأقرب أولاً...</div><div id="box" class="grid"><div class="card">جاري التحميل...</div></div></div><script>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مقدمو الخدمة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:1100px;margin:22px auto}.btn{display:inline-block;background:#111;color:#fff;text-decoration:none;padding:10px 13px;border-radius:10px}.light{background:#eee;color:#111}.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;background:#fff;padding:12px;border-radius:15px;margin:14px 0}.filters input,.filters select{padding:11px;border:1px solid #ccc;border-radius:10px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 16px #0001}.img{width:100%;height:190px;object-fit:cover;border-radius:12px;background:#eee}.row{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.muted{color:#666;line-height:1.7}.badge{background:#eee;padding:5px 8px;border-radius:999px}@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr}}@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.category-request{background:#fff;border-radius:16px;padding:14px;margin:14px 0;box-shadow:0 4px 16px #0001}
+.category-request h2{margin:0 0 7px}.reqgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.reqgrid input,.reqgrid textarea,.reqgrid button{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit}
+.reqgrid textarea{grid-column:1/-1;min-height:95px;resize:vertical}.reqstatus{font-size:13px;line-height:1.7;margin-top:8px;color:#555}
+@media(max-width:600px){.reqgrid{grid-template-columns:1fr}.reqgrid textarea{grid-column:auto}}
+</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="row"><a class="btn light" href="services.html">← الأقسام</a><a class="btn" href="service-orders.html">📋 طلباتي</a></div><h1 id="title">مقدمو الخدمة</h1><div class="filters"><input id="q" placeholder="🔎 الاسم أو المنطقة"><select id="gov"><option value="">كل المحافظات</option></select><select id="avail"><option value="all">الكل</option><option value="yes">متوفر الآن</option></select></div>
+<div class="category-request">
+  <h2>📣 طلب خدمة من هذا القسم</h2>
+  <div class="muted">أرسل طلبك للقسم، والإشعار يروح فقط لمقدمي الخدمة المعتمدين في هذا القسم.</div>
+  <div class="reqgrid" style="margin-top:10px">
+    <input id="reqName" placeholder="الاسم">
+    <input id="reqPhone" placeholder="رقم الهاتف 07xxxxxxxxx" inputmode="tel">
+    <input id="reqAddress" placeholder="العنوان / المنطقة">
+    <input id="reqDate" type="date">
+    <input id="reqTime" placeholder="الوقت المناسب مثل 5 مساءً">
+    <button id="reqLoc" class="light" type="button">📍 تحديد موقعي</button>
+    <textarea id="reqDetails" placeholder="اكتب تفاصيل الخدمة المطلوبة"></textarea>
+  </div>
+  <button id="reqSend" class="btn" type="button" style="margin-top:9px">إرسال الطلب للقسم</button>
+  <div id="reqStatus" class="reqstatus"></div>
+</div>
+<div id="nearbyStatus" class="card" style="margin-bottom:10px">📍 جاري تحديد موقعك لعرض الأقرب أولاً...</div><div id="box" class="grid"><div class="card">جاري التحميل...</div></div></div><script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 const id=Number(new URLSearchParams(location.search).get('id'));
-let rows=[],userPos=null;
+let rows=[],userPos=null,me=null,reqLat=null,reqLng=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){
+  me=(await db.auth.getUser()).data.user||null;
   const [{data:c},{data:p,error}]=await Promise.all([
     db.from('service_categories').select('name').eq('id',id).maybeSingle(),
     db.from('service_providers').select('*').eq('category_id',id).eq('is_active',true).order('sort_order')
   ]);
   title.textContent=c?.name||'مقدمو الخدمة';
+  if(me){
+    const {data:pr}=await db.from('profiles').select('full_name,phone,governorate').eq('id',me.id).maybeSingle();
+    if(pr){reqName.value=pr.full_name||'';reqPhone.value=pr.phone||'';reqAddress.value=pr.governorate||'';}
+  }
   if(error){box.textContent=error.message;return}
   rows=p||[];
   [...new Set(rows.map(x=>x.governorate).filter(Boolean))].forEach(v=>gov.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
@@ -51,4 +78,27 @@ function render(){
     </div>`;
   }).join(''):'<div class="card">لا يوجد مقدمو خدمة مطابقون.</div>';
 }
-q.oninput=render;gov.onchange=render;avail.onchange=render;load();</script></body></html>
+q.oninput=render;gov.onchange=render;avail.onchange=render;
+reqLoc.onclick=async()=>{
+  try{const pos=await HA_Nearby.getCurrent({allowCache:false});reqLat=pos.lat;reqLng=pos.lng;reqStatus.textContent='✅ تم تحديد موقعك.'}
+  catch(e){reqStatus.textContent='تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.'}
+};
+reqSend.onclick=async()=>{
+  if(!me){location.href='login.html?next='+encodeURIComponent(location.href);return}
+  const n=reqName.value.trim(),ph=reqPhone.value.replace(/\D/g,''),ad=reqAddress.value.trim(),de=reqDetails.value.trim();
+  if(!n)return alert('اكتب الاسم');
+  if(!/^07\d{9}$/.test(ph))return alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
+  if(!ad)return alert('اكتب العنوان أو المنطقة');
+  if(!de)return alert('اكتب تفاصيل الخدمة');
+  reqSend.disabled=true;reqStatus.textContent='جاري إرسال الطلب...';
+  const {data,error}=await db.from('service_requests').insert({
+    customer_id:me.id,provider_id:null,category_id:id,customer_name:n,phone:ph,address:ad,details:de,
+    preferred_date:reqDate.value||null,preferred_time:reqTime.value.trim()||null,
+    customer_lat:reqLat,customer_lng:reqLng,status:'new'
+  }).select('id').single();
+  reqSend.disabled=false;
+  if(error){reqStatus.textContent='❌ '+error.message;return}
+  reqStatus.textContent='✅ تم إرسال الطلب للقسم المختص. رقم الطلب: '+data.id;
+  reqDetails.value='';
+};
+load();</script></body></html>
