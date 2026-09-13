@@ -81,9 +81,12 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
     <button type="button" onclick="loadListings()">تحديث</button>
   </div>
 
-  <div class="register-card">
+  <div id="adminReviewLink" style="display:none;margin:0 0 12px">
+      <a href="admin-transport-directory.html" style="display:block;text-align:center;background:#111;color:#fff;text-decoration:none;padding:12px;border-radius:12px;font-weight:700">🛡️ مراجعة طلبات التسجيل</a>
+    </div>
+    <div class="register-card">
     <h2>➕ تسجيل خدمتي</h2>
-    <div class="hint">إذا عندك خط أو سيارة أو تعمل بالكراج، سجل معلوماتك حتى تظهر للناس بهذا القسم.</div>
+    <div class="hint">إذا عندك خط أو سيارة أو تعمل بالكراج، ارفع طلبك للإدارة. لن تظهر معلوماتك للناس إلا بعد موافقة الأدمن.</div>
     <button class="primary" id="openFormBtn" type="button" style="margin-top:10px">فتح استمارة التسجيل</button>
 
     <div id="form" class="form">
@@ -109,7 +112,7 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
         <input id="priceNotes" placeholder="السعر أو ملاحظات الأجرة">
         <textarea id="details" class="full" placeholder="تفاصيل إضافية: المدرسة/الجامعة/الدائرة/مسار الخط/نوع الحمل أو أي معلومات مهمة"></textarea>
       </div>
-      <button class="save" id="saveBtn" type="button">حفظ ونشر المعلومات</button>
+      <button class="save" id="saveBtn" type="button">إرسال طلب التسجيل</button>
       <div id="saveStatus" class="status"></div>
     </div>
   </div>
@@ -168,6 +171,11 @@ async function init(){
   const {data:{session}}=await db.auth.getSession();
   me=session?.user||null;
   if(me){
+    try{
+      const {data:isAdmin}=await db.rpc('is_app_admin');
+      if(isAdmin) $('adminReviewLink').style.display='block';
+    }catch(e){}
+
     const {data:p}=await db.from('profiles').select('full_name,phone,governorate').eq('id',me.id).maybeSingle();
     if(p){
       $('fullName').value=p.full_name||'';
@@ -190,12 +198,21 @@ async function loadMyExisting(){
   const {data}=await db.from('transport_directory')
     .select('*').eq('user_id',me.id).eq('service_type',currentType).maybeSingle();
   editingId=data?.id||null;
+  if(data){
+    const labels={pending:'⏳ طلبك بانتظار موافقة الإدارة',approved:'✅ طلبك مقبول ومعلوماتك ظاهرة للناس',rejected:'❌ تم رفض الطلب'};
+    $('saveStatus').textContent=labels[data.status]||'';
+    if(data.status==='rejected' && data.review_note){
+      $('saveStatus').textContent+='\nملاحظة الإدارة: '+data.review_note;
+    }
+  }else{
+    $('saveStatus').textContent='';
+  }
   if(!data){
     $('vehicleType').value=currentType==='stoota'?'ستوتة':currentType==='cargo'?'سيارة حمل':'';
     $('fromArea').value='';$('toArea').value='';$('vehicleModel').value='';$('plateNumber').value='';
     $('seats').value='';$('workTimes').value='';$('priceNotes').value='';$('details').value='';
     $('whatsapp').value='';
-    $('saveBtn').textContent='حفظ ونشر المعلومات';
+    $('saveBtn').textContent='إرسال طلب التسجيل';
     return;
   }
   $('fullName').value=data.full_name||'';
@@ -211,7 +228,7 @@ async function loadMyExisting(){
   $('workTimes').value=data.work_times||'';
   $('priceNotes').value=data.price_notes||'';
   $('details').value=data.details||'';
-  $('saveBtn').textContent='تحديث ونشر المعلومات';
+  $('saveBtn').textContent='إرسال التعديل للموافقة';
 }
 
 async function saveListing(){
@@ -240,7 +257,8 @@ async function saveListing(){
     work_times:$('workTimes').value.trim()||null,
     price_notes:$('priceNotes').value.trim()||null,
     details:$('details').value.trim()||null,
-    is_active:true,
+    is_active:false,
+    status:'pending',
     updated_at:new Date().toISOString()
   };
 
@@ -256,7 +274,7 @@ async function saveListing(){
     alert('تعذر حفظ المعلومات: '+error.message);
     return;
   }
-  $('saveStatus').textContent='✅ تم نشر معلوماتك وتظهر الآن للمستخدمين.';
+  $('saveStatus').textContent='✅ تم إرسال طلبك — بانتظار موافقة الإدارة.';
   await loadMyExisting();
   await loadListings();
 }
@@ -264,7 +282,7 @@ async function saveListing(){
 async function loadListings(){
   $('list').innerHTML='<div class="loading">جاري تحميل المعلومات...</div>';
   let q=db.from('transport_directory').select('*')
-    .eq('service_type',currentType).eq('is_active',true).order('updated_at',{ascending:false});
+    .eq('service_type',currentType).eq('status','approved').eq('is_active',true).order('updated_at',{ascending:false});
   const gov=$('govFilter').value;
   if(gov)q=q.eq('governorate',gov);
   const {data,error}=await q;
@@ -306,12 +324,12 @@ function cardHtml(x){
       <a class="call" href="tel:${phone}">📞 اتصال بالسائق</a>
       <a class="whatsapp" href="https://wa.me/${wa}" target="_blank" rel="noopener">💬 واتساب</a>
     </div>
-    ${own?`<div class="manage"><button class="edit" onclick="document.getElementById('form').classList.add('show');window.scrollTo({top:0,behavior:'smooth'})">✏️ تعديل معلوماتي</button><button class="delete" data-delete="${esc(x.id)}">🗑️ إيقاف الظهور</button></div>`:''}
+    ${own?`<div class="manage"><button class="edit" onclick="document.getElementById('form').classList.add('show');window.scrollTo({top:0,behavior:'smooth'})">✏️ تعديل معلوماتي</button><button class="delete" data-delete="${esc(x.id)}">🗑️ إلغاء خدمتي</button></div>`:''}
   </div>`;
 }
 
 async function deleteMine(id){
-  if(!me||!confirm('هل تريد إيقاف ظهور معلوماتك بهذا القسم؟'))return;
+  if(!me||!confirm('هل تريد إلغاء خدمتك من هذا القسم؟'))return;
   const {error}=await db.from('transport_directory').update({is_active:false,updated_at:new Date().toISOString()}).eq('id',id).eq('user_id',me.id);
   if(error){alert(error.message);return}
   editingId=null;

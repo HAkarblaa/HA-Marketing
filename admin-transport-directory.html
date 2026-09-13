@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>طلبات خدمات النقل - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#07090b;color:#f7f7f7}
+.wrap{width:94%;max-width:1050px;margin:20px auto 60px}
+.head{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;gap:10px}
+.head h1{text-align:center;font-size:24px;margin:5px 0}
+.back,.home{height:44px;border-radius:14px;background:#12171b;color:#f2b544;text-decoration:none;display:grid;place-items:center;border:1px solid #3e3218}
+.sub{text-align:center;color:#aab0b4;margin:7px 0 16px}
+.filters{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:14px}
+select,button,textarea{font:inherit}
+select{padding:11px;border-radius:11px;border:1px solid #333;background:#101519;color:#fff}
+.refresh{border:1px solid #70551d;background:#f2b544;color:#111;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.stat{background:#101519;border:1px solid #2a3034;border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:22px;color:#f2b544}
+.stat small{color:#aaa}
+.list{display:grid;gap:12px}
+.card{background:#0e1317;border:1px solid #394147;border-radius:18px;padding:14px}
+.card.pending{border-color:#8a6823}
+.card.approved{border-color:#246b3f}
+.card.rejected{border-color:#722d36}
+.top{display:flex;align-items:center;gap:10px}
+.avatar{width:48px;height:48px;border-radius:14px;background:#171e22;display:grid;place-items:center;font-size:28px;border:1px solid #3a4145}
+.info{flex:1}
+.info h3{margin:0;font-size:17px}
+.badge{display:inline-block;margin-top:5px;padding:4px 8px;border-radius:999px;background:#1c2327;color:#ddd;font-size:11px}
+.details{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.item{background:#090d10;border-radius:10px;padding:9px}
+.item small{display:block;color:#9aa1a6;font-size:10px;margin-bottom:4px}
+.item b{font-size:12px;line-height:1.5}
+.note{margin-top:9px;padding:10px;background:#090d10;border-radius:10px;color:#ddd;line-height:1.7;font-size:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.actions button{border:0;border-radius:11px;padding:11px;font-weight:800;cursor:pointer}
+.approve{background:#2baa5e;color:#fff}
+.reject{background:#a12b3d;color:#fff}
+.reopen{background:#d29a2d;color:#111;grid-column:1/-1}
+.empty{text-align:center;padding:28px;background:#0e1317;border-radius:16px;color:#aaa}
+@media(max-width:700px){.filters{grid-template-columns:1fr}.details{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <a class="back" href="admin-panel.html">←</a>
+    <h1>🛡️ طلبات خدمات النقل</h1>
+    <a class="home" href="index.html">🏠</a>
+  </div>
+  <p class="sub">لا تظهر أي خدمة للناس إلا بعد موافقة الإدارة.</p>
+
+  <div class="filters">
+    <select id="statusFilter">
+      <option value="pending">طلبات بانتظار الموافقة</option>
+      <option value="approved">المقبولة</option>
+      <option value="rejected">المرفوضة</option>
+      <option value="">الكل</option>
+    </select>
+    <select id="typeFilter">
+      <option value="">كل الخدمات</option>
+      <option value="stoota">الستوتة</option>
+      <option value="cargo">سيارة حمل</option>
+      <option value="student_line">خط الطلاب</option>
+      <option value="employee_line">خط الموظفين</option>
+      <option value="garage">الكراج الموحد</option>
+    </select>
+    <button class="refresh" id="refreshBtn">تحديث</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="pendingCount">0</b><small>بانتظار الموافقة</small></div>
+    <div class="stat"><b id="approvedCount">0</b><small>مقبول</small></div>
+    <div class="stat"><b id="rejectedCount">0</b><small>مرفوض</small></div>
+  </div>
+
+  <div id="list" class="list"></div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+const $=id=>document.getElementById(id);
+const TYPES={
+ stoota:['الستوتة','🛻'],
+ cargo:['سيارة حمل','🚚'],
+ student_line:['خط الطلاب','🎒'],
+ employee_line:['خط الموظفين','🧑‍💼'],
+ garage:['الكراج الموحد','🅿️']
+};
+let me=null;
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function stateLabel(s){return s==='approved'?'✅ مقبول':s==='rejected'?'❌ مرفوض':'⏳ بانتظار الموافقة'}
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  me=session?.user||null;
+  if(!me){location.href='login.html';return}
+  const {data:isAdmin,error}=await db.rpc('is_app_admin');
+  if(error||!isAdmin){
+    document.body.innerHTML='<div style="padding:40px;text-align:center">لا توجد صلاحية لفتح هذه الصفحة.</div>';
+    return;
+  }
+  $('refreshBtn').onclick=load;
+  $('statusFilter').onchange=load;
+  $('typeFilter').onchange=load;
+  await load();
+}
+
+async function load(){
+  $('list').innerHTML='<div class="empty">جاري التحميل...</div>';
+
+  const {data:all,error:allErr}=await db.from('transport_directory').select('status');
+  if(!allErr){
+    $('pendingCount').textContent=(all||[]).filter(x=>x.status==='pending').length;
+    $('approvedCount').textContent=(all||[]).filter(x=>x.status==='approved').length;
+    $('rejectedCount').textContent=(all||[]).filter(x=>x.status==='rejected').length;
+  }
+
+  let q=db.from('transport_directory').select('*').order('updated_at',{ascending:false});
+  const st=$('statusFilter').value, tp=$('typeFilter').value;
+  if(st)q=q.eq('status',st);
+  if(tp)q=q.eq('service_type',tp);
+  const {data,error}=await q;
+  if(error){$('list').innerHTML='<div class="empty">❌ '+esc(error.message)+'</div>';return}
+  if(!data?.length){$('list').innerHTML='<div class="empty">لا توجد طلبات بهذا الفلتر.</div>';return}
+  $('list').innerHTML=data.map(card).join('');
+  document.querySelectorAll('[data-approve]').forEach(b=>b.onclick=()=>approve(b.dataset.approve));
+  document.querySelectorAll('[data-reject]').forEach(b=>b.onclick=()=>rejectReq(b.dataset.reject));
+  document.querySelectorAll('[data-reopen]').forEach(b=>b.onclick=()=>reopen(b.dataset.reopen));
+}
+
+function card(x){
+  const type=TYPES[x.service_type]||[x.service_type,'🚗'];
+  const route=[x.from_area,x.to_area].filter(Boolean).map(esc).join(' ← ')||'—';
+  return `<div class="card ${esc(x.status)}">
+    <div class="top">
+      <div class="avatar">${type[1]}</div>
+      <div class="info">
+        <h3>${esc(x.full_name)}</h3>
+        <span class="badge">${esc(type[0])} • ${esc(x.governorate)} • ${stateLabel(x.status)}</span>
+      </div>
+    </div>
+    <div class="details">
+      <div class="item"><small>الهاتف</small><b>${esc(x.phone)}</b></div>
+      <div class="item"><small>واتساب</small><b>${esc(x.whatsapp||'—')}</b></div>
+      <div class="item"><small>المسار / المنطقة</small><b>${route}</b></div>
+      <div class="item"><small>المركبة</small><b>${esc(x.vehicle_type||'—')} ${x.vehicle_model?'• '+esc(x.vehicle_model):''}</b></div>
+      <div class="item"><small>اللوحة</small><b>${esc(x.plate_number||'—')}</b></div>
+      <div class="item"><small>المقاعد</small><b>${esc(x.seats||'—')}</b></div>
+      <div class="item"><small>أوقات العمل</small><b>${esc(x.work_times||'—')}</b></div>
+      <div class="item"><small>الأجرة</small><b>${esc(x.price_notes||'—')}</b></div>
+    </div>
+    ${x.details?`<div class="note"><b>التفاصيل:</b><br>${esc(x.details)}</div>`:''}
+    ${x.review_note?`<div class="note"><b>ملاحظة الإدارة:</b><br>${esc(x.review_note)}</div>`:''}
+    <div class="actions">
+      ${x.status!=='approved'?`<button class="approve" data-approve="${esc(x.id)}">✅ موافقة</button>`:''}
+      ${x.status!=='rejected'?`<button class="reject" data-reject="${esc(x.id)}">❌ رفض</button>`:''}
+      ${x.status!=='pending'?`<button class="reopen" data-reopen="${esc(x.id)}">↩️ إرجاع للمراجعة</button>`:''}
+    </div>
+  </div>`;
+}
+
+async function approve(id){
+  if(!confirm('الموافقة على هذا الطلب وإظهار معلوماته للناس؟'))return;
+  const {error}=await db.from('transport_directory').update({
+    status:'approved',
+    is_active:true,
+    review_note:null,
+    reviewed_by:me.id,
+    reviewed_at:new Date().toISOString(),
+    updated_at:new Date().toISOString()
+  }).eq('id',id);
+  if(error){alert(error.message);return}
+  await load();
+}
+
+async function rejectReq(id){
+  const note=prompt('سبب الرفض أو الملاحظة التي تظهر لصاحب الطلب:','');
+  if(note===null)return;
+  const {error}=await db.from('transport_directory').update({
+    status:'rejected',
+    is_active:false,
+    review_note:note.trim()||null,
+    reviewed_by:me.id,
+    reviewed_at:new Date().toISOString(),
+    updated_at:new Date().toISOString()
+  }).eq('id',id);
+  if(error){alert(error.message);return}
+  await load();
+}
+
+async function reopen(id){
+  if(!confirm('إرجاع الطلب إلى انتظار المراجعة؟'))return;
+  const {error}=await db.from('transport_directory').update({
+    status:'pending',
+    is_active:false,
+    review_note:null,
+    reviewed_by:null,
+    reviewed_at:null,
+    updated_at:new Date().toISOString()
+  }).eq('id',id);
+  if(error){alert(error.message);return}
+  await load();
+}
+
+init();
+</script>
+</body>
+</html>
