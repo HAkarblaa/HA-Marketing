@@ -1791,9 +1791,16 @@ order.onclick=async()=>{
   activeDeliveryRideId=rideRef.key;
   activeDeliveryRideRef=rideRef;
 
+  const deliveryVehicleName=String(selected.dataset.name||'').toLowerCase();
+  const deliveryDispatchType=
+    /تكتك|tuktuk/.test(deliveryVehicleName) ? 'delivery_tuktuk' :
+    /سيارة|car/.test(deliveryVehicleName) ? 'delivery_car' :
+    'delivery_courier';
+
   const rideData={
     customerUid:fbUser.uid,
     serviceType:'delivery',
+    dispatchType:deliveryDispatchType,
     status:'searching',
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,
@@ -1825,12 +1832,13 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
+    await db.ref('userRides/'+fbUser.uid+'/'+activeDeliveryRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_delivery',activeDeliveryRideId);
     openDeliveryPostOrder();
     listenDeliveryRide(activeDeliveryRideId);
   }catch(err){
     console.error(err);
-    alert((err && (err.code==='PERMISSION_DENIED' || String(err.message||'').toLowerCase().includes('permission'))) ? 'تعذر إرسال طلب المندوب لأن صلاحيات Firebase تمنع الحفظ. حدّث قواعد Realtime Database بالملف firebase-database.rules.json المرفق.' : 'تعذر إرسال طلب المندوب. حاول مرة ثانية.');
+    alert('تعذر إرسال طلب المندوب إلى قاعدة البيانات. حاول مرة ثانية.');
   }finally{
     order.disabled=false;
     order.textContent=oldText;
