@@ -1245,6 +1245,49 @@ button{-webkit-tap-highlight-color:transparent}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
 }
 
+
+
+/* ===== HA MAP THEME: نفس الخريطة الفاتحة بباقي الأقسام ===== */
+#map{
+  background:#f1f0f2 !important;
+}
+
+#map .leaflet-tile-pane{
+  filter:saturate(1.22) contrast(1.08) brightness(1.035);
+}
+
+#map .leaflet-control-attribution{
+  background:rgba(255,255,255,.80) !important;
+  color:#666 !important;
+  font-size:10px !important;
+  padding:2px 5px !important;
+}
+
+#map .leaflet-control-attribution a{
+  color:#626a75 !important;
+}
+
+#map .leaflet-control-zoom{
+  border:0 !important;
+  border-radius:16px !important;
+  overflow:hidden !important;
+  box-shadow:0 4px 15px rgba(0,0,0,.16) !important;
+}
+
+#map .leaflet-control-zoom a{
+  width:42px !important;
+  height:42px !important;
+  line-height:42px !important;
+  background:#fff !important;
+  color:#666d78 !important;
+  border:0 !important;
+  font-size:22px !important;
+}
+
+#map .leaflet-control-zoom a + a{
+  border-top:1px solid #ececec !important;
+}
+
 </style>
 
 </head>
