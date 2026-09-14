@@ -162,8 +162,8 @@
           if(Notification.permission==='granted'){
             new Notification(title,{
               body,
-              icon:'./icon-192.png',
-              badge:'./icon-192.png',
+              icon:'./ha-logo-transparent.png',
+              badge:'./notification-icon.png',
               data:{url:payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html'}
             });
           }
