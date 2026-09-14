@@ -551,7 +551,7 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
   }catch(e){
     console.warn('admin shortcuts',e);
   }
-})(); })(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
+})(); if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
 (function(){const b=document.getElementById('haNetBadge');const u=()=>{if(b)b.style.display=navigator.onLine?'none':'block'};addEventListener('online',u);addEventListener('offline',u);u()})();
 
 /* ===== تشغيل الواجهة نفسها بدون إنترنت ===== */
