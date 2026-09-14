@@ -452,7 +452,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();documen
 window.addEventListener('popstate',()=>{const m=document.getElementById('shortcuts');if(m?.classList.contains('show')){closeMenu();history.pushState({haMenuGuard:true},'',location.href)}}); let haSearchTimer=null;
 function searchCards(){clearTimeout(haSearchTimer);haSearchTimer=setTimeout(()=>{const v=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let n=0;document.querySelectorAll('#mainGrid .card').forEach(c=>{const ok=((c.innerText||'')+' '+(c.dataset.search||'')).toLowerCase().includes(v);c.style.display=ok?'flex':'none';if(ok)n++});const nr=document.getElementById('noResults');if(nr)nr.style.display=n?'none':'block'},80)} function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading'),t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;x?.classList.add('show')}
 function hidePageLoading(){document.getElementById('haPageLoading')?.classList.remove('show')}
-async function continueLogin(){
+async async function continueLogin(){
   showPageLoading('جاري التحقق من تسجيل الدخول...');
 
   // بدون إنترنت: لا نغيّر الواجهة ولا نحوّل المستخدم لصفحة ثانية.
