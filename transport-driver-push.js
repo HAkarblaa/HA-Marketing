@@ -192,9 +192,8 @@
 
     startLocation();
 
-    // يظهر فقط للسائق/المندوب الموافق عليه.
-    setTimeout(addPushPrompt,700);
-
+    // تم إخفاء شريط "شغّل إشعارات طلبات النقل" من الواجهة.
+    // نظام الإشعارات نفسه يبقى شغال، ويمكن تشغيله من زر الإشعارات بالموقع.
     await loadNearbyNotifications();
     notificationTimer=setInterval(loadNearbyNotifications,9000);
   }
