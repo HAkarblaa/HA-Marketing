@@ -7,7 +7,7 @@
 </style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="wrap"><div class="row"><a class="btn light" href="services.html">← الأقسام</a><a class="btn" href="service-orders.html">📋 طلباتي</a></div><h1 id="title">مقدمو الخدمة</h1><div class="filters"><input id="q" placeholder="🔎 الاسم أو المنطقة"><select id="gov"><option value="">كل المحافظات</option></select><select id="avail"><option value="all">الكل</option><option value="yes">متوفر الآن</option></select></div>
 <div class="category-request">
   <h2>📣 طلب خدمة من هذا القسم</h2>
-  <div class="muted">أرسل طلبك للقسم، والإشعار يروح فقط لمقدمي الخدمة المعتمدين في هذا القسم.</div>
+  <div class="muted">أرسل طلبك للقسم، ويظهر فقط لمقدمي الخدمة المعتمدين بنفس المهنة حتى يقبله أحدهم.</div>
   <div class="reqgrid" style="margin-top:10px">
     <input id="reqName" placeholder="الاسم">
     <input id="reqPhone" placeholder="رقم الهاتف 07xxxxxxxxx" inputmode="tel">
@@ -21,27 +21,77 @@
   <div id="reqStatus" class="reqstatus"></div>
 </div>
 <div id="nearbyStatus" class="card" style="margin-bottom:10px">📍 جاري تحديد موقعك لعرض الأقرب أولاً...</div><div id="box" class="grid"><div class="card">جاري التحميل...</div></div></div><script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-const id=Number(new URLSearchParams(location.search).get('id'));
-let rows=[],userPos=null,me=null,reqLat=null,reqLng=null;
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const categoryId=Number(new URLSearchParams(location.search).get('id'));
+let rows=[],userPos=null,me=null,reqLat=null,reqLng=null,currentCategory=null;
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+function providerName(x){
+  return x.name||x.full_name||'مقدم خدمة';
+}
+
 async function load(){
-  me=(await db.auth.getUser()).data.user||null;
-  const [{data:c},{data:p,error}]=await Promise.all([
-    db.from('service_categories').select('name').eq('id',id).maybeSingle(),
-    db.from('service_providers').select('*').eq('category_id',id).eq('is_active',true).order('sort_order')
-  ]);
-  title.textContent=c?.name||'مقدمو الخدمة';
-  if(me){
-    const {data:pr}=await db.from('profiles').select('full_name,phone,governorate').eq('id',me.id).maybeSingle();
-    if(pr){reqName.value=pr.full_name||'';reqPhone.value=pr.phone||'';reqAddress.value=pr.governorate||'';}
+  if(!Number.isFinite(categoryId)||categoryId<=0){
+    title.textContent='قسم غير صحيح';
+    box.innerHTML='<div class="card">ارجع واختر نوع الخدمة من جديد.</div>';
+    reqSend.disabled=true;
+    return;
   }
-  if(error){box.textContent=error.message;return}
+
+  me=(await db.auth.getUser()).data.user||null;
+
+  const [{data:c,error:catError},{data:p,error:providersError}]=await Promise.all([
+    db.from('service_categories').select('id,name').eq('id',categoryId).eq('is_active',true).maybeSingle(),
+    db.from('service_providers')
+      .select('*')
+      .eq('category_id',categoryId)
+      .eq('is_active',true)
+      .order('sort_order')
+  ]);
+
+  if(catError||!c){
+    title.textContent='تعذر تحميل القسم';
+    box.innerHTML='<div class="card">'+esc(catError?.message||'القسم غير موجود')+'</div>';
+    reqSend.disabled=true;
+    return;
+  }
+
+  currentCategory=c;
+  title.textContent=c.name;
+
+  if(me){
+    const {data:pr}=await db.from('profiles')
+      .select('full_name,phone,governorate')
+      .eq('id',me.id)
+      .maybeSingle();
+    if(pr){
+      reqName.value=pr.full_name||'';
+      reqPhone.value=pr.phone||'';
+      reqAddress.value=pr.governorate||'';
+    }
+  }
+
+  if(providersError){
+    box.innerHTML='<div class="card">'+esc(providersError.message)+'</div>';
+    return;
+  }
+
   rows=p||[];
-  [...new Set(rows.map(x=>x.governorate).filter(Boolean))].forEach(v=>gov.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
+  [...new Set(rows.map(x=>x.governorate).filter(Boolean))]
+    .forEach(v=>gov.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
+
   render();
   locateAndSort();
 }
+
 async function locateAndSort(){
   try{
     userPos=await HA_Nearby.getCurrent({allowCache:false});
@@ -51,54 +101,108 @@ async function locateAndSort(){
   }
   render();
 }
+
 function render(){
   const search=q.value.trim();
-  let a=rows.filter(x=>(!search||(x.name+' '+(x.area||'')+' '+(x.address||'')).includes(search))&&(!gov.value||x.governorate===gov.value)&&(avail.value!=='yes'||x.is_available));
+  let a=rows.filter(x=>{
+    const hay=[providerName(x),x.other_profession,x.area,x.address,x.governorate].filter(Boolean).join(' ');
+    return (!search||hay.includes(search))
+      && (!gov.value||x.governorate===gov.value)
+      && (avail.value!=='yes'||x.is_available);
+  });
 
   if(userPos){
-    a.forEach(x=>x._distance=HA_Nearby.distanceKm(userPos,{lat:x.lat,lng:x.lng}));
-    a.sort((x,y)=>{
-      const dx=Number.isFinite(x._distance)?x._distance:Infinity;
-      const dy=Number.isFinite(y._distance)?y._distance:Infinity;
-      if(dx!==dy)return dx-dy;
-      return Number(x.sort_order||100)-Number(y.sort_order||100);
+    a.forEach(x=>{
+      const lat=Number(x.lat),lng=Number(x.lng);
+      x._distance=(Number.isFinite(lat)&&Number.isFinite(lng))
+        ?HA_Nearby.distanceKm(userPos,{lat,lng})
+        :Infinity;
     });
+    a.sort((x,y)=>(x._distance??Infinity)-(y._distance??Infinity));
   }
 
   box.innerHTML=a.length?a.map(x=>{
-    const distance=userPos&&Number.isFinite(x._distance)?`<div class="muted">🧭 يبعد عنك ${HA_Nearby.distanceText(x._distance)}</div>`:'';
+    const distance=userPos&&Number.isFinite(x._distance)
+      ?`<div class="muted">🧭 يبعد عنك ${HA_Nearby.distanceText(x._distance)}</div>`:'';
     return `<div class="card">
       ${x.image_url?`<img class="img" src="${esc(x.image_url)}">`:''}
-      <div class="row"><h2>${esc(x.name)}</h2>${x.is_verified?'<span class="badge">✅ موثّق</span>':''}</div>
+      <div class="row"><h2>${esc(providerName(x))}</h2>${x.is_verified?'<span class="badge">✅ معتمد</span>':''}</div>
+      <div class="muted">🛠️ ${esc(currentCategory?.name||x.other_profession||'')}</div>
       <div class="muted">📍 ${esc([x.governorate,x.area,x.address].filter(Boolean).join(' - ')||'العنوان غير مضاف')}</div>
       ${distance}
       <div class="muted">${x.is_available?'🟢 متوفر':'🔴 غير متوفر'} ${x.price_from!=null?' • يبدأ من '+Number(x.price_from).toLocaleString('ar-IQ')+' د.ع':''}</div>
-      <p>${esc(x.description||'')}</p>
+      <p>${esc(x.description||x.skills||'')}</p>
       <a class="btn" href="service-provider.html?id=${x.id}">عرض التفاصيل وطلب الخدمة</a>
     </div>`;
-  }).join(''):'<div class="card">لا يوجد مقدمو خدمة مطابقون.</div>';
+  }).join(''):'<div class="card">لا يوجد مقدمو خدمة بهذا القسم حالياً، لكن تقدر ترسل طلب عام للقسم أعلاه.</div>';
 }
-q.oninput=render;gov.onchange=render;avail.onchange=render;
+
+q.oninput=render;
+gov.onchange=render;
+avail.onchange=render;
+
 reqLoc.onclick=async()=>{
-  try{const pos=await HA_Nearby.getCurrent({allowCache:false});reqLat=pos.lat;reqLng=pos.lng;reqStatus.textContent='✅ تم تحديد موقعك.'}
-  catch(e){reqStatus.textContent='تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.'}
+  try{
+    const pos=await HA_Nearby.getCurrent({allowCache:false});
+    reqLat=pos.lat;reqLng=pos.lng;
+    reqStatus.textContent='✅ تم تحديد موقعك.';
+  }catch(e){
+    reqStatus.textContent='تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.';
+  }
 };
+
 reqSend.onclick=async()=>{
-  if(!me){location.href='login.html?next='+encodeURIComponent(location.href);return}
-  const n=reqName.value.trim(),ph=reqPhone.value.replace(/\D/g,''),ad=reqAddress.value.trim(),de=reqDetails.value.trim();
+  if(!me){
+    location.href='login.html?next='+encodeURIComponent(location.href);
+    return;
+  }
+
+  const n=reqName.value.trim();
+  const ph=reqPhone.value.replace(/\D/g,'');
+  const ad=reqAddress.value.trim();
+  const de=reqDetails.value.trim();
+
   if(!n)return alert('اكتب الاسم');
   if(!/^07\d{9}$/.test(ph))return alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
   if(!ad)return alert('اكتب العنوان أو المنطقة');
   if(!de)return alert('اكتب تفاصيل الخدمة');
-  reqSend.disabled=true;reqStatus.textContent='جاري إرسال الطلب...';
-  const {data,error}=await db.from('service_requests').insert({
-    customer_id:me.id,provider_id:null,category_id:id,customer_name:n,phone:ph,address:ad,details:de,
-    preferred_date:reqDate.value||null,preferred_time:reqTime.value.trim()||null,
-    customer_lat:reqLat,customer_lng:reqLng,status:'new'
-  }).select('id').single();
+  if(!currentCategory)return alert('تعذر تحديد نوع الخدمة');
+
+  reqSend.disabled=true;
+  reqStatus.textContent='جاري إرسال الطلب...';
+
+  const payload={
+    customer_id:me.id,
+    provider_id:null,
+    category_id:categoryId,
+    service_type:currentCategory.name,
+    customer_name:n,
+    phone:ph,
+    address:ad,
+    details:de,
+    preferred_date:reqDate.value||null,
+    preferred_time:reqTime.value.trim()||null,
+    customer_lat:reqLat,
+    customer_lng:reqLng,
+    status:'new'
+  };
+
+  const {data,error}=await db.from('service_requests')
+    .insert(payload)
+    .select('id')
+    .single();
+
   reqSend.disabled=false;
-  if(error){reqStatus.textContent='❌ '+error.message;return}
-  reqStatus.textContent='✅ تم إرسال الطلب للقسم المختص. رقم الطلب: '+data.id;
+
+  if(error){
+    reqStatus.textContent='❌ تعذر إرسال الطلب: '+error.message;
+    return;
+  }
+
+  reqStatus.textContent='✅ تم إرسال الطلب لمقدمي خدمة '+currentCategory.name+' بنجاح. رقم الطلب: '+data.id;
   reqDetails.value='';
+  setTimeout(()=>location.href='service-orders.html',900);
 };
-load();</script></body></html>
+
+load();
+</script></body></html>

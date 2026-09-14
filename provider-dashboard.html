@@ -2,45 +2,199 @@
 <div id="otherCatBox" style="display:none">
 <input id="otherCat" placeholder="اكتب اسم المهنة الأخرى">
 </div>
-<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card"><h2>الطلبات الواردة</h2><div id="requests">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card"><h2>الطلبات الواردة</h2><div id="requests">جاري التحميل...</div></div></div></div><script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
 const providerNameEl=document.getElementById('name');
 const providerPhoneEl=document.getElementById('phone');
 const providerGovEl=document.getElementById('gov');
 const providerAddressEl=document.getElementById('address');
-let me=null,p=null,providerLat=null,providerLng=null;function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'service_provider'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية مقدم الخدمة: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كمقدم خدمة بعد. <a href="marketplace-onboarding.html">متابعة الطلب</a>';return}gate.innerHTML='✅ مقدم خدمة معتمد — الإضافة وإدارة الطلبات فعالة من داخل التطبيق';panel.style.display='block';const {data:cats,error:catError}=await db.from('service_categories').select('id,name').eq('is_active',true).order('sort_order');
-if(catError){
-  cat.innerHTML='<option value="">تعذر تحميل الأقسام</option>';
-  console.error(catError);
-}else{
-  cat.innerHTML=(cats||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
-  cat.innerHTML += `
-    <option value="manual_haddad">حداد</option>
-    <option value="manual_najjar">نجار</option>
-    <option value="manual_binaa">بناء</option>
-    <option value="manual_electric">كهربائي</option>
-    <option value="manual_plumber">سباك</option>
-    <option value="manual_paint">صباغ</option>
-    <option value="manual_ac">تبريد وتكييف</option>
-    <option value="manual_clean">تنظيف</option>
-    <option value="other">➕ أخرى / غير ذلك</option>`;
-}
-cat.onchange=()=>{
+const otherCatBox=document.getElementById('otherCatBox');
+const otherCat=document.getElementById('otherCat');
+
+let me=null,p=null,providerLat=null,providerLng=null,categories=[];
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+const statusLabel=s=>({
+  new:'جديد',
+  pending:'جديد',
+  accepted:'مقبول',
+  on_the_way:'بالطريق',
+  in_progress:'قيد التنفيذ',
+  completed:'مكتمل',
+  cancelled:'ملغي'
+}[s]||s||'');
+
+function categoryChanged(){
   otherCatBox.style.display=cat.value==='other'?'block':'none';
-};const {data:x}=await db.from('service_providers').select('*').eq('owner_user_id',me.id).maybeSingle();if(x){p=x;cat.value=x.category_id;providerNameEl.value=x.name;providerPhoneEl.value=x.phone||'';whatsapp.value=x.whatsapp||'';providerGovEl.value=x.governorate||'';providerAddressEl.value=x.address||'';providerLat=x.lat??null;providerLng=x.lng??null;if(providerLat!=null&&providerLng!=null)providerLocStatus.textContent='✅ موقع الخدمة محفوظ';price.value=x.price_from||'';skills.value=x.skills||'';hours.value=x.working_hours||''}loadReq()}async function saveProfile(){
-if(providerLat==null||providerLng==null){
-  try{
-    const pos=await HA_Nearby.getCurrent({allowCache:false});
-    providerLat=pos.lat;providerLng=pos.lng;
-    providerLocStatus.textContent='✅ تم اعتماد موقعك الحالي';
-  }catch(e){
-    return alert('فعّل GPS وحدد موقع الخدمة حتى تظهر للزبائن حسب الأقرب.');
-  }
 }
-if(!cat.value)return alert('اختر قسم المهنة أولاً');
-if(cat.value==='other' && !otherCat.value.trim()) return alert('اكتب اسم المهنة');
-const payload={owner_user_id:me.id,category_id:cat.value==='other'?null:Number(cat.value),name:providerNameEl.value.trim(),phone:providerPhoneEl.value.trim()||null,whatsapp:whatsapp.value.trim()||null,governorate:providerGovEl.value.trim()||null,address:providerAddressEl.value.trim()||null,lat:providerLat,lng:providerLng,price_from:price.value?Number(price.value):null,skills:skills.value.trim()||null,working_hours:hours.value.trim()||null,
-other_profession:cat.value==='other'?otherCat.value.trim():null,
-is_active:true,is_verified:true,is_available:true};if(!payload.name)return alert('اكتب الاسم');let r=p?await db.from('service_providers').update(payload).eq('id',p.id).select().single():await db.from('service_providers').insert(payload).select().single();if(r.error)return alert(r.error.message);p=r.data;alert('تم الحفظ');loadReq()}providerLocateBtn.onclick=async()=>{
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html';return}
+  me=session.user;
+
+  const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'service_provider'});
+  if(permError){
+    gate.innerHTML='تعذر التحقق من صلاحية مقدم الخدمة: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';
+    return;
+  }
+  if(!ok){
+    gate.innerHTML='حسابك غير معتمد كمقدم خدمة بعد. <a href="marketplace-onboarding.html">متابعة الطلب</a>';
+    return;
+  }
+
+  gate.innerHTML='✅ مقدم خدمة معتمد — اختر مهنتك واحفظ الملف حتى تستلم طلبات نفس المهنة.';
+  panel.style.display='block';
+
+  const {data:cats,error:catError}=await db.from('service_categories')
+    .select('id,name')
+    .eq('is_active',true)
+    .order('sort_order');
+
+  if(catError){
+    cat.innerHTML='<option value="">تعذر تحميل المهن</option>';
+    return;
+  }
+
+  categories=cats||[];
+  cat.innerHTML='<option value="">اختر المهنة</option>'
+    +categories.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')
+    +'<option value="other">➕ غير ذلك / مهنة أخرى</option>';
+  cat.onchange=categoryChanged;
+
+  const {data:profiles,error:profileError}=await db.from('service_providers')
+    .select('*')
+    .eq('owner_user_id',me.id)
+    .order('updated_at',{ascending:false})
+    .limit(1);
+
+  if(profileError){
+    gate.innerHTML+=' <div class="muted">تعذر تحميل الملف: '+esc(profileError.message)+'</div>';
+  }
+
+  const x=(profiles||[])[0]||null;
+  if(x){
+    p=x;
+    if(x.category_id){
+      cat.value=String(x.category_id);
+    }else if(x.other_profession){
+      cat.value='other';
+      otherCat.value=x.other_profession;
+    }
+    categoryChanged();
+
+    providerNameEl.value=x.name||x.full_name||'';
+    providerPhoneEl.value=x.phone||'';
+    whatsapp.value=x.whatsapp||'';
+    providerGovEl.value=x.governorate||'';
+    providerAddressEl.value=x.address||'';
+    providerLat=x.lat??null;
+    providerLng=x.lng??null;
+    if(providerLat!=null&&providerLng!=null)providerLocStatus.textContent='✅ موقع الخدمة محفوظ';
+    price.value=x.price_from||'';
+    skills.value=x.skills||'';
+    hours.value=x.working_hours||'';
+  }else{
+    const {data:pr}=await db.from('profiles')
+      .select('full_name,phone,governorate')
+      .eq('id',me.id)
+      .maybeSingle();
+    if(pr){
+      providerNameEl.value=pr.full_name||'';
+      providerPhoneEl.value=pr.phone||'';
+      providerGovEl.value=pr.governorate||'';
+    }
+  }
+
+  await loadReq();
+}
+
+async function saveProfile(){
+  if(!cat.value)return alert('اختر المهنة أولاً');
+  if(!providerNameEl.value.trim())return alert('اكتب الاسم / اسم النشاط');
+
+  let categoryId=null;
+  let otherProfession=null;
+
+  if(cat.value==='other'){
+    otherProfession=otherCat.value.trim();
+    if(!otherProfession)return alert('اكتب اسم المهنة الأخرى');
+
+    const {data:newId,error:categoryError}=await db.rpc('ensure_service_category',{p_name:otherProfession});
+    if(categoryError)return alert('تعذر حفظ المهنة الجديدة: '+categoryError.message);
+    categoryId=Number(newId);
+    if(!Number.isFinite(categoryId))return alert('تعذر إنشاء قسم المهنة');
+  }else{
+    categoryId=Number(cat.value);
+    if(!Number.isFinite(categoryId))return alert('اختر مهنة صحيحة');
+  }
+
+  if(providerLat==null||providerLng==null){
+    try{
+      const pos=await HA_Nearby.getCurrent({allowCache:false});
+      providerLat=pos.lat;providerLng=pos.lng;
+      providerLocStatus.textContent='✅ تم اعتماد موقعك الحالي';
+    }catch(e){
+      return alert('فعّل GPS وحدد موقع الخدمة حتى تظهر للزبائن حسب الأقرب.');
+    }
+  }
+
+  const displayName=providerNameEl.value.trim();
+  const payload={
+    owner_user_id:me.id,
+    category_id:categoryId,
+    name:displayName,
+    full_name:displayName,
+    phone:providerPhoneEl.value.trim()||null,
+    whatsapp:whatsapp.value.trim()||null,
+    governorate:providerGovEl.value.trim()||null,
+    address:providerAddressEl.value.trim()||null,
+    lat:providerLat,
+    lng:providerLng,
+    price_from:price.value?Number(price.value):null,
+    skills:skills.value.trim()||null,
+    description:skills.value.trim()||null,
+    working_hours:hours.value.trim()||null,
+    other_profession:otherProfession,
+    is_active:true,
+    is_verified:true,
+    is_available:true,
+    updated_at:new Date().toISOString()
+  };
+
+  let result;
+  if(p?.id){
+    result=await db.from('service_providers')
+      .update(payload)
+      .eq('id',p.id)
+      .eq('owner_user_id',me.id)
+      .select()
+      .single();
+  }else{
+    result=await db.from('service_providers')
+      .insert(payload)
+      .select()
+      .single();
+  }
+
+  if(result.error)return alert('تعذر حفظ الملف: '+result.error.message);
+
+  p=result.data;
+  cat.value=String(p.category_id);
+  otherCatBox.style.display='none';
+  alert('✅ تم حفظ المهنة والملف بنجاح');
+  await loadReq();
+}
+
+providerLocateBtn.onclick=async()=>{
   providerLocStatus.textContent='جاري تحديد الموقع...';
   try{
     const pos=await HA_Nearby.getCurrent({allowCache:false});
@@ -50,39 +204,100 @@ is_active:true,is_verified:true,is_available:true};if(!payload.name)return alert
     providerLocStatus.textContent='تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.';
   }
 };
+
 async function loadReq(){
-  if(!p){requests.textContent='احفظ ملفك المهني أولاً.';return}
-  const [{data,error},{data:declines}]=await Promise.all([
-    db.from('service_requests').select('*').eq('category_id',p.category_id).order('created_at',{ascending:false}),
-    db.from('service_request_declines').select('request_id').eq('provider_id',p.id)
+  if(!p?.id){
+    requests.textContent='احفظ ملفك المهني أولاً.';
+    return;
+  }
+  if(!p.category_id){
+    requests.textContent='اختر مهنتك واحفظ الملف أولاً.';
+    return;
+  }
+
+  const declinesPromise=db.from('service_request_declines')
+    .select('request_id')
+    .eq('provider_id',p.id);
+
+  const requestsPromise=db.from('service_requests')
+    .select('*')
+    .eq('category_id',p.category_id)
+    .order('created_at',{ascending:false})
+    .limit(100);
+
+  const [{data,error},{data:declines,error:declineError}]=await Promise.all([
+    requestsPromise,declinesPromise
   ]);
-  if(error){requests.textContent=error.message;return}
+
+  if(error){
+    requests.textContent='تعذر تحميل الطلبات: '+error.message;
+    return;
+  }
+
   const skipped=new Set((declines||[]).map(x=>Number(x.request_id)));
-  const requested=Number(new URLSearchParams(location.search).get('request')||0);
+  const rawRequested=new URLSearchParams(location.search).get('request');
+  const requested=(rawRequested&&/^\d+$/.test(rawRequested))?Number(rawRequested):null;
+
   let arr=(data||[]).filter(x=>{
     if(x.provider_id!=null && Number(x.provider_id)!==Number(p.id))return false;
     if(x.provider_id==null && skipped.has(Number(x.id)))return false;
     return true;
   });
-  if(requested)arr.sort((a,b)=>Number(b.id===requested)-Number(a.id===requested));
-  requests.innerHTML=arr.map(x=>{
+
+  if(requested){
+    arr.sort((a,b)=>Number(b.id===requested)-Number(a.id===requested));
+  }
+
+  requests.innerHTML=arr.length?arr.map(x=>{
     const mine=Number(x.provider_id)===Number(p.id);
     const open=(x.status==='new'||x.status==='pending');
-    return `<div class="card" ${Number(x.id)===requested?'style="outline:2px solid #d3a331"':''}><div class="row"><b>طلب #${x.id}</b><span class="badge">${esc(x.status)}</span></div><div>${esc(x.customer_name||'زبون')} — ${esc(x.phone||'')}</div><div class="muted">${esc(x.address||'')}<br>${esc(x.details||'')}</div><div class="row" style="margin-top:8px">${open?`<button onclick="acceptReq(${x.id})">✅ قبول</button><button class="danger" onclick="declineReq(${x.id})">تخطي / رفض</button>`:''}${mine&&x.status==='accepted'?`<button onclick="st(${x.id},'on_the_way')">بالطريق</button>`:''}${mine&&x.status==='on_the_way'?`<button onclick="st(${x.id},'in_progress')">بدأت الخدمة</button>`:''}${mine&&x.status==='in_progress'?`<button class="ok" onclick="st(${x.id},'completed')">إكمال</button>`:''}</div></div>`;
-  }).join('')||'لا توجد طلبات متاحة في قسمك.';
+    const direct=x.provider_id!=null;
+
+    return `<div class="card" ${requested===Number(x.id)?'style="outline:2px solid #d3a331"':''}>
+      <div class="row">
+        <b>طلب #${x.id}</b>
+        <span class="badge">${esc(statusLabel(x.status))}</span>
+      </div>
+      <div><b>${esc(x.customer_name||'زبون')}</b> — ${esc(x.phone||'')}</div>
+      <div class="muted">
+        🛠️ ${esc(x.service_type||'خدمة')}<br>
+        📍 ${esc(x.address||'')}<br>
+        ${x.preferred_date?'📅 '+esc(x.preferred_date)+'<br>':''}
+        ${x.preferred_time?'🕒 '+esc(x.preferred_time)+'<br>':''}
+        ${esc(x.details||'')}
+      </div>
+      <div class="row" style="margin-top:8px">
+        ${open?`<button onclick="acceptReq(${x.id})">✅ قبول الطلب</button><button class="danger" onclick="declineReq(${x.id})">${direct?'❌ رفض':'⏭️ تخطي'}</button>`:''}
+        ${mine&&x.status==='accepted'?`<button onclick="setReqStatus(${x.id},'on_the_way')">🚗 بالطريق</button>`:''}
+        ${mine&&x.status==='on_the_way'?`<button onclick="setReqStatus(${x.id},'in_progress')">🛠️ بدأت الخدمة</button>`:''}
+        ${mine&&x.status==='in_progress'?`<button class="ok" onclick="setReqStatus(${x.id},'completed')">✅ إكمال</button>`:''}
+        ${mine&&x.phone?`<a class="btn light" href="tel:${esc(x.phone)}">📞 اتصال</a>`:''}
+      </div>
+    </div>`;
+  }).join(''):'لا توجد طلبات متاحة في مهنتك حالياً.';
 }
+
 async function acceptReq(id){
-  const {error}=await db.rpc('accept_service_category_request',{p_request_id:id});
+  const {error}=await db.rpc('accept_service_request',{p_request_id:id});
   if(error)return alert(error.message);
-  alert('✅ تم قبول الطلب وربطه بحسابك.');loadReq();
+  alert('✅ تم قبول الطلب وربطه بحسابك.');
+  await loadReq();
 }
+
 async function declineReq(id){
-  const {error}=await db.rpc('decline_service_category_request',{p_request_id:id});
+  const {error}=await db.rpc('decline_service_request',{p_request_id:id});
   if(error)return alert(error.message);
-  loadReq();
+  await loadReq();
 }
-async function st(id,status){
-  const {error}=await db.from('service_requests').update({status,updated_at:new Date().toISOString()}).eq('id',id).eq('provider_id',p.id);
-  if(error)alert(error.message);else loadReq();
+
+async function setReqStatus(id,status){
+  const {error}=await db.rpc('service_provider_update_request_status',{
+    p_request_id:id,
+    p_status:status
+  });
+  if(error)return alert(error.message);
+  await loadReq();
 }
-init();</script></body></html>
+
+init();
+</script></body></html>
