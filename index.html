@@ -420,24 +420,38 @@ body{
 .ha-transport-order-badge.show{display:block}
 
 
-/* ===== HA: إظهار كل الأقسام للإدمن فقط ===== */
-.ha-admin-section{display:none!important}
-html.ha-is-admin .ha-admin-section.card{display:flex!important}
-html.ha-is-admin #shortcuts a.ha-admin-section{display:flex!important}
-
+/* ===== HA SECTION VISIBILITY SAFE FIX ===== */
+#mainGrid a[href="chat.html"],#shortcuts a[href="chat.html"]{display:none!important}
+#mainGrid a[href="news.html"],#shortcuts a[href="news.html"]{display:none!important}
+#mainGrid a[href="religious.html"],#shortcuts a[href="religious.html"]{display:none!important}
+#mainGrid a[href="entertainment.html"],#shortcuts a[href="entertainment.html"]{display:none!important}
+#mainGrid a[href="sports.html"],#shortcuts a[href="sports.html"]{display:none!important}
+#mainGrid a[href="call-us.html"],#shortcuts a[href="call-us.html"]{display:none!important}
+html.ha-show-all-sections #mainGrid a[href="chat.html"]{display:flex!important}
+html.ha-show-all-sections #shortcuts a[href="chat.html"]{display:flex!important}
+html.ha-show-all-sections #mainGrid a[href="news.html"]{display:flex!important}
+html.ha-show-all-sections #shortcuts a[href="news.html"]{display:flex!important}
+html.ha-show-all-sections #mainGrid a[href="religious.html"]{display:flex!important}
+html.ha-show-all-sections #shortcuts a[href="religious.html"]{display:flex!important}
+html.ha-show-all-sections #mainGrid a[href="entertainment.html"]{display:flex!important}
+html.ha-show-all-sections #shortcuts a[href="entertainment.html"]{display:flex!important}
+html.ha-show-all-sections #mainGrid a[href="sports.html"]{display:flex!important}
+html.ha-show-all-sections #shortcuts a[href="sports.html"]{display:flex!important}
+html.ha-show-all-sections #mainGrid a[href="call-us.html"]{display:flex!important}
+html.ha-show-all-sections #shortcuts a[href="call-us.html"]{display:flex!important}
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo">HA</div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
 </div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="ha-logo">HA</div> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <a class="promo-pill" href="shop.html"><span class="arrow">‹</span><strong>تسوق الآن</strong><span class="ico">🛒</span></a>
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
-</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a class="ha-admin-section" href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a class="ha-admin-section" href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a class="ha-admin-section" href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a class="ha-admin-section" href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a class="ha-admin-section" href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a class="ha-admin-section" href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
+</div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <a id="haDriverOrderAlert" class="ha-driver-order-alert" href="driver.html">
   <span class="bell">🔔</span>
   <span class="txt"><b id="haDriverOrderTitle">عندك طلب نقل جديد</b><small id="haDriverOrderText">اضغط حتى تفتح واجهة السائق وتشوف الطلب.</small></span>
   <span id="haDriverOrderCount" class="count">1</span>
-</a> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium ha-admin-section" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
+</a> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
       <span class="chat-live-badge"><i></i> متاح الآن</span>
       <div class="iconbox chat-iconbox">
         <span class="chat-main-icon">💬</span>
@@ -463,7 +477,7 @@ html.ha-is-admin #shortcuts a.ha-admin-section{display:flex!important}
         <span>فتح الدردشة</span>
         <b>←</b>
       </div>
-    </a> <a class="card c-news ha-admin-section" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious ha-admin-section" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain ha-admin-section" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports ha-admin-section" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل"><b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
+    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل"><b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
 </main> <nav class="bottom-nav bottom-nav-five" aria-label="القائمة السفلية">
   <div class="bottom-inner bottom-inner-five">
     <a class="bottom-link active" href="index.html">
@@ -482,7 +496,7 @@ html.ha-is-admin #shortcuts a.ha-admin-section{display:flex!important}
       <span class="bi">👤</span>
       <span>حسابي</span>
     </a>
-    <a class="bottom-link ha-admin-section" href="call-us.html">
+    <a class="bottom-link" href="call-us.html">
       <span class="bi">☎</span>
       <span>اتصل بنا</span>
     </a>
@@ -496,7 +510,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();documen
 window.addEventListener('popstate',()=>{const m=document.getElementById('shortcuts');if(m?.classList.contains('show')){closeMenu();history.pushState({haMenuGuard:true},'',location.href)}}); let haSearchTimer=null;
 function searchCards(){clearTimeout(haSearchTimer);haSearchTimer=setTimeout(()=>{const v=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let n=0;document.querySelectorAll('#mainGrid .card').forEach(c=>{const ok=((c.innerText||'')+' '+(c.dataset.search||'')).toLowerCase().includes(v);c.style.display=ok?'flex':'none';if(ok)n++});const nr=document.getElementById('noResults');if(nr)nr.style.display=n?'none':'block'},80)} function showPageLoading(text='جاري التحميل...'){const x=document.getElementById('haPageLoading'),t=document.getElementById('haPageLoadingText');if(t)t.textContent=text;x?.classList.add('show')}
 function hidePageLoading(){document.getElementById('haPageLoading')?.classList.remove('show')}
-async async function continueLogin(){
+async function continueLogin(){
   showPageLoading('جاري التحقق من تسجيل الدخول...');
 
   // بدون إنترنت: لا نغيّر الواجهة ولا نحوّل المستخدم لصفحة ثانية.
@@ -539,11 +553,6 @@ async async function continueLogin(){
 }
 document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href')||'';if(!href||href==='#'||a.dataset.comingSoon==='1'||href.startsWith('javascript:')||a.target==='_blank')return;if(href.endsWith('.html')||(!href.includes('://')&&!href.startsWith('mailto:')&&!href.startsWith('tel:')))showPageLoading('جاري فتح الصفحة...')},true); (async function(){
   try{
-    /* إذا كان الإدمن سبق وتحقق وهو أوفلاين نخلي الأقسام ظاهرة له فقط. */
-    if(!navigator.onLine && localStorage.getItem('ha_admin_sections_visible')==='1'){
-      document.documentElement.classList.add('ha-is-admin');
-    }
-
     if(!window.supabase)return;
 
     const adb=supabase.createClient(
@@ -557,21 +566,11 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
 
     let isAdmin=false;
 
-    /* الأدمن الرئيسي */
     try{
-      const r0=await adb.rpc('is_super_admin');
-      if(!r0.error && r0.data===true)isAdmin=true;
+      const r=await adb.rpc('is_app_admin');
+      if(!r.error && r.data===true)isAdmin=true;
     }catch(_e){}
 
-    /* باقي الأدمنية */
-    if(!isAdmin){
-      try{
-        const r=await adb.rpc('is_app_admin');
-        if(!r.error && r.data===true)isAdmin=true;
-      }catch(_e){}
-    }
-
-    /* توافق مع النسخ القديمة */
     if(!isAdmin){
       try{
         const r2=await adb.rpc('ha_is_admin');
@@ -580,17 +579,11 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
     }
 
     if(isAdmin){
-      document.documentElement.classList.add('ha-is-admin');
-      localStorage.setItem('ha_admin_sections_visible','1');
-
       const adminLink=document.getElementById('adminPanelLink');
       const requestsLink=document.getElementById('marketplaceRequestsLink');
 
       if(adminLink)adminLink.style.display='flex';
       if(requestsLink)requestsLink.style.display='flex';
-    }else{
-      document.documentElement.classList.remove('ha-is-admin');
-      localStorage.removeItem('ha_admin_sections_visible');
     }
   }catch(e){
     console.warn('admin shortcuts',e);
@@ -688,5 +681,58 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
 <script src="push-config.js"></script>
 <script src="notifications.js"></script>
 <script src="transport-driver-push.js"></script>
+
+<script>
+/* ===== HA SECTION VISIBILITY SAFE FIX ===== */
+(async function(){
+  try{
+    if(!window.supabase) return;
+
+    const haSectionDb = window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {
+        auth:{
+          persistSession:true,
+          autoRefreshToken:true,
+          detectSessionInUrl:true,
+          storageKey:'ha-marketing-auth'
+        }
+      }
+    );
+
+    const {data:{session}} = await haSectionDb.auth.getSession();
+    if(!session || !session.user || session.user.is_anonymous) return;
+
+    let isAdmin = false;
+
+    try{
+      const {data,error} = await haSectionDb.rpc('is_super_admin');
+      if(!error && data === true) isAdmin = true;
+    }catch(_e){}
+
+    if(!isAdmin){
+      try{
+        const {data,error} = await haSectionDb.rpc('is_app_admin');
+        if(!error && data === true) isAdmin = true;
+      }catch(_e){}
+    }
+
+    if(!isAdmin){
+      try{
+        const {data,error} = await haSectionDb.rpc('ha_is_admin');
+        if(!error && data === true) isAdmin = true;
+      }catch(_e){}
+    }
+
+    if(isAdmin){
+      document.documentElement.classList.add('ha-show-all-sections');
+    }
+  }catch(e){
+    console.warn('section visibility check',e);
+  }
+})();
+</script>
+
 </body>
 </html>
