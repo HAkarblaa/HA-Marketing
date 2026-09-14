@@ -2,7 +2,7 @@
 <div id="otherCatBox" style="display:none">
 <input id="otherCat" placeholder="اكتب اسم المهنة الأخرى">
 </div>
-<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card"><h2>الطلبات الواردة</h2><div id="requests">جاري التحميل...</div></div></div></div><script>
+<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card" id="incomingRequestsCard"><h2>📥 طلبات الخدمة الواردة</h2><div id="requests">جاري التحميل...</div></div></div></div><script>
 const db=supabase.createClient(
   'https://ubayrhtshgtgggxprrek.supabase.co',
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
@@ -115,6 +115,12 @@ async function init(){
   }
 
   await loadReq();
+
+  if(new URLSearchParams(location.search).get('view')==='requests'){
+    setTimeout(()=>{
+      document.getElementById('incomingRequestsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },250);
+  }
 }
 
 async function saveProfile(){
