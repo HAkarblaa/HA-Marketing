@@ -1,20 +1,445 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>طلب خدمة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
-:root{--bg:#03070b;--panel:#07111b;--gold:#f4c45f;--text:#fff;--muted:#aeb8c4}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#12212d 0,#05090d 35%,#020405 75%);color:#fff}a{text-decoration:none;color:inherit}.page{width:min(100%,980px);margin:auto;padding:0 14px 105px}.hero{position:relative;overflow:hidden;min-height:400px;padding:20px 16px 25px;border-radius:0 0 34px 34px;background:radial-gradient(circle at 85% 35%,rgba(244,196,95,.18),transparent 24%),radial-gradient(circle at 10% 35%,rgba(61,140,184,.12),transparent 24%),linear-gradient(180deg,#0a151f,#05090e);border-bottom:1px solid #96651f;box-shadow:0 22px 55px #0008}.topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between}.round{width:48px;height:48px;border-radius:50%;border:1px solid #a77a34;background:#080d12;display:grid;place-items:center;color:#f7d36d;font-size:25px}.brand{text-align:center}.logo{font-size:50px;font-weight:900;letter-spacing:-5px;background:linear-gradient(#ffe9a4,#c48625);-webkit-background-clip:text;color:transparent;line-height:.9}.brand strong{display:block;font-size:28px}.brand small{display:block;color:#d2d8df;font-size:13px;margin-top:8px}.hero-content{text-align:center;position:relative;z-index:2;padding-top:28px}.decor{font-size:50px;display:flex;gap:28px;justify-content:center;margin-bottom:10px}.hero h1{font-size:52px;margin:0;background:linear-gradient(90deg,#fff6d8,#d69a34,#fff);-webkit-background-clip:text;color:transparent}.hero p{font-size:20px;color:#d7dde5}.cta{max-width:720px;margin:24px auto 0;min-height:70px;border:1px solid #f0bd58;border-radius:36px;background:linear-gradient(#0a0f14,#05080b);display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#f3cf76;font-size:20px;font-weight:800;box-shadow:0 0 28px rgba(244,196,95,.14)}.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.qcard,.card{position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(145deg,#101e2c,#050b11);border:1px solid #31465a;box-shadow:0 12px 30px #0007;text-align:center;padding:18px 13px}.qcard{min-height:178px}.qicon{width:84px;height:84px;margin:0 auto 11px;border-radius:22px;display:grid;place-items:center;font-size:45px;background:#09131d;border:1px solid var(--accent,#d9a63d);box-shadow:0 0 24px color-mix(in srgb,var(--accent,#d9a63d) 18%,transparent)}.qcard:after,.card:after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent,#d9a63d),transparent)}.qcard h3{font-size:23px;margin:3px 0 7px}.qcard p,.muted{color:#aeb8c4;line-height:1.6;margin:0}.blue{--accent:#34a7ec}.green{--accent:#46cf74}.red{--accent:#ec5a63}.purple{--accent:#a85ee8}.gold{--accent:#efbf58}.orange{--accent:#ef9d4e}.section-title{display:flex;align-items:center;gap:10px;margin:32px 4px 14px;font-size:25px}.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#28465e,transparent)}.provider-links{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px 0}.provider-links a{padding:10px 14px;border-radius:14px;border:1px solid #77571f;background:#0a1118;color:#f2ce74}.search{display:grid;grid-template-columns:2fr 1fr;gap:9px;background:#08111a;border:1px solid #22374b;padding:11px;border-radius:18px;margin:12px 0 16px}.search input,.search select{width:100%;padding:13px;border-radius:12px;border:1px solid #31465a;background:#04090e;color:#fff;outline:none}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.card{min-height:150px;color:#fff}.card .icon{font-size:38px}.card h2{font-size:18px;margin:9px 0 5px}.card .img{width:100%;height:100px;object-fit:cover;border-radius:15px;border:1px solid #2c3d4c}.bottom{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,980px);height:86px;background:linear-gradient(#080e14f5,#030608);border-top:1px solid #b47a23;display:grid;grid-template-columns:1fr 1.25fr 1fr}.bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#9da9b5}.bottom span{font-size:25px}.bottom .active{color:#f5ce6a;border-left:1px solid #7b551d;border-right:1px solid #7b551d;border-radius:30px 30px 0 0;background:radial-gradient(circle at 50% 100%,rgba(244,196,95,.18),transparent 55%)}@media(max-width:560px){.page{padding:0 8px 95px}.hero{min-height:350px;padding:16px 10px 20px}.round{width:42px;height:42px}.logo{font-size:43px}.brand strong{font-size:23px}.brand small{font-size:11px}.hero h1{font-size:41px}.hero p{font-size:16px}.decor{font-size:40px}.cta{font-size:16px;min-height:60px;padding:0 17px}.qcard{min-height:150px;padding:12px 8px}.qicon{width:70px;height:70px;font-size:38px}.qcard h3{font-size:18px}.qcard p{font-size:12px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.card{min-height:115px;padding:10px 6px;border-radius:17px}.card h2{font-size:13px}.card .muted{font-size:9px}.card .icon{font-size:29px}.card .img{height:65px}.search{grid-template-columns:1fr}.bottom{height:78px}}
-</style><link rel="stylesheet" href="ha-premium-theme.css"></head><body><div class="page"><section class="hero"><div class="topbar"><a class="round" href="index.html">‹</a><div class="brand"><div class="logo">HA</div><strong><span style="color:#d69b34">HA</span> Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div><a class="round" href="#categories">⌕</a></div><div class="hero-content"><div class="decor"><span>🧰</span><span>🛠️</span><span>⛑️</span></div><h1>طلب خدمة</h1><p>اطلب الخدمات التي تحتاجها بسرعة</p><a class="cta" href="#categories"><span>⛑️</span><b>اختر خدمتك ودعنا نهتم بالباقي</b><span>‹</span></a></div></section>
-<section class="quick"><a class="qcard blue" href="#categories"><div class="qicon">▦</div><h3>اختيار الخدمة</h3><p>استعرض الخدمات المتاحة</p></a><a class="qcard blue" href="#categories"><div class="qicon">📨</div><h3>إرسال الطلب</h3><p>أرسل تفاصيل الخدمة بسهولة</p></a><a class="qcard green" href="service-orders.html"><div class="qicon">📊</div><h3>حالة الطلب</h3><p>تابع تقدم طلبك لحظة بلحظة</p></a><a class="qcard red" href="track-service.html"><div class="qicon">🗺️</div><h3>الخريطة والتتبع</h3><p>اعرف الموقع وخط السير</p></a><a class="qcard purple" href="service-orders.html"><div class="qicon">📋</div><h3>قوائم الخدمات</h3><p>رتب وراجع الخدمات المطلوبة</p></a><a class="qcard gold" href="index.html"><div class="qicon">🎧</div><h3>الدعم والمساعدة</h3><p>تواصل للحصول على المساعدة</p></a></section>
-<section id="providerQuick" class="quick" style="display:none">
-  <a class="qcard orange" href="provider-dashboard.html">
-    <div class="qicon">🧰</div>
-    <h3>إدارة ملف مقدم الخدمة</h3>
-    <p>تعديل البيانات والمهنة</p>
-  </a>
-  <a class="qcard blue" href="provider-dashboard.html?view=requests">
-    <div class="qicon">📥</div>
-    <h3>طلبات الخدمة الواردة</h3>
-    <p>عرض وقبول الطلبات الجديدة</p>
-  </a>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>طلب خدمة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#030504;
+  --panel:#0a0d0c;
+  --panel2:#101411;
+  --gold:#f2c25f;
+  --gold2:#c78a27;
+  --line:#7f5a23;
+  --text:#fff;
+  --muted:#a9afb3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 15% 0,rgba(220,162,48,.09),transparent 24%),
+    radial-gradient(circle at 92% 8%,rgba(220,162,48,.08),transparent 22%),
+    #020403;
+}
+a{text-decoration:none;color:inherit}
+.page{width:min(100%,980px);margin:auto;padding:0 16px 110px;overflow:hidden}
+
+/* رأس الصفحة مثل التصميم المختار */
+.hero{
+  position:relative;
+  padding:26px 12px 18px;
+  text-align:center;
+}
+.hero:before,.hero:after{
+  content:"";
+  position:absolute;
+  width:260px;height:260px;border:1px solid rgba(224,169,58,.22);
+  border-radius:50%;
+  top:-155px;
+}
+.hero:before{right:-105px}
+.hero:after{left:-120px}
+.topbar{
+  display:grid;
+  grid-template-columns:54px 1fr 54px;
+  align-items:start;
+  gap:10px;
+  position:relative;
+  z-index:2;
+}
+.round{
+  width:52px;height:52px;border-radius:50%;
+  border:1px solid #856226;
+  background:#090b0a;
+  display:grid;place-items:center;
+  color:#f1c35f;
+  font-size:26px;
+  box-shadow:0 0 20px rgba(213,161,50,.08);
+}
+.brand{text-align:center}
+.logo{
+  font-size:64px;
+  font-weight:900;
+  letter-spacing:-7px;
+  line-height:.78;
+  background:linear-gradient(180deg,#ffe69b 0,#e5ad43 48%,#9f651b 100%);
+  -webkit-background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 6px #000);
+}
+.brand strong{
+  display:block;
+  font-size:19px;
+  letter-spacing:6px;
+  color:#e7d0a0;
+  margin-top:9px;
+}
+.brand small{
+  display:block;
+  color:#d2d5d5;
+  font-size:15px;
+  margin-top:7px;
+}
+.hero-content{position:relative;z-index:2;padding-top:34px}
+.decor,.cta{display:none}
+.hero h1{
+  margin:0;
+  font-size:54px;
+  font-weight:900;
+  background:linear-gradient(180deg,#fff2c1,#e5b249);
+  -webkit-background-clip:text;color:transparent;
+  text-shadow:0 8px 28px rgba(206,148,37,.12);
+}
+.hero p{font-size:22px;color:#c5c9cc;margin:12px 0 0}
+.hero-content:after{
+  content:"";
+  display:block;
+  width:58px;height:4px;border-radius:10px;
+  background:linear-gradient(90deg,#9d681e,#ffe78a,#9d681e);
+  margin:21px auto 0;
+}
+
+/* الأقسام الكبيرة */
+.section-shell{
+  border:1px solid #8a6021;
+  border-radius:28px;
+  padding:18px;
+  margin-top:12px;
+  background:
+    linear-gradient(145deg,rgba(17,20,18,.93),rgba(5,7,6,.96));
+  box-shadow:inset 0 0 32px rgba(255,194,74,.025),0 14px 36px #0008;
+}
+.shell-head{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:15px;
+}
+.shell-head .badgeIcon{
+  width:48px;height:48px;border-radius:50%;
+  display:grid;place-items:center;
+  border:1px solid #8e6528;
+  color:#f1c45d;
+  font-size:23px;
+  background:#0c0e0c;
+}
+.shell-head h2{
+  margin:0;
+  color:#f3cf76;
+  font-size:28px;
+  white-space:nowrap;
+}
+.shell-head .line{
+  height:1px;
+  flex:1;
+  background:linear-gradient(90deg,transparent,#b47a27);
+}
+.shell-head p{
+  margin:0;
+  color:#bfc3c5;
+  font-size:16px;
+  white-space:nowrap;
+}
+
+/* بطاقات خدمات العملاء */
+.quick{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin:0;
+}
+.qcard{
+  min-height:240px;
+  position:relative;
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 85% 95%,rgba(226,163,44,.12),transparent 38%),
+    linear-gradient(145deg,#151918,#070908);
+  border:1px solid #384039;
+  box-shadow:inset 0 0 25px rgba(255,255,255,.018),0 12px 26px #0008;
+  text-align:center;
+  padding:20px 12px 28px;
+  transition:.18s ease;
+}
+.qcard:hover{transform:translateY(-2px);border-color:#9b7029}
+.qicon{
+  width:92px;height:92px;
+  margin:0 auto 15px;
+  border-radius:25px;
+  display:grid;place-items:center;
+  font-size:48px;
+  background:#08100e;
+  border:1px solid var(--accent,#d9a63d);
+  box-shadow:0 0 18px color-mix(in srgb,var(--accent,#d9a63d) 18%,transparent);
+}
+.qcard h3{font-size:24px;margin:4px 0 8px}
+.qcard p{color:#aeb4b7;line-height:1.6;margin:0;font-size:15px}
+.qcard:after{
+  content:"›";
+  position:absolute;
+  bottom:13px;left:50%;transform:translateX(-50%);
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid #8a6226;
+  display:grid;place-items:center;
+  color:#f0c45d;font-size:25px;line-height:1;
+}
+.blue{--accent:#2098ef}.green{--accent:#27d06f}.red{--accent:#ef5666}.purple{--accent:#a65bf1}.gold{--accent:#e8b94c}.orange{--accent:#ee9d43}
+
+/* مقدم الخدمة */
+.provider-shell{margin-top:24px}
+.provider-links{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:0;
+}
+.provider-links a{
+  min-height:162px;
+  padding:20px 10px 16px;
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 80% 100%,rgba(225,165,47,.11),transparent 45%),
+    linear-gradient(145deg,#151816,#080a09);
+  border:1px solid #52584f;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:800;
+  font-size:17px;
+  line-height:1.45;
+  box-shadow:0 10px 24px #0006;
+}
+.provider-links a:nth-child(1):before{content:"🛠️"}
+.provider-links a:nth-child(2):before{content:"➕"}
+.provider-links a:nth-child(3):before{content:"💼"}
+.provider-links a:nth-child(4):before{content:"📋"}
+.provider-links a:before{
+  width:58px;height:58px;border-radius:18px;
+  display:grid;place-items:center;
+  border:1px solid #9a702e;
+  background:#0b0e0c;
+  font-size:29px;
+  margin-bottom:12px;
+}
+
+/* الأزرار الخاصة بمقدم الخدمة المعتمد تبقى بنفس المنطق السابق */
+#providerQuick{
+  margin-top:12px !important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+#providerQuick .qcard{min-height:170px}
+#providerQuick .qicon{width:70px;height:70px;font-size:35px}
+
+/* قائمة الأقسام - نفس الوظيفة القديمة وتبقى تحت التصميم */
+.categories-shell{margin-top:24px}
+.section-title{
+  display:flex;align-items:center;gap:12px;
+  margin:0 0 14px;font-size:27px;color:#f0c86d;
+}
+.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#936520,transparent)}
+.search{
+  display:grid;grid-template-columns:2fr 1fr;gap:9px;
+  background:#090d0b;border:1px solid #57431f;
+  padding:11px;border-radius:18px;margin:12px 0 16px;
+}
+.search input,.search select{
+  width:100%;padding:13px;border-radius:12px;
+  border:1px solid #3b413b;background:#050706;color:#fff;outline:none;
+}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.card{
+  min-height:150px;
+  color:#fff;
+  position:relative;overflow:hidden;border-radius:22px;
+  background:linear-gradient(145deg,#141816,#070908);
+  border:1px solid #444b44;
+  box-shadow:0 10px 24px #0006;
+  text-align:center;padding:15px 9px;
+}
+.card .icon{font-size:38px}
+.card h2{font-size:18px;margin:9px 0 5px}
+.card .muted,.muted{color:#aeb4b7;line-height:1.6}
+.card .img{width:100%;height:100px;object-fit:cover;border-radius:15px;border:1px solid #494f49}
+
+/* الشريط السفلي */
+.bottom{
+  position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:0;
+  width:min(100%,980px);height:92px;
+  background:linear-gradient(180deg,#0a0d0cfa,#030504);
+  border:1px solid #7f5b24;border-bottom:0;
+  border-radius:34px 34px 0 0;
+  display:grid;grid-template-columns:1fr 1.2fr 1fr;
+  overflow:hidden;
+  box-shadow:0 -8px 30px #000a;
+}
+.bottom a{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;color:#f4f4f4;font-size:16px;
+}
+.bottom span{font-size:28px}
+.bottom .active{
+  color:#f1c45d;
+  border-left:1px solid #8b6124;border-right:1px solid #8b6124;
+  border-radius:34px 34px 0 0;
+  background:radial-gradient(circle at 50% 75%,rgba(244,190,76,.18),transparent 65%);
+}
+
+@media(max-width:720px){
+  .page{padding:0 10px 100px}
+  .hero{padding-top:20px}
+  .topbar{grid-template-columns:46px 1fr 46px}
+  .round{width:45px;height:45px;font-size:22px}
+  .logo{font-size:54px}
+  .brand strong{font-size:15px;letter-spacing:4px}
+  .brand small{font-size:12px}
+  .hero-content{padding-top:30px}
+  .hero h1{font-size:45px}
+  .hero p{font-size:18px}
+  .section-shell{padding:12px;border-radius:24px}
+  .shell-head{gap:8px}
+  .shell-head .badgeIcon{width:40px;height:40px}
+  .shell-head h2{font-size:22px}
+  .shell-head p{font-size:12px}
+  .quick{gap:8px}
+  .qcard{min-height:190px;padding:14px 7px 28px;border-radius:20px}
+  .qicon{width:70px;height:70px;font-size:37px;border-radius:20px}
+  .qcard h3{font-size:18px}
+  .qcard p{font-size:12px}
+  .provider-links{gap:7px}
+  .provider-links a{min-height:135px;padding:12px 5px;font-size:13px;border-radius:19px}
+  .provider-links a:before{width:48px;height:48px;font-size:23px}
+  .grid{gap:7px}
+  .card{min-height:120px;padding:10px 6px;border-radius:17px}
+  .card h2{font-size:13px}
+  .card .muted{font-size:10px}
+  .card .icon{font-size:29px}
+  .card .img{height:65px}
+  .bottom{height:82px}
+}
+@media(max-width:470px){
+  .quick{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .qcard{min-height:178px}
+  .qicon{width:62px;height:62px;font-size:32px}
+  .qcard h3{font-size:16px}
+  .qcard p{font-size:11px}
+  .provider-links{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .provider-links a{font-size:11px;min-height:128px}
+  .provider-links a:before{width:43px;height:43px;font-size:21px}
+  #providerQuick{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+<link rel="stylesheet" href="ha-premium-theme.css"></head><body>
+<div class="page">
+
+<section class="hero">
+  <div class="topbar">
+    <a class="round" href="index.html">🔔</a>
+    <div class="brand">
+      <div class="logo">HA</div>
+      <strong>HA MARKETING</strong>
+      <small>كل الخدمات في مكان واحد</small>
+    </div>
+    <a class="round" href="index.html">☰</a>
+  </div>
+
+  <div class="hero-content">
+    <div class="decor"><span>🧰</span><span>🛠️</span><span>⛑️</span></div>
+    <h1>طلب الخدمة</h1>
+    <p>اختر الخدمة التي تحتاجها وابدأ الآن</p>
+    <a class="cta" href="#categories"><span>⛑️</span><b>اختر خدمتك ودعنا نهتم بالباقي</b><span>‹</span></a>
+  </div>
 </section>
-<div class="section-title"><b>مقدم الخدمة</b></div><div class="provider-links"><a href="marketplace-onboarding.html">🛠️ اطلب صلاحية مقدم خدمة</a><a href="provider-dashboard.html">➕ إضافة وإدارة خدمتي</a><a href="work-center.html">🧰 مركز العمل</a><a href="service-orders.html">📋 طلباتي</a></div><div id="categories" class="section-title"><b>اختر نوع الخدمة</b></div><div class="search"><input id="q" placeholder="🔎 ابحث عن حداد، حلاق، كهربائي..."><select id="sort"><option value="order">الترتيب</option><option value="name">حسب الاسم</option></select></div><div id="box" class="grid"><div class="card">جاري التحميل...</div></div></div><nav class="bottom"><a href="index.html"><span>⌂</span>الرئيسية</a><a class="active" href="index.html"><span>▦</span>الأقسام</a><a href="tel:"><span>☎</span>اتصل بنا</a></nav><script>
+
+<section class="section-shell">
+  <div class="shell-head">
+    <div class="badgeIcon">👤</div>
+    <h2>خدمات العملاء</h2>
+    <div class="line"></div>
+    <p>كل ما تحتاجه في مكان واحد</p>
+  </div>
+
+  <section class="quick">
+    <a class="qcard red" href="track-service.html">
+      <div class="qicon">🗺️</div>
+      <h3>الخريطة والتتبع</h3>
+      <p>اعرف الموقع وخط السير</p>
+    </a>
+    <a class="qcard blue" href="#categories">
+      <div class="qicon">▦</div>
+      <h3>اختيار الخدمة</h3>
+      <p>استعرض الخدمات المتاحة</p>
+    </a>
+    <a class="qcard blue" href="#categories">
+      <div class="qicon">📨</div>
+      <h3>إرسال الطلب</h3>
+      <p>أرسل تفاصيل الخدمة بسهولة</p>
+    </a>
+    <a class="qcard purple" href="service-orders.html">
+      <div class="qicon">📋</div>
+      <h3>قوائم الخدمات</h3>
+      <p>رتب وراجع الخدمات المطلوبة</p>
+    </a>
+    <a class="qcard gold" href="index.html">
+      <div class="qicon">🎧</div>
+      <h3>الدعم والمساعدة</h3>
+      <p>تواصل للحصول على المساعدة</p>
+    </a>
+    <a class="qcard green" href="service-orders.html">
+      <div class="qicon">📊</div>
+      <h3>حالة الطلب</h3>
+      <p>تابع تقدم طلبك لحظة بلحظة</p>
+    </a>
+  </section>
+</section>
+
+<section class="section-shell provider-shell">
+  <div class="shell-head">
+    <div class="badgeIcon">💼</div>
+    <h2>مقدم الخدمة</h2>
+    <div class="line"></div>
+    <p>ابدأ بتقديم خدماتك معنا</p>
+  </div>
+
+  <div class="provider-links">
+    <a href="marketplace-onboarding.html">اطلب صلاحية مقدم خدمة</a>
+    <a href="provider-dashboard.html">إضافة وإدارة خدمتي</a>
+    <a href="work-center.html">مركز العمل</a>
+    <a href="service-orders.html">طلباتي</a>
+  </div>
+
+  <section id="providerQuick" class="quick" style="display:none">
+    <a class="qcard orange" href="provider-dashboard.html">
+      <div class="qicon">🧰</div>
+      <h3>إدارة ملف مقدم الخدمة</h3>
+      <p>تعديل البيانات والمهنة</p>
+    </a>
+    <a class="qcard blue" href="provider-dashboard.html?view=requests">
+      <div class="qicon">📥</div>
+      <h3>طلبات الخدمة الواردة</h3>
+      <p>عرض وقبول الطلبات الجديدة</p>
+    </a>
+  </section>
+</section>
+
+<section class="section-shell categories-shell">
+  <div id="categories" class="section-title"><b>اختر نوع الخدمة</b></div>
+  <div class="search">
+    <input id="q" placeholder="🔎 ابحث عن حداد، حلاق، كهربائي...">
+    <select id="sort"><option value="order">الترتيب</option><option value="name">حسب الاسم</option></select>
+  </div>
+  <div id="box" class="grid"><div class="card">جاري التحميل...</div></div>
+</section>
+
+</div>
+
+<nav class="bottom">
+  <a href="index.html"><span>⌂</span>الرئيسية</a>
+  <a class="active" href="index.html"><span>▦</span>الأقسام</a>
+  <a href="tel:"><span>☎</span>اتصل بنا</a>
+</nav>
+<script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}});let rows=[];const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function load(){const {data,error}=await db.from('service_categories').select('*').eq('is_active',true).order('sort_order');if(error){box.innerHTML='<div class="card">شغّل ملف SERVICE-MARKETPLACE-UPDATE.sql أولاً.<br>'+esc(error.message)+'</div>';return}rows=data||[];render()}function render(){let a=rows.filter(x=>!q.value.trim()||(x.name+' '+(x.description||'')).includes(q.value.trim()));if(sort.value==='name')a.sort((x,y)=>x.name.localeCompare(y.name,'ar'));box.innerHTML=a.length?a.map((x,i)=>`<a class="card ${['gold','blue','green','red','purple','orange'][i%6]}" href="service-category.html?id=${x.id}">${x.image_url?`<img class="img" src="${esc(x.image_url)}" alt="">`:`<div class="icon">${esc(x.icon||'🛠️')}</div>`}<h2>${esc(x.name)}</h2><div class="muted">${esc(x.description||'')}</div></a>`).join(''):'<div class="card">لا توجد نتائج.</div>'}q.oninput=render;sort.onchange=render;
 
 async function showProviderQuick(){
