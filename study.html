@@ -1,310 +1,248 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دراسة - HA Marketing</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الدراسة - HA Marketing</title>
 <style>
 *{box-sizing:border-box}
 :root{
-  --bg:#050607;
-  --bg2:#0a0d10;
-  --card:#0d1216;
-  --card2:#101820;
-  --gold:#f3c35c;
-  --gold2:#b77a16;
-  --text:#fff7e8;
-  --muted:#b9b5ad;
-  --line:rgba(243,195,92,.32);
-  --glow:0 0 28px rgba(232,170,54,.16);
+  --bg:#070a0d;
+  --card:#0f151a;
+  --card2:#080c0f;
+  --gold:#efc768;
+  --text:#f7f9fb;
+  --muted:#aeb7bf;
+  --line:#34414c;
 }
-html{background:#050607}
+html,body{margin:0;min-height:100%;font-family:Tahoma,Arial,sans-serif}
 body{
-  margin:0;
-  font-family:"Tahoma","Arial",sans-serif;
   background:
-    radial-gradient(circle at 50% -15%,rgba(225,156,34,.18),transparent 34%),
-    radial-gradient(circle at 5% 42%,rgba(29,102,124,.11),transparent 30%),
-    linear-gradient(180deg,#050607 0%,#080a0d 46%,#030405 100%);
+    radial-gradient(circle at 50% -10%,rgba(239,199,104,.14),transparent 32%),
+    linear-gradient(180deg,#070a0d,#030506);
   color:var(--text);
-  min-height:100vh;
-  padding-bottom:92px;
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background:linear-gradient(90deg,transparent 0 49.7%,rgba(255,193,67,.018) 50%,transparent 50.3%);
+  padding-bottom:78px;
 }
 .topbar{
-  min-height:72px;
-  display:grid;
-  grid-template-columns:52px 1fr 52px;
-  align-items:center;
-  gap:10px;
-  padding:10px 16px;
+  height:58px;
   position:sticky;top:0;z-index:30;
-  background:rgba(4,6,8,.92);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(243,195,92,.28);
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  display:grid;
+  grid-template-columns:44px 1fr 44px;
+  align-items:center;
+  gap:8px;
+  padding:7px 10px;
+  background:rgba(5,8,10,.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(239,199,104,.24);
 }
-.back,.home{
-  width:46px;height:46px;border:1px solid rgba(243,195,92,.42);border-radius:14px;
-  background:linear-gradient(145deg,#12171c,#07090b);color:var(--gold);
-  display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;
-  text-decoration:none;box-shadow:inset 0 0 16px rgba(243,195,92,.04),0 6px 18px rgba(0,0,0,.25);
+.topbtn{
+  width:40px;height:40px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  border:1px solid rgba(239,199,104,.30);
+  background:#10161b;
+  color:#f2ca6c;
+  text-decoration:none;
+  font-size:19px;
 }
-.back:active,.home:active{transform:scale(.96)}
-.title{text-align:center;font-weight:800;font-size:20px;color:#fff;letter-spacing:.2px}
-.title small{display:block;color:var(--gold);font-size:11px;font-weight:600;margin-top:3px}
+.top-title{text-align:center}
+.top-title b{display:block;font-size:17px}
+.top-title small{display:block;margin-top:2px;font-size:9px;color:#aeb7bf}
+
 .hero{
-  width:min(980px,94%);margin:24px auto 12px;padding:28px 20px 24px;text-align:center;
-  border-radius:26px;position:relative;overflow:hidden;
-  background:
-    linear-gradient(135deg,rgba(12,17,22,.97),rgba(4,6,8,.97)),
-    radial-gradient(circle at 50% 0,rgba(243,195,92,.18),transparent 50%);
-  border:1px solid rgba(243,195,92,.36);
-  box-shadow:0 18px 55px rgba(0,0,0,.38),inset 0 0 40px rgba(243,195,92,.035),var(--glow);
+  width:min(900px,94%);
+  margin:14px auto 10px;
+  padding:16px 14px;
+  border-radius:18px;
+  text-align:center;
+  background:linear-gradient(145deg,#12191e,#090d10);
+  border:1px solid rgba(239,199,104,.28);
 }
-.hero:before{content:"";position:absolute;left:8%;right:8%;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 18px var(--gold)}
-.brandmark{
-  width:76px;height:76px;margin:0 auto 10px;border-radius:24px;display:flex;align-items:center;justify-content:center;
-  font-size:28px;font-weight:900;font-style:italic;color:#111;
-  background:linear-gradient(135deg,#fff1b0 0%,#f3c35c 38%,#a9630a 100%);
-  box-shadow:0 0 30px rgba(243,195,92,.25),inset 0 1px 0 rgba(255,255,255,.65);
-  transform:skew(-6deg);
-}
-.hero .icon{display:none}
-.hero h1{margin:6px 0 7px;font-size:31px;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.hero p{margin:0;color:#c8c3ba;line-height:1.8;font-size:14px}
-.goldline{width:62px;height:3px;border-radius:9px;background:linear-gradient(90deg,#8b5310,#ffd87a,#9c5b0d);margin:15px auto 0;box-shadow:0 0 12px rgba(243,195,92,.35)}
+.hero .ico{font-size:36px}
+.hero h1{margin:5px 0 4px;font-size:24px;color:#f2cb70}
+.hero p{margin:0;font-size:11px;color:#aeb7bf}
+
 .grid{
-  width:min(980px,94%);margin:18px auto 34px;display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+  width:min(900px,94%);
+  margin:10px auto 22px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
 }
 .card{
-  min-height:174px;position:relative;overflow:hidden;
-  background:linear-gradient(145deg,rgba(16,23,29,.98),rgba(7,10,13,.98));
-  border:1px solid rgba(189,200,211,.18);border-radius:22px;padding:18px 12px 16px;
-  cursor:pointer;text-align:center;color:#fff;text-decoration:none!important;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.30),inset 0 0 25px rgba(255,255,255,.018);
-  transition:.2s ease;
+  aspect-ratio:1/1;
+  min-height:128px;
+  padding:10px 7px;
+  border-radius:18px;
+  border:1px solid rgba(101,126,147,.26);
+  background:
+    radial-gradient(circle at 50% 0,rgba(239,199,104,.06),transparent 40%),
+    linear-gradient(145deg,#11181d,#080c0f);
+  color:#fff;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 8px 22px rgba(0,0,0,.25);
 }
-.card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 5%,rgba(243,195,92,.08),transparent 38%);pointer-events:none}
-.card:after{content:"";position:absolute;bottom:0;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(243,195,92,.55),transparent)}
-.card:hover{transform:translateY(-3px);border-color:rgba(243,195,92,.44);box-shadow:0 16px 38px rgba(0,0,0,.38),0 0 25px rgba(243,195,92,.08)}
-.card:active{transform:scale(.985)}
-.card .icon{
-  width:70px;height:70px;margin:0 auto 12px;border-radius:20px;display:flex;align-items:center;justify-content:center;
-  font-size:35px;background:linear-gradient(145deg,#14202a,#070b0f);
-  border:1px solid rgba(243,195,92,.30);box-shadow:inset 0 0 20px rgba(243,195,92,.05),0 7px 18px rgba(0,0,0,.28);
+.card:active{transform:scale(.98)}
+.icon{
+  width:48px;height:48px;
+  border-radius:14px;
+  display:grid;place-items:center;
+  font-size:25px;
+  background:#0b1115;
+  border:1px solid rgba(239,199,104,.28);
 }
-.card h2{margin:0 0 8px;font-size:20px;color:#fff;line-height:1.35}
-.card h2:after{content:"";display:block;width:28px;height:2px;background:var(--gold);border-radius:2px;margin:8px auto 0;box-shadow:0 0 8px rgba(243,195,92,.32)}
-.card p{margin:0;color:#bdb9b1;line-height:1.55;font-size:13px}
-.study-banner{
-  width:min(980px,94%);margin:0 auto 32px;padding:18px 20px;border-radius:22px;display:flex;align-items:center;gap:15px;
-  background:linear-gradient(110deg,#15100a 0%,#0b0d0f 48%,#15100a 100%);border:1px solid rgba(243,195,92,.46);
-  box-shadow:0 14px 36px rgba(0,0,0,.34),inset 0 0 28px rgba(243,195,92,.04);
+.card h2{
+  margin:0;
+  font-size:13px;
+  line-height:1.35;
+  color:#f8fafb;
 }
-.study-banner .bicon{font-size:48px;filter:drop-shadow(0 0 10px rgba(243,195,92,.26))}
-.study-banner h3{margin:0 0 5px;color:#ffe09a;font-size:20px}.study-banner p{margin:0;color:#c9c4ba;font-size:13px;line-height:1.6}
-.panel{display:none;width:min(980px,94%);margin:18px auto 42px}
-.panel.show{display:block}
-.panel-head{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  background:linear-gradient(145deg,#12171c,#090b0e);padding:15px 16px;border-radius:18px;
-  border:1px solid rgba(243,195,92,.30);box-shadow:0 12px 28px rgba(0,0,0,.26);margin-bottom:14px;
+.card p{
+  margin:0;
+  font-size:8.5px;
+  line-height:1.45;
+  color:#9eabb5;
+  max-width:96%;
 }
-.panel-head h2{margin:0;font-size:21px;color:#ffe19a}.close-panel{width:42px;height:42px;border:1px solid rgba(243,195,92,.30);border-radius:12px;background:#090c0f;color:var(--gold);font-size:23px;cursor:pointer}
-.subgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.subcard{
-  background:linear-gradient(145deg,#10171c,#080b0e);border:1px solid rgba(173,188,198,.17);border-radius:17px;padding:18px 12px;min-height:112px;
-  box-shadow:0 8px 22px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;
-}
-.subcard .subicon{font-size:33px;margin-bottom:8px}.subcard strong{font-size:17px}.note{
-  background:linear-gradient(145deg,#10161b,#080b0e);border:1px solid rgba(243,195,92,.20);border-radius:18px;padding:18px;color:#d5d1c8;line-height:1.8;
-  box-shadow:0 9px 24px rgba(0,0,0,.24);text-align:center;
-}
-.note h3{color:#ffe09a}
-/* Overrides for the student form so existing functionality stays intact */
-#studentAuthMsg{background:#0b1014!important;color:#d7d2c8!important;border:1px solid rgba(243,195,92,.18)!important}
-#studentForm input,#studentForm select,#studentForm textarea{
-  background:#080c0f!important;color:#fff!important;border:1px solid rgba(243,195,92,.22)!important;border-radius:12px!important;outline:none!important;
-}
-#studentForm input::placeholder,#studentForm textarea::placeholder{color:#8f918f}
-#stSaveBtn{background:linear-gradient(135deg,#f5d27a,#bd7817)!important;color:#15110a!important;font-weight:800!important}
-#myStudents>div{border-bottom:1px solid rgba(243,195,92,.14)!important}
-.bottom-nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:40;height:74px;display:grid;grid-template-columns:1fr 1.35fr 1fr;align-items:center;
-  background:rgba(4,6,8,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(243,195,92,.40);box-shadow:0 -12px 35px rgba(0,0,0,.38);
-}
-.nav-item{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#c4c0b7;text-decoration:none;font-size:12px;gap:4px}.nav-item .ni{font-size:24px}.nav-item.active{color:#ffd878}.nav-brand{height:84px;margin-top:-17px;border:1px solid rgba(243,195,92,.50);border-bottom:0;border-radius:42px 42px 0 0;background:linear-gradient(180deg,#11161a,#050708);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f5cf74;font-weight:800;box-shadow:0 -9px 22px rgba(243,195,92,.08)}.nav-brand b{font-size:20px}.nav-brand span{font-size:10px;color:#d8cfbd;margin-top:2px}
-@media(max-width:700px){
-  .grid{gap:10px}.card{min-height:148px;padding:13px 7px;border-radius:18px}.card .icon{width:58px;height:58px;font-size:29px;border-radius:17px;margin-bottom:9px}.card h2{font-size:15px}.card p{font-size:10.5px}.hero{padding:22px 14px}.hero h1{font-size:25px}.brandmark{width:65px;height:65px;font-size:25px}.subgrid{gap:9px}.subcard{min-height:100px;padding:13px 8px}.subcard strong{font-size:14px}.study-banner{padding:14px}.study-banner .bicon{font-size:40px}.study-banner h3{font-size:17px}
-}
-@media(max-width:390px){.grid{gap:8px}.card{min-height:140px}.card h2{font-size:14px}.card p{font-size:9.7px}.card .icon{width:54px;height:54px;font-size:27px}}
+.featured{border-color:rgba(239,199,104,.45)}
+.featured .icon{border-color:rgba(239,199,104,.52);background:#171209}
 
-/* HA Study - ministerial questions */
-.ministerial-card{--glow:224,168,63}
-.courses-card{--glow:78,154,220}
+.bottom{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  height:58px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:rgba(5,8,10,.96);
+  border-top:1px solid rgba(239,199,104,.22);
+}
+.bottom a{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  color:#d8dde1;text-decoration:none;font-size:11px;
+}
+.bottom a.active{color:#f2cb70}
 
+html[data-ha-theme="light"] body{
+  background:linear-gradient(180deg,#f6faff,#edf4fb)!important;
+  color:#102235!important;
+}
+html[data-ha-theme="light"] .topbar,
+html[data-ha-theme="light"] .bottom{
+  background:rgba(255,255,255,.96)!important;
+  border-color:rgba(56,111,165,.16)!important;
+}
+html[data-ha-theme="light"] .topbtn{
+  background:#f1f6fb!important;
+  color:#8f6318!important;
+  border-color:#d9c28f!important;
+}
+html[data-ha-theme="light"] .top-title b{color:#102235!important}
+html[data-ha-theme="light"] .top-title small{color:#68798a!important}
+html[data-ha-theme="light"] .hero{
+  background:linear-gradient(145deg,#fff,#f4f9ff)!important;
+  border-color:rgba(203,151,45,.30)!important;
+}
+html[data-ha-theme="light"] .hero h1{color:#8d6115!important}
+html[data-ha-theme="light"] .hero p{color:#68798a!important}
+html[data-ha-theme="light"] .card{
+  background:linear-gradient(145deg,#fff,#f3f8fd)!important;
+  border-color:rgba(55,117,177,.17)!important;
+  color:#102235!important;
+  box-shadow:0 7px 20px rgba(38,75,112,.09)!important;
+}
+html[data-ha-theme="light"] .card h2{color:#17334d!important}
+html[data-ha-theme="light"] .card p{color:#6c7a88!important}
+html[data-ha-theme="light"] .icon{
+  background:#f4f8fc!important;
+  border-color:#d8c28f!important;
+}
+html[data-ha-theme="light"] .bottom a{color:#4b6174!important}
+html[data-ha-theme="light"] .bottom a.active{color:#8f6318!important}
+
+@media(max-width:560px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .card{min-height:105px;border-radius:15px;padding:7px 4px;gap:5px}
+  .icon{width:40px;height:40px;border-radius:12px;font-size:21px}
+  .card h2{font-size:11px}
+  .card p{font-size:7.2px}
+  .hero{padding:13px 10px}
+  .hero h1{font-size:21px}
+}
+@media(max-width:360px){
+  .grid{gap:5px}
+  .card{min-height:96px}
+  .card h2{font-size:10px}
+  .card p{display:none}
+}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 </head>
 <body>
 
-<div class="topbar">
-  <button class="back" type="button" onclick="goBack()" aria-label="رجوع">→</button>
-  <div class="title">الدراسة<small>HA Marketing</small>
-<a class="card ministerial-card" href="ministerial-questions.html" data-search="الاسئلة الوزارية أسئلة وزارية ابتدائي متوسط اعدادي مهني متميزين">
-  <div class="iconbox">📚</div>
-  <h2>الأسئلة الوزارية</h2>
-  <p>أسئلة الامتحانات الوزارية حسب المرحلة</p>
-</a>
+<header class="topbar">
+  <button class="topbtn" type="button" onclick="history.back()">→</button>
+  <div class="top-title"><b>الدراسة</b><small>HA Marketing</small></div>
+  <a class="topbtn" href="index.html">⌂</a>
+</header>
 
-<a class="card courses-card" href="courses.html" data-search="الدورات اونلاين حضوري كلاهما دورات تعليمية">
-  <div class="iconbox">🎓</div>
-  <h2>الدورات</h2>
-  <p>اختر نوع الدورة</p>
-</a>
+<section class="hero">
+  <div class="ico">📚</div>
+  <h1>الدراسة</h1>
+  <p>كل الأدوات الدراسية بمكان واحد وبشكل مرتب</p>
+</section>
 
-</div>
-  
+<main class="grid">
+  <a class="card featured" href="ministerial-questions.html">
+    <div class="icon">📑</div><h2>الأسئلة الوزارية</h2><p>ابتدائي، متوسط، إعدادي، مهني، متميزين</p>
+  </a>
 
-  
+  <a class="card featured" href="courses.html">
+    <div class="icon">🎓</div><h2>الدورات</h2><p>أونلاين، حضوري، كلاهما</p>
+  </a>
 
-  
-  
+  <a class="card" href="file-tools.html">
+    <div class="icon">📄</div><h2>تحويل وتعديل الملفات</h2><p>أدوات الملفات الدراسية</p>
+  </a>
+
+  <a class="card" href="study-summary.html">
+    <div class="icon">📝</div><h2>تلخيص المواد</h2><p>تلخيص وترتيب المحتوى</p>
+  </a>
+
+  <a class="card" href="study-language.html">
+    <div class="icon">🌐</div><h2>الإنجليزية والترجمة</h2><p>تعلم وترجمة النصوص</p>
+  </a>
+
+  <a class="card" href="math-calculator.html">
+    <div class="icon">🧮</div><h2>الحاسبة والمعادلات</h2><p>حساب وحل المعادلات</p>
+  </a>
+
+  <a class="card" href="study-planner.html">
+    <div class="icon">📅</div><h2>الجدول والتقويم</h2><p>تنظيم الدراسة والمواعيد</p>
+  </a>
+
+  <a class="card" href="education-news.html">
+    <div class="icon">🏫</div><h2>أخبار التربية</h2><p>آخر أخبار وزارة التربية</p>
+  </a>
+
+  <a class="card" href="higher-education-news.html">
+    <div class="icon">🏛️</div><h2>أخبار التعليم العالي</h2><p>آخر أخبار الجامعات والوزارة</p>
+  </a>
+
+  <a class="card" href="student-transport.html">
+    <div class="icon">🚌</div><h2>النقل الطلابي</h2><p>خدمات النقل الخاصة بالطلاب</p>
+  </a>
 </main>
 
-<section class="study-banner" id="studyBanner">
-  <div class="bicon">🎓</div>
-  <div><h3>طوّر مستقبلك معنا</h3><p>أدوات ومحتوى دراسي مرتب في مكان واحد، بتصميم HA Marketing الجديد.</p></div>
-</section>
-
-<section class="panel" id="schools">
-  <div class="panel-head">
-    <h2>🏫 المدارس</h2>
-    <button class="close-panel" type="button" onclick="closePanel()">×</button>
-  </div>
-  <div class="subgrid">
-    
-    
-  <div class="subgrid">
-    
-  <div class="subgrid" style="margin-bottom:14px">
-    <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
-    <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
-    <div class="subcard"><div class="subicon">📘</div><strong>متوسط</strong></div>
-    <div class="subcard"><div class="subicon">📗</div><strong>إعدادي</strong></div>
-    <div class="subcard"><div class="subicon">⭐</div><strong>متميزين</strong></div>
-    <div class="subcard"><div class="subicon">📝</div><strong>خارجي</strong></div>
-    <div class="subcard"><div class="subicon">📜</div><strong>دبلوم</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>بكالوريوس</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>ماجستير</strong></div>
-    <div class="subcard"><div class="subicon">🏅</div><strong>دكتوراه</strong></div>
-  </div>
-
-  <div class="note" style="text-align:right;margin-bottom:14px">
-    <h3 style="margin-top:0">تسجيل طالب</h3>
-    <p style="line-height:1.7">أي صاحب حساب في HA Marketing يقدر يسجل طالب. التسجيل يبقى مرتبط بحسابك ويمكنك تعديله أو حذفه لاحقاً.</p>
-    <div id="studentAuthMsg" style="padding:10px;border-radius:10px;background:#f5f5f5;margin-bottom:10px">جاري التحقق من الحساب...</div>
-    <div id="studentForm" style="display:none;grid-template-columns:1fr;gap:9px;max-width:560px;margin:auto">
-      <input id="stName" placeholder="اسم الطالب" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <select id="stLevel" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-        <option value="روضة">روضة</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="إعدادي">إعدادي</option><option value="متميزين">متميزين</option><option value="خارجي">خارجي</option><option value="دبلوم">دبلوم</option><option value="بكالوريوس">بكالوريوس</option><option value="ماجستير">ماجستير</option><option value="دكتوراه">دكتوراه</option>
-      </select>
-      <input id="stGrade" placeholder="الصف / المرحلة / القسم" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <input id="stInstitution" placeholder="اسم المدرسة / الجامعة / المعهد" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <input id="stGovernorate" placeholder="المحافظة" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <input id="stArea" placeholder="المنطقة" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <input id="stPhone" placeholder="رقم التواصل (اختياري)" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <input id="stBirthYear" type="number" min="1950" max="2030" placeholder="سنة الميلاد (اختياري)" style="padding:11px;border:1px solid #ccc;border-radius:10px">
-      <textarea id="stNotes" placeholder="ملاحظات أو تفاصيل إضافية" style="padding:11px;border:1px solid #ccc;border-radius:10px;min-height:80px"></textarea>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="stSaveBtn" onclick="saveStudent()" style="border:0;border-radius:10px;background:#111;color:#fff;padding:11px 18px">حفظ التسجيل</button><button onclick="resetStudentForm()" style="border:0;border-radius:10px;background:#eee;padding:11px 18px">تفريغ</button></div>
-    </div>
-  </div>
-  <div class="note" style="text-align:right">
-    <h3 style="margin-top:0">تسجيلاتي</h3>
-    <div id="myStudents">سجّل دخولك حتى تظهر تسجيلاتك.</div>
-  </div>
-</section>
-
-<nav class="bottom-nav" aria-label="التنقل">
-  <a class="nav-item active" href="study.html"><span class="ni">📚</span><span>الدراسة</span></a>
-  <a class="nav-brand" href="index.html"><b>HA</b><span>HA Marketing</span></a>
-  <a class="nav-item" href="index.html"><span class="ni">🏠</span><span>الرئيسية</span></a>
+<nav class="bottom">
+  <a class="active" href="study.html">📚 الدراسة</a>
+  <a href="index.html">🏠 الرئيسية</a>
 </nav>
-<script>
-let currentPanel = null;
-
-function openPanel(id){
-  document.getElementById('mainGrid').style.display = 'none';
-  const sb=document.getElementById('studyBanner'); if(sb) sb.style.display='none';
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
-  const panel = document.getElementById(id);
-  panel.classList.add('show');
-  currentPanel = id;
-  window.scrollTo({top:0, behavior:'smooth'});
-  history.pushState({studyPanel:id}, '', location.href);
-}
-
-function closePanel(){
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
-  document.getElementById('mainGrid').style.display = 'grid';
-  const sb=document.getElementById('studyBanner'); if(sb) sb.style.display='flex';
-  currentPanel = null;
-}
-
-
-
-const STUDY_SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
-const STUDY_SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-const studyDb=window.supabase?supabase.createClient(STUDY_SB_URL,STUDY_SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}):null;
-let studyMe=null,studentEditId=null;
-async function initStudentRegistration(){
-  if(!studyDb)return;
-  let session=null;try{({data:{session}}=await studyDb.auth.getSession())}catch(e){}
-  if(!session){studentAuthMsg.innerHTML='حتى تسجل طالب، <a href="login.html?next=study.html">سجّل دخولك</a> أولاً.';return}
-  studyMe=session.user;studentAuthMsg.textContent='✅ مسجل دخول — تقدر تضيف أو تعدل تسجيلات الطلاب المرتبطة بحسابك.';studentForm.style.display='grid';loadMyStudents();
-}
-function studentEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-async function loadMyStudents(){
-  if(!studyMe)return;myStudents.textContent='جاري التحميل...';
-  const {data,error}=await studyDb.from('study_students').select('*').eq('owner_user_id',studyMe.id).order('created_at',{ascending:false});
-  if(error){myStudents.textContent='تعذر تحميل التسجيلات: '+error.message;return}
-  myStudents.innerHTML=(data||[]).map(x=>`<div style="padding:11px 0;border-bottom:1px solid #eee"><b>${studentEsc(x.student_name)}</b><div style="color:#666;margin:5px 0">${studentEsc(x.education_level)}${x.grade?' • '+studentEsc(x.grade):''}${x.institution_name?' • '+studentEsc(x.institution_name):''}</div><button onclick='editStudent(${JSON.stringify(x)})' style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px">تعديل</button><button onclick="parentCode(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;margin-left:5px;background:#e8f0ff">رمز ولي الأمر</button><button onclick="deleteStudent(${x.id})" style="border:0;border-radius:8px;padding:7px 11px;background:#b91c1c;color:#fff">حذف</button></div>`).join('')||'ما عندك تسجيلات طلاب بعد.';
-}
-async function saveStudent(){
-  if(!studyMe)return location.href='login.html?next=study.html';
-  if(!stName.value.trim())return alert('اكتب اسم الطالب');
-  const payload={owner_user_id:studyMe.id,student_name:stName.value.trim(),education_level:stLevel.value,grade:stGrade.value.trim()||null,institution_name:stInstitution.value.trim()||null,governorate:stGovernorate.value.trim()||null,area:stArea.value.trim()||null,phone:stPhone.value.trim()||null,birth_year:stBirthYear.value?Number(stBirthYear.value):null,notes:stNotes.value.trim()||null,updated_at:new Date().toISOString()};
-  stSaveBtn.disabled=true;stSaveBtn.textContent='جاري الحفظ...';
-  let error=null;if(studentEditId){({error}=await studyDb.from('study_students').update(payload).eq('id',studentEditId).eq('owner_user_id',studyMe.id));}else{const r=await studyDb.rpc('register_my_student',{p_student:payload});error=r.error;} stSaveBtn.disabled=false;stSaveBtn.textContent='حفظ التسجيل';if(error)return alert('تعذر حفظ معلومات الطالب: '+error.message);resetStudentForm();loadMyStudents();
-}
-function editStudent(x){studentEditId=x.id;stName.value=x.student_name||'';stLevel.value=x.education_level||'ابتدائي';stGrade.value=x.grade||'';stInstitution.value=x.institution_name||'';stGovernorate.value=x.governorate||'';stArea.value=x.area||'';stPhone.value=x.phone||'';stBirthYear.value=x.birth_year||'';stNotes.value=x.notes||'';stSaveBtn.textContent='حفظ التعديل';document.getElementById('students').scrollIntoView({behavior:'smooth'})}
-function resetStudentForm(){studentEditId=null;['stName','stGrade','stInstitution','stGovernorate','stArea','stPhone','stBirthYear','stNotes'].forEach(id=>document.getElementById(id).value='');stLevel.value='روضة';stSaveBtn.textContent='حفظ التسجيل'}
-async function parentCode(id){const {data,error}=await studyDb.rpc('generate_student_parent_code',{p_student_id:id});if(error)return alert(error.message);prompt('رمز ربط ولي الأمر — أرسله لولي الأمر فقط:',data)}
-async function deleteStudent(id){if(!studyMe||!confirm('متأكد من حذف تسجيل الطالب؟'))return;const {error}=await studyDb.from('study_students').delete().eq('id',id).eq('owner_user_id',studyMe.id);if(error)return alert(error.message);loadMyStudents()}
-initStudentRegistration();
-
-function goBack(){
-  if(currentPanel){
-    closePanel();
-  }else{
-    location.href = 'index.html';
-  }
-}
-
-window.addEventListener('popstate', function(){
-  if(currentPanel){
-    closePanel();
-  }
-});
-</script>
 
 </body>
 </html>
