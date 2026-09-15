@@ -144,6 +144,10 @@ body:before{
   .grid{gap:10px}.card{min-height:148px;padding:13px 7px;border-radius:18px}.card .icon{width:58px;height:58px;font-size:29px;border-radius:17px;margin-bottom:9px}.card h2{font-size:15px}.card p{font-size:10.5px}.hero{padding:22px 14px}.hero h1{font-size:25px}.brandmark{width:65px;height:65px;font-size:25px}.subgrid{gap:9px}.subcard{min-height:100px;padding:13px 8px}.subcard strong{font-size:14px}.study-banner{padding:14px}.study-banner .bicon{font-size:40px}.study-banner h3{font-size:17px}
 }
 @media(max-width:390px){.grid{gap:8px}.card{min-height:140px}.card h2{font-size:14px}.card p{font-size:9.7px}.card .icon{width:54px;height:54px;font-size:27px}}
+
+/* HA Study - ministerial questions */
+.ministerial-card{--glow:224,168,63}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
@@ -153,85 +157,19 @@ body:before{
 
 <div class="topbar">
   <button class="back" type="button" onclick="goBack()" aria-label="رجوع">→</button>
-  <div class="title">الدراسة<small>HA Marketing</small></div>
-  <a class="home" href="index.html" aria-label="الرئيسية">🏠</a>
+  <div class="title">الدراسة<small>HA Marketing</small>
+<a class="card ministerial-card" href="ministerial-questions.html" data-search="الاسئلة الوزارية أسئلة وزارية ابتدائي متوسط اعدادي مهني متميزين">
+  <div class="iconbox">📚</div>
+  <h2>الأسئلة الوزارية</h2>
+  <p>أسئلة الامتحانات الوزارية حسب المرحلة</p>
+</a>
 </div>
+  
 
-<section class="hero">
-  <div class="brandmark">HA</div>
-  <div class="icon">📚</div>
-  <h1>الدراسة</h1>
-  <p>محتوى دراسي وتعليمي متكامل للطلاب — اختر القسم أو الأداة التي تحتاجها.</p>
-  <div class="goldline"></div>
-</section>
+  
 
-<main class="grid" id="mainGrid">
-  <button class="card" type="button" onclick="openPanel('schools')">
-    <div class="icon">🏫</div>
-    <h2>المدارس</h2>
-    <p>حكومية وأهلية وخارجية</p>
-  </button>
-
-  <button class="card" type="button" onclick="openPanel('universities')">
-    <div class="icon">🎓</div>
-    <h2>الجامعات</h2>
-    <p>حكومية وأهلية وخارجية</p>
-  </button>
-
-  <button class="card" type="button" onclick="openPanel('students')">
-    <div class="icon">👨‍🎓</div>
-    <h2>الطلاب</h2>
-    <p>من الروضة إلى الدكتوراه</p>
-  </button>
-
-  <a class="card" href="file-tools.html" style="text-decoration:none">
-    <div class="icon">📁</div>
-    <h2>تحويل وتعديل الملفات</h2>
-    <p>تحويل وتعديل الملفات مباشرة من داخل التطبيق</p>
-  </a>
-
-  <a class="card" href="study-summary.html" style="text-decoration:none">
-    <div class="icon">📝</div>
-    <h2>تلخيص المواد</h2>
-    <p>ارفع PDF أو Word أو TXT واحصل على ملخص دراسي مرتب</p>
-  </a>
-
-  <a class="card" href="study-language.html" style="text-decoration:none">
-    <div class="icon">🇬🇧</div>
-    <h2>الإنجليزية والترجمة</h2>
-    <p>تعلم، محادثة، قواعد، مفردات وترجمة ذكية</p>
-  </a>
-
-  <a class="card" href="math-calculator.html" style="text-decoration:none">
-    <div class="icon">🧮</div>
-    <h2>الحاسبة وحل المعادلات</h2>
-    <p>بسيطة ومتقدمة وحل المسائل من صورة</p>
-  </a>
-
-  <a class="card" href="study-planner.html" style="text-decoration:none">
-    <div class="icon">📅</div>
-    <h2>الجدول والتقويم</h2>
-    <p>6 محاضرات يومياً من السبت للخميس ومواعيد الامتحانات</p>
-  </a>
-
-  <a class="card" href="education-news.html" style="text-decoration:none">
-    <div class="icon">📰</div>
-    <h2>أخبار التربية</h2>
-    <p>أخبار المدارس والامتحانات والقرارات التربوية</p>
-  </a>
-
-  <a class="card" href="higher-education-news.html" style="text-decoration:none">
-    <div class="icon">🏛️</div>
-    <h2>أخبار التعليم العالي</h2>
-    <p>أخبار الجامعات والقبول والدراسات العليا</p>
-  </a>
-
-  <a class="card" href="student-transport.html" style="text-decoration:none">
-    <div class="icon">🚌</div>
-    <h2>النقل الطلابي</h2>
-    <p>خدمات نقل الطلبة للمدارس والجامعات</p>
-  </a>
-  <a class="card" href="student-talents.html" style="text-decoration:none"><div class="icon">🎨</div><h2>مواهب الطلاب</h2><p>انشر صور الموهبة والتفاصيل وشاهد مواهب الطلاب</p></a>
+  
+  
 </main>
 
 <section class="study-banner" id="studyBanner">
@@ -245,29 +183,10 @@ body:before{
     <button class="close-panel" type="button" onclick="closePanel()">×</button>
   </div>
   <div class="subgrid">
-    <div class="subcard"><div class="subicon">🏛️</div><strong>المدارس الحكومية</strong></div>
-    <div class="subcard"><div class="subicon">🏫</div><strong>المدارس الأهلية</strong></div>
-    <div class="subcard"><div class="subicon">🌍</div><strong>المدارس الخارجية</strong></div>
-  </div>
-</section>
-
-<section class="panel" id="universities">
-  <div class="panel-head">
-    <h2>🎓 الجامعات</h2>
-    <button class="close-panel" type="button" onclick="closePanel()">×</button>
-  </div>
+    
+    
   <div class="subgrid">
-    <div class="subcard"><div class="subicon">🏛️</div><strong>الجامعات الحكومية</strong></div>
-    <div class="subcard"><div class="subicon">🎓</div><strong>الجامعات الأهلية</strong></div>
-    <div class="subcard"><div class="subicon">🌍</div><strong>الجامعات الخارجية</strong></div>
-  </div>
-</section>
-
-<section class="panel" id="students">
-  <div class="panel-head">
-    <h2>👨‍🎓 الطلاب</h2>
-    <button class="close-panel" type="button" onclick="closePanel()">×</button>
-  </div>
+    
   <div class="subgrid" style="margin-bottom:14px">
     <div class="subcard"><div class="subicon">🧸</div><strong>روضة</strong></div>
     <div class="subcard"><div class="subicon">✏️</div><strong>ابتدائي</strong></div>
