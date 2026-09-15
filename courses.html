@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الدورات - HA Marketing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#080b0e;color:#fff}
+.wrap{width:94%;max-width:860px;margin:18px auto 90px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.back{padding:10px 13px;border-radius:12px;background:#161b20;color:#fff;text-decoration:none}
+h1{text-align:center;margin:20px 0 8px;color:#f0c86b}
+.sub{text-align:center;color:#aeb6bd;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.box{
+  aspect-ratio:1/1;
+  min-height:130px;
+  border-radius:20px;
+  border:1px solid #39444d;
+  background:linear-gradient(145deg,#12181d,#080b0e);
+  color:#fff;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:10px;
+  gap:8px;
+  box-shadow:0 8px 24px #0005;
+}
+.ico{font-size:34px}
+.box b{font-size:17px}
+.box small{font-size:10px;color:#aeb6bd}
+@media(max-width:560px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .box{min-height:105px;border-radius:16px;padding:7px}
+  .ico{font-size:27px}
+  .box b{font-size:13px}
+  .box small{font-size:8px}
+}
+</style>
+<script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="study.html">← الدراسة</a>
+    <b>HA Marketing</b>
+    <span></span>
+  </div>
+
+  <h1>🎓 الدورات</h1>
+  <div class="sub">اختر نوع الدورة</div>
+
+  <div class="grid">
+    <a class="box" href="courses-online.html">
+      <div class="ico">💻</div>
+      <b>أونلاين</b>
+      <small>دورات عن بُعد</small>
+    </a>
+
+    <a class="box" href="courses-inperson.html">
+      <div class="ico">🏫</div>
+      <b>حضوري</b>
+      <small>دورات بالحضور</small>
+    </a>
+
+    <a class="box" href="courses-both.html">
+      <div class="ico">🔄</div>
+      <b>كلاهما</b>
+      <small>أونلاين وحضوري</small>
+    </a>
+  </div>
+</div>
+</body>
+</html>
