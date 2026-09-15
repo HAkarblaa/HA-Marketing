@@ -1357,6 +1357,363 @@ button{-webkit-tap-highlight-color:transparent}
 .ha-driver-balance strong{display:block;color:#f2b544;font-size:22px;margin-top:3px}
 .ha-driver-balance .ico{font-size:31px}
 
+
+/* =========================================================
+   HA DRIVER SIMPLE UI
+   واجهة سائق مختصرة مع إبقاء كل الوظائف والمنطق
+   ========================================================= */
+
+.head{
+  min-height:54px!important;
+  padding:8px 12px!important;
+}
+.head-brand h1{
+  font-size:18px!important;
+  margin:0!important;
+}
+.head-brand small{
+  font-size:10px!important;
+  opacity:.75!important;
+}
+
+/* بطاقة السائق المختصرة */
+.driver-simple-hero{
+  margin:8px 10px 7px!important;
+  padding:9px 10px!important;
+  border-radius:18px!important;
+  min-height:0!important;
+}
+.driver-simple-hero .driver-simple-top{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:9px!important;
+}
+.driver-simple-hero .driver-profile-box{
+  flex:1!important;
+  min-height:54px!important;
+  padding:7px 9px!important;
+  border-radius:14px!important;
+}
+.driver-simple-hero .driver-avatar{
+  width:40px!important;
+  height:40px!important;
+  font-size:21px!important;
+}
+.driver-simple-hero .driver-profile-box strong{
+  font-size:13px!important;
+}
+.driver-simple-hero .driver-profile-box span{
+  font-size:9px!important;
+  margin-top:3px!important;
+}
+.driver-simple-hero .status-toggle{
+  flex:0 0 auto!important;
+}
+.driver-simple-hero .status-toggle button{
+  min-width:92px!important;
+  padding:9px 10px!important;
+  border-radius:13px!important;
+  font-size:10px!important;
+}
+.driver-hidden-data{
+  display:none!important;
+}
+
+/* الرصيد مختصر */
+.ha-driver-balance{
+  margin:0 10px 7px!important;
+  min-height:54px!important;
+  padding:8px 12px!important;
+  border-radius:16px!important;
+}
+.ha-driver-balance small:first-child{
+  font-size:9px!important;
+}
+.ha-driver-balance small:last-child{
+  display:none!important;
+}
+.ha-driver-balance strong{
+  font-size:17px!important;
+  margin-top:2px!important;
+}
+.ha-driver-balance .ico{
+  font-size:24px!important;
+}
+
+/* الخريطة تبقى هي العنصر الرئيسي */
+.map-shell{
+  margin:7px 10px 0!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+}
+#map{
+  min-height:320px!important;
+}
+
+/* الملخص 3 مربعات صغيرة بجانب بعض */
+.summary{
+  margin:8px 10px!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+.summary .box{
+  min-height:62px!important;
+  padding:8px 5px!important;
+  border-radius:14px!important;
+  text-align:center!important;
+}
+.summary .box small{
+  font-size:9px!important;
+  margin-bottom:4px!important;
+}
+.summary .box b{
+  font-size:14px!important;
+}
+
+/* قسم الطلب مختصر */
+.request-deck{
+  margin:8px 10px 14px!important;
+  padding:10px!important;
+  border-radius:18px!important;
+}
+.request-section-head{
+  min-height:34px!important;
+  margin-bottom:5px!important;
+}
+.request-section-head h2{
+  font-size:16px!important;
+}
+.request-pager{
+  font-size:10px!important;
+  padding:5px 8px!important;
+}
+.request-empty{
+  min-height:115px!important;
+  padding:12px!important;
+}
+.request-empty b{
+  font-size:13px!important;
+}
+.request-empty small{
+  font-size:9px!important;
+}
+
+/* بطاقة الطلب: فقط أهم المعلومات */
+.request-live-card{
+  padding:10px!important;
+  border-radius:16px!important;
+}
+.request-live-card .customer{
+  padding-bottom:8px!important;
+}
+.request-live-card .request-avatar{
+  width:38px!important;
+  height:38px!important;
+  font-size:20px!important;
+}
+.request-live-card .customer-info b{
+  font-size:12px!important;
+}
+.request-live-card .customer-info span{
+  display:none!important;
+}
+.request-live-card #requestVehicle{
+  font-size:10px!important;
+}
+
+/* نخفي مدة الوصول ومدة الرحلة من الطلب قبل القبول */
+.request-live-card .route-info{
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+}
+.request-live-card .route-info .item:nth-child(3),
+.request-live-card .route-info .item:nth-child(4){
+  display:none!important;
+}
+.request-live-card .route-info .item{
+  min-height:58px!important;
+  padding:8px!important;
+  border-radius:12px!important;
+}
+.request-live-card .route-info small{
+  font-size:9px!important;
+}
+.request-live-card .route-info b{
+  font-size:10px!important;
+  line-height:1.55!important;
+}
+
+/* فقط زرين واضحين */
+.request-actions{
+  grid-template-columns:1.35fr 1fr!important;
+  gap:7px!important;
+  margin-top:8px!important;
+}
+.request-actions button{
+  min-height:40px!important;
+  padding:8px 6px!important;
+  border-radius:12px!important;
+  font-size:11px!important;
+}
+#rejectBtn{
+  display:none!important;
+}
+
+/* الطلب الحالي بعد القبول */
+.accepted-panel{
+  margin:8px 10px 18px!important;
+  padding:10px!important;
+  border-radius:18px!important;
+}
+.accepted-panel h2{
+  font-size:16px!important;
+  margin:0 0 7px!important;
+}
+.accepted-panel .state{
+  margin-bottom:7px!important;
+  padding:8px!important;
+  border-radius:12px!important;
+  font-size:11px!important;
+}
+.accepted-panel .request-card{
+  padding:10px!important;
+  border-radius:15px!important;
+}
+.accepted-panel .customer .avatar{
+  width:38px!important;
+  height:38px!important;
+  font-size:20px!important;
+}
+.accepted-panel .customer-info b{
+  font-size:12px!important;
+}
+.accepted-panel .customer-info span{
+  font-size:9px!important;
+}
+.accepted-panel #currentFare{
+  font-size:12px!important;
+}
+
+/* اتصالات 3 مربعات بسيطة */
+.accepted-panel .contact{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+  margin-top:8px!important;
+}
+.accepted-panel .contact button{
+  min-height:42px!important;
+  padding:7px 4px!important;
+  border-radius:11px!important;
+  font-size:9px!important;
+}
+
+/* خط الحالة مختصر */
+.ride-status-box{
+  padding:8px!important;
+  border-radius:13px!important;
+  margin-top:8px!important;
+}
+.ride-status-live{
+  font-size:10px!important;
+  margin-bottom:6px!important;
+}
+.ride-status-steps{
+  gap:4px!important;
+}
+.ride-status-step{
+  padding:6px 2px!important;
+  font-size:8px!important;
+  border-radius:8px!important;
+}
+
+/* أزرار مراحل الرحلة */
+.trip-actions{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+.trip-actions button{
+  min-height:40px!important;
+  padding:7px 4px!important;
+  border-radius:11px!important;
+  font-size:9px!important;
+}
+#driverCancelCurrentBtn{
+  grid-column:1/-1!important;
+}
+
+/* زر فتح الخرائط أصغر */
+.driver-external-map-btn{
+  width:42px!important;
+  height:42px!important;
+  left:10px!important;
+  bottom:62px!important;
+  font-size:20px!important;
+}
+.driver-external-map-menu{
+  left:58px!important;
+  bottom:60px!important;
+}
+
+/* الوضع النهاري */
+html[data-ha-theme="light"] .driver-simple-hero,
+html[data-ha-theme="light"] .request-deck,
+html[data-ha-theme="light"] .accepted-panel{
+  background:linear-gradient(145deg,#ffffff,#f5f9ff)!important;
+  color:#102235!important;
+  border-color:rgba(55,121,190,.20)!important;
+}
+html[data-ha-theme="light"] .summary .box{
+  background:linear-gradient(145deg,#ffffff,#eef6ff)!important;
+  color:#102235!important;
+}
+html[data-ha-theme="light"] .request-live-card,
+html[data-ha-theme="light"] .accepted-panel .request-card{
+  background:#ffffff!important;
+  color:#102235!important;
+}
+
+/* الوضع الليلي */
+html[data-ha-theme="dark"] .driver-simple-hero,
+html[data-ha-theme="dark"] .request-deck,
+html[data-ha-theme="dark"] .accepted-panel{
+  background:linear-gradient(145deg,#11171a,#06090b)!important;
+  color:#f7f9fa!important;
+}
+html[data-ha-theme="dark"] .summary .box{
+  background:linear-gradient(145deg,#12191d,#080b0d)!important;
+}
+
+/* موبايل */
+@media(max-width:600px){
+  #map{
+    min-height:300px!important;
+  }
+  .driver-simple-hero{
+    margin:6px 7px 5px!important;
+  }
+  .ha-driver-balance,
+  .map-shell,
+  .summary,
+  .request-deck,
+  .accepted-panel{
+    margin-left:7px!important;
+    margin-right:7px!important;
+  }
+  .driver-simple-hero .status-toggle button{
+    min-width:82px!important;
+    font-size:9px!important;
+  }
+  .summary .box b{
+    font-size:12px!important;
+  }
+  .request-live-card .route-info{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+
 </style>
 
 <script src="ha-theme.js"></script>
@@ -1371,43 +1728,32 @@ button{-webkit-tap-highlight-color:transparent}
   <header class="head">
     <a class="head-home" href="index.html" aria-label="الرئيسية">🏠</a>
     <div class="head-brand">
-      <h1>واجهة السائق</h1>
-      <small>HA Marketing</small>
+      <h1>السائق</h1>
+      <small>طلبات النقل</small>
     </div>
     <a class="head-back" href="javascript:history.back()" aria-label="رجوع">←</a>
   </header>
 
-  <section class="driver-hero live-hero">
-    <div class="hero-title">
-      <div>
-        <b>السائق</b>
-        <small class="hero-live-note">جاهز لاستقبال الطلبات القريبة</small>
+  <section class="driver-hero live-hero driver-simple-hero">
+    <div class="driver-simple-top">
+      <div class="driver-profile-box">
+        <div class="driver-avatar">🚕</div>
+        <div>
+          <strong id="driverDisplayName">السائق</strong>
+          <span>جاهز لاستقبال الطلبات</span>
+        </div>
       </div>
+
       <div class="status-toggle">
         <button id="availabilityBtn">متصل الآن</button>
       </div>
     </div>
 
-    <div class="driver-grid">
-      <div class="driver-profile-box">
-        <div class="driver-avatar">🚕</div>
-        <div>
-          <strong id="driverDisplayName">السائق</strong>
-          <span>● متصل بالخدمة</span>
-        </div>
-      </div>
-      <div class="driver-data">
-        <small>المركبة</small>
-        <b id="driverDisplayVehicle">🚕 —</b>
-      </div>
-      <div class="driver-data">
-        <small>اللون</small>
-        <b id="driverDisplayColor">🎨 —</b>
-      </div>
-      <div class="driver-data">
-        <small>اللوحة</small>
-        <b id="driverDisplayPlate">—</b>
-      </div>
+    <!-- هذه البيانات تبقى موجودة حتى لا يتغير منطق الصفحة، لكنها مخفية من الواجهة البسيطة -->
+    <div class="driver-hidden-data" aria-hidden="true">
+      <b id="driverDisplayVehicle">🚕 —</b>
+      <b id="driverDisplayColor">🎨 —</b>
+      <b id="driverDisplayPlate">—</b>
     </div>
   </section>
 
@@ -1443,21 +1789,21 @@ button{-webkit-tap-highlight-color:transparent}
   </div>
 
   <div class="summary">
-    <div class="box"><small>الطلبات القريبة</small><b id="nearbyCount">0</b></div>
-    <div class="box"><small>المسافة للزبون</small><b id="toCustomer">—</b></div>
+    <div class="box"><small>طلبات</small><b id="nearbyCount">0</b></div>
+    <div class="box"><small>المسافة</small><b id="toCustomer">—</b></div>
     <div class="box"><small>السعر</small><b id="fare">—</b></div>
   </div>
 
   <div class="section request-deck" id="requestsSection">
     <div class="request-section-head">
-      <h2>الطلبات القريبة</h2>
+      <h2>الطلب القريب</h2>
       <span id="requestPager" class="request-pager">0 / 0</span>
     </div>
 
     <div id="requestEmptyState" class="request-empty">
       <div class="search-radar"><span></span><span></span><span></span></div>
       <b>جاري البحث عن طلب قريب...</b>
-      <small>أي طلب مناسب لنوع تسجيلك راح يظهر هنا مباشرة</small>
+      <small>أقرب طلب مناسب راح يظهر هنا</small>
     </div>
 
     <div class="request-card request-live-card" id="requestCard">
@@ -1479,8 +1825,8 @@ button{-webkit-tap-highlight-color:transparent}
       </div>
 
       <div class="actions request-actions">
-        <button id="acceptBtn" class="accept">✓ قبول الطلب</button>
-        <button id="changeRequestBtn" class="change-request">تخطي الطلب ←</button>
+        <button id="acceptBtn" class="accept">✓ قبول</button>
+        <button id="changeRequestBtn" class="change-request">تخطي ←</button>
         <button id="rejectBtn" class="reject" style="display:none!important">رفض</button>
       </div>
     </div>
