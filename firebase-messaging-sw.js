@@ -22,12 +22,12 @@ messaging.onBackgroundMessage((payload)=>{
   const title=payload?.notification?.title || payload?.data?.title || 'HA Marketing';
   const options={
     body:payload?.notification?.body || payload?.data?.body || 'وصلك إشعار جديد',
-    icon:'../ha-notification-logo-v3.png',
-    badge:'../ha-notification-badge-v3.png',
+    icon:'https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v4.png',
+    badge:'https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v4.png',
     tag:payload?.data?.tag || 'ha-marketing',
     renotify:true,
     data:{
-      url:payload?.data?.link || '../notifications-center.html'
+      url:payload?.data?.link || 'https://hakarblaa.github.io/HA-Marketing/notifications-center.html'
     }
   };
   self.registration.showNotification(title,options);
@@ -36,7 +36,7 @@ messaging.onBackgroundMessage((payload)=>{
 self.addEventListener('notificationclick',(event)=>{
   event.notification.close();
   const target=new URL(
-    event.notification?.data?.url || '../notifications-center.html',
+    event.notification?.data?.url || 'https://hakarblaa.github.io/HA-Marketing/notifications-center.html',
     self.location.origin + self.location.pathname
   ).href;
 
