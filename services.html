@@ -382,6 +382,70 @@ a{text-decoration:none;color:inherit}
   .provider-entry b{font-size:14px}.provider-entry small{font-size:11px}
 }
 
+
+/* ===== HA SERVICE 3-COLUMN SQUARES ===== */
+.simple-actions{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.simple-action{
+  min-height:150px!important;
+  aspect-ratio:1/1!important;
+  padding:14px 10px!important;
+  border-radius:20px!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:10px!important;
+}
+.simple-action .simple-icon{
+  width:58px!important;
+  height:58px!important;
+  flex:0 0 58px!important;
+  border-radius:18px!important;
+  font-size:29px!important;
+}
+.simple-action span:nth-child(2){
+  align-items:center!important;
+  text-align:center!important;
+}
+.simple-action b{
+  font-size:17px!important;
+}
+.simple-action small{
+  font-size:11px!important;
+  line-height:1.55!important;
+}
+.simple-action i{
+  display:none!important;
+}
+@media(max-width:720px){
+  .simple-actions{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .simple-action{
+    min-height:112px!important;
+    padding:10px 6px!important;
+    border-radius:16px!important;
+    gap:7px!important;
+  }
+  .simple-action .simple-icon{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+    font-size:23px!important;
+    border-radius:14px!important;
+  }
+  .simple-action b{
+    font-size:13px!important;
+  }
+  .simple-action small{
+    font-size:9px!important;
+  }
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
