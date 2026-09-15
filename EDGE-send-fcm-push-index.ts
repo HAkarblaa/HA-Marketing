@@ -136,8 +136,8 @@ Deno.serve(async (req) => {
               notification: {
                 title: n.title,
                 body: n.message,
-                icon: "https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v2.png",
-                badge: "https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v2.png",
+                icon: "https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v3.png",
+                badge: "https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v3.png",
                 tag: `ha-notification-${n.id}`,
               },
             },
