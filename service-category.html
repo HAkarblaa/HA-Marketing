@@ -4,23 +4,44 @@
 .reqgrid input,.reqgrid textarea,.reqgrid button{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit}
 .reqgrid textarea{grid-column:1/-1;min-height:95px;resize:vertical}.reqstatus{font-size:13px;line-height:1.7;margin-top:8px;color:#555}
 @media(max-width:600px){.reqgrid{grid-template-columns:1fr}.reqgrid textarea{grid-column:auto}}
+
+/* ===== SIMPLE SERVICE CATEGORY ===== */
+.simple-filters{grid-template-columns:2fr 1fr!important;padding:9px!important}
+.simple-request{padding:13px!important}
+.request-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.request-title div{display:flex;flex-direction:column;gap:4px}
+.request-title b{font-size:18px}
+.request-title small{font-size:12px;color:#777}
+.simple-reqgrid{grid-template-columns:1fr 1fr!important}
+.simple-reqgrid textarea{grid-column:1/-1!important;min-height:82px!important}
+.request-send{width:100%;margin-top:9px;font-size:16px;font-weight:800}
+@media(max-width:600px){
+  .simple-filters{grid-template-columns:1fr!important}
+  .simple-reqgrid{grid-template-columns:1fr!important}
+  .simple-reqgrid textarea{grid-column:auto!important}
+}
+
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-</head><body><div class="wrap"><div class="row"><a class="btn light" href="services.html">← الأقسام</a><a class="btn" href="service-orders.html">📋 طلباتي</a></div><h1 id="title">مقدمو الخدمة</h1><div class="filters"><input id="q" placeholder="🔎 الاسم أو المنطقة"><select id="gov"><option value="">كل المحافظات</option></select><select id="avail"><option value="all">الكل</option><option value="yes">متوفر الآن</option></select></div>
-<div class="category-request">
-  <h2>📣 طلب خدمة من هذا القسم</h2>
-  <div class="muted">أرسل طلبك للقسم، ويظهر فقط لمقدمي الخدمة المعتمدين بنفس المهنة حتى يقبله أحدهم.</div>
-  <div class="reqgrid" style="margin-top:10px">
+</head><body><div class="wrap"><div class="row"><a class="btn light" href="services.html">← الأقسام</a><a class="btn" href="service-orders.html">📋 طلباتي</a></div><h1 id="title">مقدمو الخدمة</h1><div class="filters simple-filters">
+  <input id="q" placeholder="🔎 ابحث باسم مقدم الخدمة أو المنطقة">
+  <select id="avail"><option value="all">الكل</option><option value="yes">المتوفر الآن</option></select>
+</div>
+<div class="category-request simple-request">
+  <div class="request-title">
+    <div><b>📩 اطلب الخدمة بسرعة</b><small>املأ المعلومات الأساسية فقط</small></div>
+  </div>
+  <div class="reqgrid simple-reqgrid">
     <input id="reqName" placeholder="الاسم">
     <input id="reqPhone" placeholder="رقم الهاتف 07xxxxxxxxx" inputmode="tel">
-    <input id="reqAddress" placeholder="العنوان / المنطقة">
-    <input id="reqDate" type="date">
-    <input id="reqTime" placeholder="الوقت المناسب مثل 5 مساءً">
-    <button id="reqLoc" class="light" type="button">📍 تحديد موقعي</button>
-    <textarea id="reqDetails" placeholder="اكتب تفاصيل الخدمة المطلوبة"></textarea>
+    <input id="reqAddress" placeholder="المنطقة / العنوان">
+    <textarea id="reqDetails" placeholder="شنو الخدمة اللي تحتاجها؟"></textarea>
   </div>
-  <button id="reqSend" class="btn" type="button" style="margin-top:9px">إرسال الطلب للقسم</button>
+  <button id="reqSend" class="btn request-send" type="button">إرسال الطلب</button>
   <div id="reqStatus" class="reqstatus"></div>
+  <input id="reqDate" type="hidden">
+  <input id="reqTime" type="hidden">
+  <button id="reqLoc" type="button" style="display:none"></button>
 </div>
 <div id="nearbyStatus" class="card" style="margin-bottom:10px">📍 جاري تحديد موقعك لعرض الأقرب أولاً...</div><div id="box" class="grid"><div class="card">جاري التحميل...</div></div></div><script>
 const db=supabase.createClient(
@@ -87,9 +108,6 @@ async function load(){
   }
 
   rows=p||[];
-  [...new Set(rows.map(x=>x.governorate).filter(Boolean))]
-    .forEach(v=>gov.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
-
   render();
   locateAndSort();
 }
@@ -109,7 +127,6 @@ function render(){
   let a=rows.filter(x=>{
     const hay=[providerName(x),x.other_profession,x.area,x.address,x.governorate].filter(Boolean).join(' ');
     return (!search||hay.includes(search))
-      && (!gov.value||x.governorate===gov.value)
       && (avail.value!=='yes'||x.is_available);
   });
 
@@ -140,7 +157,6 @@ function render(){
 }
 
 q.oninput=render;
-gov.onchange=render;
 avail.onchange=render;
 
 reqLoc.onclick=async()=>{

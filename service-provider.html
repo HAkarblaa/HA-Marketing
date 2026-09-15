@@ -1,6 +1,42 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تفاصيل مقدم الخدمة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:20px auto}.card{background:#fff;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 4px 16px #0001}.img{width:100%;max-height:370px;object-fit:cover;border-radius:14px;background:#eee}.btn,button{border:0;background:#111;color:#fff;padding:11px 14px;border-radius:10px;text-decoration:none;cursor:pointer}.light{background:#eee;color:#111}.row{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap}.muted{color:#666;line-height:1.8}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}input,textarea,select{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px}textarea{min-height:100px}@media(max-width:600px){.grid{grid-template-columns:1fr}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تفاصيل مقدم الخدمة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:20px auto}.card{background:#fff;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 4px 16px #0001}.img{width:100%;max-height:370px;object-fit:cover;border-radius:14px;background:#eee}.btn,button{border:0;background:#111;color:#fff;padding:11px 14px;border-radius:10px;text-decoration:none;cursor:pointer}.light{background:#eee;color:#111}.row{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap}.muted{color:#666;line-height:1.8}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}input,textarea,select{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px}textarea{min-height:100px}@media(max-width:600px){.grid{grid-template-columns:1fr}}
+/* ===== SIMPLE PROVIDER REQUEST ===== */
+.simple-order-card{padding:14px!important}
+.simple-order-head{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-bottom:9px}
+.simple-order-head h2{margin:0}
+.simple-order-head small{color:#777}
+.simple-order-grid{grid-template-columns:1fr 1fr 1fr!important}
+.simple-order-card textarea{min-height:82px!important;margin:9px 0}
+.send-main{width:100%;font-size:16px;font-weight:800}
+.reviews-collapse summary{cursor:pointer;font-weight:900;font-size:18px}
+@media(max-width:650px){
+  .simple-order-grid{grid-template-columns:1fr!important}
+  .simple-order-head{align-items:start;flex-direction:column}
+}
+
+</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-</head><body><div class="wrap"><a class="btn light" href="services.html">← رجوع</a><div id="detail" class="card">جاري التحميل...</div><div class="card"><h2>📩 طلب هذه الخدمة</h2><div id="loginNote" class="muted"></div><form id="form"><div class="grid"><input id="name" required placeholder="الاسم"><input id="phone" required placeholder="رقم الهاتف"><input id="address" required placeholder="العنوان"><input id="date" type="date"><input id="time" placeholder="الوقت المناسب مثل 5 مساءً"><button type="button" class="light" id="loc">📍 تحديد موقعي</button></div><textarea id="details" required placeholder="اكتب تفاصيل الخدمة المطلوبة"></textarea><button type="submit">تأكيد طلب الخدمة</button></form></div><div class="card"><h2>⭐ التقييمات</h2><div id="reviews">جاري التحميل...</div><div class="grid"><select id="rating"><option value="5">5 نجوم</option><option value="4">4 نجوم</option><option value="3">3 نجوم</option><option value="2">2 نجمتان</option><option value="1">1 نجمة</option></select><input id="comment" placeholder="اكتب تعليقك"></div><button id="sendReview">إرسال التقييم</button></div></div><script>
+</head><body><div class="wrap"><a class="btn light" href="services.html">← رجوع</a><div id="detail" class="card">جاري التحميل...</div><div class="card simple-order-card">
+  <div class="simple-order-head">
+    <h2>📩 اطلب الخدمة</h2>
+    <small>المعلومات الأساسية فقط</small>
+  </div>
+  <div id="loginNote" class="muted"></div>
+  <form id="form">
+    <div class="grid simple-order-grid">
+      <input id="name" required placeholder="الاسم">
+      <input id="phone" required placeholder="رقم الهاتف">
+      <input id="address" required placeholder="المنطقة / العنوان">
+    </div>
+    <textarea id="details" required placeholder="اكتب باختصار شنو تحتاج"></textarea>
+    <input id="date" type="hidden">
+    <input id="time" type="hidden">
+    <button type="button" id="loc" style="display:none"></button>
+    <button class="send-main" type="submit">إرسال الطلب</button>
+  </form>
+</div><details class="card reviews-collapse">
+  <summary>⭐ التقييمات</summary>
+  <div id="reviews">جاري التحميل...</div><div class="grid"><select id="rating"><option value="5">5 نجوم</option><option value="4">4 نجوم</option><option value="3">3 نجوم</option><option value="2">2 نجمتان</option><option value="1">1 نجمة</option></select><input id="comment" placeholder="اكتب تعليقك"></div><button id="sendReview">إرسال التقييم</button>
+</details></div><script>
 const db=supabase.createClient(
   'https://ubayrhtshgtgggxprrek.supabase.co',
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
@@ -47,14 +83,11 @@ async function load(){
     <div class="row"><h1>${esc(providerName(p))}</h1>${p.is_verified?'<b>✅ معتمد</b>':''}</div>
     <div class="muted">
       🛠️ ${esc(profession)}<br>
-      📞 ${esc(p.phone||'غير مضاف')}<br>
-      📍 ${esc([p.governorate,p.area,p.address].filter(Boolean).join(' - ')||'غير مضاف')}<br>
-      🕒 ${esc(p.working_hours||'أوقات العمل غير مضافة')}<br>
-      💰 ${p.price_from!=null?'يبدأ من '+Number(p.price_from).toLocaleString('ar-IQ')+' د.ع '+esc(p.price_note||''):'السعر حسب الخدمة'}<br>
+      📍 ${esc([p.governorate,p.area].filter(Boolean).join(' - ')||'الموقع غير مضاف')}<br>
+      💰 ${p.price_from!=null?'يبدأ من '+Number(p.price_from).toLocaleString('ar-IQ')+' د.ع':'السعر حسب الخدمة'}<br>
       ${p.is_available?'🟢 متوفر حالياً':'🔴 غير متوفر حالياً'}
     </div>
-    <p>${esc(p.description||'')}</p>
-    <p><b>المهارات والخدمات:</b><br>${esc(p.skills||'')}</p>
+    ${p.description?`<p>${esc(p.description)}</p>`:''}
     <div class="row">
       ${p.phone?`<a class="btn" href="tel:${esc(p.phone)}">📞 اتصال</a>`:''}
       ${p.whatsapp?`<a class="btn" href="https://wa.me/${esc(p.whatsapp.replace(/\D/g,''))}" target="_blank">واتساب</a>`:''}

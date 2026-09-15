@@ -329,6 +329,59 @@ a{text-decoration:none;color:inherit}
   .provider-links a:before{width:43px;height:43px;font-size:21px}
   #providerQuick{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* ===== HA SIMPLE SERVICE UI ===== */
+.simple-customer{padding:15px!important}
+.simple-actions{display:grid;gap:10px}
+.simple-action{
+  display:flex;align-items:center;gap:13px;
+  min-height:78px;padding:12px 14px;
+  border-radius:19px;text-decoration:none;
+  color:#fff;background:linear-gradient(145deg,#151918,#080a09);
+  border:1px solid #4f554f;box-shadow:0 9px 22px #0005;
+}
+.simple-action.main-action{
+  border-color:#a67728;
+  background:radial-gradient(circle at 90% 50%,rgba(231,173,62,.14),transparent 32%),linear-gradient(145deg,#171a17,#090b09);
+}
+.simple-action .simple-icon{
+  width:52px;height:52px;flex:0 0 52px;border-radius:16px;
+  display:grid;place-items:center;font-size:27px;
+  background:#0b0e0c;border:1px solid #8e672b
+}
+.simple-action span:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1}
+.simple-action b{font-size:18px;color:#f2cc73}
+.simple-action small{font-size:12px;color:#aeb4b7}
+.simple-action i{font-style:normal;font-size:29px;color:#e6b750}
+.compact-provider{padding:12px!important}
+.provider-entry{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 12px;border:1px solid #4a504b;border-radius:16px;
+  background:#0a0d0b
+}
+.provider-entry div{display:flex;flex-direction:column;gap:4px}
+.provider-entry b{color:#f0c96d}
+.provider-entry small{color:#aeb4b7}
+.provider-entry a{
+  text-decoration:none;color:#111;background:linear-gradient(135deg,#f2cb6e,#d69b2f);
+  padding:9px 12px;border-radius:11px;font-weight:900;white-space:nowrap
+}
+.provider-approved{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.provider-approved a{
+  text-decoration:none;text-align:center;padding:11px;border-radius:13px;
+  color:#fff;background:#111615;border:1px solid #5a604f
+}
+.simple-search{grid-template-columns:1fr!important}
+.simple-search input{font-size:15px}
+@media(max-width:600px){
+  .hero h1{font-size:36px!important}
+  .hero p{font-size:15px!important}
+  .simple-action{min-height:70px;padding:10px 11px}
+  .simple-action .simple-icon{width:46px;height:46px;flex-basis:46px;font-size:24px}
+  .simple-action b{font-size:16px}
+  .provider-entry b{font-size:14px}.provider-entry small{font-size:11px}
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
@@ -354,82 +407,63 @@ a{text-decoration:none;color:inherit}
   </div>
 </section>
 
-<section class="section-shell">
+<section class="section-shell simple-customer">
   <div class="shell-head">
-    <div class="badgeIcon">👤</div>
-    <h2>خدمات العملاء</h2>
+    <div class="badgeIcon">🛠️</div>
+    <h2>طلب خدمة</h2>
     <div class="line"></div>
-    <p>كل ما تحتاجه في مكان واحد</p>
+    <p>ثلاث خطوات بسيطة</p>
   </div>
 
-  <section class="quick">
-    <a class="qcard red" href="track-service.html">
-      <div class="qicon">🗺️</div>
-      <h3>الخريطة والتتبع</h3>
-      <p>اعرف الموقع وخط السير</p>
+  <div class="simple-actions">
+    <a class="simple-action main-action" href="#categories">
+      <span class="simple-icon">🔧</span>
+      <span>
+        <b>اختر نوع الخدمة</b>
+        <small>كهربائي، سباك، صيانة وغيرها</small>
+      </span>
+      <i>‹</i>
     </a>
-    <a class="qcard blue" href="#categories">
-      <div class="qicon">▦</div>
-      <h3>اختيار الخدمة</h3>
-      <p>استعرض الخدمات المتاحة</p>
+
+    <a class="simple-action" href="service-orders.html">
+      <span class="simple-icon">📋</span>
+      <span>
+        <b>طلباتي</b>
+        <small>تابع الطلب أو ألغِه</small>
+      </span>
+      <i>‹</i>
     </a>
-    <a class="qcard blue" href="#categories">
-      <div class="qicon">📨</div>
-      <h3>إرسال الطلب</h3>
-      <p>أرسل تفاصيل الخدمة بسهولة</p>
+
+    <a class="simple-action" href="track-service.html">
+      <span class="simple-icon">📍</span>
+      <span>
+        <b>التتبع</b>
+        <small>الموقع وحالة الخدمة</small>
+      </span>
+      <i>‹</i>
     </a>
-    <a class="qcard purple" href="service-orders.html">
-      <div class="qicon">📋</div>
-      <h3>قوائم الخدمات</h3>
-      <p>رتب وراجع الخدمات المطلوبة</p>
-    </a>
-    <a class="qcard gold" href="index.html">
-      <div class="qicon">🎧</div>
-      <h3>الدعم والمساعدة</h3>
-      <p>تواصل للحصول على المساعدة</p>
-    </a>
-    <a class="qcard green" href="service-orders.html">
-      <div class="qicon">📊</div>
-      <h3>حالة الطلب</h3>
-      <p>تابع تقدم طلبك لحظة بلحظة</p>
-    </a>
-  </section>
+  </div>
 </section>
 
-<section class="section-shell provider-shell">
-  <div class="shell-head">
-    <div class="badgeIcon">💼</div>
-    <h2>مقدم الخدمة</h2>
-    <div class="line"></div>
-    <p>ابدأ بتقديم خدماتك معنا</p>
+<section class="section-shell provider-shell compact-provider">
+  <div class="provider-entry">
+    <div>
+      <b>هل أنت مقدم خدمة؟</b>
+      <small>انضم وابدأ باستلام الطلبات</small>
+    </div>
+    <a href="marketplace-onboarding.html">انضم الآن</a>
   </div>
 
-  <div class="provider-links">
-    <a href="marketplace-onboarding.html">اطلب صلاحية مقدم خدمة</a>
-    <a href="provider-dashboard.html">إضافة وإدارة خدمتي</a>
-    <a href="work-center.html">مركز العمل</a>
-    <a href="service-orders.html">طلباتي</a>
-  </div>
-
-  <section id="providerQuick" class="quick" style="display:none">
-    <a class="qcard orange" href="provider-dashboard.html">
-      <div class="qicon">🧰</div>
-      <h3>إدارة ملف مقدم الخدمة</h3>
-      <p>تعديل البيانات والمهنة</p>
-    </a>
-    <a class="qcard blue" href="provider-dashboard.html?view=requests">
-      <div class="qicon">📥</div>
-      <h3>طلبات الخدمة الواردة</h3>
-      <p>عرض وقبول الطلبات الجديدة</p>
-    </a>
+  <section id="providerQuick" class="provider-approved" style="display:none">
+    <a href="provider-dashboard.html?view=requests">📥 الطلبات الواردة</a>
+    <a href="provider-dashboard.html">🧰 ملفي المهني</a>
   </section>
 </section>
 
 <section class="section-shell categories-shell">
   <div id="categories" class="section-title"><b>اختر نوع الخدمة</b></div>
-  <div class="search">
-    <input id="q" placeholder="🔎 ابحث عن حداد، حلاق، كهربائي...">
-    <select id="sort"><option value="order">الترتيب</option><option value="name">حسب الاسم</option></select>
+  <div class="search simple-search">
+    <input id="q" placeholder="🔎 ابحث عن الخدمة التي تحتاجها">
   </div>
   <div id="box" class="grid"><div class="card">جاري التحميل...</div></div>
 </section>
@@ -442,7 +476,7 @@ a{text-decoration:none;color:inherit}
   <a href="tel:"><span>☎</span>اتصل بنا</a>
 </nav>
 <script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}});let rows=[];const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function load(){const {data,error}=await db.from('service_categories').select('*').eq('is_active',true).order('sort_order');if(error){box.innerHTML='<div class="card">شغّل ملف SERVICE-MARKETPLACE-UPDATE.sql أولاً.<br>'+esc(error.message)+'</div>';return}rows=data||[];render()}function render(){let a=rows.filter(x=>!q.value.trim()||(x.name+' '+(x.description||'')).includes(q.value.trim()));if(sort.value==='name')a.sort((x,y)=>x.name.localeCompare(y.name,'ar'));box.innerHTML=a.length?a.map((x,i)=>`<a class="card ${['gold','blue','green','red','purple','orange'][i%6]}" href="service-category.html?id=${x.id}">${x.image_url?`<img class="img" src="${esc(x.image_url)}" alt="">`:`<div class="icon">${esc(x.icon||'🛠️')}</div>`}<h2>${esc(x.name)}</h2><div class="muted">${esc(x.description||'')}</div></a>`).join(''):'<div class="card">لا توجد نتائج.</div>'}q.oninput=render;sort.onchange=render;
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}});let rows=[];const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function load(){const {data,error}=await db.from('service_categories').select('*').eq('is_active',true).order('sort_order');if(error){box.innerHTML='<div class="card">شغّل ملف SERVICE-MARKETPLACE-UPDATE.sql أولاً.<br>'+esc(error.message)+'</div>';return}rows=data||[];render()}function render(){let a=rows.filter(x=>!q.value.trim()||(x.name+' '+(x.description||'')).includes(q.value.trim()));box.innerHTML=a.length?a.map((x,i)=>`<a class="card ${['gold','blue','green','red','purple','orange'][i%6]}" href="service-category.html?id=${x.id}">${x.image_url?`<img class="img" src="${esc(x.image_url)}" alt="">`:`<div class="icon">${esc(x.icon||'🛠️')}</div>`}<h2>${esc(x.name)}</h2><div class="muted">${esc(x.description||'')}</div></a>`).join(''):'<div class="card">لا توجد نتائج.</div>'}q.oninput=render;
 
 async function showProviderQuick(){
   try{
