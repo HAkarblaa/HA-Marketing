@@ -173,8 +173,8 @@
           if(Notification.permission==='granted'){
             new Notification(title,{
               body,
-              icon:'./ha-notification-logo.png',
-              badge:'./ha-notification-badge.png',
+              icon:'./ha-notification-logo-v2.png',
+              badge:'./ha-notification-badge-v2.png',
               data:{url:payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html'}
             });
           }

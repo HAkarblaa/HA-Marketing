@@ -22,8 +22,8 @@ messaging.onBackgroundMessage((payload)=>{
   const title=payload?.notification?.title || payload?.data?.title || 'HA Marketing';
   const options={
     body:payload?.notification?.body || payload?.data?.body || 'وصلك إشعار جديد',
-    icon:'../ha-notification-logo.png',
-    badge:'../ha-notification-badge.png',
+    icon:'../ha-notification-logo-v2.png',
+    badge:'../ha-notification-badge-v2.png',
     tag:payload?.data?.tag || 'ha-marketing',
     renotify:true,
     data:{
