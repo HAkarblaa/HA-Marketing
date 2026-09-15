@@ -1361,6 +1361,9 @@ button{-webkit-tap-highlight-color:transparent}
 
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+
+<link rel="stylesheet" href="ha-location-ux.css">
+<script src="ha-location-ux.js"></script>
 </head>
 <body>
 
@@ -1577,7 +1580,7 @@ let haDriverMapCentered=false;
 function centerDriverMapOnCurrentLocation(){
   if(haDriverMapCentered || !navigator.geolocation) return;
 
-  navigator.geolocation.getCurrentPosition(pos=>{
+  HA_LocationUX.getCurrentPosition(pos=>{
     const p={lat:pos.coords.latitude,lng:pos.coords.longitude};
     driverRealPos=p;
     placeDriverMapMarker(driver,[p.lat,p.lng]);

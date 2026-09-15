@@ -1025,6 +1025,9 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+
+<link rel="stylesheet" href="ha-location-ux.css">
+<script src="ha-location-ux.js"></script>
 </head>
 
 <body class="delivery-stage-1">
@@ -1475,13 +1478,14 @@ function setPoint(kind,p,label){
 
 locateBtn.onclick=()=>{
  if(!navigator.geolocation){
-   notice.textContent='المتصفح لا يدعم تحديد الموقع.';
+   notice.textContent='تعذر تحديد الموقع.';
+   HA_LocationUX.unsupported();
    return;
  }
 
  notice.textContent='جاري تحديد موقعك...';
 
- navigator.geolocation.getCurrentPosition(async pos=>{
+ HA_LocationUX.getCurrentPosition(async pos=>{
    const p=await snap(L.latLng(pos.coords.latitude,pos.coords.longitude));
    detectProvinceFromPoint(p);
 
@@ -1505,7 +1509,7 @@ let haAutoLocationCentered=false;
 function autoCenterOnCurrentLocation(){
   if(haAutoLocationCentered || !navigator.geolocation) return;
 
-  navigator.geolocation.getCurrentPosition(pos=>{
+  HA_LocationUX.getCurrentPosition(pos=>{
     const raw=L.latLng(pos.coords.latitude,pos.coords.longitude);
 
     // ننقل الخريطة فوراً إلى GPS بدون انتظار خدمات الطرق أو البحث.
@@ -1647,13 +1651,14 @@ async function detectProvinceFromPoint(p){
 
 document.getElementById('provinceBtn').addEventListener('click',()=>{
   if(!navigator.geolocation){
-    document.getElementById('provinceName').textContent='المتصفح لا يدعم تحديد الموقع';
+    document.getElementById('provinceName').textContent='تعذر تحديد الموقع';
+    HA_LocationUX.unsupported();
     return;
   }
 
   document.getElementById('provinceName').textContent='جاري تحديد موقعك...';
 
-  navigator.geolocation.getCurrentPosition(async pos=>{
+  HA_LocationUX.getCurrentPosition(async pos=>{
     const p=L.latLng(pos.coords.latitude,pos.coords.longitude);
     await detectProvinceFromPoint(p);
   },()=>{

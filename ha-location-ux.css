@@ -1,0 +1,130 @@
+/* HA Marketing - Location searching UX */
+.ha-location-loading{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:7px !important;
+}
+.ha-location-loading::after,
+.ha-location-status-chip .ha-location-spinner{
+  content:"";
+  width:13px;
+  height:13px;
+  flex:0 0 13px;
+  border:2px solid rgba(231,173,62,.25);
+  border-top-color:#e7ad3e;
+  border-radius:50%;
+  animation:haLocationSpin .72s linear infinite;
+}
+@keyframes haLocationSpin{to{transform:rotate(360deg)}}
+
+.ha-location-status-chip{
+  position:fixed;
+  z-index:120000;
+  left:50%;
+  top:78px;
+  transform:translate(-50%,-12px);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  max-width:calc(100vw - 28px);
+  padding:9px 13px;
+  border-radius:999px;
+  background:rgba(7,10,12,.94);
+  color:#fff;
+  border:1px solid rgba(231,173,62,.48);
+  box-shadow:0 10px 30px rgba(0,0,0,.30);
+  font:700 12px/1.4 Arial,Tahoma,sans-serif;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:.18s ease;
+}
+.ha-location-status-chip.show{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+}
+
+/* تنبيه تفعيل الموقع */
+.ha-location-modal{
+  position:fixed;
+  inset:0;
+  z-index:130000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.62);
+  backdrop-filter:blur(5px);
+}
+.ha-location-modal.show{display:flex}
+.ha-location-modal-card{
+  width:min(430px,94vw);
+  border-radius:22px;
+  padding:18px;
+  text-align:center;
+  background:#0c1013;
+  color:#fff;
+  border:1px solid rgba(231,173,62,.55);
+  box-shadow:0 18px 55px rgba(0,0,0,.45);
+}
+.ha-location-modal-icon{
+  width:58px;height:58px;
+  display:grid;place-items:center;
+  margin:0 auto 10px;
+  border-radius:18px;
+  font-size:29px;
+  background:rgba(231,173,62,.10);
+  border:1px solid rgba(231,173,62,.40);
+}
+.ha-location-modal-card h3{margin:6px 0 8px;font-size:20px}
+.ha-location-modal-card p{
+  margin:0 0 14px;
+  color:#c1c6ca;
+  font-size:14px;
+  line-height:1.8;
+}
+.ha-location-modal-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.ha-location-modal-actions button{
+  border-radius:13px;
+  padding:11px 10px;
+  font:800 14px Arial,Tahoma,sans-serif;
+  cursor:pointer;
+}
+.ha-location-retry{
+  border:1px solid #b47d22;
+  background:linear-gradient(135deg,#f1c760,#d99a2a);
+  color:#17191b;
+}
+.ha-location-close{
+  border:1px solid #4b5155;
+  background:#15191c;
+  color:#fff;
+}
+
+html[data-ha-theme="light"] .ha-location-status-chip{
+  background:rgba(255,255,255,.97);
+  color:#102235;
+  border-color:rgba(205,145,32,.45);
+  box-shadow:0 10px 28px rgba(37,76,120,.14);
+}
+html[data-ha-theme="light"] .ha-location-modal-card{
+  background:#fff;
+  color:#102235;
+  border-color:rgba(205,145,32,.42);
+  box-shadow:0 18px 55px rgba(37,76,120,.18);
+}
+html[data-ha-theme="light"] .ha-location-modal-card p{color:#64748b}
+html[data-ha-theme="light"] .ha-location-close{
+  background:#eef4fa;
+  color:#17324b;
+  border-color:#cbd8e4;
+}
+@media(max-width:600px){
+  .ha-location-status-chip{top:66px;font-size:11px;padding:8px 11px}
+  .ha-location-modal-actions{grid-template-columns:1fr}
+}
