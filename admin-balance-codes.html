@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أكواد تعبئة الرصيد - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#07090b;color:#fff}
+.wrap{width:94%;max-width:900px;margin:24px auto}
+.card{background:#101419;border:1px solid #3b3327;border-radius:18px;padding:16px;margin:12px 0}
+h1,h2{color:#efc46b}
+input,select,button{font:inherit}
+input,select{width:100%;padding:12px;border-radius:11px;border:1px solid #454b50;background:#080b0e;color:#fff;margin:5px 0 10px}
+button,.btn{border:1px solid #866124;background:#15191d;color:#efc46b;border-radius:11px;padding:11px 14px;cursor:pointer;text-decoration:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.code{font:900 25px/1.2 monospace;direction:ltr;text-align:center;color:#ffd97f;letter-spacing:2px;padding:14px;border:1px dashed #92703a;border-radius:13px;margin-top:12px}
+.item{border:1px solid #343b40;border-radius:13px;padding:12px;margin:8px 0}
+.muted{color:#9ea5aa;font-size:13px;line-height:1.7}
+.used{opacity:.55}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="btn" href="admin-panel.html">← لوحة الإدارة</a>
+  <h1>💳 أكواد تعبئة الرصيد</h1>
+
+  <div id="gate" class="card">جاري التحقق من الصلاحية...</div>
+
+  <div id="panel" style="display:none">
+    <div class="card">
+      <h2>إنشاء كود جديد</h2>
+      <div class="grid">
+        <div>
+          <label>قيمة الرصيد بالدينار</label>
+          <input id="amount" type="number" min="1" step="1" placeholder="مثال: 10000">
+        </div>
+        <div>
+          <label>الكود مخصص لمن؟</label>
+          <select id="role">
+            <option value="">جميع الأنواع</option>
+            <option value="employee">الموظف</option>
+            <option value="driver">السائق / المندوب</option>
+            <option value="service_provider">مقدم الخدمة</option>
+          </select>
+        </div>
+      </div>
+      <button id="createBtn">إنشاء الكود</button>
+      <div id="newCode" class="code" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <h2>آخر الأكواد</h2>
+      <div id="codes">جاري التحميل...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const roleName=x=>({
+  employee:'موظف',
+  driver:'سائق / مندوب',
+  service_provider:'مقدم خدمة'
+}[x]||'جميع الأنواع');
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){gate.textContent='يجب تسجيل الدخول.';return}
+
+  let ok=false;
+  try{
+    const a=await db.rpc('is_app_admin');
+    const s=await db.rpc('is_super_admin');
+    ok=(!a.error&&a.data===true)||(!s.error&&s.data===true);
+  }catch(e){}
+
+  if(!ok){gate.textContent='هذه الصفحة للإدارة فقط.';return}
+
+  gate.textContent='✅ مسموح';
+  panel.style.display='block';
+  loadCodes();
+}
+
+createBtn.onclick=async()=>{
+  const value=Number(amount.value);
+  if(!Number.isFinite(value)||value<=0)return alert('اكتب قيمة صحيحة');
+
+  createBtn.disabled=true;
+  const {data,error}=await db.rpc('generate_balance_recharge_code',{
+    p_amount:value,
+    p_role_type:role.value||null,
+    p_expires_at:null
+  });
+  createBtn.disabled=false;
+
+  if(error)return alert(error.message);
+
+  newCode.style.display='block';
+  newCode.textContent=data;
+  loadCodes();
+};
+
+async function loadCodes(){
+  const {data,error}=await db.from('balance_recharge_codes')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(100);
+
+  if(error){codes.textContent=error.message;return}
+
+  codes.innerHTML=(data||[]).map(x=>`
+    <div class="item ${x.used_at?'used':''}">
+      <b style="font-family:monospace;direction:ltr">${x.code}</b>
+      <div>${Number(x.amount).toLocaleString('ar-IQ')} د.ع • ${roleName(x.role_type)}</div>
+      <div class="muted">${x.used_at?'مستخدم ✅':'غير مستخدم'} • ${new Date(x.created_at).toLocaleString('ar-IQ')}</div>
+    </div>
+  `).join('')||'لا توجد أكواد.';
+}
+
+init();
+</script>
+</body>
+</html>

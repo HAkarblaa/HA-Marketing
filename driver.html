@@ -1352,7 +1352,7 @@ button{-webkit-tap-highlight-color:transparent}
   justify-content:space-between;
   gap:10px;
 }
-.ha-driver-balance.show{display:flex}
+.ha-driver-balance.show{display:flex}.ha-driver-balance{cursor:pointer}
 .ha-driver-balance small{display:block;color:#aab1b7;font-size:11px}
 .ha-driver-balance strong{display:block;color:#f2b544;font-size:22px;margin-top:3px}
 .ha-driver-balance .ico{font-size:31px}
@@ -1406,7 +1406,7 @@ button{-webkit-tap-highlight-color:transparent}
     </div>
   </section>
 
-  <section id="haDriverBalance" class="ha-driver-balance">
+  <section id="haDriverBalance" class="ha-driver-balance" onclick="haRedeemDriverBalance()">
     <div>
       <small>الرصيد الحالي</small>
       <strong id="haDriverBalanceValue">0 د.ع</strong>
@@ -2468,6 +2468,28 @@ window.addEventListener('load',()=>{
 
 <script>
 /* ===== HA DRIVER BALANCE ===== */
+window.haDriverBalanceDb=null;
+window.haRedeemDriverBalance=async function(){
+  const db=window.haDriverBalanceDb;
+  if(!db)return;
+
+  const code=prompt('أدخل كود تعبئة رصيد السائق / المندوب:');
+  if(code===null)return;
+  if(!code.trim()){alert('اكتب الكود أولاً');return}
+
+  const {data,error}=await db.rpc('redeem_balance_recharge_code',{
+    p_code:code.trim(),
+    p_role_type:'driver'
+  });
+
+  if(error){alert('تعذر إضافة الرصيد: '+error.message);return}
+
+  document.getElementById('haDriverBalanceValue').textContent=
+    Number(data?.balance||0).toLocaleString('ar-IQ',{maximumFractionDigits:2})+' د.ع';
+
+  alert('✅ تمت إضافة '+Number(data?.added||0).toLocaleString('ar-IQ')+' د.ع');
+};
+
 (async function(){
   try{
     if(!window.supabase)return;
@@ -2476,6 +2498,7 @@ window.addEventListener('load',()=>{
       'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
       {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
     );
+    window.haDriverBalanceDb=sdb;
     const {data:{session}}=await sdb.auth.getSession();
     const user=session?.user;
     if(!user)return;

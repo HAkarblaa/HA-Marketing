@@ -565,7 +565,7 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   <span id="haDriverOrderCount" class="count">1</span>
 </a> 
 <section id="haRoleBalances" class="ha-role-balances" aria-label="الرصيد">
-  <a id="haEmployeeBalanceCard" class="ha-role-balance-card" href="employee-orders.html">
+  <a id="haEmployeeBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('employee','haEmployeeBalance');return false;">
     <span class="wallet">💳</span>
     <span class="meta">
       <small>الرصيد الحالي</small>
@@ -574,7 +574,7 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
     </span>
   </a>
 
-  <a id="haDriverBalanceCard" class="ha-role-balance-card" href="driver.html">
+  <a id="haDriverBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('driver','haDriverBalance');return false;">
     <span class="wallet">🚕</span>
     <span class="meta">
       <small>الرصيد الحالي</small>
@@ -583,7 +583,7 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
     </span>
   </a>
 
-  <a id="haProviderBalanceCard" class="ha-role-balance-card" href="provider-dashboard.html">
+  <a id="haProviderBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('service_provider','haProviderBalance');return false;">
     <span class="wallet">🛠️</span>
     <span class="meta">
       <small>الرصيد الحالي</small>
@@ -952,6 +952,33 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
   );
 
   const fmt=n=>(Number(n||0)).toLocaleString('ar-IQ',{maximumFractionDigits:2})+' د.ع';
+
+  window.redeemRoleBalanceCode=async function(roleType,amountId){
+    const code=prompt('أدخل كود تعبئة الرصيد:');
+    if(code===null)return;
+    if(!code.trim()){
+      alert('اكتب الكود أولاً');
+      return;
+    }
+
+    const {data,error}=await bdb.rpc('redeem_balance_recharge_code',{
+      p_code:code.trim(),
+      p_role_type:roleType
+    });
+
+    if(error){
+      alert('تعذر إضافة الرصيد: '+error.message);
+      return;
+    }
+
+    const newBalance=Number(data?.balance||0);
+    const added=Number(data?.added||0);
+    const value=document.getElementById(amountId);
+    if(value)value.textContent=fmt(newBalance);
+
+    alert('✅ تمت إضافة '+fmt(added)+' إلى رصيدك.\nالرصيد الحالي: '+fmt(newBalance));
+  };
+
 
   function showCard(id,amountId,amount){
     const card=document.getElementById(id);
