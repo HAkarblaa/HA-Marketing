@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
 
     const { data: tokens, error: tErr } = await admin
       .from("push_tokens")
-      .select("id,token,platform")
+      .select("id,token")
       .eq("user_id", n.user_id)
       .eq("enabled", true);
     if (tErr) throw tErr;
@@ -119,44 +119,30 @@ Deno.serve(async (req) => {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(
-          String(row.platform || "").toLowerCase() !== "android"
-            ? {
-                // Web Push: DATA ONLY.
-                // الـ Service Worker هو الذي ينشئ الإشعار حتى نضمن شعار HA المفرغ.
-                message: {
-                  token: row.token,
-                  data: {
-                    title: n.title,
-                    body: n.message,
-                    message: n.message,
-                    link,
-                    notification_id: String(n.id),
-                    kind: n.kind || "general",
-                    order_id: n.order_id ? String(n.order_id) : "",
-                  },
-                  webpush: {
-                    headers: {
-                      Urgency: "high"
-                    },
-                  },
-                },
-              }
-            : {
-                message: {
-                  token: row.token,
-                  notification: { title: n.title, body: n.message },
-                  data: {
-                    title: n.title,
-                    message: n.message,
-                    link,
-                    notification_id: String(n.id),
-                    kind: n.kind || "general",
-                    order_id: n.order_id ? String(n.order_id) : "",
-                  },
-                },
-              }
-        ),
+        body: JSON.stringify({
+          message: {
+            token: row.token,
+            notification: { title: n.title, body: n.message },
+            data: {
+              title: n.title,
+              message: n.message,
+              link,
+              notification_id: String(n.id),
+              kind: n.kind || "general",
+              order_id: n.order_id ? String(n.order_id) : "",
+            },
+            webpush: {
+              fcm_options: { link },
+              notification: {
+                title: n.title,
+                body: n.message,
+                icon: "https://hakarblaa.github.io/HA-Marketing/ha-logo-transparent.png",
+                badge: "https://hakarblaa.github.io/HA-Marketing/notification-icon.png",
+                tag: `ha-notification-${n.id}`,
+              },
+            },
+          },
+        }),
       });
 
       if (r.ok) {

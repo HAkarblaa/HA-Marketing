@@ -104,17 +104,6 @@
     }
   }
 
-
-  async function refreshPushWorker(){
-    try{
-      if(!('serviceWorker' in navigator))return;
-      const reg=await navigator.serviceWorker.getRegistration('./fcm/');
-      if(reg)await reg.update();
-    }catch(e){
-      console.warn('push worker update',e);
-    }
-  }
-
   async function enableNotifications(){
     if(!navigator.onLine){
       alert('تحتاج إنترنت لتشغيل الإشعارات.');
@@ -173,8 +162,8 @@
           if(Notification.permission==='granted'){
             new Notification(title,{
               body,
-              icon:'https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-oval.png',
-              badge:'https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-oval.png',
+              icon:'./ha-logo-transparent.png',
+              badge:'./notification-icon.png',
               data:{url:payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html'}
             });
           }
@@ -224,7 +213,6 @@
       b.onclick=toggleNotifications;
     });
     updateBell();
-    if(isEnabled())refreshPushWorker();
   }
 
   window.HA_EnableNotifications=enableNotifications;
