@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إضافة خدمة - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#06090b;color:#fff}
+.wrap{width:94%;max-width:850px;margin:20px auto 90px}
+.top,.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn,button{border:0;border-radius:13px;padding:11px 14px;background:#151a1e;color:#fff;text-decoration:none;cursor:pointer;font:inherit}
+.card{margin:13px 0;padding:16px;border-radius:19px;border:1px solid #3d464d;background:#0c1115;box-shadow:0 10px 30px #0004}
+.hero{text-align:center;border-color:#8e6927}
+.hero .ico{font-size:50px}.hero h1{margin:7px 0;color:#f0c86c}
+.hero p{color:#aeb7bd;line-height:1.8}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #48525a;background:#080c0f;color:#fff;font:inherit}
+textarea{min-height:100px;grid-column:1/-1}
+.full{grid-column:1/-1}
+.send{width:100%;margin-top:10px;background:linear-gradient(135deg,#efca70,#d39829);color:#17191a;font-weight:900}
+.status{margin-top:10px;color:#b6bec4}
+.item{padding:12px 0;border-bottom:1px solid #293138}.item:last-child{border-bottom:0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2329;font-size:11px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}textarea,.full{grid-column:auto}}
+</style>
+<script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="btn" href="services.html">← طلب خدمة</a>
+    <b>HA Marketing</b>
+    <span></span>
+  </div>
+
+  <div class="card hero">
+    <div class="ico">➕🛠️</div>
+    <h1>إضافة خدمة</h1>
+    <p>قدّم بيانات خدمتك. الطلب يروح للإدارة أولاً، وما تظهر الخدمة للزبائن إلا بعد الموافقة.</p>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <select id="category" class="full">
+        <option value="">جاري تحميل أنواع الخدمات...</option>
+      </select>
+      <input id="otherCategory" class="full" style="display:none" placeholder="اكتب نوع الخدمة الجديدة">
+      <input id="name" placeholder="اسم الخدمة / اسم النشاط">
+      <input id="phone" inputmode="tel" placeholder="رقم الهاتف">
+      <input id="gov" placeholder="المحافظة">
+      <input id="address" placeholder="المنطقة / العنوان">
+      <input id="price" type="number" min="0" placeholder="السعر يبدأ من (اختياري)">
+      <input id="hours" placeholder="أوقات العمل (اختياري)">
+      <textarea id="description" placeholder="وصف مختصر للخدمة"></textarea>
+    </div>
+    <button id="sendBtn" class="send" type="button">إرسال طلب إضافة الخدمة</button>
+    <div id="status" class="status">بعد الإرسال يبقى الطلب قيد المراجعة إلى أن توافق الإدارة.</div>
+  </div>
+
+  <div class="card">
+    <h3>حالة طلباتي</h3>
+    <div id="mine">جاري التحميل...</div>
+  </div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+let me=null;
+
+category.onchange=()=>{
+  otherCategory.style.display=category.value==='other'?'block':'none';
+};
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html?next=add-service.html';return}
+  me=session.user;
+
+  const {data:cats,error}=await db.from('service_categories')
+    .select('id,name')
+    .eq('is_active',true)
+    .order('sort_order');
+
+  category.innerHTML='<option value="">اختر نوع الخدمة</option>'
+    +(cats||[]).map(x=>`<option value="${x.id}" data-name="${esc(x.name)}">${esc(x.name)}</option>`).join('')
+    +'<option value="other">➕ خدمة أخرى</option>';
+
+  if(error)status.textContent='تعذر تحميل أنواع الخدمات: '+error.message;
+
+  try{
+    const {data:p}=await db.from('profiles')
+      .select('full_name,phone,governorate')
+      .eq('id',me.id).maybeSingle();
+    if(p){
+      name.value=p.full_name||'';
+      phone.value=p.phone||'';
+      gov.value=p.governorate||'';
+    }
+  }catch(e){}
+
+  loadMine();
+}
+
+sendBtn.onclick=async()=>{
+  const catVal=category.value;
+  if(!catVal)return alert('اختر نوع الخدمة');
+
+  const displayName=name.value.trim();
+  if(!displayName)return alert('اكتب اسم الخدمة / النشاط');
+
+  const opt=category.options[category.selectedIndex];
+  const isOther=catVal==='other';
+  const catName=isOther?otherCategory.value.trim():(opt?.dataset?.name||opt?.textContent||'').trim();
+  if(isOther&&!catName)return alert('اكتب نوع الخدمة الجديدة');
+
+  sendBtn.disabled=true;
+  status.textContent='جاري إرسال الطلب للإدارة...';
+
+  const {data,error}=await db.rpc('submit_service_addition_request',{
+    p_category_id:isOther?null:Number(catVal),
+    p_category_name:catName,
+    p_display_name:displayName,
+    p_phone:phone.value.trim()||null,
+    p_governorate:gov.value.trim()||null,
+    p_address:address.value.trim()||null,
+    p_price_from:price.value?Number(price.value):null,
+    p_description:description.value.trim()||null,
+    p_working_hours:hours.value.trim()||null
+  });
+
+  sendBtn.disabled=false;
+
+  if(error){
+    status.textContent='❌ تعذر إرسال الطلب: '+error.message;
+    return;
+  }
+
+  status.textContent='✅ تم إرسال الطلب وهو الآن بانتظار موافقة الإدارة.';
+  alert('تم إرسال طلب إضافة الخدمة بنجاح وهو قيد المراجعة.');
+  loadMine();
+};
+
+async function loadMine(){
+  const {data,error}=await db.from('service_addition_requests')
+    .select('*')
+    .eq('user_id',me.id)
+    .order('created_at',{ascending:false})
+    .limit(30);
+
+  if(error){
+    mine.textContent='شغّل ملف SQL الجديد أولاً: '+error.message;
+    return;
+  }
+
+  const names={pending:'⏳ قيد المراجعة',approved:'✅ مقبول',rejected:'❌ مرفوض'};
+  mine.innerHTML=(data||[]).map(x=>`
+    <div class="item">
+      <div class="row">
+        <b>${esc(x.display_name)}</b>
+        <span class="badge">${names[x.status]||esc(x.status)}</span>
+      </div>
+      <div style="margin-top:6px">${esc(x.category_name)}</div>
+      ${x.admin_note?`<div style="color:#b8c0c6;margin-top:6px">ملاحظة الإدارة: ${esc(x.admin_note)}</div>`:''}
+      ${x.status==='approved'?'<div style="margin-top:8px"><a class="btn" href="provider-dashboard.html">فتح لوحة مقدم الخدمة</a></div>':''}
+    </div>
+  `).join('')||'لا توجد طلبات سابقة.';
+}
+init();
+</script>
+</body>
+</html>

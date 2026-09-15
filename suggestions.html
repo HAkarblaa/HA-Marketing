@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مقترحاتكم - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#070a0d;color:#fff}
+.wrap{width:94%;max-width:760px;margin:20px auto 90px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.btn,button{border:0;border-radius:13px;padding:11px 14px;background:#151a1e;color:#fff;text-decoration:none;cursor:pointer;font:inherit}
+.card{margin:14px 0;padding:18px;border:1px solid #39434b;border-radius:20px;background:#0d1216;box-shadow:0 10px 30px #0005}
+.hero{text-align:center;border-color:#8b6727}
+.hero .ico{font-size:52px}
+.hero h1{margin:8px 0;color:#f0c86d}
+.hero p{color:#aeb6bc;line-height:1.8}
+textarea{width:100%;min-height:160px;resize:vertical;padding:14px;border-radius:14px;border:1px solid #4b555d;background:#080c0f;color:#fff;font:inherit}
+.send{width:100%;margin-top:10px;background:linear-gradient(135deg,#efc96d,#cf9225);color:#17191b;font-weight:900}
+.status{margin-top:10px;color:#b7bec3}
+.item{padding:12px 0;border-bottom:1px solid #293037}
+.item:last-child{border-bottom:0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2329;color:#ddd;font-size:11px}
+small{color:#8f989f}
+</style>
+<script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="btn" href="index.html">← الرئيسية</a>
+    <b>HA Marketing</b>
+    <span></span>
+  </div>
+
+  <div class="card hero">
+    <div class="ico">💡</div>
+    <h1>مقترحاتكم</h1>
+    <p>اكتب أي فكرة أو اقتراح يساعدنا نطوّر التطبيق. المقترح يوصل مباشرة إلى الأدمن الرئيسي.</p>
+  </div>
+
+  <div class="card">
+    <textarea id="message" maxlength="3000" placeholder="اكتب مقترحك هنا..."></textarea>
+    <button id="sendBtn" class="send" type="button">إرسال المقترح</button>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="card">
+    <h3>مقترحاتي السابقة</h3>
+    <div id="mine">جاري التحميل...</div>
+  </div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+let me=null;
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html?next=suggestions.html';return}
+  me=session.user;
+  loadMine();
+}
+
+sendBtn.onclick=async()=>{
+  const text=message.value.trim();
+  if(text.length<3)return alert('اكتب المقترح أولاً');
+
+  sendBtn.disabled=true;
+  status.textContent='جاري إرسال المقترح...';
+
+  const {data,error}=await db.rpc('submit_user_suggestion',{p_message:text});
+  sendBtn.disabled=false;
+
+  if(error){
+    status.textContent='تعذر الإرسال: '+error.message;
+    return;
+  }
+
+  message.value='';
+  status.textContent='✅ تم إرسال مقترحك إلى الأدمن الرئيسي.';
+  await loadMine();
+};
+
+async function loadMine(){
+  const {data,error}=await db.from('user_suggestions')
+    .select('*')
+    .eq('user_id',me.id)
+    .order('created_at',{ascending:false})
+    .limit(30);
+
+  if(error){
+    mine.textContent='شغّل ملف SQL الجديد أولاً: '+error.message;
+    return;
+  }
+
+  const names={new:'⏳ جديد',reviewed:'✅ تمت المراجعة',closed:'✔️ مغلق'};
+  mine.innerHTML=(data||[]).map(x=>`
+    <div class="item">
+      <span class="badge">${names[x.status]||esc(x.status)}</span>
+      <div style="margin:8px 0;line-height:1.8">${esc(x.message)}</div>
+      ${x.admin_note?`<small>رد الإدارة: ${esc(x.admin_note)}</small><br>`:''}
+      <small>${new Date(x.created_at).toLocaleString('ar-IQ')}</small>
+    </div>
+  `).join('')||'ما عندك مقترحات سابقة.';
+}
+
+init();
+</script>
+</body>
+</html>

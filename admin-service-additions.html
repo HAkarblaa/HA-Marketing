@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>طلبات إضافة الخدمة - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#070a0d;color:#fff}
+.wrap{width:94%;max-width:1050px;margin:20px auto 80px}
+.top,.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn,button{border:0;border-radius:12px;padding:10px 13px;background:#151a1e;color:#fff;text-decoration:none;cursor:pointer;font:inherit}
+.card{margin:12px 0;padding:15px;border-radius:17px;border:1px solid #3a444c;background:#0d1216}
+.pending{border-right:5px solid #e7ad3e}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2329;font-size:11px}
+.ok{background:#176536}.danger{background:#9a2432}.light{background:#31383e}
+.muted{color:#9ea7ae;line-height:1.8}
+</style>
+<script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="btn" href="admin-panel.html">← لوحة الإدارة</a>
+    <h2>🛠️ طلبات إضافة الخدمة</h2>
+    <button onclick="load()">تحديث</button>
+  </div>
+  <div id="gate" class="card">جاري التحقق...</div>
+  <div id="list"></div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+let allowed=false;
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html';return}
+
+  let ok=false;
+  const s=await db.rpc('is_super_admin');
+  if(!s.error&&s.data===true)ok=true;
+
+  if(!ok){
+    const p=await db.rpc('admin_has_section',{p_section:'services'});
+    if(!p.error&&p.data===true)ok=true;
+  }
+
+  if(!ok){
+    gate.textContent='لا تملك صلاحية إدارة طلب الخدمة.';
+    return;
+  }
+
+  allowed=true;
+  gate.textContent='✅ صلاحية المراجعة فعالة';
+  load();
+}
+
+async function load(){
+  if(!allowed)return;
+  list.innerHTML='<div class="card">جاري تحميل الطلبات...</div>';
+
+  const {data,error}=await db.from('service_addition_requests')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(300);
+
+  if(error){
+    list.innerHTML='<div class="card">'+esc(error.message)+'</div>';
+    return;
+  }
+
+  const names={pending:'قيد المراجعة',approved:'مقبول',rejected:'مرفوض'};
+  list.innerHTML=(data||[]).map(x=>`
+    <div class="card ${x.status==='pending'?'pending':''}">
+      <div class="row">
+        <b>${esc(x.display_name)}</b>
+        <span class="badge">${names[x.status]||esc(x.status)}</span>
+      </div>
+      <div class="muted">
+        🛠️ ${esc(x.category_name)}<br>
+        📞 ${esc(x.phone||'غير مضاف')}<br>
+        📍 ${esc([x.governorate,x.address].filter(Boolean).join(' - ')||'غير مضاف')}<br>
+        💰 ${x.price_from!=null?Number(x.price_from).toLocaleString('ar-IQ')+' د.ع':'حسب الخدمة'}<br>
+        📝 ${esc(x.description||'')}
+      </div>
+      ${x.admin_note?`<div class="muted">ملاحظة الإدارة: ${esc(x.admin_note)}</div>`:''}
+      ${x.status==='pending'?`
+        <div class="row" style="margin-top:10px">
+          <button class="ok" onclick="review(${x.id},'approved')">موافقة وإضافة الخدمة</button>
+          <button class="danger" onclick="review(${x.id},'rejected')">رفض</button>
+        </div>`:''}
+    </div>
+  `).join('')||'<div class="card">لا توجد طلبات إضافة خدمة.</div>';
+}
+
+async function review(id,statusValue){
+  const note=prompt('ملاحظة الإدارة (اختياري):')||null;
+  const {data,error}=await db.rpc('review_service_addition_request',{
+    p_id:id,
+    p_status:statusValue,
+    p_note:note
+  });
+  if(error)return alert('تعذر تنفيذ القرار: '+error.message);
+  await load();
+}
+init();
+</script>
+</body>
+</html>
