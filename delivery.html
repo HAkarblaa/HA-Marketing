@@ -1027,6 +1027,44 @@ body.delivery-stage-1 #centerPin{
 .ha-live-entity.destination{background:#eefbed}
 .ha-live-entity span{position:relative;z-index:2}
 
+
+/* ===== HA SECOND ADDRESS MAP PICKER ===== */
+.extra-address-confirm{
+  position:absolute;
+  z-index:850;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%);
+  display:none;
+  min-width:170px;
+  max-width:calc(100% - 28px);
+  padding:10px 15px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#a55df0,#7040c8);
+  color:#fff;
+  font-weight:900;
+  font-size:13px;
+  box-shadow:0 8px 25px rgba(70,35,120,.30);
+}
+.extra-address-confirm.show{display:block}
+.center-pin.extra-address .moving-pin{
+  background:#8b5cf6!important;
+  border-color:#fff!important;
+  box-shadow:0 4px 16px rgba(139,92,246,.45)!important;
+}
+.ha-extra-address-mode .single-search-wrap{
+  display:block!important;
+  position:relative!important;
+  z-index:900!important;
+  margin-top:8px!important;
+}
+.ha-extra-address-mode #selectionPanel,
+.ha-extra-address-mode #tripSheet{
+  display:none!important;
+}
+html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
+
 </style>
 
 <style id="ha-mobile-confirm-button-fix">
@@ -1086,6 +1124,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   <button id="locateBtn" class="locate-btn" title="تحديد موقعي" aria-label="تحديد موقعي">📍</button>
 
   <div id="centerPin" class="center-pin"><span class="moving-pin"></span></div>
+  <button id="extraAddressConfirmBtn" class="extra-address-confirm" type="button">📍 تثبيت العنوان الثاني</button>
 </div>
 
 
@@ -1366,6 +1405,106 @@ extraSheet.addEventListener('click',e=>{
   if(e.target===extraSheet) closeExtraSheet();
 });
 
+
+// ===== اختيار العنوان الثاني من الخريطة =====
+let haExtraAddressMode=false;
+let haExtraAddressPoint=null;
+let haExtraAddressLabel='';
+let haExtraPreviousMode=null;
+
+function haBeginExtraAddressPick(){
+  if(!extraDestinationCheck.checked)return;
+
+  haExtraAddressMode=true;
+  haExtraPreviousMode=mode;
+  closeExtraSheet();
+
+  document.body.classList.add('ha-extra-address-mode');
+  document.getElementById('selectionPanel').style.display='none';
+  document.getElementById('tripSheet').classList.remove('open');
+
+  const search=document.getElementById('placeSearch');
+  search.value='';
+  search.placeholder='ابحث عن العنوان الثاني';
+
+  const results=document.getElementById('placeResults');
+  results.style.display='none';
+  results.innerHTML='';
+
+  centerPin.classList.add('show','extra-address');
+  document.getElementById('extraAddressConfirmBtn').classList.add('show');
+
+  notice.textContent='حرّك المؤشر وحدد العنوان الثاني، أو ابحث عن المكان ثم اضغط تثبيت العنوان الثاني.';
+
+  if(end)map.setView(end,Math.max(map.getZoom(),15));
+  setTimeout(()=>map.invalidateSize(),80);
+}
+
+async function haConfirmExtraAddress(){
+  if(!haExtraAddressMode)return;
+
+  const p=await snap(map.getCenter());
+  haExtraAddressPoint=p;
+
+  const input=document.getElementById('extraDestinationText');
+  if(input){
+    input.value=haExtraAddressLabel || 'عنوان إضافي محدد من الخريطة';
+    input.dataset.lat=String(p.lat);
+    input.dataset.lng=String(p.lng);
+  }
+
+  haEndExtraAddressPick();
+
+  extraSheet.classList.add('show');
+  extraSheet.setAttribute('aria-hidden','false');
+  notice.textContent='تم تثبيت العنوان الثاني من الخريطة.';
+}
+
+function haEndExtraAddressPick(){
+  haExtraAddressMode=false;
+  document.body.classList.remove('ha-extra-address-mode');
+
+  centerPin.classList.remove('show','extra-address');
+  document.getElementById('extraAddressConfirmBtn').classList.remove('show');
+  document.getElementById('placeResults').style.display='none';
+
+  const search=document.getElementById('placeSearch');
+  search.value='';
+
+  if(start && end){
+    document.getElementById('selectionPanel').style.display='none';
+    document.getElementById('vehicleStep').style.display='block';
+    document.getElementById('tripSheet').classList.add('open');
+    document.body.classList.add('trip-sheet-open','trip-ready');
+  }else{
+    document.getElementById('selectionPanel').style.display='block';
+  }
+
+  if(haExtraPreviousMode){
+    setMode(haExtraPreviousMode);
+    haExtraPreviousMode=null;
+  }
+
+  setTimeout(()=>map.invalidateSize(),80);
+}
+
+document.getElementById('extraAddressConfirmBtn').onclick=haConfirmExtraAddress;
+
+extraDestinationCheck.addEventListener('change',()=>{
+  if(extraDestinationCheck.checked){
+    setTimeout(haBeginExtraAddressPick,120);
+  }else{
+    haExtraAddressPoint=null;
+    haExtraAddressLabel='';
+    if(extraDestinationText){
+      extraDestinationText.value='';
+      delete extraDestinationText.dataset.lat;
+      delete extraDestinationText.dataset.lng;
+    }
+    if(haExtraAddressMode)haEndExtraAddressPick();
+  }
+});
+
 </script>
 <script>
 const map=L.map('map',{zoomControl:false}).setView([33.2232,43.6793],6);
@@ -1597,7 +1736,7 @@ async function searchCurrentPlace(){
  const q=document.getElementById('placeSearch').value.trim();
  if(!q)return;
 
- const kind=mode;
+ const kind=haExtraAddressMode?'extra':mode;
  const box=document.getElementById('placeResults');
  box.style.display='block';
  box.innerHTML='<button disabled>جاري البحث...</button>';
@@ -1624,6 +1763,15 @@ async function searchCurrentPlace(){
        detectProvinceFromPoint(p);
 
        // البحث فقط ينقل الخريطة والدبوس، ولا يثبت النقطة.
+       if(kind==='extra'){
+         haExtraAddressLabel=x.display_name;
+         map.setView(p,16);
+         centerPin.classList.add('show','extra-address');
+         box.style.display='none';
+         notice.textContent='تم نقل المؤشر إلى العنوان الثاني. عدّل مكانه إذا تريد ثم اضغط تثبيت العنوان الثاني.';
+         return;
+       }
+
        setMode(kind);
        map.setView(p,16);
        startMapPick();
@@ -1736,7 +1884,7 @@ function round250(x){
 
 function currentPricingExtras(){
   return {
-    extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
+    extraDestination:extraDestinationCheck.checked ? (extraDestinationText.value.trim()+(extraDestinationText.dataset.lat?' | '+extraDestinationText.dataset.lat+','+extraDestinationText.dataset.lng:'')) : '',
     extraPickup:stopCheck.checked ? stopText.value.trim() : '',
     fragile:!!luggageCheck.checked,
     packages:passengersCheck.checked ? Number(extraPassengers.value) : 1
@@ -1953,7 +2101,7 @@ order.onclick=async()=>{
       notes:notesEl ? notesEl.value.trim() : ''
     },
     extras:{
-      extraDestination:extraDestinationCheck.checked ? extraDestinationText.value.trim() : '',
+      extraDestination:extraDestinationCheck.checked ? (extraDestinationText.value.trim()+(extraDestinationText.dataset.lat?' | '+extraDestinationText.dataset.lat+','+extraDestinationText.dataset.lng:'')) : '',
       extraPickup:stopCheck.checked ? stopText.value.trim() : '',
       fragile:!!luggageCheck.checked,
       packages:passengersCheck.checked ? Number(extraPassengers.value) : 1
