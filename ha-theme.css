@@ -494,3 +494,411 @@ html[data-ha-theme="light"] .ha-theme-toggle{
     font-size:20px !important;
   }
 }
+
+/* =========================================================
+   HA Marketing - GLOBAL TEXT CONTRAST FIX
+   إصلاح تداخل/اختفاء ألوان الكتابة في الوضعين النهاري والليلي
+   ========================================================= */
+
+/* ألوان أساسية أوضح */
+html[data-ha-theme="light"]{
+  --ha-fix-text:#102235;
+  --ha-fix-heading:#0b1f33;
+  --ha-fix-muted:#5f6d7a;
+  --ha-fix-soft:#73808d;
+  --ha-fix-link:#155b97;
+  --ha-fix-gold:#9b6713;
+  --ha-fix-card:#ffffff;
+  --ha-fix-card2:#f6faff;
+}
+
+html[data-ha-theme="dark"]{
+  --ha-fix-text:#f7f9fb;
+  --ha-fix-heading:#ffffff;
+  --ha-fix-muted:#c1c7cd;
+  --ha-fix-soft:#9fa8b1;
+  --ha-fix-link:#77baff;
+  --ha-fix-gold:#f1c566;
+  --ha-fix-card:#0c1013;
+  --ha-fix-card2:#11161a;
+}
+
+/* النص العام */
+html[data-ha-theme] body,
+html[data-ha-theme] .page,
+html[data-ha-theme] .wrap,
+html[data-ha-theme] .container,
+html[data-ha-theme] .content,
+html[data-ha-theme] .shell,
+html[data-ha-theme] main{
+  color:var(--ha-fix-text) !important;
+}
+
+/* العناوين */
+html[data-ha-theme] :is(
+  h1,h2,h3,h4,h5,h6,
+  .title,.heading,.section-title,.drawer-title,
+  .brand strong,.shell-head h2,.request-title b
+){
+  color:var(--ha-fix-heading) !important;
+  -webkit-text-fill-color:currentColor !important;
+  text-shadow:none !important;
+}
+
+/* النصوص الثانوية */
+html[data-ha-theme] :is(
+  p,.muted,.sub,.subtitle,.desc,.description,
+  .help,.hint,.meta,.status-text,.card p,
+  .qcard p,.shell-head p,.brand small
+){
+  color:var(--ha-fix-muted) !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+
+/* small فقط إذا ليس داخل زر ملون */
+html[data-ha-theme] small:not(button small):not(.btn small):not(.button small){
+  color:var(--ha-fix-soft) !important;
+}
+
+/* الروابط العامة */
+html[data-ha-theme] a:not(
+  .btn,.button,.primary,.cta,.go,.action,.save,.submit,
+  .simple-action,.provider-approved a,.provider-entry a,
+  .bottom a,.bottom-nav a,.shortcuts a,.card
+){
+  color:var(--ha-fix-link) !important;
+}
+
+/* ===== الواجهة الرئيسية ===== */
+html[data-ha-theme="light"] #mainGrid .card{
+  background:
+    radial-gradient(circle at 50% 0,rgba(var(--glow),.10),transparent 38%),
+    linear-gradient(145deg,#ffffff,#f5f9ff) !important;
+  border-color:rgba(var(--glow),.24) !important;
+}
+html[data-ha-theme="dark"] #mainGrid .card{
+  background:
+    radial-gradient(circle at 50% 0,rgba(var(--glow),.11),transparent 38%),
+    linear-gradient(145deg,#12181d,#06090c) !important;
+}
+
+html[data-ha-theme="light"] #mainGrid .card h2{
+  color:#11263a !important;
+}
+html[data-ha-theme="dark"] #mainGrid .card h2{
+  color:#ffffff !important;
+}
+html[data-ha-theme="light"] #mainGrid .card p{
+  color:#5f6d7b !important;
+}
+html[data-ha-theme="dark"] #mainGrid .card p{
+  color:#c4cbd1 !important;
+}
+
+html[data-ha-theme="light"] .iconbox{
+  background:
+    linear-gradient(145deg,rgba(var(--glow),.17),#ffffff) !important;
+  border-color:rgba(var(--glow),.48) !important;
+  box-shadow:0 8px 20px rgba(33,72,114,.10) !important;
+}
+html[data-ha-theme="dark"] .iconbox{
+  background:
+    linear-gradient(145deg,rgba(var(--glow),.30),#070b0e) !important;
+}
+
+/* اسم/نص البطل */
+html[data-ha-theme="light"] :is(.brand-name,.hero h1){
+  color:#10253a !important;
+  background:none !important;
+  -webkit-background-clip:border-box !important;
+  -webkit-text-fill-color:#10253a !important;
+  text-shadow:none !important;
+}
+html[data-ha-theme="dark"] :is(.brand-name,.hero h1){
+  color:#f8e5b2 !important;
+  background:none !important;
+  -webkit-background-clip:border-box !important;
+  -webkit-text-fill-color:#f8e5b2 !important;
+}
+html[data-ha-theme="light"] :is(.brand-sub,.hero p){
+  color:#526579 !important;
+}
+html[data-ha-theme="dark"] :is(.brand-sub,.hero p){
+  color:#cbd1d6 !important;
+}
+
+/* HA النصي ببعض الأقسام */
+html[data-ha-theme] .logo{
+  background:linear-gradient(180deg,#ffe69b 0,#e5ad43 48%,#9f651b 100%) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  color:transparent !important;
+  -webkit-text-fill-color:transparent !important;
+}
+
+/* شريط الأخبار */
+html[data-ha-theme="light"] :is(.ha-news-ticker,.promo-pill){
+  color:#18324b !important;
+}
+html[data-ha-theme="light"] :is(.ha-ticker-track,.promo-pill span,.promo-pill b){
+  color:#7c5410 !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+html[data-ha-theme="dark"] :is(.ha-news-ticker,.promo-pill){
+  color:#ffffff !important;
+}
+html[data-ha-theme="dark"] :is(.ha-ticker-track,.promo-pill span,.promo-pill b){
+  color:#efc66f !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+
+/* القائمة المختصرة */
+html[data-ha-theme="light"] .shortcuts{
+  background:linear-gradient(160deg,#ffffff,#f3f8fd) !important;
+}
+html[data-ha-theme="light"] .shortcuts a{
+  color:#17334d !important;
+  background:rgba(50,120,190,.045) !important;
+  border-color:rgba(52,115,177,.13) !important;
+}
+html[data-ha-theme="dark"] .shortcuts a{
+  color:#f5f7f9 !important;
+}
+html[data-ha-theme="light"] .drawer-title{
+  color:#996712 !important;
+}
+html[data-ha-theme="dark"] .drawer-title{
+  color:#f1c56f !important;
+}
+
+/* ===== طلب خدمة والأقسام ذات البطاقات ===== */
+html[data-ha-theme="light"] :is(
+  .section-shell,.qcard,.simple-action,.provider-entry,
+  .provider-approved a,.category-request,.provider-card,
+  .service-card
+){
+  background:
+    radial-gradient(circle at 90% 0,rgba(74,151,230,.07),transparent 35%),
+    linear-gradient(145deg,#ffffff,#f4f9ff) !important;
+  color:#102235 !important;
+  border-color:rgba(53,119,188,.20) !important;
+}
+html[data-ha-theme="dark"] :is(
+  .section-shell,.qcard,.simple-action,.provider-entry,
+  .provider-approved a,.category-request,.provider-card,
+  .service-card
+){
+  background:
+    radial-gradient(circle at 90% 0,rgba(231,173,62,.07),transparent 35%),
+    linear-gradient(145deg,#121715,#070a08) !important;
+  color:#f8fafb !important;
+}
+
+html[data-ha-theme="light"] :is(
+  .section-shell h2,.qcard h3,.simple-action b,
+  .provider-entry b,.provider-approved a,
+  .provider-card h2,.service-card h2
+){
+  color:#102b45 !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+html[data-ha-theme="dark"] :is(
+  .section-shell h2,.qcard h3,.simple-action b,
+  .provider-entry b,.provider-approved a,
+  .provider-card h2,.service-card h2
+){
+  color:#f1c66a !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+
+html[data-ha-theme="light"] :is(
+  .qcard p,.simple-action small,.provider-entry small,
+  .provider-card p,.service-card p
+){
+  color:#607080 !important;
+}
+html[data-ha-theme="dark"] :is(
+  .qcard p,.simple-action small,.provider-entry small,
+  .provider-card p,.service-card p
+){
+  color:#c1c8cd !important;
+}
+
+/* ===== البطاقات البيضاء/السوداء العامة ===== */
+html[data-ha-theme="light"] :is(
+  .card,.box,.panel,.tile,.role,.tool,.order,.order-row,
+  .request-card,.product-card,.store-card,.info-card,.status-card,
+  .result,.feature,.option,.list,.conversation,.composer
+){
+  color:#102235 !important;
+}
+html[data-ha-theme="dark"] :is(
+  .card,.box,.panel,.tile,.role,.tool,.order,.order-row,
+  .request-card,.product-card,.store-card,.info-card,.status-card,
+  .result,.feature,.option,.list,.conversation,.composer
+){
+  color:#f5f7f8 !important;
+}
+
+/* داخل البطاقات */
+html[data-ha-theme="light"] :is(
+  .card,.box,.panel,.tile,.role,.tool,.order,.request-card,
+  .product-card,.store-card,.info-card,.status-card
+) :is(h1,h2,h3,h4,b,strong,label){
+  color:#11283d !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+html[data-ha-theme="dark"] :is(
+  .card,.box,.panel,.tile,.role,.tool,.order,.request-card,
+  .product-card,.store-card,.info-card,.status-card
+) :is(h1,h2,h3,h4,b,strong,label){
+  color:#f7f9fa !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+
+html[data-ha-theme="light"] :is(
+  .card,.box,.panel,.tile,.role,.tool,.order,.request-card,
+  .product-card,.store-card,.info-card,.status-card
+) :is(p,.muted,.desc,.description,small){
+  color:#627181 !important;
+}
+html[data-ha-theme="dark"] :is(
+  .card,.box,.panel,.tile,.role,.tool,.order,.request-card,
+  .product-card,.store-card,.info-card,.status-card
+) :is(p,.muted,.desc,.description,small){
+  color:#bcc4ca !important;
+}
+
+/* ===== حقول الإدخال ===== */
+html[data-ha-theme="light"] :is(input,select,textarea,.input,.search input){
+  background:#ffffff !important;
+  color:#102235 !important;
+  -webkit-text-fill-color:#102235 !important;
+  caret-color:#145f9e !important;
+}
+html[data-ha-theme="dark"] :is(input,select,textarea,.input,.search input){
+  background:#090d10 !important;
+  color:#f5f7f9 !important;
+  -webkit-text-fill-color:#f5f7f9 !important;
+  caret-color:#efc567 !important;
+}
+html[data-ha-theme="light"] :is(input,textarea)::placeholder{
+  color:#8a96a1 !important;
+  -webkit-text-fill-color:#8a96a1 !important;
+  opacity:1 !important;
+}
+html[data-ha-theme="dark"] :is(input,textarea)::placeholder{
+  color:#8f99a2 !important;
+  -webkit-text-fill-color:#8f99a2 !important;
+  opacity:1 !important;
+}
+
+/* ===== الأزرار ===== */
+html[data-ha-theme] :is(
+  button,.btn,.button,.primary,.cta,.go,.action,.save,.submit
+){
+  -webkit-text-fill-color:currentColor !important;
+  text-shadow:none !important;
+}
+
+/* أزرار ذهبية */
+html[data-ha-theme] :is(
+  .primary,.cta,.go,.save,.submit,.send,.send-main,.request-send,
+  .provider-entry a,.ha-location-retry
+){
+  color:#18212a !important;
+  -webkit-text-fill-color:#18212a !important;
+}
+
+/* أزرار داكنة */
+html[data-ha-theme="dark"] button:not(.primary):not(.cta):not(.go):not(.save):not(.submit):not(.send):not(.send-main),
+html[data-ha-theme="dark"] .btn:not(.primary){
+  color:#ffffff !important;
+}
+html[data-ha-theme="light"] button:not(.primary):not(.cta):not(.go):not(.save):not(.submit):not(.send):not(.send-main),
+html[data-ha-theme="light"] .btn:not(.primary){
+  color:#17334e !important;
+}
+
+/* أزرار الحالة الملونة */
+html[data-ha-theme] :is(.danger,.reject,.delete){
+  color:#9f2430 !important;
+  -webkit-text-fill-color:#9f2430 !important;
+}
+html[data-ha-theme="dark"] :is(.danger,.reject,.delete){
+  color:#ffb7be !important;
+  -webkit-text-fill-color:#ffb7be !important;
+}
+html[data-ha-theme] :is(.success,.ok,.green){
+  color:#146b3d !important;
+  -webkit-text-fill-color:#146b3d !important;
+}
+html[data-ha-theme="dark"] :is(.success,.ok,.green){
+  color:#b9f0cf !important;
+  -webkit-text-fill-color:#b9f0cf !important;
+}
+
+/* ===== الشريط السفلي ===== */
+html[data-ha-theme="light"] :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar){
+  background:rgba(255,255,255,.97) !important;
+}
+html[data-ha-theme="light"] :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar) a{
+  color:#40576c !important;
+}
+html[data-ha-theme="light"] :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar) .active{
+  color:#9a6812 !important;
+}
+html[data-ha-theme="dark"] :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar) a{
+  color:#e8ecef !important;
+}
+html[data-ha-theme="dark"] :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar) .active{
+  color:#f1c55f !important;
+}
+
+/* ===== الجداول والقوائم ===== */
+html[data-ha-theme="light"] th{
+  color:#14344f !important;
+}
+html[data-ha-theme="light"] td{
+  color:#263b4d !important;
+}
+html[data-ha-theme="dark"] th{
+  color:#f4d68d !important;
+}
+html[data-ha-theme="dark"] td{
+  color:#edf1f3 !important;
+}
+
+/* ===== Badges / Status ===== */
+html[data-ha-theme="light"] :is(.badge,.status,.chip,.tag,.pill){
+  color:#24394b !important;
+}
+html[data-ha-theme="dark"] :is(.badge,.status,.chip,.tag,.pill){
+  color:#f0f3f5 !important;
+}
+
+/* ===== حالات كانت تختفي بسبب transparent أو webkit fill ===== */
+html[data-ha-theme] :is(
+  .card h2,.card h3,.qcard h3,.simple-action b,
+  .provider-card h2,.service-card h2,.shell-head h2
+){
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
+/* لا نغير لون الإيموجي/الصور/الخريطة */
+html[data-ha-theme] :is(img,svg,canvas,video,iframe,#map,.map,.leaflet-container){
+  color:initial;
+  -webkit-text-fill-color:initial;
+}
+
+/* تحسين النصوص الصغيرة بالموبايل */
+@media(max-width:600px){
+  html[data-ha-theme] body{
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  html[data-ha-theme] :is(.card p,.qcard p,.simple-action small,.muted,.hint){
+    line-height:1.65 !important;
+  }
+}
