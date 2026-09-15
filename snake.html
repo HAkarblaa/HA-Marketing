@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10170e">
+<title>لعبة الحية - HA Marketing</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Tahoma,Arial,sans-serif;background:#070b08;color:#f3f7ee}
+body{display:flex;justify-content:center;padding:14px 10px 40px}
+.wrap{width:min(520px,100%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.back{width:42px;height:42px;border-radius:13px;border:1px solid #4f624b;background:#111911;color:#dfe8d7;font-size:25px;display:grid;place-items:center;text-decoration:none}
+.title{text-align:center;flex:1}.title b{display:block;font-size:20px;color:#d7e4c9}.title small{font-size:11px;color:#8fa087}
+.phone{border:2px solid #68745d;border-radius:28px;padding:15px 13px 18px;background:linear-gradient(160deg,#30372d,#151a14 55%,#090c09);box-shadow:0 18px 50px #0008,inset 0 0 0 1px #ffffff10}
+.brand{text-align:center;margin:2px 0 9px;font-weight:900;letter-spacing:2px;color:#becab3}
+.screen{background:#9eaf79;border:5px solid #252b20;border-radius:12px;padding:8px;box-shadow:inset 0 0 22px #29321caa}
+.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;color:#1c2615;font-family:monospace;font-weight:900;font-size:12px;margin-bottom:6px}
+.hud div:nth-child(2){text-align:center}.hud div:last-child{text-align:left}
+canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px solid #34402a;image-rendering:pixelated}
+.msg{min-height:26px;margin-top:6px;text-align:center;color:#1b2515;font-family:monospace;font-size:12px;font-weight:900}
+.controls{display:grid;grid-template-columns:72px 72px 72px;grid-template-rows:58px 58px 58px;justify-content:center;gap:5px;margin-top:16px;direction:ltr}
+.key{border:1px solid #646f5f;background:linear-gradient(#262d24,#111510);color:#e7eee0;border-radius:14px;font-size:25px;box-shadow:inset 0 1px #ffffff12,0 5px 10px #0006;touch-action:manipulation}
+.key:active{transform:translateY(2px);background:#0d110d}
+.up{grid-column:2;grid-row:1}.left{grid-column:1;grid-row:2}.center{grid-column:2;grid-row:2;font-size:13px;font-weight:900;color:#d6e0cc}.right{grid-column:3;grid-row:2}.down{grid-column:2;grid-row:3}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.action{padding:12px;border:1px solid #53644c;border-radius:13px;background:#121a12;color:#e4ecdc;font-weight:900;font-size:13px}
+.action.primary{background:#1f2e1c;border-color:#79916d;color:#e8f3df}
+.note{text-align:center;color:#83907c;font-size:10px;line-height:1.7;margin-top:10px}
+@media(max-width:420px){
+ body{padding:8px 6px 28px}.phone{padding:11px 9px 14px;border-radius:23px}
+ .controls{grid-template-columns:64px 64px 64px;grid-template-rows:52px 52px 52px}
+ .key{font-size:22px}.title b{font-size:17px}
+}
+</style>
+<link rel="stylesheet" href="ha-theme.css">
+<script src="ha-theme.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="entertainment.html">‹</a>
+    <div class="title"><b>🐍 لعبة الحية</b><small>ستايل نوكيا الكلاسيكي</small></div>
+    <div style="width:42px"></div>
+  </div>
+
+  <section class="phone">
+    <div class="brand">HA • SNAKE</div>
+
+    <div class="screen">
+      <div class="hud">
+        <div>LEVEL <span id="level">1</span></div>
+        <div>SCORE <span id="score">0</span></div>
+        <div>BEST <span id="best">0</span></div>
+      </div>
+      <canvas id="game" width="360" height="360" aria-label="لعبة الحية"></canvas>
+      <div id="msg" class="msg">اضغط تشغيل وابدأ</div>
+    </div>
+
+    <div class="controls">
+      <button class="key up" data-dir="up">▲</button>
+      <button class="key left" data-dir="left">◀</button>
+      <button class="key center" id="playBtn">تشغيل</button>
+      <button class="key right" data-dir="right">▶</button>
+      <button class="key down" data-dir="down">▼</button>
+    </div>
+
+    <div class="bottom">
+      <button class="action primary" id="restartBtn">↻ إعادة اللعب</button>
+      <button class="action" id="pauseBtn">Ⅱ إيقاف مؤقت</button>
+    </div>
+  </section>
+
+  <div class="note">تشتغل باللمس أو أسهم الكيبورد. كل ما تاكل النقطة يزيد طول الحية والسكور.</div>
+</div>
+
+<script>
+(()=>{
+  const canvas=document.getElementById('game');
+  const ctx=canvas.getContext('2d');
+  const scoreEl=document.getElementById('score');
+  const bestEl=document.getElementById('best');
+  const levelEl=document.getElementById('level');
+  const msg=document.getElementById('msg');
+  const playBtn=document.getElementById('playBtn');
+  const pauseBtn=document.getElementById('pauseBtn');
+  const restartBtn=document.getElementById('restartBtn');
+
+  const CELLS=18;
+  const SIZE=canvas.width/CELLS;
+  let snake,food,dir,nextDir,score,level,timer,running=false,paused=false;
+  let best=Number(localStorage.getItem('ha_snake_best')||0);
+  bestEl.textContent=best;
+
+  function reset(){
+    clearInterval(timer);
+    snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];
+    dir={x:1,y:0}; nextDir={x:1,y:0};
+    score=0; level=1; running=false; paused=false;
+    scoreEl.textContent='0'; levelEl.textContent='1';
+    food=randomFood();
+    msg.textContent='اضغط تشغيل وابدأ';
+    playBtn.textContent='تشغيل';
+    pauseBtn.textContent='Ⅱ إيقاف مؤقت';
+    draw();
+  }
+
+  function randomFood(){
+    let p;
+    do{
+      p={x:Math.floor(Math.random()*CELLS),y:Math.floor(Math.random()*CELLS)};
+    }while(snake && snake.some(s=>s.x===p.x&&s.y===p.y));
+    return p;
+  }
+
+  function speed(){
+    return Math.max(70,190-(level-1)*18);
+  }
+
+  function startLoop(){
+    clearInterval(timer);
+    timer=setInterval(step,speed());
+  }
+
+  function start(){
+    if(running && paused){ paused=false; msg.textContent=''; playBtn.textContent='تشغيل'; startLoop(); return; }
+    if(running)return;
+    running=true; paused=false; msg.textContent=''; playBtn.textContent='تشغيل';
+    startLoop();
+  }
+
+  function gameOver(){
+    clearInterval(timer); running=false; paused=false;
+    if(score>best){
+      best=score; localStorage.setItem('ha_snake_best',String(best)); bestEl.textContent=best;
+    }
+    msg.textContent='GAME OVER — اضغط إعادة اللعب';
+    playBtn.textContent='تشغيل';
+  }
+
+  function step(){
+    if(paused||!running)return;
+    dir=nextDir;
+    const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+
+    if(head.x<0||head.y<0||head.x>=CELLS||head.y>=CELLS||
+       snake.some(s=>s.x===head.x&&s.y===head.y)){
+      gameOver(); draw(); return;
+    }
+
+    snake.unshift(head);
+
+    if(head.x===food.x&&head.y===food.y){
+      score+=10;
+      const newLevel=Math.min(8,1+Math.floor(score/50));
+      if(newLevel!==level){level=newLevel;levelEl.textContent=level;startLoop()}
+      scoreEl.textContent=score;
+      food=randomFood();
+    }else{
+      snake.pop();
+    }
+    draw();
+  }
+
+  function draw(){
+    ctx.fillStyle='#a9b982'; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.strokeStyle='rgba(43,54,34,.12)';
+    ctx.lineWidth=1;
+    for(let i=0;i<=CELLS;i++){
+      ctx.beginPath();ctx.moveTo(i*SIZE,0);ctx.lineTo(i*SIZE,canvas.height);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(0,i*SIZE);ctx.lineTo(canvas.width,i*SIZE);ctx.stroke();
+    }
+
+    ctx.fillStyle='#243019';
+    snake.forEach((s,i)=>{
+      const pad=i===0?2:3;
+      ctx.fillRect(s.x*SIZE+pad,s.y*SIZE+pad,SIZE-pad*2,SIZE-pad*2);
+    });
+
+    ctx.fillStyle='#1c2615';
+    ctx.beginPath();
+    ctx.arc(food.x*SIZE+SIZE/2,food.y*SIZE+SIZE/2,SIZE*.28,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  function setDir(name){
+    const d={
+      up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}
+    }[name];
+    if(!d)return;
+    if(d.x===-dir.x&&d.y===-dir.y)return;
+    nextDir=d;
+    if(!running)start();
+  }
+
+  document.querySelectorAll('[data-dir]').forEach(b=>{
+    b.addEventListener('pointerdown',e=>{e.preventDefault();setDir(b.dataset.dir)});
+  });
+
+  document.addEventListener('keydown',e=>{
+    const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
+    if(map[e.key]){e.preventDefault();setDir(map[e.key])}
+    if(e.key===' '){e.preventDefault();togglePause()}
+  });
+
+  function togglePause(){
+    if(!running)return;
+    paused=!paused;
+    if(paused){
+      clearInterval(timer);
+      msg.textContent='PAUSED';
+      pauseBtn.textContent='▶ متابعة';
+    }else{
+      msg.textContent='';
+      pauseBtn.textContent='Ⅱ إيقاف مؤقت';
+      startLoop();
+    }
+  }
+
+  playBtn.onclick=start;
+  pauseBtn.onclick=togglePause;
+  restartBtn.onclick=()=>{reset();start()};
+
+  reset();
+})();
+</script>
+</body>
+</html>
