@@ -22,8 +22,8 @@ messaging.onBackgroundMessage((payload)=>{
   const title=payload?.notification?.title || payload?.data?.title || 'HA Marketing';
   const options={
     body:payload?.notification?.body || payload?.data?.body || 'وصلك إشعار جديد',
-    icon:'https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v4.png',
-    badge:'https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v4.png',
+    icon:'https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v5.png',
+    badge:'https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v5.png',
     tag:payload?.data?.tag || 'ha-marketing',
     renotify:true,
     data:{

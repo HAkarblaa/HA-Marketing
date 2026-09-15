@@ -173,8 +173,8 @@
           if(Notification.permission==='granted'){
             new Notification(title,{
               body,
-              icon:'https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v4.png',
-              badge:'https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v4.png',
+              icon:'https://hakarblaa.github.io/HA-Marketing/ha-notification-logo-v5.png',
+              badge:'https://hakarblaa.github.io/HA-Marketing/ha-notification-badge-v5.png',
               data:{url:payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html'}
             });
           }
