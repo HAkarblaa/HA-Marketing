@@ -27,15 +27,15 @@ html[data-ha-theme="dark"]{
 /* ---------- Light mode ---------- */
 html[data-ha-theme="light"]{
   color-scheme:light;
-  --ha-mode-bg:#ffffff;
-  --ha-mode-bg2:#f5f6f8;
+  --ha-mode-bg:#f8fbff;
+  --ha-mode-bg2:#eef5ff;
   --ha-mode-panel:#ffffff;
-  --ha-mode-panel2:#f7f7f8;
-  --ha-mode-text:#111315;
-  --ha-mode-muted:#60666d;
-  --ha-mode-border:rgba(173,120,27,.28);
+  --ha-mode-panel2:#f7fbff;
+  --ha-mode-text:#102235;
+  --ha-mode-muted:#64748b;
+  --ha-mode-border:rgba(61,134,214,.22);
   --ha-mode-input:#ffffff;
-  --ha-mode-shadow:rgba(27,31,36,.10);
+  --ha-mode-shadow:rgba(31,62,101,.12);
 }
 
 /* Base page background */
@@ -264,6 +264,224 @@ html[data-ha-theme="dark"] .wrap,
 html[data-ha-theme="dark"] .container,
 html[data-ha-theme="dark"] .content{
   background-color:#000 !important;
+}
+
+
+/* =========================================================
+   HA Marketing - Light Mode Vivid Enhancement
+   ألوان نهارية زاهية ونظيفة مع لمسات ذهبية وزرقاء.
+   ========================================================= */
+html[data-ha-theme="light"] body{
+  background:
+    radial-gradient(circle at 10% 0%,rgba(255,205,96,.20),transparent 24%),
+    radial-gradient(circle at 90% 10%,rgba(64,156,255,.14),transparent 28%),
+    linear-gradient(180deg,#ffffff 0%,#f7fbff 42%,#eef6ff 100%) !important;
+  color:#102235 !important;
+}
+
+html[data-ha-theme="light"] body::before{
+  opacity:.10 !important;
+}
+
+/* البطاقات */
+html[data-ha-theme="light"] :is(
+  .card,.box,.panel,.tile,.qcard,.category,.role,.tool,
+  .order,.order-row,.request-card,.provider-card,.service-card,
+  .product-card,.store-card,.info-card,.status-card,
+  .items,.delivery,.result,.feature,.option,.section-shell,
+  .modal-content,.sheet-content,.dialog,.popup,.drawer,.side,
+  .conversation,.messages,.composer,.list
+){
+  background:
+    radial-gradient(circle at 90% 0%,rgba(255,205,92,.10),transparent 34%),
+    radial-gradient(circle at 0% 100%,rgba(71,158,255,.07),transparent 35%),
+    linear-gradient(145deg,#ffffff,#f7fbff) !important;
+  border-color:rgba(67,132,205,.20) !important;
+  box-shadow:
+    0 10px 28px rgba(37,76,120,.10),
+    0 2px 8px rgba(37,76,120,.06) !important;
+}
+
+/* رؤوس الصفحات والشريط العلوي والسفلي */
+html[data-ha-theme="light"] :is(
+  header,.header,.topbar,.navbar,.nav,.top,.head,.toolbar,.appbar,
+  .bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom,.shortcuts
+){
+  background:rgba(255,255,255,.94) !important;
+  color:#102235 !important;
+  border-color:rgba(225,169,50,.28) !important;
+  box-shadow:0 6px 18px rgba(37,76,120,.08) !important;
+  backdrop-filter:blur(12px);
+}
+
+/* Hero */
+html[data-ha-theme="light"] :is(.hero,.banner,.intro,.welcome,.hero-card){
+  background:
+    radial-gradient(circle at 15% 10%,rgba(255,206,97,.23),transparent 30%),
+    radial-gradient(circle at 88% 12%,rgba(80,162,255,.18),transparent 34%),
+    linear-gradient(145deg,#ffffff,#f3f8ff) !important;
+  color:#102235 !important;
+  border-color:rgba(220,162,42,.30) !important;
+  box-shadow:0 14px 34px rgba(48,91,140,.10) !important;
+}
+
+/* العناوين */
+html[data-ha-theme="light"] :is(h1,h2,h3,.title,.heading,.section-title){
+  color:#102235 !important;
+  text-shadow:none !important;
+}
+html[data-ha-theme="light"] :is(.gold,.accent,.highlight){
+  color:#c58a16 !important;
+}
+
+/* النصوص الثانوية */
+html[data-ha-theme="light"] :is(
+  p,.muted,.sub,.subtitle,.desc,.description,small,.help,.hint
+){
+  color:#64748b !important;
+}
+
+/* الأيقونات والدوائر */
+html[data-ha-theme="light"] :is(.iconbox,.qicon,.ico-box,.badgeIcon,.round,.round-btn,.menu-btn){
+  background:
+    linear-gradient(145deg,#ffffff,#eef6ff) !important;
+  border-color:rgba(64,143,225,.30) !important;
+  box-shadow:0 7px 18px rgba(48,100,160,.10) !important;
+}
+
+/* أزرار أساسية */
+html[data-ha-theme="light"] :is(
+  button,.btn,.button,.primary,.cta,.go,.action,.save,.submit
+){
+  border-color:rgba(210,148,25,.45) !important;
+}
+html[data-ha-theme="light"] :is(
+  .primary,.cta,.go,.save,.submit
+){
+  background:linear-gradient(135deg,#f6c65e,#d89a24) !important;
+  color:#1b2634 !important;
+  box-shadow:0 8px 18px rgba(214,154,38,.20) !important;
+}
+
+/* أزرار عادية */
+html[data-ha-theme="light"] button:not(.primary):not(.cta):not(.go):not(.save):not(.submit){
+  background:linear-gradient(145deg,#ffffff,#eef6ff) !important;
+  color:#12304d !important;
+}
+
+/* حقول الإدخال */
+html[data-ha-theme="light"] :is(input,select,textarea,.input,.search){
+  background:#ffffff !important;
+  color:#102235 !important;
+  border-color:rgba(64,138,216,.24) !important;
+  box-shadow:inset 0 1px 2px rgba(34,67,104,.04) !important;
+}
+html[data-ha-theme="light"] :is(input,select,textarea):focus{
+  border-color:#4d9be8 !important;
+  box-shadow:0 0 0 3px rgba(77,155,232,.12) !important;
+}
+
+/* شريط الأخبار */
+html[data-ha-theme="light"] .ha-news-ticker{
+  background:
+    linear-gradient(135deg,#ffffff,#f5f9ff) !important;
+  border-color:rgba(219,157,32,.38) !important;
+  box-shadow:0 8px 20px rgba(48,91,140,.09) !important;
+}
+html[data-ha-theme="light"] .ha-ticker-track{
+  color:#8c6115 !important;
+}
+
+/* روابط القوائم */
+html[data-ha-theme="light"] .shortcuts a{
+  color:#16324d !important;
+  border-color:rgba(67,132,205,.14) !important;
+}
+html[data-ha-theme="light"] .shortcuts a:hover{
+  background:#eef6ff !important;
+}
+
+/* بطاقات الألوان المعروفة */
+html[data-ha-theme="light"] .blue{
+  background:linear-gradient(145deg,#eef7ff,#e1f0ff) !important;
+  color:#155b92 !important;
+  border-color:#add2f2 !important;
+}
+html[data-ha-theme="light"] .green{
+  background:linear-gradient(145deg,#f0fbf4,#e3f7ea) !important;
+  color:#17663b !important;
+  border-color:#afe0c0 !important;
+}
+html[data-ha-theme="light"] .red{
+  background:linear-gradient(145deg,#fff4f5,#ffe9ec) !important;
+  color:#a92f3b !important;
+  border-color:#efb8be !important;
+}
+html[data-ha-theme="light"] .purple{
+  background:linear-gradient(145deg,#f8f2ff,#f0e5ff) !important;
+  color:#7747a4 !important;
+  border-color:#d5b8ee !important;
+}
+html[data-ha-theme="light"] .gold,
+html[data-ha-theme="light"] .orange{
+  background:linear-gradient(145deg,#fff9eb,#fff1c9) !important;
+  color:#8a5d0e !important;
+  border-color:#efd28f !important;
+}
+
+/* الوضع المختار في الشريط السفلي */
+html[data-ha-theme="light"] :is(.active,.selected,.current){
+  color:#b57b12 !important;
+}
+html[data-ha-theme="light"] .bottom .active,
+html[data-ha-theme="light"] .bottom-nav .active{
+  background:linear-gradient(180deg,#fff9e9,#fff1c3) !important;
+  border-color:#e4b44c !important;
+}
+
+/* الجداول */
+html[data-ha-theme="light"] table{
+  background:#ffffff !important;
+  border-radius:14px;
+  overflow:hidden;
+}
+html[data-ha-theme="light"] th{
+  background:#eef6ff !important;
+  color:#173956 !important;
+}
+html[data-ha-theme="light"] tr:nth-child(even) td{
+  background:#fbfdff !important;
+}
+
+/* حالات النجاح والتنبيه */
+html[data-ha-theme="light"] .success,
+html[data-ha-theme="light"] .ok{
+  background:#eaf9ef !important;
+  color:#12633a !important;
+  border-color:#a9dfbc !important;
+}
+html[data-ha-theme="light"] .warning,
+html[data-ha-theme="light"] .warn{
+  background:#fff7df !important;
+  color:#8a640f !important;
+  border-color:#ecd48e !important;
+}
+html[data-ha-theme="light"] .danger,
+html[data-ha-theme="light"] .reject,
+html[data-ha-theme="light"] .delete{
+  background:#fff0f2 !important;
+  color:#a92835 !important;
+  border-color:#efb0b7 !important;
+}
+
+/* زر تبديل الوضع */
+html[data-ha-theme="light"] .ha-theme-toggle{
+  background:linear-gradient(145deg,#ffffff,#eef6ff) !important;
+  color:#14314e !important;
+  border-color:#e4b44c !important;
+  box-shadow:
+    0 9px 24px rgba(48,91,140,.14),
+    0 0 0 3px rgba(228,180,76,.08) !important;
 }
 
 @media(max-width:600px){
