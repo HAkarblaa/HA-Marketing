@@ -1338,6 +1338,25 @@ button{-webkit-tap-highlight-color:transparent}
 }
 .driver-external-map-menu button+button{margin-top:3px}
 
+
+/* ===== HA DRIVER BALANCE ===== */
+.ha-driver-balance{
+  display:none;
+  margin:0 12px 9px;
+  padding:12px 14px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#101820,#071015);
+  border:1px solid rgba(242,181,68,.45);
+  box-shadow:0 8px 24px #0005;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.ha-driver-balance.show{display:flex}
+.ha-driver-balance small{display:block;color:#aab1b7;font-size:11px}
+.ha-driver-balance strong{display:block;color:#f2b544;font-size:22px;margin-top:3px}
+.ha-driver-balance .ico{font-size:31px}
+
 </style>
 
 </head>
@@ -1385,6 +1404,15 @@ button{-webkit-tap-highlight-color:transparent}
         <b id="driverDisplayPlate">—</b>
       </div>
     </div>
+  </section>
+
+  <section id="haDriverBalance" class="ha-driver-balance">
+    <div>
+      <small>الرصيد الحالي</small>
+      <strong id="haDriverBalanceValue">0 د.ع</strong>
+      <small>رصيد السائق / المندوب</small>
+    </div>
+    <div class="ico">💳</div>
   </section>
 
   <div class="map-shell animated-map">
@@ -2434,6 +2462,40 @@ window.addEventListener('load',()=>{
   document.addEventListener('click',function(e){
     if(!menu.contains(e.target)&&e.target!==btn)menu.classList.remove('show');
   });
+})();
+</script>
+
+
+<script>
+/* ===== HA DRIVER BALANCE ===== */
+(async function(){
+  try{
+    if(!window.supabase)return;
+    const sdb=window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+    const {data:{session}}=await sdb.auth.getSession();
+    const user=session?.user;
+    if(!user)return;
+
+    const {data:tp}=await sdb.from('transport_profiles')
+      .select('status').eq('user_id',user.id).maybeSingle();
+
+    if(!tp || tp.status!=='approved')return;
+
+    let amount=0;
+    const {data:b}=await sdb.from('role_balances')
+      .select('balance').eq('user_id',user.id).eq('role_type','driver').maybeSingle();
+    amount=Number(b?.balance||0);
+
+    document.getElementById('haDriverBalanceValue').textContent=
+      amount.toLocaleString('ar-IQ',{maximumFractionDigits:2})+' د.ع';
+    document.getElementById('haDriverBalance').classList.add('show');
+  }catch(e){
+    console.warn('driver balance',e);
+  }
 })();
 </script>
 
