@@ -505,6 +505,56 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   .ha-role-balance-card strong{font-size:19px}
 }
 
+
+/* ===== HA EMPLOYEE BALANCE STRIP ===== */
+.ha-employee-balance-strip{
+  display:none;
+  width:min(690px,92%);
+  margin:10px auto 0;
+  min-height:58px;
+  padding:9px 16px;
+  border-radius:24px;
+  border:1px solid rgba(239,189,94,.58);
+  background:linear-gradient(180deg,rgba(17,20,22,.96),rgba(6,8,10,.98));
+  box-shadow:0 0 22px rgba(239,189,94,.10),inset 0 0 18px rgba(255,255,255,.02);
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  cursor:pointer;
+  color:#fff;
+}
+.ha-employee-balance-strip.show{display:flex}
+.ha-employee-balance-strip .left{
+  display:flex;align-items:center;gap:10px;min-width:0;
+}
+.ha-employee-balance-strip .ico{
+  width:40px;height:40px;border-radius:14px;
+  display:grid;place-items:center;
+  border:1px solid rgba(239,189,94,.42);
+  background:rgba(239,189,94,.08);
+  font-size:21px;
+}
+.ha-employee-balance-strip .label{
+  color:#d3d7da;
+  font-size:13px;
+  white-space:nowrap;
+}
+.ha-employee-balance-strip strong{
+  color:#f2c56b;
+  font-size:20px;
+  white-space:nowrap;
+}
+.ha-employee-balance-strip .hint{
+  color:#888f94;
+  font-size:10px;
+  margin-top:2px;
+}
+@media(max-width:700px){
+  .ha-employee-balance-strip{min-height:54px;padding:8px 13px;border-radius:20px}
+  .ha-employee-balance-strip .ico{width:36px;height:36px;font-size:19px}
+  .ha-employee-balance-strip strong{font-size:18px}
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
@@ -516,21 +566,26 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   </div>
   <a class="ha-ticker-admin" href="admin-home-ticker.html" title="إدارة أخبار الشريط">✎</a>
 </div>
+
+<div id="haEmployeeBalanceStrip"
+     class="ha-employee-balance-strip"
+     onclick="redeemRoleBalanceCode('employee','haEmployeeBalanceStripValue')">
+  <div class="left">
+    <span class="ico">💳</span>
+    <div>
+      <div class="label">رصيدك</div>
+      <div class="hint">اضغط لإضافة الرصيد بالكود</div>
+    </div>
+  </div>
+  <strong id="haEmployeeBalanceStripValue">0 د.ع</strong>
+</div>
+
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
 </div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> 
 <section id="haRoleBalances" class="ha-role-balances" aria-label="الرصيد">
-  <a id="haEmployeeBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('employee','haEmployeeBalance');return false;">
-    <span class="wallet">💳</span>
-    <span class="meta">
-      <small>الرصيد الحالي</small>
-      <strong id="haEmployeeBalance">0 د.ع</strong>
-      <b>رصيد الموظف</b>
-    </span>
-  </a>
-
-  <a id="haDriverBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('driver','haDriverBalance');return false;">
+<a id="haDriverBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('driver','haDriverBalance');return false;">
     <span class="wallet">🚕</span>
     <span class="meta">
       <small>الرصيد الحالي</small>
@@ -978,7 +1033,12 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
       (rows||[]).forEach(x=>balances[x.role_type]=Number(x.balance||0));
     }catch(_e){}
 
-    if(employee)showCard('haEmployeeBalanceCard','haEmployeeBalance',balances.employee||0);
+    if(employee){
+      const strip=document.getElementById('haEmployeeBalanceStrip');
+      const value=document.getElementById('haEmployeeBalanceStripValue');
+      if(value)value.textContent=fmt(balances.employee||0);
+      if(strip)strip.classList.add('show');
+    }
     if(driver)showCard('haDriverBalanceCard','haDriverBalance',balances.driver||0);
     if(provider)showCard('haProviderBalanceCard','haProviderBalance',balances.service_provider||0);
   }catch(e){
