@@ -1,17 +1,22 @@
-HA Marketing - تعديل أيقونة الإشعار الخارجية فقط
+HA Marketing - تثبيت أيقونة الإشعار الخارجية
 
-هذه النسخة مبنية من نفس الشعار الذي أرسلته أنت.
+المشكلة:
+كانت إشعارات Web تُنشأ أحياناً من Firebase نفسه وأحياناً من Service Worker،
+ولذلك كانت أيقونة HA تظهر مرة وتختفي مرة.
 
-التعديل:
-- الأيقونة الصغيرة: شكل HA داخل البيضاوي فقط، والخلفية شفافة بالكامل.
-- الأيقونة الكبيرة: نفس شعار HA البيضاوي على خلفية بيضاء كما طلبت.
-- لا يوجد أي تعديل على وصول الإشعارات أو Supabase أو الواجهة الرئيسية.
-- تم تعديل firebase-messaging-sw.js و notifications.js فقط للإشارة إلى الصور الجديدة.
+هذا التعديل:
+- يجعل إشعارات Web Data-Only.
+- يجعل firebase-messaging-sw.js هو الوحيد الذي يعرض إشعار Web.
+- يثبت الأيقونة على:
+  ha-logo-transparent.png
+  notification-icon.png
+- لا يغيّر المستلم أو محتوى الإشعار أو نظام الإشعارات.
 
-ارفع هذه الملفات الأربعة بنفس مكان index.html:
-1) firebase-messaging-sw.js
-2) notifications.js
-3) ha-notification-logo-oval.png
-4) ha-notification-badge-oval.png
+التركيب:
+1) ارفع firebase-messaging-sw.js بجانب index.html على GitHub.
+2) Supabase > Edge Functions > send-fcm-push
+   استبدل index.ts بمحتوى EDGE-send-fcm-push-index.ts ثم Deploy.
+3) افتح الموقع مرة واحدة على الهاتف، انتظر عدة ثوانٍ، ثم جرّب إشعار جديد.
 
-بعد الرفع افتح الموقع على الهاتف مرة واحدة وانتظر عدة ثوانٍ، ثم جرّب إشعاراً جديداً.
+مهم:
+لا تحتاج تبديل بقية ملفات الموقع.
