@@ -2066,6 +2066,43 @@ html[data-ha-theme="light"] .shop-courier-link b{
   .shop-courier-link b{font-size:6.5px!important}
 }
 
+
+/* ===== HA DISTINCT LIVE MAP ICONS ===== */
+.ha-live-entity-icon{
+  background:transparent!important;
+  border:0!important;
+}
+.ha-live-entity{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  background:#fff;
+  border:2px solid rgba(255,255,255,.95);
+  box-shadow:0 5px 16px rgba(0,0,0,.30),0 0 0 2px rgba(20,30,40,.16);
+  line-height:1;
+  position:relative;
+}
+.ha-live-entity::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-6px;
+  width:10px;
+  height:10px;
+  transform:translateX(-50%) rotate(45deg);
+  background:inherit;
+  border-right:2px solid rgba(255,255,255,.95);
+  border-bottom:2px solid rgba(255,255,255,.95);
+}
+.ha-live-entity.driver{background:#fff7df}
+.ha-live-entity.customer{background:#eaf4ff}
+.ha-live-entity.goods{background:#fff1df}
+.ha-live-entity.destination{background:#eefbed}
+.ha-live-entity span{position:relative;z-index:2}
+
 </style>
 
 <script src="ha-theme.js"></script>
@@ -2276,9 +2313,43 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
   attribution:'&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-const driverIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin driver"></div>',iconSize:[36,36],iconAnchor:[18,34]});
-const customerIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin customer"></div>',iconSize:[36,36],iconAnchor:[18,34]});
-const destinationIcon=L.divIcon({className:'ha-marker',html:'<div class="ha-pin destination"></div>',iconSize:[36,36],iconAnchor:[18,34]});
+
+function haLiveEntityIcon(kind,emoji){
+  return L.divIcon({
+    className:'ha-live-entity-icon',
+    html:'<div class="ha-live-entity '+kind+'"><span>'+emoji+'</span></div>',
+    iconSize:[42,48],
+    iconAnchor:[21,46],
+    popupAnchor:[0,-43]
+  });
+}
+function haDriverVehicleEmoji(type,vehicle){
+  const t=String(type||'').toLowerCase();
+  const v=String(vehicle||'').toLowerCase();
+  if(t==='taxi')return '🚕';
+  if(t==='tuktuk')return '🛺';
+  if(t==='delivery_courier')return '🛵';
+  if(t==='delivery_tuktuk')return '🛺';
+  if(t==='delivery_car')return '🚗';
+  if(t==='stoota')return '🛻';
+  if(t==='cargo')return '🚚';
+  if(/تكتك|tuktuk/.test(v))return '🛺';
+  if(/دراج|motor|bike|مندوب/.test(v))return '🛵';
+  if(/حمل|truck|cargo/.test(v))return '🚚';
+  if(/ستوت|pickup/.test(v))return '🛻';
+  if(/سيارة|car/.test(v))return '🚗';
+  return '🚘';
+}
+function haDriverMapIcon(type,vehicle){
+  return haLiveEntityIcon('driver',haDriverVehicleEmoji(type,vehicle));
+}
+const haCustomerMapIcon=()=>haLiveEntityIcon('customer','👤');
+const haGoodsMapIcon=()=>haLiveEntityIcon('goods','📦');
+const haDestinationMapIcon=()=>haLiveEntityIcon('destination','🏁');
+
+let driverIcon=haDriverMapIcon('taxi','');
+let customerIcon=haCustomerMapIcon();
+let destinationIcon=haDestinationMapIcon();
 // لا نظهر نقاطاً تجريبية بمحافظة أخرى عند فتح الصفحة.
 const driver=L.marker([33.2232,43.6793],{icon:driverIcon}).bindPopup('موقع السائق');
 const customer=L.marker([33.2232,43.6793],{icon:customerIcon}).bindPopup('موقع الزبون');
@@ -2395,6 +2466,19 @@ function rideMatchesThisDriver(ride){
   return !!type && driverDispatchTypes.includes(type);
 }
 
+function refreshRideEntityIcons(ride){
+  const type=normalizeRideDispatch(ride);
+  const driverVehicle=ride?.vehicleType||'';
+  driver.setIcon(haDriverMapIcon(type||driverDispatchTypes[0]||'taxi',driverVehicle));
+
+  const isGoods=['delivery_courier','delivery_tuktuk','delivery_car','stoota','cargo'].includes(type);
+  customer.setIcon(isGoods?haGoodsMapIcon():haCustomerMapIcon());
+  destination.setIcon(isGoods?haCustomerMapIcon():haDestinationMapIcon());
+
+  customer.bindPopup(isGoods?'الأغراض':'الزبون');
+  destination.bindPopup(isGoods?'المستلم':'الوجهة');
+}
+
 function rideDisplayLabel(ride){
   const type=normalizeRideDispatch(ride);
   const vehicle=ride?.vehicleType||'';
@@ -2448,6 +2532,7 @@ function renderPendingRide(index){
   requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
   fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
+  refreshRideEntityIcons(ride);
   if(ride.pickup){
     placeDriverMapMarker(customer,[ride.pickup.lat,ride.pickup.lng]);
   }
@@ -2780,6 +2865,7 @@ async function restoreDriverRide(){
   acceptedPanel.classList.add('show');
   currentFare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
+  refreshRideEntityIcons(ride);
   if(ride.pickup) placeDriverMapMarker(customer,[ride.pickup.lat,ride.pickup.lng]);
   if(ride.destination) placeDriverMapMarker(destination,[ride.destination.lat,ride.destination.lng]);
 
@@ -2842,6 +2928,9 @@ async function initRealDriver(){
     driverKind=ident.driverKind||null;
     driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
     driverReady=true;
+    const ownType=driverDispatchTypes[0]||driverKind||'taxi';
+    driverIcon=haDriverMapIcon(ownType,(driverProfile?.carName||driverProfile?.vehicleName||''));
+    driver.setIcon(driverIcon);
     refreshDriverHero(driverProfile);
     if(msg) msg.textContent='';
     setup.style.display='none';

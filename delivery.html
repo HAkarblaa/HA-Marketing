@@ -990,6 +990,43 @@ body.delivery-stage-1 #centerPin{
   font-family:Arial,Tahoma,sans-serif !important;
 }
 
+
+/* ===== HA DISTINCT LIVE MAP ICONS ===== */
+.ha-live-entity-icon{
+  background:transparent!important;
+  border:0!important;
+}
+.ha-live-entity{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  background:#fff;
+  border:2px solid rgba(255,255,255,.95);
+  box-shadow:0 5px 16px rgba(0,0,0,.30),0 0 0 2px rgba(20,30,40,.16);
+  line-height:1;
+  position:relative;
+}
+.ha-live-entity::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-6px;
+  width:10px;
+  height:10px;
+  transform:translateX(-50%) rotate(45deg);
+  background:inherit;
+  border-right:2px solid rgba(255,255,255,.95);
+  border-bottom:2px solid rgba(255,255,255,.95);
+}
+.ha-live-entity.driver{background:#fff7df}
+.ha-live-entity.customer{background:#eaf4ff}
+.ha-live-entity.goods{background:#fff1df}
+.ha-live-entity.destination{background:#eefbed}
+.ha-live-entity span{position:relative;z-index:2}
+
 </style>
 
 <style id="ha-mobile-confirm-button-fix">
@@ -1025,9 +1062,6 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-
-<link rel="stylesheet" href="ha-location-ux.css">
-<script src="ha-location-ux.js"></script>
 </head>
 
 <body class="delivery-stage-1">
@@ -1491,14 +1525,13 @@ function setPoint(kind,p,label){
 
 locateBtn.onclick=()=>{
  if(!navigator.geolocation){
-   notice.textContent='تعذر تحديد الموقع.';
-   HA_LocationUX.unsupported();
+   notice.textContent='المتصفح لا يدعم تحديد الموقع.';
    return;
  }
 
  notice.textContent='جاري تحديد موقعك...';
 
- HA_LocationUX.getCurrentPosition(async pos=>{
+ navigator.geolocation.getCurrentPosition(async pos=>{
    const p=await snap(L.latLng(pos.coords.latitude,pos.coords.longitude));
    detectProvinceFromPoint(p);
 
@@ -1522,7 +1555,7 @@ let haAutoLocationCentered=false;
 function autoCenterOnCurrentLocation(){
   if(haAutoLocationCentered || !navigator.geolocation) return;
 
-  HA_LocationUX.getCurrentPosition(pos=>{
+  navigator.geolocation.getCurrentPosition(pos=>{
     const raw=L.latLng(pos.coords.latitude,pos.coords.longitude);
 
     // ننقل الخريطة فوراً إلى GPS بدون انتظار خدمات الطرق أو البحث.
@@ -1664,14 +1697,13 @@ async function detectProvinceFromPoint(p){
 
 document.getElementById('provinceBtn').addEventListener('click',()=>{
   if(!navigator.geolocation){
-    document.getElementById('provinceName').textContent='تعذر تحديد الموقع';
-    HA_LocationUX.unsupported();
+    document.getElementById('provinceName').textContent='المتصفح لا يدعم تحديد الموقع';
     return;
   }
 
   document.getElementById('provinceName').textContent='جاري تحديد موقعك...';
 
-  HA_LocationUX.getCurrentPosition(async pos=>{
+  navigator.geolocation.getCurrentPosition(async pos=>{
     const p=L.latLng(pos.coords.latitude,pos.coords.longitude);
     await detectProvinceFromPoint(p);
   },()=>{
@@ -1801,6 +1833,40 @@ document.querySelectorAll('.type').forEach(c=>{
 let activeDeliveryRideId=null;
 let activeDeliveryRideRef=null;
 let deliveryTrackingMap=null;
+
+function haLiveEntityIcon(kind,emoji){
+  return L.divIcon({
+    className:'ha-live-entity-icon',
+    html:'<div class="ha-live-entity '+kind+'"><span>'+emoji+'</span></div>',
+    iconSize:[42,48],
+    iconAnchor:[21,46],
+    popupAnchor:[0,-43]
+  });
+}
+function haDriverVehicleEmoji(type,vehicle){
+  const t=String(type||'').toLowerCase();
+  const v=String(vehicle||'').toLowerCase();
+  if(t==='taxi')return '🚕';
+  if(t==='tuktuk')return '🛺';
+  if(t==='delivery_courier')return '🛵';
+  if(t==='delivery_tuktuk')return '🛺';
+  if(t==='delivery_car')return '🚗';
+  if(t==='stoota')return '🛻';
+  if(t==='cargo')return '🚚';
+  if(/تكتك|tuktuk/.test(v))return '🛺';
+  if(/دراج|motor|bike|مندوب/.test(v))return '🛵';
+  if(/حمل|truck|cargo/.test(v))return '🚚';
+  if(/ستوت|pickup/.test(v))return '🛻';
+  if(/سيارة|car/.test(v))return '🚗';
+  return '🚘';
+}
+function haDriverMapIcon(type,vehicle){
+  return haLiveEntityIcon('driver',haDriverVehicleEmoji(type,vehicle));
+}
+const haCustomerMapIcon=()=>haLiveEntityIcon('customer','👤');
+const haGoodsMapIcon=()=>haLiveEntityIcon('goods','📦');
+const haDestinationMapIcon=()=>haLiveEntityIcon('destination','🏁');
+
 let deliveryDriverMarker=null;
 
 order.onclick=async()=>{
@@ -1931,6 +1997,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     }else deliveryTrackingMap.invalidateSize();
 
     if(start && end){
+      L.marker([start.lat,start.lng],{icon:haGoodsMapIcon()}).addTo(deliveryTrackingMap).bindPopup('الأغراض');
+      L.marker([end.lat,end.lng],{icon:haCustomerMapIcon()}).addTo(deliveryTrackingMap).bindPopup('المستلم');
       route(start,end).then(r=>{
         const layer=L.geoJSON(r.geometry,{style:{weight:5}}).addTo(deliveryTrackingMap);
         deliveryTrackingMap.fitBounds(layer.getBounds(),{padding:[35,35]});
@@ -1951,7 +2019,7 @@ function listenDeliveryRide(rideId){
     onLocation:(p,loc)=>{
       if(!deliveryTrackingMap)return;
       if(deliveryDriverMarker) deliveryDriverMarker.setLatLng(p);
-      else deliveryDriverMarker=L.marker(p).addTo(deliveryTrackingMap).bindPopup('المندوب');
+      else deliveryDriverMarker=L.marker(p,{icon:haDriverMapIcon('delivery_courier',currentRide?.vehicleType)}).addTo(deliveryTrackingMap).bindPopup('المندوب');
 
       const b=deliveryTrackingMap.getBounds();
       if(!b.contains(p)) deliveryTrackingMap.panTo(p,{animate:true,duration:.5});
@@ -2028,7 +2096,7 @@ function listenDeliveryRide(rideId){
       if(ride.driverLocation && deliveryTrackingMap){
         const p=[ride.driverLocation.lat,ride.driverLocation.lng];
         if(deliveryDriverMarker) deliveryDriverMarker.setLatLng(p);
-        else deliveryDriverMarker=L.marker(p).addTo(deliveryTrackingMap).bindPopup(d.name||'المندوب');
+        else deliveryDriverMarker=L.marker(p,{icon:haDriverMapIcon('delivery_courier',ride.vehicleType)}).addTo(deliveryTrackingMap).bindPopup(d.name||'المندوب');
       }
     }
 
