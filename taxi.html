@@ -1194,7 +1194,7 @@ body:not(.trip-ready) #extraSummary{
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-push-dispatch.js"></script>
+<script src="transport-push-dispatch.js?v=qalat-sukkar-1km-1"></script>
 
 <script>
 /* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
@@ -1778,6 +1778,19 @@ order.onclick=async()=>{
     order.disabled=false;
     order.textContent=oldText;
     return;
+  }
+
+
+  // HA: النقل يعمل داخل نطاق قلعة سكر فقط.
+  if(window.HA_TransportPush && typeof window.HA_TransportPush.validateRouteArea==='function'){
+    const areaCheck=window.HA_TransportPush.validateRouteArea(
+      {lat:start.lat,lng:start.lng},
+      {lat:end.lat,lng:end.lng}
+    );
+    if(!areaCheck.ok){
+      window.HA_TransportPush.showAreaMessage(areaCheck);
+      return;
+    }
   }
 
   const rideRef=db.ref('rides').push();
