@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="ha-theme.css">
 </head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← رجوع</a><h2 id="title">تسوق الآن</h2><span></span></div><div id="nearbyStatus" class="legacy"><a href="#" onclick="refreshNearby();return false">📍 جاري تحديد موقعك لعرض الأقرب أولاً...</a></div><div id="legacy" class="legacy"></div><div id="list" class="grid"></div></div><script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-const SECTIONS={library:['📚','مكتبة'],building_materials:['🏗️','مواد البناء'],cards_credit:['💳','بطاقات وأرصدة'],yugioh:['🃏','أوراق يوغي'],markets:['🛒','أسواق'],restaurants:['🍽️','مطاعم'],flowers:['💐','ورد'],home_appliances:['🏠','أجهزة منزلية'],printers:['🖨️','طابعات'],devices:['📱','أجهزة'],device_accessories:['🎧','إكسسوارات الأجهزة'],clothes:['👕','ملابس'],shoes:['👟','أحذية']};
+const SECTIONS={library:['📚','مكتبة'],building_materials:['🏗️','مواد البناء'],cards_credit:['💳','بطاقات وأرصدة'],yugioh:['🃏','أوراق يوغي'],markets:['🛒','أسواق'],restaurants:['🍽️','مطاعم'],flowers:['💐','ورد'],home_appliances:['🏠','أجهزة منزلية'],printers:['🖨️','طابعات'],devices:['📱','أجهزة'],device_accessories:['🎧','إكسسوارات الأجهزة'],clothes:['👕','ملابس'],shoes:['👟','أحذية'],pharmacies:['💊','الصيدليات']};
 const section=new URLSearchParams(location.search).get('section')||'';
 let rows=[],userPos=null;
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
