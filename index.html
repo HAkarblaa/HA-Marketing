@@ -439,11 +439,77 @@ html.ha-show-all-sections #mainGrid a[href="sports.html"]{display:flex!important
 html.ha-show-all-sections #shortcuts a[href="sports.html"]{display:flex!important}
 html.ha-show-all-sections #mainGrid a[href="call-us.html"]{display:flex!important}
 html.ha-show-all-sections #shortcuts a[href="call-us.html"]{display:flex!important}
+
+/* ===== HA NEWS TICKER ===== */
+.promo-pill.ha-news-ticker{
+  overflow:hidden;
+  cursor:default;
+  padding:0 16px;
+  gap:10px;
+}
+.ha-news-ticker .ico{
+  flex:0 0 auto;
+  font-size:27px;
+}
+.ha-ticker-window{
+  position:relative;
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  height:52px;
+  display:flex;
+  align-items:center;
+  direction:ltr;
+  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+}
+.ha-ticker-track{
+  width:max-content;
+  white-space:nowrap;
+  display:inline-block;
+  color:#f1c66c;
+  font-weight:850;
+  font-size:clamp(14px,3.6vw,20px);
+  animation:haTickerMove 22s linear infinite;
+  will-change:transform;
+  direction:rtl;
+}
+.ha-ticker-track:hover{animation-play-state:paused}
+@keyframes haTickerMove{
+  from{transform:translateX(-5%)}
+  to{transform:translateX(105%)}
+}
+.ha-ticker-admin{
+  flex:0 0 auto;
+  width:34px;height:34px;
+  border-radius:50%;
+  display:none;
+  place-items:center;
+  border:1px solid rgba(239,189,94,.55);
+  color:#f2c66a;
+  background:#0a0d10;
+  font-size:16px;
+  text-decoration:none;
+}
+html.ha-super-admin .ha-ticker-admin{display:grid}
+@media(max-width:700px){
+  .promo-pill.ha-news-ticker{padding-inline:12px}
+  .ha-ticker-window{height:46px}
+  .ha-news-ticker .ico{font-size:23px}
+  .ha-ticker-admin{width:31px;height:31px}
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"></head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA logo"></div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
-</div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA logo"></div> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <a class="promo-pill" href="shop.html"><span class="arrow">‹</span><strong>تسوق الآن</strong><span class="ico">🛒</span></a>
+</div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA logo"></div> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <div class="promo-pill ha-news-ticker" id="haNewsTicker" aria-label="آخر الأخبار">
+  <span class="ico">📰</span>
+  <div class="ha-ticker-window">
+    <div class="ha-ticker-track" id="haTickerTrack">مرحباً بكم في HA Marketing</div>
+  </div>
+  <a class="ha-ticker-admin" href="admin-home-ticker.html" title="إدارة أخبار الشريط">✎</a>
+</div>
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
 </div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
@@ -730,6 +796,68 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
     }
   }catch(e){
     console.warn('section visibility check',e);
+  }
+})();
+</script>
+
+
+<script>
+/* ===== HA NEWS TICKER ===== */
+(async function(){
+  const track=document.getElementById('haTickerTrack');
+  if(!track)return;
+
+  const fallback='مرحباً بكم في HA Marketing';
+  const cacheKey='ha_home_ticker_news';
+
+  function show(items){
+    const clean=(items||[])
+      .map(x=>typeof x==='string'?x:(x?.text||''))
+      .map(x=>String(x).trim())
+      .filter(Boolean);
+
+    track.textContent=clean.length
+      ? clean.join('     ◆     ')
+      : fallback;
+  }
+
+  try{
+    const cached=JSON.parse(localStorage.getItem(cacheKey)||'[]');
+    if(Array.isArray(cached) && cached.length)show(cached);
+  }catch(_e){}
+
+  if(!window.supabase || !navigator.onLine)return;
+
+  try{
+    const tdb=window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const {data,error}=await tdb
+      .from('home_ticker_news')
+      .select('id,text,created_at')
+      .eq('is_active',true)
+      .order('created_at',{ascending:false})
+      .limit(12);
+
+    if(!error && data){
+      show(data);
+      try{localStorage.setItem(cacheKey,JSON.stringify(data));}catch(_e){}
+    }
+
+    const {data:{session}}=await tdb.auth.getSession();
+    if(session?.user && !session.user.is_anonymous){
+      try{
+        const {data:isSuper,error:superError}=await tdb.rpc('is_super_admin');
+        if(!superError && isSuper===true){
+          document.documentElement.classList.add('ha-super-admin');
+        }
+      }catch(_e){}
+    }
+  }catch(e){
+    console.warn('home ticker',e);
   }
 })();
 </script>

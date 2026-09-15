@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إدارة شريط الأخبار - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#050709;color:#fff}
+.wrap{width:94%;max-width:850px;margin:24px auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+a,button{font:inherit}
+.btn,button{border:1px solid #7c5a25;background:#11161a;color:#f1c56d;border-radius:12px;padding:11px 15px;text-decoration:none;cursor:pointer}
+.card{background:#0d1114;border:1px solid #3c3221;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 8px 28px #0007}
+h1,h2{margin:0 0 12px;color:#f1c56d}
+textarea{width:100%;min-height:110px;resize:vertical;background:#050709;color:#fff;border:1px solid #4b4438;border-radius:12px;padding:13px;font:inherit;outline:none}
+textarea:focus{border-color:#c38c31}
+.note{color:#aab0b5;line-height:1.7}
+.status{padding:10px 12px;border-radius:12px;background:#13191d;margin-top:10px;white-space:pre-wrap}
+.news{display:grid;gap:10px}
+.item{border:1px solid #333b3f;background:#080b0d;border-radius:14px;padding:12px}
+.item .txt{line-height:1.8;font-weight:700}
+.item .meta{font-size:12px;color:#969da2;margin:7px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.danger{border-color:#7e2631;color:#ff9aa6}
+.ok{border-color:#276d43;color:#8de3ab}
+#gate{text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="btn" href="index.html">← الرئيسية</a>
+    <h1>📰 إدارة شريط الأخبار</h1>
+    <span></span>
+  </div>
+
+  <div id="gate" class="card">جاري التحقق من صلاحية الأدمن الرئيسي...</div>
+
+  <div id="panel" style="display:none">
+    <div class="card">
+      <h2>نشر خبر جديد</h2>
+      <div class="note">الخبر يظهر مباشرة بالشريط المتحرك في الواجهة الرئيسية. اكتب نصاً قصيراً وواضحاً.</div>
+      <textarea id="newsText" maxlength="280" placeholder="مثال: تم إضافة خدمات جديدة إلى قسم طلب الخدمة..."></textarea>
+      <div class="row">
+        <button id="publishBtn">نشر الخبر</button>
+      </div>
+      <div id="status" class="status">جاهز.</div>
+    </div>
+
+    <div class="card">
+      <h2>الأخبار المنشورة</h2>
+      <div id="list" class="news">جاري التحميل...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+let me=null;
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+    gate.innerHTML='يجب تسجيل الدخول أولاً. <a class="btn" href="login.html">تسجيل الدخول</a>';
+    return;
+  }
+  me=session.user;
+
+  const {data:ok,error}=await db.rpc('is_super_admin');
+  if(error || ok!==true){
+    gate.textContent='هذه الصفحة متاحة للأدمن الرئيسي فقط.';
+    return;
+  }
+
+  gate.textContent='✅ تم التحقق: الأدمن الرئيسي';
+  panel.style.display='block';
+  loadNews();
+}
+
+async function loadNews(){
+  list.textContent='جاري التحميل...';
+  const {data,error}=await db.from('home_ticker_news')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(100);
+
+  if(error){
+    list.textContent='تعذر تحميل الأخبار: '+error.message;
+    return;
+  }
+
+  list.innerHTML=(data||[]).length
+    ? data.map(x=>`<div class="item">
+        <div class="txt">${esc(x.text)}</div>
+        <div class="meta">${new Date(x.created_at).toLocaleString('ar-IQ')} • ${x.is_active?'ظاهر':'مخفي'}</div>
+        <div class="row">
+          <button class="${x.is_active?'danger':'ok'}" onclick="toggleNews(${x.id},${!x.is_active})">${x.is_active?'إخفاء':'إظهار'}</button>
+          <button class="danger" onclick="deleteNews(${x.id})">حذف</button>
+        </div>
+      </div>`).join('')
+    : 'لا توجد أخبار منشورة بعد.';
+}
+
+publishBtn.onclick=async()=>{
+  const text=newsText.value.trim();
+  if(!text)return alert('اكتب الخبر أولاً');
+
+  publishBtn.disabled=true;
+  status.textContent='جاري النشر...';
+
+  const {error}=await db.from('home_ticker_news').insert({
+    text,
+    is_active:true,
+    created_by:me.id
+  });
+
+  publishBtn.disabled=false;
+
+  if(error){
+    status.textContent='❌ تعذر النشر: '+error.message;
+    return;
+  }
+
+  newsText.value='';
+  status.textContent='✅ تم نشر الخبر وسيظهر في الشريط.';
+  localStorage.removeItem('ha_home_ticker_news');
+  loadNews();
+};
+
+async function toggleNews(id,value){
+  const {error}=await db.from('home_ticker_news')
+    .update({is_active:value})
+    .eq('id',id);
+
+  if(error)return alert(error.message);
+  localStorage.removeItem('ha_home_ticker_news');
+  loadNews();
+}
+
+async function deleteNews(id){
+  if(!confirm('حذف هذا الخبر نهائياً؟'))return;
+
+  const {error}=await db.from('home_ticker_news')
+    .delete()
+    .eq('id',id);
+
+  if(error)return alert(error.message);
+  localStorage.removeItem('ha_home_ticker_news');
+  loadNews();
+}
+
+init();
+</script>
+</body>
+</html>
