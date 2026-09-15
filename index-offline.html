@@ -459,55 +459,10 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   .ha-ticker-admin{width:31px;height:31px}
 }
 
-
-/* ===== HA ROLE BALANCES ===== */
-.ha-role-balances{
-  display:none;
-  width:92%;
-  max-width:1050px;
-  margin:0 auto 16px;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px;
-}
-.ha-role-balances.show{display:grid}
-.ha-role-balance-card{
-  display:none;
-  position:relative;
-  min-height:116px;
-  padding:15px 16px;
-  border-radius:22px;
-  text-decoration:none;
-  color:#fff;
-  background:
-    radial-gradient(circle at 90% 10%,rgba(239,189,94,.18),transparent 35%),
-    linear-gradient(145deg,#11171c,#070a0d);
-  border:1px solid rgba(239,189,94,.42);
-  box-shadow:0 12px 30px #0007,inset 0 0 22px rgba(239,189,94,.04);
-  overflow:hidden;
-}
-.ha-role-balance-card.show{display:flex;align-items:center;gap:14px}
-.ha-role-balance-card .wallet{
-  width:62px;height:62px;flex:0 0 62px;
-  border-radius:18px;
-  display:grid;place-items:center;
-  font-size:33px;
-  background:rgba(239,189,94,.10);
-  border:1px solid rgba(239,189,94,.50);
-}
-.ha-role-balance-card .meta{min-width:0;flex:1}
-.ha-role-balance-card small{display:block;color:#aeb4ba;font-size:11px;margin-bottom:5px}
-.ha-role-balance-card strong{display:block;color:#f2c66a;font-size:22px;white-space:nowrap}
-.ha-role-balance-card b{display:block;font-size:13px;margin-top:5px}
-@media(max-width:700px){
-  .ha-role-balances{width:93%;grid-template-columns:1fr}
-  .ha-role-balance-card{min-height:96px;padding:12px 14px}
-  .ha-role-balance-card .wallet{width:52px;height:52px;flex-basis:52px;font-size:28px}
-  .ha-role-balance-card strong{font-size:19px}
-}
-
-
 </style>
-<link rel="stylesheet" href="ha-premium-theme.css"></head>
+<link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA logo"></div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
 </div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <div class="promo-pill ha-news-ticker" id="haNewsTicker" aria-label="آخر الأخبار">
@@ -517,34 +472,10 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   </div>
   <a class="ha-ticker-admin" href="admin-home-ticker.html" title="إدارة أخبار الشريط">✎</a>
 </div>
-<strong id="haEmployeeBalanceStripValue">0 د.ع</strong>
-</div>
-
 </section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
 </div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> 
-<section id="haRoleBalances" class="ha-role-balances" aria-label="الرصيد">
-<a id="haDriverBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('driver','haDriverBalance');return false;">
-    <span class="wallet">🚕</span>
-    <span class="meta">
-      <small>الرصيد الحالي</small>
-      <strong id="haDriverBalance">0 د.ع</strong>
-      <b>رصيد السائق / المندوب</b>
-    </span>
-  </a>
-
-  <a id="haProviderBalanceCard" class="ha-role-balance-card" href="#" onclick="redeemRoleBalanceCode('service_provider','haProviderBalance');return false;">
-    <span class="wallet">🛠️</span>
-    <span class="meta">
-      <small>الرصيد الحالي</small>
-      <strong id="haProviderBalance">0 د.ع</strong>
-      <b>رصيد مقدم الخدمة</b>
-    </span>
-  </a>
-</section>
-
-<main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
       <span class="chat-live-badge"><i></i> متاح الآن</span>
       <div class="iconbox chat-iconbox">
         <span class="chat-main-icon">💬</span>
@@ -883,99 +814,6 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
     }
   }catch(e){
     console.warn('home ticker',e);
-  }
-})();
-</script>
-
-
-<script>
-/* ===== HA ROLE BALANCES ===== */
-(async function(){
-  const wrap=document.getElementById('haRoleBalances');
-  if(!wrap || !window.supabase)return;
-
-  const bdb=window.supabase.createClient(
-    'https://ubayrhtshgtgggxprrek.supabase.co',
-    'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-  );
-
-  const fmt=n=>(Number(n||0)).toLocaleString('ar-IQ',{maximumFractionDigits:2})+' د.ع';
-
-  window.redeemRoleBalanceCode=async function(roleType,amountId){
-    const code=prompt('أدخل كود تعبئة الرصيد:');
-    if(code===null)return;
-    if(!code.trim()){
-      alert('اكتب الكود أولاً');
-      return;
-    }
-
-    const {data,error}=await bdb.rpc('redeem_balance_recharge_code',{
-      p_code:code.trim(),
-      p_role_type:roleType
-    });
-
-    if(error){
-      alert('تعذر إضافة الرصيد: '+error.message);
-      return;
-    }
-
-    const newBalance=Number(data?.balance||0);
-    const added=Number(data?.added||0);
-    const value=document.getElementById(amountId);
-    if(value)value.textContent=fmt(newBalance);
-
-    alert('✅ تمت إضافة '+fmt(added)+' إلى رصيدك.\nالرصيد الحالي: '+fmt(newBalance));
-  };
-
-
-  function showCard(id,amountId,amount){
-    const card=document.getElementById(id);
-    const value=document.getElementById(amountId);
-    if(value)value.textContent=fmt(amount);
-    if(card)card.classList.add('show');
-    wrap.classList.add('show');
-  }
-
-  try{
-    const {data:{session}}=await bdb.auth.getSession();
-    const user=session?.user;
-    if(!user || user.is_anonymous)return;
-
-    let employee=false,driver=false,provider=false;
-
-    try{
-      const {data:p}=await bdb.from('profiles')
-        .select('account_type,employee_status')
-        .eq('id',user.id)
-        .maybeSingle();
-      employee=!!(p && p.account_type==='employee' && p.employee_status==='approved');
-    }catch(_e){}
-
-    try{
-      const {data:t}=await bdb.from('transport_profiles')
-        .select('status')
-        .eq('user_id',user.id)
-        .maybeSingle();
-      driver=!!(t && t.status==='approved');
-    }catch(_e){}
-
-    try{
-      const {data:ok,error}=await bdb.rpc('has_approved_role',{p_role:'service_provider'});
-      provider=!error && ok===true;
-    }catch(_e){}
-
-    let balances={};
-    try{
-      const {data:rows}=await bdb.from('role_balances')
-        .select('role_type,balance')
-        .eq('user_id',user.id);
-      (rows||[]).forEach(x=>balances[x.role_type]=Number(x.balance||0));
-    }catch(_e){}
-if(driver)showCard('haDriverBalanceCard','haDriverBalance',balances.driver||0);
-    if(provider)showCard('haProviderBalanceCard','haProviderBalance',balances.service_provider||0);
-  }catch(e){
-    console.warn('role balance cards',e);
   }
 })();
 </script>
