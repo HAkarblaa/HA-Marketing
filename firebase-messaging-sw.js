@@ -1,6 +1,3 @@
-self.addEventListener('install',()=>self.skipWaiting());
-self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
-
 importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
 
@@ -20,8 +17,8 @@ messaging.onBackgroundMessage((payload)=>{
   const title=payload?.notification?.title || payload?.data?.title || 'HA Marketing';
   const options={
     body:payload?.notification?.body || payload?.data?.body || 'وصلك إشعار جديد',
-    icon:'https://hakarblaa.github.io/HA-Marketing/ha-logo-transparent.png',
-    badge:'https://hakarblaa.github.io/HA-Marketing/notification-icon.png',
+    icon:'../ha-logo-transparent.png',
+    badge:'../notification-icon.png',
     tag:payload?.data?.tag || 'ha-marketing',
     renotify:true,
     data:{
