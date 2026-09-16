@@ -1,3 +1,161 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>حذف الحساب - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>body{font-family:Arial;background:#f5f5f5;margin:0;color:#111}.w{max-width:620px;margin:35px auto;padding:16px}.c{background:#fff;padding:22px;border-radius:16px}textarea,button,a{width:100%;box-sizing:border-box;padding:13px;border-radius:10px;margin-top:12px;font-size:16px}textarea{min-height:110px;border:1px solid #ccc}button{border:0;background:#b00020;color:#fff}.back{display:block;text-align:center;background:#eee;color:#111;text-decoration:none}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
-<link rel="stylesheet" href="ha-theme.css">
-</head><body><div class="w"><div class="c"><h1>حذف الحساب</h1><p>يمكنك إرسال طلب حذف حسابك وبياناته المرتبطة. بعد إرسال الطلب سيظهر لك رقم الطلب.</p><textarea id="reason" placeholder="سبب الحذف (اختياري)"></textarea><button id="go">إرسال طلب حذف الحساب</button><div id="msg"></div><a class="back" href="account.html">الرجوع إلى الحساب</a></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}});go.onclick=async()=>{go.disabled=true;msg.textContent='جاري الإرسال...';const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}const {data,error}=await db.rpc('request_account_deletion',{p_reason:reason.value.trim()||null});go.disabled=false;if(error){msg.textContent=error.message;return}msg.textContent='تم إرسال طلب حذف الحساب. رقم الطلب: '+data};</script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="طلب حذف حساب HA Marketing والبيانات المرتبطة به.">
+  <title>طلب حذف الحساب - HA Marketing</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="ha-premium-theme.css">
+  <link rel="stylesheet" href="ha-theme.css">
+  <script src="ha-theme.js"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:Arial,Tahoma,sans-serif;background:#f5f6f8;margin:0;color:#111;line-height:1.8}
+    .wrap{max-width:760px;margin:32px auto;padding:16px}
+    .card{background:#fff;padding:26px;border-radius:18px;box-shadow:0 8px 28px #00000010}
+    h1{margin:0 0 8px;font-size:28px}
+    h2{font-size:20px;margin:26px 0 8px}
+    p{margin:8px 0}
+    ul{padding-right:24px;margin:8px 0}
+    li{margin:5px 0}
+    .muted{color:#5f6368;font-size:14px}
+    .notice{background:#f7f9fc;border:1px solid #dfe4ea;border-radius:12px;padding:14px;margin:16px 0}
+    .danger{background:#fff4f4;border:1px solid #f1cccc}
+    textarea{width:100%;min-height:110px;border:1px solid #c9cdd2;border-radius:12px;padding:13px;font:inherit;resize:vertical}
+    button,.btn{width:100%;display:block;border:0;border-radius:12px;padding:13px 16px;margin-top:12px;font-size:16px;text-align:center;text-decoration:none;cursor:pointer}
+    #go{background:#b00020;color:#fff}
+    #go:disabled{opacity:.55;cursor:not-allowed}
+    .secondary{background:#eceff3;color:#111}
+    .link{color:#0b57d0}
+    .check{display:flex;gap:10px;align-items:flex-start;margin:14px 0}
+    .check input{margin-top:7px;transform:scale(1.2)}
+    #msg{margin-top:14px;padding:12px;border-radius:10px;display:none}
+    #msg.ok{display:block;background:#edf7ed;color:#175b21;border:1px solid #c9e8cc}
+    #msg.err{display:block;background:#fff1f1;color:#8b0000;border:1px solid #f0caca}
+    #requestBox{display:none}
+    #loginBox{display:none}
+    .contact a{word-break:break-word}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>طلب حذف حساب HA Marketing</h1>
+      <p class="muted">هذه الصفحة مخصّصة لطلب حذف حسابك والبيانات المرتبطة به من HA Marketing.</p>
+
+      <div class="notice">
+        <strong>طريقة طلب الحذف:</strong>
+        <ol>
+          <li>سجّل الدخول إلى حسابك.</li>
+          <li>ارجع إلى هذه الصفحة.</li>
+          <li>اكتب سبب الحذف إذا رغبت، ثم أرسل الطلب.</li>
+        </ol>
+      </div>
+
+      <h2>ما الذي يشمله طلب الحذف؟</h2>
+      <p>يشمل الطلب حذف الحساب والبيانات المرتبطة به التي لم تعد لازمة لتقديم الخدمة، مثل بيانات الملف الشخصي والبيانات المرتبطة بطلبات المستخدم وأدواره داخل الخدمة، وفق سياسة الخصوصية.</p>
+      <p>قد نحتفظ بجزء محدود من البيانات لمدة لازمة فقط إذا كان ذلك مطلوباً للامتثال للقانون، أو لحماية النظام، أو لمنع الاحتيال وإساءة الاستخدام.</p>
+
+      <div id="loginBox" class="notice">
+        <strong>أنت غير مسجل الدخول حالياً.</strong>
+        <p>يمكنك تسجيل الدخول من الموقع ثم العودة إلى هذه الصفحة لإرسال طلب الحذف.</p>
+        <a class="btn secondary" href="login.html">تسجيل الدخول</a>
+      </div>
+
+      <div id="requestBox">
+        <h2>إرسال طلب الحذف</h2>
+        <label for="reason">سبب الحذف (اختياري)</label>
+        <textarea id="reason" maxlength="1000" placeholder="يمكنك كتابة سبب الحذف هنا، أو تركه فارغاً."></textarea>
+        <label class="check">
+          <input id="confirm" type="checkbox">
+          <span>أؤكد أنني أطلب حذف حسابي والبيانات المرتبطة به وفق ما هو موضح أعلاه.</span>
+        </label>
+        <button id="go" disabled>إرسال طلب حذف الحساب</button>
+      </div>
+
+      <div id="msg" role="status" aria-live="polite"></div>
+
+      <div class="notice contact">
+        <strong>إذا تعذر عليك تسجيل الدخول:</strong>
+        <p>يمكنك التواصل معنا للمساعدة في طلب حذف الحساب عبر واتساب:</p>
+        <p><a class="link" href="https://wa.me/9647837094984">+964 783 709 4984</a></p>
+        <p><a class="link" href="https://wa.me/9647769923065">+964 776 992 3065</a></p>
+      </div>
+
+      <p><a class="link" href="privacy-policy.html">سياسة الخصوصية</a></p>
+      <a class="btn secondary" href="index.html">العودة إلى الرئيسية</a>
+    </section>
+  </main>
+
+  <script>
+    const db = supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const loginBox = document.getElementById('loginBox');
+    const requestBox = document.getElementById('requestBox');
+    const confirmBox = document.getElementById('confirm');
+    const go = document.getElementById('go');
+    const msg = document.getElementById('msg');
+    const reason = document.getElementById('reason');
+
+    function showMessage(text, type){
+      msg.textContent = text;
+      msg.className = type === 'ok' ? 'ok' : 'err';
+    }
+
+    confirmBox.addEventListener('change', () => {
+      go.disabled = !confirmBox.checked;
+    });
+
+    async function init(){
+      const {data:{session}} = await db.auth.getSession();
+      if(session){
+        requestBox.style.display = 'block';
+      }else{
+        loginBox.style.display = 'block';
+      }
+    }
+
+    go.addEventListener('click', async () => {
+      if(!confirmBox.checked) return;
+      go.disabled = true;
+      go.textContent = 'جاري إرسال الطلب...';
+      msg.className = '';
+      msg.style.display = 'none';
+
+      const {data:{session}} = await db.auth.getSession();
+      if(!session){
+        loginBox.style.display = 'block';
+        requestBox.style.display = 'none';
+        showMessage('يجب تسجيل الدخول أولاً ثم العودة إلى هذه الصفحة.', 'err');
+        go.disabled = false;
+        go.textContent = 'إرسال طلب حذف الحساب';
+        return;
+      }
+
+      const {data, error} = await db.rpc('request_account_deletion', {
+        p_reason: reason.value.trim() || null
+      });
+
+      if(error){
+        showMessage('تعذر إرسال الطلب: ' + error.message, 'err');
+        go.disabled = false;
+        go.textContent = 'إرسال طلب حذف الحساب';
+        return;
+      }
+
+      showMessage('تم إرسال طلب حذف الحساب بنجاح. رقم الطلب: ' + data, 'ok');
+      reason.disabled = true;
+      confirmBox.disabled = true;
+      go.textContent = 'تم إرسال الطلب';
+      go.disabled = true;
+    });
+
+    init();
+  </script>
+</body>
+</html>
