@@ -256,7 +256,16 @@ function internetState(){
  document.querySelector('[data-mode="online"]').disabled=!on;
  if(!on && gameMode==='online'){
    gameMode='cpu';
-   document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{
+   document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='cpu'));
+   by('onlineBox').classList.remove('show');
+   by('tournamentBox').classList.remove('show');
+   by('opponentField').style.display='';
+   by('startGameFull').textContent='بدء المباراة';
+ }
+}
+addEventListener('online',internetState);addEventListener('offline',internetState);internetState();
+
+document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{
  if(b.dataset.mode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج اتصال بالإنترنت');return}
  gameMode=b.dataset.mode;
  document.querySelectorAll('.modeBtn').forEach(x=>x.classList.toggle('active',x===b));
