@@ -62,16 +62,6 @@
 @media(max-width:700px){.menuGrid,.tourGrid{grid-template-columns:1fr}.modeGrid{grid-template-columns:1fr 1fr}.menuTitle h1{font-size:23px}}
 
 
-/* Goalkeeper turn */
-#keeperTurnHud{position:fixed;inset:0;z-index:2300;pointer-events:none;display:none;color:#fff}
-#keeperTurnHud.show{display:block}
-#keeperJoy{pointer-events:auto;touch-action:none;position:absolute;left:14px;bottom:18px;width:106px;height:106px;border:3px solid #bde7d0;background:#1d9d4d88;border-radius:50%}
-#keeperKnob{position:absolute;width:52px;height:52px;border-radius:50%;left:24px;top:24px;background:#d9eee2;border:2px solid white;box-shadow:0 2px 8px #0007}
-#keeperJump{pointer-events:auto;position:absolute;right:16px;bottom:18px;width:102px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#2b6ca3,#103b60);color:#fff;font-size:16px;font-weight:900}
-#keeperReady{pointer-events:auto;position:absolute;right:130px;bottom:18px;width:102px;height:58px;border-radius:30px;border:2px solid #ffffff99;background:linear-gradient(#b82d2d,#681010);color:#fff;font-size:14px;font-weight:900}
-#keeperHint{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);background:#06101bcc;border:1px solid #ffffff22;border-radius:999px;padding:7px 14px;font-size:11px;white-space:nowrap}
-@media(max-width:650px){#keeperJoy{left:7px;width:88px;height:88px}#keeperKnob{width:42px;height:42px;left:20px;top:20px}#keeperJump{right:8px;width:88px;height:50px;font-size:14px}#keeperReady{right:102px;width:82px;height:50px;font-size:11px}}
-
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
 </head>
@@ -128,13 +118,7 @@
 
 <div id="game"></div>
 
-<div id="keeperTurnHud">
-  <div id="keeperJoy"><div id="keeperKnob"></div></div>
-  <button id="keeperReady">استعداد</button>
-  <button id="keeperJump">قفز</button>
-  <div id="keeperHint">دور الحارس: حرّك الزر للاتجاه ثم اضغط قفز عند تسديدة الخصم</div>
-</div>
-
+<!-- حُذف دور التحكم بحارس المرمى: اللعب الآن تسديد فقط -->
 <div class="hud">
  <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small></div>
  <div class="power"><div class="track"><div id="mask"></div></div></div>
@@ -406,65 +390,5 @@ new MutationObserver(()=>{
 })();
 </script>
 
-
-<script>
-(function(){
- const by=id=>document.getElementById(id);
- const hud=by('keeperTurnHud'), joy=by('keeperJoy'), knob=by('keeperKnob');
- let gx=0,gy=0,pointer=null,armed=false,opponentShooting=false;
-
- function move(x,y){
-   const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-   let dx=x-cx,dy=y-cy,max=r.width*.34,len=Math.hypot(dx,dy);
-   if(len>max){dx=dx/len*max;dy=dy/len*max}
-   knob.style.transform=`translate(${dx}px,${dy}px)`;
-   gx=dx/max; gy=-dy/max;
- }
- joy.addEventListener('pointerdown',e=>{pointer=e.pointerId;joy.setPointerCapture(e.pointerId);move(e.clientX,e.clientY)});
- joy.addEventListener('pointermove',e=>{if(e.pointerId===pointer)move(e.clientX,e.clientY)});
- joy.addEventListener('pointerup',e=>{if(e.pointerId===pointer)pointer=null});
- joy.addEventListener('pointercancel',()=>pointer=null);
-
- function showKeeperTurn(){
-   hud.classList.add('show');
-   const normalHud=document.querySelector('.hud');
-   if(normalHud) normalHud.style.visibility='hidden';
-   armed=false;opponentShooting=false;
-   by('keeperHint').textContent='دور الحارس: اختر اتجاهك واضغط استعداد';
- }
- function hideKeeperTurn(){
-   hud.classList.remove('show');
-   const normalHud=document.querySelector('.hud');
-   if(normalHud) normalHud.style.visibility='visible';
- }
- by('keeperReady').onclick=()=>{
-   if(armed)return; armed=true;
-   by('keeperHint').textContent='انتبه... الخصم راح يسدد!';
-   setTimeout(()=>{opponentShooting=true;by('keeperHint').textContent='هسه! اقفز بالاتجاه المناسب';},700+Math.random()*900);
- };
- by('keeperJump').onclick=()=>{
-   if(!armed){by('keeperHint').textContent='اضغط استعداد أولاً';return}
-   const shotX=Math.random()*2-1, shotY=Math.random()*1.4-.25;
-   const timing=opponentShooting;
-   const distance=Math.hypot(gx-shotX,(gy-shotY)*.72);
-   const saved=timing && distance<.72;
-   by('keeperHint').textContent=saved?'🧤 تصدي رائع!':'⚽ هدف للخصم';
-   window.dispatchEvent(new CustomEvent('haGoalkeeperResult',{detail:{saved}}));
-   setTimeout(hideKeeperTurn,1050);
- };
- window.haShowKeeperTurn=showKeeperTurn;
-
- // Alternate automatically after the player's visible shot result.
- const msg=by('msg');
- if(msg){
-   let prev=false;
-   new MutationObserver(()=>{
-     const now=msg.classList.contains('show');
-     if(now&&!prev)setTimeout(showKeeperTurn,2100);
-     prev=now;
-   }).observe(msg,{attributes:true,attributeFilter:['class']});
- }
-})();
-</script>
 
 </body></html>
