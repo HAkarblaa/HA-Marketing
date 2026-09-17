@@ -79,7 +79,7 @@
    <div class="menuField"><label>اسم اللاعب</label><input id="playerNameMenu" maxlength="20" placeholder="اكتب اسم اللاعب"></div>
    <div class="menuField"><label>نوع الفريق</label><select id="teamTypeMenu"><option value="national">منتخبات</option><option value="club">نوادي</option></select></div>
    <div class="menuField"><label>فريقك</label><select id="teamMenu"></select></div>
-   <div class="menuField"><label>الخصم</label><select id="opponentMenu"></select></div>
+   <div class="menuField" id="opponentField"><label>الخصم</label><select id="opponentMenu"></select></div>
    <div class="menuField"><label>مستوى الجهاز</label><select id="difficultyMenu"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select></div>
    <div class="menuField"><label>عدد الركلات</label><select id="kickCountMenu"><option value="3">3 ركلات</option><option value="5" selected>5 ركلات</option><option value="7">7 ركلات</option></select></div>
   </div>
@@ -93,9 +93,10 @@
    <div class="tourGrid">
     <div class="menuField"><label>اسم البطولة</label><input id="tourName" value="بطولة HA"></div>
     <div class="menuField"><label>عدد الفرق</label><select id="tourTeams"><option value="8">8 فرق</option><option value="16">16 فريق</option></select></div>
-    <div class="menuField"><label>النظام</label><select id="tourFormat"><option value="groups">مجموعات + خروج مغلوب</option><option value="knockout">خروج مغلوب مباشر</option></select></div>
+    <div class="menuField"><label>النظام</label><input id="tourFormatLabel" value="بطولة متعددة الفرق — خروج مغلوب" readonly></div>
     <div class="menuField"><label>نوع البطولة</label><select id="tourType"><option value="cpu">ضد الجهاز</option><option value="rooms">غرف أونلاين</option></select></div>
    </div>
+   <div style="margin-top:8px;padding:9px 11px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff12;font-size:12px;line-height:1.8">🏆 بالبطولة ما تختار خصم. اللعبة تسحب عدة فرق تلقائياً، وكل فوز ينقلك للخصم التالي إلى نصف النهائي والنهائي.</div>
    <button id="viewTournament" class="menuAction" style="width:100%;margin-top:8px">📋 عرض جدول البطولة</button>
   </div>
   <div id="onlineBox">
@@ -255,37 +256,116 @@ function internetState(){
  document.querySelector('[data-mode="online"]').disabled=!on;
  if(!on && gameMode==='online'){
    gameMode='cpu';
-   document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='cpu'));
-   by('onlineBox').classList.remove('show');
- }
-}
-addEventListener('online',internetState);addEventListener('offline',internetState);internetState();
-
-document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{
+   document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{
  if(b.dataset.mode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج اتصال بالإنترنت');return}
  gameMode=b.dataset.mode;
  document.querySelectorAll('.modeBtn').forEach(x=>x.classList.toggle('active',x===b));
  by('tournamentBox').classList.toggle('show',gameMode==='tournament');
  by('onlineBox').classList.toggle('show',gameMode==='online');
+ // في البطولة الخصم يتحدد تلقائياً من جدول الفرق، لذلك نخفي اختيار الخصم اليدوي.
+ by('opponentField').style.display=gameMode==='tournament'?'none':'';
+ by('startGameFull').textContent=gameMode==='tournament'?'🏆 بدء مباراة البطولة':'بدء المباراة';
 }));
 
+function shuffled(arr){
+ const a=[...arr];
+ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+ return a;
+}
+function fakeScore(){
+ let a=Math.floor(Math.random()*5),b=Math.floor(Math.random()*5);
+ if(a===b){Math.random()<.5?a++:b++}
+ return [a,b];
+}
+function makeRound(teamList,roundNo){
+ const f=[];
+ for(let i=0;i<teamList.length;i+=2){
+   f.push({a:teamList[i],b:teamList[i+1],played:false,sa:null,sb:null,winner:null,userMatch:false});
+ }
+ return {number:roundNo,fixtures:f};
+}
+function roundName(nTeams){
+ if(nTeams>=16)return 'دور الـ16';
+ if(nTeams===8)return 'ربع النهائي';
+ if(nTeams===4)return 'نصف النهائي';
+ if(nTeams===2)return 'النهائي';
+ return 'الجولة';
+}
 function makeTournament(){
- const count=Number(by('tourTeams').value),pool=[...teams[by('teamTypeMenu').value]];
- while(pool.length<count)pool.push('فريق '+(pool.length+1));
- const selected=pool.slice(0,count); const mine=by('teamMenu').value;
- if(!selected.includes(mine))selected[0]=mine;
- const fixtures=[];
- for(let i=0;i<selected.length;i+=2)fixtures.push({a:selected[i],b:selected[i+1],played:false,sa:null,sb:null});
- tournament={name:by('tourName').value||'بطولة HA',format:by('tourFormat').value,type:by('tourType').value,teams:selected,round:1,fixtures,champion:null};
- localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament));return tournament;
+ const count=Number(by('tourTeams').value);
+ const mine=by('teamMenu').value;
+ let pool=teams[by('teamTypeMenu').value].filter(x=>x!==mine);
+ while(pool.length<count-1)pool.push('فريق '+(pool.length+2));
+ pool=shuffled(pool).slice(0,count-1);
+ // ضع فريق اللاعب في موقع عشوائي حتى ما يكون الجدول ثابت.
+ const pos=Math.floor(Math.random()*count);
+ const selected=[...pool];selected.splice(pos,0,mine);
+ const first=makeRound(selected,1);
+ tournament={
+   name:by('tourName').value||'بطولة HA',type:by('tourType').value,
+   teams:selected,mine,round:1,rounds:[first],champion:null,eliminated:false,complete:false
+ };
+ prepareCurrentRound();
+ saveTournament();
+ return tournament;
+}
+function saveTournament(){localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament))}
+function currentRound(){return tournament&&tournament.rounds?tournament.rounds[tournament.round-1]:null}
+function prepareCurrentRound(){
+ if(!tournament)return;
+ const mine=tournament.mine||by('teamMenu').value;
+ const r=currentRound();if(!r)return;
+ r.fixtures.forEach(m=>{
+   if(m.a===mine||m.b===mine){m.userMatch=true;return}
+   if(!m.played){const [sa,sb]=fakeScore();m.sa=sa;m.sb=sb;m.played=true;m.winner=sa>sb?m.a:m.b}
+ });
+}
+function tournamentUserFixture(){
+ if(!tournament)return null;
+ const r=currentRound();if(!r)return null;
+ const mine=tournament.mine||by('teamMenu').value;
+ return r.fixtures.find(m=>m.userMatch&&!m.played&&(m.a===mine||m.b===mine))||null;
+}
+function buildNextRound(){
+ const r=currentRound();if(!r)return;
+ const winners=r.fixtures.map(m=>m.winner).filter(Boolean);
+ if(winners.length===1){tournament.champion=winners[0];tournament.complete=true;saveTournament();return}
+ tournament.round++;
+ tournament.rounds.push(makeRound(winners,tournament.round));
+ prepareCurrentRound();
+ saveTournament();
+}
+function finishTournamentAfterElimination(){
+ if(!tournament)return;
+ let r=currentRound();
+ // أكمل بقية البطولة آلياً بعد خروج اللاعب حتى يظهر البطل الحقيقي.
+ while(r){
+   r.fixtures.forEach(m=>{
+     if(!m.played){const [sa,sb]=fakeScore();m.sa=sa;m.sb=sb;m.played=true;m.winner=sa>sb?m.a:m.b}
+   });
+   const winners=r.fixtures.map(m=>m.winner).filter(Boolean);
+   if(winners.length===1){tournament.champion=winners[0];tournament.complete=true;break}
+   tournament.round++;
+   tournament.rounds.push(makeRound(winners,tournament.round));
+   r=currentRound();
+ }
+ saveTournament();
 }
 function renderTournament(){
  if(!tournament)makeTournament();
  by('tourModalTitle').textContent='🏆 '+tournament.name;
- by('tourContent').innerHTML=(tournament.fixtures||[]).map((m,i)=>'<div class="fixture"><span>'+(i+1)+'. '+m.a+'</span><b>'+(m.played?(m.sa+' - '+m.sb):'VS')+'</b><span>'+m.b+'</span></div>').join('')+(tournament.champion?'<div class="resultBig">🏆 البطل: '+tournament.champion+'</div>':'');
+ let html='<div style="margin-bottom:10px;font-size:12px;opacity:.85">الفرق: '+tournament.teams.length+' — فريقك: <b>'+tournament.mine+'</b></div>';
+ (tournament.rounds||[]).forEach((r,ri)=>{
+   const teamCount=r.fixtures.length*2;
+   html+='<div style="margin:12px 0 6px;font-weight:900;color:#ffd85c">'+roundName(teamCount)+'</div>';
+   html+=r.fixtures.map((m,i)=>'<div class="fixture"'+(m.userMatch?' style="border-color:#ffd85c55"':'')+'><span>'+(i+1)+'. '+m.a+'</span><b>'+(m.played?(m.sa+' - '+m.sb):'VS')+'</b><span>'+m.b+'</span></div>').join('');
+ });
+ if(tournament.champion)html+='<div class="resultBig">🏆 البطل: '+tournament.champion+'</div>';
+ else if(!tournament.eliminated){const m=tournamentUserFixture();if(m)html+='<div class="resultBig" style="font-size:18px">مباراتك القادمة: '+(m.a===tournament.mine?m.b:m.a)+'</div>'}
+ by('tourContent').innerHTML=html;
  by('tournamentModal').classList.add('show');
 }
-by('viewTournament').onclick=()=>{if(!tournament)makeTournament();renderTournament()};
+by('viewTournament').onclick=()=>{if(!tournament||tournament.complete)makeTournament();renderTournament()};
 by('closeTour').onclick=()=>by('tournamentModal').classList.remove('show');
 
 by('createRoom').onclick=()=>{
@@ -314,48 +394,76 @@ function resetScore(){
 }
 function currentOpponent(){
  if(gameMode!=='tournament')return by('opponentMenu').value;
- if(!tournament)makeTournament();
- const mine=by('teamMenu').value;
- const m=(tournament.fixtures||[]).find(x=>!x.played&&(x.a===mine||x.b===mine));
- return m?(m.a===mine?m.b:m.a):by('opponentMenu').value;
+ if(!tournament||tournament.complete||tournament.eliminated)makeTournament();
+ const m=tournamentUserFixture();
+ return m?(m.a===tournament.mine?m.b:m.a):'خصم البطولة';
 }
 function beginGame(){
  if(gameMode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج إنترنت');return}
  if(gameMode==='tournament'){
    if(by('tourType').value==='rooms'&&!navigator.onLine){alert('بطولة الغرف تحتاج إنترنت. اختر بطولة ضد الجهاز أو شغّل الإنترنت.');return}
-   if(!tournament||tournament.champion)makeTournament();
+   const mine=by('teamMenu').value;
+   const settingsChanged=!tournament||tournament.mine!==mine||tournament.teams.length!==Number(by('tourTeams').value)||tournament.complete||tournament.eliminated;
+   if(settingsChanged)makeTournament();
+   prepareCurrentRound();
+   if(!tournamentUserFixture()){
+     alert('لا توجد مباراة حالية. سيتم تجهيز الجولة التالية.');
+     return;
+   }
  }
  maxKicks=Number(by('kickCountMenu').value);
  resetScore();
  by('homeTeamText').textContent=by('teamMenu').value;
  by('awayTeamText').textContent=currentOpponent();
- by('hudMode').textContent=gameMode==='cpu'?'ضد الجهاز':gameMode==='local'?'لاعبان محلياً':gameMode==='tournament'?'بطولة':'أونلاين';
+ by('hudMode').textContent=gameMode==='cpu'?'ضد الجهاز':gameMode==='local'?'لاعبان محلياً':gameMode==='tournament'?'بطولة — '+roundName(currentRound().fixtures.length*2):'أونلاين';
  by('menuScreen').style.display='none';
 }
 by('startGameFull').onclick=beginGame;
 
 function finalizeTournament(){
- if(gameMode!=='tournament'||!tournament)return;
- const mine=by('teamMenu').value;
- const match=(tournament.fixtures||[]).find(x=>!x.played&&(x.a===mine||x.b===mine));
- if(match){
-  match.played=true;match.sa=match.a===mine?homeScore:awayScore;match.sb=match.a===mine?awayScore:homeScore;
+ if(gameMode!=='tournament'||!tournament)return null;
+ const match=tournamentUserFixture();
+ if(!match)return null;
+ const mine=tournament.mine;
+ match.played=true;
+ match.sa=match.a===mine?homeScore:awayScore;
+ match.sb=match.a===mine?awayScore:homeScore;
+ const userWon=homeScore>=awayScore;
+ match.winner=userWon?mine:(match.a===mine?match.b:match.a);
+ if(!userWon){
+   tournament.eliminated=true;
+   finishTournamentAfterElimination();
+   saveTournament();
+   return {won:false,finished:true};
  }
- if(homeScore>=awayScore){
-   const remaining=(tournament.fixtures||[]).filter(x=>!x.played);
-   if(!remaining.length)tournament.champion=mine;
- } else {
-   tournament.champion=(match?(match.a===mine?match.b:match.a):'الخصم');
+ const r=currentRound();
+ const allPlayed=r.fixtures.every(m=>m.played);
+ if(allPlayed){
+   const winners=r.fixtures.map(m=>m.winner).filter(Boolean);
+   if(winners.length===1){tournament.champion=mine;tournament.complete=true;saveTournament();return {won:true,finished:true,champion:true}}
+   buildNextRound();
  }
- localStorage.setItem('ha_pen_tournament',JSON.stringify(tournament));
+ saveTournament();
+ return {won:true,finished:false,next:currentOpponent()};
 }
 function finishMatch(){
- finalizeTournament();
+ const tr=finalizeTournament();
  let res=homeScore>awayScore?'فوز 🎉':homeScore<awayScore?'خسارة':'تعادل';
- if(gameMode==='tournament'&&homeScore>=awayScore)res+=' — تأهلت/تقدمت في البطولة 🏆';
+ by('playAgain').textContent='إعادة اللعب';
+ if(gameMode==='tournament'&&tr){
+   if(tr.champion){res='🏆 مبروك! فزت بالبطولة';by('playAgain').textContent='بطولة جديدة'}
+   else if(!tr.won){res='خرجت من البطولة — البطل: '+(tournament.champion||'سيُحدد');by('playAgain').textContent='بطولة جديدة'}
+   else {res='فوز وتأهلت ✅ — الخصم القادم: '+currentOpponent();by('playAgain').textContent='المباراة التالية'}
+ }
  by('endResult').textContent=res;by('endScore').textContent=homeScore+' - '+awayScore;by('endModal').classList.add('show');
 }
-by('playAgain').onclick=()=>{by('endModal').classList.remove('show');resetScore()};
+by('playAgain').onclick=()=>{
+ by('endModal').classList.remove('show');
+ if(gameMode==='tournament'){
+   if(tournament&&tournament.complete){makeTournament()}
+   beginGame();
+ }else resetScore();
+};
 by('backMenu').onclick=()=>{by('endModal').classList.remove('show');by('menuScreen').style.display='flex'};
 
 // Hook into the existing visual game's score text changes.

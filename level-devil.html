@@ -33,17 +33,17 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);padding:14px;border-radius:18px;text-align:center}.stat b{display:block;font-size:24px}.stat span{display:block;margin-top:4px;color:var(--muted);font-size:12px}
 .list{display:flex;flex-direction:column;gap:10px}.list div{background:rgba(255,255,255,.04);border-radius:16px;padding:11px 12px;color:#d6deea;line-height:1.7;font-size:14px}
 .actions{display:flex;flex-wrap:wrap;gap:10px}.actions button,.actions a{flex:1 1 120px;text-align:center}
-.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lvl{padding:10px;border-radius:14px;background:rgba(255,255,255,.05);text-align:center;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700}.lvl.active{background:linear-gradient(135deg,#ffd400,#ffb703);color:#111;border-color:#fff06a;box-shadow:0 0 0 2px rgba(255,212,0,.18)}
+.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-height:270px;overflow:auto;padding-left:2px}.lvl{padding:9px 5px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center;border:1px solid rgba(255,255,255,.08);font-weight:800;color:#8995a3;cursor:default}.lvl.done{background:rgba(22,200,91,.14);color:#9cffbd;border-color:rgba(22,200,91,.35)}.lvl.active{background:linear-gradient(135deg,#ffd400,#ffb703);color:#111;border-color:#fff06a;box-shadow:0 0 0 2px rgba(255,212,0,.18)}.lvl.locked::after{content:' 🔒';font-size:10px}
 .note{color:var(--muted);font-size:13px;line-height:1.8}
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
-@media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(3,1fr)}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
+@media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
 </style>
 </head>
 <body>
 <div class="page">
   <div class="topbar">
     <a class="ghost" href="entertainment.html">↩ رجوع للترفيه</a>
-    <div class="brand"><div class="logo">👿</div><div><h1>لعبة ليفل ديفل</h1><p>فكرة مراحل وفخاخ مفاجئة للموقع - HA Marketing</p></div></div>
+    <div class="brand"><div class="logo">👿</div><div><h1>لعبة ليفل ديفل</h1><p>50 مرحلة متدرجة الصعوبة - HA Marketing</p></div></div>
     <button class="ghost" id="fullscreenBtn">⛶ ملء الشاشة</button>
   </div>
 
@@ -52,11 +52,11 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
       <div class="canvas-wrap" id="wrap">
         <canvas id="game" width="960" height="600"></canvas>
         <div class="hud">
-          <div class="badge">المرحلة: <span id="hudLevel">1</span> / <span id="hudTotal">6</span></div>
+          <div class="badge">المرحلة: <span id="hudLevel">1</span> / <span id="hudTotal">50</span></div>
           <div class="badge">السقوط: <span id="hudDeaths">0</span></div>
           <div class="badge">أفضل مرحلة: <span id="hudBest">1</span></div>
         </div>
-        <div class="center-msg" id="overlay"><div class="box"><h2>ابدأ اللعب</h2><p>تحرك يمين ويسار، اقفز، وابتعد عن المسامير والحفر والفخاخ. أوصل إلى الباب الأخضر لتنتقل للمرحلة التالية.</p></div></div>
+        <div class="center-msg" id="overlay"><div class="box"><h2>ابدأ اللعب</h2><p>عندك 50 مرحلة. كل مرحلة أصعب من اللي قبلها، وما تنفتح المرحلة التالية إلا بعد ما توصل للباب الأخضر وتفوز بالمرحلة الحالية.</p></div></div>
       </div>
       <div class="mobile-controls">
         <div class="pad">
@@ -67,7 +67,6 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
         <div class="actions">
           <button class="btn" id="startBtn">▶ ابدأ</button>
           <button class="ghost" id="restartBtn">↻ إعادة</button>
-          <select id="stageSelect" class="ghost" aria-label="اختيار المرحلة" style="min-height:46px;padding:8px 10px;font-weight:800"></select>
         </div>
       </div>
     </div>
@@ -83,9 +82,9 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
         </div>
       </div>
       <div class="card">
-        <h3>اختيار المرحلة</h3>
+        <h3>المراحل - تفتح بالتسلسل</h3>
         <div class="levels" id="levels"></div>
-        <p class="note">من تدخل الباب الأخضر تنتقل تلقائياً للمرحلة التالية خلال لحظة.</p>
+        <p class="note">🔒 ما تگدر تختار مرحلة أعلى بنفسك. لازم تكمل المرحلة الحالية حتى تنفتح اللي بعدها. اللعبة تحتوي 50 مرحلة وتزداد صعوبتها تدريجياً.</p>
       </div>
       <div class="card">
         <h3>طريقة اللعب</h3>
@@ -117,110 +116,96 @@ let keys = {left:false,right:false,jump:false};
 let jumpQueued = false;
 let levelTransitioning = false;
 
-const levels = [
-  {
-    name:'المرحلة 1',
-    map:[
-      '....................',
-      '....................',
-      '....................',
-      '....................',
-      '....................',
-      '......c.......s..E..',
-      '...###....#####.....',
-      '..P.................',
-      '########....########',
-      '####################'
+function makeRows(lines){
+  return lines.map(s => (s + '....................').slice(0,20));
+}
+
+function buildLevel(n){
+  const pattern=(n-1)%10;
+  const tier=Math.floor((n-1)/10); // 0..4
+  const maps=[
+    [
+      '....................','....................','....................','....................','....................',
+      '.............###.E..','......###........###','..P.................','####..####..####..##','####################'
+    ],
+    [
+      '....................','....................','....................','.............###....','................E...','.....###.....#######',
+      '..........###.......','.P..................','#####..#####..#######','####################'
+    ],
+    [
+      '....................','....................','..............E.....','............####....','.......###..........','....................',
+      '...###......###.....','.P..................','####..####..####..###','####################'
+    ],
+    [
+      '....................','....................','....................','...............E....','..............###...','....###.............',
+      '..........###.......','.P..................','#####..####..#####.##','####################'
+    ],
+    [
+      '....................','....................','.............E......','............###.....','......###...........','....................',
+      '..###.......###.....','.P..................','####..#####..####..##','####################'
+    ],
+    [
+      '....................','....................','....................','..............E.....','.............###....','.....###............',
+      '..........###.......','.P..................','#####..####..####..###','####################'
+    ],
+    [
+      '....................','....................','...............E....','..............###...','.........###........','....................',
+      '...###..............','.P..................','####..####..#####..##','####################'
+    ],
+    [
+      '....................','....................','....................','.............E......','............###.....','.......###..........',
+      '..###...............','.P..................','#####..#####..####.###','####################'
+    ],
+    [
+      '....................','....................','..............E.....','.............###....','....###.............','..........###.......',
+      '....................','.P..................','####..####..####..####','####################'
+    ],
+    [
+      '....................','....................','...............E....','..............###...','......###...........','............###.....',
+      '..###...............','.P..................','#####..####..#####.##','####################'
     ]
-  },
-  {
-    name:'المرحلة 2',
-    map:[
-      '....................',
-      '....................',
-      '............c.......',
-      '....................',
-      '...........###..E...',
-      '.....s..............',
-      '...####....tttt.....',
-      '.P..........####....',
-      '########.........###',
-      '####################'
-    ]
-  },
-  {
-    name:'المرحلة 3',
-    map:[
-      '....................',
-      '.............c......',
-      '....................',
-      '.........m......E...',
-      '..###...............',
-      '.........s......####',
-      '...tttt.............',
-      '.P....#####.........',
-      '#####.......########',
-      '####################'
-    ]
-  },
-  {
-    name:'المرحلة 4',
-    map:[
-      '....................',
-      '..........c.........',
-      '....................',
-      '.....####.....m..E..',
-      '...............####.',
-      '.s....####..........',
-      '.....tttt....####...',
-      '.P.............c....',
-      '####....########....',
-      '####################'
-    ]
-  },
-  {
-    name:'المرحلة 5',
-    map:[
-      '....................',
-      '...............E....',
-      '...............###..',
-      '.....c......m.......',
-      '..####.........s....',
-      '..........####......',
-      '.tttt...........####',
-      '.P.........c........',
-      '#####....########...',
-      '####################'
-    ]
-  },
-  {
-    name:'المرحلة 6',
-    map:[
-      '....................',
-      '....................',
-      '.......c.......E....',
-      '.....#####....###...',
-      '..............m.....',
-      '..s..####...........',
-      '....tttt....####....',
-      '.P.......c..........',
-      '#####....########...',
-      '####################'
-    ]
+  ];
+  let g=makeRows(maps[pattern]).map(r=>r.split(''));
+
+  // فخاخ أساسية متدرجة؛ تبقى هناك دائماً مساحات قفز ممكنة
+  const spikeSlots=[2,5,8,11,14,17];
+  const trapSlots =[3,7,10,13,16];
+  const coinSlots =[4,9,15];
+  const spikeCount=Math.min(1+tier+Math.floor(pattern/3),5);
+  const trapCount =Math.min(tier+Math.floor((pattern+1)/4),4);
+  for(let i=0;i<spikeCount;i++){
+    const c=spikeSlots[(i+pattern)%spikeSlots.length];
+    if(g[7][c]==='.' && g[8][c]==='#') g[7][c]='s';
   }
-];
+  for(let i=0;i<trapCount;i++){
+    const c=trapSlots[(i+pattern)%trapSlots.length];
+    if(g[8][c]==='#') g[8][c]='t';
+  }
+  // منصات متحركة إضافية من المرحلة 11 فما فوق
+  if(n>=11){ const c=6+((pattern*2)%8); if(g[6][c]==='.') g[6][c]='m'; }
+  if(n>=26){ const c=11+((pattern)%5); if(g[5][c]==='.') g[5][c]='m'; }
+  if(n>=41){ const c=4+((pattern*3)%10); if(g[4][c]==='.') g[4][c]='m'; }
+  // عملات اختيارية كعلامات للمسار
+  coinSlots.forEach((c,i)=>{ if(i<=tier && g[6][c]==='.') g[6][c]='c'; });
+
+  return {name:'المرحلة '+n,map:g.map(r=>r.join(''))};
+}
+
+const levels = Array.from({length:50},(_,i)=>buildLevel(i+1));
 
 function loadProgress(){
   try{
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    deaths = data.deaths || 0;
-    wins = data.wins || 0;
-    unlocked = levels.length;
-    bestLevel = Math.max(1, Math.min(levels.length, data.bestLevel || 1));
-  }catch(e){}
+    deaths = Number(data.deaths)||0;
+    wins = Number(data.wins)||0;
+    unlocked = Math.max(1, Math.min(levels.length, Number(data.unlocked)||1));
+    bestLevel = Math.max(1, Math.min(levels.length, Number(data.bestLevel)||unlocked));
+    currentLevelIndex = Math.max(0, Math.min(levels.length-1, Number.isInteger(data.currentLevel)?data.currentLevel:(unlocked-1)));
+    if(currentLevelIndex >= unlocked) currentLevelIndex = unlocked-1;
+  }catch(e){ unlocked=1; bestLevel=1; currentLevelIndex=0; }
 }
 function saveProgress(){
-  unlocked = levels.length; localStorage.setItem(STORAGE_KEY, JSON.stringify({deaths,wins,unlocked,bestLevel}));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({deaths,wins,unlocked,bestLevel,currentLevel:currentLevelIndex}));
 }
 
 const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawnY:0};
@@ -228,6 +213,7 @@ let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let coins=[]; let exit
 
 function parseLevel(index){
   if(index < 0 || index >= levels.length) index = 0;
+  if(index >= unlocked) index = Math.max(0, unlocked-1);
   currentLevelIndex = index;
   levelTransitioning = false;
   tiles=[]; spikes=[]; traps=[]; movers=[]; coins=[]; exitDoor=null;
@@ -240,7 +226,7 @@ function parseLevel(index){
       if(ch==='#') tiles.push({x,y,w:TILE,h:TILE,type:'solid'});
       if(ch==='s') spikes.push({x,y,w:TILE,h:TILE});
       if(ch==='t') traps.push({x,y,w:TILE,h:TILE,armed:false,falling:false,vy:0,baseY:y});
-      if(ch==='m') movers.push({x,y,w:TILE,h:18,min:x-110,max:x+110,dir:1,speed:2.1});
+      if(ch==='m') movers.push({x,y,w:TILE,h:18,min:x-110,max:x+110,dir:1,speed:2.1 + Math.min(2.4,index*0.05)});
       if(ch==='c') coins.push({x:x+TILE/2,y:y+TILE/2,r:9,taken:false});
       if(ch==='E') exitDoor = {x,y,w:TILE,h:TILE};
       if(ch==='P'){ player.x=x+10; player.y=y+4; player.spawnX=player.x; player.spawnY=player.y; }
@@ -281,13 +267,14 @@ function completeLevel(){
     updateStageUI();
     showTempMessage('🎉 أكملت جميع المراحل!');
     beep(820,0.14);
-    setTimeout(()=>{ parseLevel(0); showTempMessage('رجعنا للمرحلة الأولى'); },1000);
+    setTimeout(()=>{ parseLevel(levels.length-1); showTempMessage('🏆 بطل! كملت 50 مرحلة'); },1000);
     return;
   }
 
   // افتح وسجل المرحلة التالية فعلياً قبل الانتقال إليها
   unlocked = Math.max(unlocked, nextIndex + 1);
   bestLevel = Math.max(bestLevel, nextIndex + 1);
+  currentLevelIndex = nextIndex;
   saveProgress();
   updateStageUI();
   showTempMessage('✅ أحسنت! المرحلة ' + (nextIndex + 1));
@@ -318,8 +305,9 @@ function update(dt){
   });
 
   player.vx = 0;
-  if(keys.left) {player.vx = -4.2; player.face = -1;}
-  if(keys.right){player.vx = 4.2; player.face = 1;}
+  const runSpeed = currentLevelIndex>=30 ? 4.45 : 4.2;
+  if(keys.left) {player.vx = -runSpeed; player.face = -1;}
+  if(keys.right){player.vx = runSpeed; player.face = 1;}
   if((keys.jump || jumpQueued) && player.onGround){ player.vy = -11.5; player.onGround=false; beep(340,0.05); }
   jumpQueued=false;
   player.vy += 0.55;
@@ -407,7 +395,13 @@ function updateStageUI(){
   document.getElementById('statBest').textContent = bestLevel;
   document.getElementById('statDeaths').textContent = deaths;
   document.getElementById('statWins').textContent = wins; document.getElementById('hudTotal').textContent = levels.length;
-  [...document.querySelectorAll('.lvl')].forEach((b,i)=>{ b.classList.toggle('active', i===currentLevelIndex); b.disabled=false; b.style.opacity='1'; }); const sel=document.getElementById('stageSelect'); if(sel) sel.value=String(currentLevelIndex);
+  [...document.querySelectorAll('.lvl')].forEach((b,i)=>{
+    b.classList.toggle('active', i===currentLevelIndex);
+    b.classList.toggle('done', i<unlocked-1);
+    b.classList.toggle('locked', i>=unlocked);
+    b.disabled=true;
+    b.style.opacity = i>=unlocked ? '.5' : '1';
+  });
 }
 
 // controls
@@ -434,12 +428,11 @@ function buildLevelButtons(){
   levels.forEach((lv,i)=>{
     const b = document.createElement('button');
     b.className='lvl';
-    b.textContent = 'مرحلة '+(i+1);
-    b.onclick = ()=>{ parseLevel(i); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); };
+    b.type='button';
+    b.disabled=true;
+    b.textContent = (i+1);
     holder.appendChild(b);
   });
-  const sel=document.getElementById('stageSelect');
-  if(sel){ sel.innerHTML=levels.map((lv,i)=>`<option value="${i}">مرحلة ${i+1}</option>`).join(''); sel.value=String(currentLevelIndex); }
 }
 
 function beep(freq=440,duration=0.08,type='square'){
@@ -455,14 +448,13 @@ function beep(freq=440,duration=0.08,type='square'){
 }
 
 // UI bindings
-buildLevelButtons();
 loadProgress();
-parseLevel(0);
+buildLevelButtons();
+parseLevel(currentLevelIndex);
 updateStageUI();
 draw();
 document.getElementById('startBtn').onclick = startGame;
 document.getElementById('restartBtn').onclick = restartCurrent;
-document.getElementById('stageSelect').onchange = e=>{ parseLevel(Number(e.target.value)||0); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); };
 document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
 </script>
 </body>
