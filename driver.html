@@ -2565,6 +2565,15 @@ function renderPendingRide(index){
 }
 
 function watchPendingRides(){
+  // SECURITY: do not subscribe to open ride requests unless this session has
+  // already been verified as an approved transport worker through Supabase.
+  if(!driverReady || !driverProfile || !Array.isArray(driverDispatchTypes) || !driverDispatchTypes.length){
+    nearbyCount.textContent='0';
+    requestCard.style.display='none';
+    const emptyState=document.getElementById('requestEmptyState');
+    if(emptyState)emptyState.style.display='flex';
+    return;
+  }
   if(!firebase.auth().currentUser){
     HA_FirebaseAuth.ready().then(u=>{firebaseDriverUser=u;watchPendingRides();}).catch(err=>{
       console.error(err);
@@ -2696,10 +2705,23 @@ acceptBtn.onclick=async()=>{
     alert('تعذر التحقق الآمن من Firebase. فعّل Anonymous Authentication.'); return;
   }
   const ident=await HA_TransportProfile.driverIdentity();
-  if(!ident.ok){acceptBtn.disabled=false;acceptBtn.textContent=oldAcceptText;alert(ident.message||'بيانات السائق غير مكتملة.');return;}
+  if(!ident.ok){
+    driverReady=false;
+    driverProfile=null;
+    driverDispatchTypes=[];
+    if(driverWatch){ try{driverWatch.off();}catch(e){} driverWatch=null; }
+    pendingEntries=[];
+    nearbyCount.textContent='0';
+    requestCard.style.display='none';
+    acceptBtn.disabled=false;
+    acceptBtn.textContent=oldAcceptText;
+    alert(ident.message||'بيانات السائق غير مكتملة.');
+    return;
+  }
   driverProfile=ident.driver;
   driverKind=ident.driverKind||null;
   driverDispatchTypes=Array.isArray(ident.dispatchTypes)?ident.dispatchTypes:[];
+  driverReady=true;
 
   if(!rideMatchesThisDriver(currentRide)){
     alert('هذا الطلب مو مخصص لنوع تسجيلك.');

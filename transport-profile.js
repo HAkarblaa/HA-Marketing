@@ -103,14 +103,23 @@
     if(!user?.id)return null;
 
     let p=null;
+    let profileVerified=false;
     try{
       const r=await db.from('profiles')
         .select('id,full_name,username,phone,account_type,employee_status,employee_role')
         .eq('id',user.id)
         .maybeSingle();
-      if(!r.error&&r.data)p=r.data;
-    }catch(e){}
+      if(!r.error&&r.data){
+        p=r.data;
+        profileVerified=true;
+      }
+    }catch(e){
+      console.warn('HA security: profile verification failed',e);
+    }
 
+    // SECURITY: never trust user_metadata/localStorage for privileged roles.
+    // Names/phone may use auth metadata as display fallbacks, but account_type,
+    // employee_status and employee_role must come from the database profile.
     const meta=user.user_metadata||{};
     cached={
       id:p?.id||user.id,
@@ -118,9 +127,10 @@
       full_name:p?.full_name||meta.full_name||meta.name||'',
       username:p?.username||meta.username||'',
       phone:p?.phone||user.phone||meta.phone||'',
-      account_type:p?.account_type||meta.account_type||'customer',
-      employee_status:p?.employee_status||meta.employee_status||null,
-      employee_role:p?.employee_role||meta.employee_role||meta.employee_role_key||null
+      account_type:profileVerified?(p.account_type||'customer'):'customer',
+      employee_status:profileVerified?(p.employee_status||null):null,
+      employee_role:profileVerified?(p.employee_role||null):null,
+      _verifiedProfile:profileVerified
     };
     return cached;
   }
@@ -155,7 +165,7 @@
     const db=supa();
 
     // صلاحية السائق ممكن تجي من حساب موظف قديم أو من بوابة الانضمام الجديدة.
-    const employeeApproved=(p.account_type==='employee' && p.employee_status==='approved');
+    const employeeApproved=(p._verifiedProfile===true && p.account_type==='employee' && p.employee_status==='approved');
 
     let transport=null;
     try{
@@ -193,10 +203,12 @@
       carName:transport?.vehicle_model||transport?.vehicle_type||'',
       carColor:transport?.vehicle_color||''
     };
+    // SECURITY: server-side approved vehicle data wins over localStorage.
+    // Local values are only a fallback when the approved database record has no value.
     const v={
-      plate:local.plate||dbVehicle.plate,
-      carName:local.carName||dbVehicle.carName,
-      carColor:local.carColor||dbVehicle.carColor
+      plate:dbVehicle.plate||local.plate||'',
+      carName:dbVehicle.carName||local.carName||'',
+      carColor:dbVehicle.carColor||local.carColor||''
     };
 
     // إذا كانت البيانات موجودة في Supabase نخزنها محلياً حتى تستخدمها واجهة السائق.
