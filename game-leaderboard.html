@@ -44,8 +44,8 @@ body{margin:0;background:radial-gradient(circle at 50% -10%,#6d4b171f,transparen
   </div>
 
   <section class="hero">
-    <strong>كل لعبة لها تصنيف مستقل + تصنيف عام</strong>
-    <span>النقاط ما تنمسح إذا خسرت. كل مباراة تضاف إلى مجموع نقاطك، ويظهر اسمك ومعرّفك وعدد مرات اللعب وأفضل نتيجة.</span>
+    <strong>تصنيف لعبة الحية</strong>
+    <span>كل جولة تنضاف إلى مجموع نقاطك حتى عند الخسارة، ويظهر اسمك ومعرّفك وعدد مرات اللعب وأفضل نتيجة.</span>
   </section>
 
   <div class="tabs" id="tabs"></div>
@@ -62,14 +62,9 @@ body{margin:0;background:radial-gradient(circle at 50% -10%,#6d4b171f,transparen
 
 <script>
 const GAME_LABELS={
-  all:'🌟 الكل',
-  snake:'🐍 الحية',
-  penalties:'⚽ الجزاءات',
-  domino:'🁫 الدومينو',
-  chess:'♟️ الشطرنج',
-  backgammon:'🎲 الطاولة'
+  snake:'🐍 الحية'
 };
-let current='all';
+let current='snake';
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmt(n){return Number(n||0).toLocaleString('ar-IQ')}
