@@ -16,7 +16,7 @@
     .ha-rate-star{border:0;background:transparent;font-size:37px;color:#c7c7c7;cursor:pointer;padding:2px}
     .ha-rate-star.on{color:#f5a900}
     .ha-rating-note{width:100%;box-sizing:border-box;border:1px solid #ddd;border-radius:12px;padding:10px;min-height:72px;resize:none;font-family:inherit}
-    .ha-rating-send{width:100%;border:0;border-radius:12px;background:#111;color:#fff;padding:12px;margin-top:10px;font-weight:800;cursor:pointer}
+    .ha-rating-comment-hint{font-size:12px;color:#777;margin-top:6px;text-align:right}.ha-rating-send{width:100%;border:0;border-radius:12px;background:#111;color:#fff;padding:12px;margin-top:10px;font-weight:800;cursor:pointer}
     .ha-rating-skip{border:0;background:transparent;color:#777;margin-top:9px;cursor:pointer}`;
     document.head.appendChild(st);
   }
@@ -34,8 +34,9 @@
       <div class="ha-rating-title">قيّم الخدمة</div>
       <div class="ha-rating-sub">شلون كانت تجربتك ويا ${targetName}؟</div>
       <div class="ha-rating-stars">${starsHtml()}</div>
-      <textarea class="ha-rating-note" maxlength="300" placeholder="ملاحظة اختيارية..."></textarea>
-      <button class="ha-rating-send" type="button">إرسال التقييم</button>
+      <textarea class="ha-rating-note" maxlength="300" placeholder="اكتب تعليقك عن التجربة (اختياري)..."></textarea>
+      <div class="ha-rating-comment-hint">التعليق اختياري ويُحفظ مع التقييم.</div>
+      <button class="ha-rating-send" type="button">إرسال التقييم والتعليق</button>
       <button class="ha-rating-skip" type="button">لاحقاً</button>
     </div>`;
     document.body.appendChild(ov);
@@ -53,6 +54,7 @@
       await firebase.database().ref(`rides/${rideId}/ratings/${role}`).set(payload);
       await firebase.database().ref(`rides/${rideId}`).update({
         [`${role}Rating`]:score,
+        [`${role}RatingComment`]:note,
         [`${role}RatingAt`]:firebase.database.ServerValue.TIMESTAMP
       });
       ov.remove();

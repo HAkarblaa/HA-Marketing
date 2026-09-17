@@ -1332,6 +1332,7 @@ html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="firebase-auth-secure.js"></script>
+<script src="transport-rating.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAPmaCbhJCh1a7DyDos1HyM95HDKe4L6sE",
@@ -2314,6 +2315,7 @@ function listenToRide(rideId){
       if(customerTripStatus) customerTripStatus.textContent=statusText;
 
       if(ride.status==='finished'){
+        window.haLastFinishedRideId=rideId;
         localStorage.removeItem('ha_active_ride');
 
         // نوقف متابعة الطلب ونحوّل الزبون إلى شاشة انتهاء واضحة.
@@ -2462,14 +2464,16 @@ document.getElementById('finishHomeBtn').onclick=()=>{
 };
 
 document.getElementById('finishRateBtn').onclick=()=>{
-  const rating=prompt('قيّم السائق من 1 إلى 5');
-  if(!rating)return;
-  const n=Number(rating);
-  if(n<1 || n>5 || !Number.isFinite(n)){
-    alert('اكتب رقم من 1 إلى 5.');
+  const rideId=window.haLastFinishedRideId || localStorage.getItem('ha_active_ride');
+  if(!rideId){
+    alert('تعذر العثور على الرحلة المكتملة.');
     return;
   }
-  alert('شكراً لتقييمك ⭐ '+n);
+  if(!window.HA_Rating){
+    alert('تعذر فتح نافذة التقييم حالياً.');
+    return;
+  }
+  HA_Rating.show({rideId:rideId,role:'customer',targetName:acceptedDriver.name||'السائق'});
 };
 
 document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
