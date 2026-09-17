@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ألعاب HA Marketing</title><link rel="stylesheet" href="assets/ha-games-style.css"></head><body><div class="page">
+<div class="topbar"><div class="brand"><div class="logo">HA</div><div><h1>ألعاب HA Marketing</h1><p>باقة ألعاب كاملة للموقع مع نقاط وتصنيف</p></div></div><div class="row"><a class="btn secondary" href="games-ranking.html">🏆 التصنيف العام</a></div></div>
+<div class="hero"><div class="card"><h2>مرحباً بك في مركز الألعاب</h2><p>هذه الباقة تضم 5 ألعاب سريعة وجذابة مناسبة للموقع والموبايل: تفادي العوائق، الطائر، تكسير الطابوق، القفز، وجمع العملات. كل لعبة تسجل النقاط وتحفظ أعلى نتيجة وعدد مرات اللعب وتظهر داخل التصنيف.</p><div class="notice">إذا كان عندك تسجيل دخول داخل الموقع، سيتم استخدام الاسم والمعرف تلقائياً. وإذا لم يوجد، تحفظ النتائج محلياً على الجهاز.</div></div><div class="card"><h3>إحصائيات سريعة</h3><div class="stat-grid"><div class="stat"><b>5</b><span>ألعاب</span></div><div class="stat"><b id="sumPlayers">0</b><span>لاعبين محلياً</span></div><div class="stat"><b id="sumRecords">0</b><span>نتائج</span></div></div></div></div>
+<div class="grid" style="margin-top:16px">
+<a class="card game-card" href="car-dodge.html"><h3>🚗 تفادي العوائق</h3><p>تحرك يمين ويسار وتجنب السيارات. كل ثانية = نقاط أعلى.</p></a>
+<a class="card game-card" href="bird-game.html"><h3>🐦 لعبة الطائر</h3><p>حلّق بين الأنابيب، وتجاوز أكثر عدد ممكن من الحواجز.</p></a>
+<a class="card game-card" href="brick-breaker.html"><h3>🧱 تكسير الطابوق</h3><p>اكسر الطابوق بالمضرب والكرة، واجمع النقاط مع كل ضربة.</p></a>
+<a class="card game-card" href="jumper.html"><h3>🏃 لعبة القفز</h3><p>اقفز فوق الصناديق والعوائق، واستمر لأبعد مسافة ممكنة.</p></a>
+<a class="card game-card" href="coin-runner.html"><h3>🪙 جمع العملات</h3><p>اجمع العملات واهرب من العوائق لتصل لأعلى نتيجة.</p></a>
+<a class="card game-card" href="games-ranking.html"><h3>🏆 التصنيف</h3><p>شاهد ترتيب جميع الألعاب وترتيب كل لعبة بشكل منفصل.</p></a>
+</div><footer>HA Marketing Games Pack</footer></div>
+<script src="assets/ha-games-common.js"></script><script>const d=JSON.parse(localStorage.getItem('ha_games_records_v1')||'{"games":{},"history":[]}');document.getElementById('sumRecords').textContent=(d.history||[]).length;const players=new Set();Object.values(d.games||{}).forEach(g=>Object.values(g.players||{}).forEach(p=>players.add(p.userId)));document.getElementById('sumPlayers').textContent=players.size;</script></body></html>
