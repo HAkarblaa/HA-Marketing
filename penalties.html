@@ -113,7 +113,7 @@
   </div>
  </div>
 </div>
-<div id="miniHud">الوضع: <b id="hudMode">ضد الجهاز</b><br>الجولات: <b id="hudKicks">0/5</b></div>
+<div id="miniHud">الوضع: <b id="hudMode">ضد الجهاز</b><br>الركلات: <b id="hudKicks">0/5 - 0/5</b><br>الدور: <b id="hudTurn">أنت تسدد</b></div>
 <div id="endModal"><div class="modalCard"><h2>نتيجة المباراة</h2><div id="endResult" class="resultBig"></div><div id="endScore" class="resultBig"></div><div class="menuActions"><button id="playAgain" class="menuAction primary">إعادة اللعب</button><button id="backMenu" class="menuAction">القائمة الرئيسية</button></div></div></div>
 <div id="tournamentModal"><div class="modalCard"><h2 id="tourModalTitle">🏆 جدول البطولة</h2><div id="tourContent"></div><div class="menuActions"><button id="closeTour" class="menuAction">إغلاق</button></div></div></div>
 
@@ -172,7 +172,8 @@ const ballMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.55});con
 const curveMat=new THREE.LineDashedMaterial({color:0x6dff63,dashSize:.32,gapSize:.22});let aimLine=new THREE.Line(new THREE.BufferGeometry(),curveMat);scene.add(aimLine);
 let aimDot=new THREE.Mesh(new THREE.RingGeometry(.25,.34,24),new THREE.MeshBasicMaterial({color:0x6dff63,side:THREE.DoubleSide}));aimDot.rotation.x=-Math.PI/2;scene.add(aimDot);
 
-let home=0,shooting=false,shotT=0,target=new THREE.Vector3(),keeperTarget=0,power=.55;
+let shooting=false,shotT=0,target=new THREE.Vector3(),keeperTarget=0,power=.55;
+let shotOwner='home',forcedGoal=null;
 const mask=document.getElementById('mask'),msg=document.getElementById('msg');
 const joy=document.getElementById('joy'),joyKnob=document.getElementById('joyKnob');
 let aimX=0, aimY=0;
@@ -211,8 +212,46 @@ updateAim();
 
 document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');let t=b.dataset.ball;if(t==='fire'){ballMat.color.set(0xff6b21);ballMat.emissive.set(0xaa1800);ballMat.emissiveIntensity=1.5}else if(t==='ice'){ballMat.color.set(0x9befff);ballMat.emissive.set(0x187cc5);ballMat.emissiveIntensity=1.2}else if(t==='dirt'){ballMat.color.set(0x9b6a3b);ballMat.emissive.set(0)}else{ballMat.color.set(0xffffff);ballMat.emissive.set(0)}});
 
-function reset(){shooting=false;shotT=0;player.position.set(-.8,0,4.7);player.rotation.set(0,Math.PI,0);keeper.position.set(0,0,-11.5);keeper.rotation.set(0,0,0);ball.position.set(.25,.23,2.25);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);aimLine.visible=true;aimDot.visible=true;updateAim()}
-document.getElementById('shoot').onclick=()=>{if(shooting)return;shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;let x=aimX*4.0;let y=1.0+power*.8+aimY*1.25;target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);keeperTarget=Math.random()*7.4-3.7};
+function reset(){
+ shooting=false;shotT=0;forcedGoal=null;
+ player.position.set(-.8,0,4.7);player.rotation.set(0,Math.PI,0);
+ keeper.position.set(0,0,-11.5);keeper.rotation.set(0,0,0);
+ ball.position.set(.25,.23,2.25);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);
+ const canAim=window.haCanPlayerShoot!==false;
+ aimLine.visible=canAim;aimDot.visible=canAim;updateAim();
+}
+function startShot(owner,goalOverride=null){
+ if(shooting)return false;
+ shotOwner=owner||'home';forcedGoal=goalOverride;
+ shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;
+ if(shotOwner==='away'){
+   const d=document.getElementById('difficultyMenu')?.value||'medium';
+   const chance=d==='hard' ? .76 : d==='easy' ? .43 : .59;
+   const willGoal=goalOverride===null?Math.random()<chance:!!goalOverride;
+   forcedGoal=willGoal;
+   const x=(Math.random()*7.2)-3.6;
+   const y=.65+Math.random()*1.9;
+   target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);
+   if(willGoal){
+     let off=(1.15+Math.random()*1.5)*(Math.random()<.5?-1:1);
+     keeperTarget=THREE.MathUtils.clamp(x+off,-3.7,3.7);
+   }else{
+     keeperTarget=THREE.MathUtils.clamp(x+(Math.random()-.5)*.7,-3.7,3.7);
+   }
+ }else{
+   let x=aimX*4.0;let y=1.0+power*.8+aimY*1.25;
+   target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);
+   keeperTarget=Math.random()*7.4-3.7;
+ }
+ return true;
+}
+document.getElementById('shoot').onclick=()=>{
+ if(shooting||window.haCanPlayerShoot===false)return;
+ startShot(window.haActiveSide||'home');
+};
+window.haPenaltyOpponentShoot=()=>startShot('away');
+window.haPenaltySceneBusy=()=>shooting;
+
 
 let clock=new THREE.Clock(),phase=0,judged=false;
 function animate(){
@@ -221,7 +260,15 @@ function animate(){
   shotT+=dt;let t=shotT;
   if(t<.58){let q=t/.58;player.position.z=4.7-q*2.15;player.position.x=-.8+q*.55;player.rotation.z=Math.sin(q*Math.PI)*-.08}
   if(t>.38&&t<1.38){let q=Math.min((t-.38),1),start=new THREE.Vector3(.25,.23,2.25),mid=new THREE.Vector3(target.x*.28,2.15,-4.8),c=new THREE.QuadraticBezierCurve3(start,mid,target);ball.position.copy(c.getPoint(q));ball.rotation.x+=dt*18;ball.rotation.z+=dt*9;if(q>.24){let d=Math.min((q-.24)/.48,1);keeper.position.x=THREE.MathUtils.lerp(0,keeperTarget,d);keeper.position.y=Math.sin(d*Math.PI)*.72;keeper.rotation.z=-keeperTarget*.16*d}camera.position.z=THREE.MathUtils.lerp(14.7,10.8,q);camera.position.y=THREE.MathUtils.lerp(5.7,4.4,q);camera.lookAt(ball.position.x*.22,1.55,-8.7)}
-  if(t>=1.38&&!judged){judged=true;let saved=Math.abs(target.x-keeperTarget)<.75&&target.y<2.1;if(!saved){home++;document.getElementById('score').textContent=`العراق ${home} - 0 إيران`;msg.textContent='GOAL!'}else msg.textContent='تصدي!';msg.classList.add('show')}
+  if(t>=1.38&&!judged){
+   judged=true;
+   let saved=Math.abs(target.x-keeperTarget)<.75&&target.y<2.1;
+   let goal=forcedGoal===null?!saved:!!forcedGoal;
+   if(shotOwner==='away') msg.textContent=goal?'هدف للخصم!':'الحارس تصدى!';
+   else msg.textContent=goal?'GOAL!':'تصدي!';
+   msg.classList.add('show');
+   if(typeof window.haPenaltyShotResult==='function') window.haPenaltyShotResult({side:shotOwner,goal});
+  }
   if(t>2.15){msg.classList.remove('show');judged=false;reset()}
  }
  renderer.render(scene,camera)
@@ -236,7 +283,7 @@ const teams={
  national:['العراق','إيران','السعودية','الكويت','قطر','الأرجنتين','البرازيل','فرنسا','إسبانيا','ألمانيا','البرتغال','إنجلترا'],
  club:['ريال مدريد','برشلونة','مانشستر سيتي','ليفربول','بايرن ميونخ','ميلان','إنتر','باريس سان جيرمان']
 };
-let gameMode='cpu',maxKicks=5,kickNo=0,homeScore=0,awayScore=0;
+let gameMode='cpu',maxKicks=5,homeKicks=0,awayKicks=0,homeScore=0,awayScore=0,suddenDeath=false,matchEnded=false;
 let points=Number(localStorage.getItem('ha_pen_points')||0),gems=Number(localStorage.getItem('ha_pen_gems')||0);
 let tournament=JSON.parse(localStorage.getItem('ha_pen_tournament')||'null');
 
@@ -396,10 +443,22 @@ by('shopOpen').onclick=()=>{
  }
 };
 
+function updateMatchHud(){
+ by('homeScoreText').textContent=homeScore;
+ by('awayScoreText').textContent=awayScore;
+ by('hudKicks').textContent=homeKicks+'/'+maxKicks+' - '+awayKicks+'/'+maxKicks+(suddenDeath?' +':'');
+}
+function setTurn(label,canShoot,side='home'){
+ by('hudTurn').textContent=label;
+ window.haCanPlayerShoot=!!canShoot;
+ window.haActiveSide=side;
+ const shoot=by('shoot');
+ if(shoot){shoot.disabled=!canShoot;shoot.style.opacity=canShoot?'1':'.45'}
+}
 function resetScore(){
- kickNo=0;homeScore=0;awayScore=0;
- by('homeScoreText').textContent='0';by('awayScoreText').textContent='0';
- by('hudKicks').textContent='0/'+maxKicks;
+ homeKicks=0;awayKicks=0;homeScore=0;awayScore=0;suddenDeath=false;matchEnded=false;
+ updateMatchHud();
+ setTurn('أنت تسدد',true,'home');
 }
 function currentOpponent(){
  if(gameMode!=='tournament')return by('opponentMenu').value;
@@ -437,7 +496,7 @@ function finalizeTournament(){
  match.played=true;
  match.sa=match.a===mine?homeScore:awayScore;
  match.sb=match.a===mine?awayScore:homeScore;
- const userWon=homeScore>=awayScore;
+ const userWon=homeScore>awayScore;
  match.winner=userWon?mine:(match.a===mine?match.b:match.a);
  if(!userWon){
    tournament.eliminated=true;
@@ -456,6 +515,9 @@ function finalizeTournament(){
  return {won:true,finished:false,next:currentOpponent()};
 }
 function finishMatch(){
+ if(matchEnded)return;
+ matchEnded=true;
+ setTurn('انتهت المباراة',false,'home');
  const tr=finalizeTournament();
  let res=homeScore>awayScore?'فوز 🎉':homeScore<awayScore?'خسارة':'تعادل';
  by('playAgain').textContent='إعادة اللعب';
@@ -464,46 +526,71 @@ function finishMatch(){
    else if(!tr.won){res='خرجت من البطولة — البطل: '+(tournament.champion||'سيُحدد');by('playAgain').textContent='بطولة جديدة'}
    else {res='فوز وتأهلت ✅ — الخصم القادم: '+currentOpponent();by('playAgain').textContent='المباراة التالية'}
  }
- by('endResult').textContent=res;by('endScore').textContent=homeScore+' - '+awayScore;by('endModal').classList.add('show');
+ by('endResult').textContent=res;
+ by('endScore').textContent=homeScore+' - '+awayScore;
+ setTimeout(()=>by('endModal').classList.add('show'),650);
 }
+function afterPair(){
+ if(matchEnded)return;
+ if(homeKicks!==awayKicks)return;
+ if(!suddenDeath){
+   const remaining=Math.max(0,maxKicks-homeKicks);
+   if(Math.abs(homeScore-awayScore)>remaining){finishMatch();return}
+   if(homeKicks>=maxKicks){
+     if(homeScore!==awayScore){finishMatch();return}
+     suddenDeath=true;
+     by('hudTurn').textContent='تعادل — ركلات إضافية';
+   }
+ }else if(homeKicks>maxKicks && homeScore!==awayScore){
+   finishMatch();return;
+ }
+ setTimeout(()=>setTurn(suddenDeath?'ركلة إضافية — دورك':'أنت تسدد',true,'home'),700);
+}
+function startCpuShot(){
+ if(matchEnded)return;
+ setTurn('الخصم يسدد...',false,'away');
+ const tryStart=()=>{
+   if(matchEnded)return;
+   if(typeof window.haPenaltyOpponentShoot!=='function'){setTimeout(tryStart,150);return}
+   const ok=window.haPenaltyOpponentShoot();
+   if(!ok)setTimeout(tryStart,150);
+ };
+ setTimeout(tryStart,900);
+}
+function award(goal){
+ points+=goal?10:2;
+ if(Math.random()<.12)gems++;
+ localStorage.setItem('ha_pen_points',points);localStorage.setItem('ha_pen_gems',gems);syncWallet();
+}
+window.haPenaltyShotResult=({side,goal})=>{
+ if(matchEnded)return;
+ if(side==='home'){
+   homeKicks++;if(goal)homeScore++;award(goal);updateMatchHud();
+   if(gameMode==='cpu'||gameMode==='tournament'){
+     startCpuShot();
+   }else if(gameMode==='local'){
+     setTimeout(()=>setTurn('اللاعب الثاني يسدد',true,'away'),700);
+   }else{
+     // نسخة الأونلاين الحالية لا تملك خادماً فعلياً للمنافس؛ نحاكي ركلة الخصم حتى تنتهي المباراة.
+     startCpuShot();
+   }
+ }else{
+   awayKicks++;if(goal)awayScore++;updateMatchHud();
+   afterPair();
+ }
+};
+
 by('playAgain').onclick=()=>{
  by('endModal').classList.remove('show');
  if(gameMode==='tournament'){
    if(tournament&&tournament.complete){makeTournament()}
    beginGame();
- }else resetScore();
-};
-by('backMenu').onclick=()=>{by('endModal').classList.remove('show');by('menuScreen').style.display='flex'};
-
-// Hook into the existing visual game's score text changes.
-// A MutationObserver watches the current 3D result and mirrors it into the full system.
-const msg=by('msg');
-let lastShown=false;
-new MutationObserver(()=>{
- const showing=msg.classList.contains('show');
- if(showing&&!lastShown){
-   kickNo++;
-   const text=(msg.textContent||'').toLowerCase();
-   if(text.includes('goal')||text.includes('هدف')) homeScore++;
-   else {
-     const d=by('difficultyMenu').value;
-     const cpuChance=d==='hard'?.75:d==='medium'?.58:.42;
-     if(gameMode==='cpu'||gameMode==='tournament'){if(Math.random()<cpuChance)awayScore++}
-   }
-   // For every player kick, simulate opponent kick in CPU/tournament.
-   if((gameMode==='cpu'||gameMode==='tournament') && (text.includes('goal')||text.includes('هدف'))){
-     const d=by('difficultyMenu').value;const cpuChance=d==='hard'?.75:d==='medium'?.58:.42;
-     if(Math.random()<cpuChance)awayScore++;
-   }
-   by('homeScoreText').textContent=homeScore;by('awayScoreText').textContent=awayScore;
-   by('hudKicks').textContent=Math.min(kickNo,maxKicks)+'/'+maxKicks;
-   points+=text.includes('goal')||text.includes('هدف')?10:2;
-   if(Math.random()<.12)gems++;
-   localStorage.setItem('ha_pen_points',points);localStorage.setItem('ha_pen_gems',gems);
-   if(kickNo>=maxKicks)setTimeout(finishMatch,1400);
+ }else{
+   resetScore();
  }
- lastShown=showing;
-}).observe(msg,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
+};
+by('backMenu').onclick=()=>{by('endModal').classList.remove('show');matchEnded=true;setTurn('القائمة',false,'home');by('menuScreen').style.display='flex'};
+
 })();
 </script>
 
