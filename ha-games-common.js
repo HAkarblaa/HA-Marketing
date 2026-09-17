@@ -1,58 +1,23 @@
-(function(){
-  const STORAGE_KEY='ha_games_records_v1';
-  const USER_KEYS=['ha_user','ha_current_user','currentUser','user','profile'];
-  function parseJson(v){try{return JSON.parse(v)}catch(e){return null}}
-  function detectUser(){
-    for(const k of USER_KEYS){
-      const raw=localStorage.getItem(k); if(!raw) continue;
-      const obj=parseJson(raw); if(obj && typeof obj==='object'){
-        const username=obj.username||obj.user_name||obj.handle||obj.userHandle||obj.slug||'';
-        const name=obj.full_name||obj.fullName||obj.name||obj.display_name||obj.email||'مستخدم HA';
-        const id=obj.id||obj.user_id||obj.uid||obj.uuid||username||'guest';
-        return {id:String(id), username:String(username||('user_'+String(id).slice(0,6))), name:String(name)};
-      }
-    }
-    return {id:'guest-device', username:'guest', name:'زائر الجهاز'};
-  }
-  function getData(){return parseJson(localStorage.getItem(STORAGE_KEY))||{games:{},history:[]}}
-  function setData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
-  function saveScore(gameKey, gameTitle, score, meta={}){
-    const user=detectUser(); const data=getData();
-    if(!data.games[gameKey]) data.games[gameKey]={title:gameTitle, players:{}};
-    const p=data.games[gameKey].players[user.id] || {userId:user.id,username:user.username,name:user.name,totalScore:0,bestScore:0,playCount:0,wins:0,lastScore:0,updatedAt:null};
-    p.username=user.username; p.name=user.name; p.totalScore += Math.max(0,Math.floor(score||0)); p.lastScore=Math.floor(score||0); p.playCount += 1; p.bestScore=Math.max(p.bestScore,p.lastScore); if(meta.win) p.wins+=1; p.updatedAt=new Date().toISOString();
-    data.games[gameKey].players[user.id]=p;
-    data.history.unshift({gameKey,gameTitle,score:p.lastScore,userId:user.id,username:user.username,name:user.name,at:p.updatedAt,win:!!meta.win});
-    data.history=data.history.slice(0,400);
-    setData(data);
-    return p;
-  }
-  function getLeaderboard(gameKey){
-    const data=getData();
-    if(gameKey==='all'){
-      const map={};
-      Object.entries(data.games).forEach(([k,g])=>{
-        Object.values(g.players||{}).forEach(p=>{
-          if(!map[p.userId]) map[p.userId]={userId:p.userId,username:p.username,name:p.name,totalScore:0,bestScore:0,playCount:0,wins:0,games:0};
-          const m=map[p.userId]; m.username=p.username; m.name=p.name; m.totalScore += p.totalScore||0; m.bestScore=Math.max(m.bestScore,p.bestScore||0); m.playCount += p.playCount||0; m.wins += p.wins||0; m.games += 1;
-        })
-      });
-      return Object.values(map).sort((a,b)=> b.totalScore-a.totalScore || b.bestScore-a.bestScore || b.playCount-a.playCount);
-    }
-    const g=data.games[gameKey]; if(!g) return [];
-    return Object.values(g.players||{}).sort((a,b)=> b.totalScore-a.totalScore || b.bestScore-a.bestScore || b.playCount-a.playCount);
-  }
-  function getGameSummaries(){ const data=getData(); return Object.entries(data.games).map(([key,g])=>({key,title:g.title||key,count:Object.keys(g.players||{}).length})); }
-  function renderMiniLeaderboard(el, gameKey, limit=8){ if(!el) return; const list=getLeaderboard(gameKey).slice(0,limit); el.innerHTML=list.length?list.map((p,i)=>`<div class="list-item"><div>#${i+1} - ${escapeHtml(p.name)} <span class="small">@${escapeHtml(p.username)}</span></div><div>${p.totalScore} نقطة</div></div>`).join(''):'<div class="notice">لا توجد نتائج بعد.</div>'; }
-  function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
-  function beep(type='tick'){
-    try{
-      const C=window.AudioContext||window.webkitAudioContext; if(!C) return; const ctx=new C(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.connect(g); g.connect(ctx.destination);
-      const now=ctx.currentTime; const preset={tick:[660,.07,'square'],coin:[880,.12,'triangle'],hit:[180,.15,'sawtooth'],jump:[520,.1,'triangle'],lose:[140,.25,'sawtooth'],win:[740,.2,'square']};
-      const [freq,dur,wave]=(preset[type]||preset.tick); o.type=wave; o.frequency.value=freq; g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.15,now+.01); g.gain.exponentialRampToValueAtTime(.0001,now+dur); o.start(now); o.stop(now+dur+.02);
-    }catch(e){}
-  }
-  function toast(msg){ let t=document.getElementById('ha-toast'); if(!t){t=document.createElement('div'); t.id='ha-toast'; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 16px;border-radius:14px;z-index:99999;border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 40px rgba(0,0,0,.35)'; document.body.appendChild(t);} t.textContent=msg; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.opacity='0',2200); }
-  function bindFullscreen(btn, targetSelector){ if(!btn) return; btn.addEventListener('click',()=>{ const el=document.querySelector(targetSelector); if(!el) return; el.classList.toggle('fullscreen-fixed'); }); }
-  window.HAGames={detectUser,saveScore,getLeaderboard,getGameSummaries,renderMiniLeaderboard,beep,toast,bindFullscreen};
+
+const HAGame=(()=>{
+  const KEY='ha_games_records_v2', mem={};
+  const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+  const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+  let client=null;
+  const safe={get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]??null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}};
+  const parse=v=>{try{return JSON.parse(v)}catch(e){return null}};
+  function user(){for(const k of ['ha_user','ha_current_user','currentUser','user','profile']){const o=parse(safe.get(k));if(o&&typeof o==='object'){const id=o.id||o.user_id||o.uid||o.uuid||o.username||'guest';return{id:String(id),name:String(o.full_name||o.fullName||o.name||o.display_name||'مستخدم HA'),username:String(o.username||o.user_name||o.handle||('user_'+String(id).slice(0,6)))}}}return{id:'guest',name:'لاعب',username:'guest'}}
+  function data(){return parse(safe.get(KEY))||{games:{}}} function put(d){safe.set(KEY,JSON.stringify(d))}
+  function localSave(key,title,score,win){const u=user(),d=data();d.games[key]??={title,players:{}};const p=d.games[key].players[u.id]||{userId:u.id,name:u.name,username:u.username,totalScore:0,bestScore:0,playCount:0,wins:0};p.name=u.name;p.username=u.username;p.totalScore+=score;p.bestScore=Math.max(p.bestScore,score);p.playCount++;if(win)p.wins++;p.lastScore=score;d.games[key].players[u.id]=p;put(d);return p}
+  function localBoard(key){const g=data().games[key];return g?Object.values(g.players||{}).sort((a,b)=>b.totalScore-a.totalScore||b.bestScore-a.bestScore):[]}
+  function db(){if(client)return client;if(!window.supabase||!window.supabase.createClient)return null;try{client=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});return client}catch(e){return null}}
+  async function remoteIdentity(){const c=db();if(!c)return null;try{const {data:{session}}=await c.auth.getSession();if(!session)return null;let name='مستخدم HA',username='user_'+session.user.id.slice(0,6);const r=await c.from('profiles').select('full_name,username').eq('id',session.user.id).maybeSingle();if(r.data){name=r.data.full_name||name;username=r.data.username||username}return{id:session.user.id,name,username}}catch(e){return null}}
+  async function remoteSave(key,title,score,win){const c=db(),u=await remoteIdentity();if(!c||!u)return;try{const q=await c.from('ha_game_scores').select('id,total_score,best_score,play_count,wins').eq('user_id',u.id).eq('game_key',key).maybeSingle();if(q.data){await c.from('ha_game_scores').update({username:u.username,display_name:u.name,game_title:title,total_score:Number(q.data.total_score||0)+score,best_score:Math.max(Number(q.data.best_score||0),score),play_count:Number(q.data.play_count||0)+1,wins:Number(q.data.wins||0)+(win?1:0),last_score:score}).eq('id',q.data.id)}else{await c.from('ha_game_scores').insert({user_id:u.id,username:u.username,display_name:u.name,game_key:key,game_title:title,total_score:score,best_score:score,play_count:1,wins:win?1:0,last_score:score})}}catch(e){console.warn('score sync',e)}}
+  function save(key,title,score,win=false){score=Math.max(0,Math.floor(Number(score)||0));const p=localSave(key,title,score,win);remoteSave(key,title,score,win);return p}
+  async function renderBoard(el,key,limit=8){const local=localBoard(key).slice(0,limit);renderRows(el,local);const c=db();if(!c)return;try{const r=await c.from('ha_game_scores').select('display_name,username,total_score,best_score,play_count,wins').eq('game_key',key).order('total_score',{ascending:false}).limit(limit);if(!r.error&&r.data?.length)renderRows(el,r.data.map(x=>({name:x.display_name,username:x.username,totalScore:x.total_score,bestScore:x.best_score,playCount:x.play_count,wins:x.wins})))}catch(e){}}
+  function renderRows(el,rows){if(!el)return;el.innerHTML=rows?.length?rows.map((p,i)=>`<div class="rankrow"><span>#${i+1} ${esc(p.name||'لاعب')} <small>@${esc(p.username||'user')}</small></span><b>${Number(p.totalScore||0)}</b></div>`).join(''):'<div class="notice">لا توجد نتائج بعد.</div>'}
+  function myStats(key){const me=localBoard(key).find(x=>x.userId===user().id);return me||{bestScore:0,playCount:0,totalScore:0,wins:0}}
+  function beep(type='tick'){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const a=new A(),o=a.createOscillator(),g=a.createGain();const P={tick:[620,.06],coin:[900,.08],jump:[520,.09],lose:[160,.22],win:[760,.18]};const [f,d]=P[type]||P.tick;o.frequency.value=f;o.connect(g);g.connect(a.destination);g.gain.value=.08;o.start();o.stop(a.currentTime+d)}catch(e){}}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  return{save,renderBoard,myStats,beep,user,localBoard,db};
 })();
