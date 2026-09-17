@@ -4,14 +4,17 @@
 @media(max-width:650px){.board{padding:8px;gap:2px}.point{min-height:150px}.checker{width:25px;height:25px}}
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="game-ranking.js"></script>
 </head><body><div class="wrap"><h1>🎲 طاولة</h1><p class="sub">نسخة مبسطة ضد الجهاز: سباق 7 أحجار. أنت تتحرك من اليمين إلى اليسار والجهاز بالعكس، وأول من يخرج أحجاره يفوز.</p><div id="board" class="board"></div><div class="panel"><div id="status" class="status">اضغط رمي النرد.</div><div id="dice" class="dice">🎲</div><button id="roll">رمي النرد</button> <button id="reset">لعبة جديدة</button></div><a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a></div>
 <script>
-let you=[],cpu=[],turn='you',rolled=0,over=false;const N=12,COUNT=7;
-function init(){you=Array(COUNT).fill(11);cpu=Array(COUNT).fill(0);turn='you';rolled=0;over=false;status.textContent='دورك — اضغط رمي النرد.';dice.textContent='🎲';render()}
+let you=[],cpu=[],turn='you',rolled=0,over=false;const N=12,COUNT=7;let rankPlayId='',rankRecorded=false;
+function finishRank(won){if(rankRecorded)return;rankRecorded=true;const pts=you.filter(x=>x<0).length*10;HA_GameRanking.record('backgammon',pts,{won:!!won,playId:rankPlayId})}
+function init(){rankPlayId=HA_GameRanking.newPlayId('backgammon');rankRecorded=false;you=Array(COUNT).fill(11);cpu=Array(COUNT).fill(0);turn='you';rolled=0;over=false;status.textContent='دورك — اضغط رمي النرد.';dice.textContent='🎲';render()}
 function render(){board.innerHTML='';for(let p=0;p<N;p++){let el=document.createElement('div');el.className='point';you.filter(x=>x===p).forEach(()=>{let c=document.createElement('div');c.className='checker you';el.appendChild(c)});cpu.filter(x=>x===p).forEach(()=>{let c=document.createElement('div');c.className='checker cpu';el.appendChild(c)});board.appendChild(el)}}
 function d(){return 1+Math.floor(Math.random()*6)}
 function moveYou(n){let candidates=you.map((p,i)=>[p,i]).filter(x=>x[0]>=0).sort((a,b)=>a[0]-b[0]);if(!candidates.length)return;let [p,i]=candidates[0];you[i]=p-n<0?-1:p-n}
 function moveCpu(n){let candidates=cpu.map((p,i)=>[p,i]).filter(x=>x[0]<N).sort((a,b)=>b[0]-a[0]);if(!candidates.length)return;let [p,i]=candidates[0];cpu[i]=p+n>=N?N:p+n}
-function check(){if(you.every(x=>x<0)){over=true;status.textContent='أنت فزت! 🎉';return true}if(cpu.every(x=>x>=N)){over=true;status.textContent='الجهاز فاز.';return true}return false}
+function check(){if(you.every(x=>x<0)){over=true;status.textContent='أنت فزت! 🎉';finishRank(true);return true}if(cpu.every(x=>x>=N)){over=true;status.textContent='الجهاز فاز.';finishRank(false);return true}return false}
 roll.onclick=()=>{if(over||turn!=='you')return;let n=d();dice.textContent='🎲 '+n;moveYou(n);render();if(check())return;turn='cpu';status.textContent='الجهاز يرمي...';setTimeout(()=>{let c=d();dice.textContent='🎲 '+c;moveCpu(c);render();if(check())return;turn='you';status.textContent='دورك — اضغط رمي النرد.'},700)};reset.onclick=init;init();
 </script></body></html>

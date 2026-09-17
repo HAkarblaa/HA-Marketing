@@ -194,6 +194,8 @@ display:flex;align-items:center;justify-content:center;padding:16px;overflow:aut
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="game-ranking.js"></script>
 </head>
 <body>
 
@@ -395,6 +397,7 @@ async function ensureOnlineAuth(){
 
 let cfg={mode:'cpu',rule:'draw',target:100,name:'لاعب',tile:'#f7f2e8',pip:'#101010',board:'#0f7048',board2:'#0b5d3d'};
 let state={players:[],hands:[],stock:[],chain:[],turn:0,scores:[],history:[],over:false,passes:0};
+let rankPlayId='',rankInitialHandCount=7,rankRecorded=false;
 let myIndex=0, roomCode='', roomRef=null, roomListener=null, localTimer=null, timeLeft=10, musicOn=true, gameStarted=false;
 let audioCtx=null, musicOsc=null, musicGain=null;
 
@@ -437,6 +440,29 @@ function startMusic(){
 function stopMusic(){if(musicOsc){try{musicOsc.stop()}catch(e){}musicOsc=null}}
 $('soundBtn').onclick=()=>{musicOn=!musicOn;$('soundBtn').textContent=musicOn?'🔊':'🔇';musicOn?startMusic():stopMusic()};
 
+
+
+function startRankTracking(playId,initialCount){
+  rankPlayId=playId||HA_GameRanking.newPlayId('domino');
+  rankInitialHandCount=Number(initialCount||7);
+  rankRecorded=false;
+}
+function maybeRecordRanking(){
+  if(!state||!state.over||rankRecorded||myIndex<0)return;
+  rankRecorded=true;
+  const hands=state.hands||[];
+  const myHand=hands[myIndex]||[];
+  const played=Math.max(0,rankInitialHandCount-myHand.length);
+  const points=played*10;
+  let winner=-1;
+  winner=hands.findIndex(h=>(h||[]).length===0);
+  if(winner<0&&hands.length){
+    const sums=hands.map(h=>sumHand(h||[]));
+    const min=Math.min(...sums);
+    winner=sums.indexOf(min);
+  }
+  HA_GameRanking.record('domino',points,{won:winner===myIndex,playId:rankPlayId||HA_GameRanking.newPlayId('domino')});
+}
 
 function renderSquareChain(){
   const el=$('chain');
@@ -497,6 +523,7 @@ function render(){
   renderScores();
   $('drawBtn').disabled=state.over||state.turn!==myIndex||cfg.rule!=='draw';
   $('passBtn').disabled=state.over||state.turn!==myIndex;
+  maybeRecordRanking();
 }
 function renderScores(){
   $('scoreRows').innerHTML='';state.players.forEach((p,i)=>{$('scoreRows').innerHTML+='<div class="score-row"><span>'+escapeHtml(p.name)+'</span><b>'+(state.scores[i]||0)+'</b></div>'});
@@ -543,7 +570,7 @@ function cpuMove(){
 function startOffline(mode){
   cfg.mode=mode;cfg.name=nameOrDefault();cfg.rule=$('startRule').value;cfg.target=Number($('startTarget').value);
   const count=2,set=makeSet();state={players:[{id:uid,name:cfg.name},{id:'cpu',name:mode==='cpu'?'الجهاز':'اللاعب 2'}],hands:[set.splice(0,7),set.splice(0,7)],stock:set,chain:[],turn:0,scores:[0,0],history:[],over:false,passes:0};
-  myIndex=0;gameStarted=true;$('startScreen').classList.add('hidden');startMusic();startTurnClock();render();$('status').textContent='ابدأ بوضع أي حجر.'
+  myIndex=0;startRankTracking(HA_GameRanking.newPlayId('domino'),7);gameStarted=true;$('startScreen').classList.add('hidden');startMusic();startTurnClock();render();$('status').textContent='ابدأ بوضع أي حجر.'
 }
 document.querySelectorAll('.mode-card').forEach(b=>b.onclick=()=>{
   const m=b.dataset.mode;if(m==='online'){$('onlinePanel').classList.add('show');return}
@@ -620,6 +647,7 @@ $('hostStartBtn').onclick=async()=>{
 }
 function enterOnlineGame(r){
   state=r.game;cfg.rule=r.rule||'draw';cfg.target=Number(r.target||100);myIndex=state.players.findIndex(p=>p.id===uid);if(myIndex<0)return;
+  startRankTracking('domino-online-'+roomCode,state.players.length===4?5:7);
   gameStarted=true;$('startScreen').classList.add('hidden');startMusic();watchOnlineGame();render();showGameMic();joinGameVoice();$('status').textContent='المباراة أونلاين — دور '+state.players[state.turn].name
 }
 function watchOnlineGame(){

@@ -302,6 +302,8 @@ body{
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="game-ranking.js"></script>
 </head>
 <body>
 
@@ -468,6 +470,7 @@ const CLUBS=[
 
 let mode='cpu',difficulty='medium',myTeam=null,oppTeam=null,myName='لاعب',oppName='الجهاز',kickMax=5;
 let score=[0,0],turn=0,kicks=[0,0],history=[],timeLeft=10,timerId=null,gameOver=false;
+let rankPlayId='';
 let roomRef=null,roomCode='',uid=null;
 async function ensureOnlineAuth(){
   const user=await HA_FirebaseAuth.ready();
@@ -495,6 +498,7 @@ function startGame(selectedMode){
   const pool=$('teamType').value==='club'?CLUBS:NATIONALS;
   oppTeam=pool[(Number($('teamSelect').value)+1)%pool.length];
   score=[0,0];kicks=[0,0];history=[];turn=0;gameOver=false;
+  rankPlayId=HA_GameRanking.newPlayId('penalties');
   $('startScreen').classList.add('hidden');renderHeader();renderDots();resetScene();startClock();startMusic();
   $('status').textContent='ابدأ باختيار جهة التسديد.';
 }
@@ -607,6 +611,7 @@ function checkEnd(){
     gameOver=true;clearInterval(timerId);
     const win=score[0]>score[1];
     if(win){econ.points+=100;econ.wins++;if(econ.wins%2===0)econ.gems+=1;saveEcon()}
+    HA_GameRanking.record('penalties',score[0]*10,{won:win,playId:rankPlayId||HA_GameRanking.newPlayId('penalties')});
     $('endTitle').textContent=win?'🏆 فزت بالمباراة':'انتهت المباراة';
     $('endText').textContent=(win?'أحسنت! ':'')+'النتيجة '+score[0]+' - '+score[1]+(win?' • حصلت على 100 نقطة'+(econ.wins%2===0?' و1 جوهرة 💎':''):'');
     $('endModal').classList.add('show');return true
@@ -685,6 +690,7 @@ function enterOnline(r){
   const ps=Object.entries(r.players||{});if(ps.length<2)return;
   const mine=ps.find(([id])=>id===uid),other=ps.find(([id])=>id!==uid);if(!mine||!other)return;
   mode='online';myName=mine[1].name;myTeam=mine[1].team;oppName=other[1].name;oppTeam=other[1].team;kickMax=Number($('kickCount').value);score=[0,0];kicks=[0,0];history=[];turn=0;gameOver=false;
+  rankPlayId='penalties-online-'+roomCode;
   $('startScreen').classList.add('hidden');renderHeader();renderDots();startClock();startMusic();showGameMic();joinGameVoice()
 }
 </script>

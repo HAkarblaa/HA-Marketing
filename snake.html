@@ -41,6 +41,8 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
 </style>
 <link rel="stylesheet" href="ha-theme.css">
 <script src="ha-theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="game-ranking.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -97,11 +99,14 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
   const CELLS=18;
   const SIZE=canvas.width/CELLS;
   let snake,food,dir,nextDir,score,level,timer,running=false,paused=false;
+  let rankPlayId='',runStarted=false;
   let best=Number(localStorage.getItem('ha_snake_best')||0);
   bestEl.textContent=best;
 
   function reset(message='اضغط زر التشغيل وابدأ'){
     clearInterval(timer);
+    rankPlayId=HA_GameRanking.newPlayId('snake');
+    runStarted=false;
     snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];
     dir={x:1,y:0}; nextDir={x:1,y:0};
     score=0; level=1; running=false; paused=false;
@@ -118,9 +123,13 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
     }
   }
 
-  function restartAfterWall(){
+  function finishAndRestart(message){
+    const finalScore=score;
     updateBest();
-    reset('اصطدمت بالجدار — نبدأ من جديد');
+    if(runStarted){
+      HA_GameRanking.record('snake',finalScore,{won:false,playId:rankPlayId});
+    }
+    reset(message);
     setTimeout(()=>start(),450);
   }
 
@@ -144,7 +153,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
   function start(){
     if(running && paused){ paused=false; msg.textContent=''; startLoop(); return; }
     if(running)return;
-    running=true; paused=false; msg.textContent='';
+    running=true; paused=false; runStarted=true; msg.textContent='';
     startLoop();
   }
 
@@ -161,11 +170,12 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
 
     const hitWall=head.x<0||head.y<0||head.x>=CELLS||head.y>=CELLS;
     if(hitWall){
-      restartAfterWall();
+      finishAndRestart('اصطدمت بالجدار — نبدأ من جديد');
       return;
     }
     if(snake.some(s=>s.x===head.x&&s.y===head.y)){
-      gameOver(); draw(); return;
+      finishAndRestart('اصطدمت الحية بنفسها — نبدأ من جديد');
+      return;
     }
 
     snake.unshift(head);
@@ -240,7 +250,10 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
 
   playBtn.onclick=start;
   pauseBtn.onclick=togglePause;
-  restartBtn.onclick=()=>{reset();start()};
+  restartBtn.onclick=()=>{
+    if(runStarted)HA_GameRanking.record('snake',score,{won:false,playId:rankPlayId});
+    reset();start();
+  };
 
   reset();
 })();
