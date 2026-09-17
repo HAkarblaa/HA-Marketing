@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>لعبة ليفل ديفل - HA Marketing</title>
+<style>
+:root{--bg:#070b11;--panel:#0d1520;--panel2:#111d2d;--line:#2a3e5c;--gold:#f0c56b;--text:#fff;--muted:#b6c0cf;--accent:#a855f7;--accent2:#ec4899;--danger:#ef4444;--ok:#22c55e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#03060a,#08101a 55%,#04070b);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+.page{max-width:1100px;margin:auto;padding:14px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.btn,.ghost{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,#172433,#0e1724);color:#fff;border-radius:16px;padding:12px 16px;font-size:15px;font-weight:700;cursor:pointer}
+.ghost{background:rgba(255,255,255,.04)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#a855f7,#ec4899);font-size:30px;box-shadow:0 10px 25px rgba(168,85,247,.28)}
+.brand h1{margin:0;font-size:27px}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px}
+.stagebox{background:linear-gradient(180deg,#0b1118,#0b1420);border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:14px;box-shadow:0 20px 50px rgba(0,0,0,.28)}
+.canvas-wrap{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#84ccff 0%,#9ed6ff 35%,#d7ecff 35%,#d7ecff 100%);border:1px solid rgba(255,255,255,.1)}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none}
+.hud{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+.badge{background:rgba(6,10,18,.72);backdrop-filter:blur(8px);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);font-size:13px;font-weight:700}
+.center-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;pointer-events:none}
+.center-msg .box{background:rgba(6,10,18,.72);backdrop-filter:blur(10px);padding:18px 16px;border-radius:22px;border:1px solid rgba(255,255,255,.08);max-width:520px}
+.center-msg h2{margin:0 0 8px;font-size:28px}.center-msg p{margin:0;color:#dbe4f3;line-height:1.8}
+.mobile-controls{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;margin-top:12px;align-items:center}
+.pad{display:flex;gap:10px}.ctrl{user-select:none;min-height:62px;min-width:62px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(180deg,#152131,#0f1724);display:grid;place-items:center;font-size:28px;font-weight:700;box-shadow:0 10px 20px rgba(0,0,0,.22)}
+.jump{padding:0 28px;min-height:62px;border-radius:18px;background:linear-gradient(135deg,#a855f7,#ec4899);font-size:20px;font-weight:900}
+.sidebar{display:flex;flex-direction:column;gap:14px}
+.card{background:linear-gradient(180deg,#0d1520,#0b1118);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:16px;box-shadow:0 20px 45px rgba(0,0,0,.22)}
+.card h3{margin:0 0 12px;font-size:18px;color:var(--gold)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);padding:14px;border-radius:18px;text-align:center}.stat b{display:block;font-size:24px}.stat span{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+.list{display:flex;flex-direction:column;gap:10px}.list div{background:rgba(255,255,255,.04);border-radius:16px;padding:11px 12px;color:#d6deea;line-height:1.7;font-size:14px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}.actions button,.actions a{flex:1 1 120px;text-align:center}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lvl{padding:10px;border-radius:14px;background:rgba(255,255,255,.05);text-align:center;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700}.lvl.active{background:linear-gradient(135deg,#a855f7,#ec4899);border-color:transparent}
+.note{color:var(--muted);font-size:13px;line-height:1.8}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
+@media (max-width:480px){.page{padding:10px}.brand h1{font-size:22px}.logo{width:46px;height:46px;font-size:24px}.stagebox{padding:10px;border-radius:22px}.card{padding:14px;border-radius:18px}.levels{grid-template-columns:repeat(2,1fr)}.ctrl{min-height:58px;min-width:58px}.jump{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <a class="ghost" href="entertainment.html">↩ رجوع للترفيه</a>
+    <div class="brand"><div class="logo">👿</div><div><h1>لعبة ليفل ديفل</h1><p>فكرة مراحل وفخاخ مفاجئة للموقع - HA Marketing</p></div></div>
+    <button class="ghost" id="fullscreenBtn">⛶ ملء الشاشة</button>
+  </div>
+
+  <div class="layout">
+    <div class="stagebox">
+      <div class="canvas-wrap" id="wrap">
+        <canvas id="game" width="960" height="600"></canvas>
+        <div class="hud">
+          <div class="badge">المرحلة: <span id="hudLevel">1</span></div>
+          <div class="badge">السقوط: <span id="hudDeaths">0</span></div>
+          <div class="badge">أفضل مرحلة: <span id="hudBest">1</span></div>
+        </div>
+        <div class="center-msg" id="overlay"><div class="box"><h2>ابدأ اللعب</h2><p>تحرك يمين ويسار، اقفز، وابتعد عن المسامير والحفر والفخاخ. أوصل إلى الباب الأخضر لتنتقل للمرحلة التالية.</p></div></div>
+      </div>
+      <div class="mobile-controls">
+        <div class="pad">
+          <button class="ctrl" data-key="left">←</button>
+          <button class="ctrl" data-key="right">→</button>
+        </div>
+        <button class="ctrl jump" data-key="jump">قفز</button>
+        <div class="actions">
+          <button class="btn" id="startBtn">▶ ابدأ</button>
+          <button class="ghost" id="restartBtn">↻ إعادة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="card">
+        <h3>إحصائياتك</h3>
+        <div class="stats">
+          <div class="stat"><b id="statLevel">1</b><span>المرحلة الحالية</span></div>
+          <div class="stat"><b id="statBest">1</b><span>أفضل مرحلة</span></div>
+          <div class="stat"><b id="statDeaths">0</b><span>عدد السقوط</span></div>
+          <div class="stat"><b id="statWins">0</b><span>مرات الإكمال</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>اختيار المرحلة</h3>
+        <div class="levels" id="levels"></div>
+        <p class="note">إذا وصلت للباب تنفتح المرحلة اللي بعدها تلقائياً.</p>
+      </div>
+      <div class="card">
+        <h3>طريقة اللعب</h3>
+        <div class="list">
+          <div>🎯 الهدف: الوصول إلى الباب الأخضر في نهاية المرحلة.</div>
+          <div>⚠️ الفخاخ: مسامير، أرض تنهار، بلوكات تتحرك، وحفر تسقطك.</div>
+          <div>📱 للموبايل: استخدم الأسهم السفلية وزر القفز الكبير.</div>
+          <div>⌨️ للكمبيوتر: الأسهم أو A/D للحركة و Space أو ↑ للقفز.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const TILE = 48;
+const W = canvas.width, H = canvas.height;
+const STORAGE_KEY = 'ha_level_devil_progress_v1';
+let gameRunning = false;
+let animation = null;
+let currentLevelIndex = 0;
+let deaths = 0;
+let wins = 0;
+let unlocked = 1;
+let bestLevel = 1;
+let keys = {left:false,right:false,jump:false};
+let jumpQueued = false;
+
+const levels = [
+  {
+    name:'المرحلة 1',
+    map:[
+      '....................',
+      '....................',
+      '....................',
+      '....................',
+      '....................',
+      '......c.......s..E..',
+      '...###....#####.....',
+      '..P.................',
+      '########....########',
+      '####################'
+    ]
+  },
+  {
+    name:'المرحلة 2',
+    map:[
+      '....................',
+      '....................',
+      '............c.......',
+      '....................',
+      '...........###..E...',
+      '.....s..............',
+      '...####....tttt.....',
+      '.P..........####....',
+      '########.........###',
+      '####################'
+    ]
+  },
+  {
+    name:'المرحلة 3',
+    map:[
+      '....................',
+      '.............c......',
+      '....................',
+      '.........m......E...',
+      '..###...............',
+      '.........s......####',
+      '...tttt.............',
+      '.P....#####.........',
+      '#####.......########',
+      '####################'
+    ]
+  },
+  {
+    name:'المرحلة 4',
+    map:[
+      '....................',
+      '..........c.........',
+      '....................',
+      '.....####.....m..E..',
+      '...............####.',
+      '.s....####..........',
+      '.....tttt....####...',
+      '.P.............c....',
+      '####....########....',
+      '####################'
+    ]
+  },
+  {
+    name:'المرحلة 5',
+    map:[
+      '....................',
+      '...............E....',
+      '...............###..',
+      '.....c......m.......',
+      '..####.........s....',
+      '..........####......',
+      '.tttt...........####',
+      '.P.........c........',
+      '#####....########...',
+      '####################'
+    ]
+  },
+  {
+    name:'المرحلة 6',
+    map:[
+      '....................',
+      '....................',
+      '.......c.......E....',
+      '.....#####....###...',
+      '..............m.....',
+      '..s..####...........',
+      '....tttt....####....',
+      '.P.......c..........',
+      '#####....########...',
+      '####################'
+    ]
+  }
+];
+
+function loadProgress(){
+  try{
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    deaths = data.deaths || 0;
+    wins = data.wins || 0;
+    unlocked = Math.max(1, Math.min(levels.length, data.unlocked || 1));
+    bestLevel = Math.max(1, Math.min(levels.length, data.bestLevel || 1));
+  }catch(e){}
+}
+function saveProgress(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({deaths,wins,unlocked,bestLevel}));
+}
+
+const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawnY:0};
+let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let coins=[]; let exitDoor=null;
+
+function parseLevel(index){
+  currentLevelIndex = index;
+  tiles=[]; spikes=[]; traps=[]; movers=[]; coins=[]; exitDoor=null;
+  const map = levels[index].map;
+  for(let r=0;r<map.length;r++){
+    const row = map[r];
+    for(let c=0;c<row.length;c++){
+      const ch = row[c];
+      const x = c*TILE, y = r*TILE;
+      if(ch==='#') tiles.push({x,y,w:TILE,h:TILE,type:'solid'});
+      if(ch==='s') spikes.push({x,y,w:TILE,h:TILE});
+      if(ch==='t') traps.push({x,y,w:TILE,h:TILE,armed:false,falling:false,vy:0,baseY:y});
+      if(ch==='m') movers.push({x,y,w:TILE,h:18,min:x-110,max:x+110,dir:1,speed:2.1});
+      if(ch==='c') coins.push({x:x+TILE/2,y:y+TILE/2,r:9,taken:false});
+      if(ch==='E') exitDoor = {x,y,w:TILE,h:TILE};
+      if(ch==='P'){ player.x=x+10; player.y=y+4; player.spawnX=player.x; player.spawnY=player.y; }
+    }
+  }
+  player.vx=0; player.vy=0; player.onGround=false;
+  updateStageUI();
+}
+
+function rectsIntersect(a,b){
+  return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+}
+
+function solidAt(rect){
+  return tiles.some(t=>rectsIntersect(rect,t)) || traps.some(t=>!t.falling && rectsIntersect(rect,t));
+}
+
+function killPlayer(){
+  deaths++;
+  beep(120,0.15,'sawtooth');
+  saveProgress();
+  parseLevel(currentLevelIndex);
+  showTempMessage('سقطت! أعد المحاولة');
+}
+
+function completeLevel(){
+  if(currentLevelIndex+1 > bestLevel) bestLevel = currentLevelIndex+1;
+  if(unlocked < currentLevelIndex+2) unlocked = Math.min(levels.length, currentLevelIndex+2);
+  if(currentLevelIndex === levels.length-1){ wins++; saveProgress(); updateStageUI(); showTempMessage('أكملت جميع المراحل!'); beep(720,0.12); setTimeout(()=>{parseLevel(0);},800); return; }
+  saveProgress();
+  showTempMessage('أحسنت! انتقلت للمرحلة التالية');
+  beep(700,0.10); setTimeout(()=>{parseLevel(currentLevelIndex+1);},700);
+}
+
+let tempMessage=''; let tempMessageTimer=0;
+function showTempMessage(msg){ tempMessage=msg; tempMessageTimer=120; }
+
+function update(dt){
+  movers.forEach(m=>{ m.x += m.speed*m.dir; if(m.x<m.min||m.x>m.max){ m.dir*=-1; m.x += m.speed*m.dir;} });
+  traps.forEach(t=>{
+    const triggerZone={x:t.x,y:t.y-10,w:t.w,h:t.h+20};
+    if(!t.armed && rectsIntersect({...player},triggerZone)) t.armed = true;
+    if(t.armed && !t.falling) t.falling = true;
+    if(t.falling){ t.vy += 0.55; t.y += t.vy; }
+  });
+
+  player.vx = 0;
+  if(keys.left) {player.vx = -4.2; player.face = -1;}
+  if(keys.right){player.vx = 4.2; player.face = 1;}
+  if((keys.jump || jumpQueued) && player.onGround){ player.vy = -11.5; player.onGround=false; beep(340,0.05); }
+  jumpQueued=false;
+  player.vy += 0.55;
+  if(player.vy > 12) player.vy = 12;
+
+  // horizontal
+  player.x += player.vx;
+  const solids = [...tiles, ...traps.filter(t=>!t.falling), ...movers];
+  for(const s of solids){
+    if(rectsIntersect(player,{x:s.x,y:s.y,w:s.w,h:s.h})){
+      if(player.vx>0) player.x = s.x - player.w;
+      if(player.vx<0) player.x = s.x + s.w;
+    }
+  }
+
+  // vertical
+  player.y += player.vy;
+  player.onGround = false;
+  for(const s of solids){
+    if(rectsIntersect(player,{x:s.x,y:s.y,w:s.w,h:s.h})){
+      if(player.vy>0){ player.y = s.y - player.h; player.vy = 0; player.onGround = true; if(movers.includes(s)) player.x += s.speed*s.dir; }
+      else if(player.vy<0){ player.y = s.y + s.h; player.vy = 0; }
+    }
+  }
+
+  if(player.x<0) player.x = 0;
+  if(player.x+player.w>W) player.x = W-player.w;
+  if(player.y>H+120) return killPlayer();
+
+  for(const s of spikes){ if(rectsIntersect(player, {x:s.x+8,y:s.y+16,w:s.w-16,h:s.h-16})) return killPlayer(); }
+  for(const m of movers){ if(rectsIntersect(player, {x:m.x,y:m.y,w:m.w,h:m.h})) return killPlayer(); }
+  for(const c of coins){ if(!c.taken && Math.hypot((player.x+player.w/2)-c.x,(player.y+player.h/2)-c.y)<20){ c.taken=true; beep(840,0.05);} }
+  if(exitDoor && rectsIntersect(player,{x:exitDoor.x+8,y:exitDoor.y+8,w:exitDoor.w-16,h:exitDoor.h-8})) return completeLevel();
+  if(tempMessageTimer>0) tempMessageTimer--;
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // background
+  const grd = ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,'#7dd3fc'); grd.addColorStop(.45,'#d7efff'); grd.addColorStop(.45,'#d7efff'); grd.addColorStop(1,'#f1f5f9');
+  ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
+  // clouds
+  for(let i=0;i<6;i++) drawCloud(110+i*150,(i%2)*45+52,0.9);
+  // ground strip
+  ctx.fillStyle='#94a3b8'; ctx.fillRect(0,H-24,W,24);
+
+  // tiles
+  tiles.forEach(t=> drawBlock(t.x,t.y,'#2f435e','#1d2a3a'));
+  traps.forEach(t=>{ if(t.y<H+50) drawTrapBlock(t.x,t.y,t.armed?'#7f1d1d':'#475569', t.armed?'#ef4444':'#64748b'); });
+  movers.forEach(m=>{ctx.fillStyle='#ef4444'; roundRect(m.x,m.y,m.w,m.h,8); ctx.fillStyle='rgba(255,255,255,.25)'; ctx.fillRect(m.x+6,m.y+4,m.w-12,5);});
+  spikes.forEach(s=> drawSpikes(s.x,s.y));
+  coins.forEach(c=>{ if(!c.taken){ ctx.beginPath(); ctx.fillStyle='#facc15'; ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#9a6e0a'; ctx.font='bold 12px Tahoma'; ctx.fillText('$',c.x-4,c.y+4);} });
+  if(exitDoor){ drawDoor(exitDoor.x, exitDoor.y); }
+  // player
+  drawPlayer(player.x, player.y, player.face);
+
+  if(tempMessageTimer>0 && tempMessage){
+    ctx.fillStyle='rgba(7,10,17,.62)';
+    roundRect(300,18,360,42,16);
+    ctx.fillStyle='#fff'; ctx.font='bold 20px Tahoma'; ctx.textAlign='center'; ctx.fillText(tempMessage,480,45); ctx.textAlign='start';
+  }
+}
+
+function drawBlock(x,y,fill,stroke){ ctx.fillStyle=fill; roundRect(x+2,y+2,TILE-4,TILE-4,9); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x+10,y+10,TILE-18,7); ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.strokeRect(x+3,y+3,TILE-6,TILE-6); }
+function drawTrapBlock(x,y,fill,stroke){ ctx.fillStyle=fill; roundRect(x+2,y+2,TILE-4,TILE-4,9); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x+8,y+10,TILE-16,7); ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.strokeRect(x+3,y+3,TILE-6,TILE-6); }
+function drawSpikes(x,y){ ctx.fillStyle='#ef4444'; for(let i=0;i<4;i++){ ctx.beginPath(); ctx.moveTo(x+6+i*10,y+TILE-6); ctx.lineTo(x+11+i*10,y+12); ctx.lineTo(x+16+i*10,y+TILE-6); ctx.closePath(); ctx.fill(); } }
+function drawDoor(x,y){ ctx.fillStyle='#22c55e'; roundRect(x+8,y+4,TILE-16,TILE-8,12); ctx.fillStyle='#14532d'; roundRect(x+14,y+10,TILE-28,TILE-20,8); ctx.fillStyle='#fef08a'; ctx.beginPath(); ctx.arc(x+TILE-18,y+TILE/2,3,0,Math.PI*2); ctx.fill(); }
+function drawPlayer(x,y,face){ ctx.fillStyle='#111827'; roundRect(x+6,y+10,18,24,8); ctx.fillStyle='#a855f7'; ctx.beginPath(); ctx.arc(x+14,y+10,10,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x+11+(face>0?2:-2),y+8,2.2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(x+17+(face>0?2:-2),y+8,2.2,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#ec4899'; ctx.fillRect(x+9,y+32,6,10); ctx.fillRect(x+18,y+32,6,10); }
+function drawCloud(x,y,s=1){ ctx.fillStyle='rgba(255,255,255,.75)'; ctx.beginPath(); ctx.arc(x,y,18*s,0,Math.PI*2); ctx.arc(x+20*s,y-8*s,24*s,0,Math.PI*2); ctx.arc(x+48*s,y,18*s,0,Math.PI*2); ctx.fill(); }
+function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); ctx.fill(); }
+
+function loop(){
+  if(gameRunning){ update(1/60); draw(); updateStageUI(); animation = requestAnimationFrame(loop); }
+}
+
+function startGame(){ gameRunning=true; document.getElementById('overlay').style.display='none'; cancelAnimationFrame(animation); loop(); }
+function restartCurrent(){ parseLevel(currentLevelIndex); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); }
+
+function updateStageUI(){
+  document.getElementById('hudLevel').textContent = currentLevelIndex+1;
+  document.getElementById('hudDeaths').textContent = deaths;
+  document.getElementById('hudBest').textContent = bestLevel;
+  document.getElementById('statLevel').textContent = currentLevelIndex+1;
+  document.getElementById('statBest').textContent = bestLevel;
+  document.getElementById('statDeaths').textContent = deaths;
+  document.getElementById('statWins').textContent = wins;
+  [...document.querySelectorAll('.lvl')].forEach((b,i)=>{ b.classList.toggle('active', i===currentLevelIndex); b.disabled = i+1>unlocked; b.style.opacity = i+1>unlocked?'.45':'1'; });
+}
+
+// controls
+window.addEventListener('keydown',e=>{
+  if(['ArrowLeft','a','A'].includes(e.key)) keys.left=true;
+  if(['ArrowRight','d','D'].includes(e.key)) keys.right=true;
+  if([' ','ArrowUp','w','W'].includes(e.key)){ e.preventDefault(); keys.jump=true; jumpQueued=true; }
+});
+window.addEventListener('keyup',e=>{
+  if(['ArrowLeft','a','A'].includes(e.key)) keys.left=false;
+  if(['ArrowRight','d','D'].includes(e.key)) keys.right=false;
+  if([' ','ArrowUp','w','W'].includes(e.key)) keys.jump=false;
+});
+for(const btn of document.querySelectorAll('[data-key]')){
+  const k = btn.dataset.key;
+  const set = v=>{ if(k==='left') keys.left=v; if(k==='right') keys.right=v; if(k==='jump'){ keys.jump=v; if(v) jumpQueued=true; } };
+  ['touchstart','mousedown'].forEach(ev=>btn.addEventListener(ev,e=>{e.preventDefault(); set(true);}));
+  ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>btn.addEventListener(ev,e=>{e.preventDefault(); set(false);}));
+}
+
+function buildLevelButtons(){
+  const holder = document.getElementById('levels');
+  holder.innerHTML='';
+  levels.forEach((lv,i)=>{
+    const b = document.createElement('button');
+    b.className='lvl';
+    b.textContent = 'مرحلة '+(i+1);
+    b.onclick = ()=>{ if(i+1<=unlocked){ parseLevel(i); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); } };
+    holder.appendChild(b);
+  });
+}
+
+function beep(freq=440,duration=0.08,type='square'){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    const ac = beep.ac || (beep.ac = new AC());
+    const o = ac.createOscillator(); const g = ac.createGain();
+    o.type = type; o.frequency.value = freq; o.connect(g); g.connect(ac.destination);
+    g.gain.setValueAtTime(0.03, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + duration);
+    o.start(); o.stop(ac.currentTime + duration);
+  }catch(e){}
+}
+
+// UI bindings
+buildLevelButtons();
+loadProgress();
+parseLevel(0);
+updateStageUI();
+draw();
+document.getElementById('startBtn').onclick = startGame;
+document.getElementById('restartBtn').onclick = restartCurrent;
+document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
+</script>
+</body>
+</html>
