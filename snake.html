@@ -20,18 +20,23 @@ body{display:flex;justify-content:center;padding:14px 10px 40px}
 .hud div:nth-child(2){text-align:center}.hud div:last-child{text-align:left}
 canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px solid #34402a;image-rendering:pixelated}
 .msg{min-height:26px;margin-top:6px;text-align:center;color:#1b2515;font-family:monospace;font-size:12px;font-weight:900}
-.controls{display:grid;grid-template-columns:72px 72px 72px;grid-template-rows:58px 58px 58px;justify-content:center;gap:5px;margin-top:16px;direction:ltr}
-.key{border:1px solid #646f5f;background:linear-gradient(#262d24,#111510);color:#e7eee0;border-radius:14px;font-size:25px;box-shadow:inset 0 1px #ffffff12,0 5px 10px #0006;touch-action:manipulation}
-.key:active{transform:translateY(2px);background:#0d110d}
-.up{grid-column:2;grid-row:1}.left{grid-column:1;grid-row:2}.center{grid-column:2;grid-row:2;font-size:13px;font-weight:900;color:#d6e0cc}.right{grid-column:3;grid-row:2}.down{grid-column:2;grid-row:3}
+.control-pad{width:max-content;margin:16px auto 0;padding:12px;border:1px solid #4f5c49;border-radius:22px;background:linear-gradient(180deg,#1b2119,#0d110d);box-shadow:inset 0 1px #ffffff10,0 10px 22px #0005}
+.controls{display:grid;grid-template-columns:64px 64px 64px;grid-template-rows:56px 56px 56px;justify-content:center;gap:8px;direction:ltr}
+.key{width:64px;height:56px;border:1px solid #6a7864;background:linear-gradient(180deg,#2b3428,#151a14);color:#edf5e8;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px #ffffff18,0 5px 10px #0007;touch-action:manipulation;cursor:pointer}
+.key svg{width:27px;height:27px;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;fill:none;pointer-events:none}
+.key.center{background:linear-gradient(180deg,#7f956b,#536347);border-color:#9eb38a;color:#0c1209}
+.key.center svg{fill:currentColor;stroke:none;width:25px;height:25px}
+.key:active{transform:translateY(2px) scale(.97);filter:brightness(.9)}
+.up{grid-column:2;grid-row:1}.left{grid-column:1;grid-row:2}.center{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}.down{grid-column:2;grid-row:3}
 .bottom{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .action{padding:12px;border:1px solid #53644c;border-radius:13px;background:#121a12;color:#e4ecdc;font-weight:900;font-size:13px}
 .action.primary{background:#1f2e1c;border-color:#79916d;color:#e8f3df}
 .note{text-align:center;color:#83907c;font-size:10px;line-height:1.7;margin-top:10px}
 @media(max-width:420px){
  body{padding:8px 6px 28px}.phone{padding:11px 9px 14px;border-radius:23px}
- .controls{grid-template-columns:64px 64px 64px;grid-template-rows:52px 52px 52px}
- .key{font-size:22px}.title b{font-size:17px}
+ .control-pad{padding:10px;border-radius:19px}
+ .controls{grid-template-columns:58px 58px 58px;grid-template-rows:50px 50px 50px;gap:7px}
+ .key{width:58px;height:50px;border-radius:14px}.key svg{width:24px;height:24px}.title b{font-size:17px}
 }
 </style>
 <link rel="stylesheet" href="ha-theme.css">
@@ -58,12 +63,14 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
       <div id="msg" class="msg">اضغط تشغيل وابدأ</div>
     </div>
 
-    <div class="controls">
-      <button class="key up" data-dir="up">▲</button>
-      <button class="key left" data-dir="left">◀</button>
-      <button class="key center" id="playBtn">تشغيل</button>
-      <button class="key right" data-dir="right">▶</button>
-      <button class="key down" data-dir="down">▼</button>
+    <div class="control-pad" aria-label="أزرار التحكم">
+      <div class="controls">
+        <button class="key up" data-dir="up" aria-label="أعلى"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+        <button class="key left" data-dir="left" aria-label="يسار"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button class="key center" id="playBtn" aria-label="تشغيل"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="key right" data-dir="right" aria-label="يمين"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <button class="key down" data-dir="down" aria-label="أسفل"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+      </div>
     </div>
 
     <div class="bottom">
@@ -93,17 +100,28 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
   let best=Number(localStorage.getItem('ha_snake_best')||0);
   bestEl.textContent=best;
 
-  function reset(){
+  function reset(message='اضغط زر التشغيل وابدأ'){
     clearInterval(timer);
     snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];
     dir={x:1,y:0}; nextDir={x:1,y:0};
     score=0; level=1; running=false; paused=false;
     scoreEl.textContent='0'; levelEl.textContent='1';
     food=randomFood();
-    msg.textContent='اضغط تشغيل وابدأ';
-    playBtn.textContent='تشغيل';
+    msg.textContent=message;
     pauseBtn.textContent='Ⅱ إيقاف مؤقت';
     draw();
+  }
+
+  function updateBest(){
+    if(score>best){
+      best=score; localStorage.setItem('ha_snake_best',String(best)); bestEl.textContent=best;
+    }
+  }
+
+  function restartAfterWall(){
+    updateBest();
+    reset('اصطدمت بالجدار — نبدأ من جديد');
+    setTimeout(()=>start(),450);
   }
 
   function randomFood(){
@@ -124,19 +142,16 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
   }
 
   function start(){
-    if(running && paused){ paused=false; msg.textContent=''; playBtn.textContent='تشغيل'; startLoop(); return; }
+    if(running && paused){ paused=false; msg.textContent=''; startLoop(); return; }
     if(running)return;
-    running=true; paused=false; msg.textContent=''; playBtn.textContent='تشغيل';
+    running=true; paused=false; msg.textContent='';
     startLoop();
   }
 
   function gameOver(){
     clearInterval(timer); running=false; paused=false;
-    if(score>best){
-      best=score; localStorage.setItem('ha_snake_best',String(best)); bestEl.textContent=best;
-    }
+    updateBest();
     msg.textContent='GAME OVER — اضغط إعادة اللعب';
-    playBtn.textContent='تشغيل';
   }
 
   function step(){
@@ -144,8 +159,12 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
     dir=nextDir;
     const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
 
-    if(head.x<0||head.y<0||head.x>=CELLS||head.y>=CELLS||
-       snake.some(s=>s.x===head.x&&s.y===head.y)){
+    const hitWall=head.x<0||head.y<0||head.x>=CELLS||head.y>=CELLS;
+    if(hitWall){
+      restartAfterWall();
+      return;
+    }
+    if(snake.some(s=>s.x===head.x&&s.y===head.y)){
       gameOver(); draw(); return;
     }
 
