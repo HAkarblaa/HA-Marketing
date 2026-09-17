@@ -25,8 +25,8 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 .center-msg .box{background:rgba(6,10,18,.72);backdrop-filter:blur(10px);padding:18px 16px;border-radius:22px;border:1px solid rgba(255,255,255,.08);max-width:520px}
 .center-msg h2{margin:0 0 8px;font-size:28px}.center-msg p{margin:0;color:#dbe4f3;line-height:1.8}
 .mobile-controls{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;margin-top:12px;align-items:center}
-.pad{display:flex;gap:10px}.ctrl{user-select:none;min-height:62px;min-width:62px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(180deg,#152131,#0f1724);display:grid;place-items:center;font-size:28px;font-weight:700;box-shadow:0 10px 20px rgba(0,0,0,.22)}
-.jump{padding:0 28px;min-height:62px;border-radius:18px;background:linear-gradient(135deg,#a855f7,#ec4899);font-size:20px;font-weight:900}
+.pad{display:flex;gap:12px;direction:ltr}.ctrl{user-select:none;min-height:72px;min-width:82px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(180deg,#152131,#0f1724);display:grid;place-items:center;font-size:34px;font-weight:900;box-shadow:0 10px 20px rgba(0,0,0,.22)}
+.jump{padding:0 30px;min-height:72px;min-width:110px;border-radius:18px;background:linear-gradient(135deg,#a855f7,#ec4899);font-size:20px;font-weight:900}
 .sidebar{display:flex;flex-direction:column;gap:14px}
 .card{background:linear-gradient(180deg,#0d1520,#0b1118);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:16px;box-shadow:0 20px 45px rgba(0,0,0,.22)}
 .card h3{margin:0 0 12px;font-size:18px;color:var(--gold)}
@@ -36,7 +36,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lvl{padding:10px;border-radius:14px;background:rgba(255,255,255,.05);text-align:center;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700}.lvl.active{background:linear-gradient(135deg,#a855f7,#ec4899);border-color:transparent}
 .note{color:var(--muted);font-size:13px;line-height:1.8}
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
-@media (max-width:480px){.page{padding:10px}.brand h1{font-size:22px}.logo{width:46px;height:46px;font-size:24px}.stagebox{padding:10px;border-radius:22px}.card{padding:14px;border-radius:18px}.levels{grid-template-columns:repeat(2,1fr)}.ctrl{min-height:58px;min-width:58px}.jump{font-size:18px}}
+@media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(3,1fr)}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -52,7 +52,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
       <div class="canvas-wrap" id="wrap">
         <canvas id="game" width="960" height="600"></canvas>
         <div class="hud">
-          <div class="badge">المرحلة: <span id="hudLevel">1</span></div>
+          <div class="badge">المرحلة: <span id="hudLevel">1</span> / <span id="hudTotal">6</span></div>
           <div class="badge">السقوط: <span id="hudDeaths">0</span></div>
           <div class="badge">أفضل مرحلة: <span id="hudBest">1</span></div>
         </div>
@@ -67,6 +67,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
         <div class="actions">
           <button class="btn" id="startBtn">▶ ابدأ</button>
           <button class="ghost" id="restartBtn">↻ إعادة</button>
+          <select id="stageSelect" class="ghost" aria-label="اختيار المرحلة" style="min-height:46px;padding:8px 10px;font-weight:800"></select>
         </div>
       </div>
     </div>
@@ -110,7 +111,7 @@ let animation = null;
 let currentLevelIndex = 0;
 let deaths = 0;
 let wins = 0;
-let unlocked = 1;
+let unlocked = 6;
 let bestLevel = 1;
 let keys = {left:false,right:false,jump:false};
 let jumpQueued = false;
@@ -213,12 +214,12 @@ function loadProgress(){
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     deaths = data.deaths || 0;
     wins = data.wins || 0;
-    unlocked = Math.max(1, Math.min(levels.length, data.unlocked || 1));
+    unlocked = levels.length;
     bestLevel = Math.max(1, Math.min(levels.length, data.bestLevel || 1));
   }catch(e){}
 }
 function saveProgress(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({deaths,wins,unlocked,bestLevel}));
+  unlocked = levels.length; localStorage.setItem(STORAGE_KEY, JSON.stringify({deaths,wins,unlocked,bestLevel}));
 }
 
 const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawnY:0};
@@ -372,8 +373,8 @@ function updateStageUI(){
   document.getElementById('statLevel').textContent = currentLevelIndex+1;
   document.getElementById('statBest').textContent = bestLevel;
   document.getElementById('statDeaths').textContent = deaths;
-  document.getElementById('statWins').textContent = wins;
-  [...document.querySelectorAll('.lvl')].forEach((b,i)=>{ b.classList.toggle('active', i===currentLevelIndex); b.disabled = i+1>unlocked; b.style.opacity = i+1>unlocked?'.45':'1'; });
+  document.getElementById('statWins').textContent = wins; document.getElementById('hudTotal').textContent = levels.length;
+  [...document.querySelectorAll('.lvl')].forEach((b,i)=>{ b.classList.toggle('active', i===currentLevelIndex); b.disabled=false; b.style.opacity='1'; }); const sel=document.getElementById('stageSelect'); if(sel) sel.value=String(currentLevelIndex);
 }
 
 // controls
@@ -401,9 +402,11 @@ function buildLevelButtons(){
     const b = document.createElement('button');
     b.className='lvl';
     b.textContent = 'مرحلة '+(i+1);
-    b.onclick = ()=>{ if(i+1<=unlocked){ parseLevel(i); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); } };
+    b.onclick = ()=>{ parseLevel(i); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); };
     holder.appendChild(b);
   });
+  const sel=document.getElementById('stageSelect');
+  if(sel){ sel.innerHTML=levels.map((lv,i)=>`<option value="${i}">مرحلة ${i+1}</option>`).join(''); sel.value=String(currentLevelIndex); }
 }
 
 function beep(freq=440,duration=0.08,type='square'){
@@ -426,6 +429,7 @@ updateStageUI();
 draw();
 document.getElementById('startBtn').onclick = startGame;
 document.getElementById('restartBtn').onclick = restartCurrent;
+document.getElementById('stageSelect').onchange = e=>{ parseLevel(Number(e.target.value)||0); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); };
 document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
 </script>
 </body>

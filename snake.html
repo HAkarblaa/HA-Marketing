@@ -18,7 +18,7 @@ body{display:flex;justify-content:center;padding:14px 10px 40px}
 .screen{background:#9eaf79;border:5px solid #252b20;border-radius:12px;padding:8px;box-shadow:inset 0 0 22px #29321caa}
 .hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;color:#1c2615;font-family:monospace;font-weight:900;font-size:12px;margin-bottom:6px}
 .hud div:nth-child(2){text-align:center}.hud div:last-child{text-align:left}
-canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px solid #34402a;image-rendering:pixelated}
+canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action:none;cursor:crosshair;border:2px solid #34402a;image-rendering:pixelated}
 .msg{min-height:26px;margin-top:6px;text-align:center;color:#1b2515;font-family:monospace;font-size:12px;font-weight:900}
 .control-pad{width:max-content;margin:16px auto 0;padding:12px;border:1px solid #4f5c49;border-radius:22px;background:linear-gradient(180deg,#1b2119,#0d110d);box-shadow:inset 0 1px #ffffff10,0 10px 22px #0005}
 .controls{display:grid;grid-template-columns:64px 64px 64px;grid-template-rows:56px 56px 56px;justify-content:center;gap:8px;direction:ltr}
@@ -62,7 +62,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
         <div>BEST <span id="best">0</span></div>
       </div>
       <canvas id="game" width="360" height="360" aria-label="لعبة الحية"></canvas>
-      <div id="msg" class="msg">اضغط تشغيل وابدأ</div>
+      <div id="msg" class="msg">اضغط تشغيل أو اسحب على شاشة اللعب</div>
     </div>
 
     <div class="control-pad" aria-label="أزرار التحكم">
@@ -103,7 +103,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
   let best=Number(localStorage.getItem('ha_snake_best')||0);
   bestEl.textContent=best;
 
-  function reset(message='اضغط زر التشغيل وابدأ'){
+  function reset(message='اضغط تشغيل أو اسحب على شاشة اللعب'){
     clearInterval(timer);
     rankPlayId=HA_GameRanking.newPlayId('snake');
     runStarted=false;
@@ -227,6 +227,40 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;border:2px s
   document.querySelectorAll('[data-dir]').forEach(b=>{
     b.addEventListener('pointerdown',e=>{e.preventDefault();setDir(b.dataset.dir)});
   });
+
+  // التحكم من نفس شاشة اللعب: اسحب بأي اتجاه لتغيير مسار الحية.
+  let swipeStart=null;
+  const applySwipe=(dx,dy)=>{
+    if(Math.max(Math.abs(dx),Math.abs(dy))<14) return false;
+    if(Math.abs(dx)>Math.abs(dy)) setDir(dx>0?'right':'left');
+    else setDir(dy>0?'down':'up');
+    return true;
+  };
+  canvas.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    swipeStart={x:e.clientX,y:e.clientY,id:e.pointerId};
+    try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+  });
+  canvas.addEventListener('pointermove',e=>{
+    if(!swipeStart||e.pointerId!==swipeStart.id)return;
+    e.preventDefault();
+    const dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y;
+    if(applySwipe(dx,dy)) swipeStart={x:e.clientX,y:e.clientY,id:e.pointerId};
+  });
+  const endSwipe=e=>{
+    if(!swipeStart||e.pointerId!==swipeStart.id)return;
+    e.preventDefault();
+    const dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y;
+    if(!applySwipe(dx,dy)){
+      // حتى اللمسة القصيرة تشتغل: نحدد الاتجاه حسب مكان اللمس داخل الشاشة.
+      const r=canvas.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
+      if(Math.abs(x)>Math.abs(y)) setDir(x>0?'right':'left');
+      else setDir(y>0?'down':'up');
+    }
+    swipeStart=null;
+  };
+  canvas.addEventListener('pointerup',endSwipe);
+  canvas.addEventListener('pointercancel',()=>{swipeStart=null});
 
   document.addEventListener('keydown',e=>{
     const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
