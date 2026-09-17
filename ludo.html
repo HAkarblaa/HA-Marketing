@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071018">
-<title>لودو أونلاين - HA Marketing</title>
+<title>لودو - HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#05080d;--panel:#0d1622;--panel2:#111e2e;--gold:#f0c765;--gold2:#ffe6a5;--muted:#93a3b6;--line:#ffffff16;--red:#ef4444;--blue:#3b82f6;--green:#22c55e;--yellow:#eab308}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#8c5d1d20,transparent 30%),linear-gradient(180deg,#030507,#07111b 58%,#020407);color:#fff;min-height:100vh}button,input{font:inherit}.hidden{display:none!important}.app{width:min(1080px,100%);margin:auto;padding:12px 12px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.back,.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #e3b45355;background:#0c141f;color:var(--gold2);display:grid;place-items:center;text-decoration:none;font-size:23px}.brand{text-align:center;flex:1}.brand h1{font-size:22px;margin:0;color:var(--gold2)}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.actions{display:flex;gap:6px}.iconbtn{cursor:pointer;font-size:18px}
 .notice{border:1px solid #e4ad4660;background:linear-gradient(135deg,#1a1409,#0c1722);border-radius:17px;padding:11px 13px;color:#f7d88d;font-size:12px;line-height:1.8;margin-bottom:12px}.statusbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#0b1420;border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:12px}.dot{width:9px;height:9px;border-radius:50%;background:#64748b;display:inline-block;box-shadow:0 0 12px currentColor}.dot.on{background:#22c55e;color:#22c55e}.dot.wait{background:#eab308;color:#eab308}.roomcode{direction:ltr;font-weight:900;letter-spacing:2px;color:#ffe29a}.pill{padding:6px 10px;border-radius:999px;background:#ffffff0b;border:1px solid #ffffff12;font-size:11px;color:#c9d4df}
-.card{background:linear-gradient(160deg,#101b2a,#09121d);border:1px solid var(--line);border-radius:22px;padding:15px;box-shadow:0 18px 46px #0005}.lobby{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lobby h2{margin:0 0 7px;color:var(--gold2);font-size:18px}.lobby p{color:var(--muted);font-size:12px;line-height:1.7;margin:0 0 12px}.primary,.secondary,.danger{border:0;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,#ffd879,#d89427);color:#171006}.secondary{background:#18273a;color:#fff;border:1px solid #ffffff16}.danger{background:#4a161b;color:#ffd5d8;border:1px solid #ef444455}.joinrow{display:grid;grid-template-columns:1fr auto;gap:8px}.joinrow input{min-width:0;border:1px solid #ffffff1c;background:#07101a;color:#fff;border-radius:13px;padding:12px;outline:0;text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:3px;font-weight:900}.msg{min-height:20px;margin-top:9px;color:#f2c76d;font-size:11px}
+.card{background:linear-gradient(160deg,#101b2a,#09121d);border:1px solid var(--line);border-radius:22px;padding:15px;box-shadow:0 18px 46px #0005}.lobby{display:grid;grid-template-columns:1fr 1fr;gap:12px}.solo-card{grid-column:1/-1;border-color:#e3b45355;background:linear-gradient(145deg,#17130a,#0b1722)}.lobby h2{margin:0 0 7px;color:var(--gold2);font-size:18px}.lobby p{color:var(--muted);font-size:12px;line-height:1.7;margin:0 0 12px}.primary,.secondary,.danger{border:0;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,#ffd879,#d89427);color:#171006}.secondary{background:#18273a;color:#fff;border:1px solid #ffffff16}.danger{background:#4a161b;color:#ffd5d8;border:1px solid #ef444455}.joinrow{display:grid;grid-template-columns:1fr auto;gap:8px}.joinrow input{min-width:0;border:1px solid #ffffff1c;background:#07101a;color:#fff;border-radius:13px;padding:12px;outline:0;text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:3px;font-weight:900}.msg{min-height:20px;margin-top:9px;color:#f2c76d;font-size:11px}
 .game{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px}.boardwrap{background:#07101a;border:1px solid #ffffff15;border-radius:24px;padding:10px;overflow:hidden}.board{aspect-ratio:1/1;width:100%;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);gap:1px;background:#203040;border:3px solid #26384d;border-radius:17px;overflow:hidden;position:relative}.cell{position:relative;background:#0b1724;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}.cell.track{background:#edf2f7}.cell.safe:after{content:"★";font-size:clamp(7px,1.2vw,15px);color:#8a6b23}.cell.start-red{background:#fecaca}.cell.start-blue{background:#bfdbfe}.cell.red-yard{background:#7f1d1d}.cell.blue-yard{background:#1e3a8a}.cell.green-yard{background:#14532d}.cell.yellow-yard{background:#713f12}.cell.home-red{background:#ef4444}.cell.home-blue{background:#3b82f6}.cell.center{background:conic-gradient(from 45deg,var(--red) 0 25%,var(--green) 0 50%,var(--blue) 0 75%,var(--yellow) 0);border:1px solid #fff4}.yard-slot{width:58%;height:58%;border-radius:50%;background:#fff;border:2px solid #ffffffaa;box-shadow:inset 0 0 0 4px #0001}.piece{width:72%;height:72%;max-width:36px;max-height:36px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-weight:900;font-size:clamp(8px,1.5vw,13px);box-shadow:0 4px 10px #0008;cursor:default;z-index:4;transition:.18s transform}.piece.red{background:linear-gradient(145deg,#fb7185,#b91c1c)}.piece.blue{background:linear-gradient(145deg,#60a5fa,#1d4ed8)}.piece.movable{cursor:pointer;animation:pulse 1s infinite;box-shadow:0 0 0 3px #fff8,0 0 18px #ffe08a}.piece.done{outline:2px solid #ffd86a}.cell.multi .piece{width:46%;height:46%;font-size:8px;margin:-2px}@keyframes pulse{50%{transform:scale(1.16)}}
 .side{display:grid;gap:10px;align-content:start}.player{border-radius:18px;padding:12px;border:1px solid #ffffff16;background:#0b1623}.player.active{box-shadow:0 0 0 2px #f5ca6766,0 0 25px #d49b2b22}.player .name{font-weight:900}.player .user{color:#8fa3b7;font-size:10px;margin-top:3px;direction:ltr;text-align:right}.redtxt{color:#ff8d99}.bluetxt{color:#82b6ff}.dicebox{text-align:center;border-radius:20px;padding:14px;background:linear-gradient(145deg,#15130c,#0c1723);border:1px solid #dfab4355}.dice{width:82px;height:82px;margin:3px auto 8px;border-radius:18px;background:#fff;color:#111;display:grid;place-items:center;font-size:55px;box-shadow:0 10px 30px #0007;user-select:none}.dice.rolling{animation:roll .12s linear infinite}@keyframes roll{50%{transform:rotate(7deg) scale(.96)}}.turn{font-weight:900;color:#f6d67f;font-size:13px}.timer{font-size:11px;color:#9fafbf;margin-top:4px}.dicebtn{width:100%;margin-top:10px}.dicebtn:disabled{opacity:.45;cursor:not-allowed}.help{font-size:10px;color:#9fb0c1;line-height:1.7;background:#ffffff07;border-radius:12px;padding:9px;margin-top:9px}.room-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.events{max-height:150px;overflow:auto;font-size:10px;line-height:1.7;color:#aab7c5}.event{padding:5px 0;border-bottom:1px solid #ffffff0b}
 .rankbox{margin-top:12px}.rankhead{display:flex;align-items:center;justify-content:space-between;gap:8px}.rankhead h3{margin:0;color:var(--gold2)}.ranklist{display:grid;gap:6px;margin-top:9px}.rankrow{display:grid;grid-template-columns:38px 1fr 70px 60px;gap:6px;align-items:center;background:#ffffff07;border-radius:12px;padding:8px;font-size:10px}.rankrow b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rankrow small{display:block;color:#8192a4;direction:ltr;text-align:right}.ranknum{text-align:center;color:#f3c96d;font-weight:900}.rankcell{text-align:center}
@@ -24,15 +24,16 @@
 <div id="app" class="app hidden">
   <div class="top">
     <a class="back" href="entertainment.html">‹</a>
-    <div class="brand"><h1>🎲 لودو أونلاين</h1><small>نسخة تجريبية خاصة بالأدمن الرئيسي</small></div>
+    <div class="brand"><h1>🎲 لودو</h1><small>فردي ضد الجهاز أو أونلاين — نسخة الأدمن الرئيسي</small></div>
     <div class="actions"><button id="soundBtn" class="iconbtn" title="الصوت">🔊</button><button id="musicBtn" class="iconbtn" title="الموسيقى">🎵</button></div>
   </div>
-  <div class="notice">🛡️ هذه النسخة مخفية عن المستخدمين ومحمية بصلاحية <b>Super Admin</b>. تقدر تختبر اللعب الأونلاين من جهازين بنفس حساب الأدمن الرئيسي؛ كل جهاز يأخذ مقعد مختلف داخل الغرفة.</div>
+  <div class="notice">🛡️ هذه النسخة مخفية عن المستخدمين ومحمية بصلاحية <b>Super Admin</b>. تقدر تلعب <b>فردي ضد الجهاز</b> أو تختبر اللعب الأونلاين من جهازين.</div>
   <div id="statusbar" class="statusbar hidden"><div><span id="onlineDot" class="dot wait"></span> <span id="netText">متصل</span></div><div class="pill">الغرفة: <span id="roomCodeView" class="roomcode">------</span></div><div id="seatView" class="pill">المقعد: —</div></div>
 
   <section id="lobby" class="lobby">
-    <div class="card"><h2>إنشاء غرفة</h2><p>أنشئ غرفة جديدة وخذ الكود إلى الجهاز الثاني. يجب تسجيل الدخول هناك بنفس حساب الأدمن الرئيسي حالياً.</p><button id="createBtn" class="primary">＋ إنشاء غرفة لودو</button><div id="createMsg" class="msg"></div></div>
-    <div class="card"><h2>دخول غرفة</h2><p>اكتب كود الغرفة المكوّن من 6 أحرف، ثم ادخل كمنافس أزرق.</p><div class="joinrow"><input id="joinCode" maxlength="6" placeholder="ABC123"><button id="joinBtn" class="secondary">دخول</button></div><div id="joinMsg" class="msg"></div></div>
+    <div class="card solo-card"><h2>🤖 لعب فردي ضد الجهاز</h2><p>ابدأ مباشرة ضد الجهاز. أنت بالأحمر والجهاز بالأزرق، مع نفس قوانين النرد والأكل والوصول للبيت.</p><button id="soloBtn" class="primary">▶ ابدأ لعب فردي</button><div id="soloMsg" class="msg"></div></div>
+    <div class="card"><h2>إنشاء غرفة أونلاين</h2><p>أنشئ غرفة جديدة وخذ الكود إلى الجهاز الثاني. يجب تسجيل الدخول هناك بنفس حساب الأدمن الرئيسي حالياً.</p><button id="createBtn" class="primary">＋ إنشاء غرفة لودو</button><div id="createMsg" class="msg"></div></div>
+    <div class="card"><h2>دخول غرفة أونلاين</h2><p>اكتب كود الغرفة المكوّن من 6 أحرف، ثم ادخل كمنافس أزرق.</p><div class="joinrow"><input id="joinCode" maxlength="6" placeholder="ABC123"><button id="joinBtn" class="secondary">دخول</button></div><div id="joinMsg" class="msg"></div></div>
   </section>
 
   <section id="gameArea" class="game hidden">
@@ -73,6 +74,7 @@ const SAFE=new Set([0,8,13,21,26,34,39,47]);
 const FINAL=56, OUTER_MAX=50;
 const DICE=['⚀','⚁','⚂','⚃','⚄','⚅'];
 let me=null,profile=null,isSuper=false,room=null,state=null,seat=null,channel=null,lastRevision=-1,lastFinishedRevision=-1,timerId=null,musicTimer=null,audioCtx=null;
+let playMode='online',cpuBusy=false,soloResultSaved=false;
 let soundOn=localStorage.getItem('ha_ludo_sound')!=='0';
 let musicOn=localStorage.getItem('ha_ludo_music')==='1';
 let clientId=localStorage.getItem('ha_ludo_client_id');
@@ -99,7 +101,7 @@ function initialState(phase='waiting'){
 function globalPos(color,step){if(step<0||step>OUTER_MAX)return null;return (START[color]+step)%52}
 function validMoves(st,color,dice){return st.pieces[color].map((p,i)=>{if(p===FINAL)return false;if(p===-1)return dice===6;return p+dice<=FINAL})}
 function myTurn(){return state&&seat&&state.phase==='playing'&&state.turn===seat}
-function playerMeta(color){if(!room)return {name:'بانتظار...',username:''};return color==='red'?{name:room.host_name||'الأحمر',username:room.host_username||''}:{name:room.guest_name||'بانتظار...',username:room.guest_username||''}}
+function playerMeta(color){if(playMode==='solo'){return color==='red'?{name:profile?.full_name||profile?.username||'أنت',username:profile?.username||''}:{name:'الجهاز',username:'CPU'}}if(!room)return {name:'بانتظار...',username:''};return color==='red'?{name:room.host_name||'الأحمر',username:room.host_username||''}:{name:room.guest_name||'بانتظار...',username:room.guest_username||''}}
 function logEvent(text){if(!state)return;state.lastEvent={text,at:Date.now()}}
 
 function buildBoard(){
@@ -132,19 +134,27 @@ function renderPieces(){
 function render(){
  if(!room||!state)return;
  $('statusbar').classList.remove('hidden');$('gameArea').classList.remove('hidden');$('lobby').classList.add('hidden');
- $('roomCodeView').textContent=room.code;$('seatView').textContent='المقعد: '+(seat==='red'?'🔴 الأحمر':seat==='blue'?'🔵 الأزرق':'مشاهد');
+ $('roomCodeView').textContent=playMode==='solo'?'فردي':room.code;$('seatView').textContent=playMode==='solo'?'الوضع: 🤖 ضد الجهاز':'المقعد: '+(seat==='red'?'🔴 الأحمر':seat==='blue'?'🔵 الأزرق':'مشاهد');
+ $('copyBtn').classList.toggle('hidden',playMode==='solo');$('leaveBtn').textContent=playMode==='solo'?'إنهاء اللعب الفردي':'خروج من الغرفة';
  const rp=playerMeta('red'),bp=playerMeta('blue');$('redName').textContent=rp.name;$('redUser').textContent=rp.username?('@'+String(rp.username).replace(/^@/,'')):'';$('blueName').textContent=bp.name;$('blueUser').textContent=bp.username?('@'+String(bp.username).replace(/^@/,'')):'';
  $('redPlayer').classList.toggle('active',state.turn==='red'&&state.phase==='playing');$('bluePlayer').classList.toggle('active',state.turn==='blue'&&state.phase==='playing');
  if(state.dice)$('dice').textContent=DICE[state.dice-1];
  if(state.phase==='waiting'){$('turnView').textContent='بانتظار اللاعب الثاني...';$('rollBtn').disabled=true;$('timerView').textContent='—'}
  else if(state.phase==='finished'){$('turnView').textContent='🏆 الفائز: '+(state.winner==='red'?rp.name:bp.name);$('rollBtn').disabled=true;$('timerView').textContent='انتهت المباراة'}
- else{$('turnView').textContent='الدور: '+(state.turn==='red'?rp.name:bp.name);$('rollBtn').disabled=!(myTurn()&&!state.rolled);}
+ else{$('turnView').textContent=playMode==='solo'&&state.turn==='blue'?'🤖 الجهاز يفكر...':'الدور: '+(state.turn==='red'?rp.name:bp.name);$('rollBtn').disabled=!(myTurn()&&!state.rolled);}
  $('events').innerHTML='<div class="event">'+esc(state.lastEvent?.text||'بدأت المباراة')+'</div><div class="event">الحركة رقم '+Number(state.moveNo||0).toLocaleString('ar-IQ')+'</div>';
  renderPieces();
 }
 
 async function commit(next,status){
- if(!room)return false;const expected=Number(room.revision||0);next.moveNo=Number(next.moveNo||0)+1;
+ if(!room)return false;next.moveNo=Number(next.moveNo||0)+1;
+ if(playMode==='solo'){
+   state=next;if(status)room.status=status;render();
+   if(state.phase==='finished')await finalizeSoloResult();
+   else if(state.turn==='blue'&&!state.rolled&&!cpuBusy)setTimeout(cpuTakeTurn,650);
+   return true;
+ }
+ const expected=Number(room.revision||0);
  const payload={state:next,revision:expected+1,updated_at:new Date().toISOString()};if(status)payload.status=status;
  const {data,error}=await db.from('ludo_rooms').update(payload).eq('id',room.id).eq('revision',expected).select('*').maybeSingle();
  if(error){toast('تعذر تحديث المباراة');console.warn(error);return false}if(!data){await refreshRoom();toast('تم تحديث الجولة من الجهاز الآخر');return false}applyRoom(data);return true;
@@ -173,7 +183,59 @@ async function movePiece(i){
 }
 $('rollBtn').onclick=rollDice;
 
+function startSolo(){
+ playMode='solo';cpuBusy=false;soloResultSaved=false;seat='red';lastRevision=-1;lastFinishedRevision=-1;
+ room={id:null,code:'SOLO',host_client_id:clientId,guest_client_id:'CPU',host_user_id:me?.id||null,guest_user_id:null,host_name:profile?.full_name||profile?.username||'أنت',host_username:profile?.username||'',guest_name:'الجهاز',guest_username:'CPU',status:'playing',revision:0};
+ state=initialState('playing');state.lastEvent={text:'🤖 بدأت مباراة فردية ضد الجهاز',at:Date.now()};
+ render();buildBoard();sfx('join');$('soloMsg').textContent='بدأت المباراة الفردية.';
+}
+$('soloBtn').onclick=startSolo;
+
+function chooseCpuMove(st,d){
+ const valid=validMoves(st,'blue',d);let best=-1,bestScore=-1e9;
+ valid.forEach((ok,i)=>{if(!ok)return;const old=st.pieces.blue[i],next=old===-1?0:old+d;let score=next;
+   if(next===FINAL)score+=1000;
+   if(old===-1)score+=180;
+   if(next<=OUTER_MAX){const g=globalPos('blue',next);if(!SAFE.has(g)){for(const p of st.pieces.red){if(p>=0&&p<=OUTER_MAX&&globalPos('red',p)===g)score+=500}}}
+   if(SAFE.has(globalPos('blue',Math.min(next,OUTER_MAX))))score+=40;
+   if(score>bestScore){bestScore=score;best=i}
+ });
+ return best;
+}
+async function cpuTakeTurn(){
+ if(playMode!=='solo'||cpuBusy||!state||state.phase!=='playing'||state.turn!=='blue')return;
+ cpuBusy=true;
+ try{
+   await new Promise(r=>setTimeout(r,550));ensureAudio();sfx('roll');$('dice').classList.add('rolling');
+   let frames=0;const anim=setInterval(()=>{$('dice').textContent=DICE[randDice()-1];if(++frames>7){clearInterval(anim);$('dice').classList.remove('rolling')}},65);
+   const d=randDice();await new Promise(r=>setTimeout(r,560));clearInterval(anim);$('dice').classList.remove('rolling');$('dice').textContent=DICE[d-1];
+   let n=cloneState();n.dice=d;n.rolled=true;n.turnStartedAt=Date.now();if(d===6)n.sixCount=Number(n.sixCount||0)+1;else n.sixCount=0;
+   if(n.sixCount>=3){n.rolled=false;n.dice=null;n.sixCount=0;n.turn='red';n.turnStartedAt=Date.now();n.lastEvent={text:'🤖 الجهاز رمى ثلاث ستات متتالية — انتقل الدور لك',at:Date.now()};await commit(n);return}
+   n.lastEvent={text:'🎲 الجهاز رمى '+d,at:Date.now()};state=n;render();
+   await new Promise(r=>setTimeout(r,650));
+   const idx=chooseCpuMove(state,d);
+   if(idx<0){n=cloneState();n.rolled=false;n.dice=null;n.sixCount=0;n.turn='red';n.turnStartedAt=Date.now();n.lastEvent={text:'🤖 لا توجد حركة للجهاز — الدور لك',at:Date.now()};await commit(n);return}
+   n=cloneState();const old=n.pieces.blue[idx];const next=old===-1?0:old+d;n.pieces.blue[idx]=next;let captured=0;
+   if(next<=OUTER_MAX){const g=globalPos('blue',next);if(!SAFE.has(g)){n.pieces.red=n.pieces.red.map(p=>{if(p>=0&&p<=OUTER_MAX&&globalPos('red',p)===g){captured++;return -1}return p})}}
+   const finished=n.pieces.blue.every(p=>p===FINAL);
+   if(finished){n.phase='finished';n.winner='blue';n.rolled=false;n.dice=null;n.lastEvent={text:'🤖 الجهاز فاز بالمباراة',at:Date.now()};sfx('lose');await commit(n,'finished');return}
+   const extra=(d===6||captured>0);n.rolled=false;n.dice=null;if(!extra){n.turn='red';n.sixCount=0}else if(d!==6)n.sixCount=0;n.turnStartedAt=Date.now();
+   if(captured){n.lastEvent={text:'💥 الجهاز أكل أحد أحجارك وحصل على دور إضافي',at:Date.now()};sfx('capture')}else if(next===FINAL){n.lastEvent={text:'🏠 حجر للجهاز وصل إلى البيت'+(extra?' — دور إضافي':''),at:Date.now()};sfx('home')}else{n.lastEvent={text:'🤖 الجهاز حرّك الحجر '+(idx+1)+' بمقدار '+d+(extra?' — دور إضافي':''),at:Date.now()};sfx('move')}
+   await commit(n);
+ }finally{
+   cpuBusy=false;
+   if(playMode==='solo'&&state?.phase==='playing'&&state.turn==='blue'&&!state.rolled)setTimeout(cpuTakeTurn,650);
+ }
+}
+async function finalizeSoloResult(){
+ if(playMode!=='solo'||soloResultSaved||state?.phase!=='finished')return;soloResultSaved=true;
+ const won=state.winner==='red';if(won)sfx('win');else sfx('lose');
+ try{const {error}=await db.rpc('ha_ludo_record_solo',{p_won:won});if(error)console.warn('solo result',error);else loadRanking()}catch(e){console.warn('solo result',e)}
+}
+
+
 function applyRoom(r){
+ playMode='online';soloResultSaved=false;
  const prev=room,prevState=state;room=r;state=(typeof r.state==='string'?JSON.parse(r.state):r.state)||initialState(r.status==='playing'?'playing':'waiting');seat=r.host_client_id===clientId?'red':r.guest_client_id===clientId?'blue':null;
  if(!seat&&r.host_user_id===me.id&&!r.guest_client_id)seat='red';
  render();
@@ -200,11 +262,11 @@ async function joinRoom(){
   const {data:u,error:ue}=await db.from('ludo_rooms').update({guest_user_id:me.id,guest_client_id:clientId,guest_name:profile?.full_name||profile?.username||'المنافس',guest_username:profile?.username||'',state:st,status:'playing',revision:Number(r.revision||0)+1,updated_at:new Date().toISOString()}).eq('id',r.id).select('*').single();if(ue)throw ue;applyRoom(u);await subscribeRoom();$('joinMsg').textContent='تم الدخول';sfx('join');
  }catch(e){console.warn(e);$('joinMsg').textContent=e.message||'تعذر الدخول'}finally{$('joinBtn').disabled=false}
 }
-$('createBtn').onclick=createRoom;$('joinBtn').onclick=joinRoom;$('joinCode').oninput=e=>e.target.value=normalizeCode(e.target.value);$('joinCode').onkeydown=e=>{if(e.key==='Enter')joinRoom()};
+$('createBtn').onclick=()=>{playMode='online';createRoom()};$('joinBtn').onclick=()=>{playMode='online';joinRoom()};$('joinCode').oninput=e=>e.target.value=normalizeCode(e.target.value);$('joinCode').onkeydown=e=>{if(e.key==='Enter')joinRoom()};
 $('copyBtn').onclick=async()=>{if(!room)return;try{await navigator.clipboard.writeText(room.code);toast('تم نسخ كود الغرفة')}catch(_e){toast('الكود: '+room.code)}};
-$('newBtn').onclick=async()=>{if(!room||room.host_client_id!==clientId)return toast('المضيف فقط يبدأ جولة جديدة');if(!room.guest_client_id)return toast('بانتظار اللاعب الثاني');const n=initialState('playing');n.lastEvent={text:'↻ بدأت جولة جديدة',at:Date.now()};await commit(n,'playing')};
-$('leaveBtn').onclick=async()=>{if(!room)return resetUi();if(room.host_client_id===clientId){await db.from('ludo_rooms').delete().eq('id',room.id)}else if(room.guest_client_id===clientId){const n=initialState('waiting');await db.from('ludo_rooms').update({guest_user_id:null,guest_client_id:null,guest_name:null,guest_username:null,state:n,status:'waiting',revision:Number(room.revision||0)+1}).eq('id',room.id)}resetUi()};
-function resetUi(){if(channel){db.removeChannel(channel).catch(()=>{});channel=null}room=null;state=null;seat=null;$('lobby').classList.remove('hidden');$('gameArea').classList.add('hidden');$('statusbar').classList.add('hidden');$('createMsg').textContent='';$('joinMsg').textContent='';buildBoard()}
+$('newBtn').onclick=async()=>{if(playMode==='solo'){soloResultSaved=false;cpuBusy=false;const n=initialState('playing');n.lastEvent={text:'↻ بدأت جولة فردية جديدة',at:Date.now()};state=n;room.status='playing';render();buildBoard();return}if(!room||room.host_client_id!==clientId)return toast('المضيف فقط يبدأ جولة جديدة');if(!room.guest_client_id)return toast('بانتظار اللاعب الثاني');const n=initialState('playing');n.lastEvent={text:'↻ بدأت جولة جديدة',at:Date.now()};await commit(n,'playing')};
+$('leaveBtn').onclick=async()=>{if(playMode==='solo')return resetUi();if(!room)return resetUi();if(room.host_client_id===clientId){await db.from('ludo_rooms').delete().eq('id',room.id)}else if(room.guest_client_id===clientId){const n=initialState('waiting');await db.from('ludo_rooms').update({guest_user_id:null,guest_client_id:null,guest_name:null,guest_username:null,state:n,status:'waiting',revision:Number(room.revision||0)+1}).eq('id',room.id)}resetUi()};
+function resetUi(){if(channel){db.removeChannel(channel).catch(()=>{});channel=null}room=null;state=null;seat=null;playMode='online';cpuBusy=false;soloResultSaved=false;$('lobby').classList.remove('hidden');$('gameArea').classList.add('hidden');$('statusbar').classList.add('hidden');$('copyBtn').classList.remove('hidden');$('leaveBtn').textContent='خروج من الغرفة';$('createMsg').textContent='';$('joinMsg').textContent='';$('soloMsg').textContent='';buildBoard()}
 
 function updateTimer(){if(!state||state.phase!=='playing'||!state.turnStartedAt){$('timerView').textContent='—';return}const left=Math.max(0,30-Math.floor((Date.now()-Number(state.turnStartedAt))/1000));$('timerView').textContent='الوقت: '+left+'ث';if(left===0&&myTurn())handleTimeout()}
 let timeoutBusy=false;async function handleTimeout(){if(timeoutBusy||!myTurn())return;timeoutBusy=true;try{if(!state.rolled){await rollDice()}else{const v=validMoves(state,seat,state.dice),i=v.findIndex(Boolean);if(i>=0)await movePiece(i);else await passNoMove(state.dice)}}finally{setTimeout(()=>timeoutBusy=false,1200)}}
