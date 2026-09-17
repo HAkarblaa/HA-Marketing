@@ -61,6 +61,7 @@ a{text-decoration:none;color:inherit}
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="page">
@@ -84,6 +85,10 @@ a{text-decoration:none;color:inherit}
   <main class="grid">
     <a class="card green" data-k="الحية حية snake نوكيا لعبة الحية" href="snake.html" style="--glow:rgba(106,190,77,.18)">
       <div class="iconbox">🐍</div><h2>لعبة الحية</h2><div class="tinyline"></div><p>لعبة الحية الكلاسيكية<br>ستايل نوكيا القديم</p>
+    </a>
+
+    <a id="ludoAdminCard" class="card gold" data-k="لودو ludo اونلاين أونلاين ثنائي" href="ludo.html" style="--glow:rgba(244,176,49,.22);display:none">
+      <div class="iconbox">🎲</div><h2>لودو أونلاين</h2><div class="tinyline"></div><p>تجريبي للأدمن الرئيسي<br>لاعبان أونلاين + صوت</p><div class="badge">🔒 خاص بالأدمن</div>
     </a>
 
     <section class="info-hub" id="infoHub" data-k="العمر احسب عمرك معلومات عامة ثقافة حقائق اسئلة أسئلة عامة مسابقة اختبار">
@@ -126,6 +131,21 @@ function filterCards(){
   const hub=document.getElementById('infoHub');
   if(hub) hub.classList.toggle('hide',!!s&&!items.some(i=>!i.classList.contains('hide')));
 }
+</script>
+
+<script>
+(async function(){
+  const card=document.getElementById('ludoAdminCard');
+  if(!card||!window.supabase)return;
+  try{
+    const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+    const {data:{session}}=await db.auth.getSession();if(!session)return;
+    let ok=false;
+    try{const r=await db.rpc('is_super_admin');if(!r.error)ok=!!r.data}catch(_e){}
+    if(!ok){try{const r=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',session.user.id).maybeSingle();ok=!!(r.data?.is_super_admin&&r.data?.is_active)}catch(_e){}}
+    if(ok)card.style.display='flex';
+  }catch(_e){}
+})();
 </script>
 </body>
 </html>

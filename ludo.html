@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071018">
+<title>لودو أونلاين - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#05080d;--panel:#0d1622;--panel2:#111e2e;--gold:#f0c765;--gold2:#ffe6a5;--muted:#93a3b6;--line:#ffffff16;--red:#ef4444;--blue:#3b82f6;--green:#22c55e;--yellow:#eab308}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#8c5d1d20,transparent 30%),linear-gradient(180deg,#030507,#07111b 58%,#020407);color:#fff;min-height:100vh}button,input{font:inherit}.hidden{display:none!important}.app{width:min(1080px,100%);margin:auto;padding:12px 12px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.back,.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #e3b45355;background:#0c141f;color:var(--gold2);display:grid;place-items:center;text-decoration:none;font-size:23px}.brand{text-align:center;flex:1}.brand h1{font-size:22px;margin:0;color:var(--gold2)}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.actions{display:flex;gap:6px}.iconbtn{cursor:pointer;font-size:18px}
+.notice{border:1px solid #e4ad4660;background:linear-gradient(135deg,#1a1409,#0c1722);border-radius:17px;padding:11px 13px;color:#f7d88d;font-size:12px;line-height:1.8;margin-bottom:12px}.statusbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#0b1420;border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:12px}.dot{width:9px;height:9px;border-radius:50%;background:#64748b;display:inline-block;box-shadow:0 0 12px currentColor}.dot.on{background:#22c55e;color:#22c55e}.dot.wait{background:#eab308;color:#eab308}.roomcode{direction:ltr;font-weight:900;letter-spacing:2px;color:#ffe29a}.pill{padding:6px 10px;border-radius:999px;background:#ffffff0b;border:1px solid #ffffff12;font-size:11px;color:#c9d4df}
+.card{background:linear-gradient(160deg,#101b2a,#09121d);border:1px solid var(--line);border-radius:22px;padding:15px;box-shadow:0 18px 46px #0005}.lobby{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lobby h2{margin:0 0 7px;color:var(--gold2);font-size:18px}.lobby p{color:var(--muted);font-size:12px;line-height:1.7;margin:0 0 12px}.primary,.secondary,.danger{border:0;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,#ffd879,#d89427);color:#171006}.secondary{background:#18273a;color:#fff;border:1px solid #ffffff16}.danger{background:#4a161b;color:#ffd5d8;border:1px solid #ef444455}.joinrow{display:grid;grid-template-columns:1fr auto;gap:8px}.joinrow input{min-width:0;border:1px solid #ffffff1c;background:#07101a;color:#fff;border-radius:13px;padding:12px;outline:0;text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:3px;font-weight:900}.msg{min-height:20px;margin-top:9px;color:#f2c76d;font-size:11px}
+.game{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px}.boardwrap{background:#07101a;border:1px solid #ffffff15;border-radius:24px;padding:10px;overflow:hidden}.board{aspect-ratio:1/1;width:100%;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);gap:1px;background:#203040;border:3px solid #26384d;border-radius:17px;overflow:hidden;position:relative}.cell{position:relative;background:#0b1724;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}.cell.track{background:#edf2f7}.cell.safe:after{content:"★";font-size:clamp(7px,1.2vw,15px);color:#8a6b23}.cell.start-red{background:#fecaca}.cell.start-blue{background:#bfdbfe}.cell.red-yard{background:#7f1d1d}.cell.blue-yard{background:#1e3a8a}.cell.green-yard{background:#14532d}.cell.yellow-yard{background:#713f12}.cell.home-red{background:#ef4444}.cell.home-blue{background:#3b82f6}.cell.center{background:conic-gradient(from 45deg,var(--red) 0 25%,var(--green) 0 50%,var(--blue) 0 75%,var(--yellow) 0);border:1px solid #fff4}.yard-slot{width:58%;height:58%;border-radius:50%;background:#fff;border:2px solid #ffffffaa;box-shadow:inset 0 0 0 4px #0001}.piece{width:72%;height:72%;max-width:36px;max-height:36px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-weight:900;font-size:clamp(8px,1.5vw,13px);box-shadow:0 4px 10px #0008;cursor:default;z-index:4;transition:.18s transform}.piece.red{background:linear-gradient(145deg,#fb7185,#b91c1c)}.piece.blue{background:linear-gradient(145deg,#60a5fa,#1d4ed8)}.piece.movable{cursor:pointer;animation:pulse 1s infinite;box-shadow:0 0 0 3px #fff8,0 0 18px #ffe08a}.piece.done{outline:2px solid #ffd86a}.cell.multi .piece{width:46%;height:46%;font-size:8px;margin:-2px}@keyframes pulse{50%{transform:scale(1.16)}}
+.side{display:grid;gap:10px;align-content:start}.player{border-radius:18px;padding:12px;border:1px solid #ffffff16;background:#0b1623}.player.active{box-shadow:0 0 0 2px #f5ca6766,0 0 25px #d49b2b22}.player .name{font-weight:900}.player .user{color:#8fa3b7;font-size:10px;margin-top:3px;direction:ltr;text-align:right}.redtxt{color:#ff8d99}.bluetxt{color:#82b6ff}.dicebox{text-align:center;border-radius:20px;padding:14px;background:linear-gradient(145deg,#15130c,#0c1723);border:1px solid #dfab4355}.dice{width:82px;height:82px;margin:3px auto 8px;border-radius:18px;background:#fff;color:#111;display:grid;place-items:center;font-size:55px;box-shadow:0 10px 30px #0007;user-select:none}.dice.rolling{animation:roll .12s linear infinite}@keyframes roll{50%{transform:rotate(7deg) scale(.96)}}.turn{font-weight:900;color:#f6d67f;font-size:13px}.timer{font-size:11px;color:#9fafbf;margin-top:4px}.dicebtn{width:100%;margin-top:10px}.dicebtn:disabled{opacity:.45;cursor:not-allowed}.help{font-size:10px;color:#9fb0c1;line-height:1.7;background:#ffffff07;border-radius:12px;padding:9px;margin-top:9px}.room-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.events{max-height:150px;overflow:auto;font-size:10px;line-height:1.7;color:#aab7c5}.event{padding:5px 0;border-bottom:1px solid #ffffff0b}
+.rankbox{margin-top:12px}.rankhead{display:flex;align-items:center;justify-content:space-between;gap:8px}.rankhead h3{margin:0;color:var(--gold2)}.ranklist{display:grid;gap:6px;margin-top:9px}.rankrow{display:grid;grid-template-columns:38px 1fr 70px 60px;gap:6px;align-items:center;background:#ffffff07;border-radius:12px;padding:8px;font-size:10px}.rankrow b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rankrow small{display:block;color:#8192a4;direction:ltr;text-align:right}.ranknum{text-align:center;color:#f3c96d;font-weight:900}.rankcell{text-align:center}
+.overlay{position:fixed;inset:0;background:#02050af2;display:flex;align-items:center;justify-content:center;z-index:999;padding:18px}.gate{width:min(520px,100%);background:#0d1724;border:1px solid #efc26255;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 70px #000}.gate h2{margin:0 0 8px;color:#ffe198}.gate p{color:#aab8c7;line-height:1.8}.gate a{display:inline-block;margin-top:8px}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%) translateY(18px);background:#101927;color:#fff;border:1px solid #ffffff20;padding:10px 14px;border-radius:999px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:1200}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:820px){.game{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.dicebox{grid-row:1 / span 2}.lobby{grid-template-columns:1fr}.boardwrap{padding:6px}.app{padding:8px 8px 25px}}@media(max-width:560px){.side{grid-template-columns:1fr}.dicebox{grid-row:auto}.rankrow{grid-template-columns:32px 1fr 58px 48px}.brand small{display:none}.board{border-width:2px}.piece{border-width:1px}.notice{font-size:10px}}
+</style>
+</head>
+<body>
+<div id="gate" class="overlay"><div class="gate"><h2>🔒 فحص صلاحية الأدمن الرئيسي</h2><p id="gateText">جاري التحقق من الحساب...</p><a class="secondary" href="entertainment.html">الرجوع للترفيه</a></div></div>
+<div id="toast" class="toast"></div>
+<div id="app" class="app hidden">
+  <div class="top">
+    <a class="back" href="entertainment.html">‹</a>
+    <div class="brand"><h1>🎲 لودو أونلاين</h1><small>نسخة تجريبية خاصة بالأدمن الرئيسي</small></div>
+    <div class="actions"><button id="soundBtn" class="iconbtn" title="الصوت">🔊</button><button id="musicBtn" class="iconbtn" title="الموسيقى">🎵</button></div>
+  </div>
+  <div class="notice">🛡️ هذه النسخة مخفية عن المستخدمين ومحمية بصلاحية <b>Super Admin</b>. تقدر تختبر اللعب الأونلاين من جهازين بنفس حساب الأدمن الرئيسي؛ كل جهاز يأخذ مقعد مختلف داخل الغرفة.</div>
+  <div id="statusbar" class="statusbar hidden"><div><span id="onlineDot" class="dot wait"></span> <span id="netText">متصل</span></div><div class="pill">الغرفة: <span id="roomCodeView" class="roomcode">------</span></div><div id="seatView" class="pill">المقعد: —</div></div>
+
+  <section id="lobby" class="lobby">
+    <div class="card"><h2>إنشاء غرفة</h2><p>أنشئ غرفة جديدة وخذ الكود إلى الجهاز الثاني. يجب تسجيل الدخول هناك بنفس حساب الأدمن الرئيسي حالياً.</p><button id="createBtn" class="primary">＋ إنشاء غرفة لودو</button><div id="createMsg" class="msg"></div></div>
+    <div class="card"><h2>دخول غرفة</h2><p>اكتب كود الغرفة المكوّن من 6 أحرف، ثم ادخل كمنافس أزرق.</p><div class="joinrow"><input id="joinCode" maxlength="6" placeholder="ABC123"><button id="joinBtn" class="secondary">دخول</button></div><div id="joinMsg" class="msg"></div></div>
+  </section>
+
+  <section id="gameArea" class="game hidden">
+    <div class="boardwrap"><div id="board" class="board"></div></div>
+    <aside class="side">
+      <div id="redPlayer" class="player"><div class="name redtxt">🔴 <span id="redName">بانتظار...</span></div><div id="redUser" class="user"></div></div>
+      <div id="bluePlayer" class="player"><div class="name bluetxt">🔵 <span id="blueName">بانتظار...</span></div><div id="blueUser" class="user"></div></div>
+      <div class="dicebox">
+        <div id="dice" class="dice">⚀</div>
+        <div id="turnView" class="turn">بانتظار اللاعب الثاني...</div>
+        <div id="timerView" class="timer">—</div>
+        <button id="rollBtn" class="primary dicebtn" disabled>🎲 ارمي النرد</button>
+        <div id="moveHelp" class="help">من يطلع الرقم، اضغط على الحجر المضيء حتى تحركه. خروج الحجر من البيت يحتاج 6.</div>
+      </div>
+      <div class="card"><div class="room-actions"><button id="copyBtn" class="secondary">📋 نسخ الكود</button><button id="newBtn" class="secondary">↻ جولة جديدة</button><button id="leaveBtn" class="danger" style="grid-column:1/-1">خروج من الغرفة</button></div></div>
+      <div class="card"><b style="color:#f0c765">آخر الأحداث</b><div id="events" class="events"><div class="event">بانتظار بدء المباراة.</div></div></div>
+    </aside>
+  </section>
+
+  <section class="card rankbox">
+    <div class="rankhead"><h3>🏆 ترتيب لودو التجريبي</h3><button id="rankBtn" class="secondary">تحديث</button></div>
+    <div id="rankList" class="ranklist"><div class="msg">لا توجد نتائج بعد.</div></div>
+  </section>
+</div>
+<script>
+'use strict';
+const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const $=id=>document.getElementById(id);
+const TRACK=[
+[6,1],[6,2],[6,3],[6,4],[6,5],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],[7,14],[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],[7,0],[6,0]
+];
+const HOME={red:[[7,1],[7,2],[7,3],[7,4],[7,5]],blue:[[7,13],[7,12],[7,11],[7,10],[7,9]]};
+const YARD={red:[[1,1],[1,4],[4,1],[4,4]],blue:[[10,10],[10,13],[13,10],[13,13]]};
+const START={red:0,blue:26};
+const SAFE=new Set([0,8,13,21,26,34,39,47]);
+const FINAL=56, OUTER_MAX=50;
+const DICE=['⚀','⚁','⚂','⚃','⚄','⚅'];
+let me=null,profile=null,isSuper=false,room=null,state=null,seat=null,channel=null,lastRevision=-1,lastFinishedRevision=-1,timerId=null,musicTimer=null,audioCtx=null;
+let soundOn=localStorage.getItem('ha_ludo_sound')!=='0';
+let musicOn=localStorage.getItem('ha_ludo_music')==='1';
+let clientId=localStorage.getItem('ha_ludo_client_id');
+if(!clientId){clientId=(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now());localStorage.setItem('ha_ludo_client_id',clientId)}
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800)}
+function normalizeCode(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)}
+function randomCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let x='';const a=new Uint32Array(6);crypto.getRandomValues(a);for(let i=0;i<6;i++)x+=chars[a[i]%chars.length];return x}
+function randDice(){const a=new Uint32Array(1);crypto.getRandomValues(a);return 1+(a[0]%6)}
+function ensureAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{})}
+function tone(f,d=.09,v=.035,delay=0,type='sine'){if(!soundOn)return;ensureAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(audioCtx.destination);const t=audioCtx.currentTime+delay;o.start(t);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.stop(t+d+.02)}
+function sfx(k){if(!soundOn)return;if(k==='roll'){tone(180,.06,.04,0,'square');tone(240,.06,.035,.08,'square');tone(320,.07,.035,.16,'square')}else if(k==='move'){tone(420,.06,.025);tone(520,.06,.025,.06)}else if(k==='capture'){tone(220,.09,.04,0,'sawtooth');tone(130,.14,.04,.08,'sawtooth')}else if(k==='home'){tone(520,.07,.035);tone(660,.08,.035,.08);tone(800,.12,.04,.16)}else if(k==='join'){tone(440,.08,.03);tone(660,.12,.03,.09)}else if(k==='win'){[523,659,784,1047].forEach((f,i)=>tone(f,.18,.04,i*.10))}else if(k==='lose'){tone(330,.12,.03);tone(220,.2,.03,.1)}else if(k==='click'){tone(380,.04,.018)}}
+function startMusic(){stopMusic();if(!musicOn)return;ensureAudio();let i=0;const notes=[261.6,329.6,392,329.6,293.7,349.2,440,349.2];musicTimer=setInterval(()=>{if(!musicOn)return;const old=soundOn;soundOn=true;tone(notes[i++%notes.length],.23,.008,0,'triangle');soundOn=old},650)}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
+function refreshAudioButtons(){$('soundBtn').textContent=soundOn?'🔊':'🔇';$('musicBtn').textContent=musicOn?'🎵':'🎶'}
+$('soundBtn').onclick=()=>{soundOn=!soundOn;localStorage.setItem('ha_ludo_sound',soundOn?'1':'0');refreshAudioButtons();if(soundOn)sfx('click')};
+$('musicBtn').onclick=()=>{musicOn=!musicOn;localStorage.setItem('ha_ludo_music',musicOn?'1':'0');refreshAudioButtons();if(musicOn){ensureAudio();startMusic()}else stopMusic()};
+refreshAudioButtons();
+
+function initialState(phase='waiting'){
+ return {version:1,phase,pieces:{red:[-1,-1,-1,-1],blue:[-1,-1,-1,-1]},turn:'red',dice:null,rolled:false,sixCount:0,winner:null,moveNo:0,turnStartedAt:Date.now(),lastEvent:{text:phase==='playing'?'بدأت المباراة':'بانتظار اللاعب الثاني',at:Date.now()}};
+}
+function globalPos(color,step){if(step<0||step>OUTER_MAX)return null;return (START[color]+step)%52}
+function validMoves(st,color,dice){return st.pieces[color].map((p,i)=>{if(p===FINAL)return false;if(p===-1)return dice===6;return p+dice<=FINAL})}
+function myTurn(){return state&&seat&&state.phase==='playing'&&state.turn===seat}
+function playerMeta(color){if(!room)return {name:'بانتظار...',username:''};return color==='red'?{name:room.host_name||'الأحمر',username:room.host_username||''}:{name:room.guest_name||'بانتظار...',username:room.guest_username||''}}
+function logEvent(text){if(!state)return;state.lastEvent={text,at:Date.now()}}
+
+function buildBoard(){
+ const b=$('board');b.innerHTML='';
+ const trackMap=new Map(TRACK.map((p,i)=>[p.join(','),i]));
+ const redHome=new Set(HOME.red.map(p=>p.join(','))),blueHome=new Set(HOME.blue.map(p=>p.join(',')));
+ const yardSlots=new Set([...YARD.red,...YARD.blue].map(p=>p.join(',')));
+ for(let r=0;r<15;r++)for(let c=0;c<15;c++){
+  const k=r+','+c,cell=document.createElement('div');cell.className='cell';cell.dataset.rc=k;
+  if(r<6&&c<6)cell.classList.add('red-yard');else if(r<6&&c>8)cell.classList.add('green-yard');else if(r>8&&c<6)cell.classList.add('yellow-yard');else if(r>8&&c>8)cell.classList.add('blue-yard');
+  if(trackMap.has(k)){cell.className='cell track';const gi=trackMap.get(k);cell.dataset.track=gi;if(SAFE.has(gi))cell.classList.add('safe');if(gi===0)cell.classList.add('start-red');if(gi===26)cell.classList.add('start-blue')}
+  if(redHome.has(k))cell.className='cell home-red';if(blueHome.has(k))cell.className='cell home-blue';
+  if(r>=6&&r<=8&&c>=6&&c<=8)cell.className='cell center';
+  if(yardSlots.has(k)){const slot=document.createElement('div');slot.className='yard-slot';cell.appendChild(slot)}
+  b.appendChild(cell);
+ }
+ renderPieces();
+}
+function cellAt(rc){return $('board').querySelector('[data-rc="'+rc[0]+','+rc[1]+'"]')}
+function pieceCell(color,step,index){if(step===-1)return cellAt(YARD[color][index]);if(step<=OUTER_MAX)return cellAt(TRACK[globalPos(color,step)]);if(step<FINAL)return cellAt(HOME[color][step-51]);return cellAt([7,7])}
+function renderPieces(){
+ if(!$('board').children.length||!state)return;
+ $('board').querySelectorAll('.piece').forEach(x=>x.remove());$('board').querySelectorAll('.multi').forEach(x=>x.classList.remove('multi'));
+ const movable=(myTurn()&&state.rolled&&state.dice)?validMoves(state,seat,state.dice):[false,false,false,false];
+ ['red','blue'].forEach(color=>state.pieces[color].forEach((step,i)=>{
+   const cell=pieceCell(color,step,i);if(!cell)return;const p=document.createElement('button');p.type='button';p.className='piece '+color+(step===FINAL?' done':'')+((color===seat&&movable[i])?' movable':'');p.textContent=String(i+1);p.dataset.color=color;p.dataset.i=i;
+   if(color===seat&&movable[i])p.onclick=()=>movePiece(i);cell.appendChild(p);if(cell.querySelectorAll('.piece').length>1)cell.classList.add('multi');
+ }));
+}
+function render(){
+ if(!room||!state)return;
+ $('statusbar').classList.remove('hidden');$('gameArea').classList.remove('hidden');$('lobby').classList.add('hidden');
+ $('roomCodeView').textContent=room.code;$('seatView').textContent='المقعد: '+(seat==='red'?'🔴 الأحمر':seat==='blue'?'🔵 الأزرق':'مشاهد');
+ const rp=playerMeta('red'),bp=playerMeta('blue');$('redName').textContent=rp.name;$('redUser').textContent=rp.username?('@'+String(rp.username).replace(/^@/,'')):'';$('blueName').textContent=bp.name;$('blueUser').textContent=bp.username?('@'+String(bp.username).replace(/^@/,'')):'';
+ $('redPlayer').classList.toggle('active',state.turn==='red'&&state.phase==='playing');$('bluePlayer').classList.toggle('active',state.turn==='blue'&&state.phase==='playing');
+ if(state.dice)$('dice').textContent=DICE[state.dice-1];
+ if(state.phase==='waiting'){$('turnView').textContent='بانتظار اللاعب الثاني...';$('rollBtn').disabled=true;$('timerView').textContent='—'}
+ else if(state.phase==='finished'){$('turnView').textContent='🏆 الفائز: '+(state.winner==='red'?rp.name:bp.name);$('rollBtn').disabled=true;$('timerView').textContent='انتهت المباراة'}
+ else{$('turnView').textContent='الدور: '+(state.turn==='red'?rp.name:bp.name);$('rollBtn').disabled=!(myTurn()&&!state.rolled);}
+ $('events').innerHTML='<div class="event">'+esc(state.lastEvent?.text||'بدأت المباراة')+'</div><div class="event">الحركة رقم '+Number(state.moveNo||0).toLocaleString('ar-IQ')+'</div>';
+ renderPieces();
+}
+
+async function commit(next,status){
+ if(!room)return false;const expected=Number(room.revision||0);next.moveNo=Number(next.moveNo||0)+1;
+ const payload={state:next,revision:expected+1,updated_at:new Date().toISOString()};if(status)payload.status=status;
+ const {data,error}=await db.from('ludo_rooms').update(payload).eq('id',room.id).eq('revision',expected).select('*').maybeSingle();
+ if(error){toast('تعذر تحديث المباراة');console.warn(error);return false}if(!data){await refreshRoom();toast('تم تحديث الجولة من الجهاز الآخر');return false}applyRoom(data);return true;
+}
+async function refreshRoom(){if(!room)return;const {data}=await db.from('ludo_rooms').select('*').eq('id',room.id).maybeSingle();if(data)applyRoom(data)}
+function cloneState(){return JSON.parse(JSON.stringify(state))}
+
+async function rollDice(){
+ if(!myTurn()||state.rolled)return;ensureAudio();sfx('roll');$('dice').classList.add('rolling');$('rollBtn').disabled=true;let frames=0;const anim=setInterval(()=>{$('dice').textContent=DICE[randDice()-1];if(++frames>8){clearInterval(anim);$('dice').classList.remove('rolling')}},65);
+ const d=randDice();await new Promise(r=>setTimeout(r,620));clearInterval(anim);$('dice').classList.remove('rolling');$('dice').textContent=DICE[d-1];
+ const n=cloneState();n.dice=d;n.rolled=true;n.turnStartedAt=Date.now();
+ if(d===6)n.sixCount=Number(n.sixCount||0)+1;else n.sixCount=0;
+ if(n.sixCount>=3){n.rolled=false;n.dice=null;n.sixCount=0;n.turn=seat==='red'?'blue':'red';n.turnStartedAt=Date.now();logEvent.call({state:n},'ثلاث ستات متتالية — انتقل الدور');n.lastEvent={text:'ثلاث ستات متتالية — انتقل الدور',at:Date.now()};await commit(n);return}
+ const valid=validMoves(n,seat,d);
+ n.lastEvent={text:'🎲 '+playerMeta(seat).name+' رمى '+d,at:Date.now()};await commit(n);
+ if(!valid.some(Boolean)){setTimeout(()=>passNoMove(d),850)}
+}
+async function passNoMove(d){if(!state||!myTurn()||!state.rolled||state.dice!==d)return;const n=cloneState();n.rolled=false;n.dice=null;n.sixCount=0;n.turn=seat==='red'?'blue':'red';n.turnStartedAt=Date.now();n.lastEvent={text:'لا توجد حركة متاحة — انتقل الدور',at:Date.now()};await commit(n)}
+async function movePiece(i){
+ if(!myTurn()||!state.rolled)return;const d=state.dice,valid=validMoves(state,seat,d);if(!valid[i])return;ensureAudio();const n=cloneState(),old=n.pieces[seat][i];let next=old===-1?0:old+d;n.pieces[seat][i]=next;let captured=0;
+ if(next<=OUTER_MAX){const g=globalPos(seat,next);if(!SAFE.has(g)){const opp=seat==='red'?'blue':'red';n.pieces[opp]=n.pieces[opp].map(p=>{if(p>=0&&p<=OUTER_MAX&&globalPos(opp,p)===g){captured++;return -1}return p})}}
+ const finished=n.pieces[seat].every(p=>p===FINAL);if(finished){n.phase='finished';n.winner=seat;n.rolled=false;n.dice=null;n.lastEvent={text:'🏆 '+playerMeta(seat).name+' فاز بالمباراة!',at:Date.now()};sfx('win');await commit(n,'finished');return}
+ const extra=(d===6||captured>0);n.rolled=false;n.dice=null;if(!extra){n.turn=seat==='red'?'blue':'red';n.sixCount=0}else if(d!==6)n.sixCount=0;n.turnStartedAt=Date.now();
+ if(captured){n.lastEvent={text:'💥 '+playerMeta(seat).name+' أكل حجر الخصم وحصل على دور إضافي',at:Date.now()};sfx('capture')}else if(next===FINAL){n.lastEvent={text:'🏠 حجر وصل إلى البيت'+(extra?' — دور إضافي':'') ,at:Date.now()};sfx('home')}else{n.lastEvent={text:'تحرك الحجر '+(i+1)+' بمقدار '+d+(extra?' — دور إضافي':''),at:Date.now()};sfx('move')}
+ await commit(n);
+}
+$('rollBtn').onclick=rollDice;
+
+function applyRoom(r){
+ const prev=room,prevState=state;room=r;state=(typeof r.state==='string'?JSON.parse(r.state):r.state)||initialState(r.status==='playing'?'playing':'waiting');seat=r.host_client_id===clientId?'red':r.guest_client_id===clientId?'blue':null;
+ if(!seat&&r.host_user_id===me.id&&!r.guest_client_id)seat='red';
+ render();
+ if(Number(r.revision)!==lastRevision){if(lastRevision>=0&&prevState&&state.lastEvent?.text!==prevState.lastEvent?.text)sfx('click');lastRevision=Number(r.revision||0)}
+ if(state.phase==='finished'&&Number(r.revision)!==lastFinishedRevision){lastFinishedRevision=Number(r.revision||0);if(seat&&state.winner===seat)sfx('win');else if(seat)sfx('lose');if(r.host_client_id===clientId)finalizeResult()}
+}
+async function subscribeRoom(){if(channel){await db.removeChannel(channel);channel=null}if(!room)return;channel=db.channel('ha-ludo-'+room.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'ludo_rooms',filter:'id=eq.'+room.id},p=>applyRoom(p.new)).on('postgres_changes',{event:'DELETE',schema:'public',table:'ludo_rooms',filter:'id=eq.'+room.id},()=>{toast('تم إغلاق الغرفة');resetUi()}).subscribe()}
+
+async function createRoom(){
+ $('createBtn').disabled=true;$('createMsg').textContent='جاري إنشاء الغرفة...';
+ try{
+  for(let attempt=0;attempt<5;attempt++){
+   const code=randomCode(),st=initialState('waiting');const row={code,host_user_id:me.id,host_client_id:clientId,host_name:profile?.full_name||profile?.username||'الأدمن',host_username:profile?.username||'',state:st,status:'waiting',revision:0};
+   const {data,error}=await db.from('ludo_rooms').insert(row).select('*').single();if(error){if(String(error.code)==='23505')continue;throw error}applyRoom(data);await subscribeRoom();$('createMsg').textContent='تم إنشاء الغرفة: '+code;sfx('join');return;
+  }throw new Error('تعذر توليد كود فريد');
+ }catch(e){console.warn(e);$('createMsg').textContent='تعذر الإنشاء. تأكد من تشغيل ملف SQL.'}finally{$('createBtn').disabled=false}
+}
+async function joinRoom(){
+ const code=normalizeCode($('joinCode').value);$('joinCode').value=code;if(code.length!==6)return toast('اكتب كود الغرفة من 6 أحرف');$('joinBtn').disabled=true;$('joinMsg').textContent='جاري الدخول...';
+ try{
+  const {data:r,error}=await db.from('ludo_rooms').select('*').eq('code',code).maybeSingle();if(error)throw error;if(!r)throw new Error('الغرفة غير موجودة');if(r.guest_client_id&&r.guest_client_id!==clientId)throw new Error('الغرفة ممتلئة');
+  if(r.host_client_id===clientId){applyRoom(r);await subscribeRoom();return}
+  const st=(typeof r.state==='string'?JSON.parse(r.state):r.state)||initialState();if(!r.guest_client_id){st.phase='playing';st.turn='red';st.turnStartedAt=Date.now();st.lastEvent={text:'✅ انضم اللاعب الثاني — بدأت المباراة',at:Date.now()}}
+  const {data:u,error:ue}=await db.from('ludo_rooms').update({guest_user_id:me.id,guest_client_id:clientId,guest_name:profile?.full_name||profile?.username||'المنافس',guest_username:profile?.username||'',state:st,status:'playing',revision:Number(r.revision||0)+1,updated_at:new Date().toISOString()}).eq('id',r.id).select('*').single();if(ue)throw ue;applyRoom(u);await subscribeRoom();$('joinMsg').textContent='تم الدخول';sfx('join');
+ }catch(e){console.warn(e);$('joinMsg').textContent=e.message||'تعذر الدخول'}finally{$('joinBtn').disabled=false}
+}
+$('createBtn').onclick=createRoom;$('joinBtn').onclick=joinRoom;$('joinCode').oninput=e=>e.target.value=normalizeCode(e.target.value);$('joinCode').onkeydown=e=>{if(e.key==='Enter')joinRoom()};
+$('copyBtn').onclick=async()=>{if(!room)return;try{await navigator.clipboard.writeText(room.code);toast('تم نسخ كود الغرفة')}catch(_e){toast('الكود: '+room.code)}};
+$('newBtn').onclick=async()=>{if(!room||room.host_client_id!==clientId)return toast('المضيف فقط يبدأ جولة جديدة');if(!room.guest_client_id)return toast('بانتظار اللاعب الثاني');const n=initialState('playing');n.lastEvent={text:'↻ بدأت جولة جديدة',at:Date.now()};await commit(n,'playing')};
+$('leaveBtn').onclick=async()=>{if(!room)return resetUi();if(room.host_client_id===clientId){await db.from('ludo_rooms').delete().eq('id',room.id)}else if(room.guest_client_id===clientId){const n=initialState('waiting');await db.from('ludo_rooms').update({guest_user_id:null,guest_client_id:null,guest_name:null,guest_username:null,state:n,status:'waiting',revision:Number(room.revision||0)+1}).eq('id',room.id)}resetUi()};
+function resetUi(){if(channel){db.removeChannel(channel).catch(()=>{});channel=null}room=null;state=null;seat=null;$('lobby').classList.remove('hidden');$('gameArea').classList.add('hidden');$('statusbar').classList.add('hidden');$('createMsg').textContent='';$('joinMsg').textContent='';buildBoard()}
+
+function updateTimer(){if(!state||state.phase!=='playing'||!state.turnStartedAt){$('timerView').textContent='—';return}const left=Math.max(0,30-Math.floor((Date.now()-Number(state.turnStartedAt))/1000));$('timerView').textContent='الوقت: '+left+'ث';if(left===0&&myTurn())handleTimeout()}
+let timeoutBusy=false;async function handleTimeout(){if(timeoutBusy||!myTurn())return;timeoutBusy=true;try{if(!state.rolled){await rollDice()}else{const v=validMoves(state,seat,state.dice),i=v.findIndex(Boolean);if(i>=0)await movePiece(i);else await passNoMove(state.dice)}}finally{setTimeout(()=>timeoutBusy=false,1200)}}
+timerId=setInterval(updateTimer,1000);
+window.addEventListener('online',()=>{$('onlineDot').className='dot on';$('netText').textContent='متصل';refreshRoom()});window.addEventListener('offline',()=>{$('onlineDot').className='dot wait';$('netText').textContent='بدون إنترنت'});
+
+async function finalizeResult(){if(!room||state?.phase!=='finished')return;try{await db.rpc('ha_ludo_finalize_room',{p_room_id:room.id});loadRanking()}catch(e){console.warn('finalize',e)}}
+async function loadRanking(){
+ $('rankList').innerHTML='<div class="msg">جاري تحميل الترتيب...</div>';
+ try{const {data,error}=await db.rpc('ha_ludo_leaderboard',{p_limit:20});if(error)throw error;const rows=data||[];if(!rows.length){$('rankList').innerHTML='<div class="msg">لا توجد نتائج مسجلة بعد.</div>';return}$('rankList').innerHTML=rows.map(r=>'<div class="rankrow"><div class="ranknum">#'+esc(r.rank_no)+'</div><div><b>'+esc(r.full_name||'مستخدم')+'</b><small>'+(r.username?('@'+esc(String(r.username).replace(/^@/,''))):'')+'</small></div><div class="rankcell"><b>'+Number(r.total_points||0).toLocaleString('ar-IQ')+'</b><small>نقطة</small></div><div class="rankcell"><b>'+Number(r.wins||0).toLocaleString('ar-IQ')+'</b><small>فوز</small></div></div>').join('')}
+ catch(e){console.warn(e);$('rankList').innerHTML='<div class="msg">تعذر تحميل الترتيب. شغّل ملف LUDO-ONLINE-ADMIN-SETUP.sql مرة واحدة.</div>'}
+}
+$('rankBtn').onclick=loadRanking;
+
+async function checkAccess(){
+ try{
+  const {data:{session},error}=await db.auth.getSession();if(error||!session){$('gateText').innerHTML='سجّل الدخول بحساب الأدمن الرئيسي أولاً.';return}me=session.user;
+  let ok=false;try{const r=await db.rpc('is_super_admin');if(!r.error)ok=!!r.data}catch(_e){}
+  if(!ok){try{const r=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',me.id).maybeSingle();ok=!!(r.data?.is_super_admin&&r.data?.is_active)}catch(_e){}}
+  if(!ok){$('gateText').innerHTML='هذه اللعبة متاحة حالياً للأدمن الرئيسي فقط.';return}
+  isSuper=true;try{const r=await db.from('profiles').select('full_name,username').eq('id',me.id).maybeSingle();profile=r.data||null}catch(_e){}
+  $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('onlineDot').className=navigator.onLine?'dot on':'dot wait';$('netText').textContent=navigator.onLine?'متصل':'بدون إنترنت';buildBoard();loadRanking();if(musicOn)startMusic();
+  const q=new URLSearchParams(location.search).get('room');if(q){$('joinCode').value=normalizeCode(q);joinRoom()}
+ }catch(e){console.warn(e);$('gateText').textContent='تعذر التحقق من الصلاحية. حاول تحديث الصفحة.'}
+}
+checkAccess();
+</script>
+</body>
+</html>
