@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HA Sniper Lobby</title>
+<style>
+body{margin:0;background:#111;color:white;font-family:Arial;text-align:center}
+.box{margin:20px auto;max-width:600px;background:#222;padding:20px;border-radius:20px}
+button{padding:15px;margin:8px;border-radius:12px;background:#e5b534;border:0}
+</style></head>
+<body>
+<div class="box">
+<h1>🎯 HA Sniper Battle</h1>
+<h2>غرفة اللعب</h2>
+<button>🎤 المايك</button><button>💬 الدردشة</button>
+<h3>اختر عدد اللاعبين</h3>
+<button onclick="start(10)">10 لاعبين</button>
+<button onclick="start(20)">20 لاعب</button>
+<button onclick="start(50)">50 لاعب</button>
+<button onclick="start(100)">100 لاعب</button>
+<p id="info"></p>
+</div>
+<script>
+function start(n){location.href='sniper-battle.html?players='+n}
+</script>
+</body></html>

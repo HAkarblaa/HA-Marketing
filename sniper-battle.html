@@ -1,9 +1,17 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لعبة القناصات</title>
-<style>body{background:#101820;color:white;text-align:center;font-family:Arial}#game{height:70vh;background:linear-gradient(#8bd8ff,#385d32);margin:15px;border-radius:20px;position:relative;overflow:hidden}.target{position:absolute;width:45px;height:45px;background:#e22;border-radius:50%;border:3px solid white}select,button{padding:12px;border-radius:10px}</style></head>
-<body><h1>🎯 لعبة القناصات</h1>
-<select id="n"><option>10</option><option>20</option><option>50</option><option>100</option></select>
-<button onclick="start()">ابدأ</button><div id="game"></div><h2>النقاط: <span id="s">0</span></h2>
-<script>let s=0;function start(){game.innerHTML='';for(let i=0;i<n.value;i++)setTimeout(bot,i*200)}function bot(){let t=document.createElement('div');t.className='target';t.style.left=Math.random()*85+'%';t.style.top=Math.random()*70+'%';t.onclick=()=>{s++;document.getElementById('s').innerHTML=s;t.remove()};game.appendChild(t);setTimeout(()=>t.remove(),3000)}</script>
+<title>Sniper Battle</title>
+<style>
+body{background:#27452b;color:white;text-align:center;font-family:Arial}
+#map{height:70vh;margin:10px;background:linear-gradient(#87ceeb,#355b32);border-radius:20px;position:relative}
+.bot{position:absolute;background:#d33;width:35px;height:35px;border-radius:50%}
+</style></head>
+<body>
+<h1>🎯 المعركة</h1><h2 id="p"></h2>
+<div id="map"></div>
+<script>
+let n=new URLSearchParams(location.search).get('players')||10;
+p.innerHTML='اللاعبين: '+n;
+for(let i=0;i<n;i++){let b=document.createElement('div');b.className='bot';b.style.left=Math.random()*90+'%';b.style.top=Math.random()*80+'%';map.appendChild(b)}
+</script>
 </body></html>
