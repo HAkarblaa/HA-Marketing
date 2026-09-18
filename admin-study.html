@@ -1,9 +1,98 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة الدراسة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.top{background:#000;color:#fff;padding:12px 14px;display:flex;gap:10px;align-items:center}.top button{width:44px;height:44px;border:0;border-radius:10px;background:#fff;font-size:20px}.wrap{width:min(1000px,94%);margin:18px auto}.box,.item{background:#fff;border-radius:16px;padding:15px;box-shadow:0 3px 12px #0001;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit}textarea{min-height:90px}.full{grid-column:1/-1}.btn{border:0;border-radius:10px;padding:11px 15px;background:#111;color:#fff;font-weight:700}.danger{background:#b91c1c}.muted{background:#eee;color:#111}.item{display:flex;gap:12px}.item img{width:80px;height:80px;object-fit:cover;border-radius:12px;background:#eee}.item .info{flex:1}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.status{padding:12px;border-radius:12px;margin-bottom:12px;background:#fff7d6}@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.item img{width:65px;height:65px}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة الدراسة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5}.top{background:#000;color:#fff;padding:12px 14px;display:flex;gap:10px;align-items:center}.top button{width:44px;height:44px;border:0;border-radius:10px;background:#fff;font-size:20px}.wrap{width:min(1000px,94%);margin:18px auto}.box,.item{background:#fff;border-radius:16px;padding:15px;box-shadow:0 3px 12px #0001;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit}textarea{min-height:90px}.full{grid-column:1/-1}.btn{border:0;border-radius:10px;padding:11px 15px;background:#111;color:#fff;font-weight:700}.danger{background:#b91c1c}.muted{background:#eee;color:#111}.item{display:flex;gap:12px}.item img{width:80px;height:80px;object-fit:cover;border-radius:12px;background:#eee}.item .info{flex:1}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.status{padding:12px;border-radius:12px;margin-bottom:12px;background:#fff7d6}@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.item img{width:65px;height:65px}}
+.study-banner-box{display:none}.study-banner-box.show{display:block}
+.banner-preview{width:100%;max-height:220px;object-fit:cover;border-radius:14px;border:1px solid #ddd;background:#eee;margin-top:8px;display:none}
+.banner-item{display:flex;gap:12px;align-items:center;background:#fff;border-radius:16px;padding:12px;box-shadow:0 3px 12px #0001;margin-bottom:10px}
+.banner-item img{width:130px;height:82px;object-fit:cover;border-radius:12px;background:#eee;flex:none}
+.banner-item .info{flex:1;min-width:0}.banner-item .info b{display:block;margin-bottom:5px}.banner-item .info small{color:#666}
+.banner-item .actions{display:flex;gap:6px;flex-wrap:wrap}
+@media(max-width:650px){.banner-item{align-items:flex-start;flex-direction:column}.banner-item img{width:100%;height:150px}}
+</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-</head><body><div class="top"><button onclick="history.back()">←</button><h2 style="margin:0;font-size:19px">📚 إدارة قسم الدراسة</h2></div><main class="wrap"><div id="status" class="status">جاري التحقق من الصلاحية...</div><section class="box" id="formBox" hidden><h2 id="formTitle">إضافة مؤسسة أو مدرس</h2><div class="grid"><select id="type"><option>مدرسة</option><option>جامعة</option><option>معهد</option><option>مركز تقوية</option><option>مدرس خصوصي</option><option>دورة تدريبية</option></select><input id="name" placeholder="الاسم"><input id="governorate" placeholder="المحافظة"><input id="area" placeholder="المنطقة"><input id="phone" placeholder="رقم الهاتف"><input id="address" placeholder="العنوان"><input id="image_url" placeholder="رابط الصورة (اختياري)"><input id="map_url" placeholder="رابط الموقع/الخريطة"><input id="sort_order" type="number" value="100" placeholder="الترتيب"><select id="is_active"><option value="true">ظاهر</option><option value="false">مخفي</option></select><textarea id="description" class="full" placeholder="الوصف والتفاصيل"></textarea><div class="full"><button class="btn" onclick="save()">حفظ</button> <button class="btn muted" onclick="resetForm()">تفريغ</button></div></div></section><section><div id="list"></div></section><section class="box" id="studentsAdmin" hidden><h2>👨‍🎓 تسجيلات الطلاب</h2><div id="studentList">جاري التحميل...</div></section></main><script>
+</head><body><div class="top"><button onclick="history.back()">←</button><h2 style="margin:0;font-size:19px">📚 إدارة قسم الدراسة</h2></div><main class="wrap"><div id="status" class="status">جاري التحقق من الصلاحية...</div><section class="box" id="formBox" hidden><h2 id="formTitle">إضافة مؤسسة أو مدرس</h2><div class="grid"><select id="type"><option>مدرسة</option><option>جامعة</option><option>معهد</option><option>مركز تقوية</option><option>مدرس خصوصي</option><option>دورة تدريبية</option></select><input id="name" placeholder="الاسم"><input id="governorate" placeholder="المحافظة"><input id="area" placeholder="المنطقة"><input id="phone" placeholder="رقم الهاتف"><input id="address" placeholder="العنوان"><input id="image_url" placeholder="رابط الصورة (اختياري)"><input id="map_url" placeholder="رابط الموقع/الخريطة"><input id="sort_order" type="number" value="100" placeholder="الترتيب"><select id="is_active"><option value="true">ظاهر</option><option value="false">مخفي</option></select><textarea id="description" class="full" placeholder="الوصف والتفاصيل"></textarea><div class="full"><button class="btn" onclick="save()">حفظ</button> <button class="btn muted" onclick="resetForm()">تفريغ</button></div></div></section><section><div id="list"></div></section><section class="box study-banner-box" id="studyBannerAdmin">
+<h2>🖼️ إعلانات أعلى قسم الدراسة</h2>
+<div class="grid">
+  <input id="bannerTitle" placeholder="عنوان الإعلان (اختياري)">
+  <input id="bannerLink" placeholder="الرابط عند الضغط (اختياري)">
+  <input id="bannerSort" type="number" value="100" placeholder="الترتيب">
+  <select id="bannerActive"><option value="true">ظاهر</option><option value="false">مخفي</option></select>
+  <input id="bannerImageUrl" class="full" placeholder="رابط الصورة أو ارفع صورة من الجهاز">
+  <input id="bannerImageFile" class="full" type="file" accept="image/*">
+  <img id="bannerPreview" class="banner-preview full" alt="معاينة الإعلان">
+  <textarea id="bannerSubtitle" class="full" placeholder="وصف قصير (اختياري)"></textarea>
+  <div class="full"><button class="btn" id="saveBannerBtn" type="button" onclick="saveBanner()">حفظ الإعلان</button> <button class="btn muted" type="button" onclick="resetBannerForm()">تفريغ</button></div>
+</div>
+<div id="bannerStatus" class="status" style="display:none"></div>
+<div id="bannerList" style="margin-top:12px"></div>
+</section><section class="box" id="studentsAdmin" hidden><h2>👨‍🎓 تسجيلات الطلاب</h2><div id="studentList">جاري التحميل...</div></section></main><script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let editId=null,me=null;const SUPER='f65185bb-1761-42c0-b358-1b0277555e24';function e(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-async function init(){const {data:{session}}=await db.auth.getSession();if(!session)return location.href='login.html';me=session.user;let ok=me.id===SUPER,isSuper=ok;try{const {data:a}=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',me.id).maybeSingle();isSuper=isSuper||!!(a?.is_active&&a?.is_super_admin);ok=ok||isSuper;if(a?.is_active&&!isSuper){const {data:p}=await db.from('app_admin_permissions').select('section_key,can_manage,can_create,can_edit,can_delete').eq('admin_user_id',me.id).eq('section_key','study').maybeSingle();ok=!!p&&(p.can_manage||p.can_create||p.can_edit||p.can_delete)}}catch{}if(!ok){status.textContent='لا تملك صلاحية إدارة الدراسة.';return}status.textContent=isSuper?'✅ Super Admin — إضافة وتعديل وحذف بكل محتوى الدراسة.':'✅ لديك صلاحية إدارة قسم الدراسة.';formBox.hidden=false;studentsAdmin.hidden=false;load();loadStudents()}
+async function init(){const {data:{session}}=await db.auth.getSession();if(!session)return location.href='login.html';me=session.user;let ok=me.id===SUPER,isSuper=ok;try{const {data:a}=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',me.id).maybeSingle();isSuper=isSuper||!!(a?.is_active&&a?.is_super_admin);ok=ok||isSuper;if(a?.is_active&&!isSuper){const {data:p}=await db.from('app_admin_permissions').select('section_key,can_manage,can_create,can_edit,can_delete').eq('admin_user_id',me.id).eq('section_key','study').maybeSingle();ok=!!p&&(p.can_manage||p.can_create||p.can_edit||p.can_delete)}}catch{}if(!ok){status.textContent='لا تملك صلاحية إدارة الدراسة.';return}status.textContent=isSuper?'✅ Super Admin — إضافة وتعديل وحذف بكل محتوى الدراسة.':'✅ لديك صلاحية إدارة قسم الدراسة.';formBox.hidden=false;studentsAdmin.hidden=false;studyBannerAdmin.classList.add('show');load();loadStudents();loadBanners()}
 async function loadStudents(){const {data,error}=await db.from('study_students').select('*').order('created_at',{ascending:false});if(error){studentList.innerHTML='<div>'+e(error.message)+'</div>';return}studentList.innerHTML=(data||[]).map(x=>`<div class="item"><div class="info"><b>${e(x.student_name)}</b><div>${e(x.education_level)}${x.grade?' • '+e(x.grade):''}</div><div>${e(x.institution_name||'')} ${e(x.governorate||'')} ${e(x.area||'')}</div><small>${e(x.phone||'بدون رقم')} • ${new Date(x.created_at).toLocaleDateString('ar-IQ')}</small><div class="actions"><button class="btn danger" onclick="adminDeleteStudent(${x.id})">حذف التسجيل</button></div></div></div>`).join('')||'<div>لا توجد تسجيلات طلاب بعد.</div>'}async function adminDeleteStudent(id){if(!confirm('متأكد من حذف تسجيل الطالب؟'))return;const {error}=await db.from('study_students').delete().eq('id',id);if(error)return alert(error.message);loadStudents()}
 async function load(){const {data,error}=await db.from('study_directory').select('*').order('sort_order').order('created_at',{ascending:false});if(error){list.innerHTML='<div class="box">'+e(error.message)+'</div>';return}list.innerHTML=(data||[]).map(v=>`<div class="item"><img src="${e(v.image_url||'main.jpg')}" onerror="this.src='main.jpg'"><div class="info"><b>${e(v.name)}</b><div>${e(v.type)} • ${e(v.governorate||'')} ${e(v.area||'')}</div><small>${v.is_active?'ظاهر':'مخفي'} • ${e(v.phone||'')}</small><div class="actions"><button class="btn muted" onclick='edit(${JSON.stringify(v)})'>تعديل</button><button class="btn danger" onclick="del(${v.id})">حذف</button></div></div></div>`).join('')||'<div class="box">لا توجد عناصر.</div>'}
 async function save(){if(!name.value.trim())return alert('اكتب الاسم');const p={type:type.value,name:name.value.trim(),governorate:governorate.value.trim(),area:area.value.trim(),phone:phone.value.trim(),address:address.value.trim(),image_url:image_url.value.trim()||null,map_url:map_url.value.trim()||null,description:description.value.trim(),sort_order:+sort_order.value||100,is_active:is_active.value==='true',created_by:me.id};const q=editId?db.from('study_directory').update(p).eq('id',editId):db.from('study_directory').insert(p);const {error}=await q;if(error)return alert(error.message);resetForm();load()}
-function edit(v){editId=v.id;formTitle.textContent='تعديل: '+v.name;['type','name','governorate','area','phone','address','image_url','map_url','description','sort_order'].forEach(k=>document.getElementById(k).value=v[k]??'');is_active.value=String(v.is_active);scrollTo({top:0,behavior:'smooth'})}function resetForm(){editId=null;formTitle.textContent='إضافة مؤسسة أو مدرس';['name','governorate','area','phone','address','image_url','map_url','description'].forEach(k=>document.getElementById(k).value='');sort_order.value=100;is_active.value='true'}async function del(id){if(!confirm('متأكد من الحذف؟'))return;const {error}=await db.from('study_directory').delete().eq('id',id);if(error)return alert(error.message);load()}init();</script></body></html>
+function edit(v){editId=v.id;formTitle.textContent='تعديل: '+v.name;['type','name','governorate','area','phone','address','image_url','map_url','description','sort_order'].forEach(k=>document.getElementById(k).value=v[k]??'');is_active.value=String(v.is_active);scrollTo({top:0,behavior:'smooth'})}function resetForm(){editId=null;formTitle.textContent='إضافة مؤسسة أو مدرس';['name','governorate','area','phone','address','image_url','map_url','description'].forEach(k=>document.getElementById(k).value='');sort_order.value=100;is_active.value='true'}async function del(id){if(!confirm('متأكد من الحذف؟'))return;const {error}=await db.from('study_directory').delete().eq('id',id);if(error)return alert(error.message);load()}
+let bannerEditId=null;
+let bannerOldImageUrl=null;
+const bannerImageFile=document.getElementById('bannerImageFile');
+const bannerPreview=document.getElementById('bannerPreview');
+function bannerPreviewSet(url){
+  if(url){bannerPreview.src=url;bannerPreview.style.display='block'}
+  else{bannerPreview.removeAttribute('src');bannerPreview.style.display='none'}
+}
+bannerImageFile?.addEventListener('change',()=>{
+  const f=bannerImageFile.files?.[0];
+  if(!f)return;
+  bannerPreviewSet(URL.createObjectURL(f));
+});
+bannerImageUrl?.addEventListener('input',()=>{
+  if(!bannerImageFile.files?.length)bannerPreviewSet(bannerImageUrl.value.trim());
+});
+async function uploadBannerImage(){
+  const f=bannerImageFile.files?.[0];
+  if(!f)return bannerImageUrl.value.trim()||bannerOldImageUrl||null;
+  if(!f.type.startsWith('image/'))throw new Error('الملف المختار ليس صورة.');
+  if(f.size>12*1024*1024)throw new Error('حجم الصورة أكبر من 12MB.');
+  const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+  const path=`study/${me.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+  const {error}=await db.storage.from('study-banners').upload(path,f,{upsert:false,contentType:f.type});
+  if(error)throw error;
+  return db.storage.from('study-banners').getPublicUrl(path).data.publicUrl;
+}
+async function loadBanners(){
+  const {data,error}=await db.from('study_banners').select('*').order('sort_order').order('created_at',{ascending:false});
+  if(error){bannerList.innerHTML='<div class="status">'+e(error.message)+'</div>';return}
+  bannerList.innerHTML=(data||[]).map(v=>`<div class="banner-item">
+    <img src="${e(v.image_url||'main.jpg')}" onerror="this.src='main.jpg'">
+    <div class="info"><b>${e(v.title||'إعلان بدون عنوان')}</b><small>${v.is_active?'ظاهر':'مخفي'} • ترتيب ${Number(v.sort_order||100)}</small><div>${e(v.subtitle||'')}</div>
+      <div class="actions"><button class="btn muted" onclick='editBanner(${JSON.stringify(v)})'>تعديل</button><button class="btn danger" onclick="deleteBanner(${v.id})">حذف</button></div>
+    </div>
+  </div>`).join('')||'<div class="status">لا توجد صور إعلانية بعد.</div>';
+}
+function editBanner(v){
+  bannerEditId=v.id;bannerOldImageUrl=v.image_url||null;
+  bannerTitle.value=v.title||'';bannerSubtitle.value=v.subtitle||'';bannerLink.value=v.link_url||'';bannerSort.value=v.sort_order??100;bannerActive.value=String(v.is_active);bannerImageUrl.value=v.image_url||'';bannerImageFile.value='';bannerPreviewSet(v.image_url||'');
+  studyBannerAdmin.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function resetBannerForm(){
+  bannerEditId=null;bannerOldImageUrl=null;bannerTitle.value='';bannerSubtitle.value='';bannerLink.value='';bannerSort.value=100;bannerActive.value='true';bannerImageUrl.value='';bannerImageFile.value='';bannerPreviewSet('');bannerStatus.style.display='none';
+}
+async function saveBanner(){
+  const btn=document.getElementById('saveBannerBtn');
+  btn.disabled=true;btn.textContent='جاري الحفظ...';bannerStatus.style.display='block';bannerStatus.textContent='جاري حفظ الإعلان...';
+  try{
+    const image_url=await uploadBannerImage();
+    if(!image_url)throw new Error('أضف صورة للإعلان.');
+    const payload={image_url,title:bannerTitle.value.trim()||null,subtitle:bannerSubtitle.value.trim()||null,link_url:bannerLink.value.trim()||null,sort_order:Number(bannerSort.value)||100,is_active:bannerActive.value==='true',created_by:me.id};
+    const q=bannerEditId?db.from('study_banners').update(payload).eq('id',bannerEditId):db.from('study_banners').insert(payload);
+    const {error}=await q;if(error)throw error;
+    bannerStatus.textContent='✅ تم حفظ الإعلان.';resetBannerForm();await loadBanners();bannerStatus.style.display='block';bannerStatus.textContent='✅ تم حفظ الإعلان.';
+  }catch(err){bannerStatus.textContent='❌ '+(err?.message||String(err))}
+  finally{btn.disabled=false;btn.textContent='حفظ الإعلان'}
+}
+async function deleteBanner(id){
+  if(!confirm('حذف هذا الإعلان؟'))return;
+  const {error}=await db.from('study_banners').delete().eq('id',id);
+  if(error)return alert(error.message);
+  loadBanners();
+}
+
+init();</script></body></html>
