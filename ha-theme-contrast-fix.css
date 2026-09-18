@@ -1,0 +1,53 @@
+
+/* HA Marketing contrast fix */
+html[data-ha-theme="light"],html[data-ha-theme="light"] body{
+  color:#102235 !important;
+}
+html[data-ha-theme="light"] .card,
+html[data-ha-theme="light"] .box,
+html[data-ha-theme="light"] .panel,
+html[data-ha-theme="light"] .modal,
+html[data-ha-theme="light"] .section,
+html[data-ha-theme="light"] .search-wrap{
+  background:#ffffff !important;
+  color:#102235 !important;
+  border-color:rgba(16,34,53,.16)!important;
+}
+html[data-ha-theme="light"] h1,
+html[data-ha-theme="light"] h2,
+html[data-ha-theme="light"] h3,
+html[data-ha-theme="light"] b,
+html[data-ha-theme="light"] strong{
+  color:#102235 !important;
+}
+html[data-ha-theme="light"] p,
+html[data-ha-theme="light"] small,
+html[data-ha-theme="light"] label{
+  color:#475569 !important;
+}
+html[data-ha-theme="light"] input,
+html[data-ha-theme="light"] textarea,
+html[data-ha-theme="light"] select{
+  background:#fff !important;
+  color:#102235 !important;
+  border-color:#cbd5e1 !important;
+}
+html[data-ha-theme="dark"] input,
+html[data-ha-theme="dark"] textarea,
+html[data-ha-theme="dark"] select{
+  background:#080a0b !important;
+  color:#fff !important;
+}
+html[data-ha-theme="dark"] p,
+html[data-ha-theme="dark"] small,
+html[data-ha-theme="dark"] label{
+  color:#b8c1cc !important;
+}
+/* buttons */
+button,.btn{
+  color:#fff;
+}
+html[data-ha-theme="light"] button,
+html[data-ha-theme="light"] .btn{
+  color:#102235 !important;
+}
