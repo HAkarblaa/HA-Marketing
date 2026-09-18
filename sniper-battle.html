@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HA Sniper Battle</title>
+<style>
+body{margin:0;background:#17251a;color:#fff;font-family:Arial;text-align:center}
+#game{height:70vh;margin:15px;background:linear-gradient(#8bd8ff,#356b35);position:relative;border-radius:20px;overflow:hidden}
+.building{position:absolute;left:12%;bottom:40px;width:150px;height:230px;background:#777}
+.target{position:absolute;width:45px;height:45px;border-radius:50%;background:#e22;border:3px solid white}
+button,select{padding:12px;margin:5px;border-radius:12px}
+</style>
+</head>
+<body>
+<h1>🎯 HA Sniper Battle</h1>
+<select id="players">
+<option value="10">10 لاعبين</option>
+<option value="20">20 لاعب</option>
+<option value="50">50 لاعب</option>
+<option value="100">100 لاعب</option>
+</select>
+<button onclick="start()">بدء المعركة</button>
+<div id="game"><div class="building"></div></div>
+<h2>اللاعبين: <span id="count">0</span> | النقاط: <span id="score">0</span></h2>
+<script>
+let score=0, left=0;
+function start(){
+ left=Number(players.value)-1;
+ count.innerHTML=players.value;
+ spawn();
+}
+function spawn(){
+ if(left<=0)return;
+ let t=document.createElement('div');
+ t.className='target';
+ t.style.left=Math.random()*85+'%';
+ t.style.top=Math.random()*65+'%';
+ t.onclick=()=>{score++;scoreEl();t.remove();spawn()};
+ game.appendChild(t);
+ // bots shoot automatically
+ setTimeout(()=>{if(t){t.remove();left--;count.innerHTML=left+1;spawn()}},1200);
+}
+function scoreEl(){document.getElementById('score').innerHTML=score}
+</script>
+</body>
+</html>
