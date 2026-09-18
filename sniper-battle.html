@@ -1,17 +1,57 @@
 <!doctype html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sniper Battle</title>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HA Sniper Battle</title>
 <style>
-body{background:#27452b;color:white;text-align:center;font-family:Arial}
-#map{height:70vh;margin:10px;background:linear-gradient(#87ceeb,#355b32);border-radius:20px;position:relative}
-.bot{position:absolute;background:#d33;width:35px;height:35px;border-radius:50%}
-</style></head>
+body{margin:0;background:#101820;color:white;font-family:Tahoma;text-align:center}
+#lobby,#game{padding:15px}
+.panel{background:#1d2835;border-radius:20px;padding:15px;margin:10px auto;max-width:700px}
+button,select{padding:12px;border-radius:12px;margin:5px;border:0}
+button{background:#f5c542}
+#map{height:65vh;background:linear-gradient(#8bd3ff,#356b35);position:relative;overflow:hidden;border-radius:25px}
+.player{position:absolute;width:34px;height:34px;border-radius:50%;background:#3af;border:3px solid white}
+.bot{background:#e33}
+#controls{display:flex;justify-content:center;gap:8px}
+</style>
+</head>
 <body>
-<h1>🎯 المعركة</h1><h2 id="p"></h2>
-<div id="map"></div>
+<div id="lobby" class="panel">
+<h1>🎯 HA Sniper Battle</h1>
+<p>غرفة اللعب</p>
+<select id="count"><option>10</option><option>20</option><option>50</option><option>100</option></select>
+<select id="map"><option value="city">🏢 عمارات</option><option value="forest">🌲 غابة</option></select>
+<br><button onclick="start()">ابدأ المعركة</button>
+</div>
+
+<div id="game" class="panel" style="display:none">
+<h2>🎯 المعركة</h2>
+<p>اللاعبين: <span id="num"></span> | النقاط: <span id="score">0</span></p>
+<div id="area" style="height:65vh;background:linear-gradient(#8bd3ff,#356b35);position:relative;border-radius:25px"></div>
+<div id="controls">
+<button>🎤 مايك</button><button>💬 دردشة</button><button onclick="shoot()">🎯 إطلاق</button>
+</div>
+</div>
+
 <script>
-let n=new URLSearchParams(location.search).get('players')||10;
-p.innerHTML='اللاعبين: '+n;
-for(let i=0;i<n;i++){let b=document.createElement('div');b.className='bot';b.style.left=Math.random()*90+'%';b.style.top=Math.random()*80+'%';map.appendChild(b)}
+let score=0,targets=[];
+function start(){
+ document.getElementById('lobby').style.display='none';
+ document.getElementById('game').style.display='block';
+ let n=Number(document.getElementById('count').value);
+ document.getElementById('num').innerText=n;
+ for(let i=0;i<n;i++) createPlayer(i);
+}
+function createPlayer(i){
+ let p=document.createElement('div');
+ p.className='player '+(i?'bot':'');
+ p.style.left=Math.random()*90+'%';
+ p.style.top=Math.random()*80+'%';
+ p.onclick=()=>{if(p.classList.contains('bot')){score++;document.getElementById('score').innerText=score;p.remove()}};
+ document.getElementById('area').appendChild(p);
+}
+function shoot(){}
 </script>
-</body></html>
+</body>
+</html>
