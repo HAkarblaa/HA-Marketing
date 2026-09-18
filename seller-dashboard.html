@@ -5,32 +5,43 @@
 .image-actions{display:flex;gap:8px;flex-wrap:wrap}
 .image-actions input{margin:0;flex:1;min-width:210px}
 .note{font-size:12px;color:#777;margin-top:6px}@media(max-width:720px){.card{padding:11px;font-size:13px}}
-/* ===== لوحة بائع مختصرة ===== */
-.wrap{max-width:900px!important}
-.top h1{font-size:22px!important}
-.card{padding:12px!important;margin:10px 0!important;border-radius:14px!important}
-.card h2{font-size:18px!important;margin:5px 0 12px!important}
-.muted{font-size:13px!important}
-.image-picker,.note,.image-preview{ }
-.row{gap:8px!important}
-input,select,textarea{padding:9px!important}
-
-#panel>.card:nth-of-type(1),
-#panel>.card:nth-of-type(2),
-#panel>.card:nth-of-type(3),
-#panel>.card:nth-of-type(4){
- box-shadow:0 3px 12px #0001!important;
-}
-
-@media(max-width:720px){
- .top{justify-content:center!important;text-align:center}
- .top .btn{font-size:12px!important;padding:9px!important}
- .card{font-size:13px!important}
-}
+/* ===== HA SELLER APP DASHBOARD ===== */
+#sellerHome{display:block;margin-top:12px}
+.seller-profile{background:linear-gradient(145deg,#111820,#091018);color:#fff;border:1px solid rgba(214,155,52,.45);border-radius:22px;padding:18px;display:flex;align-items:center;gap:14px;box-shadow:0 10px 30px rgba(0,0,0,.16)}
+.seller-avatar{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:34px;background:linear-gradient(145deg,#2b2111,#10151b);border:1px solid rgba(244,196,95,.55)}
+.seller-profile .info{flex:1;min-width:0}.seller-profile h2{margin:0 0 6px;font-size:21px}.seller-profile p{margin:0;color:#b8c1cc;font-size:13px}
+.seller-status{display:inline-block;margin-top:8px;padding:5px 10px;border-radius:999px;background:#14351f;color:#7ee29a;font-size:12px;font-weight:700}
+.seller-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.seller-tile{border:0;min-height:130px;border-radius:20px;padding:16px 10px;background:linear-gradient(145deg,#fff,#f6f7f9);color:#111;box-shadow:0 6px 22px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer}
+.seller-tile .ico{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:#111;color:#f4c45f;font-size:28px}.seller-tile b{font-size:16px}.seller-tile small{color:#6d747c;font-size:11px}
+.dash-section{display:none!important}.dash-section.active{display:block!important}
+.section-back{display:inline-flex!important;align-items:center;gap:6px;margin-bottom:10px;padding:8px 12px!important;border-radius:10px!important;background:#eee!important;color:#111!important}
+html[data-ha-theme="dark"] .seller-tile{background:linear-gradient(145deg,#151d26,#0b1118);color:#fff;border:1px solid #263646}
+html[data-ha-theme="dark"] .seller-tile small{color:#aeb8c4}
+html[data-ha-theme="light"] .seller-profile{background:linear-gradient(145deg,#fff8eb,#fff);color:#15202b}
+html[data-ha-theme="light"] .seller-profile p{color:#65717d}
+@media(max-width:600px){.wrap{width:96%;margin:12px auto}.top{gap:6px}.top h1{width:100%;text-align:center;font-size:22px;margin:5px 0}.seller-profile{padding:14px}.seller-avatar{width:56px;height:56px;font-size:30px}.seller-grid{gap:9px}.seller-tile{min-height:116px;padding:12px 7px}.seller-tile .ico{width:48px;height:48px;font-size:25px}.seller-tile b{font-size:14px}}
 
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card"><h2>متجري</h2><select id="section">
+</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
+<div id="sellerHome">
+  <div class="seller-profile">
+    <div class="seller-avatar">🏪</div>
+    <div class="info">
+      <h2 id="dashStoreName">متجري</h2>
+      <p>إدارة سريعة للمتجر</p>
+      <span id="dashStoreStatus" class="seller-status">جاري التحقق...</span>
+    </div>
+  </div>
+  <div class="seller-grid">
+    <button type="button" class="seller-tile" onclick="openSellerSection('storeSection')"><span class="ico">🏪</span><b>بيانات المتجر</b><small>الاسم والموقع والصورة</small></button>
+    <button type="button" class="seller-tile" onclick="openSellerSection('addProductSection')"><span class="ico">➕</span><b>إضافة منتج</b><small>منتج جديد</small></button>
+    <button type="button" class="seller-tile" onclick="openSellerSection('productsSection')"><span class="ico">📦</span><b>منتجاتي</b><small>عرض وحذف</small></button>
+    <button type="button" class="seller-tile" onclick="openSellerSection('ordersSection')"><span class="ico">🧾</span><b>الطلبات</b><small>متابعة الطلبات</small></button>
+  </div>
+</div>
+<div class="card dash-section" id="storeSection"><button type="button" class="section-back" onclick="showSellerHome()">← رجوع</button><h2>متجري</h2><select id="section">
 <option value="markets">أسواق</option>
 <option value="restaurants">مطاعم</option>
 <option value="flowers">ورد</option>
@@ -57,7 +68,7 @@ input,select,textarea{padding:9px!important}
 <img id="storeImagePreview" class="image-preview" alt="معاينة صورة المتجر">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="desc" placeholder="وصف المتجر"></textarea><button id="saveStoreBtn" type="button">حفظ المتجر</button><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
+<textarea id="desc" placeholder="وصف المتجر"></textarea><button id="saveStoreBtn" type="button">حفظ المتجر</button><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card dash-section" id="addProductSection"><button type="button" class="section-back" onclick="showSellerHome()">← رجوع</button><h2>إضافة منتج</h2><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
 <label>صورة المنتج</label>
 <div class="image-actions">
   <input id="productImageFile" type="file" accept="image/*" capture="environment">
@@ -65,7 +76,25 @@ input,select,textarea{padding:9px!important}
 <img id="productImagePreview" class="image-preview" alt="معاينة صورة المنتج">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card"><h2>منتجاتي</h2><div id="products">جاري التحميل...</div></div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card dash-section" id="productsSection"><button type="button" class="section-back" onclick="showSellerHome()">← رجوع</button><h2>منتجاتي</h2><div id="products">جاري التحميل...</div></div><div class="card dash-section" id="ordersSection"><button type="button" class="section-back" onclick="showSellerHome()">← رجوع</button><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>
+function openSellerSection(id){
+  const home=document.getElementById('sellerHome'); if(home)home.style.display='none';
+  document.querySelectorAll('.dash-section').forEach(x=>x.classList.remove('active'));
+  const section=document.getElementById(id); if(section){section.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+}
+function showSellerHome(){
+  document.querySelectorAll('.dash-section').forEach(x=>x.classList.remove('active'));
+  const home=document.getElementById('sellerHome'); if(home)home.style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateSellerDashboardHeader(){
+  const name=document.getElementById('dashStoreName');
+  const status=document.getElementById('dashStoreStatus');
+  if(name)name.textContent=(store&&store.name)?store.name:'متجري';
+  if(status){status.textContent=store?'✅ المتجر جاهز':'➕ أنشئ متجرك أولاً';status.style.background=store?'#14351f':'#3c2e13';status.style.color=store?'#7ee29a':'#ffd877';}
+}
+
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
@@ -161,7 +190,7 @@ if(productImageFile){
     }
   });
 }
-const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();loadProducts();loadOrders()}let saveStoreBusy=false;
+const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}updateSellerDashboardHeader();const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();loadProducts();loadOrders()}let saveStoreBusy=false;
 
 function withTimeout(promise,ms=15000){
   return Promise.race([
@@ -235,6 +264,7 @@ async function saveStore(){
     if(!r?.data)throw new Error('قاعدة البيانات لم ترجع بيانات المتجر بعد الحفظ.');
 
     store=r.data;
+    updateSellerDashboardHeader();
     syncAutoCategory();
 
     // بعد نجاح حفظ المتجر نحاول حفظ الصورة بشكل منفصل.
