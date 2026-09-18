@@ -567,6 +567,73 @@ html[data-ha-theme="light"] .category h2{
 }
 #myStoresAction[hidden]{display:none!important}
 
+
+/* ===== شريط البحث بدل المربعات العلوية ===== */
+.shop-search-wrap{
+  display:block!important;
+  margin:18px 0!important;
+}
+.shop-search-bar{
+  width:100%;
+  min-height:62px;
+  border-radius:20px;
+  border:1px solid #c18a2d;
+  background:linear-gradient(145deg,#10202f,#05090e);
+  color:#f4d37c;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 18px;
+  cursor:pointer;
+  font:inherit;
+  box-shadow:inset 0 1px 0 #ffffff0c,0 8px 24px #0005;
+}
+.shop-search-bar .search-ico{
+  font-size:28px;
+  flex:none;
+}
+.shop-search-bar .search-text{
+  flex:1;
+  text-align:right;
+  font-size:16px;
+  font-weight:700;
+  color:#d9e0e6;
+}
+html[data-ha-theme="light"] .shop-search-bar{
+  background:linear-gradient(145deg,#fff,#edf5ff)!important;
+  color:#a87520!important;
+  border-color:rgba(168,117,32,.45)!important;
+}
+html[data-ha-theme="light"] .shop-search-bar .search-text{
+  color:#334455!important;
+}
+@media(max-width:560px){
+  .shop-search-bar{
+    min-height:56px;
+    border-radius:17px;
+    padding:0 14px;
+  }
+  .shop-search-bar .search-ico{font-size:24px}
+  .shop-search-bar .search-text{font-size:14px}
+}
+
+
+/* ===== اختصارات التسوق حسب نوع المستخدم ===== */
+#shopBottomNav{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+#shopBottomNav.owner-mode{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+#shopBottomNav a{
+  min-width:0;
+  text-align:center;
+  font-size:13px;
+}
+#shopBottomNav a span{
+  font-size:24px;
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
@@ -600,12 +667,14 @@ html[data-ha-theme="light"] .category h2{
   
 </section>
 
-<section class="top-actions">
-<a class="top-action" href="marketplace-onboarding.html"><span>🏪</span><b>إضافة متجر</b></a>
-<a id="myStoresAction" class="top-action" href="my-stores.html" hidden><span>🏬</span><b>متاجري</b></a>
-<a class="top-action" href="cart.html"><span>🛒</span><b>السلة</b></a>
-<a class="top-action" href="#" onclick="openSearch();return false;"><span>🔍</span><b>البحث</b></a>
+
+<section class="top-actions shop-search-wrap">
+  <button type="button" class="shop-search-bar" onclick="openSearch()">
+    <span class="search-ico">🔍</span>
+    <span class="search-text">ابحث عن متجر أو منتج</span>
+  </button>
 </section>
+
 
 <div id="categories" class="section-title"><b>أقسام التسوق</b></div>
 <section class="categories">
@@ -625,7 +694,14 @@ html[data-ha-theme="light"] .category h2{
   <a class="category orange" href="shop-section.html?section=shoes"><div class="icon">👟</div><h2>أحذية</h2></a>
 </section>
 </div>
-<nav class="bottom"><a href="index.html"><span>⌂</span>الرئيسية</a><a class="active" href="index.html"><span>▦</span>الأقسام</a><a href="tel:"><span>☎</span>اتصل بنا</a></nav>
+
+<nav class="bottom" id="shopBottomNav">
+  <a id="bottomAddStore" href="marketplace-onboarding.html"><span>🏪</span>إضافة متجر</a>
+  <a id="bottomCart" href="cart.html"><span>🛒</span>السلة</a>
+  <a id="bottomAddProduct" href="my-stores.html" style="display:none"><span>➕</span>إضافة منتج</a>
+  <a id="bottomSellerOrders" href="seller-dashboard.html" style="display:none"><span>📦</span>طلباتي</a>
+</nav>
+
 
 <script>
 function toggleCustomerMenu(){
@@ -709,6 +785,59 @@ function openAddProduct(){
     }
   }catch(e){
     console.warn('my stores action',e);
+  }
+})();
+</script>
+
+
+<script>
+/* ===== اختصارات أسفل التسوق حسب وجود متجر ===== */
+(async function setupShopShortcuts(){
+  try{
+    if(!window.supabase) return;
+
+    const db = window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const nav=document.getElementById('shopBottomNav');
+    const cart=document.getElementById('bottomCart');
+    const addProduct=document.getElementById('bottomAddProduct');
+    const sellerOrders=document.getElementById('bottomSellerOrders');
+
+    // الوضع الافتراضي: زبون
+    if(cart) cart.style.display='flex';
+    if(addProduct) addProduct.style.display='none';
+    if(sellerOrders) sellerOrders.style.display='none';
+    if(nav) nav.classList.remove('owner-mode');
+
+    const {data:{session}} = await db.auth.getSession();
+    const user = session?.user;
+
+    // المستخدم غير المسجل يبقى بوضع الزبون
+    if(!user || user.is_anonymous) return;
+
+    const {data,error} = await db
+      .from('shop_businesses')
+      .select('id')
+      .eq('owner_user_id',user.id)
+      .limit(1);
+
+    if(error) return;
+
+    const hasStore = Array.isArray(data) && data.length > 0;
+
+    if(hasStore){
+      // صاحب متجر: إخفاء السلة وإظهار إضافة منتج + طلباتي
+      if(cart) cart.style.display='none';
+      if(addProduct) addProduct.style.display='flex';
+      if(sellerOrders) sellerOrders.style.display='flex';
+      if(nav) nav.classList.add('owner-mode');
+    }
+  }catch(e){
+    console.warn('shop shortcuts setup',e);
   }
 })();
 </script>
