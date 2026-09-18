@@ -166,40 +166,376 @@ html[data-ha-theme="dark"] .store-action small{
 }
 
 
-/* ===== HA SHOP COMPACT FINAL CARD STYLE ===== */
+/* ===== HA SHOP BAR STYLE ===== */
 .quick{
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:12px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ gap:12px!important;
 }
 .qcard{
-  aspect-ratio:1/1!important;
-  min-height:0!important;
-  border-radius:22px!important;
-  padding:10px!important;
-  justify-content:center!important;
+ aspect-ratio:auto!important;
+ min-height:78px!important;
+ width:100%!important;
+ flex-direction:row!important;
+ justify-content:flex-start!important;
+ align-items:center!important;
+ padding:12px 18px!important;
+ border-radius:20px!important;
+ gap:15px!important;
 }
 .qicon{
-  width:52px!important;
-  height:52px!important;
-  font-size:28px!important;
+ width:52px!important;
+ height:52px!important;
+ margin:0!important;
+ flex:none!important;
+ font-size:28px!important;
+ border-radius:16px!important;
 }
 .qcard h3{
-  font-size:14px!important;
-  color:#f4c45f!important;
+ margin:0!important;
+ flex:1;
+ text-align:right;
+ font-size:18px!important;
 }
-.store-action,.category{
-  transition:.2s ease;
+.qcard:after{
+ content:"›";
+ font-size:30px;
+ color:#f4c45f;
 }
-.store-action:hover,.category:hover{
-  transform:translateY(-3px);
+.qcard p{display:none!important}
+
+html[data-ha-theme="light"] .qcard{
+ background:linear-gradient(145deg,#fff,#edf5ff)!important;
 }
-html[data-ha-theme="light"] .qcard h3,
+html[data-ha-theme="light"] .qcard h3{
+ color:#102235!important;
+}
+
+
+
+/* ===== HA SHOP FULL BAR STYLE OVERRIDE ===== */
+.store-actions,
+.categories{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:12px!important;
+}
+
+.store-action,
+.category{
+  aspect-ratio:auto!important;
+  min-height:78px!important;
+  width:100%!important;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  text-align:right!important;
+  padding:12px 18px!important;
+  border-radius:20px!important;
+  gap:15px!important;
+}
+
+.store-action span,
+.category .icon{
+  width:52px!important;
+  height:52px!important;
+  margin:0!important;
+  flex:none!important;
+  font-size:28px!important;
+  border-radius:16px!important;
+}
+
+.store-action b,
+.category h2{
+  margin:0!important;
+  flex:1!important;
+  text-align:right!important;
+  font-size:18px!important;
+  line-height:1.5!important;
+}
+
+.store-action small,
+.category p{
+  display:none!important;
+}
+
+.store-action:after,
+.category:after{
+  content:"›";
+  font-size:30px;
+  color:#f4c45f;
+  flex:none;
+}
+
+html[data-ha-theme="light"] .store-action,
+html[data-ha-theme="light"] .category{
+  background:linear-gradient(145deg,#fff,#edf5ff)!important;
+}
+html[data-ha-theme="light"] .store-action b,
 html[data-ha-theme="light"] .category h2{
   color:#102235!important;
 }
-html[data-ha-theme="light"] .qcard,
-html[data-ha-theme="light"] .category{
-  background:linear-gradient(145deg,#fff,#edf5ff)!important;
+
+@media(max-width:560px){
+  .store-actions,
+  .categories{
+    gap:9px!important;
+  }
+  .store-action,
+  .category{
+    min-height:70px!important;
+    padding:10px 14px!important;
+    border-radius:18px!important;
+    gap:12px!important;
+  }
+  .store-action span,
+  .category .icon{
+    width:46px!important;
+    height:46px!important;
+    font-size:24px!important;
+    border-radius:14px!important;
+  }
+  .store-action b,
+  .category h2{
+    font-size:15px!important;
+  }
+  .store-action:after,
+  .category:after{
+    font-size:26px!important;
+  }
+}
+
+
+/* ===== Customer Menu Group ===== */
+.customer-menu{
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+ margin:16px 0;
+}
+.customer-bar{
+ min-height:75px;
+ border-radius:22px;
+ padding:15px 20px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ background:linear-gradient(145deg,#10202f,#05090e);
+ border:1px solid #c18a2d;
+ color:#f4d37c;
+ font-size:20px;
+ font-weight:bold;
+ cursor:pointer;
+}
+.customer-items{
+ display:none;
+ flex-direction:column;
+ gap:10px;
+ margin-top:10px;
+}
+.customer-items.open{
+ display:flex;
+}
+.customer-item{
+ min-height:65px;
+ border-radius:18px;
+ padding:12px 18px;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ background:linear-gradient(145deg,#101f2d,#05090e);
+ border:1px solid #31465c;
+ color:#fff;
+}
+
+
+/* ===== Store Options Group ===== */
+.store-menu{display:none!important; 
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+ margin:16px 0;
+}
+.store-bar{
+ min-height:75px;
+ border-radius:22px;
+ padding:15px 20px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ background:linear-gradient(145deg,#10202f,#05090e);
+ border:1px solid #c18a2d;
+ color:#f4d37c;
+ font-size:20px;
+ font-weight:bold;
+ cursor:pointer;
+}
+.store-items{
+ display:none;
+ flex-direction:column;
+ gap:10px;
+ margin-top:10px;
+}
+.store-items.open{display:flex}
+.store-item{
+ min-height:65px;
+ border-radius:18px;
+ padding:12px 18px;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ background:linear-gradient(145deg,#101f2d,#05090e);
+ border:1px solid #31465c;
+ color:#fff;
+}
+
+
+.customer-menu{display:none!important;}
+
+
+/* ===== FINAL OVERRIDE: shopping categories as squares ===== */
+.categories{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.category{
+  width:100%!important;
+  min-height:0!important;
+  aspect-ratio:1/1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:8px!important;
+  padding:10px 6px!important;
+  border-radius:18px!important;
+}
+.category .icon{
+  width:54px!important;
+  height:54px!important;
+  margin:0 auto!important;
+  font-size:28px!important;
+  border-radius:16px!important;
+}
+.category h2{
+  margin:0!important;
+  flex:none!important;
+  text-align:center!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+}
+.category p{display:none!important;}
+.category:after{content:none!important;}
+
+@media (max-width:560px){
+  .categories{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .category{
+    aspect-ratio:1/1!important;
+    min-height:112px!important;
+    padding:8px 4px!important;
+    border-radius:16px!important;
+    gap:6px!important;
+  }
+  .category .icon{
+    width:46px!important;
+    height:46px!important;
+    font-size:24px!important;
+    border-radius:14px!important;
+  }
+  .category h2{
+    font-size:12px!important;
+  }
+}
+
+
+/* ===== Top action squares ===== */
+.top-actions{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:10px!important;
+ margin:18px 0!important;
+}
+.top-action{
+ aspect-ratio:1/1!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ border-radius:20px!important;
+ background:linear-gradient(145deg,#10202f,#05090e);
+ border:1px solid #c18a2d;
+ color:#f4d37c;
+ gap:8px;
+ font-weight:bold;
+}
+.top-action span{
+ font-size:38px;
+}
+.top-action b{
+ font-size:15px;
+}
+
+
+/* ===== Add store submenu + smart search ===== */
+.store-popup{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0008;
+ z-index:999;
+ align-items:center;
+ justify-content:center;
+}
+.store-popup.open{display:flex;}
+.store-box{
+ width:90%;
+ max-width:420px;
+ background:#101f2d;
+ border-radius:22px;
+ padding:20px;
+ border:1px solid #c18a2d;
+}
+.store-box a{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ min-height:65px;
+ margin:10px 0;
+ border-radius:18px;
+ background:#162b3d;
+ color:#f4d37c;
+ font-weight:bold;
+}
+.search-box{
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+ margin-top:10px;
+}
+.search-box input{
+ padding:14px;
+ border-radius:14px;
+ border:1px solid #c18a2d;
+ background:#08131d;
+ color:white;
+}
+.search-options{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+}
+.search-options button{
+ padding:12px 5px;
+ border-radius:14px;
+ border:1px solid #c18a2d;
+ background:#162b3d;
+ color:#f4d37c;
 }
 
 </style>
@@ -212,7 +548,10 @@ html[data-ha-theme="light"] .category{
   <div class="topbar"><a class="round" href="index.html">‹</a><div class="brand"><div class="logo">HA</div><strong><span style="color:#d69b34">HA</span> Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div><a class="round" href="#categories">⌕</a></div>
   <div class="hero-content"><h1 class="hero-title">تسوق الآن</h1><div class="hero-sub">اختر القسم وابدأ التسوق</div></div>
 </section>
-<section class="quick">
+
+
+
+<section class="quick" style="display:none!important">
  <a class="qcard gold" href="#categories"><div class="qicon">📦</div><h3>المنتجات</h3></a>
  <a class="qcard gold" href="cart.html"><div class="qicon">🛒</div><h3>السلة</h3></a>
  <a class="qcard red" href="favorites.html"><div class="qicon">❤️</div><h3>المفضلة</h3></a>
@@ -220,14 +559,23 @@ html[data-ha-theme="light"] .category{
  <a class="qcard orange" href="#categories"><div class="qicon">🏷️</div><h3>العروض</h3></a>
  <a class="qcard green" href="cart.html"><div class="qicon">📋</div><h3>قوائم التسوق</h3></a>
 </section>
-<div class="section-title"><b>خيارات المتجر</b></div>
+
+
+
 <section class="store-actions">
-  <a class="store-action gold" href="marketplace-onboarding.html"><span>🏪</span><b>إضافة متجر</b><small>طلب وموافقة الإدارة</small></a>
-  <a class="store-action green" href="seller-dashboard.html"><span>➕</span><b>المتجر والمنتجات</b><small>إدارة المتجر</small></a>
-  <a class="store-action blue" href="work-center.html"><span>🧰</span><b>مركز العمل</b><small>إدارة حساب العمل</small></a>
-  <a class="store-action orange" href="store-accounting.html"><span>📒</span><b>الحسابات</b><small>حسابات المتجر</small></a>
-  <a class="store-action purple" href="shop-orders.html"><span>📦</span><b>الطلبات</b><small>متابعة الطلبات</small></a>
+  
+  
+  
+  
+  
 </section>
+
+<section class="top-actions">
+<a class="top-action" href="#" onclick="openStoreMenu();return false;"><span>🏪</span><b>إضافة متجر</b></a>
+<a class="top-action" href="cart.html"><span>🛒</span><b>السلة</b></a>
+<a class="top-action" href="#" onclick="openSearch();return false;"><span>🔍</span><b>البحث</b></a>
+</section>
+
 <div id="categories" class="section-title"><b>أقسام التسوق</b></div>
 <section class="categories">
   <a class="category gold" href="shop-section.html?section=library"><div class="icon">📚</div><h2>مكتبة</h2></a>
@@ -247,4 +595,67 @@ html[data-ha-theme="light"] .category{
 </section>
 </div>
 <nav class="bottom"><a href="index.html"><span>⌂</span>الرئيسية</a><a class="active" href="index.html"><span>▦</span>الأقسام</a><a href="tel:"><span>☎</span>اتصل بنا</a></nav>
+
+<script>
+function toggleCustomerMenu(){
+ const x=document.getElementById('customerItems');
+ if(x)x.classList.toggle('open');
+}
+</script>
+
+
+<script>
+function toggleStoreMenu(){
+ const x=document.getElementById('storeItems');
+ if(x)x.classList.toggle('open');
+}
+</script>
+
+
+<div id="storePopup" class="store-popup">
+<div class="store-box">
+<a href="marketplace-onboarding.html">🏪 إضافة متجر</a>
+<a href="#" onclick="openAddProduct();return false;">📦 إضافة المنتجات</a>
+</div>
+</div>
+
+<div id="searchPopup" class="store-popup">
+<div class="store-box">
+<div class="search-box">
+<input id="searchInput" placeholder="ابحث عن متجر أو منتج">
+<div class="search-options">
+<button>📷 صورة المنتج</button>
+<button>🏪 المتجر</button>
+<button>📦 المنتج</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+function openStoreMenu(){
+ document.getElementById('storePopup').classList.add('open');
+}
+function openSearch(){
+ document.getElementById('searchPopup').classList.add('open');
+}
+document.querySelectorAll('.store-popup').forEach(x=>{
+ x.onclick=function(e){
+  if(e.target===x)x.classList.remove('open');
+ }
+});
+</script>
+
+<script>
+function openAddProduct(){
+    // لاحقاً تربط مع بيانات المتجر، حالياً يمنع الدخول بدون متجر
+    if(localStorage.getItem("ha_store_added") === "yes"){
+        window.location.href="add-product.html";
+    }else{
+        alert("يجب إضافة متجر أولاً");
+        window.location.href="marketplace-onboarding.html";
+    }
+}
+</script>
+
 </body></html>
