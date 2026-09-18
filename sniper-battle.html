@@ -6,42 +6,37 @@
 <title>HA Sniper Battle</title>
 <style>
 body{margin:0;background:#17251a;color:#fff;font-family:Arial;text-align:center}
-#game{height:70vh;margin:15px;background:linear-gradient(#8bd8ff,#356b35);position:relative;border-radius:20px;overflow:hidden}
-.building{position:absolute;left:12%;bottom:40px;width:150px;height:230px;background:#777}
-.target{position:absolute;width:45px;height:45px;border-radius:50%;background:#e22;border:3px solid white}
-button,select{padding:12px;margin:5px;border-radius:12px}
+.wrap{padding:15px}
+#game{height:70vh;background:linear-gradient(#8bd8ff,#356b35);border-radius:20px;position:relative;overflow:hidden}
+.card{background:#fff2;color:white;padding:10px;border-radius:15px}
+.target{position:absolute;width:45px;height:45px;background:#e22;border-radius:50%;border:3px solid white}
+button,select{padding:12px;border-radius:12px;margin:5px}
 </style>
 </head>
 <body>
+<div class="wrap">
 <h1>🎯 HA Sniper Battle</h1>
-<select id="players">
-<option value="10">10 لاعبين</option>
-<option value="20">20 لاعب</option>
-<option value="50">50 لاعب</option>
-<option value="100">100 لاعب</option>
-</select>
-<button onclick="start()">بدء المعركة</button>
-<div id="game"><div class="building"></div></div>
-<h2>اللاعبين: <span id="count">0</span> | النقاط: <span id="score">0</span></h2>
+<select id="num"><option>10</option><option>20</option><option>50</option><option>100</option></select>
+<button onclick="start()">ابدأ</button>
+<div id="game"></div>
+<h2>النقاط: <span id="score">0</span></h2>
+</div>
 <script>
-let score=0, left=0;
+let s=0;
 function start(){
- left=Number(players.value)-1;
- count.innerHTML=players.value;
- spawn();
+ game.innerHTML='';
+ let n=Number(num.value);
+ for(let i=0;i<n;i++) setTimeout(()=>bot(),i*200);
 }
-function spawn(){
- if(left<=0)return;
+function bot(){
  let t=document.createElement('div');
  t.className='target';
  t.style.left=Math.random()*85+'%';
- t.style.top=Math.random()*65+'%';
- t.onclick=()=>{score++;scoreEl();t.remove();spawn()};
+ t.style.top=Math.random()*70+'%';
+ t.onclick=()=>{s++;score.innerText=s;t.remove()};
  game.appendChild(t);
- // bots shoot automatically
- setTimeout(()=>{if(t){t.remove();left--;count.innerHTML=left+1;spawn()}},1200);
+ setTimeout(()=>t.remove(),3000);
 }
-function scoreEl(){document.getElementById('score').innerHTML=score}
 </script>
 </body>
 </html>
