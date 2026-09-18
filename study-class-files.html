@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ملفات الصف - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#06090c;color:#fff;font-family:Tahoma,Arial;padding-bottom:30px}
+.wrap{width:min(94%,760px);margin:16px auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.back{padding:10px 13px;border-radius:12px;border:1px solid #3a4752;background:#12181d;color:#fff;text-decoration:none}
+.card{margin-top:14px;padding:16px;border-radius:20px;border:1px solid #3a4752;background:linear-gradient(145deg,#11181d,#080c0f)}
+h1{margin:0 0 6px;color:#f0c86b;font-size:23px}
+.muted{color:#9faab3;font-size:13px;line-height:1.7}
+.teacher-box{display:none}
+body.teacher .teacher-box{display:block}
+label{display:block;margin:13px 0 6px;font-weight:800}
+input[type=text],input[type=file]{width:100%;padding:12px;border-radius:12px;border:1px solid #3b4a56;background:#0a1015;color:#fff;font:inherit}
+.file-pick{padding:14px;border:1px dashed #6a5630;border-radius:14px;background:#0b1014}
+.btn{border:1px solid #967026;background:#18130b;color:#f0c86b;border-radius:13px;padding:12px 14px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.secondary{border-color:#3e5668;background:#101922;color:#cfe6f8}
+.btn.danger{border-color:#73343d;background:#251116;color:#ffbcc5}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.status{margin-top:10px;color:#aeb7bf;white-space:pre-wrap}
+.list{display:grid;gap:10px;margin-top:14px}
+.file-row{border:1px solid #35434e;background:#0b1116;border-radius:17px;padding:14px}
+.file-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.file-icon{font-size:30px}
+.file-title{font-weight:900;color:#f1cc78;line-height:1.5}
+.file-name{color:#aeb7bf;font-size:12px;margin-top:4px;word-break:break-all}
+.meta{color:#75818a;font-size:11px;margin-top:7px}
+.empty{text-align:center;padding:24px;color:#8e99a1;border:1px dashed #34414a;border-radius:16px}
+.progress{height:8px;background:#0b1014;border:1px solid #2c3943;border-radius:999px;overflow:hidden;margin-top:10px;display:none}
+.progress>span{display:block;height:100%;width:0;background:#d4aa55}
+@media(max-width:520px){.actions .btn{flex:1}.file-head{align-items:center}}
+</style>
+<script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a id="backLink" class="back" href="#">← الصف</a>
+    <b>HA Marketing</b>
+    <span></span>
+  </div>
+
+  <section class="card">
+    <h1 id="pageTitle">📚 الملفات</h1>
+    <div id="classInfo" class="muted">جاري تحميل بيانات الصف...</div>
+  </section>
+
+  <section class="card teacher-box">
+    <h1 style="font-size:19px">➕ إضافة ملف</h1>
+    <div class="muted">الإضافة متاحة لمدرس الصف فقط. الطالب يقدر يفتح الملف أو يحمّله.</div>
+
+    <label>عنوان الملف</label>
+    <input id="fileTitle" type="text" maxlength="140" placeholder="مثال: ملزمة الفصل الأول">
+
+    <label>اختيار الملف</label>
+    <div class="file-pick">
+      <input id="fileInput" type="file">
+      <div class="muted" style="margin-top:7px">PDF، Word، PowerPoint، صور وغيرها — الحد الأعلى 25 MB.</div>
+    </div>
+
+    <div class="progress" id="progress"><span id="progressBar"></span></div>
+    <button id="uploadBtn" class="btn" type="button" style="width:100%;margin-top:12px">⬆️ رفع الملف</button>
+    <div id="uploadStatus" class="status"></div>
+  </section>
+
+  <section class="card">
+    <h1 style="font-size:19px">📂 الملفات المضافة</h1>
+    <div id="list" class="list"><div class="empty">جاري التحميل...</div></div>
+  </section>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const qp=new URLSearchParams(location.search);
+const classId=Number(qp.get('class'));
+const type=String(qp.get('type')||'handout').toLowerCase();
+const TYPES={
+  handout:{title:'الملازم',icon:'📚',single:'ملزمة'},
+  exam:{title:'الامتحانات',icon:'📝',single:'امتحان'},
+  question:{title:'الأسئلة',icon:'❓',single:'أسئلة'},
+  assignment:{title:'الواجبات',icon:'✅',single:'واجب'}
+};
+const cfg=TYPES[type]||TYPES.handout;
+let me=null,currentClass=null,isTeacher=false;
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtBytes=n=>{
+  n=Number(n||0);
+  if(!n)return '';
+  if(n<1024)return n+' B';
+  if(n<1024*1024)return (n/1024).toFixed(1)+' KB';
+  return (n/1024/1024).toFixed(1)+' MB';
+};
+const fmtDate=v=>{try{return new Date(v).toLocaleString('ar-IQ',{dateStyle:'medium',timeStyle:'short'})}catch{return ''}};
+
+async function init(){
+  document.getElementById('pageTitle').textContent=cfg.icon+' '+cfg.title;
+  if(!Number.isInteger(classId)||classId<=0){
+    document.getElementById('classInfo').textContent='الصف غير محدد.';
+    return;
+  }
+
+  document.getElementById('backLink').href='study-class.html?class='+encodeURIComponent(classId);
+
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html';return}
+  me=session.user;
+
+  const {data:c,error}=await db.from('study_classes').select('*').eq('id',classId).maybeSingle();
+  if(error||!c){
+    document.getElementById('classInfo').textContent='تعذر العثور على الصف.';
+    return;
+  }
+  currentClass=c;
+  isTeacher=c.teacher_user_id===me.id;
+
+  let allowed=isTeacher;
+  if(!allowed){
+    const {data:m}=await db.from('study_class_members')
+      .select('class_id')
+      .eq('class_id',classId)
+      .eq('student_user_id',me.id)
+      .maybeSingle();
+    allowed=!!m;
+  }
+  if(!allowed){
+    document.getElementById('classInfo').textContent='هذا الصف خاص بطلابه ومدرسه.';
+    return;
+  }
+
+  if(isTeacher)document.body.classList.add('teacher');
+
+  document.getElementById('classInfo').innerHTML=
+    '<b>'+esc(c.class_name||'الصف')+'</b><br>'+
+    esc(c.grade_name||'')+(c.branch?' — '+esc(c.branch):'')+
+    (c.subject?'<br>المادة: '+esc(c.subject):'');
+
+  await loadFiles();
+}
+
+async function loadFiles(){
+  const list=document.getElementById('list');
+  list.innerHTML='<div class="empty">جاري تحميل الملفات...</div>';
+
+  const {data,error}=await db
+    .from('study_class_files')
+    .select('*')
+    .eq('class_id',classId)
+    .eq('file_type',type)
+    .order('created_at',{ascending:false});
+
+  if(error){
+    list.innerHTML='<div class="empty">تعذر تحميل الملفات: '+esc(error.message)+'</div>';
+    return;
+  }
+  if(!data?.length){
+    list.innerHTML='<div class="empty">لا توجد ملفات مضافة حالياً.</div>';
+    return;
+  }
+
+  list.innerHTML='';
+  data.forEach(row=>{
+    const el=document.createElement('article');
+    el.className='file-row';
+    el.innerHTML=`
+      <div class="file-head">
+        <div>
+          <div class="file-title">${esc(row.title||row.original_name||cfg.single)}</div>
+          <div class="file-name">${esc(row.original_name||'')}</div>
+          <div class="meta">${fmtBytes(row.size_bytes)} ${row.created_at?' • '+fmtDate(row.created_at):''}</div>
+        </div>
+        <div class="file-icon">${cfg.icon}</div>
+      </div>
+      <div class="actions">
+        <button class="btn secondary openBtn" type="button">👁️ فتح الملف</button>
+        <button class="btn downloadBtn" type="button">⬇️ تحميل</button>
+        ${isTeacher?'<button class="btn danger deleteBtn" type="button">🗑 حذف</button>':''}
+      </div>`;
+
+    el.querySelector('.openBtn').onclick=()=>openFile(row);
+    el.querySelector('.downloadBtn').onclick=()=>downloadFile(row);
+    if(isTeacher)el.querySelector('.deleteBtn').onclick=()=>deleteFile(row);
+    list.appendChild(el);
+  });
+}
+
+async function signedUrl(path){
+  const {data,error}=await db.storage.from('study-class-files').createSignedUrl(path,60*15);
+  if(error)throw error;
+  return data.signedUrl;
+}
+
+async function openFile(row){
+  try{
+    const url=await signedUrl(row.storage_path);
+    window.open(url,'_blank','noopener');
+  }catch(e){alert('تعذر فتح الملف: '+(e?.message||String(e)))}
+}
+
+async function downloadFile(row){
+  try{
+    const url=await signedUrl(row.storage_path);
+    const r=await fetch(url);
+    if(!r.ok)throw new Error('تعذر تنزيل الملف');
+    const blob=await r.blob();
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=row.original_name||'file';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+  }catch(e){alert('تعذر تحميل الملف: '+(e?.message||String(e)))}
+}
+
+function safeFileName(name){
+  const ext=(name.includes('.')?'.'+name.split('.').pop().replace(/[^a-zA-Z0-9]/g,'').slice(0,10):'');
+  return Date.now()+'-'+Math.random().toString(36).slice(2,8)+ext;
+}
+
+document.getElementById('uploadBtn').onclick=async()=>{
+  if(!isTeacher||!me)return;
+
+  const input=document.getElementById('fileInput');
+  const f=input.files?.[0];
+  const title=document.getElementById('fileTitle').value.trim();
+  const status=document.getElementById('uploadStatus');
+  const btn=document.getElementById('uploadBtn');
+
+  if(!f)return alert('اختار ملف أولاً');
+  if(f.size>25*1024*1024)return alert('حجم الملف أكبر من 25 MB');
+
+  btn.disabled=true;
+  status.textContent='جاري رفع الملف...';
+  document.getElementById('progress').style.display='block';
+  document.getElementById('progressBar').style.width='35%';
+
+  try{
+    const path=`${classId}/${type}/${me.id}/${safeFileName(f.name)}`;
+
+    const {error:upErr}=await db.storage
+      .from('study-class-files')
+      .upload(path,f,{contentType:f.type||'application/octet-stream',upsert:false});
+    if(upErr)throw upErr;
+
+    document.getElementById('progressBar').style.width='75%';
+
+    const {error:dbErr}=await db.from('study_class_files').insert({
+      class_id:classId,
+      teacher_user_id:me.id,
+      file_type:type,
+      title:title||f.name,
+      original_name:f.name,
+      storage_path:path,
+      mime_type:f.type||null,
+      size_bytes:f.size
+    });
+
+    if(dbErr){
+      await db.storage.from('study-class-files').remove([path]);
+      throw dbErr;
+    }
+
+    document.getElementById('progressBar').style.width='100%';
+    status.textContent='✅ تم رفع الملف.';
+    input.value='';
+    document.getElementById('fileTitle').value='';
+    await loadFiles();
+  }catch(e){
+    status.textContent='❌ '+(e?.message||String(e));
+  }finally{
+    btn.disabled=false;
+    setTimeout(()=>{
+      document.getElementById('progress').style.display='none';
+      document.getElementById('progressBar').style.width='0';
+    },700);
+  }
+};
+
+async function deleteFile(row){
+  if(!isTeacher)return;
+  if(!confirm('حذف هذا الملف؟'))return;
+
+  const {error:storageError}=await db.storage.from('study-class-files').remove([row.storage_path]);
+  if(storageError && !String(storageError.message||'').toLowerCase().includes('not found')){
+    alert('تعذر حذف الملف من التخزين: '+storageError.message);
+    return;
+  }
+
+  const {error}=await db.from('study_class_files').delete().eq('id',row.id);
+  if(error){alert('تعذر حذف سجل الملف: '+error.message);return}
+  await loadFiles();
+}
+
+init();
+</script>
+</body>
+</html>
