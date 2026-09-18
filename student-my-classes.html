@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>صفوفي - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#06090c;color:#fff;min-height:100vh}
+.wrap{width:min(94%,950px);margin:16px auto 90px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.back{padding:10px 13px;border-radius:12px;border:1px solid #3b4853;background:#12181d;color:#fff;text-decoration:none}
+.hero{text-align:center;padding:18px;margin:16px 0;border:1px solid #6f5724;border-radius:22px;background:linear-gradient(145deg,#15140f,#0a0d10)}
+.hero h1{margin:0;color:#f0c86b}
+.hero p{margin:7px 0 0;color:#aeb7bf}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.class-card{border:1px solid #35434e;border-radius:20px;padding:15px;background:linear-gradient(145deg,#11181d,#080c0f)}
+.class-card h2{margin:0 0 8px;color:#f0c86b;font-size:19px}
+.meta{color:#aeb7bf;font-size:12px;line-height:1.7}
+.open{display:flex;align-items:center;justify-content:center;min-height:46px;margin-top:12px;border-radius:13px;border:1px solid #966f25;background:#18130b;color:#f0c86b;text-decoration:none;font-weight:800}
+.empty{grid-column:1/-1;text-align:center;color:#aeb7bf;padding:30px;border:1px solid #2f3c47;border-radius:18px}
+.bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,950px);height:76px;background:#080c0ff5;border-top:1px solid #7b5a20;display:grid;grid-template-columns:repeat(3,1fr);z-index:20}
+.bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#aeb8c4;text-decoration:none;font-size:11px}
+.bottom a span{font-size:22px}
+.bottom a.active{color:#f0c86b}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+</style>
+<script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="study.html">← الدراسة</a><b>HA Marketing</b><span></span></div>
+  <div class="hero"><h1>📚 صفوفي</h1><p>الصفوف التي انضممت إليها كطالب</p></div>
+  <div id="classes" class="grid"><div class="empty">جاري التحميل...</div></div>
+</div>
+
+<nav class="bottom">
+  <a class="active" href="student-my-classes.html"><span>📚</span>صفوفي</a>
+  <a id="quickClass" href="#" style="display:none"><span>🎒</span>صفي</a>
+  <a href="notifications-center.html"><span>🔔</span>التبليغات</a>
+</nav>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+(async()=>{
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html';return}
+
+  const {data:members,error}=await db
+    .from('study_class_members')
+    .select('class_id,joined_at')
+    .eq('student_user_id',session.user.id)
+    .order('joined_at',{ascending:false});
+
+  const el=document.getElementById('classes');
+  if(error){el.innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
+
+  const rows=Array.isArray(members)?members:[];
+  if(!rows.length){
+    el.innerHTML='<div class="empty">ما عندك صفوف حالياً. ادخل إلى الدورات واختر مدرس واطلب الانضمام.</div>';
+    return;
+  }
+
+  const ids=rows.map(x=>x.class_id);
+  const {data:classes,error:classError}=await db
+    .from('study_classes')
+    .select('id,class_name,grade_name,branch,subject,mode,teacher_user_id')
+    .in('id',ids);
+
+  if(classError){el.innerHTML='<div class="empty">'+esc(classError.message)+'</div>';return}
+
+  const classMap=Object.fromEntries((classes||[]).map(c=>[c.id,c]));
+  const teacherIds=[...new Set((classes||[]).map(c=>c.teacher_user_id).filter(Boolean))];
+  let teacherMap={};
+
+  if(teacherIds.length){
+    const {data:teachers}=await db
+      .from('study_teachers')
+      .select('user_id,display_name')
+      .in('user_id',teacherIds);
+    teacherMap=Object.fromEntries((teachers||[]).map(t=>[t.user_id,t.display_name]));
+  }
+
+  const ordered=rows.map(r=>classMap[r.class_id]).filter(Boolean);
+
+  el.innerHTML=ordered.map(c=>`
+    <div class="class-card">
+      <h2>${esc(c.class_name||'الصف')}</h2>
+      <div class="meta">
+        المدرس: ${esc(teacherMap[c.teacher_user_id]||'مدرس')}<br>
+        ${esc(c.grade_name||'')}${c.branch?' — '+esc(c.branch):''}<br>
+        ${esc(c.subject||'بدون مادة')} • ${c.mode==='online'?'أونلاين':c.mode==='inperson'?'حضوري':'أونلاين وحضوري'}
+      </div>
+      <a class="open" href="study-class.html?class=${encodeURIComponent(c.id)}">فتح صفي ←</a>
+    </div>
+  `).join('');
+
+  const quick=document.getElementById('quickClass');
+  if(ordered[0]){
+    quick.href='study-class.html?class='+encodeURIComponent(ordered[0].id);
+    quick.style.display='flex';
+  }
+})();
+</script>
+</body>
+</html>
