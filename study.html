@@ -232,6 +232,50 @@ html[data-ha-theme="light"] .study-arrow{background:rgba(255,255,255,.84);color:
   .study-arrow{width:37px;height:37px;font-size:21px}
 }
 
+
+/* ===== Study dynamic bottom bar ===== */
+.study-dynamic-bottom{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  height:82px!important;
+}
+.study-dynamic-bottom.has-3{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.study-dynamic-bottom.has-4{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+.study-dynamic-bottom a{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  min-width:0!important;
+  padding:7px 3px!important;
+  color:#aeb8c4!important;
+  font-size:11px!important;
+}
+.study-dynamic-bottom a span{
+  font-size:22px!important;
+  line-height:1!important;
+}
+.study-dynamic-bottom a b{
+  font-size:11px!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}
+.study-dynamic-bottom a.study-active{
+  color:#f0c86b!important;
+  background:radial-gradient(circle at 50% 100%,rgba(239,199,104,.15),transparent 64%)!important;
+}
+@media(max-width:420px){
+  .study-dynamic-bottom a b{font-size:10px!important}
+  .study-dynamic-bottom a span{font-size:20px!important}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ha-theme.js"></script>
@@ -296,9 +340,11 @@ html[data-ha-theme="light"] .study-arrow{background:rgba(255,255,255,.84);color:
   </a>
 </main>
 
-<nav class="bottom">
-  <a class="active" href="study.html">📚 الدراسة</a>
-  <a href="index.html">🏠 الرئيسية</a>
+<nav class="bottom study-dynamic-bottom" id="studyBottomNav">
+  <a id="teacherJoinTab" href="teacher-classes.html"><span>👨‍🏫</span><b>انضمام كمدرس</b></a>
+  <a id="myClassesTab" href="#" style="display:none"><span>📚</span><b>صفوفي</b></a>
+  <a id="myClassTab" href="#" style="display:none"><span>🎒</span><b>صفي</b></a>
+  <a id="studyNotificationsTab" href="notifications-center.html"><span>🔔</span><b>التبليغات</b></a>
 </nav>
 
 
@@ -371,6 +417,78 @@ async function loadStudyBanners(){
 document.getElementById('studyPrev')?.addEventListener('click',prevStudyBanner);
 document.getElementById('studyNext')?.addEventListener('click',nextStudyBanner);
 loadStudyBanners();
+</script>
+
+
+<script>
+/* ===== شريط الدراسة حسب نوع الحساب ===== */
+(async function setupStudyBottom(){
+  try{
+    const nav=document.getElementById('studyBottomNav');
+    const teacherJoin=document.getElementById('teacherJoinTab');
+    const myClasses=document.getElementById('myClassesTab');
+    const myClass=document.getElementById('myClassTab');
+    const notify=document.getElementById('studyNotificationsTab');
+
+    if(!nav || !window.supabase)return;
+
+    const {data:{session}}=await studyDb.auth.getSession();
+    const user=session?.user;
+
+    // غير مسجل: يظهر انضمام كمدرس + التبليغات.
+    if(!user || user.is_anonymous){
+      nav.classList.remove('has-3','has-4');
+      return;
+    }
+
+    const [teacherRes,membersRes]=await Promise.all([
+      studyDb.from('study_teachers')
+        .select('user_id,is_approved,is_active')
+        .eq('user_id',user.id)
+        .maybeSingle(),
+      studyDb.from('study_class_members')
+        .select('class_id,joined_at')
+        .eq('student_user_id',user.id)
+        .order('joined_at',{ascending:false})
+    ]);
+
+    const isTeacher=!!teacherRes.data;
+    const joinedClasses=Array.isArray(membersRes.data)?membersRes.data:[];
+    const isStudent=joinedClasses.length>0;
+
+    if(isTeacher){
+      teacherJoin.style.display='none';
+      myClasses.style.display='flex';
+      myClasses.href='teacher-my-classes.html';
+      myClasses.classList.add('study-active');
+    }else{
+      teacherJoin.style.display='flex';
+    }
+
+    if(isStudent){
+      myClasses.style.display='flex';
+      if(!isTeacher){
+        myClasses.href='student-my-classes.html';
+        myClasses.classList.add('study-active');
+      }
+
+      const latest=joinedClasses[0];
+      if(latest?.class_id){
+        myClass.style.display='flex';
+        myClass.href='study-class.html?class='+encodeURIComponent(latest.class_id);
+      }
+    }
+
+    const visible=[teacherJoin,myClasses,myClass,notify]
+      .filter(x=>x && getComputedStyle(x).display!=='none').length;
+
+    nav.classList.remove('has-3','has-4');
+    if(visible===3)nav.classList.add('has-3');
+    if(visible>=4)nav.classList.add('has-4');
+  }catch(e){
+    console.warn('study bottom setup',e);
+  }
+})();
 </script>
 
 </body>
