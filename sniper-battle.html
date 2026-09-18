@@ -5,51 +5,41 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HA Sniper Battle</title>
 <style>
-body{margin:0;background:#101820;color:white;font-family:Tahoma;text-align:center}
-#lobby,#game{padding:15px}
-.panel{background:#1d2835;border-radius:20px;padding:15px;margin:10px auto;max-width:700px}
-button,select{padding:12px;border-radius:12px;margin:5px;border:0}
-button{background:#f5c542}
-#map{height:65vh;background:linear-gradient(#8bd3ff,#356b35);position:relative;overflow:hidden;border-radius:25px}
-.player{position:absolute;width:34px;height:34px;border-radius:50%;background:#3af;border:3px solid white}
+body{margin:0;background:#101820;color:#fff;font-family:Arial;text-align:center}
+.panel{padding:10px}
+#map{height:70vh;margin:10px;background:linear-gradient(#78bde8,#315b35);border-radius:25px;position:relative;overflow:hidden}
+.house{position:absolute;background:#555;width:90px;height:120px;bottom:80px}
+.tree{position:absolute;font-size:60px}
+.char{position:absolute;width:35px;height:55px;border-radius:15px 15px 5px 5px;background:#1e90ff;border:2px solid white}
 .bot{background:#e33}
-#controls{display:flex;justify-content:center;gap:8px}
+.gun{position:absolute;width:45px;height:5px;background:#222;right:-35px;top:20px}
+button,select{padding:12px;border-radius:12px;border:0;margin:5px;background:#f5c542}
 </style>
 </head>
 <body>
-<div id="lobby" class="panel">
+<div class="panel">
 <h1>🎯 HA Sniper Battle</h1>
-<p>غرفة اللعب</p>
-<select id="count"><option>10</option><option>20</option><option>50</option><option>100</option></select>
-<select id="map"><option value="city">🏢 عمارات</option><option value="forest">🌲 غابة</option></select>
-<br><button onclick="start()">ابدأ المعركة</button>
-</div>
-
-<div id="game" class="panel" style="display:none">
-<h2>🎯 المعركة</h2>
-<p>اللاعبين: <span id="num"></span> | النقاط: <span id="score">0</span></p>
-<div id="area" style="height:65vh;background:linear-gradient(#8bd3ff,#356b35);position:relative;border-radius:25px"></div>
-<div id="controls">
+<select id="players"><option>10</option><option>20</option><option>50</option><option>100</option></select>
+<select id="maptype"><option>🏢 المدينة</option><option>🌲 الغابة</option></select>
+<button onclick="start()">ابدأ المعركة</button>
+<h3>اللاعبين: <span id="num">0</span> | النقاط: <span id="score">0</span></h3>
+<div id="map"></div>
 <button>🎤 مايك</button><button>💬 دردشة</button><button onclick="shoot()">🎯 إطلاق</button>
 </div>
-</div>
-
 <script>
-let score=0,targets=[];
+let score=0;
 function start(){
- document.getElementById('lobby').style.display='none';
- document.getElementById('game').style.display='block';
- let n=Number(document.getElementById('count').value);
- document.getElementById('num').innerText=n;
- for(let i=0;i<n;i++) createPlayer(i);
-}
-function createPlayer(i){
- let p=document.createElement('div');
- p.className='player '+(i?'bot':'');
- p.style.left=Math.random()*90+'%';
- p.style.top=Math.random()*80+'%';
- p.onclick=()=>{if(p.classList.contains('bot')){score++;document.getElementById('score').innerText=score;p.remove()}};
- document.getElementById('area').appendChild(p);
+ let m=document.getElementById('map');m.innerHTML='';
+ let n=Number(players.value);num.innerHTML=n;
+ for(let i=0;i<n;i++){
+  let p=document.createElement('div');
+  p.className='char '+(i?'bot':'');
+  p.style.left=Math.random()*85+'%';
+  p.style.top=Math.random()*75+'%';
+  let g=document.createElement('div');g.className='gun';p.appendChild(g);
+  p.onclick=()=>{if(p.classList.contains('bot')){score++;document.getElementById('score').innerText=score;p.remove()}};
+  m.appendChild(p);
+ }
 }
 function shoot(){}
 </script>
