@@ -1,0 +1,74 @@
+
+:root{
+ --bg-night:#05070a;
+ --card-night:#0d141f;
+ --text-night:#ffffff;
+ --muted-night:#b8c2cf;
+ --bg-day:#f5f7fb;
+ --card-day:#ffffff;
+ --text-day:#18212b;
+ --muted-day:#5d6672;
+ --accent:#d9a441;
+}
+
+body.dark, body[data-theme="dark"]{
+ background:var(--bg-night)!important;
+ color:var(--text-night)!important;
+}
+
+body.light, body[data-theme="light"]{
+ background:var(--bg-day)!important;
+ color:var(--text-day)!important;
+}
+
+.card, .box, .panel, .section, .modal{
+ background:var(--card-night);
+ color:var(--text-night);
+}
+
+body.light .card,
+body.light .box,
+body.light .panel,
+body.light .section,
+body.light .modal{
+ background:var(--card-day);
+ color:var(--text-day);
+}
+
+h1,h2,h3,h4{
+ color:inherit;
+}
+
+p,small,.muted,label{
+ color:var(--muted-night);
+}
+
+body.light p,
+body.light small,
+body.light .muted,
+body.light label{
+ color:var(--muted-day);
+}
+
+input,textarea,select{
+ background:#101823;
+ color:#fff;
+ border-color:#39485a;
+}
+
+body.light input,
+body.light textarea,
+body.light select{
+ background:#fff;
+ color:#18212b;
+ border-color:#ccd5df;
+}
+
+button{
+ color:#111;
+ background:var(--accent);
+}
+
+a{
+ color:inherit;
+}
