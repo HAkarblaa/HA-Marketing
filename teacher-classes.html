@@ -7,7 +7,21 @@
 .chip label{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 6px;border-radius:12px;border:1px solid #3b4a56;background:#0d1419;color:#dfe5ea;font-size:12px;text-align:center;cursor:pointer}
 .chip input:checked+label{border-color:#b98a31;background:#211a0e;color:#f5cd70;box-shadow:0 0 0 1px #b98a3133 inset}
 .branch-chips{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.invite{flex-direction:column}.chips{grid-template-columns:repeat(2,minmax(0,1fr))}.branch-chips{grid-template-columns:repeat(3,minmax(0,1fr))}}</style><script src="ha-theme.js"></script><link rel="stylesheet" href="ha-theme.css"></head><body><div class="wrap"><div class="top"><a class="back" href="courses.html">← الدورات</a><b>HA Marketing</b><a class="back" href="teacher-my-classes.html">📚 صفوفي</a></div><h1>👨‍🏫 واجهة المدرس</h1><div id="gate" class="status">جاري التحقق...</div>
+.teacher-photo-box{grid-column:1/-1;border:1px solid #34434f;border-radius:14px;padding:12px;background:#0a1015}
+.teacher-photo-title{font-weight:800;color:#f0c86b;margin-bottom:9px}
+.teacher-photo-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.teacher-photo-actions button{min-height:46px;border-radius:12px;border:1px solid #3b4a56;background:#0d1419;color:#fff;cursor:pointer;font:inherit}
+.teacher-photo-preview{display:none;width:100%;max-height:250px;object-fit:cover;border-radius:14px;margin-top:10px;border:1px solid #3b4a56}
+.teacher-photo-note{font-size:11px;color:#9eabb5;margin-top:8px}
+.teacher-photo-remove{display:none!important;margin-top:8px;background:#4a1620!important;color:#ffd5db!important;border-color:#7f2b3b!important}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.invite{flex-direction:column}.chips{grid-template-columns:repeat(2,minmax(0,1fr))}.branch-chips{grid-template-columns:repeat(3,minmax(0,1fr))}
+.teacher-photo-box{grid-column:1/-1;border:1px solid #34434f;border-radius:14px;padding:12px;background:#0a1015}
+.teacher-photo-title{font-weight:800;color:#f0c86b;margin-bottom:9px}
+.teacher-photo-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.teacher-photo-actions button{min-height:46px;border-radius:12px;border:1px solid #3b4a56;background:#0d1419;color:#fff;cursor:pointer;font:inherit}
+.teacher-photo-preview{display:none;width:100%;max-height:250px;object-fit:cover;border-radius:14px;margin-top:10px;border:1px solid #3b4a56}
+.teacher-photo-note{font-size:11px;color:#9eabb5;margin-top:8px}
+.teacher-photo-remove{display:none!important;margin-top:8px;background:#4a1620!important;color:#ffd5db!important;border-color:#7f2b3b!important}}</style><script src="ha-theme.js"></script><link rel="stylesheet" href="ha-theme.css"></head><body><div class="wrap"><div class="top"><a class="back" href="courses.html">← الدورات</a><b>HA Marketing</b><a class="back" href="teacher-my-classes.html">📚 صفوفي</a></div><h1>👨‍🏫 واجهة المدرس</h1><div id="gate" class="status">جاري التحقق...</div>
 <section id="profileBox" class="box" hidden><h2>بيانات المدرس</h2><div class="grid"><input id="displayName" placeholder="اسم المدرس"><input id="teacherSubject" placeholder="المادة / الاختصاص">
 <div class="multi-block">
   <div class="multi-title">📚 الصفوف التي تدرّسها</div>
@@ -35,7 +49,19 @@
     <div class="chip"><input type="checkbox" id="tb_literary" value="أدبي"><label for="tb_literary">أدبي</label></div>
     <div class="chip"><input type="checkbox" id="tb_vocational" value="مهني"><label for="tb_vocational">مهني</label></div>
   </div>
-</div><input id="teacherLocation" placeholder="المنطقة / المحافظة"><input id="teacherImage" class="full" placeholder="رابط الصورة (اختياري)"><div class="full" style="display:flex;gap:8px;align-items:center"><button type="button" onclick="setTeacherLocation()">📍 تحديد موقعي</button><span id="teacherLocStatus" style="font-size:11px;color:#aeb7bf">الموقع يساعد الطلاب يشوفون المدرسين الأقرب.</span></div><textarea id="teacherBio" class="full" placeholder="نبذة مختصرة"></textarea><button class="gold full" onclick="saveTeacherProfile()">حفظ وإرسال للمراجعة</button></div></section>
+</div><input id="teacherLocation" placeholder="المنطقة / المحافظة">
+<div class="teacher-photo-box">
+  <div class="teacher-photo-title">📷 صورة المدرس <span style="font-size:11px;color:#9eabb5">(اختياري)</span></div>
+  <div class="teacher-photo-actions">
+    <button type="button" onclick="document.getElementById('teacherCameraInput').click()">📸 التقاط صورة</button>
+    <button type="button" onclick="document.getElementById('teacherFileInput').click()">🖼️ اختيار من الملفات</button>
+  </div>
+  <input id="teacherCameraInput" type="file" accept="image/*" capture="environment" hidden>
+  <input id="teacherFileInput" type="file" accept="image/*" hidden>
+  <img id="teacherImagePreview" class="teacher-photo-preview" alt="معاينة صورة المدرس">
+  <button id="teacherPhotoRemove" class="teacher-photo-remove" type="button" onclick="removeTeacherPhoto()">🗑️ حذف الصورة</button>
+  <div class="teacher-photo-note">تقدر تلتقط صورة مباشرة أو تختار صورة من جهازك. الصورة اختيارية.</div>
+</div><div class="full" style="display:flex;gap:8px;align-items:center"><button type="button" onclick="setTeacherLocation()">📍 تحديد موقعي</button><span id="teacherLocStatus" style="font-size:11px;color:#aeb7bf">الموقع يساعد الطلاب يشوفون المدرسين الأقرب.</span></div><textarea id="teacherBio" class="full" placeholder="نبذة مختصرة"></textarea><button class="gold full" onclick="saveTeacherProfile()">حفظ وإرسال للمراجعة</button></div></section>
 <section id="manage" hidden><div class="box"><h2>➕ إنشاء كلاس</h2><div class="grid"><select id="classMode"><option value="online">أونلاين</option><option value="inperson">حضوري</option><option value="both">كلاهما</option></select><select id="classGrade"><option value="primary1">الأول الابتدائي</option><option value="primary2">الثاني الابتدائي</option><option value="primary3">الثالث الابتدائي</option><option value="primary4">الرابع الابتدائي</option><option value="primary5">الخامس الابتدائي</option><option value="primary6">السادس الابتدائي</option><option value="middle1">الأول المتوسط</option><option value="middle2">الثاني المتوسط</option><option value="middle3">الثالث المتوسط</option><option value="prep4">الرابع الإعدادي</option><option value="prep5">الخامس الإعدادي</option><option value="prep6">السادس الإعدادي</option></select><select id="classBranch"><option value="">بدون فرع</option><option>علمي</option><option>أدبي</option><option>مهني</option></select><input id="className" placeholder="اسم الكلاس"><input id="classSubject" placeholder="المادة"><input id="onlineUrl" placeholder="رابط الأونلاين (اختياري)"><input id="locationText" placeholder="مكان الحضور (اختياري)"><textarea id="classDesc" class="full" placeholder="وصف الكلاس"></textarea><button class="gold full" onclick="createClass()">إنشاء الكلاس</button></div></div><div class="box"><h2>📩 طلبات الطلاب</h2><div id="studentRequests">جاري التحميل...</div></div><div class="box"><h2>كلاساتي وإرسال الدعوات</h2><div id="classes">جاري التحميل...</div></div></section></div>
 <script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,profile=null,teacherLat=null,teacherLng=null;const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const G={primary1:'الأول الابتدائي',primary2:'الثاني الابتدائي',primary3:'الثالث الابتدائي',primary4:'الرابع الابتدائي',primary5:'الخامس الابتدائي',primary6:'السادس الابتدائي',middle1:'الأول المتوسط',middle2:'الثاني المتوسط',middle3:'الثالث المتوسط',prep4:'الرابع الإعدادي',prep5:'الخامس الإعدادي',prep6:'السادس الإعدادي'};
 function checkedValues(rootId){
@@ -65,13 +91,82 @@ function applyTeacherSelectionsToClassForm(){
   }
 }
 
-async function init(){const {data:{session}}=await db.auth.getSession();if(!session)return location.href='login.html';me=session.user;const {data,error}=await db.from('study_teachers').select('*').eq('user_id',me.id).maybeSingle();if(error){gate.textContent=error.message;return}profile=data||null;if(!profile){gate.textContent='سجل بياناتك كمدرس أولاً، وبعد موافقة الإدارة تقدر تنشئ الكلاسات وترسل الدعوات.';profileBox.hidden=false;return}displayName.value=profile.display_name||'';teacherSubject.value=profile.subject||'';setCheckedValues('teacherGrades',profile.grade_keys||[]);setCheckedValues('teacherBranches',profile.branches||[]);teacherLocation.value=profile.location_text||'';teacherImage.value=profile.image_url||'';teacherBio.value=profile.bio||'';teacherLat=profile.lat??null;teacherLng=profile.lng??null;applyTeacherSelectionsToClassForm();if(teacherLat!=null&&teacherLng!=null)teacherLocStatus.textContent='✅ موقعك محفوظ';profileBox.hidden=false;if(!profile.is_approved||!profile.is_active){gate.innerHTML='<span class="pending">⏳ حساب المدرس بانتظار موافقة الإدارة.</span>';return}gate.innerHTML='<span class="ok">✅ حساب مدرس معتمد — تقدر تنشئ كلاسات وترسل دعوات.</span>';manage.hidden=false;loadClasses();loadStudentRequests()}
+
+let teacherImageData=null;
+const teacherCameraInput=document.getElementById('teacherCameraInput');
+const teacherFileInput=document.getElementById('teacherFileInput');
+const teacherImagePreview=document.getElementById('teacherImagePreview');
+const teacherPhotoRemove=document.getElementById('teacherPhotoRemove');
+
+async function teacherFileToDataUrl(file,maxSide=1000,quality=.74){
+  if(!file)return null;
+  if(!file.type.startsWith('image/'))throw new Error('الملف المختار ليس صورة');
+  if(file.size>10*1024*1024)throw new Error('حجم الصورة كبير جداً. اختر صورة أصغر من 10MB');
+
+  const raw=await new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(new Error('تعذر قراءة الصورة'));
+    r.readAsDataURL(file);
+  });
+
+  const img=await new Promise((resolve,reject)=>{
+    const im=new Image();
+    im.onload=()=>resolve(im);
+    im.onerror=()=>reject(new Error('تعذر فتح الصورة'));
+    im.src=raw;
+  });
+
+  let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+  const scale=Math.min(1,maxSide/Math.max(w,h));
+  w=Math.max(1,Math.round(w*scale));
+  h=Math.max(1,Math.round(h*scale));
+
+  const canvas=document.createElement('canvas');
+  canvas.width=w;canvas.height=h;
+  canvas.getContext('2d').drawImage(img,0,0,w,h);
+  return canvas.toDataURL('image/jpeg',quality);
+}
+
+function showTeacherPhoto(data){
+  if(data){
+    teacherImagePreview.src=data;
+    teacherImagePreview.style.display='block';
+    teacherPhotoRemove.style.setProperty('display','block','important');
+  }else{
+    teacherImagePreview.removeAttribute('src');
+    teacherImagePreview.style.display='none';
+    teacherPhotoRemove.style.setProperty('display','none','important');
+  }
+}
+
+async function handleTeacherPhoto(file){
+  if(!file)return;
+  try{
+    teacherImageData=await teacherFileToDataUrl(file);
+    showTeacherPhoto(teacherImageData);
+  }catch(e){
+    alert(e.message||String(e));
+  }
+}
+
+teacherCameraInput?.addEventListener('change',()=>handleTeacherPhoto(teacherCameraInput.files?.[0]));
+teacherFileInput?.addEventListener('change',()=>handleTeacherPhoto(teacherFileInput.files?.[0]));
+
+function removeTeacherPhoto(){
+  teacherImageData=null;
+  if(teacherCameraInput)teacherCameraInput.value='';
+  if(teacherFileInput)teacherFileInput.value='';
+  showTeacherPhoto(null);
+}
+
+async function init(){const {data:{session}}=await db.auth.getSession();if(!session)return location.href='login.html';me=session.user;const {data,error}=await db.from('study_teachers').select('*').eq('user_id',me.id).maybeSingle();if(error){gate.textContent=error.message;return}profile=data||null;if(!profile){gate.textContent='سجل بياناتك كمدرس أولاً، وبعد موافقة الإدارة تقدر تنشئ الكلاسات وترسل الدعوات.';profileBox.hidden=false;return}displayName.value=profile.display_name||'';teacherSubject.value=profile.subject||'';setCheckedValues('teacherGrades',profile.grade_keys||[]);setCheckedValues('teacherBranches',profile.branches||[]);teacherLocation.value=profile.location_text||'';teacherImageData=profile.image_url||null;showTeacherPhoto(teacherImageData);teacherBio.value=profile.bio||'';teacherLat=profile.lat??null;teacherLng=profile.lng??null;applyTeacherSelectionsToClassForm();if(teacherLat!=null&&teacherLng!=null)teacherLocStatus.textContent='✅ موقعك محفوظ';profileBox.hidden=false;if(!profile.is_approved||!profile.is_active){gate.innerHTML='<span class="pending">⏳ حساب المدرس بانتظار موافقة الإدارة.</span>';return}gate.innerHTML='<span class="ok">✅ حساب مدرس معتمد — تقدر تنشئ كلاسات وترسل دعوات.</span>';manage.hidden=false;loadClasses();loadStudentRequests()}
 function setTeacherLocation(){if(!navigator.geolocation)return alert('تحديد الموقع غير مدعوم');teacherLocStatus.textContent='جاري تحديد الموقع...';navigator.geolocation.getCurrentPosition(p=>{teacherLat=p.coords.latitude;teacherLng=p.coords.longitude;teacherLocStatus.textContent='✅ تم تحديد موقعك';},()=>{teacherLocStatus.textContent='تعذر تحديد الموقع — فعّل GPS واسمح للموقع';},{enableHighAccuracy:true,timeout:12000,maximumAge:60000})}
-async function saveTeacherProfile(){if(!me)return;const payload={user_id:me.id,display_name:displayName.value.trim(),subject:teacherSubject.value.trim()||null,grade_keys:checkedValues('teacherGrades'),branches:checkedValues('teacherBranches'),image_url:teacherImage.value.trim()||null,bio:teacherBio.value.trim()||null,location_text:teacherLocation.value.trim()||null,lat:teacherLat,lng:teacherLng};if(!payload.display_name)return alert('اكتب اسم المدرس');if(!payload.grade_keys.length)return alert('اختار صف واحد على الأقل');const {error}=await db.from('study_teachers').upsert(payload,{onConflict:'user_id'});if(error)return alert(error.message);alert('تم حفظ البيانات وإرسالها للمراجعة');applyTeacherSelectionsToClassForm();init()}
+async function saveTeacherProfile(){if(!me)return;const payload={user_id:me.id,display_name:displayName.value.trim(),subject:teacherSubject.value.trim()||null,grade_keys:checkedValues('teacherGrades'),branches:checkedValues('teacherBranches'),image_url:teacherImageData||null,bio:teacherBio.value.trim()||null,location_text:teacherLocation.value.trim()||null,lat:teacherLat,lng:teacherLng};if(!payload.display_name)return alert('اكتب اسم المدرس');if(!payload.grade_keys.length)return alert('اختار صف واحد على الأقل');const {error}=await db.from('study_teachers').upsert(payload,{onConflict:'user_id'});if(error)return alert(error.message);alert('تم حفظ البيانات وإرسالها للمراجعة');applyTeacherSelectionsToClassForm();init()}
 document.querySelectorAll('#teacherGrades input,#teacherBranches input').forEach(x=>x.addEventListener('change',applyTeacherSelectionsToClassForm));
 async function createClass(){if(!profile?.is_approved)return alert('يجب اعتماد حساب المدرس أولاً');const grade=classGrade.value;const payload={teacher_user_id:me.id,mode:classMode.value,grade_key:grade,grade_name:G[grade]||grade,branch:grade.startsWith('prep')?(classBranch.value||null):null,class_name:className.value.trim(),subject:classSubject.value.trim()||profile.subject||null,online_url:onlineUrl.value.trim()||null,location_text:locationText.value.trim()||null,description:classDesc.value.trim()||null,is_active:true};if(!payload.class_name)return alert('اكتب اسم الكلاس');const {error}=await db.from('study_classes').insert(payload);if(error)return alert(error.message);className.value='';classSubject.value='';onlineUrl.value='';locationText.value='';classDesc.value='';loadClasses()}
-async function loadClasses(){const {data,error}=await db.from('study_classes').select('*').eq('teacher_user_id',me.id).order('created_at',{ascending:false});if(error){classes.innerHTML=esc(error.message);return}classes.innerHTML=(data||[]).map(c=>`<div class="class"><div class="row"><div><b>${esc(c.class_name)}</b><div style="color:#aeb7bf;font-size:12px;margin-top:4px">${esc(G[c.grade_key]||c.grade_name)}${c.branch?' • '+esc(c.branch):''} • ${c.mode==='online'?'أونلاين':c.mode==='inperson'?'حضوري':'كلاهما'}</div></div><a class="btn" href="study-class.html?class=${c.id}">فتح</a></div><div class="invite"><input id="invite_${c.id}" type="email" placeholder="إيميل الطالب"><button class="gold" onclick="sendInvite(${c.id})">إرسال دعوة</button></div><div id="invStatus_${c.id}" style="font-size:11px;color:#aeb7bf;margin-top:6px"></div></div>`).join('')||'<div class="status">ما عندك كلاسات بعد.</div>'}
-async function sendInvite(classId){const el=document.getElementById('invite_'+classId);const email=(el.value||'').trim().toLowerCase();if(!email)return alert('اكتب إيميل الطالب');const {data,error}=await db.rpc('send_study_class_invite',{p_class_id:classId,p_email:email});const st=document.getElementById('invStatus_'+classId);if(error){st.textContent='❌ '+error.message;return}st.textContent='✅ تم إرسال الدعوة إلى '+email;el.value=''}
+async function loadClasses(){const {data,error}=await db.from('study_classes').select('*').eq('teacher_user_id',me.id).order('created_at',{ascending:false});if(error){classes.innerHTML=esc(error.message);return}classes.innerHTML=(data||[]).map(c=>`<div class="class"><div class="row"><div><b>${esc(c.class_name)}</b><div style="color:#aeb7bf;font-size:12px;margin-top:4px">${esc(G[c.grade_key]||c.grade_name)}${c.branch?' • '+esc(c.branch):''} • ${c.mode==='online'?'أونلاين':c.mode==='inperson'?'حضوري':'كلاهما'}</div></div><a class="btn" href="study-class.html?class=${c.id}">فتح</a></div><div class="invite"><input id="invite_${c.id}" type="text" inputmode="text" autocomplete="off" placeholder="معرّف الطالب أو رقم الموبايل"><button class="gold" onclick="sendInvite(${c.id})">إرسال دعوة</button></div><div id="invStatus_${c.id}" style="font-size:11px;color:#aeb7bf;margin-top:6px"></div></div>`).join('')||'<div class="status">ما عندك كلاسات بعد.</div>'}
+async function sendInvite(classId){const el=document.getElementById('invite_'+classId);const identifier=(el.value||'').trim();if(!identifier)return alert('اكتب معرّف الطالب أو رقم موبايله');const st=document.getElementById('invStatus_'+classId);st.textContent='جاري إرسال الدعوة...';const {data,error}=await db.rpc('send_study_class_invite_by_identifier',{p_class_id:classId,p_identifier:identifier});if(error){st.textContent='❌ '+error.message;return}const label=(data&&typeof data==='object'&&(data.display_name||data.username||data.phone))||identifier;st.textContent='✅ تم إرسال الدعوة إلى '+label;el.value=''}
 async function loadStudentRequests(){const el=document.getElementById('studentRequests');if(!el)return;const {data,error}=await db.from('study_class_requests').select('id,class_id,student_user_id,status,created_at').eq('teacher_user_id',me.id).eq('status','pending').order('created_at',{ascending:false});if(error){el.innerHTML='<div class="status">'+esc(error.message)+'</div>';return}const rows=data||[];if(!rows.length){el.innerHTML='<div class="status">لا توجد طلبات انضمام جديدة.</div>';return}const classIds=[...new Set(rows.map(x=>x.class_id))];let cmap={};if(classIds.length){const c=await db.from('study_classes').select('id,class_name,grade_name,subject').in('id',classIds);(c.data||[]).forEach(x=>cmap[x.id]=x)}el.innerHTML=rows.map(r=>{const c=cmap[r.class_id]||{};return `<div class="class"><div><b>👨‍🎓 طلب طالب جديد</b><div style="color:#aeb7bf;font-size:12px;margin-top:5px">${esc(c.class_name||'الكلاس')} • ${esc(c.subject||'')} • ${esc(c.grade_name||'')}</div><div style="color:#82909b;font-size:10px;margin-top:5px">معرّف الطالب: ${esc(r.student_user_id)}</div></div><div class="row" style="margin-top:10px"><button class="gold" onclick="respondRequest(${r.id},true)">✅ قبول</button><button onclick="respondRequest(${r.id},false)">✖ رفض</button></div></div>`}).join('')}
 async function respondRequest(id,accept){const {data,error}=await db.rpc('respond_study_class_request',{p_request_id:id,p_accept:accept});if(error)return alert(error.message);alert(accept?'✅ تم قبول الطالب وإضافته للصف':'تم رفض الطلب');loadStudentRequests()}
 init();</script></body></html>
