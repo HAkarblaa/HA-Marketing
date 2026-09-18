@@ -45,6 +45,7 @@ h1{text-align:center;margin:20px 0 8px;color:#f0c86b}
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="wrap">
@@ -75,9 +76,33 @@ h1{text-align:center;margin:20px 0 8px;color:#f0c86b}
       <b>كلاهما</b>
       <small>أونلاين وحضوري</small>
     </a>
+
+    <a id="myClassesCard" class="box" href="teacher-my-classes.html" style="display:none">
+      <div class="ico">📚</div>
+      <b>صفوفي</b>
+      <small>إدارة الصفوف والمحتوى والطلاب</small>
+    </a>
   </div>
 
-  <a class="teacher-link" href="teacher-classes.html">👨‍🏫 واجهة المدرس — إدارة الصفوف والدعوات</a>
+  <a id="teacherEntry" class="teacher-link" href="teacher-classes.html">👨‍🏫 تسجيل / إدارة حساب المدرس</a>
 </div>
+
+<script>
+const courseDb=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+(async()=>{
+  try{
+    const {data:{session}}=await courseDb.auth.getSession();
+    if(!session)return;
+    const {data:t}=await courseDb.from('study_teachers').select('user_id,is_approved,is_active').eq('user_id',session.user.id).maybeSingle();
+    if(t){
+      const card=document.getElementById('myClassesCard');
+      const entry=document.getElementById('teacherEntry');
+      if(card)card.style.display='flex';
+      if(entry)entry.textContent=t.is_approved&&t.is_active?'👨‍🏫 إعدادات حساب المدرس':'⏳ حساب المدرس — متابعة حالة الاعتماد';
+    }
+  }catch(e){console.warn(e)}
+})();
+</script>
+
 </body>
 </html>
