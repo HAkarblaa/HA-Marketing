@@ -538,9 +538,39 @@ html[data-ha-theme="light"] .category h2{
  color:#f4d37c;
 }
 
+
+/* تكبير محتوى المربعات */
+.top-action span{
+ font-size:48px!important;
+}
+.top-action b{
+ font-size:18px!important;
+}
+.category .icon{
+ width:65px!important;
+ height:65px!important;
+ font-size:34px!important;
+}
+.category h2{
+ font-size:16px!important;
+}
+.qicon{
+ width:65px!important;
+ height:65px!important;
+ font-size:35px!important;
+}
+
+
+/* ===== متاجري داخل واجهة التسوق ===== */
+.top-actions.has-my-stores{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#myStoresAction[hidden]{display:none!important}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="page">
@@ -571,7 +601,8 @@ html[data-ha-theme="light"] .category h2{
 </section>
 
 <section class="top-actions">
-<a class="top-action" href="#" onclick="openStoreMenu();return false;"><span>🏪</span><b>إضافة متجر</b></a>
+<a class="top-action" href="marketplace-onboarding.html"><span>🏪</span><b>إضافة متجر</b></a>
+<a id="myStoresAction" class="top-action" href="my-stores.html" hidden><span>🏬</span><b>متاجري</b></a>
 <a class="top-action" href="cart.html"><span>🛒</span><b>السلة</b></a>
 <a class="top-action" href="#" onclick="openSearch();return false;"><span>🔍</span><b>البحث</b></a>
 </section>
@@ -610,15 +641,6 @@ function toggleStoreMenu(){
  if(x)x.classList.toggle('open');
 }
 </script>
-
-
-<div id="storePopup" class="store-popup">
-<div class="store-box">
-<a href="marketplace-onboarding.html">🏪 إضافة متجر</a>
-<a href="#" onclick="openAddProduct();return false;">📦 إضافة المنتجات</a>
-</div>
-</div>
-
 <div id="searchPopup" class="store-popup">
 <div class="store-box">
 <div class="search-box">
@@ -633,9 +655,6 @@ function toggleStoreMenu(){
 </div>
 
 <script>
-function openStoreMenu(){
- document.getElementById('storePopup').classList.add('open');
-}
 function openSearch(){
  document.getElementById('searchPopup').classList.add('open');
 }
@@ -656,6 +675,42 @@ function openAddProduct(){
         window.location.href="marketplace-onboarding.html";
     }
 }
+</script>
+
+
+<script>
+(async function(){
+  try{
+    if(!window.supabase) return;
+
+    const db = window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+
+    const {data:{session}} = await db.auth.getSession();
+    const user = session?.user;
+    if(!user || user.is_anonymous) return;
+
+    const {data,error} = await db
+      .from('shop_businesses')
+      .select('id')
+      .eq('owner_user_id',user.id)
+      .limit(1);
+
+    if(error) return;
+
+    if(Array.isArray(data) && data.length){
+      const action = document.getElementById('myStoresAction');
+      const actions = document.querySelector('.top-actions');
+      if(action) action.hidden = false;
+      if(actions) actions.classList.add('has-my-stores');
+    }
+  }catch(e){
+    console.warn('my stores action',e);
+  }
+})();
 </script>
 
 </body></html>
