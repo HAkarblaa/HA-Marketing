@@ -165,6 +165,43 @@ html[data-ha-theme="dark"] .store-action small{
   }
 }
 
+
+/* ===== HA SHOP COMPACT FINAL CARD STYLE ===== */
+.quick{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.qcard{
+  aspect-ratio:1/1!important;
+  min-height:0!important;
+  border-radius:22px!important;
+  padding:10px!important;
+  justify-content:center!important;
+}
+.qicon{
+  width:52px!important;
+  height:52px!important;
+  font-size:28px!important;
+}
+.qcard h3{
+  font-size:14px!important;
+  color:#f4c45f!important;
+}
+.store-action,.category{
+  transition:.2s ease;
+}
+.store-action:hover,.category:hover{
+  transform:translateY(-3px);
+}
+html[data-ha-theme="light"] .qcard h3,
+html[data-ha-theme="light"] .category h2{
+  color:#102235!important;
+}
+html[data-ha-theme="light"] .qcard,
+html[data-ha-theme="light"] .category{
+  background:linear-gradient(145deg,#fff,#edf5ff)!important;
+}
+
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
