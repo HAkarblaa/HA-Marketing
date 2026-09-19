@@ -104,6 +104,80 @@ body{padding-bottom:86px}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+
+<style id="transport-color-fix">
+/* إصلاح ألوان صفحة النقل فقط - بدون تغيير الوظائف */
+html,body{
+  background:#050607 !important;
+  color:#f7f7f7 !important;
+}
+body{
+  background:
+    radial-gradient(circle at 50% -120px,rgba(242,181,68,.10),transparent 360px),
+    #050607 !important;
+}
+.wrap{
+  color:#f7f7f7 !important;
+}
+.wrap > h1{
+  color:#f4bd50 !important;
+  text-shadow:none !important;
+}
+.wrap > .subtitle{
+  color:#d6d6d6 !important;
+}
+.grid .card{
+  background:linear-gradient(145deg,#111315,#0b0d0f) !important;
+  color:#ffffff !important;
+  border:1px solid rgba(242,181,68,.38) !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.32) !important;
+}
+.grid .card h2{
+  color:#f4bd50 !important;
+}
+.grid .card p{
+  color:#e1e3e5 !important;
+}
+.grid .card:visited,
+.grid .card:link{
+  color:#ffffff !important;
+}
+.transport-slider{
+  background:#0b0d0f !important;
+  border:1px solid rgba(242,181,68,.38) !important;
+}
+.transport-bottom-nav{
+  background:#080a0c !important;
+}
+.transport-bottom-nav a,
+.transport-bottom-nav button{
+  color:#e8e8e8 !important;
+}
+.transport-bottom-nav .driver-orders-nav{
+  color:#f4bd50 !important;
+}
+.transport-bottom-nav .driver-orders-nav.locked{
+  color:#9aa1a6 !important;
+}
+
+/* نافذة اختيار السائق/الزبون */
+.transport-choice-box{
+  background:#111315 !important;
+  color:#ffffff !important;
+  border:1px solid rgba(242,181,68,.45) !important;
+}
+.transport-choice-box h2{
+  color:#f4bd50 !important;
+}
+.transport-choice-box p{
+  color:#dddddd !important;
+}
+.transport-choice-close{
+  background:#25282b !important;
+  color:#ffffff !important;
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
