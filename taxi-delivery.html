@@ -77,6 +77,29 @@ h1{text-align:center;margin-bottom:8px}
 .transport-choice-close{width:100%;margin-top:10px;border:0;background:#eee;color:#111;border-radius:12px;padding:11px;font:inherit;cursor:pointer}
 @media(max-width:520px){.transport-choice-actions{grid-template-columns:1fr}.transport-choice-box{padding:18px}.transport-choice-box h2{font-size:20px}}
 
+
+/* Bottom navigation for transport section */
+body{padding-bottom:86px}
+.transport-bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:9998;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  background:rgba(8,10,12,.96);backdrop-filter:blur(16px);
+  border-top:1px solid rgba(242,181,68,.38);
+  box-shadow:0 -8px 28px rgba(0,0,0,.28);
+  padding:7px max(7px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left));
+}
+.transport-bottom-nav a,.transport-bottom-nav button{
+  appearance:none;border:0;background:transparent;color:#d9dde0;text-decoration:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:58px;border-radius:14px;font:inherit;font-size:11px;font-weight:900;cursor:pointer;
+}
+.transport-bottom-nav .nav-icon{font-size:22px;line-height:1}
+.transport-bottom-nav a:hover,.transport-bottom-nav button:hover{background:rgba(242,181,68,.08);color:#ffd46a}
+.transport-bottom-nav .driver-orders-nav{color:#ffd46a}
+.transport-bottom-nav .driver-orders-nav.locked{color:#9aa1a6}
+.transport-bottom-nav .driver-orders-nav.locked .nav-icon{filter:grayscale(1);opacity:.7}
+@media(min-width:900px){.transport-bottom-nav{left:50%;right:auto;width:min(850px,94%);transform:translateX(-50%);border:1px solid rgba(242,181,68,.35);border-bottom:0;border-radius:20px 20px 0 0}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
@@ -145,13 +168,21 @@ h1{text-align:center;margin-bottom:8px}
  </a>
 </div>
 
-<div class="driver-tools">
-  <a class="driver-open-btn" id="driverQuickOpen" href="driver.html" style="display:none!important">🚕 فتح واجهة السائق</a>
-  <a class="driver-register-btn" href="transport-registration.html">📝 تسجيل سائق / مندوب / ستوتة / حمل</a>
+<!-- التنقل صار بالشريط السفلي الثابت -->
 </div>
 
-<a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
-</div>
+
+<nav class="transport-bottom-nav" aria-label="تنقل النقل">
+  <a href="index.html" aria-label="الرئيسية">
+    <span class="nav-icon">🏠</span><span>الرئيسية</span>
+  </a>
+  <a href="transport-registration.html" aria-label="تسجيل كسائق">
+    <span class="nav-icon">🪪</span><span>تسجيل كسائق</span>
+  </a>
+  <button class="driver-orders-nav locked" id="driverOrdersNav" type="button" aria-label="طلبات السائق">
+    <span class="nav-icon">📋</span><span>طلبات السائق</span>
+  </button>
+</nav>
 
 <div class="transport-choice-overlay" id="transportChoiceOverlay" aria-hidden="true">
   <div class="transport-choice-box" role="dialog" aria-modal="true" aria-labelledby="transportChoiceTitle">
@@ -250,6 +281,11 @@ async function checkApprovedTransportDriver(force=false){
 
       const quick=document.getElementById('driverQuickOpen');
       if(quick && approvedTransportDriver)quick.style.setProperty('display','block','important');
+      const ordersNav=document.getElementById('driverOrdersNav');
+      if(ordersNav){
+        ordersNav.classList.toggle('locked',!approvedTransportDriver);
+        ordersNav.title=approvedTransportDriver?'فتح طلبات السائق حسب نوع التسجيل':'هذا القسم للسائقين المسجلين والمقبولين';
+      }
       return approvedTransportDriver;
     }catch(e){
       console.warn('Driver choice check failed:',e);
@@ -303,6 +339,17 @@ function setupTransportDriverChoice(){
     if(e.target===e.currentTarget)closeTransportChoice();
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTransportChoice()});
+
+  document.getElementById('driverOrdersNav')?.addEventListener('click',async()=>{
+    const isDriver=await checkApprovedTransportDriver();
+    if(isDriver){
+      location.href='driver.html';
+      return;
+    }
+    if(confirm('قسم الطلبات خاص بالسائقين والمندوبين المقبولين. تريد تفتح صفحة التسجيل؟')){
+      location.href='transport-registration.html';
+    }
+  });
 
   // Preload the status so normal card clicks stay fast.
   checkApprovedTransportDriver();
