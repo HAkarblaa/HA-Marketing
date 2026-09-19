@@ -236,24 +236,24 @@ a{text-decoration:none;color:inherit}.page{width:min(100%,980px);margin:auto;pad
     <button class="hero-arrow left" id="shopHeroPrev" aria-label="السابق">←</button>
     <div class="hero-slides" id="shopHeroSlides">
       <article class="hero-slide" data-link="store.html">
-        <img src="home-slide-shopping.png" alt="قسم التسوق">
-        <div class="hero-slide-content"><h3>تسوّق فاخر</h3><p>اكتشف منتجات مختارة ومتاجر أنيقة بتجربة تسوق سريعة واحترافية.</p></div>
+        <img src="shop-slide-1-main.png" alt="قسم التسوق">
+        <div class="hero-slide-content"><h3>تسوق الآن</h3><p>اكتشف المتاجر والمنتجات المميزة داخل HA Marketing.</p></div>
       </article>
-      <article class="hero-slide" data-link="taxi-delivery.html">
-        <img src="home-slide-transport.png" alt="قسم النقل والتوصيل">
-        <div class="hero-slide-content"><h3>نقل وتوصيل سريع</h3><p>تكسي ومندوب وتوصيل باحترافية مع أقسام نقل واضحة وسهلة الاستخدام.</p></div>
+      <article class="hero-slide" data-link="shop-section.html?section=clothes">
+        <img src="shop-slide-2-fashion.png" alt="الأزياء والملابس">
+        <div class="hero-slide-content"><h3>الأزياء والملابس</h3><p>ملابس وأحذية وإكسسوارات ومتاجر الأزياء.</p></div>
       </article>
-      <article class="hero-slide" data-link="entertainment.html">
-        <img src="home-slide-entertainment.png" alt="قسم الترفيه">
-        <div class="hero-slide-content"><h3>ترفيه ممتع</h3><p>ألعاب وتجارب ترفيهية ضمن واجهة جذابة تناسب المستخدمين.</p></div>
+      <article class="hero-slide" data-link="shop-section.html?section=devices">
+        <img src="shop-slide-3-electronics.png" alt="الإلكترونيات">
+        <div class="hero-slide-content"><h3>الإلكترونيات</h3><p>أجهزة وإكسسوارات وتقنيات حديثة من المتاجر.</p></div>
       </article>
-      <article class="hero-slide" data-link="study.html">
-        <img src="home-slide-study.png" alt="قسم الدراسة">
-        <div class="hero-slide-content"><h3>دراسة ومعرفة</h3><p>ملفات ودروس وخدمات تعليمية ضمن مساحة منظمة وواضحة.</p></div>
+      <article class="hero-slide" data-link="shop-section.html?section=home_appliances">
+        <img src="shop-slide-4-home.png" alt="المنزل والمطبخ">
+        <div class="hero-slide-content"><h3>المنزل والمطبخ</h3><p>أجهزة منزلية ومستلزمات البيت والمطبخ.</p></div>
       </article>
-      <article class="hero-slide" data-link="services.html">
-        <img src="home-slide-services.png" alt="قسم الخدمات">
-        <div class="hero-slide-content"><h3>خدمات متنوعة</h3><p>خدمات عملية وموثوقة مصممة لتسهيل وصول المستخدم لما يحتاجه.</p></div>
+      <article class="hero-slide" data-link="shop-section.html?section=markets">
+        <img src="shop-slide-5-beauty.png" alt="الجمال والعناية">
+        <div class="hero-slide-content"><h3>الجمال والعناية</h3><p>منتجات الجمال والعناية والمستلزمات اليومية.</p></div>
       </article>
     </div>
     <button class="hero-arrow right" id="shopHeroNext" aria-label="التالي">→</button>
@@ -514,6 +514,28 @@ document.getElementById('storeSuggestForm')?.addEventListener('submit',async e=>
   }catch(e){
     console.warn('shop role nav:', e);
   }
+})();
+</script>
+
+<script>
+(async function loadShopSliderImages(){
+  try{
+    if(!window.supabase) return;
+    const db=window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+    const defaults=['shop-slide-1-main.png','shop-slide-2-fashion.png','shop-slide-3-electronics.png','shop-slide-4-home.png','shop-slide-5-beauty.png'];
+    const {data,error}=await db.from('shop_slider_images').select('slot,image_url,is_active').order('slot');
+    if(error){console.warn('shop slider images:',error);return;}
+    const slides=Array.from(document.querySelectorAll('#shopHeroSlides .hero-slide'));
+    slides.forEach((slide,i)=>{
+      const row=(data||[]).find(x=>Number(x.slot)===i+1);
+      const img=slide.querySelector('img');
+      if(img) img.src=row?.image_url||defaults[i];
+    });
+  }catch(e){console.warn('shop slider images:',e);}
 })();
 </script>
 
