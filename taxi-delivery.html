@@ -51,12 +51,30 @@ h1{text-align:center;margin-bottom:8px}
 .driver-open-btn{background:linear-gradient(135deg,#ffd46a,#d99521)!important;color:#111!important;border:1px solid #ffd46a!important;box-shadow:0 8px 22px rgba(242,181,68,.22)!important}
 .driver-register-btn{background:#111!important;color:#fff!important;border:1px solid #444!important}
 @media(max-width:700px){.driver-tools{grid-template-columns:1fr;margin-top:12px}.driver-tools a{font-size:14px!important;padding:13px 9px!important}}
+
+
+/* Automatic transport banner slider - no arrows */
+.transport-slider{position:relative;width:100%;height:230px;margin:0 0 24px;border-radius:22px;overflow:hidden;background:#111;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.transport-slide{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.transport-slide.active{opacity:1;pointer-events:auto}
+.transport-slide img{display:block;width:100%;height:100%;object-fit:cover}
+.transport-slider-dots{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:7px;z-index:3;direction:ltr}
+.transport-slider-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.45);transition:.3s}
+.transport-slider-dots span.active{width:22px;border-radius:6px;background:#ffd34f}
+@media(max-width:700px){.transport-slider{height:145px;margin-bottom:16px;border-radius:16px}.transport-slider-dots{bottom:8px}.transport-slider-dots span{width:6px;height:6px}.transport-slider-dots span.active{width:18px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 </head>
 <body>
 <div class="wrap">
+<div class="transport-slider" id="transportSlider" aria-label="خدمات النقل والتوصيل">
+  <div class="transport-slide active"><img src="images/transport-slide-1.svg" alt="خدمة التكسي"></div>
+  <div class="transport-slide"><img src="images/transport-slide-2.svg" alt="خدمة المندوب"></div>
+  <div class="transport-slide"><img src="images/transport-slide-3.svg" alt="خدمة النقل والحمل"></div>
+  <div class="transport-slider-dots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
+</div>
 <h1>🚕 طلب تكسي أو مندوب</h1>
 <p class="subtitle">اختر نوع الخدمة التي تحتاجها</p>
 
@@ -119,5 +137,51 @@ h1{text-align:center;margin-bottom:8px}
 
 <a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
 </div>
+
+<script>
+const TRANSPORT_SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const TRANSPORT_SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const transportDb=supabase.createClient(TRANSPORT_SB_URL,TRANSPORT_SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+let transportTimer=null;
+
+function startTransportSlider(){
+  const slider=document.getElementById('transportSlider');
+  if(!slider)return;
+  const slides=[...slider.querySelectorAll('.transport-slide')];
+  const dots=[...slider.querySelectorAll('.transport-slider-dots span')];
+  if(!slides.length)return;
+  let current=0;
+  clearInterval(transportTimer);
+  const show=(i)=>{
+    slides[current]?.classList.remove('active');
+    dots[current]?.classList.remove('active');
+    current=(i+slides.length)%slides.length;
+    slides[current]?.classList.add('active');
+    dots[current]?.classList.add('active');
+  };
+  if(slides.length>1)transportTimer=setInterval(()=>show(current+1),3500);
+}
+
+async function loadTransportSlider(){
+  const slider=document.getElementById('transportSlider');
+  if(!slider)return;
+  try{
+    const {data,error}=await transportDb.from('transport_slider_images')
+      .select('slot,image_url,is_active')
+      .eq('is_active',true)
+      .order('slot',{ascending:true});
+    if(error)throw error;
+    const rows=(data||[]).filter(x=>x.image_url);
+    if(rows.length){
+      slider.innerHTML=rows.map((x,i)=>`<div class="transport-slide${i===0?' active':''}"><img src="${String(x.image_url).replace(/"/g,'&quot;')}" alt="صورة خدمة النقل ${i+1}"></div>`).join('')+
+        `<div class="transport-slider-dots" aria-hidden="true">${rows.map((_,i)=>`<span class="${i===0?'active':''}"></span>`).join('')}</div>`;
+    }
+  }catch(e){
+    console.warn('Transport slider fallback:',e?.message||e);
+  }
+  startTransportSlider();
+}
+loadTransportSlider();
+</script>
 </body>
 </html>
