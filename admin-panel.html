@@ -163,7 +163,7 @@ async function init(){
  if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }
-function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('')}
+function renderSections(){let html=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('');if(adminRow?.is_super_admin){html='<div class="section-card"><div class="ico">🖼️</div><h3>صور الواجهة الرئيسية</h3><p>تبديل الصور الثلاث المتحركة في الصفحة الرئيسية</p><a href="admin-home-slider.html">فتح الإدارة</a></div>'+html;}sectionCards.innerHTML=html}
 function renderPerms(){permGrid.innerHTML=SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
 function renderShopPerms(){shopPermGrid.innerHTML=SHOP_SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="shop-sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
 function selectedShopPerms(){return [...document.querySelectorAll('.shop-sec:checked')].map(x=>x.value)}
