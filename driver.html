@@ -2103,6 +2103,131 @@ html[data-ha-theme="light"] .shop-courier-link b{
 .ha-live-entity.destination{background:#eefbed}
 .ha-live-entity span{position:relative;z-index:2}
 
+
+/* ===== HA DRIVER SIMPLE UI 2026-09-19 ===== */
+body{padding-bottom:84px!important}
+.app{padding-bottom:90px!important}
+.driver-minimal-head{
+  display:block!important;
+  grid-template-columns:none!important;
+  padding:15px 16px 13px!important;
+  text-align:center!important;
+}
+.driver-minimal-head .head-brand{width:100%!important}
+.driver-minimal-head h1{font-size:22px!important}
+.driver-minimal-head small{font-size:12px!important}
+.driver-minimal-status{
+  margin:12px 12px 8px;
+  padding:13px 14px;
+  border:1px solid rgba(242,181,68,.42);
+  border-radius:20px;
+  background:linear-gradient(145deg,#0d1317,#090d10);
+}
+.driver-minimal-status-main{display:flex;align-items:center;gap:11px}
+.driver-minimal-car{
+  width:48px;height:48px;border-radius:15px;display:grid;place-items:center;
+  font-size:26px;background:#11181c;border:1px solid rgba(242,181,68,.35)
+}
+.driver-minimal-status-main b{display:block;font-size:15px}
+.driver-minimal-status-main small{display:block;color:#9ea6ab;margin-top:5px;font-size:11px}
+.driver-minimal-status-main small i{
+  display:inline-block;width:8px;height:8px;border-radius:50%;background:#35c76f;
+  box-shadow:0 0 10px rgba(53,199,111,.85);margin-left:5px
+}
+.driver-hidden-data,.driver-compat-hidden,#haDriverBalance,.ha-balance-modal,.summary{display:none!important}
+
+/* قبل قبول الطلب: تظهر الطلبات فقط */
+body:not(.driver-active-trip) .map-shell{display:none!important}
+body:not(.driver-active-trip) #acceptedPanel{display:none!important}
+body.driver-active-trip #requestsSection{display:none!important}
+body.driver-active-trip .driver-minimal-status{display:none!important}
+
+.driver-new-requests{padding:8px 12px 18px!important}
+.request-section-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important}
+.request-section-head h2{font-size:19px!important;margin:5px 0 12px!important}
+.request-pager{font-size:11px!important;color:#ffd46a!important;border:1px solid rgba(242,181,68,.28)!important;border-radius:999px!important;padding:6px 9px!important;background:rgba(242,181,68,.06)!important}
+.driver-simple-request{padding:14px!important;border-radius:20px!important}
+.driver-simple-request .request-new-chip{font-size:11px!important}
+.driver-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+.driver-request-item{
+  padding:12px;border-radius:14px;background:#090e11;border:1px solid rgba(255,255,255,.08);
+  min-height:72px
+}
+.driver-request-item.wide{grid-column:1/-1}
+.driver-request-item small{display:block;color:#b99758;font-size:10px;margin-bottom:7px}
+.driver-request-item b{display:block;color:#fff;font-size:13px;line-height:1.55;word-break:break-word}
+.request-actions{grid-template-columns:1fr 1fr!important;gap:9px!important;margin-top:12px!important}
+.request-actions button{padding:14px!important;border-radius:14px!important;font-size:15px!important}
+#rejectBtn{display:block!important;background:#171012!important;color:#ff6a6d!important;border:1px solid rgba(255,77,79,.7)!important}
+#changeRequestBtn{display:none!important}
+
+/* بعد القبول: الخريطة + موقع الزبون + بدء/إنهاء فقط */
+body.driver-active-trip .map-shell{
+  display:block!important;width:calc(100% - 20px)!important;margin:10px 10px 0!important;
+  border-radius:20px!important;padding:2px!important
+}
+body.driver-active-trip #map{height:57vh!important;min-height:390px!important;max-height:620px!important;border-radius:18px!important}
+.driver-active-simple{padding:10px 12px 18px!important}
+.driver-active-simple.show{display:block!important}
+.driver-active-title{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:9px;padding:0 2px
+}
+.driver-active-title small{display:block;color:#b8bfc3;font-size:10px;margin-bottom:3px}
+.driver-active-title h2{margin:0!important;border:0!important;padding:0!important;font-size:18px!important;color:#fff!important}
+.driver-active-title>span{font-size:28px}
+.driver-active-location{
+  padding:13px 14px;border:1px solid rgba(242,181,68,.4);border-radius:16px;
+  background:linear-gradient(145deg,#0d1317,#090d10);margin-bottom:10px
+}
+.driver-active-location small{display:block;color:#b99758;font-size:10px;margin-bottom:7px}
+.driver-active-location b{display:block;font-size:13px;line-height:1.55}
+.driver-simple-trip-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}
+.driver-simple-trip-actions button{grid-column:auto!important;padding:14px!important;border-radius:14px!important;font-size:15px!important;font-weight:900!important}
+.driver-simple-trip-actions .start-trip{background:linear-gradient(135deg,#ffd46a,#d99521)!important;color:#111!important}
+.driver-simple-trip-actions .finish-trip{background:#1f9a50!important;color:#fff!important}
+.driver-simple-trip-actions button:disabled{opacity:.38!important}
+
+/* فقط زرين بالأسفل */
+.bottom-nav,.shop-courier-link{display:none!important}
+.driver-simple-footer{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:7000;
+  width:min(760px,100%);display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  padding:8px 10px max(8px,env(safe-area-inset-bottom));
+  background:rgba(5,7,8,.97);border-top:1px solid rgba(242,181,68,.42);backdrop-filter:blur(16px)
+}
+.driver-simple-footer a,.driver-simple-footer button{
+  min-height:55px;border-radius:15px;border:1px solid rgba(242,181,68,.24);
+  background:#0d1317;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;
+  gap:8px;font-size:12px;font-weight:800;cursor:pointer
+}
+.driver-simple-footer span{font-size:20px}.driver-simple-footer b{font-size:12px}
+
+.driver-history-sheet{
+  position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.7);display:none;
+  align-items:flex-end;justify-content:center
+}
+.driver-history-sheet.show{display:flex}
+.driver-history-card{
+  width:min(760px,100%);max-height:78vh;overflow:hidden;background:#0c1114;color:#fff;
+  border:1px solid rgba(242,181,68,.45);border-radius:24px 24px 0 0;padding:14px;
+  box-shadow:0 -18px 50px rgba(0,0,0,.55)
+}
+.driver-history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.driver-history-head small{color:#b99758;font-size:10px}.driver-history-head h3{margin:3px 0 0;font-size:18px}
+.driver-history-head button{width:38px;height:38px;border-radius:50%;border:1px solid #343c41;background:#141b1f;color:#fff;font-size:18px}
+.driver-history-list{max-height:62vh;overflow:auto;padding-bottom:10px}
+.driver-history-empty{text-align:center;padding:34px 10px;color:#9da5aa}
+.driver-history-item{border:1px solid rgba(255,255,255,.08);background:#090e11;border-radius:15px;padding:11px;margin:8px 0}
+.driver-history-item .topline{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.driver-history-item .topline b{font-size:13px}.driver-history-item .status{font-size:10px;color:#ffd46a}
+.driver-history-item .line{font-size:11px;color:#b7bdc1;line-height:1.6;margin-top:6px}
+
+@media(max-width:620px){
+  body.driver-active-trip #map{height:55vh!important;min-height:365px!important}
+  .driver-request-item{min-height:68px;padding:11px}
+}
+
 </style>
 
 <script src="ha-theme.js"></script>
@@ -2114,31 +2239,23 @@ html[data-ha-theme="light"] .shop-courier-link b{
 <body>
 
 <div class="app">
-  <header class="head">
-    <a class="head-home" href="index.html" aria-label="الرئيسية">🏠</a>
+  <header class="head driver-minimal-head">
     <div class="head-brand">
-      <h1>السائق</h1>
-      <small>طلبات النقل</small>
+      <h1>واجهة السائق</h1>
+      <small>الطلبات الجديدة</small>
     </div>
-    <a class="head-back" href="javascript:history.back()" aria-label="رجوع">←</a>
   </header>
 
-  <section class="driver-hero live-hero driver-simple-hero">
-    <div class="driver-simple-top">
-      <div class="driver-profile-box">
-        <div class="driver-avatar">🚕</div>
-        <div>
-          <strong id="driverDisplayName">السائق</strong>
-          <span>جاهز لاستقبال الطلبات</span>
-        </div>
-      </div>
-
-      <div class="status-toggle">
-        <button id="availabilityBtn">متصل الآن</button>
+  <section class="driver-minimal-status">
+    <div class="driver-minimal-status-main">
+      <span class="driver-minimal-car">🚕</span>
+      <div>
+        <b id="driverDisplayName">السائق</b>
+        <small><i></i> متصل وجاهز لاستقبال الطلبات</small>
       </div>
     </div>
-
-    <!-- هذه البيانات تبقى موجودة حتى لا يتغير منطق الصفحة، لكنها مخفية من الواجهة البسيطة -->
+    <!-- عناصر توافق مع منطق الصفحة الحالي -->
+    <button id="availabilityBtn" type="button" hidden>متصل الآن</button>
     <div class="driver-hidden-data" aria-hidden="true">
       <b id="driverDisplayVehicle">🚕 —</b>
       <b id="driverDisplayColor">🎨 —</b>
@@ -2198,80 +2315,89 @@ html[data-ha-theme="light"] .shop-courier-link b{
     <div class="box"><small>السعر</small><b id="fare">—</b></div>
   </div>
 
-  <div class="section request-deck" id="requestsSection">
+  <div class="section request-deck driver-new-requests" id="requestsSection">
     <div class="request-section-head">
-      <h2>الطلب القريب</h2>
+      <h2>الطلبات الجديدة</h2>
       <span id="requestPager" class="request-pager">0 / 0</span>
     </div>
 
     <div id="requestEmptyState" class="request-empty">
       <div class="search-radar"><span></span><span></span><span></span></div>
-      <b>جاري البحث عن طلب قريب...</b>
-      <small>أقرب طلب مناسب راح يظهر هنا</small>
+      <b>ماكو طلب جديد حالياً</b>
+      <small>من يوصل طلب جديد راح يظهر هنا مباشرة</small>
     </div>
 
-    <div class="request-card request-live-card" id="requestCard">
+    <div class="request-card driver-simple-request" id="requestCard">
       <div class="request-new-chip">طلب جديد</div>
-      <div class="customer">
-        <div class="avatar request-avatar">👤</div>
-        <div class="customer-info">
-          <b id="requestCustomerName">بانتظار طلب...</b>
-          <span id="requestCustomerPhone">—</span>
-        </div>
-        <strong id="requestVehicle">🚕 —</strong>
+
+      <!-- تبقى هذه العناصر للمنطق الحالي لكنها غير ظاهرة -->
+      <div class="driver-compat-hidden" aria-hidden="true">
+        <b id="requestCustomerName">الزبون</b>
+        <span id="requestCustomerPhone">—</span>
+        <b id="requestPickupEta">—</b>
+        <b id="requestTripTime">—</b>
       </div>
 
-      <div class="route-info">
-        <div class="item"><small>🟢 الانطلاق</small><b id="requestPickup">—</b></div>
-        <div class="item"><small>🔴 الوصول</small><b id="requestDestination">—</b></div>
-        <div class="item"><small>مدة الوصول للزبون</small><b id="requestPickupEta">—</b></div>
-        <div class="item"><small>مدة الرحلة</small><b id="requestTripTime">—</b></div>
+      <div class="driver-request-grid">
+        <div class="driver-request-item wide">
+          <small>📍 موقع الزبون</small>
+          <b id="requestPickup">—</b>
+        </div>
+        <div class="driver-request-item wide">
+          <small>🏁 الوجهة</small>
+          <b id="requestDestination">—</b>
+        </div>
+        <div class="driver-request-item">
+          <small>🚘 نوع الطلب</small>
+          <b id="requestVehicle">—</b>
+        </div>
+        <div class="driver-request-item">
+          <small>📏 المسافة عنك</small>
+          <b id="requestDistanceVisible">—</b>
+        </div>
       </div>
 
       <div class="actions request-actions">
         <button id="acceptBtn" class="accept">✓ قبول</button>
-        <button id="changeRequestBtn" class="change-request">تخطي ←</button>
-        <button id="rejectBtn" class="reject" style="display:none!important">رفض</button>
+        <button id="rejectBtn" class="reject">✕ رفض</button>
+        <button id="changeRequestBtn" class="change-request driver-compat-hidden" type="button">تخطي</button>
       </div>
     </div>
   </div>
 
-  <div class="section accepted-panel" id="acceptedPanel">
-    <h2>الطلب الحالي</h2>
-    <div class="state" id="tripState">بالطريق إلى الزبون</div>
-
-    <div class="request-card">
-      <div class="customer">
-        <div class="avatar">👤</div>
-        <div class="customer-info">
-          <b id="activeCustomerName">الزبون</b>
-          <span id="activeCustomerPhone">—</span>
-        </div>
-        <strong id="currentFare">—</strong>
+  <div class="section accepted-panel driver-active-simple" id="acceptedPanel">
+    <div class="driver-active-title">
+      <div>
+        <small>الطلب الحالي</small>
+        <h2 id="tripState">بالطريق إلى الزبون</h2>
       </div>
+      <span>🚕</span>
+    </div>
 
-      <div class="contact">
-        <button id="driverDirectCallBtn" type="button">📞 اتصال مباشر</button>
-        <button id="driverAppCallBtn" type="button">☎️ اتصال التطبيق</button>
-        <button id="driverChatBtn" type="button">💬 الرسائل</button>
-      </div>
+    <div class="driver-active-location">
+      <small>📍 موقع الزبون</small>
+      <b id="activePickupLocation">—</b>
+    </div>
 
-      <div class="ride-status-box">
-        <div id="driverRideStatusLive" class="ride-status-live">بانتظار تحديث الحالة...</div>
-        <div id="driverRideStatusTimeline" class="ride-status-steps">
-          <div class="ride-status-step" data-ride-step>تم القبول</div>
-          <div class="ride-status-step" data-ride-step>وصل</div>
-          <div class="ride-status-step" data-ride-step>بدأت</div>
-          <div class="ride-status-step" data-ride-step>انتهت</div>
-        </div>
+    <!-- عناصر توافق مخفية حتى تبقى الاتصالات والحالة الداخلية تعمل بدون تغيير الخلفية -->
+    <div class="driver-compat-hidden" aria-hidden="true">
+      <b id="activeCustomerName">الزبون</b>
+      <span id="activeCustomerPhone">—</span>
+      <strong id="currentFare">—</strong>
+      <button id="driverDirectCallBtn" type="button">اتصال</button>
+      <button id="driverAppCallBtn" type="button">اتصال التطبيق</button>
+      <button id="driverChatBtn" type="button">الرسائل</button>
+      <div id="driverRideStatusLive">—</div>
+      <div id="driverRideStatusTimeline">
+        <div data-ride-step></div><div data-ride-step></div><div data-ride-step></div><div data-ride-step></div>
       </div>
+      <button id="arriveBtn" class="arrive" type="button">وصلت للزبون</button>
+      <button id="driverCancelCurrentBtn" class="reject" type="button">إلغاء الطلب</button>
+    </div>
 
-      <div class="trip-actions" style="margin-top:10px">
-        <button id="arriveBtn" class="arrive">وصلت للزبون</button>
-        <button id="startTripBtn" class="start-trip" disabled>ابدأ الرحلة</button>
-        <button id="finishTripBtn" class="finish-trip" disabled>إنهاء الرحلة</button>
-        <button id="driverCancelCurrentBtn" class="reject" type="button" style="grid-column:1/-1">إلغاء الطلب</button>
-      </div>
+    <div class="trip-actions driver-simple-trip-actions">
+      <button id="startTripBtn" class="start-trip" disabled>▶ بدء الرحلة</button>
+      <button id="finishTripBtn" class="finish-trip" disabled>✓ إنهاء الرحلة</button>
     </div>
   </div>
 </div>
@@ -2382,6 +2508,7 @@ setTimeout(centerDriverMapOnCurrentLocation,120);
 window.addEventListener('load',()=>setTimeout(centerDriverMapOnCurrentLocation,100));
 
 let available=true;
+const driverRejectedLocally=new Set();
 // استقبال طلبات التكسي مباشرة عند فتح صفحة السائق
 let currentRideId=null;
 let currentRide=null;
@@ -2550,6 +2677,8 @@ function renderPendingRide(index){
     toCustomer.textContent='—';
     requestPickupEta.textContent='—';
   }
+  const requestDistanceVisible=document.getElementById('requestDistanceVisible');
+  if(requestDistanceVisible) requestDistanceVisible.textContent=toCustomer.textContent||'—';
 
   if(ride.pickup && ride.destination){
     try{
@@ -2590,7 +2719,7 @@ function watchPendingRides(){
     const oldSelectedId=(currentRide && currentRide.status==='searching') ? currentRideId : null;
 
     pendingEntries=Object.entries(rides)
-      .filter(([,r])=>!!r?.customerUid)
+      .filter(([id,r])=>!!r?.customerUid && !driverRejectedLocally.has(id))
       .filter(([,r])=>rideMatchesThisDriver(r));
 
     sortPendingByNearest();
@@ -2765,6 +2894,8 @@ acceptBtn.onclick=async()=>{
   acceptedPanel.classList.add('show','panel-enter');
   setTimeout(()=>acceptedPanel.classList.remove('panel-enter'),520);
   tripState.textContent='بالطريق إلى الزبون';
+  startTripBtn.disabled=false;
+  finishTripBtn.disabled=true;
   currentFare.textContent=currentRide.price ? Number(currentRide.price).toLocaleString('ar-IQ')+' د.ع' : '—';
   if(window.activeCustomerName)activeCustomerName.textContent=currentRide.customer?.name||'الزبون';
   if(window.activeCustomerPhone)activeCustomerPhone.textContent=currentRide.customer?.phone||'—';
@@ -2804,14 +2935,23 @@ changeRequestBtn.onclick=()=>{
   setTimeout(()=>renderPendingRide(nextIndex),170);
 };
 
-if(window.rejectBtn)rejectBtn.onclick=async()=>{
+if(window.rejectBtn)rejectBtn.onclick=()=>{
   if(!currentRideId)return;
-  await db.ref('rides/'+currentRideId).update({status:'rejected',rejectedAt:Date.now()});
+  driverRejectedLocally.add(currentRideId);
+  pendingEntries=pendingEntries.filter(([id])=>id!==currentRideId);
   currentRideId=null;
   currentRide=null;
   currentPendingIndex=0;
-  requestCard.style.display='none';
-  watchPendingRides();
+  if(pendingEntries.length){
+    renderPendingRide(0);
+  }else{
+    requestCard.style.display='none';
+    const emptyState=document.getElementById('requestEmptyState');
+    const pager=document.getElementById('requestPager');
+    if(emptyState)emptyState.style.display='flex';
+    if(pager)pager.textContent='0 / 0';
+    nearbyCount.textContent='0';
+  }
 };
 
 arriveBtn.onclick=async()=>{
@@ -2825,15 +2965,25 @@ startTripBtn.onclick=async()=>{
   tripState.textContent='الرحلة بدأت';
   startTripBtn.disabled=true;
   finishTripBtn.disabled=false;
-  if(currentRideId) await db.ref('rides/'+currentRideId).update({status:'started',startedAt:Date.now()});
-
-  fetch(`https://router.project-osrm.org/route/v1/driving/${customer.getLatLng().lng},${customer.getLatLng().lat};${destination.getLatLng().lng},${destination.getLatLng().lat}?overview=full&geometries=geojson`)
-    .then(r=>r.json()).then(j=>{
-      if(j.code==='Ok'){
-        const layer=L.geoJSON(j.routes[0].geometry,{style:{color:'#f2b544',weight:6,opacity:.95}}).addTo(map);
-        map.fitBounds(layer.getBounds(),{padding:[30,30]});
-      }
+  if(currentRideId){
+    const now=Date.now();
+    await db.ref('rides/'+currentRideId).update({
+      status:'started',
+      arrivedAt:currentRide?.arrivedAt||now,
+      startedAt:now
     });
+    if(currentRide) currentRide.status='started';
+  }
+
+  try{
+    fetch(`https://router.project-osrm.org/route/v1/driving/${customer.getLatLng().lng},${customer.getLatLng().lat};${destination.getLatLng().lng},${destination.getLatLng().lat}?overview=full&geometries=geojson`)
+      .then(r=>r.json()).then(j=>{
+        if(j.code==='Ok'){
+          const layer=L.geoJSON(j.routes[0].geometry,{style:{color:'#f2b544',weight:6,opacity:.95}}).addTo(map);
+          map.fitBounds(layer.getBounds(),{padding:[30,30]});
+        }
+      });
+  }catch(e){}
 };
 
 finishTripBtn.onclick=async()=>{
@@ -2899,7 +3049,7 @@ async function restoreDriverRide(){
   tripState.textContent=stateText[ride.status]||'الطلب الحالي';
 
   arriveBtn.disabled=ride.status!=='accepted';
-  startTripBtn.disabled=ride.status!=='arrived';
+  startTripBtn.disabled=!['accepted','arrived'].includes(ride.status);
   finishTripBtn.disabled=ride.status!=='started';
 
   HA_LiveTracking.startDriver(currentRideId,driver);
@@ -3206,16 +3356,20 @@ window.addEventListener('load',()=>{
 });
 </script>
 
-<a href="shop-courier.html" class="shop-courier-link" aria-label="توصيل المتاجر"><span>📦</span><b>توصيل<br>المتاجر</b></a>
-
-<nav class="bottom-nav bottom-nav-five">
-  <a href="index.html"><span>🏠</span><b>الرئيسية</b></a>
-  <a href="notifications-center.html"><span>🔔</span><b>الإشعارات</b></a>
-  <a href="driver.html#requestsSection" class="active"><span>📋</span><b>الطلبات</b></a>
-  <a href="account.html"><span>👤</span><b>حسابي</b></a>
-  <a href="contact.html"><span>☎️</span><b>اتصل بنا</b></a>
+<nav class="driver-simple-footer" aria-label="تنقل السائق">
+  <button id="driverPreviousRidesBtn" type="button"><span>🕘</span><b>طلباتي السابقة</b></button>
+  <a href="index.html"><span>🏠</span><b>الرجوع للرئيسية</b></a>
 </nav>
 
+<div id="driverHistorySheet" class="driver-history-sheet" aria-hidden="true">
+  <div class="driver-history-card">
+    <div class="driver-history-head">
+      <div><small>السائق</small><h3>طلباتي السابقة</h3></div>
+      <button id="driverHistoryCloseBtn" type="button" aria-label="إغلاق">✕</button>
+    </div>
+    <div id="driverHistoryList" class="driver-history-list">جاري تحميل الطلبات...</div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -3408,6 +3562,86 @@ document.addEventListener('DOMContentLoaded',()=>{
   }catch(e){
     console.warn('driver balance',e);
   }
+})();
+</script>
+
+
+<script>
+/* ===== HA simplified driver UI + previous rides ===== */
+(function(){
+  const panel=document.getElementById('acceptedPanel');
+  const pickupBox=document.getElementById('activePickupLocation');
+
+  function syncTripMode(){
+    const active=!!panel?.classList.contains('show');
+    document.body.classList.toggle('driver-active-trip',active);
+    if(active){
+      try{
+        if(pickupBox && typeof currentRide!=='undefined' && currentRide?.pickup){
+          pickupBox.textContent=typeof coordText==='function'?coordText(currentRide.pickup):`${currentRide.pickup.lat}, ${currentRide.pickup.lng}`;
+        }
+      }catch(e){}
+      setTimeout(()=>{try{map.invalidateSize();centerDriverMapOnCurrentLocation();}catch(e){}},80);
+    }
+  }
+  if(panel){
+    new MutationObserver(syncTripMode).observe(panel,{attributes:true,attributeFilter:['class']});
+    syncTripMode();
+  }
+
+  const openBtn=document.getElementById('driverPreviousRidesBtn');
+  const closeBtn=document.getElementById('driverHistoryCloseBtn');
+  const sheet=document.getElementById('driverHistorySheet');
+  const list=document.getElementById('driverHistoryList');
+  const statusNames={finished:'مكتمل',cancelled:'ملغي',rejected:'مرفوض',started:'جارية',arrived:'وصل السائق',accepted:'مقبول'};
+
+  function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function loc(p){
+    if(!p)return '—';
+    if(p.name)return esc(p.name);
+    const lat=Number(p.lat),lng=Number(p.lng);
+    return Number.isFinite(lat)&&Number.isFinite(lng)?lat.toFixed(5)+', '+lng.toFixed(5):'—';
+  }
+  function rideType(r){
+    try{return typeof rideDisplayLabel==='function'?rideDisplayLabel(r):(r.vehicleType||'طلب نقل')}catch(e){return r.vehicleType||'طلب نقل'}
+  }
+  async function loadHistory(){
+    if(!list)return;
+    list.innerHTML='<div class="driver-history-empty">جاري تحميل الطلبات...</div>';
+    try{
+      const user=await HA_FirebaseAuth.ready();
+      const idx=(await db.ref('driverRides/'+user.uid).once('value')).val()||{};
+      const ids=Object.keys(idx).reverse().slice(0,40);
+      if(!ids.length){list.innerHTML='<div class="driver-history-empty">ما عندك طلبات سابقة بعد.</div>';return}
+      const rows=[];
+      for(const id of ids){
+        const ride=(await db.ref('rides/'+id).once('value')).val();
+        if(ride && ['finished','cancelled','rejected'].includes(ride.status)) rows.push({id,...ride});
+      }
+      rows.sort((a,b)=>(b.finishedAt||b.cancelledAt||b.createdAt||0)-(a.finishedAt||a.cancelledAt||a.createdAt||0));
+      if(!rows.length){list.innerHTML='<div class="driver-history-empty">ما عندك طلبات مكتملة أو ملغية بعد.</div>';return}
+      list.innerHTML=rows.map(r=>{
+        const when=r.finishedAt||r.cancelledAt||r.createdAt;
+        const date=when?new Date(when).toLocaleString('ar-IQ'):'—';
+        const fare=r.price?Number(r.price).toLocaleString('ar-IQ')+' د.ع':'—';
+        return `<div class="driver-history-item">
+          <div class="topline"><b>${esc(rideType(r))}</b><span class="status">${esc(statusNames[r.status]||r.status||'—')}</span></div>
+          <div class="line">📍 ${loc(r.pickup)}<br>🏁 ${loc(r.destination)}<br>💰 ${fare}<br>🕘 ${esc(date)}</div>
+        </div>`;
+      }).join('');
+    }catch(e){
+      console.error(e);
+      list.innerHTML='<div class="driver-history-empty">تعذر تحميل الطلبات السابقة حالياً.</div>';
+    }
+  }
+  function openHistory(){
+    if(!sheet)return;
+    sheet.classList.add('show');sheet.setAttribute('aria-hidden','false');loadHistory();
+  }
+  function closeHistory(){if(!sheet)return;sheet.classList.remove('show');sheet.setAttribute('aria-hidden','true')}
+  if(openBtn)openBtn.onclick=openHistory;
+  if(closeBtn)closeBtn.onclick=closeHistory;
+  if(sheet)sheet.addEventListener('click',e=>{if(e.target===sheet)closeHistory()});
 })();
 </script>
 
