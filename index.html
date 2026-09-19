@@ -548,9 +548,11 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA logo"></div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
 </div> <section class="hero"> <div class="hero-controls"> <button class="round-btn" type="button" onclick="toggleSearch()" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button> <button class="menu-btn" type="button" onclick="toggleMenu()" aria-label="القائمة">☰</button> </div> <div class="hero-decoration"><div class="dec-laptop">💻</div><div class="dec-cart">🛒</div><i class="gold-orb o1"></i><i class="gold-orb o2"></i></div> <div class="brand-hero"> <div class="brand-name"><span class="gold">HA</span> Marketing</div> <div class="brand-sub">اختر القسم الذي تريد الدخول إليه</div> </div> <div class="ha-home-slider" id="haHomeSlider" aria-label="صور HA Marketing">
   <div class="ha-home-slider-track" id="haHomeSliderTrack">
-    <img class="ha-home-slide active" src="images/2.jpg" alt="HA Marketing 1">
-    <img class="ha-home-slide" src="images/4.jpg" alt="HA Marketing 2">
-    <img class="ha-home-slide" src="images/5.jpg" alt="HA Marketing 3">
+    <img class="ha-home-slide active" src="images/home-slide-shopping.png" alt="التسوق">
+    <img class="ha-home-slide" src="images/home-slide-transport.png" alt="النقل والتوصيل">
+    <img class="ha-home-slide" src="images/home-slide-entertainment.png" alt="الترفيه">
+    <img class="ha-home-slide" src="images/home-slide-study.png" alt="الدراسة">
+    <img class="ha-home-slide" src="images/home-slide-services.png" alt="الخدمات">
   </div>
 </div>
 </section>
@@ -917,11 +919,11 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
 (async function(){
   const track=document.getElementById('haHomeSliderTrack');
   if(!track)return;
-  const defaults=['images/2.jpg','images/4.jpg','images/5.jpg'];
+  const defaults=['images/home-slide-shopping.png','images/home-slide-transport.png','images/home-slide-entertainment.png','images/home-slide-study.png','images/home-slide-services.png'];
   let timer=null,index=0;
 
   function render(urls){
-    const list=(urls||[]).filter(Boolean).slice(0,3);
+    const list=(urls||[]).filter(Boolean).slice(0,5);
     const finalList=list.length?list:defaults;
     track.innerHTML=finalList.map((u,i)=>`<img class="ha-home-slide${i===0?' active':''}" src="${String(u).replace(/"/g,'&quot;')}" alt="HA Marketing ${i+1}">`).join('');
     index=0;
@@ -947,8 +949,9 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
     );
     const {data,error}=await hdb.from('home_slider_images').select('slot,image_url,is_active').eq('is_active',true).order('slot');
     if(!error && Array.isArray(data)){
-      const urls=data.map(x=>x.image_url).filter(Boolean);
-      if(urls.length)render(urls);
+      const bySlot=new Map(data.map(x=>[Number(x.slot),x.image_url]).filter(x=>x[1]));
+      const urls=defaults.map((fallback,i)=>bySlot.get(i+1)||fallback);
+      render(urls);
     }
   }catch(e){console.warn('home slider',e)}
 })();</script>
