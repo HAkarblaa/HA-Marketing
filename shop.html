@@ -166,866 +166,96 @@ html[data-ha-theme="dark"] .store-action small{
 }
 
 
-/* ===== HA SHOP BAR STYLE ===== */
-.quick{
- display:flex!important;
- flex-direction:column!important;
- gap:12px!important;
-}
-.qcard{
- aspect-ratio:auto!important;
- min-height:78px!important;
- width:100%!important;
- flex-direction:row!important;
- justify-content:flex-start!important;
- align-items:center!important;
- padding:12px 18px!important;
- border-radius:20px!important;
- gap:15px!important;
-}
-.qicon{
- width:52px!important;
- height:52px!important;
- margin:0!important;
- flex:none!important;
- font-size:28px!important;
- border-radius:16px!important;
-}
-.qcard h3{
- margin:0!important;
- flex:1;
- text-align:right;
- font-size:18px!important;
-}
-.qcard:after{
- content:"›";
- font-size:30px;
- color:#f4c45f;
-}
-.qcard p{display:none!important}
 
-html[data-ha-theme="light"] .qcard{
- background:linear-gradient(145deg,#fff,#edf5ff)!important;
-}
-html[data-ha-theme="light"] .qcard h3{
- color:#102235!important;
-}
-
-
-
-/* ===== HA SHOP FULL BAR STYLE OVERRIDE ===== */
-.store-actions,
-.categories{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:12px!important;
-}
-
-.store-action,
-.category{
-  aspect-ratio:auto!important;
-  min-height:78px!important;
-  width:100%!important;
-  display:flex!important;
-  flex-direction:row!important;
-  justify-content:flex-start!important;
-  align-items:center!important;
-  text-align:right!important;
-  padding:12px 18px!important;
-  border-radius:20px!important;
-  gap:15px!important;
-}
-
-.store-action span,
-.category .icon{
-  width:52px!important;
-  height:52px!important;
-  margin:0!important;
-  flex:none!important;
-  font-size:28px!important;
-  border-radius:16px!important;
-}
-
-.store-action b,
-.category h2{
-  margin:0!important;
-  flex:1!important;
-  text-align:right!important;
-  font-size:18px!important;
-  line-height:1.5!important;
-}
-
-.store-action small,
-.category p{
-  display:none!important;
-}
-
-.store-action:after,
-.category:after{
-  content:"›";
-  font-size:30px;
-  color:#f4c45f;
-  flex:none;
-}
-
-html[data-ha-theme="light"] .store-action,
-html[data-ha-theme="light"] .category{
-  background:linear-gradient(145deg,#fff,#edf5ff)!important;
-}
-html[data-ha-theme="light"] .store-action b,
-html[data-ha-theme="light"] .category h2{
-  color:#102235!important;
-}
-
-@media(max-width:560px){
-  .store-actions,
-  .categories{
-    gap:9px!important;
-  }
-  .store-action,
-  .category{
-    min-height:70px!important;
-    padding:10px 14px!important;
-    border-radius:18px!important;
-    gap:12px!important;
-  }
-  .store-action span,
-  .category .icon{
-    width:46px!important;
-    height:46px!important;
-    font-size:24px!important;
-    border-radius:14px!important;
-  }
-  .store-action b,
-  .category h2{
-    font-size:15px!important;
-  }
-  .store-action:after,
-  .category:after{
-    font-size:26px!important;
-  }
-}
-
-
-/* ===== Customer Menu Group ===== */
-.customer-menu{
- display:flex;
- flex-direction:column;
- gap:12px;
- margin:16px 0;
-}
-.customer-bar{
- min-height:75px;
- border-radius:22px;
- padding:15px 20px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- background:linear-gradient(145deg,#10202f,#05090e);
- border:1px solid #c18a2d;
- color:#f4d37c;
- font-size:20px;
- font-weight:bold;
- cursor:pointer;
-}
-.customer-items{
- display:none;
- flex-direction:column;
- gap:10px;
- margin-top:10px;
-}
-.customer-items.open{
- display:flex;
-}
-.customer-item{
- min-height:65px;
- border-radius:18px;
- padding:12px 18px;
- display:flex;
- align-items:center;
- gap:12px;
- background:linear-gradient(145deg,#101f2d,#05090e);
- border:1px solid #31465c;
- color:#fff;
-}
-
-
-/* ===== Store Options Group ===== */
-.store-menu{display:none!important; 
- display:flex;
- flex-direction:column;
- gap:12px;
- margin:16px 0;
-}
-.store-bar{
- min-height:75px;
- border-radius:22px;
- padding:15px 20px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- background:linear-gradient(145deg,#10202f,#05090e);
- border:1px solid #c18a2d;
- color:#f4d37c;
- font-size:20px;
- font-weight:bold;
- cursor:pointer;
-}
-.store-items{
- display:none;
- flex-direction:column;
- gap:10px;
- margin-top:10px;
-}
-.store-items.open{display:flex}
-.store-item{
- min-height:65px;
- border-radius:18px;
- padding:12px 18px;
- display:flex;
- align-items:center;
- gap:12px;
- background:linear-gradient(145deg,#101f2d,#05090e);
- border:1px solid #31465c;
- color:#fff;
-}
-
-
-.customer-menu{display:none!important;}
-
-
-/* ===== FINAL OVERRIDE: shopping categories as squares ===== */
-.categories{
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:10px!important;
-}
-.category{
-  width:100%!important;
-  min-height:0!important;
-  aspect-ratio:1/1!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  text-align:center!important;
-  gap:8px!important;
-  padding:10px 6px!important;
-  border-radius:18px!important;
-}
-.category .icon{
-  width:54px!important;
-  height:54px!important;
-  margin:0 auto!important;
-  font-size:28px!important;
-  border-radius:16px!important;
-}
-.category h2{
-  margin:0!important;
-  flex:none!important;
-  text-align:center!important;
-  font-size:14px!important;
-  line-height:1.45!important;
-}
-.category p{display:none!important;}
-.category:after{content:none!important;}
-
-@media (max-width:560px){
-  .categories{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:8px!important;
-  }
-  .category{
-    aspect-ratio:1/1!important;
-    min-height:112px!important;
-    padding:8px 4px!important;
-    border-radius:16px!important;
-    gap:6px!important;
-  }
-  .category .icon{
-    width:46px!important;
-    height:46px!important;
-    font-size:24px!important;
-    border-radius:14px!important;
-  }
-  .category h2{
-    font-size:12px!important;
-  }
-}
-
-
-/* ===== Top action squares ===== */
-.top-actions{
- display:grid!important;
- grid-template-columns:repeat(3,minmax(0,1fr))!important;
- gap:10px!important;
- margin:18px 0!important;
-}
-.top-action{
- aspect-ratio:1/1!important;
- display:flex!important;
- flex-direction:column!important;
- align-items:center!important;
- justify-content:center!important;
- border-radius:20px!important;
- background:linear-gradient(145deg,#10202f,#05090e);
- border:1px solid #c18a2d;
- color:#f4d37c;
- gap:8px;
- font-weight:bold;
-}
-.top-action span{
- font-size:38px;
-}
-.top-action b{
- font-size:15px;
-}
-
-
-/* ===== Add store submenu + smart search ===== */
-.store-popup{
- display:none;
- position:fixed;
- inset:0;
- background:#0008;
- z-index:999;
- align-items:center;
- justify-content:center;
-}
-.store-popup.open{display:flex;}
-.store-box{
- width:90%;
- max-width:420px;
- background:#101f2d;
- border-radius:22px;
- padding:20px;
- border:1px solid #c18a2d;
-}
-.store-box a{
- display:flex;
- align-items:center;
- justify-content:center;
- min-height:65px;
- margin:10px 0;
- border-radius:18px;
- background:#162b3d;
- color:#f4d37c;
- font-weight:bold;
-}
-.search-box{
- display:flex;
- flex-direction:column;
- gap:10px;
- margin-top:10px;
-}
-.search-box input{
- padding:14px;
- border-radius:14px;
- border:1px solid #c18a2d;
- background:#08131d;
- color:white;
-}
-.search-options{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:8px;
-}
-.search-options button{
- padding:12px 5px;
- border-radius:14px;
- border:1px solid #c18a2d;
- background:#162b3d;
- color:#f4d37c;
-}
-
-
-/* تكبير محتوى المربعات */
-.top-action span{
- font-size:48px!important;
-}
-.top-action b{
- font-size:18px!important;
-}
-.category .icon{
- width:65px!important;
- height:65px!important;
- font-size:34px!important;
-}
-.category h2{
- font-size:16px!important;
-}
-.qicon{
- width:65px!important;
- height:65px!important;
- font-size:35px!important;
-}
-
-
-/* ===== متاجري داخل واجهة التسوق ===== */
-.top-actions.has-my-stores{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-}
-#myStoresAction[hidden]{display:none!important}
-
-
-/* ===== شريط البحث بدل المربعات العلوية ===== */
-.shop-search-wrap{
-  display:block!important;
-  margin:18px 0!important;
-}
-.shop-search-bar{
-  width:100%;
-  min-height:62px;
-  border-radius:20px;
-  border:1px solid #c18a2d;
-  background:linear-gradient(145deg,#10202f,#05090e);
-  color:#f4d37c;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:0 18px;
-  cursor:pointer;
-  font:inherit;
-  box-shadow:inset 0 1px 0 #ffffff0c,0 8px 24px #0005;
-}
-.shop-search-bar .search-ico{
-  font-size:28px;
-  flex:none;
-}
-.shop-search-bar .search-text{
-  flex:1;
-  text-align:right;
-  font-size:16px;
-  font-weight:700;
-  color:#d9e0e6;
-}
-html[data-ha-theme="light"] .shop-search-bar{
-  background:linear-gradient(145deg,#fff,#edf5ff)!important;
-  color:#a87520!important;
-  border-color:rgba(168,117,32,.45)!important;
-}
-html[data-ha-theme="light"] .shop-search-bar .search-text{
-  color:#334455!important;
-}
-@media(max-width:560px){
-  .shop-search-bar{
-    min-height:56px;
-    border-radius:17px;
-    padding:0 14px;
-  }
-  .shop-search-bar .search-ico{font-size:24px}
-  .shop-search-bar .search-text{font-size:14px}
-}
-
-
-/* ===== اختصارات التسوق حسب نوع المستخدم ===== */
-#shopBottomNav{
-  grid-template-columns:repeat(2,minmax(0,1fr));
-}
-#shopBottomNav.owner-mode{
-  grid-template-columns:repeat(3,minmax(0,1fr));
-}
-#shopBottomNav a{
-  min-width:0;
-  text-align:center;
-  font-size:13px;
-}
-#shopBottomNav a span{
-  font-size:24px;
-}
-
-
-/* ===== توضيح مربعات أقسام التسوق ===== */
-.categories{
-  gap:12px!important;
-}
-.category{
-  background:linear-gradient(145deg,#132334,#071019)!important;
-  border:1.5px solid #c18a2d!important;
-  box-shadow:0 8px 22px #0007,inset 0 1px 0 #ffffff14!important;
-  border-radius:20px!important;
-  min-height:125px!important;
-}
-.category .icon{
-  width:62px!important;
-  height:62px!important;
-  font-size:34px!important;
-  border-radius:18px!important;
-  background:linear-gradient(145deg,#172534,#091018)!important;
-  border:1.5px solid #d6a33f!important;
-  box-shadow:0 0 18px rgba(244,196,95,.16)!important;
-}
-.category h2{
-  font-size:15px!important;
-  font-weight:900!important;
-  color:#ffe59a!important;
-  text-shadow:0 1px 2px #000!important;
-}
-html[data-ha-theme="light"] .category{
-  background:linear-gradient(145deg,#ffffff,#eef6ff)!important;
-  border-color:#c9983c!important;
-  box-shadow:0 7px 18px rgba(30,60,100,.12)!important;
-}
-html[data-ha-theme="light"] .category .icon{
-  background:#f8fbff!important;
-  border-color:#c9983c!important;
-}
-html[data-ha-theme="light"] .category h2{
-  color:#17324a!important;
-  text-shadow:none!important;
-}
-@media(max-width:560px){
-  .categories{gap:9px!important}
-  .category{
-    min-height:118px!important;
-    border-radius:18px!important;
-  }
-  .category .icon{
-    width:56px!important;
-    height:56px!important;
-    font-size:30px!important;
-  }
-  .category h2{
-    font-size:13px!important;
-  }
-}
-
-
-/* ===== تكبير وتوضيح محتوى مربعات الأقسام ===== */
-.category{
-  padding:12px 6px!important;
-  gap:10px!important;
-}
-.category .icon{
-  width:72px!important;
-  height:72px!important;
-  font-size:42px!important;
-  border-radius:20px!important;
-  display:grid!important;
-  place-items:center!important;
-}
-.category h2{
-  font-size:17px!important;
-  font-weight:900!important;
-  line-height:1.35!important;
-  color:#fff1bd!important;
-  letter-spacing:0!important;
-}
-@media(max-width:560px){
-  .category{
-    padding:10px 4px!important;
-    gap:8px!important;
-  }
-  .category .icon{
-    width:64px!important;
-    height:64px!important;
-    font-size:36px!important;
-    border-radius:18px!important;
-  }
-  .category h2{
-    font-size:15px!important;
-    line-height:1.3!important;
-  }
-}
-html[data-ha-theme="light"] .category h2{
-  color:#17324a!important;
-}
-
-
-
-/* ===== Hero ads slider ===== */
-.hero{
-  min-height:430px!important;
-  padding-bottom:24px!important;
-}
-.hero-content.hero-content-slider{
-  padding-top:18px!important;
-}
-.hero-slider{
-  position:relative;
-  z-index:2;
-  width:min(100%,860px);
-  margin:0 auto;
-  border-radius:28px;
-  overflow:hidden;
-  border:1px solid rgba(244,196,95,.45);
-  background:linear-gradient(145deg,#09131d,#05090d);
-  box-shadow:0 18px 42px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.08);
-}
-.hero-slides{
-  position:relative;
-  min-height:260px;
-}
-.hero-slide{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  pointer-events:none;
-  transform:scale(1.02);
-  transition:opacity .55s ease, transform .7s ease;
-}
-.hero-slide.active{
-  opacity:1;
-  pointer-events:auto;
-  transform:scale(1);
-}
-.hero-slide img{
-  width:100%;
-  height:260px;
-  object-fit:cover;
-  display:block;
-}
-.hero-slide::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(0deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.28) 42%,rgba(0,0,0,.16) 100%);
-}
-.hero-ad-content{
-  position:absolute;
-  inset:auto 0 0 0;
-  z-index:2;
-  padding:18px 20px 20px;
-  color:#fff;
-  text-align:right;
-}
-.hero-ad-title{
-  font-size:28px;
-  font-weight:900;
-  color:#ffe39b;
-  margin:0 0 6px;
-  text-shadow:0 2px 10px rgba(0,0,0,.45);
-}
-.hero-ad-sub{
-  font-size:15px;
-  color:#eef3f8;
-  margin:0 0 12px;
-}
-.hero-ad-link{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  min-height:42px;
-  padding:0 18px;
-  border-radius:999px;
-  background:rgba(244,196,95,.15);
-  border:1px solid rgba(244,196,95,.55);
-  color:#ffe39b;
-  font-weight:800;
-  backdrop-filter:blur(4px);
-}
-.hero-arrow{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:46px;
-  height:46px;
-  border-radius:50%;
-  border:1px solid rgba(244,196,95,.55);
-  background:rgba(4,10,16,.72);
-  color:#f4c45f;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  z-index:4;
-  font-size:28px;
-}
-.hero-arrow.prev{right:12px}
-.hero-arrow.next{left:12px}
-.hero-dots{
-  position:absolute;
-  bottom:14px;
-  left:18px;
-  z-index:4;
-  display:flex;
-  gap:8px;
-}
-.hero-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:rgba(255,255,255,.36);
-  border:none;
-  padding:0;
-  cursor:pointer;
-}
-.hero-dot.active{background:#f4c45f; transform:scale(1.18)}
-.hero-admin-btn{
-  margin-top:12px;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  width:max-content;
-  margin-right:auto;
-  margin-left:auto;
-  min-height:42px;
-  padding:0 16px;
-  border-radius:14px;
-  border:1px solid rgba(244,196,95,.55);
-  background:rgba(4,10,16,.6);
-  color:#ffe39b;
-  cursor:pointer;
-  font-weight:800;
-}
-.hero-admin-btn.show{display:inline-flex}
-.ads-modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.62);
-  z-index:1001;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-}
-.ads-modal.open{display:flex}
-.ads-panel{
-  width:min(100%,680px);
-  max-height:88vh;
-  overflow:auto;
-  background:linear-gradient(180deg,#0d1b29,#061018);
-  border:1px solid rgba(244,196,95,.45);
-  border-radius:24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.45);
-  padding:18px;
-}
-.ads-panel h3{
-  margin:0 0 14px;
-  font-size:24px;
-  color:#ffe39b;
-}
-.ads-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.ads-field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.ads-field.full{grid-column:1/-1}
-.ads-field label{
-  font-size:13px;
-  color:#d9e0e6;
-}
-.ads-field input, .ads-field textarea{
-  width:100%;
-  min-height:48px;
-  border-radius:14px;
-  border:1px solid #35506a;
-  background:#0a1622;
-  color:#fff;
-  padding:12px 14px;
-  font:inherit;
-}
-.ads-field textarea{min-height:88px; resize:vertical}
-.ads-help{
-  font-size:12px;
-  color:#9fb0c1;
-  margin-top:4px;
-}
-.ads-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:14px 0 16px;
-}
-.ads-actions button{
-  min-height:46px;
-  padding:0 18px;
-  border-radius:14px;
-  border:1px solid rgba(244,196,95,.55);
-  background:#10202f;
-  color:#ffe39b;
-  font:inherit;
-  font-weight:800;
-  cursor:pointer;
-}
-.ads-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.ads-item{
-  display:flex;
-  gap:12px;
-  align-items:center;
-  padding:10px;
-  background:#0a1622;
-  border:1px solid #2e455d;
-  border-radius:16px;
-}
-.ads-thumb{
-  width:88px;
-  height:62px;
-  border-radius:12px;
-  object-fit:cover;
-  background:#10202f;
-  flex:none;
-}
-.ads-item-body{flex:1; min-width:0}
-.ads-item-body strong{display:block; color:#ffe39b; margin-bottom:4px}
-.ads-item-body small{display:block; color:#b8c4d0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.ads-item-controls{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-.ads-item-controls button{
-  min-height:38px;
-  min-width:84px;
-  border-radius:12px;
-  border:1px solid #425d77;
-  background:#10202f;
-  color:#fff;
-  cursor:pointer;
-}
-.ads-empty{
-  color:#9fb0c1;
-  text-align:center;
-  padding:18px 10px;
-}
-@media(max-width:560px){
-  .hero{min-height:390px!important}
-  .hero-slider{border-radius:22px}
-  .hero-slides, .hero-slide img{min-height:220px; height:220px}
-  .hero-ad-content{padding:14px 14px 16px}
-  .hero-ad-title{font-size:22px}
-  .hero-ad-sub{font-size:13px; margin-bottom:10px}
-  .hero-ad-link{min-height:38px; font-size:13px; padding:0 14px}
-  .hero-arrow{width:40px; height:40px; font-size:24px}
-  .ads-grid{grid-template-columns:1fr}
-  .ads-item{align-items:flex-start; flex-direction:column}
-  .ads-thumb{width:100%; height:140px}
-  .ads-item-controls{width:100%; flex-direction:row}
-  .ads-item-controls button{flex:1}
+/* ===== SHOP HERO SLIDER ===== */
+.shop-slider-wrap{margin:18px 0 20px}
+.shop-slider{position:relative;overflow:hidden;border:1px solid rgba(244,196,95,.35);border-radius:30px;background:linear-gradient(180deg,#07101a,#04080c);box-shadow:0 18px 46px #0008;padding:14px}
+.shop-slider-track{display:flex;transition:transform .45s ease}
+.shop-slide{min-width:100%;position:relative;overflow:hidden;border-radius:24px;height:292px;background:#0b1118}
+.shop-slide img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.03)}
+.shop-slide:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.24) 30%,rgba(0,0,0,.65) 72%,rgba(0,0,0,.82) 100%)}
+.shop-slide-content{position:absolute;z-index:2;right:28px;bottom:22px;max-width:min(48%,420px);text-align:right}
+.shop-slide-content h3{margin:0 0 8px;font-size:23px;color:#ffd67c;text-shadow:0 2px 18px #000}
+.shop-slide-content p{margin:0 0 16px;color:#f1f4f7;line-height:1.7;font-size:14px;text-shadow:0 2px 12px #000}
+.shop-slide-content .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:1px solid rgba(244,196,95,.8);background:rgba(10,16,22,.72);color:#ffe39f;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.slider-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:48px;height:48px;border:none;border-radius:50%;display:grid;place-items:center;background:rgba(244,196,95,.96);color:#0a0d10;font-size:30px;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.slider-arrow.prev{left:20px}
+.slider-arrow.next{right:20px}
+.slider-dots{position:absolute;left:20px;bottom:18px;z-index:3;display:flex;gap:8px;direction:ltr}
+.slider-dots button{width:11px;height:11px;border-radius:50%;border:none;background:rgba(255,214,124,.42);padding:0;cursor:pointer}
+.slider-dots button.active{background:#f4c45f;transform:scale(1.12)}
+@media(max-width:700px){
+  .shop-slide{height:250px}
+  .shop-slide-content{right:18px;left:18px;bottom:18px;max-width:none}
+  .shop-slide-content h3{font-size:19px}
+  .shop-slide-content p{font-size:12px;margin-bottom:12px}
+  .shop-slide-content .btn{padding:8px 14px;font-size:13px}
+  .slider-arrow{width:42px;height:42px;font-size:26px}
+  .slider-arrow.prev{left:14px}
+  .slider-arrow.next{right:14px}
+  .slider-dots{left:14px;bottom:14px}
 }
 
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="page">
 <section class="hero">
   <div class="topbar"><a class="round" href="index.html">‹</a><div class="brand"><div class="logo">HA</div><strong><span style="color:#d69b34">HA</span> Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div><a class="round" href="#categories">⌕</a></div>
-  <div class="hero-content hero-content-slider">
-    <div class="hero-slider" id="heroAdsSlider">
-      <button type="button" class="hero-arrow prev" id="heroPrevBtn" aria-label="السابق">›</button>
-      <button type="button" class="hero-arrow next" id="heroNextBtn" aria-label="التالي">‹</button>
-      <div class="hero-slides" id="heroAdsSlides"></div>
-      <div class="hero-dots" id="heroAdsDots"></div>
+  <div class="hero-content"><h1 class="hero-title">تسوق الآن</h1><div class="hero-sub">اختر القسم وابدأ التسوق</div></div>
+</section>
+<section class="shop-slider-wrap" aria-label="سلايدر التسوق">
+  <div class="shop-slider" id="shopSlider">
+    <button class="slider-arrow prev" id="shopPrev" aria-label="السابق">‹</button>
+    <div class="shop-slider-track" id="shopSliderTrack">
+      <article class="shop-slide">
+        <img src="main.jpg" alt="عروض ومتاجر HA Marketing">
+        <div class="shop-slide-content">
+          <h3>المتاجر المميزة</h3>
+          <p>تصفح المتاجر والمنتجات المختارة بعناية داخل تسوق الآن.</p>
+          <a class="btn" href="#categories">عرض التفاصيل ←</a>
+        </div>
+      </article>
+      <article class="shop-slide">
+        <img src="images/2.jpg" alt="تسوق الأجهزة والإكسسوارات">
+        <div class="shop-slide-content">
+          <h3>أجهزة وإكسسوارات</h3>
+          <p>اكتشف الأجهزة والملحقات الأكثر طلباً بتصميم أنيق وسريع.</p>
+          <a class="btn" href="shop-section.html?section=devices">تصفح الأجهزة ←</a>
+        </div>
+      </article>
+      <article class="shop-slide">
+        <img src="images/4.jpg" alt="أسواق ومستلزمات يومية">
+        <div class="shop-slide-content">
+          <h3>أسواق ومستلزمات يومية</h3>
+          <p>كل احتياجاتك اليومية من الأسواق والطلبات السريعة في مكان واحد.</p>
+          <a class="btn" href="shop-section.html?section=markets">ابدأ التسوق ←</a>
+        </div>
+      </article>
+      <article class="shop-slide">
+        <img src="images/5.jpg" alt="مطاعم وطلبات متنوعة">
+        <div class="shop-slide-content">
+          <h3>مطاعم وطلبات متنوعة</h3>
+          <p>اختر مطعمك أو اطلب ما تحتاجه بسهولة مع واجهة واضحة وسريعة.</p>
+          <a class="btn" href="shop-section.html?section=restaurants">عرض المطاعم ←</a>
+        </div>
+      </article>
+      <article class="shop-slide">
+        <img src="main.jpg" alt="مواد بناء ومتاجر متخصصة">
+        <div class="shop-slide-content">
+          <h3>مواد البناء والمتاجر المتخصصة</h3>
+          <p>قسم مخصص للمتاجر المتنوعة ومواد البناء داخل منصة واحدة.</p>
+          <a class="btn" href="shop-section.html?section=building_materials">عرض القسم ←</a>
+        </div>
+      </article>
     </div>
-    <button type="button" class="hero-admin-btn" id="heroAdsAdminBtn">🖼️ إدارة إعلانات التسوق</button>
+    <button class="slider-arrow next" id="shopNext" aria-label="التالي">›</button>
+    <div class="slider-dots" id="shopDots" aria-label="مؤشرات الشرائح"></div>
   </div>
 </section>
-
-
-
-<section class="quick" style="display:none!important">
+<section class="quick">
  <a class="qcard gold" href="#categories"><div class="qicon">📦</div><h3>المنتجات</h3></a>
  <a class="qcard gold" href="cart.html"><div class="qicon">🛒</div><h3>السلة</h3></a>
  <a class="qcard red" href="favorites.html"><div class="qicon">❤️</div><h3>المفضلة</h3></a>
@@ -1033,26 +263,14 @@ html[data-ha-theme="light"] .category h2{
  <a class="qcard orange" href="#categories"><div class="qicon">🏷️</div><h3>العروض</h3></a>
  <a class="qcard green" href="cart.html"><div class="qicon">📋</div><h3>قوائم التسوق</h3></a>
 </section>
-
-
-
+<div class="section-title"><b>خيارات المتجر</b></div>
 <section class="store-actions">
-  
-  
-  
-  
-  
+  <a class="store-action gold" href="marketplace-onboarding.html"><span>🏪</span><b>إضافة متجر</b><small>طلب وموافقة الإدارة</small></a>
+  <a class="store-action green" href="seller-dashboard.html"><span>➕</span><b>المتجر والمنتجات</b><small>إدارة المتجر</small></a>
+  <a class="store-action blue" href="work-center.html"><span>🧰</span><b>مركز العمل</b><small>إدارة حساب العمل</small></a>
+  <a class="store-action orange" href="store-accounting.html"><span>📒</span><b>الحسابات</b><small>حسابات المتجر</small></a>
+  <a class="store-action purple" href="shop-orders.html"><span>📦</span><b>الطلبات</b><small>متابعة الطلبات</small></a>
 </section>
-
-
-<section class="top-actions shop-search-wrap">
-  <button type="button" class="shop-search-bar" onclick="openSearch()">
-    <span class="search-ico">🔍</span>
-    <span class="search-text">ابحث عن متجر أو منتج</span>
-  </button>
-</section>
-
-
 <div id="categories" class="section-title"><b>أقسام التسوق</b></div>
 <section class="categories">
   <a class="category gold" href="shop-section.html?section=library"><div class="icon">📚</div><h2>مكتبة</h2></a>
@@ -1069,415 +287,49 @@ html[data-ha-theme="light"] .category h2{
   <a class="category blue" href="shop-section.html?section=device_accessories"><div class="icon">🎧</div><h2>إكسسوارات</h2></a>
   <a class="category red" href="shop-section.html?section=clothes"><div class="icon">👕</div><h2>ملابس</h2></a>
   <a class="category orange" href="shop-section.html?section=shoes"><div class="icon">👟</div><h2>أحذية</h2></a>
-  <a class="category purple" href="suggestions.html"><div class="icon">💡</div><h2>اقتراح قسم جديد</h2></a>
 </section>
 </div>
-
-<nav class="bottom" id="shopBottomNav">
-  <a id="bottomAddStore" href="marketplace-onboarding.html"><span>🏪</span>إضافة متجر</a>
-  <a id="bottomCart" href="cart.html"><span>🛒</span>السلة</a>
-  <a id="bottomAddProduct" href="my-stores.html" style="display:none"><span>➕</span>إضافة منتج</a>
-  <a id="bottomSellerOrders" href="seller-dashboard.html" style="display:none"><span>📦</span>طلباتي</a>
-</nav>
-
+<nav class="bottom"><a href="index.html"><span>⌂</span>الرئيسية</a><a class="active" href="index.html"><span>▦</span>الأقسام</a><a href="tel:"><span>☎</span>اتصل بنا</a></nav>
 
 <script>
-function toggleCustomerMenu(){
- const x=document.getElementById('customerItems');
- if(x)x.classList.toggle('open');
-}
-</script>
+(function(){
+  const track = document.getElementById('shopSliderTrack');
+  if(!track) return;
+  const slides = Array.from(track.children);
+  const prev = document.getElementById('shopPrev');
+  const next = document.getElementById('shopNext');
+  const dotsWrap = document.getElementById('shopDots');
+  let index = 0;
+  let timer;
 
-
-<script>
-function toggleStoreMenu(){
- const x=document.getElementById('storeItems');
- if(x)x.classList.toggle('open');
-}
-</script>
-<div id="searchPopup" class="store-popup">
-<div class="store-box">
-<div class="search-box">
-<input id="searchInput" placeholder="ابحث عن متجر أو منتج">
-<div class="search-options">
-<button>📷 صورة المنتج</button>
-<button>🏪 المتجر</button>
-<button>📦 المنتج</button>
-</div>
-</div>
-</div>
-</div>
-
-<script>
-function openSearch(){
- document.getElementById('searchPopup').classList.add('open');
-}
-document.querySelectorAll('.store-popup').forEach(x=>{
- x.onclick=function(e){
-  if(e.target===x)x.classList.remove('open');
- }
-});
-</script>
-
-<script>
-function openAddProduct(){
-    // لاحقاً تربط مع بيانات المتجر، حالياً يمنع الدخول بدون متجر
-    if(localStorage.getItem("ha_store_added") === "yes"){
-        window.location.href="add-product.html";
-    }else{
-        alert("يجب إضافة متجر أولاً");
-        window.location.href="marketplace-onboarding.html";
-    }
-}
-</script>
-
-
-<script>
-(async function(){
-  try{
-    if(!window.supabase) return;
-
-    const db = window.supabase.createClient(
-      'https://ubayrhtshgtgggxprrek.supabase.co',
-      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-    );
-
-    const {data:{session}} = await db.auth.getSession();
-    const user = session?.user;
-    if(!user || user.is_anonymous) return;
-
-    const {data,error} = await db
-      .from('shop_businesses')
-      .select('id')
-      .eq('owner_user_id',user.id)
-      .limit(1);
-
-    if(error) return;
-
-    if(Array.isArray(data) && data.length){
-      const action = document.getElementById('myStoresAction');
-      const actions = document.querySelector('.top-actions');
-      if(action) action.hidden = false;
-      if(actions) actions.classList.add('has-my-stores');
-    }
-  }catch(e){
-    console.warn('my stores action',e);
-  }
-})();
-</script>
-
-
-<script>
-/* ===== اختصارات أسفل التسوق حسب وجود متجر ===== */
-(async function setupShopShortcuts(){
-  try{
-    if(!window.supabase) return;
-
-    const db = window.supabase.createClient(
-      'https://ubayrhtshgtgggxprrek.supabase.co',
-      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-    );
-
-    const nav=document.getElementById('shopBottomNav');
-    const cart=document.getElementById('bottomCart');
-    const addProduct=document.getElementById('bottomAddProduct');
-    const sellerOrders=document.getElementById('bottomSellerOrders');
-
-    // الوضع الافتراضي: زبون
-    if(cart) cart.style.display='flex';
-    if(addProduct) addProduct.style.display='none';
-    if(sellerOrders) sellerOrders.style.display='none';
-    if(nav) nav.classList.remove('owner-mode');
-
-    const {data:{session}} = await db.auth.getSession();
-    const user = session?.user;
-
-    // المستخدم غير المسجل يبقى بوضع الزبون
-    if(!user || user.is_anonymous) return;
-
-    const {data,error} = await db
-      .from('shop_businesses')
-      .select('id')
-      .eq('owner_user_id',user.id)
-      .limit(1);
-
-    if(error) return;
-
-    const hasStore = Array.isArray(data) && data.length > 0;
-
-    if(hasStore){
-      // صاحب متجر: إخفاء السلة وإظهار إضافة منتج + طلباتي
-      if(cart) cart.style.display='none';
-      if(addProduct) addProduct.style.display='flex';
-      if(sellerOrders) sellerOrders.style.display='flex';
-      if(nav) nav.classList.add('owner-mode');
-    }
-  }catch(e){
-    console.warn('shop shortcuts setup',e);
-  }
-})();
-</script>
-
-
-
-<div class="ads-modal" id="adsAdminModal">
-  <div class="ads-panel">
-    <h3>إدارة صور إعلان التسوق</h3>
-    <div class="ads-grid">
-      <div class="ads-field full">
-        <label for="adImageFile">صورة الإعلان</label>
-        <input type="file" id="adImageFile" accept="image/*">
-        <div class="ads-help">تقدر ترفع صورة مباشرة، أو تستخدم رابط صورة بالأسفل.</div>
-      </div>
-      <div class="ads-field full">
-        <label for="adImageUrl">رابط الصورة (اختياري)</label>
-        <input type="url" id="adImageUrl" placeholder="https://example.com/ad.jpg">
-      </div>
-      <div class="ads-field">
-        <label for="adTitle">عنوان الإعلان</label>
-        <input type="text" id="adTitle" placeholder="مثال: عروض خاصة اليوم">
-      </div>
-      <div class="ads-field">
-        <label for="adLink">رابط عند الضغط (اختياري)</label>
-        <input type="text" id="adLink" placeholder="shop-section.html?section=markets">
-      </div>
-      <div class="ads-field full">
-        <label for="adSubtitle">وصف قصير</label>
-        <textarea id="adSubtitle" placeholder="مثال: أفضل المتاجر والعروض بواجهة واحدة"></textarea>
-      </div>
-    </div>
-    <div class="ads-actions">
-      <button type="button" id="saveAdBtn">حفظ الإعلان</button>
-      <button type="button" id="newAdBtn">إعلان جديد</button>
-      <button type="button" id="resetAdsBtn">استرجاع الافتراضي</button>
-      <button type="button" id="closeAdsBtn">إغلاق</button>
-    </div>
-    <div class="ads-list" id="adsManageList"></div>
-  </div>
-</div>
-
-<script>
-const HA_SHOP_ADS_KEY = 'ha_shop_ads_slider_v1';
-const HA_SHOP_ADMIN_FLAG = 'ha_is_main_admin';
-const HA_SHOP_ADS_EDIT_KEY = 'ha_shop_ads_edit_index';
-const MAIN_ADMINS = [
-  'admin@example.com'
-];
-const DEFAULT_SHOP_ADS = [
-  {
-    image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
-    title: 'عروض المتاجر المميزة',
-    subtitle: 'تابع أحدث العروض والإعلانات داخل تسوق الآن',
-    link: 'shop-section.html?section=markets'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80',
-    title: 'أزياء ومنتجات جديدة',
-    subtitle: 'صور متحركة مثل الإعلانات، وتقدر تضيفها من لوحة الأدمن',
-    link: 'shop-section.html?section=clothes'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?auto=format&fit=crop&w=1200&q=80',
-    title: 'إلكترونيات وأجهزة',
-    subtitle: 'روّج لمنتجاتك أو لمتجرك بصورة واضحة وجذابة',
-    link: 'shop-section.html?section=devices'
-  }
-];
-let shopAds = [];
-let currentAdIndex = 0;
-let adsTimer = null;
-
-function safeJsonParse(value, fallback){
-  try{return JSON.parse(value)}catch(_){return fallback}
-}
-function getStoredAds(){
-  const stored = safeJsonParse(localStorage.getItem(HA_SHOP_ADS_KEY), null);
-  if(Array.isArray(stored) && stored.length) return stored;
-  return DEFAULT_SHOP_ADS.slice();
-}
-function saveStoredAds(){
-  localStorage.setItem(HA_SHOP_ADS_KEY, JSON.stringify(shopAds));
-}
-function escapeHtml(str){
-  return String(str || '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-}
-function renderHeroAds(){
-  const slidesWrap = document.getElementById('heroAdsSlides');
-  const dotsWrap = document.getElementById('heroAdsDots');
-  if(!slidesWrap || !dotsWrap) return;
-  if(!Array.isArray(shopAds) || !shopAds.length) shopAds = DEFAULT_SHOP_ADS.slice();
-  slidesWrap.innerHTML = shopAds.map((ad, i) => `
-    <a class="hero-slide ${i===currentAdIndex?'active':''}" href="${escapeHtml(ad.link || '#')}" ${ad.link ? '' : 'onclick="return false"'}>
-      <img src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title || 'إعلان')}" loading="lazy">
-      <div class="hero-ad-content">
-        <div class="hero-ad-title">${escapeHtml(ad.title || '')}</div>
-        <div class="hero-ad-sub">${escapeHtml(ad.subtitle || '')}</div>
-        ${ad.link ? '<span class="hero-ad-link">عرض التفاصيل ←</span>' : ''}
-      </div>
-    </a>
-  `).join('');
-  dotsWrap.innerHTML = shopAds.map((_, i) => `<button type="button" class="hero-dot ${i===currentAdIndex?'active':''}" onclick="goToHeroAd(${i})" aria-label="شريحة ${i+1}"></button>`).join('');
-}
-function goToHeroAd(index){
-  if(!shopAds.length) return;
-  currentAdIndex = (index + shopAds.length) % shopAds.length;
-  renderHeroAds();
-  startHeroAdsAuto();
-}
-function nextHeroAd(){ goToHeroAd(currentAdIndex + 1); }
-function prevHeroAd(){ goToHeroAd(currentAdIndex - 1); }
-function startHeroAdsAuto(){
-  if(adsTimer) clearInterval(adsTimer);
-  adsTimer = setInterval(nextHeroAd, 4500);
-}
-function clearAdForm(){
-  document.getElementById('adImageFile').value='';
-  document.getElementById('adImageUrl').value='';
-  document.getElementById('adTitle').value='';
-  document.getElementById('adSubtitle').value='';
-  document.getElementById('adLink').value='';
-  localStorage.removeItem(HA_SHOP_ADS_EDIT_KEY);
-}
-function fillAdForm(ad, index){
-  document.getElementById('adImageUrl').value=ad.image || '';
-  document.getElementById('adTitle').value=ad.title || '';
-  document.getElementById('adSubtitle').value=ad.subtitle || '';
-  document.getElementById('adLink').value=ad.link || '';
-  document.getElementById('adImageFile').value='';
-  localStorage.setItem(HA_SHOP_ADS_EDIT_KEY, String(index));
-}
-function renderAdsManageList(){
-  const list = document.getElementById('adsManageList');
-  if(!list) return;
-  if(!shopAds.length){
-    list.innerHTML = '<div class="ads-empty">ماكو إعلانات حالياً.</div>';
-    return;
-  }
-  list.innerHTML = shopAds.map((ad, i) => `
-    <div class="ads-item">
-      <img class="ads-thumb" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title || 'إعلان')}">
-      <div class="ads-item-body">
-        <strong>${escapeHtml(ad.title || 'بدون عنوان')}</strong>
-        <small>${escapeHtml(ad.subtitle || '')}</small>
-      </div>
-      <div class="ads-item-controls">
-        <button type="button" onclick="editAdItem(${i})">تعديل</button>
-        <button type="button" onclick="deleteAdItem(${i})">حذف</button>
-      </div>
-    </div>
-  `).join('');
-}
-function openAdsAdmin(){
-  document.getElementById('adsAdminModal').classList.add('open');
-  renderAdsManageList();
-}
-function closeAdsAdmin(){
-  document.getElementById('adsAdminModal').classList.remove('open');
-}
-function editAdItem(index){
-  fillAdForm(shopAds[index], index);
-  openAdsAdmin();
-}
-function deleteAdItem(index){
-  if(!confirm('حذف هذا الإعلان؟')) return;
-  shopAds.splice(index, 1);
-  if(!shopAds.length) shopAds = DEFAULT_SHOP_ADS.slice();
-  if(currentAdIndex >= shopAds.length) currentAdIndex = 0;
-  saveStoredAds();
-  renderHeroAds();
-  renderAdsManageList();
-}
-function resizeImageFile(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const maxW = 1400;
-        const scale = Math.min(1, maxW / img.width);
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        resolve(canvas.toDataURL('image/jpeg',0.84));
-      };
-      img.onerror = reject;
-      img.src = reader.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+  slides.forEach((_,i)=>{
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.setAttribute('aria-label', 'انتقال إلى الشريحة ' + (i+1));
+    dot.addEventListener('click', ()=>goTo(i));
+    dotsWrap.appendChild(dot);
   });
-}
-async function saveAdFromForm(){
-  const file = document.getElementById('adImageFile').files[0];
-  const imageUrl = document.getElementById('adImageUrl').value.trim();
-  const title = document.getElementById('adTitle').value.trim();
-  const subtitle = document.getElementById('adSubtitle').value.trim();
-  const link = document.getElementById('adLink').value.trim();
-  let image = imageUrl;
-  if(file){
-    image = await resizeImageFile(file);
-  }
-  if(!image){
-    alert('لازم تضيف صورة للإعلان');
-    return;
-  }
-  const ad = {image, title, subtitle, link};
-  const editIndexRaw = localStorage.getItem(HA_SHOP_ADS_EDIT_KEY);
-  const editIndex = editIndexRaw === null ? -1 : Number(editIndexRaw);
-  if(Number.isInteger(editIndex) && editIndex >= 0 && editIndex < shopAds.length){
-    shopAds[editIndex] = ad;
-  }else{
-    shopAds.push(ad);
-  }
-  saveStoredAds();
-  clearAdForm();
-  renderHeroAds();
-  renderAdsManageList();
-}
-function resetDefaultAds(){
-  if(!confirm('استرجاع الإعلانات الافتراضية؟')) return;
-  shopAds = DEFAULT_SHOP_ADS.slice();
-  currentAdIndex = 0;
-  saveStoredAds();
-  clearAdForm();
-  renderHeroAds();
-  renderAdsManageList();
-}
-async function enableAdsAdminIfAllowed(){
-  const btn = document.getElementById('heroAdsAdminBtn');
-  if(!btn || !window.supabase) {
-    if(location.search.includes('admin=1') || localStorage.getItem(HA_SHOP_ADMIN_FLAG)==='1') btn?.classList.add('show');
-    return;
-  }
-  let allow = location.search.includes('admin=1') || localStorage.getItem(HA_SHOP_ADMIN_FLAG)==='1';
-  try{
-    const db = window.supabase.createClient(
-      'https://ubayrhtshgtgggxprrek.supabase.co',
-      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-    );
-    const {data:{session}} = await db.auth.getSession();
-    const email = session?.user?.email?.toLowerCase?.() || '';
-    if(MAIN_ADMINS.includes(email)) allow = true;
-  }catch(_){ }
-  if(allow) btn.classList.add('show');
-}
-shopAds = getStoredAds();
-renderHeroAds();
-startHeroAdsAuto();
-document.getElementById('heroPrevBtn')?.addEventListener('click', prevHeroAd);
-document.getElementById('heroNextBtn')?.addEventListener('click', nextHeroAd);
-document.getElementById('heroAdsAdminBtn')?.addEventListener('click', openAdsAdmin);
-document.getElementById('closeAdsBtn')?.addEventListener('click', closeAdsAdmin);
-document.getElementById('newAdBtn')?.addEventListener('click', clearAdForm);
-document.getElementById('saveAdBtn')?.addEventListener('click', saveAdFromForm);
-document.getElementById('resetAdsBtn')?.addEventListener('click', resetDefaultAds);
-document.getElementById('adsAdminModal')?.addEventListener('click', function(e){ if(e.target === this) closeAdsAdmin(); });
-enableAdsAdminIfAllowed();
-</script>
-</body></html>
+  const dots = Array.from(dotsWrap.children);
 
+  function render(){
+    track.style.transform = `translateX(${index * -100}%)`;
+    dots.forEach((d,i)=>d.classList.toggle('active', i===index));
+  }
+  function goTo(i){
+    index = (i + slides.length) % slides.length;
+    render();
+    restart();
+  }
+  function restart(){
+    clearInterval(timer);
+    timer = setInterval(()=>goTo(index+1), 4500);
+  }
+
+  prev.addEventListener('click', ()=>goTo(index-1));
+  next.addEventListener('click', ()=>goTo(index+1));
+  render();
+  restart();
+})();
+</script>
+
+</body></html>
