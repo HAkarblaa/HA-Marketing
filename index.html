@@ -503,6 +503,14 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
 .c-contact{--glow:32,154,104}
 .c-suggest{--glow:235,170,55}
 
+
+/* ===== HA HOME AUTO SLIDER ===== */
+.ha-home-slider{width:min(1080px,94%);margin:16px auto 18px;position:relative;overflow:hidden;border-radius:22px;border:1px solid rgba(239,189,94,.34);background:#090d11;box-shadow:0 12px 34px #0007;aspect-ratio:16/5.2;min-height:150px}
+.ha-home-slider-track{position:absolute;inset:0}
+.ha-home-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.02);transition:opacity .85s ease,transform 4.5s ease}
+.ha-home-slide.active{opacity:1;transform:scale(1.06)}
+.ha-home-slider::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 48%,rgba(0,0,0,.26))}
+@media(max-width:700px){.ha-home-slider{width:93%;aspect-ratio:16/7.2;border-radius:18px;margin:12px auto 14px;min-height:135px}}
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
@@ -516,7 +524,15 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   </div>
   <a class="ha-ticker-admin" href="admin-home-ticker.html" title="إدارة أخبار الشريط">✎</a>
 </div>
-</section> <div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
+</section>
+<div class="ha-home-slider" id="haHomeSlider" aria-label="صور HA Marketing">
+  <div class="ha-home-slider-track" id="haHomeSliderTrack">
+    <img class="ha-home-slide active" src="images/2.jpg" alt="HA Marketing 1">
+    <img class="ha-home-slide" src="images/4.jpg" alt="HA Marketing 2">
+    <img class="ha-home-slide" src="images/5.jpg" alt="HA Marketing 3">
+  </div>
+</div>
+<div class="search-panel" id="searchPanel"> <div class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن قسم أو خدمة..." autocomplete="off" oninput="searchCards()"></div>
 </div> <div class="shortcuts" id="shortcuts"> <div class="drawer-head"><div class="drawer-title">HA Marketing<small>اختصارات سريعة</small></div><button class="drawer-close" type="button" onclick="closeMenu()">×</button></div> <a href="account.html"><span class="short-ico">👤</span>الحساب الشخصي</a> <a href="notifications-center.html"><span class="short-ico">🔔</span>الإشعارات <b id="haDrawerNotificationBadge" class="ha-drawer-notif-badge" style="display:none">0</b></a> <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button> <a id="adminPanelLink" href="admin-panel.html" style="display:none"><span class="short-ico">🛡️</span>لوحة الإدارة</a> <a id="marketplaceRequestsLink" href="admin-marketplace.html" style="display:none"><span class="short-ico">📥</span>طلبات الانضمام والصلاحيات</a> <a href="index.html"><span class="short-ico">⌂</span>الرئيسية</a> <a href="shop.html"><span class="short-ico">🛒</span>تسوق الآن</a> <a href="services.html"><span class="short-ico">🛠️</span>طلب خدمة</a> <a href="chat.html"><span class="short-ico">💬</span>الدردشة</a> <a href="news.html"><span class="short-ico">📰</span>آخر الأخبار</a> <a href="religious.html"><span class="short-ico">🕌</span>الأمور الدينية</a> <a href="study.html"><span class="short-ico">📚</span>دراسة</a> <a href="entertainment.html"><span class="short-ico">🎮</span>ترفيه</a> <a href="sports.html"><span class="short-ico">⚽</span>رياضة</a> <a href="taxi-delivery.html"><span class="short-ico">🚕</span>طلب تكسي أو مندوب</a> <a href="suggestions.html"><span class="short-ico">💡</span>مقترحاتكم</a> <a href="call-us.html"><span class="short-ico">☎</span>اتصل بنا</a>
 </div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenu()"></div> <a id="haDriverOrderAlert" class="ha-driver-order-alert" href="driver.html">
@@ -873,6 +889,47 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
   }
 })();
 </script>
+
+<script>
+/* ===== HA HOME AUTO SLIDER - no arrows ===== */
+(async function(){
+  const track=document.getElementById('haHomeSliderTrack');
+  if(!track)return;
+  const defaults=['images/2.jpg','images/4.jpg','images/5.jpg'];
+  let timer=null,index=0;
+
+  function render(urls){
+    const list=(urls||[]).filter(Boolean).slice(0,3);
+    const finalList=list.length?list:defaults;
+    track.innerHTML=finalList.map((u,i)=>`<img class="ha-home-slide${i===0?' active':''}" src="${String(u).replace(/"/g,'&quot;')}" alt="HA Marketing ${i+1}">`).join('');
+    index=0;
+    if(timer)clearInterval(timer);
+    if(finalList.length>1){
+      timer=setInterval(()=>{
+        const slides=[...track.querySelectorAll('.ha-home-slide')];
+        if(slides.length<2)return;
+        slides[index]?.classList.remove('active');
+        index=(index+1)%slides.length;
+        slides[index]?.classList.add('active');
+      },3500);
+    }
+  }
+
+  render(defaults);
+  if(!window.supabase || !navigator.onLine)return;
+  try{
+    const hdb=window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+    const {data,error}=await hdb.from('home_slider_images').select('slot,image_url,is_active').eq('is_active',true).order('slot');
+    if(!error && Array.isArray(data)){
+      const urls=data.map(x=>x.image_url).filter(Boolean);
+      if(urls.length)render(urls);
+    }
+  }catch(e){console.warn('home slider',e)}
+})();</script>
 
 </body>
 </html>
