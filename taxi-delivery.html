@@ -62,6 +62,21 @@ h1{text-align:center;margin-bottom:8px}
 .transport-slider-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.45);transition:.3s}
 .transport-slider-dots span.active{width:22px;border-radius:6px;background:#ffd34f}
 @media(max-width:700px){.transport-slider{height:145px;margin-bottom:16px;border-radius:16px}.transport-slider-dots{bottom:8px}.transport-slider-dots span{width:6px;height:6px}.transport-slider-dots span.active{width:18px}}
+
+
+/* Driver/customer choice shown only for approved transport drivers */
+.transport-choice-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99999;display:none;align-items:center;justify-content:center;padding:18px}
+.transport-choice-overlay.show{display:flex}
+.transport-choice-box{width:min(430px,94vw);background:#fff;color:#111;border-radius:22px;padding:22px;box-shadow:0 22px 70px rgba(0,0,0,.38);text-align:center}
+.transport-choice-box h2{margin:0 0 8px;font-size:24px}
+.transport-choice-box p{margin:0 0 18px;color:#666;line-height:1.7}
+.transport-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.transport-choice-actions button{border:0;border-radius:14px;padding:15px 10px;font:inherit;font-weight:900;cursor:pointer}
+.transport-driver-choice{background:linear-gradient(135deg,#ffd46a,#d99521);color:#111}
+.transport-customer-choice{background:#111;color:#fff}
+.transport-choice-close{width:100%;margin-top:10px;border:0;background:#eee;color:#111;border-radius:12px;padding:11px;font:inherit;cursor:pointer}
+@media(max-width:520px){.transport-choice-actions{grid-template-columns:1fr}.transport-choice-box{padding:18px}.transport-choice-box h2{font-size:20px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
@@ -131,12 +146,25 @@ h1{text-align:center;margin-bottom:8px}
 </div>
 
 <div class="driver-tools">
-  <a class="driver-open-btn" href="driver.html">🚕 فتح واجهة السائق</a>
+  <a class="driver-open-btn" id="driverQuickOpen" href="driver.html" style="display:none!important">🚕 فتح واجهة السائق</a>
   <a class="driver-register-btn" href="transport-registration.html">📝 تسجيل سائق / مندوب / ستوتة / حمل</a>
 </div>
 
 <a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
 </div>
+
+<div class="transport-choice-overlay" id="transportChoiceOverlay" aria-hidden="true">
+  <div class="transport-choice-box" role="dialog" aria-modal="true" aria-labelledby="transportChoiceTitle">
+    <h2 id="transportChoiceTitle">اختر طريقة الدخول</h2>
+    <p>حسابك مسجل كسائق. تريد تدخل كـسائق لو كزبون لهذه الخدمة؟</p>
+    <div class="transport-choice-actions">
+      <button class="transport-driver-choice" id="transportDriverChoice" type="button">🚕 دخول واجهة السائق</button>
+      <button class="transport-customer-choice" id="transportCustomerChoice" type="button">👤 دخول واجهة الزبون</button>
+    </div>
+    <button class="transport-choice-close" id="transportChoiceClose" type="button">إلغاء</button>
+  </div>
+</div>
+
 
 <script>
 const TRANSPORT_SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
@@ -182,6 +210,106 @@ async function loadTransportSlider(){
   startTransportSlider();
 }
 loadTransportSlider();
+
+let approvedTransportDriver=null;
+let approvedTransportDriverPromise=null;
+let pendingCustomerHref='';
+
+async function checkApprovedTransportDriver(force=false){
+  if(!force && approvedTransportDriver!==null)return approvedTransportDriver;
+  if(!force && approvedTransportDriverPromise)return approvedTransportDriverPromise;
+
+  approvedTransportDriverPromise=(async()=>{
+    try{
+      const {data:{session}}=await transportDb.auth.getSession();
+      const user=session?.user;
+      if(!user?.id){
+        approvedTransportDriver=false;
+        return false;
+      }
+
+      const driverRoles=['taxi_driver','delivery_driver','stoota_driver','cargo_driver'];
+      const [profileRes,applicationRes]=await Promise.all([
+        transportDb.from('transport_profiles')
+          .select('user_id,status,role_type')
+          .eq('user_id',user.id)
+          .eq('status','approved')
+          .in('role_type',driverRoles)
+          .limit(1),
+        transportDb.from('marketplace_applications')
+          .select('id,status,role_type')
+          .eq('user_id',user.id)
+          .eq('status','approved')
+          .in('role_type',driverRoles)
+          .limit(1)
+      ]);
+
+      const profileOk=!profileRes.error && Array.isArray(profileRes.data) && profileRes.data.length>0;
+      const appOk=!applicationRes.error && Array.isArray(applicationRes.data) && applicationRes.data.length>0;
+      approvedTransportDriver=profileOk||appOk;
+
+      const quick=document.getElementById('driverQuickOpen');
+      if(quick && approvedTransportDriver)quick.style.setProperty('display','block','important');
+      return approvedTransportDriver;
+    }catch(e){
+      console.warn('Driver choice check failed:',e);
+      approvedTransportDriver=false;
+      return false;
+    }finally{
+      approvedTransportDriverPromise=null;
+    }
+  })();
+
+  return approvedTransportDriverPromise;
+}
+
+function openTransportChoice(href){
+  pendingCustomerHref=href||'taxi-delivery.html';
+  const overlay=document.getElementById('transportChoiceOverlay');
+  if(!overlay)return location.href=pendingCustomerHref;
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+}
+
+function closeTransportChoice(){
+  const overlay=document.getElementById('transportChoiceOverlay');
+  if(!overlay)return;
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden','true');
+}
+
+function setupTransportDriverChoice(){
+  document.querySelectorAll('.grid .card').forEach(card=>{
+    card.addEventListener('click',async e=>{
+      const href=card.getAttribute('href');
+      if(!href)return;
+      e.preventDefault();
+      const isDriver=await checkApprovedTransportDriver();
+      if(isDriver)openTransportChoice(href);
+      else location.href=href;
+    });
+  });
+
+  document.getElementById('transportDriverChoice')?.addEventListener('click',()=>{
+    location.href='driver.html';
+  });
+  document.getElementById('transportCustomerChoice')?.addEventListener('click',()=>{
+    const href=pendingCustomerHref||'taxi-delivery.html';
+    closeTransportChoice();
+    location.href=href;
+  });
+  document.getElementById('transportChoiceClose')?.addEventListener('click',closeTransportChoice);
+  document.getElementById('transportChoiceOverlay')?.addEventListener('click',e=>{
+    if(e.target===e.currentTarget)closeTransportChoice();
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTransportChoice()});
+
+  // Preload the status so normal card clicks stay fast.
+  checkApprovedTransportDriver();
+}
+
+setupTransportDriverChoice();
+
 </script>
 </body>
 </html>
