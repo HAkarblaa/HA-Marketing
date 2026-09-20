@@ -2228,6 +2228,11 @@ body.driver-active-trip #map{height:57vh!important;min-height:390px!important;ma
   .driver-request-item{min-height:68px;padding:11px}
 }
 
+
+.request-offer-timer{margin:10px 0 0;padding:8px 10px;border-radius:11px;background:#11181c;border:1px solid #2d383e;
+text-align:center;color:#c7d0d5;font-size:10px;font-weight:800}
+.request-offer-timer b{color:#ffd46a;font-size:13px}
+
 </style>
 
 <script src="ha-theme.js"></script>
@@ -2357,6 +2362,7 @@ body.driver-active-trip #map{height:57vh!important;min-height:390px!important;ma
         </div>
       </div>
 
+      <div id="requestOfferTimer" class="request-offer-timer">باقي لقبول الطلب <b>25</b> ثانية</div>
       <div class="actions request-actions">
         <button id="acceptBtn" class="accept">✓ قبول</button>
         <button id="rejectBtn" class="reject">✕ رفض</button>
@@ -2517,6 +2523,8 @@ let currentRideStatusRef=null;
 let pendingEntries=[];
 let currentPendingIndex=0;
 let lastPendingCount=0;
+let requestOfferTimerId=null;
+let requestOfferSeconds=25;
 
 let driverProfile=null;
 let driverReady=false;
@@ -2627,6 +2635,37 @@ function animateRequestCard(){
   requestCard.classList.add('request-pop-in');
 }
 
+
+function stopRequestOfferTimer(){
+  if(requestOfferTimerId){clearInterval(requestOfferTimerId);requestOfferTimerId=null;}
+}
+function startRequestOfferTimer(rideId){
+  stopRequestOfferTimer();
+  requestOfferSeconds=25;
+  const el=document.getElementById('requestOfferTimer');
+  const paint=()=>{if(el)el.innerHTML='باقي لقبول الطلب <b>'+requestOfferSeconds+'</b> ثانية';};
+  paint();
+  requestOfferTimerId=setInterval(()=>{
+    if(!currentRideId || currentRideId!==rideId || currentRide?.status!=='searching'){
+      stopRequestOfferTimer();return;
+    }
+    requestOfferSeconds--;
+    paint();
+    if(requestOfferSeconds<=0){
+      stopRequestOfferTimer();
+      driverRejectedLocally.add(rideId);
+      pendingEntries=pendingEntries.filter(([id])=>id!==rideId);
+      currentRideId=null;currentRide=null;currentPendingIndex=0;
+      if(pendingEntries.length)renderPendingRide(0);
+      else{
+        stopRequestOfferTimer();
+      requestCard.style.display='none';
+        const empty=document.getElementById('requestEmptyState');
+        if(empty)empty.style.display='flex';
+      }
+    }
+  },1000);
+}
 function renderPendingRide(index){
   const emptyState=document.getElementById('requestEmptyState');
   const pager=document.getElementById('requestPager');
@@ -2691,6 +2730,7 @@ function renderPendingRide(index){
   }
 
   animateRequestCard();
+  startRequestOfferTimer(id);
 }
 
 function watchPendingRides(){
@@ -2825,6 +2865,7 @@ availabilityBtn.onclick=()=>{
 };
 
 acceptBtn.onclick=async()=>{
+  stopRequestOfferTimer();
   if(!currentRideId)return;
   const oldAcceptText=acceptBtn.textContent;
   acceptBtn.disabled=true;
@@ -2883,6 +2924,9 @@ acceptBtn.onclick=async()=>{
   }
 
   currentRide=tx.snapshot.val();
+  availabilityBtn.disabled=true;
+  availabilityBtn.textContent='مشغول برحلة';
+  if(window.HA_TransportDriverPush)HA_TransportDriverPush.setAvailable(false).catch(()=>{});
   await db.ref('driverRides/'+firebaseDriverUser.uid+'/'+currentRideId).set(true).catch(()=>{});
   localStorage.setItem('ha_driver_active_ride',currentRideId);
   HA_RideStatus.clear();
@@ -2936,6 +2980,7 @@ changeRequestBtn.onclick=()=>{
 };
 
 if(window.rejectBtn)rejectBtn.onclick=()=>{
+  stopRequestOfferTimer();
   if(!currentRideId)return;
   driverRejectedLocally.add(currentRideId);
   pendingEntries=pendingEntries.filter(([id])=>id!==currentRideId);
@@ -3002,6 +3047,9 @@ finishTripBtn.onclick=async()=>{
   setTimeout(()=>{
     currentRideId=null;
     currentRide=null;
+    availabilityBtn.disabled=false;
+    availabilityBtn.textContent=available?'متصل الآن':'غير متصل';
+    if(window.HA_TransportDriverPush)HA_TransportDriverPush.setAvailable(available).catch(()=>{});
     acceptedPanel.classList.remove('show');
     requestsSection.style.display='block';
     arriveBtn.disabled=false;

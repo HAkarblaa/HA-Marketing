@@ -113,7 +113,7 @@
       countryCode:'IQ',
       nationwide:true,
       geographicRestriction:false,
-      notificationRadiusKm:1
+      notificationRadiusKm:'adaptive'
     }
   };
 })();

@@ -1047,6 +1047,15 @@ body:not(.trip-ready) #extraSummary{
 }
 html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
 
+
+/* HA transport upgrade */
+.ha-history-fab{position:fixed;left:12px;top:52px;z-index:1800;text-decoration:none;background:#111;color:#fff;
+border-radius:12px;padding:8px 10px;font-size:11px;font-weight:700;box-shadow:0 4px 14px #0003}
+.ha-search-attempt{margin-top:9px;padding:8px 10px;border-radius:10px;background:#f5f7fb;color:#445;
+font-size:11px;font-weight:700;text-align:center;border:1px solid #e8ebf0}
+.ha-search-attempt b{color:#1110ff}
+.delivery-details .ha-money{background:#fffdf2;border-color:#e4c86a}
+
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
@@ -1055,6 +1064,7 @@ html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
 </head>
 
 <body>
+<a class="ha-history-fab" href="transport-my-rides.html">🕘 طلباتي</a>
 <div class="app">
 
 <div class="head">
@@ -1202,7 +1212,7 @@ html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
     <div id="searchingBox" class="searching-box">
       <div class="loader"></div>
       <div class="status-title">جاري البحث عن أقرب سائق</div>
-      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
+      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div><div id="haTaxiSearchAttempt" class="ha-search-attempt">المحاولة <b>1</b> • باقي <span>25</span> ثانية</div>
       <button id="searchCancelTripBtn" class="search-cancel-trip" type="button">إلغاء الطلب</button>
     </div>
 
@@ -1996,6 +2006,43 @@ document.querySelectorAll('.type').forEach(c=>{
 let activeRideId=null;
 let activeRideRef=null;
 
+
+let haTaxiSearchTimer=null;
+let haTaxiSearchAttemptNo=1;
+function haStopTaxiSearchTimer(){
+  if(haTaxiSearchTimer){clearInterval(haTaxiSearchTimer);haTaxiSearchTimer=null;}
+}
+function haStartTaxiSearchTimer(rideId,rideData){
+  haStopTaxiSearchTimer();
+  haTaxiSearchAttemptNo=Math.max(1,Number(rideData?.dispatchAttempt||1));
+  let left=25;
+  const box=document.getElementById('haTaxiSearchAttempt');
+  const paint=()=>{
+    if(box)box.innerHTML='المحاولة <b>'+haTaxiSearchAttemptNo+'</b> • باقي <span>'+left+'</span> ثانية';
+  };
+  paint();
+  haTaxiSearchTimer=setInterval(async()=>{
+    if(!activeRideId || activeRideId!==rideId){haStopTaxiSearchTimer();return;}
+    left--;
+    if(left<=0){
+      haTaxiSearchAttemptNo++;
+      left=25;
+      try{
+        const snap=await db.ref('rides/'+rideId).once('value');
+        const ride=snap.val();
+        if(!ride || ride.status!=='searching'){haStopTaxiSearchTimer();return;}
+        await db.ref('rides/'+rideId).update({
+          dispatchAttempt:haTaxiSearchAttemptNo,
+          lastDispatchAt:firebase.database.ServerValue.TIMESTAMP
+        });
+        document.querySelector('#searchingBox .status-title').textContent='جاري المحاولة مع سائق آخر';
+        document.querySelector('#searchingBox .status-sub').textContent='ماكو قبول لحد الآن، لذلك وسعنا البحث تلقائياً.';
+        if(window.HA_TransportPush)HA_TransportPush.dispatch(rideId,ride).catch(()=>{});
+      }catch(e){console.warn(e)}
+    }
+    paint();
+  },1000);
+}
 order.onclick=async()=>{
   if(!start || !end || !selected || !selected.dataset.price)return;
 
@@ -2014,6 +2061,25 @@ order.onclick=async()=>{
     return;
   }
 
+  // منع إنشاء طلب ثاني إذا عند الزبون طلب فعال.
+  const oldActiveId=localStorage.getItem('ha_active_ride');
+  if(oldActiveId){
+    try{
+      const oldSnap=await db.ref('rides/'+oldActiveId).once('value');
+      const oldRide=oldSnap.val();
+      if(oldRide && !['finished','cancelled','rejected'].includes(oldRide.status)){
+        activeRideId=oldActiveId;
+        openPostOrder();
+        listenToRide(oldActiveId);
+        if(oldRide.status==='searching')haStartTaxiSearchTimer(oldActiveId,oldRide);
+        alert('عندك طلب تكسي فعال حالياً. رجعناك إليه بدل إنشاء طلب مكرر.');
+        order.disabled=false;order.textContent=oldText;
+        return;
+      }
+      localStorage.removeItem('ha_active_ride');
+    }catch(e){console.warn(e)}
+  }
+
   // HA: الخدمة متاحة على مستوى العراق بدون حصر بمنطقة محددة.
 
   const rideRef=db.ref('rides').push();
@@ -2023,6 +2089,8 @@ order.onclick=async()=>{
   const rideData={
     customerUid:fbUser.uid,
     status:'searching',
+    dispatchAttempt:1,
+    lastDispatchAt:firebase.database.ServerValue.TIMESTAMP,
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:{
       name:'زبون',
@@ -2051,6 +2119,7 @@ order.onclick=async()=>{
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();
     listenToRide(activeRideId);
+    haStartTaxiSearchTimer(activeRideId,rideData);
   }catch(err){
     console.error(err);
     alert('تعذر إرسال الطلب إلى قاعدة البيانات. حاول مرة ثانية.');
@@ -2323,6 +2392,7 @@ function listenToRide(rideId){
     }
 
     if(ride.status==='accepted' || ride.status==='arrived' || ride.status==='started' || ride.status==='finished'){
+      haStopTaxiSearchTimer();
       document.getElementById('searchingBox').style.display='none';
       document.getElementById('driverCard').classList.add('show');
 
@@ -2406,6 +2476,7 @@ function listenToRide(rideId){
     }
 
     if(ride.status==='cancelled'){
+      haStopTaxiSearchTimer();
       if(ride.cancelledBy==='driver'){
         window.HA_NotifyMe?.({
           title:'❌ السائق ألغى الرحلة',
@@ -2450,6 +2521,7 @@ if(savedRideId){
       activeRideId=savedRideId;
       openPostOrder();
       listenToRide(savedRideId);
+      if(s.val().status==='searching')haStartTaxiSearchTimer(savedRideId,s.val());
     }
   });
 }
