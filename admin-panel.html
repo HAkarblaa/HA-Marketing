@@ -33,6 +33,12 @@
     </section>
 
     <section id="notifyView" class="view">
+
+      <div class="box" id="entertainmentSliderManager" style="display:none">
+        <h2>🎮 إدارة سلايدر الترفيه</h2>
+        <p class="small">إدارة خمس صور الحقل العلوي في صفحة الترفيه، مع زر التفاصيل والأسهم، مثل سلايدر التسوق.</p>
+        <a class="btn" href="admin-entertainment-slider.html" style="display:inline-block;text-decoration:none">فتح إدارة سلايدر الترفيه</a>
+      </div>
       <div class="box"><h2>📚 إدارة دليل الدراسة</h2><p class="small">إضافة وحذف وتعديل المدارس والجامعات والمعاهد والمدرسين ومراكز التقوية.</p><a class="btn" href="admin-study.html" style="display:inline-block;text-decoration:none">فتح إدارة الدراسة</a></div>
       <div class="box" id="generalNotifyBox">
         <h2>🔔 إرسال تبليغ / خبر</h2>
@@ -94,7 +100,7 @@ const SHOP_SECTIONS=[['library','مكتبة','📚'],['building_materials','مو
 const SECTIONS=[
  ['shop','التسوق','🛒','admin-shop.html'],['services','طلب خدمة','🛠️','admin-services.html'],['chat','الدردشة','💬','chat.html'],['news','الأخبار','📰','admin-content.html?section=news'],
  ['religious','الأمور الدينية','🕌','admin-content.html?section=religious'],['study','الدراسة','📚','admin-study.html'],['entertainment','الترفيه','🎮','admin-content.html?section=entertainment'],['sports','الرياضة','⚽','admin-content.html?section=sports'],
- ['transport','النقل','🚕','admin-transport.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
+ ['transport','النقل','🚕','taxi-delivery.html'],['appointments','المواعيد','📅','#'],['employees','الموظفين','👷','employee-orders.html'],['users','المستخدمين','👥','account.html'],
  ['notifications','الإشعارات','🔔','admin-panel.html#notify'],['settings','الإعدادات','⚙️','account.html']
 ];
 const NOTICE_SECTIONS=[
@@ -160,10 +166,11 @@ async function init(){
  who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');
  panel.style.display='block';
  renderSections();renderPerms();renderShopPerms();renderNoticeSections();
+ if(adminRow.is_super_admin){const box=document.getElementById('entertainmentSliderManager'); if(box) box.style.display='block';}
  if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }
-function renderSections(){let html=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('');if(adminRow?.is_super_admin){html='<div class="section-card"><div class="ico">🖼️</div><h3>صور الواجهة الرئيسية</h3><p>تبديل الصور الثلاث المتحركة في الصفحة الرئيسية</p><a href="admin-home-slider.html">فتح الإدارة</a></div>'+html;}sectionCards.innerHTML=html}
+function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('')}
 function renderPerms(){permGrid.innerHTML=SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
 function renderShopPerms(){shopPermGrid.innerHTML=SHOP_SECTIONS.map(([k,n,i])=>'<label class="perm"><input type="checkbox" class="shop-sec" value="'+k+'"> '+i+' '+n+'</label>').join('')}
 function selectedShopPerms(){return [...document.querySelectorAll('.shop-sec:checked')].map(x=>x.value)}
