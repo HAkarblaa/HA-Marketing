@@ -9,18 +9,21 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;font-family:Tahoma,Arial,sans-serif;background:#070b08;color:#f3f7ee}
 body{display:flex;justify-content:center;padding:14px 10px 40px}
-.wrap{width:min(520px,100%)}
+button,a{font-family:inherit}
+.wrap{width:min(540px,100%)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .back{width:42px;height:42px;border-radius:13px;border:1px solid #4f624b;background:#111911;color:#dfe8d7;font-size:25px;display:grid;place-items:center;text-decoration:none}
 .title{text-align:center;flex:1}.title b{display:block;font-size:20px;color:#d7e4c9}.title small{font-size:11px;color:#8fa087}
 .phone{border:2px solid #68745d;border-radius:28px;padding:15px 13px 18px;background:linear-gradient(160deg,#30372d,#151a14 55%,#090c09);box-shadow:0 18px 50px #0008,inset 0 0 0 1px #ffffff10}
 .brand{text-align:center;margin:2px 0 9px;font-weight:900;letter-spacing:2px;color:#becab3}
 .screen{background:#9eaf79;border:5px solid #252b20;border-radius:12px;padding:8px;box-shadow:inset 0 0 22px #29321caa}
-.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;color:#1c2615;font-family:monospace;font-weight:900;font-size:12px;margin-bottom:6px}
-.hud div:nth-child(2){text-align:center}.hud div:last-child{text-align:left}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;color:#1c2615;font-family:monospace;font-weight:900;font-size:11px;margin-bottom:6px;direction:ltr}
+.hud div{text-align:center;white-space:nowrap}
 canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action:none;cursor:crosshair;border:2px solid #34402a;image-rendering:pixelated}
-.msg{min-height:26px;margin-top:6px;text-align:center;color:#1b2515;font-family:monospace;font-size:12px;font-weight:900}
-.control-pad{width:max-content;margin:16px auto 0;padding:12px;border:1px solid #4f5c49;border-radius:22px;background:linear-gradient(180deg,#1b2119,#0d110d);box-shadow:inset 0 1px #ffffff10,0 10px 22px #0005}
+.msg{min-height:30px;margin-top:6px;text-align:center;color:#1b2515;font-family:monospace;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.legend{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:7px;color:#28331f;font-size:9px;font-weight:900}
+.legend span{background:#ffffff26;border:1px solid #23301b33;border-radius:999px;padding:4px 7px}
+.control-pad{width:max-content;max-width:100%;margin:16px auto 0;padding:12px;border:1px solid #4f5c49;border-radius:22px;background:linear-gradient(180deg,#1b2119,#0d110d);box-shadow:inset 0 1px #ffffff10,0 10px 22px #0005}
 .controls{display:grid;grid-template-columns:64px 64px 64px;grid-template-rows:56px 56px 56px;justify-content:center;gap:8px;direction:ltr}
 .key{width:64px;height:56px;border:1px solid #6a7864;background:linear-gradient(180deg,#2b3428,#151a14);color:#edf5e8;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px #ffffff18,0 5px 10px #0007;touch-action:manipulation;cursor:pointer}
 .key svg{width:27px;height:27px;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;fill:none;pointer-events:none}
@@ -29,39 +32,16 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 .key:active{transform:translateY(2px) scale(.97);filter:brightness(.9)}
 .up{grid-column:2;grid-row:1}.left{grid-column:1;grid-row:2}.center{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}.down{grid-column:2;grid-row:3}
 .bottom{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
-.action{padding:12px;border:1px solid #53644c;border-radius:13px;background:#121a12;color:#e4ecdc;font-weight:900;font-size:13px}
+.action{padding:12px;border:1px solid #53644c;border-radius:13px;background:#121a12;color:#e4ecdc;font-weight:900;font-size:13px;cursor:pointer}
 .action.primary{background:#1f2e1c;border-color:#79916d;color:#e8f3df}
-.note{text-align:center;color:#83907c;font-size:10px;line-height:1.7;margin-top:10px}
-
-.rank-card{
-  margin-top:14px;border:1px solid #4f624b;border-radius:18px;
-  background:linear-gradient(180deg,#111911,#090d09);overflow:hidden
-}
-.rank-head{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:12px 13px;border-bottom:1px solid #ffffff12
-}
-.rank-head b{color:#d7e4c9;font-size:14px}
-.rank-head a{color:#b7caa9;font-size:11px;text-decoration:none}
-.rank-list{display:grid;gap:6px;padding:9px}
-.rank-row{
-  display:grid;grid-template-columns:38px minmax(0,1fr) 76px;gap:7px;align-items:center;
-  padding:9px 8px;border-radius:12px;background:#151d13;border:1px solid #ffffff0c
-}
-.rank-no{text-align:center;font-weight:900;color:#d8e7ca}
-.rank-user{min-width:0}
-.rank-user b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rank-user small{display:block;color:#7f9078;font-size:9px;direction:ltr;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rank-score{text-align:center;font-family:monospace;font-weight:900;color:#dfeccf}
-.rank-score small{display:block;color:#84947d;font-size:8px}
-.rank-empty{padding:16px;text-align:center;color:#83907c;font-size:11px}
-
-@media(max-width:420px){
- body{padding:8px 6px 28px}.phone{padding:11px 9px 14px;border-radius:23px}
- .control-pad{padding:10px;border-radius:19px}
- .controls{grid-template-columns:58px 58px 58px;grid-template-rows:50px 50px 50px;gap:7px}
- .key{width:58px;height:50px;border-radius:14px}.key svg{width:24px;height:24px}.title b{font-size:17px}
-}
+.action:disabled{opacity:.48;cursor:not-allowed}
+.note{text-align:center;color:#83907c;font-size:10px;line-height:1.8;margin-top:10px}
+.rank-card{margin-top:14px;border:1px solid #4f624b;border-radius:18px;background:linear-gradient(180deg,#111911,#090d09);overflow:hidden}
+.rank-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 13px;border-bottom:1px solid #ffffff12}
+.rank-head b{color:#d7e4c9;font-size:14px}.rank-head a{color:#b7caa9;font-size:11px;text-decoration:none}
+.rank-list{display:grid;gap:6px;padding:9px}.rank-row{display:grid;grid-template-columns:38px minmax(0,1fr) 76px;gap:7px;align-items:center;padding:9px 8px;border-radius:12px;background:#151d13;border:1px solid #ffffff0c}
+.rank-no{text-align:center;font-weight:900;color:#d8e7ca}.rank-user{min-width:0}.rank-user b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-user small{display:block;color:#7f9078;font-size:9px;direction:ltr;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-score{text-align:center;font-family:monospace;font-weight:900;color:#dfeccf}.rank-score small{display:block;color:#84947d;font-size:8px}.rank-empty{padding:16px;text-align:center;color:#83907c;font-size:11px}
+@media(max-width:420px){body{padding:8px 6px 28px}.phone{padding:11px 9px 14px;border-radius:23px}.control-pad{padding:10px;border-radius:19px}.controls{grid-template-columns:58px 58px 58px;grid-template-rows:50px 50px 50px;gap:7px}.key{width:58px;height:50px;border-radius:14px}.key svg{width:24px;height:24px}.title b{font-size:17px}.hud{font-size:9px}}
 </style>
 <link rel="stylesheet" href="ha-theme.css">
 <script src="ha-theme.js"></script>
@@ -71,14 +51,13 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 <body>
 <div class="wrap">
   <div class="top">
-    <a class="back" href="entertainment.html">‹</a>
-    <div class="title"><b>🐍 لعبة الحية</b><small>ستايل نوكيا الكلاسيكي</small></div>
+    <a class="back" href="entertainment.html" aria-label="رجوع">‹</a>
+    <div class="title"><b>🐍 لعبة الحية</b><small>نظام جديد بالكامل — ثابت وسلس</small></div>
     <div style="width:42px"></div>
   </div>
 
   <section class="phone">
     <div class="brand">HA • SNAKE</div>
-
     <div class="screen">
       <div class="hud">
         <div>LEVEL <span id="level">1</span></div>
@@ -87,40 +66,38 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
         <div>SHIELD <span id="shieldHud">—</span></div>
       </div>
       <canvas id="game" width="360" height="360" aria-label="لعبة الحية"></canvas>
-      <div id="msg" class="msg">اضغط تشغيل أو اسحب على شاشة اللعب</div>
+      <div id="msg" class="msg" aria-live="polite">اضغط تشغيل أو اختَر اتجاه للبدء</div>
+      <div class="legend"><span>● عادي +10</span><span>★ ذهبي +30</span><span>🛡 درع</span><span>☠ سم</span></div>
     </div>
 
     <div class="control-pad" aria-label="أزرار التحكم">
       <div class="controls">
-        <button class="key up" data-dir="up" aria-label="أعلى"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
-        <button class="key left" data-dir="left" aria-label="يسار"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-        <button class="key center" id="playBtn" aria-label="تشغيل"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
-        <button class="key right" data-dir="right" aria-label="يمين"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-        <button class="key down" data-dir="down" aria-label="أسفل"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+        <button type="button" class="key up" data-dir="up" aria-label="أعلى"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+        <button type="button" class="key left" data-dir="left" aria-label="يسار"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button type="button" class="key center" id="playBtn" aria-label="تشغيل"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        <button type="button" class="key right" data-dir="right" aria-label="يمين"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <button type="button" class="key down" data-dir="down" aria-label="أسفل"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
       </div>
     </div>
 
     <div class="bottom">
-      <button class="action primary" id="restartBtn">↻ إعادة اللعب</button>
-      <button class="action" id="pauseBtn">Ⅱ إيقاف مؤقت</button>
+      <button type="button" class="action primary" id="restartBtn">↻ إعادة اللعب</button>
+      <button type="button" class="action" id="pauseBtn" disabled>Ⅱ إيقاف مؤقت</button>
     </div>
   </section>
 
   <section class="rank-card">
-    <div class="rank-head">
-      <b>🏆 ترتيب لعبة الحية</b>
-      <a href="game-leaderboard.html?game=snake">عرض الترتيب الكامل ›</a>
-    </div>
-    <div id="snakeRankList" class="rank-list">
-      <div class="rank-empty">جاري تحميل الترتيب...</div>
-    </div>
+    <div class="rank-head"><b>🏆 ترتيب لعبة الحية</b><a href="game-leaderboard.html?game=snake">عرض الترتيب الكامل ›</a></div>
+    <div id="snakeRankList" class="rank-list"><div class="rank-empty">جاري تحميل الترتيب...</div></div>
   </section>
 
-  <div class="note">تشتغل باللمس أو أسهم الكيبورد. المراحل تصير أسرع وتظهر عوائق. 🟡 أكل ذهبي نقاط أكثر • 🛡️ درع يحمي من اصطدام • ☠️ السم ينقص النقاط والطول.</div>
+  <div class="note">الكرة تبقى ثابتة بمكانها إلى أن تأكلها الحية، وبعدها فقط تظهر كرة جديدة بمكان مختلف. كل 5 أكلات تصعد مرحلة وتزيد السرعة والعوائق تدريجياً.</div>
 </div>
 
 <script>
 (()=>{
+  'use strict';
+
   const canvas=document.getElementById('game');
   const ctx=canvas.getContext('2d');
   const scoreEl=document.getElementById('score');
@@ -135,363 +112,390 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
   const CELLS=18;
   const SIZE=canvas.width/CELLS;
+  const MAX_LEVEL=10;
+  const START_SPEED=185;
+  const MIN_SPEED=72;
 
-  let snake,food,dir,nextDir,score,level,timer,running=false,paused=false,gameOver=false;
-  let obstacles=[],shieldActive=false,foodsEaten=0,steps=0,lastFoodPos=null;
-  let rankPlayId='',runStarted=false;
-  let best=Number(localStorage.getItem('ha_snake_best')||0);
+  let snake=[];
+  let dir={x:1,y:0};
+  let queuedDir={x:1,y:0};
+  let inputLocked=false;
+  let food=null;
+  let obstacles=[];
+  let score=0;
+  let level=1;
+  let foodsEaten=0;
+  let growthPending=0;
+  let shieldActive=false;
+  let running=false;
+  let paused=false;
+  let gameOver=false;
+  let timer=null;
+  let runStarted=false;
+  let playId='';
+  let lastFoodPos=null;
+  let best=Math.max(0,Number(localStorage.getItem('ha_snake_best_v2')||0));
+  let audioCtx=null;
+
   bestEl.textContent=best;
 
+  const DIRS={
+    up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}
+  };
+
+  function safeBeep(kind='tick'){
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return;
+      if(!audioCtx)audioCtx=new AC();
+      const osc=audioCtx.createOscillator();
+      const gain=audioCtx.createGain();
+      const now=audioCtx.currentTime;
+      const map={tick:520,coin:740,win:900,lose:165,shield:660};
+      osc.frequency.value=map[kind]||520;
+      gain.gain.setValueAtTime(.035,now);
+      gain.gain.exponentialRampToValueAtTime(.001,now+.07);
+      osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now);osc.stop(now+.075);
+    }catch(_e){}
+  }
+
   function esc(v){
-    return String(v??'').replace(/[&<>"']/g,c=>({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[c]));
+    return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function rankingApi(){
+    return window.HA_GameRanking && typeof window.HA_GameRanking==='object' ? window.HA_GameRanking : null;
+  }
+
+  function newPlayId(){
+    try{
+      const api=rankingApi();
+      if(api&&typeof api.newPlayId==='function')return api.newPlayId('snake');
+    }catch(_e){}
+    return 'snake-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
   }
 
   async function loadSnakeRanking(){
-    if(!snakeRankList || !window.HA_GameRanking)return;
+    const api=rankingApi();
+    if(!snakeRankList)return;
+    if(!api||typeof api.leaderboard!=='function'){
+      snakeRankList.innerHTML='<div class="rank-empty">التصنيف غير متاح حالياً، واللعبة تشتغل بصورة طبيعية.</div>';
+      return;
+    }
     snakeRankList.innerHTML='<div class="rank-empty">جاري تحميل الترتيب...</div>';
-
     try{
-      const {data,error}=await HA_GameRanking.leaderboard('snake',5);
-      if(error)throw error;
-
-      const rows=data||[];
+      const result=await api.leaderboard('snake',5);
+      if(result?.error)throw result.error;
+      const rows=result?.data||[];
       if(!rows.length){
         snakeRankList.innerHTML='<div class="rank-empty">بعد ماكو نتائج. أول لاعب يسجل نقاط راح يظهر هنا.</div>';
         return;
       }
-
       snakeRankList.innerHTML=rows.map((r,i)=>{
         const rank=Number(r.rank_no||i+1);
         const medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
         const user=r.username?'@'+String(r.username).replace(/^@+/,''):'بدون معرّف';
-        return `<div class="rank-row">
-          <div class="rank-no">${medal}</div>
-          <div class="rank-user">
-            <b>${esc(r.full_name||'مستخدم')}</b>
-            <small>${esc(user)}</small>
-          </div>
-          <div class="rank-score">${Number(r.total_points||0).toLocaleString('ar-IQ')}<small>نقطة</small></div>
-        </div>`;
+        return `<div class="rank-row"><div class="rank-no">${medal}</div><div class="rank-user"><b>${esc(r.full_name||'مستخدم')}</b><small>${esc(user)}</small></div><div class="rank-score">${Number(r.total_points||0).toLocaleString('ar-IQ')}<small>نقطة</small></div></div>`;
       }).join('');
-    }catch(e){
-      snakeRankList.innerHTML='<div class="rank-empty">تعذر تحميل الترتيب حالياً.</div>';
+    }catch(_e){
+      snakeRankList.innerHTML='<div class="rank-empty">تعذر تحميل الترتيب حالياً، واللعبة تشتغل بصورة طبيعية.</div>';
     }
   }
 
-
-  function cellKey(p){return p.x+','+p.y}
-
-  function reset(message='اضغط تشغيل أو اسحب على شاشة اللعب'){
-    clearInterval(timer);
-    rankPlayId=HA_GameRanking.newPlayId('snake');
+  async function recordRound(){
+    updateBest();
+    if(!runStarted)return;
     runStarted=false;
+    const api=rankingApi();
+    if(!api||typeof api.record!=='function')return;
+    try{
+      await api.record('snake',score,{won:false,playId});
+      setTimeout(loadSnakeRanking,250);
+    }catch(_e){}
+  }
 
-    snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];
-    dir={x:1,y:0};
-    nextDir={x:1,y:0};
+  function key(x,y){return x+','+y}
+  function inBounds(p){return p.x>=0&&p.y>=0&&p.x<CELLS&&p.y<CELLS}
+  function snakeHas(x,y,list=snake){return list.some(s=>s.x===x&&s.y===y)}
+  function obstacleHas(x,y,list=obstacles){return list.some(o=>o.x===x&&o.y===y)}
 
-    score=0;
-    level=1;
-    foodsEaten=0;
-    steps=0;
-    shieldActive=false;
-    obstacles=[];
-    lastFoodPos=null;
+  function reachableCells(from,obs=obstacles){
+    const blocked=new Set(obs.map(o=>key(o.x,o.y)));
+    const seen=new Set();
+    const q=[{x:from.x,y:from.y}];
+    seen.add(key(from.x,from.y));
+    for(let i=0;i<q.length;i++){
+      const p=q[i];
+      for(const d of Object.values(DIRS)){
+        const n={x:p.x+d.x,y:p.y+d.y};
+        const k=key(n.x,n.y);
+        if(!inBounds(n)||blocked.has(k)||seen.has(k))continue;
+        seen.add(k);q.push(n);
+      }
+    }
+    return seen;
+  }
 
-    running=false;
-    paused=false;
-    gameOver=false;
+  function chooseFoodType(){
+    // مكافآت مضمونة بشكل دوري، والسم يبقى نادراً.
+    if(foodsEaten>0 && foodsEaten%10===0 && !shieldActive)return 'shield';
+    if(foodsEaten>0 && foodsEaten%5===0)return 'gold';
+    const r=Math.random();
+    if(level>=3 && !shieldActive && r<.08)return 'shield';
+    if(level>=2 && r<.18)return 'poison';
+    if(r<.36)return 'gold';
+    return 'normal';
+  }
 
-    scoreEl.textContent='0';
-    levelEl.textContent='1';
-    shieldHud.textContent='—';
+  function spawnFood(forcedType=null){
+    const reachable=reachableCells(snake[0]);
+    let candidates=[];
+    for(let y=0;y<CELLS;y++){
+      for(let x=0;x<CELLS;x++){
+        if(!reachable.has(key(x,y)))continue;
+        if(snakeHas(x,y)||obstacleHas(x,y))continue;
+        candidates.push({x,y});
+      }
+    }
+    if(!candidates.length){
+      endGame('🏆 امتلأت الخريطة تقريباً — نتيجة ممتازة');
+      return null;
+    }
 
-    food=randomFood('normal');
-    msg.textContent=message;
-    pauseBtn.textContent='Ⅱ إيقاف مؤقت';
-    draw();
+    if(lastFoodPos && candidates.length>6){
+      const far=candidates.filter(p=>Math.abs(p.x-lastFoodPos.x)+Math.abs(p.y-lastFoodPos.y)>=5);
+      if(far.length)candidates=far;
+    }
+
+    const p=candidates[Math.floor(Math.random()*candidates.length)];
+    lastFoodPos={x:p.x,y:p.y};
+    return {...p,type:forcedType||chooseFoodType()};
+  }
+
+  function obstacleTargetCount(lvl){
+    if(lvl<2)return 0;
+    return Math.min(14,2+(lvl-2)*2);
+  }
+
+  function rebuildObstacles(){
+    const wanted=obstacleTargetCount(level);
+    if(!wanted){obstacles=[];return}
+
+    const result=[];
+    const protectedCells=new Set();
+    for(const s of snake)protectedCells.add(key(s.x,s.y));
+    const head=snake[0];
+    for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)protectedCells.add(key(head.x+dx,head.y+dy));
+
+    let attempts=0;
+    while(result.length<wanted && attempts<1200){
+      attempts++;
+      const p={x:1+Math.floor(Math.random()*(CELLS-2)),y:1+Math.floor(Math.random()*(CELLS-2))};
+      const k=key(p.x,p.y);
+      if(protectedCells.has(k)||result.some(o=>o.x===p.x&&o.y===p.y))continue;
+
+      const trial=[...result,p];
+      const reachable=reachableCells(head,trial);
+      // لا نقبل ترتيب عوائق يقسم الخريطة بصورة خانقة.
+      if(reachable.size < Math.floor(CELLS*CELLS*.58))continue;
+      result.push(p);
+    }
+    obstacles=result;
+  }
+
+  function updateHud(){
+    scoreEl.textContent=score;
+    levelEl.textContent=level;
+    shieldHud.textContent=shieldActive?'🛡️':'—';
+    if(score>best){
+      best=score;
+      localStorage.setItem('ha_snake_best_v2',String(best));
+      bestEl.textContent=best;
+    }
   }
 
   function updateBest(){
     if(score>best){
       best=score;
-      localStorage.setItem('ha_snake_best',String(best));
-      bestEl.textContent=best;
+      localStorage.setItem('ha_snake_best_v2',String(best));
     }
+    bestEl.textContent=best;
   }
 
-  function recordRound(){
-    updateBest();
-    if(runStarted){
-      Promise.resolve(HA_GameRanking.record('snake',score,{won:false,playId:rankPlayId}))
-        .finally(()=>setTimeout(loadSnakeRanking,250));
-      runStarted=false;
-    }
+  function currentSpeed(){return Math.max(MIN_SPEED,START_SPEED-(level-1)*13)}
+
+  function clearTimer(){
+    if(timer!==null){clearTimeout(timer);timer=null}
   }
 
-  function finishAndRestart(message){
-    clearInterval(timer);
-    running=false;
-    paused=false;
-    gameOver=true;
-    recordRound();
-    msg.textContent=message+' — اضغط إعادة للمحاولة';
+  function scheduleNext(){
+    clearTimer();
+    if(!running||paused||gameOver)return;
+    timer=setTimeout(()=>{
+      timer=null;
+      step();
+      scheduleNext();
+    },currentSpeed());
+  }
+
+  function resetRound(message='اضغط تشغيل أو اختَر اتجاه للبدء'){
+    clearTimer();
+    snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];
+    dir={x:1,y:0};
+    queuedDir={x:1,y:0};
+    inputLocked=false;
+    score=0;level=1;foodsEaten=0;growthPending=0;
+    shieldActive=false;running=false;paused=false;gameOver=false;
+    obstacles=[];food=null;lastFoodPos=null;runStarted=false;playId=newPlayId();
+    rebuildObstacles();
+    food=spawnFood('normal');
+    pauseBtn.disabled=true;
+    pauseBtn.textContent='Ⅱ إيقاف مؤقت';
+    msg.textContent=message;
+    updateHud();
     draw();
   }
 
-  function occupiedBySnake(x,y){
-    return snake && snake.some(s=>s.x===x&&s.y===y);
-  }
-
-  function occupiedByObstacle(x,y){
-    return obstacles.some(o=>o.x===x&&o.y===y);
-  }
-
-  function randomEmptyCell(avoid=null){
-    let p,tries=0;
-    do{
-      p={x:Math.floor(Math.random()*CELLS),y:Math.floor(Math.random()*CELLS)};
-      tries++;
-    }while(
-      tries<700 &&
-      (
-        occupiedBySnake(p.x,p.y) ||
-        occupiedByObstacle(p.x,p.y) ||
-        (snake && Math.abs(p.x-snake[0].x)+Math.abs(p.y-snake[0].y)<3) ||
-        (avoid && Math.abs(p.x-avoid.x)+Math.abs(p.y-avoid.y)<5)
-      )
-    );
-    return p;
-  }
-
-  function randomFood(forcedType=null){
-    let type=forcedType;
-    if(!type){
-      const r=Math.random();
-      if(level>=2 && r<0.10) type='shield';
-      else if(level>=2 && r<0.20) type='poison';
-      else if(r<0.38) type='gold';
-      else type='normal';
-    }
-
-    const p=randomEmptyCell(lastFoodPos);
-    lastFoodPos={x:p.x,y:p.y};
-    return {...p,type};
-  }
-
-  function rebuildObstacles(){
-    obstacles=[];
-
-    // من المرحلة 2 تبدأ العوائق وتزيد بالتدريج.
-    if(level<2)return;
-
-    const count=Math.min(12,2+(level-2)*2);
-    let tries=0;
-
-    while(obstacles.length<count && tries<700){
-      tries++;
-      const p={
-        x:1+Math.floor(Math.random()*(CELLS-2)),
-        y:1+Math.floor(Math.random()*(CELLS-2))
-      };
-
-      // لا نخلي العائق قريب من بداية الحية ولا فوق الأكل.
-      const nearHead=Math.abs(p.x-snake[0].x)+Math.abs(p.y-snake[0].y)<4;
-      const onFood=food && p.x===food.x && p.y===food.y;
-      const duplicate=occupiedByObstacle(p.x,p.y);
-      const onSnake=occupiedBySnake(p.x,p.y);
-
-      if(!nearHead && !onFood && !duplicate && !onSnake){
-        obstacles.push(p);
-      }
-    }
-  }
-
-  function speed(){
-    return Math.max(62,190-(level-1)*15);
-  }
-
-  function startLoop(){
-    clearInterval(timer);
-    timer=setInterval(step,speed());
-  }
-
-  function start(){
-    if(running && paused){
-      paused=false;
-      msg.textContent='';
-      startLoop();
-      return;
+  function startGame(){
+    if(gameOver)resetRound();
+    if(running&&paused){
+      paused=false;pauseBtn.textContent='Ⅱ إيقاف مؤقت';msg.textContent='';scheduleNext();return;
     }
     if(running)return;
-
-    if(gameOver){
-      reset();
-    }
-
-    running=true;
-    paused=false;
-    gameOver=false;
-    runStarted=true;
-    msg.textContent='';
-    startLoop();
+    running=true;paused=false;gameOver=false;runStarted=true;
+    pauseBtn.disabled=false;pauseBtn.textContent='Ⅱ إيقاف مؤقت';msg.textContent='';
+    scheduleNext();
   }
 
-  function collisionAt(p){
-    if(p.x<0||p.y<0||p.x>=CELLS||p.y>=CELLS)return 'wall';
-    if(occupiedByObstacle(p.x,p.y))return 'obstacle';
-    if(snake.some(s=>s.x===p.x&&s.y===p.y))return 'self';
+  function togglePause(){
+    if(!running||gameOver)return;
+    paused=!paused;
+    if(paused){clearTimer();msg.textContent='⏸ اللعبة متوقفة مؤقتاً';pauseBtn.textContent='▶ متابعة'}
+    else{msg.textContent='';pauseBtn.textContent='Ⅱ إيقاف مؤقت';scheduleNext()}
+    draw();
+  }
+
+  function requestDirection(name){
+    const d=DIRS[name];
+    if(!d)return;
+    if(gameOver)resetRound();
+    // إدخال واحد فقط لكل خطوة يمنع الانقلاب السريع غير المقصود.
+    if(inputLocked&&running&&!paused)return;
+    if(d.x===-dir.x&&d.y===-dir.y)return;
+    queuedDir={x:d.x,y:d.y};
+    inputLocked=true;
+    if(!running)startGame();
+  }
+
+  function foodGrowth(type){
+    if(type==='gold')return 2;
+    if(type==='normal'||type==='shield')return 1;
+    return 0;
+  }
+
+  function collisionFor(nextHead,keepTail){
+    if(!inBounds(nextHead))return 'wall';
+    if(obstacleHas(nextHead.x,nextHead.y))return 'obstacle';
+    const body=keepTail?snake:snake.slice(0,-1);
+    if(snakeHas(nextHead.x,nextHead.y,body))return 'self';
     return '';
   }
 
-  function findSafeDirection(){
-    const choices=[
-      {x:1,y:0,name:'right'},
-      {x:-1,y:0,name:'left'},
-      {x:0,y:1,name:'down'},
-      {x:0,y:-1,name:'up'}
-    ].filter(d=>!(d.x===-dir.x&&d.y===-dir.y));
-
-    for(const d of choices){
+  function findSafeMove(){
+    const options=[];
+    for(const d of Object.values(DIRS)){
+      if(d.x===-dir.x&&d.y===-dir.y)continue;
       const p={x:snake[0].x+d.x,y:snake[0].y+d.y};
-      if(!collisionAt(p))return d;
+      if(!collisionFor(p,growthPending>0))options.push({d,p});
     }
-    return null;
+    if(!options.length)return null;
+    // نفضل الاتجاه الأقرب إلى الكرة.
+    options.sort((a,b)=>{
+      const da=food?Math.abs(a.p.x-food.x)+Math.abs(a.p.y-food.y):0;
+      const db=food?Math.abs(b.p.x-food.x)+Math.abs(b.p.y-food.y):0;
+      return da-db;
+    });
+    return options[0];
   }
 
-  function useShield(){
-    if(!shieldActive)return false;
-    shieldActive=false;
-    shieldHud.textContent='—';
-    msg.textContent='🛡️ الدرع حماك من الاصطدام!';
-    HAGame.beep('coin');
-
-    const safe=findSafeDirection();
-    if(safe){
-      dir={x:safe.x,y:safe.y};
-      nextDir={x:safe.x,y:safe.y};
-    }
-    return true;
-  }
-
-  function updateLevel(){
-    const newLevel=Math.min(10,1+Math.floor(score/60));
-    if(newLevel===level)return;
-
-    level=newLevel;
-    levelEl.textContent=level;
-    rebuildObstacles();
-
-    msg.textContent='LEVEL '+level+' — السرعة والعوائق زادت';
-    HAGame.beep('win');
-    startLoop();
-    setTimeout(()=>{if(running&&!paused)msg.textContent=''},1000);
-  }
-
-  function applyFoodEffect(type){
+  function consumeFood(type){
+    foodsEaten++;
     if(type==='normal'){
-      score+=10;
-      HAGame.beep('tick');
-      return {grow:1};
+      score+=10;growthPending+=1;msg.textContent='● +10';safeBeep('tick');
+    }else if(type==='gold'){
+      score+=30;growthPending+=2;msg.textContent='★ ذهبي +30';safeBeep('win');
+    }else if(type==='shield'){
+      score+=15;growthPending+=1;shieldActive=true;msg.textContent='🛡️ صار عندك درع يحميك من اصطدام واحد';safeBeep('shield');
+    }else if(type==='poison'){
+      score=Math.max(0,score-10);msg.textContent='☠ سم: -10 وقصر طول الحية';safeBeep('lose');
+      // تقصير آمن بدون النزول تحت 3 أجزاء.
+      let cuts=Math.min(2,Math.max(0,snake.length-4));
+      while(cuts-->0)snake.pop();
     }
 
-    if(type==='gold'){
-      score+=30;
-      msg.textContent='🟡 أكل ذهبي +30';
-      HAGame.beep('win');
-      return {grow:2};
+    const nextLevel=Math.min(MAX_LEVEL,1+Math.floor(foodsEaten/5));
+    if(nextLevel>level){
+      level=nextLevel;
+      rebuildObstacles();
+      msg.textContent='LEVEL '+level+' — السرعة والعوائق زادت';
+      safeBeep('win');
     }
 
-    if(type==='shield'){
-      shieldActive=true;
-      shieldHud.textContent='🛡️';
-      score+=5;
-      msg.textContent='🛡️ حصلت على درع — يحميك من اصطدام واحد';
-      HAGame.beep('coin');
-      return {grow:1};
-    }
+    updateHud();
+    food=spawnFood();
+  }
 
-    if(type==='poison'){
-      score=Math.max(0,score-15);
-      msg.textContent='☠️ سم! نقصت 15 نقطة وقصر طول الحية';
-      HAGame.beep('lose');
-
-      // السم يقصر الحية لكن ما يخليها أقل من 3 أجزاء.
-      if(snake.length>4)snake.pop();
-      if(snake.length>4)snake.pop();
-
-      return {grow:0};
-    }
-
-    return {grow:1};
+  function endGame(message){
+    if(gameOver)return;
+    clearTimer();running=false;paused=false;gameOver=true;inputLocked=false;
+    pauseBtn.disabled=true;pauseBtn.textContent='Ⅱ إيقاف مؤقت';
+    msg.textContent=message+' — اضغط إعادة اللعب';
+    recordRound();
+    draw();
   }
 
   function step(){
-    if(paused||!running)return;
+    if(!running||paused||gameOver)return;
+    dir={x:queuedDir.x,y:queuedDir.y};
+    inputLocked=false;
 
-    steps++;
-    dir=nextDir;
+    let nextHead={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+    let eating=food&&nextHead.x===food.x&&nextHead.y===food.y;
+    let keepTail=growthPending>0 || (eating&&foodGrowth(food.type)>0);
+    let hit=collisionFor(nextHead,keepTail);
 
-    let head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
-    const collision=collisionAt(head);
-
-    if(collision){
-      if(useShield()){
-        // بعد استخدام الدرع نحاول خطوة بالاتجاه الآمن الجديد.
-        head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
-        if(collisionAt(head)){
-          finishAndRestart('انتهى الدرع وماكو مسار آمن — نبدأ من جديد');
-          return;
-        }
-      }else{
-        const messages={
-          wall:'اصطدمت بالجدار — نبدأ من جديد',
-          obstacle:'اصطدمت بعائق — نبدأ من جديد',
-          self:'اصطدمت الحية بنفسها — نبدأ من جديد'
-        };
-        finishAndRestart(messages[collision]||'GAME OVER');
-        return;
-      }
+    if(hit&&shieldActive){
+      const safe=findSafeMove();
+      shieldActive=false;updateHud();safeBeep('shield');
+      if(!safe){endGame('الدرع انكسر وما بقى مسار آمن');return}
+      dir={x:safe.d.x,y:safe.d.y};queuedDir={x:dir.x,y:dir.y};nextHead=safe.p;
+      eating=food&&nextHead.x===food.x&&nextHead.y===food.y;
+      keepTail=growthPending>0 || (eating&&foodGrowth(food.type)>0);
+      hit=collisionFor(nextHead,keepTail);
+      msg.textContent='🛡️ الدرع حماك';
     }
 
-    snake.unshift(head);
-
-    if(head.x===food.x&&head.y===food.y){
-      foodsEaten++;
-      const result=applyFoodEffect(food.type);
-
-      // النمو: لأن الرأس انضاف، نقرر كم جزء نخلي قبل حذف الذيل.
-      if(result.grow<=0){
-        snake.pop();
-      }else if(result.grow===1){
-        // لا نحذف ذيل = نمو جزء واحد.
-      }else if(result.grow>=2){
-        // نمو إضافي بسيط بتكرار آخر جزء.
-        const tail=snake[snake.length-1];
-        snake.push({x:tail.x,y:tail.y});
-      }
-
-      scoreEl.textContent=score;
-      updateLevel();
-
-      // كل 5 أكلات نضمن أكل خاص حتى تبقى اللعبة متنوعة.
-      let forced=null;
-      if(foodsEaten%10===0)forced='shield';
-      else if(foodsEaten%5===0)forced='gold';
-
-      food=randomFood(forced);
-    }else{
-      snake.pop();
+    if(hit){
+      const reason=hit==='wall'?'اصطدمت بالجدار':hit==='obstacle'?'اصطدمت بعائق':'اصطدمت الحية بنفسها';
+      endGame(reason);return;
     }
 
+    snake.unshift(nextHead);
+
+    if(eating){
+      const eatenType=food.type;
+      consumeFood(eatenType);
+    }
+
+    if(growthPending>0)growthPending--;
+    else snake.pop();
+
+    updateHud();
     draw();
   }
 
   function drawGrid(){
-    ctx.strokeStyle='rgba(43,54,34,.12)';
-    ctx.lineWidth=1;
+    ctx.strokeStyle='rgba(43,54,34,.11)';ctx.lineWidth=1;
     for(let i=0;i<=CELLS;i++){
       ctx.beginPath();ctx.moveTo(i*SIZE,0);ctx.lineTo(i*SIZE,canvas.height);ctx.stroke();
       ctx.beginPath();ctx.moveTo(0,i*SIZE);ctx.lineTo(canvas.width,i*SIZE);ctx.stroke();
@@ -499,207 +503,98 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   }
 
   function drawObstacles(){
-    obstacles.forEach(o=>{
+    for(const o of obstacles){
       const x=o.x*SIZE,y=o.y*SIZE;
-      ctx.fillStyle='#4d563d';
-      ctx.fillRect(x+2,y+2,SIZE-4,SIZE-4);
-      ctx.fillStyle='#687358';
-      ctx.fillRect(x+5,y+5,SIZE-10,4);
-      ctx.strokeStyle='#222a1d';
-      ctx.strokeRect(x+2.5,y+2.5,SIZE-5,SIZE-5);
-    });
+      ctx.fillStyle='#4d563d';ctx.fillRect(x+2,y+2,SIZE-4,SIZE-4);
+      ctx.fillStyle='#6f7a60';ctx.fillRect(x+5,y+5,SIZE-10,4);
+      ctx.strokeStyle='#222a1d';ctx.strokeRect(x+2.5,y+2.5,SIZE-5,SIZE-5);
+    }
   }
 
   function drawFood(){
-    const cx=food.x*SIZE+SIZE/2;
-    const cy=food.y*SIZE+SIZE/2;
-
+    if(!food)return;
+    const cx=food.x*SIZE+SIZE/2,cy=food.y*SIZE+SIZE/2;
+    ctx.save();
     if(food.type==='normal'){
-      ctx.fillStyle='#1c2615';
-      ctx.beginPath();
-      ctx.arc(cx,cy,SIZE*.28,0,Math.PI*2);
-      ctx.fill();
-      return;
+      ctx.fillStyle='#15200f';ctx.beginPath();ctx.arc(cx,cy,SIZE*.29,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#4a5e3b';ctx.beginPath();ctx.arc(cx-3,cy-4,SIZE*.08,0,Math.PI*2);ctx.fill();
+    }else if(food.type==='gold'){
+      ctx.fillStyle='#e1b81e';ctx.beginPath();ctx.arc(cx,cy,SIZE*.35,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff1a6';ctx.font='bold 14px Tahoma';ctx.textAlign='center';ctx.fillText('★',cx,cy+5);
+    }else if(food.type==='shield'){
+      ctx.fillStyle='#397fa3';ctx.beginPath();ctx.arc(cx,cy,SIZE*.37,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ecfbff';ctx.font='14px Tahoma';ctx.textAlign='center';ctx.fillText('🛡',cx,cy+5);
+    }else{
+      ctx.fillStyle='#7d3030';ctx.beginPath();ctx.arc(cx,cy,SIZE*.35,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='14px Tahoma';ctx.textAlign='center';ctx.fillText('☠',cx,cy+5);
     }
+    ctx.restore();
+  }
 
-    if(food.type==='gold'){
-      ctx.fillStyle='#e2b714';
-      ctx.beginPath();
-      ctx.arc(cx,cy,SIZE*.34,0,Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle='#fff1a6';
-      ctx.font='bold 14px Tahoma';
-      ctx.textAlign='center';
-      ctx.fillText('★',cx,cy+5);
-      ctx.textAlign='start';
-      return;
+  function drawSnake(){
+    snake.forEach((s,i)=>{
+      const pad=i===0?2:3;
+      ctx.fillStyle=i===0?'#13200e':'#25321c';
+      ctx.fillRect(s.x*SIZE+pad,s.y*SIZE+pad,SIZE-pad*2,SIZE-pad*2);
+      if(i===0){
+        const cx=s.x*SIZE+SIZE/2,cy=s.y*SIZE+SIZE/2;
+        ctx.fillStyle='#b8c99d';
+        if(dir.x!==0){ctx.fillRect(cx+dir.x*5-1,cy-5,2,2);ctx.fillRect(cx+dir.x*5-1,cy+3,2,2)}
+        else{ctx.fillRect(cx-5,cy+dir.y*5-1,2,2);ctx.fillRect(cx+3,cy+dir.y*5-1,2,2)}
+      }
+    });
+    if(shieldActive&&snake[0]){
+      const h=snake[0];ctx.strokeStyle='#d5f5ff';ctx.lineWidth=2;ctx.strokeRect(h.x*SIZE+1,h.y*SIZE+1,SIZE-2,SIZE-2);
     }
+  }
 
-    if(food.type==='shield'){
-      ctx.fillStyle='#3b82a8';
-      ctx.beginPath();
-      ctx.arc(cx,cy,SIZE*.36,0,Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle='#ecfbff';
-      ctx.font='14px Tahoma';
-      ctx.textAlign='center';
-      ctx.fillText('🛡',cx,cy+5);
-      ctx.textAlign='start';
-      return;
-    }
-
-    if(food.type==='poison'){
-      ctx.fillStyle='#7a2727';
-      ctx.beginPath();
-      ctx.arc(cx,cy,SIZE*.34,0,Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle='#fff';
-      ctx.font='14px Tahoma';
-      ctx.textAlign='center';
-      ctx.fillText('☠',cx,cy+5);
-      ctx.textAlign='start';
-    }
+  function drawOverlay(){
+    if(!paused&&!gameOver)return;
+    ctx.fillStyle='rgba(12,19,10,.35)';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.textAlign='center';ctx.fillStyle='#edf4e5';ctx.font='bold 22px Tahoma';
+    ctx.fillText(paused?'متوقفة مؤقتاً':'انتهت الجولة',canvas.width/2,canvas.height/2);
+    ctx.textAlign='start';
   }
 
   function draw(){
-    // تتغير درجة الشاشة بشكل بسيط مع تقدم المرحلة.
-    const bg=level>=7?'#879b6c':level>=4?'#9eb17d':'#a9b982';
-    ctx.fillStyle=bg;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    drawGrid();
-    drawObstacles();
-
-    snake.forEach((s,i)=>{
-      const pad=i===0?2:3;
-      ctx.fillStyle=i===0?'#17210f':'#243019';
-      ctx.fillRect(s.x*SIZE+pad,s.y*SIZE+pad,SIZE-pad*2,SIZE-pad*2);
-    });
-
-    if(shieldActive){
-      const h=snake[0];
-      ctx.strokeStyle='#d5f5ff';
-      ctx.lineWidth=2;
-      ctx.strokeRect(h.x*SIZE+1,h.y*SIZE+1,SIZE-2,SIZE-2);
-    }
-
-    drawFood();
+    const bg=level>=8?'#829769':level>=5?'#98aa78':'#a9b982';
+    ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
+    drawGrid();drawObstacles();drawFood();drawSnake();drawOverlay();
   }
 
-  function setDir(name){
-    const d={
-      up:{x:0,y:-1},
-      down:{x:0,y:1},
-      left:{x:-1,y:0},
-      right:{x:1,y:0}
-    }[name];
-
-    if(!d)return;
-    if(d.x===-dir.x&&d.y===-dir.y)return;
-
-    nextDir=d;
-    if(!running)start();
-  }
-
-  document.querySelectorAll('[data-dir]').forEach(b=>{
-    b.addEventListener('pointerdown',e=>{
-      e.preventDefault();
-      setDir(b.dataset.dir);
-    });
-  });
-
-  let swipeStart=null;
-
-  const applySwipe=(dx,dy)=>{
-    if(Math.max(Math.abs(dx),Math.abs(dy))<14)return false;
-    if(Math.abs(dx)>Math.abs(dy))setDir(dx>0?'right':'left');
-    else setDir(dy>0?'down':'up');
-    return true;
-  };
-
-  canvas.addEventListener('pointerdown',e=>{
-    e.preventDefault();
-    swipeStart={x:e.clientX,y:e.clientY,id:e.pointerId};
-    try{canvas.setPointerCapture(e.pointerId)}catch(_){}
-  });
-
-  canvas.addEventListener('pointermove',e=>{
-    if(!swipeStart||e.pointerId!==swipeStart.id)return;
-    e.preventDefault();
-    const dx=e.clientX-swipeStart.x;
-    const dy=e.clientY-swipeStart.y;
-    if(applySwipe(dx,dy)){
-      swipeStart={x:e.clientX,y:e.clientY,id:e.pointerId};
-    }
-  });
-
-  const endSwipe=e=>{
-    if(!swipeStart||e.pointerId!==swipeStart.id)return;
-    e.preventDefault();
-
-    const dx=e.clientX-swipeStart.x;
-    const dy=e.clientY-swipeStart.y;
-
-    if(!applySwipe(dx,dy)){
-      const r=canvas.getBoundingClientRect();
-      const x=e.clientX-r.left-r.width/2;
-      const y=e.clientY-r.top-r.height/2;
-
-      if(Math.abs(x)>Math.abs(y))setDir(x>0?'right':'left');
-      else setDir(y>0?'down':'up');
-    }
-
-    swipeStart=null;
-  };
-
-  canvas.addEventListener('pointerup',endSwipe);
-  canvas.addEventListener('pointercancel',()=>{swipeStart=null});
+  document.querySelectorAll('[data-dir]').forEach(btn=>btn.addEventListener('pointerdown',e=>{e.preventDefault();requestDirection(btn.dataset.dir)}));
+  playBtn.addEventListener('click',startGame);
+  pauseBtn.addEventListener('click',togglePause);
+  restartBtn.addEventListener('click',()=>{if(runStarted)recordRound();resetRound();startGame()});
 
   document.addEventListener('keydown',e=>{
-    const map={
-      ArrowUp:'up',
-      ArrowDown:'down',
-      ArrowLeft:'left',
-      ArrowRight:'right'
-    };
-
-    if(map[e.key]){
-      e.preventDefault();
-      setDir(map[e.key]);
-    }
-
-    if(e.key===' '){
-      e.preventDefault();
-      togglePause();
-    }
+    const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
+    if(map[e.key]){e.preventDefault();requestDirection(map[e.key])}
+    else if(e.key===' '){e.preventDefault();togglePause()}
   });
 
-  function togglePause(){
-    if(!running)return;
+  let swipe=null;
+  canvas.addEventListener('pointerdown',e=>{e.preventDefault();swipe={x:e.clientX,y:e.clientY,id:e.pointerId};try{canvas.setPointerCapture(e.pointerId)}catch(_e){}});
+  canvas.addEventListener('pointerup',e=>{
+    if(!swipe||swipe.id!==e.pointerId)return;
+    e.preventDefault();
+    const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;
+    if(Math.max(Math.abs(dx),Math.abs(dy))>=12)requestDirection(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'));
+    swipe=null;
+  });
+  canvas.addEventListener('pointercancel',()=>{swipe=null});
 
-    paused=!paused;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden&&running&&!paused&&!gameOver)togglePause();
+  });
 
-    if(paused){
-      clearInterval(timer);
-      msg.textContent='PAUSED';
-      pauseBtn.textContent='▶ متابعة';
-    }else{
-      msg.textContent='';
-      pauseBtn.textContent='Ⅱ إيقاف مؤقت';
-      startLoop();
-    }
-  }
+  // معلومات قراءة فقط تساعد بالفحص بدون التأثير على اللعب.
+  window.HASnakeState=()=>({
+    running,paused,gameOver,score,level,foodsEaten,shieldActive,
+    food:food?{...food}:null,
+    head:snake[0]?{...snake[0]}:null,
+    length:snake.length,
+    obstacles:obstacles.length
+  });
 
-  playBtn.onclick=start;
-  pauseBtn.onclick=togglePause;
-
-  restartBtn.onclick=()=>{
-    if(runStarted)recordRound();
-    reset();
-    start();
-  };
-
-  reset();
+  resetRound();
   loadSnakeRanking();
 })();
 </script>
