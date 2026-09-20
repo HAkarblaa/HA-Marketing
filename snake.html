@@ -36,6 +36,8 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 .action.primary{background:#1f2e1c;border-color:#79916d;color:#e8f3df}
 .action:disabled{opacity:.48;cursor:not-allowed}
 .note{text-align:center;color:#83907c;font-size:10px;line-height:1.8;margin-top:10px}
+.gameover-card{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);z-index:20;width:min(290px,82%);padding:18px;border-radius:18px;background:rgba(8,14,9,.94);border:1px solid rgba(219,237,203,.22);box-shadow:0 18px 55px #0008;text-align:center;display:none;backdrop-filter:blur(8px)}
+.gameover-card.show{display:block}.gameover-card h3{margin:0 0 8px;color:#eaf5df;font-size:22px}.gameover-card .go-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}.gameover-card .go-stat{padding:8px 5px;border-radius:11px;background:#152013;border:1px solid #ffffff10}.gameover-card .go-stat b{display:block;color:#d9ebc8;font-size:18px}.gameover-card .go-stat small{color:#84947d;font-size:9px}.gameover-card button{width:100%;padding:11px;border:0;border-radius:12px;background:#d7e8c7;color:#10200d;font-weight:900;cursor:pointer}
 .rank-card{margin-top:14px;border:1px solid #4f624b;border-radius:18px;background:linear-gradient(180deg,#111911,#090d09);overflow:hidden}
 .rank-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 13px;border-bottom:1px solid #ffffff12}
 .rank-head b{color:#d7e4c9;font-size:14px}.rank-head a{color:#b7caa9;font-size:11px;text-decoration:none}
@@ -58,7 +60,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
   <section class="phone">
     <div class="brand">HA • SNAKE</div>
-    <div class="screen">
+    <div class="screen" style="position:relative">
       <div class="hud">
         <div>LEVEL <span id="level">1</span></div>
         <div>SCORE <span id="score">0</span></div>
@@ -66,6 +68,15 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
         <div>SHIELD <span id="shieldHud">—</span></div>
       </div>
       <canvas id="game" width="360" height="360" aria-label="لعبة الحية"></canvas>
+      <div id="gameOverCard" class="gameover-card">
+        <h3>انتهت الجولة</h3>
+        <div class="go-stats">
+          <div class="go-stat"><b id="goScore">0</b><small>النقاط</small></div>
+          <div class="go-stat"><b id="goBest">0</b><small>أفضل نتيجة</small></div>
+          <div class="go-stat"><b id="goLevel">1</b><small>المرحلة</small></div>
+        </div>
+        <button id="goRestartBtn" type="button">↻ إعادة اللعب</button>
+      </div>
       <div id="msg" class="msg" aria-live="polite">اضغط تشغيل أو اختَر اتجاه للبدء</div>
       <div class="legend"><span>● عادي +10</span><span>★ ذهبي +30</span><span>🛡 درع</span><span>☠ سم</span></div>
     </div>
@@ -91,7 +102,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     <div id="snakeRankList" class="rank-list"><div class="rank-empty">جاري تحميل الترتيب...</div></div>
   </section>
 
-  <div class="note">الكرة تبقى ثابتة بمكانها إلى أن تأكلها الحية، وبعدها فقط تظهر كرة جديدة بمكان مختلف. كل 5 أكلات تصعد مرحلة وتزيد السرعة والعوائق تدريجياً.</div>
+  <div class="note">الكرة تبقى ثابتة بمكانها إلى أن تأكلها الحية، وبعدها تظهر كرة جديدة بمكان مختلف. الحركة مستمرة وناعمة، الانعطاف أنعم، والذيل يصغر تدريجياً. وماكو جدران: إذا تدخل من اليمين تطلع من اليسار، وإذا تدخل من فوق تطلع من تحت وبالعكس.</div>
 </div>
 
 <script>
@@ -109,6 +120,11 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   const pauseBtn=document.getElementById('pauseBtn');
   const restartBtn=document.getElementById('restartBtn');
   const snakeRankList=document.getElementById('snakeRankList');
+  const gameOverCard=document.getElementById('gameOverCard');
+  const goScore=document.getElementById('goScore');
+  const goBest=document.getElementById('goBest');
+  const goLevel=document.getElementById('goLevel');
+  const goRestartBtn=document.getElementById('goRestartBtn');
 
   const CELLS=18;
   const SIZE=canvas.width/CELLS;
@@ -117,6 +133,9 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   const MIN_SPEED=72;
 
   let snake=[];
+  let prevSnake=[];
+  let moveStartedAt=0;
+  let animationFrameId=0;
   let dir={x:1,y:0};
   let queuedDir={x:1,y:0};
   let inputLocked=false;
@@ -136,6 +155,8 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   let lastFoodPos=null;
   let best=Math.max(0,Number(localStorage.getItem('ha_snake_best_v2')||0));
   let audioCtx=null;
+  let eatPulseUntil=0;
+  let hitPulseUntil=0;
 
   bestEl.textContent=best;
 
@@ -158,6 +179,13 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
       osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now);osc.stop(now+.075);
     }catch(_e){}
   }
+
+  function vibrate(pattern){
+    try{
+      if(navigator.vibrate) navigator.vibrate(pattern);
+    }catch(_e){}
+  }
+
 
   function esc(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -216,6 +244,14 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
   function key(x,y){return x+','+y}
   function inBounds(p){return p.x>=0&&p.y>=0&&p.x<CELLS&&p.y<CELLS}
+
+  // إذا خرجت الحية من طرف الشاشة ترجع من الطرف المقابل.
+  function wrapPoint(p){
+    return {
+      x:(p.x+CELLS)%CELLS,
+      y:(p.y+CELLS)%CELLS
+    };
+  }
   function snakeHas(x,y,list=snake){return list.some(s=>s.x===x&&s.y===y)}
   function obstacleHas(x,y,list=obstacles){return list.some(o=>o.x===x&&o.y===y)}
 
@@ -224,13 +260,15 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     const seen=new Set();
     const q=[{x:from.x,y:from.y}];
     seen.add(key(from.x,from.y));
+
     for(let i=0;i<q.length;i++){
       const p=q[i];
       for(const d of Object.values(DIRS)){
-        const n={x:p.x+d.x,y:p.y+d.y};
+        const n=wrapPoint({x:p.x+d.x,y:p.y+d.y});
         const k=key(n.x,n.y);
-        if(!inBounds(n)||blocked.has(k)||seen.has(k))continue;
-        seen.add(k);q.push(n);
+        if(blocked.has(k)||seen.has(k))continue;
+        seen.add(k);
+        q.push(n);
       }
     }
     return seen;
@@ -322,7 +360,9 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     bestEl.textContent=best;
   }
 
-  function currentSpeed(){return Math.max(MIN_SPEED,START_SPEED-(level-1)*13)}
+  function currentSpeed(){
+    return Math.max(MIN_SPEED, START_SPEED - Math.min(113, foodsEaten*2.2));
+  }
 
   function clearTimer(){
     if(timer!==null){clearTimeout(timer);timer=null}
@@ -341,6 +381,8 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   function resetRound(message='اضغط تشغيل أو اختَر اتجاه للبدء'){
     clearTimer();
     snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];
+    prevSnake=snake.map(p=>({...p}));
+    moveStartedAt=performance.now();
     dir={x:1,y:0};
     queuedDir={x:1,y:0};
     inputLocked=false;
@@ -350,6 +392,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     rebuildObstacles();
     food=spawnFood('normal');
     pauseBtn.disabled=true;
+    gameOverCard.classList.remove('show');
     pauseBtn.textContent='Ⅱ إيقاف مؤقت';
     msg.textContent=message;
     updateHud();
@@ -364,6 +407,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     if(running)return;
     running=true;paused=false;gameOver=false;runStarted=true;
     pauseBtn.disabled=false;pauseBtn.textContent='Ⅱ إيقاف مؤقت';msg.textContent='';
+    step();
     scheduleNext();
   }
 
@@ -394,7 +438,6 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   }
 
   function collisionFor(nextHead,keepTail){
-    if(!inBounds(nextHead))return 'wall';
     if(obstacleHas(nextHead.x,nextHead.y))return 'obstacle';
     const body=keepTail?snake:snake.slice(0,-1);
     if(snakeHas(nextHead.x,nextHead.y,body))return 'self';
@@ -405,7 +448,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     const options=[];
     for(const d of Object.values(DIRS)){
       if(d.x===-dir.x&&d.y===-dir.y)continue;
-      const p={x:snake[0].x+d.x,y:snake[0].y+d.y};
+      const p=wrapPoint({x:snake[0].x+d.x,y:snake[0].y+d.y});
       if(!collisionFor(p,growthPending>0))options.push({d,p});
     }
     if(!options.length)return null;
@@ -421,13 +464,13 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   function consumeFood(type){
     foodsEaten++;
     if(type==='normal'){
-      score+=10;growthPending+=1;msg.textContent='● +10';safeBeep('tick');
+      score+=10;growthPending+=1;msg.textContent='● +10';safeBeep('tick');vibrate(18);eatPulseUntil=performance.now()+120;
     }else if(type==='gold'){
-      score+=30;growthPending+=2;msg.textContent='★ ذهبي +30';safeBeep('win');
+      score+=30;growthPending+=2;msg.textContent='★ ذهبي +30';safeBeep('win');vibrate([22,18,22]);eatPulseUntil=performance.now()+170;
     }else if(type==='shield'){
-      score+=15;growthPending+=1;shieldActive=true;msg.textContent='🛡️ صار عندك درع يحميك من اصطدام واحد';safeBeep('shield');
+      score+=15;growthPending+=1;shieldActive=true;msg.textContent='🛡️ صار عندك درع يحميك من اصطدام واحد';safeBeep('shield');vibrate(28);eatPulseUntil=performance.now()+140;
     }else if(type==='poison'){
-      score=Math.max(0,score-10);msg.textContent='☠ سم: -10 وقصر طول الحية';safeBeep('lose');
+      score=Math.max(0,score-10);msg.textContent='☠ سم: -10 وقصر طول الحية';safeBeep('lose');vibrate([30,25,30]);hitPulseUntil=performance.now()+180;
       // تقصير آمن بدون النزول تحت 3 أجزاء.
       let cuts=Math.min(2,Math.max(0,snake.length-4));
       while(cuts-->0)snake.pop();
@@ -449,17 +492,26 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     if(gameOver)return;
     clearTimer();running=false;paused=false;gameOver=true;inputLocked=false;
     pauseBtn.disabled=true;pauseBtn.textContent='Ⅱ إيقاف مؤقت';
-    msg.textContent=message+' — اضغط إعادة اللعب';
+    msg.textContent=message;
+    safeBeep('lose');
+    vibrate([70,45,90]);
+    hitPulseUntil=performance.now()+260;
+    updateBest();
+    goScore.textContent=score;
+    goBest.textContent=best;
+    goLevel.textContent=level;
+    gameOverCard.classList.add('show');
     recordRound();
     draw();
   }
 
   function step(){
     if(!running||paused||gameOver)return;
+    prevSnake=snake.map(p=>({...p}));
     dir={x:queuedDir.x,y:queuedDir.y};
     inputLocked=false;
 
-    let nextHead={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+    let nextHead=wrapPoint({x:snake[0].x+dir.x,y:snake[0].y+dir.y});
     let eating=food&&nextHead.x===food.x&&nextHead.y===food.y;
     let keepTail=growthPending>0 || (eating&&foodGrowth(food.type)>0);
     let hit=collisionFor(nextHead,keepTail);
@@ -476,7 +528,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     }
 
     if(hit){
-      const reason=hit==='wall'?'اصطدمت بالجدار':hit==='obstacle'?'اصطدمت بعائق':'اصطدمت الحية بنفسها';
+      const reason=hit==='obstacle'?'اصطدمت بعائق':'اصطدمت الحية بنفسها';
       endGame(reason);return;
     }
 
@@ -491,7 +543,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     else snake.pop();
 
     updateHud();
-    draw();
+    moveStartedAt=performance.now();
   }
 
   function drawGrid(){
@@ -515,34 +567,159 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     if(!food)return;
     const cx=food.x*SIZE+SIZE/2,cy=food.y*SIZE+SIZE/2;
     ctx.save();
+
     if(food.type==='normal'){
-      ctx.fillStyle='#15200f';ctx.beginPath();ctx.arc(cx,cy,SIZE*.29,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#4a5e3b';ctx.beginPath();ctx.arc(cx-3,cy-4,SIZE*.08,0,Math.PI*2);ctx.fill();
+      const g=ctx.createRadialGradient(cx-4,cy-5,2,cx,cy,SIZE*.35);
+      g.addColorStop(0,'#e8f6dc');
+      g.addColorStop(.22,'#7eab55');
+      g.addColorStop(1,'#315326');
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(cx,cy,SIZE*.28,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#355c29';ctx.fillRect(cx+1,cy-SIZE*.36,2,5);
     }else if(food.type==='gold'){
-      ctx.fillStyle='#e1b81e';ctx.beginPath();ctx.arc(cx,cy,SIZE*.35,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff1a6';ctx.font='bold 14px Tahoma';ctx.textAlign='center';ctx.fillText('★',cx,cy+5);
+      const g=ctx.createRadialGradient(cx-4,cy-5,2,cx,cy,SIZE*.38);
+      g.addColorStop(0,'#fff8c8');g.addColorStop(.33,'#ffd84c');g.addColorStop(1,'#ae7706');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,SIZE*.34,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#594003';ctx.font='bold 14px Tahoma';ctx.textAlign='center';ctx.fillText('★',cx,cy+5);
     }else if(food.type==='shield'){
-      ctx.fillStyle='#397fa3';ctx.beginPath();ctx.arc(cx,cy,SIZE*.37,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ecfbff';ctx.font='14px Tahoma';ctx.textAlign='center';ctx.fillText('🛡',cx,cy+5);
+      ctx.fillStyle='#356f92';ctx.beginPath();ctx.arc(cx,cy,SIZE*.35,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ecfbff';ctx.font='14px Tahoma';ctx.textAlign='center';ctx.fillText('🛡',cx,cy+5);
     }else{
-      ctx.fillStyle='#7d3030';ctx.beginPath();ctx.arc(cx,cy,SIZE*.35,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='14px Tahoma';ctx.textAlign='center';ctx.fillText('☠',cx,cy+5);
+      ctx.fillStyle='#823a3a';ctx.beginPath();ctx.arc(cx,cy,SIZE*.34,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='14px Tahoma';ctx.textAlign='center';ctx.fillText('☠',cx,cy+5);
     }
     ctx.restore();
   }
 
-  function drawSnake(){
-    snake.forEach((s,i)=>{
-      const pad=i===0?2:3;
-      ctx.fillStyle=i===0?'#13200e':'#25321c';
-      ctx.fillRect(s.x*SIZE+pad,s.y*SIZE+pad,SIZE-pad*2,SIZE-pad*2);
-      if(i===0){
-        const cx=s.x*SIZE+SIZE/2,cy=s.y*SIZE+SIZE/2;
-        ctx.fillStyle='#b8c99d';
-        if(dir.x!==0){ctx.fillRect(cx+dir.x*5-1,cy-5,2,2);ctx.fillRect(cx+dir.x*5-1,cy+3,2,2)}
-        else{ctx.fillRect(cx-5,cy+dir.y*5-1,2,2);ctx.fillRect(cx+3,cy+dir.y*5-1,2,2)}
-      }
-    });
-    if(shieldActive&&snake[0]){
-      const h=snake[0];ctx.strokeStyle='#d5f5ff';ctx.lineWidth=2;ctx.strokeRect(h.x*SIZE+1,h.y*SIZE+1,SIZE-2,SIZE-2);
+  function drawSnake(body=snake){
+    if(!body.length)return;
+
+    const center=p=>({x:p.x*SIZE+SIZE/2,y:p.y*SIZE+SIZE/2});
+
+    // فصل الرسم فقط عند عبور طرف الشاشة حتى لا يظهر خط طويل وسط الساحة.
+    const runs=[];
+    let run=[body[body.length-1]];
+    for(let i=body.length-2;i>=0;i--){
+      const prev=run[run.length-1],cur=body[i];
+      if(Math.abs(cur.x-prev.x)>1 || Math.abs(cur.y-prev.y)>1){
+        runs.push(run);run=[cur];
+      }else run.push(cur);
     }
+    runs.push(run);
+
+    function smoothPath(points){
+      const pts=points.map(center);
+      if(!pts.length)return null;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x,pts[0].y);
+      if(pts.length===1)return pts;
+      for(let i=1;i<pts.length-1;i++){
+        const mx=(pts[i].x+pts[i+1].x)/2;
+        const my=(pts[i].y+pts[i+1].y)/2;
+        ctx.quadraticCurveTo(pts[i].x,pts[i].y,mx,my);
+      }
+      const last=pts[pts.length-1];
+      ctx.lineTo(last.x,last.y);
+      return pts;
+    }
+
+    // جسم متصل؛ الذيل أنحف ويزداد السمك تدريجياً باتجاه الرأس.
+    for(const r of runs){
+      if(r.length===1){
+        const c=center(r[0]);
+        ctx.fillStyle='#315525';
+        ctx.beginPath();ctx.arc(c.x,c.y,SIZE*.15,0,Math.PI*2);ctx.fill();
+        continue;
+      }
+
+      const pts=r.map(center);
+      for(let i=0;i<pts.length-1;i++){
+        const t=i/Math.max(1,pts.length-2);
+        const width=SIZE*(0.24+0.31*t);
+
+        const p1=pts[i],p2=pts[i+1];
+        const mx=(p1.x+p2.x)/2,my=(p1.y+p2.y)/2;
+
+        ctx.save();
+        ctx.lineCap='round';ctx.lineJoin='round';
+
+        ctx.strokeStyle='#294b20';
+        ctx.lineWidth=width+3;
+        ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.quadraticCurveTo(mx,my,p2.x,p2.y);ctx.stroke();
+
+        ctx.strokeStyle='#4f7f38';
+        ctx.lineWidth=width;
+        ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.quadraticCurveTo(mx,my,p2.x,p2.y);ctx.stroke();
+
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.strokeStyle='rgba(157,207,111,.28)';
+      ctx.lineWidth=SIZE*.15;
+      ctx.lineCap='round';ctx.lineJoin='round';
+      smoothPath(r);ctx.stroke();
+      ctx.restore();
+    }
+
+    // الرأس
+    const h=body[0];
+    const hx=h.x*SIZE+SIZE/2,hy=h.y*SIZE+SIZE/2;
+    const pulse=performance.now()<eatPulseUntil?1.12:1;
+    const headR=SIZE*.40*pulse;
+
+    const hg=ctx.createRadialGradient(hx-headR*.35,hy-headR*.35,headR*.12,hx,hy,headR);
+    hg.addColorStop(0,'#8fbd66');
+    hg.addColorStop(.55,'#507f39');
+    hg.addColorStop(1,'#27481e');
+    ctx.beginPath();ctx.fillStyle=hg;ctx.arc(hx,hy,headR,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(14,34,11,.9)';ctx.lineWidth=1.5;ctx.stroke();
+
+    let ex1=hx,ey1=hy,ex2=hx,ey2=hy;
+    if(dir.x===1){ex1=hx+6;ey1=hy-5;ex2=hx+6;ey2=hy+5}
+    else if(dir.x===-1){ex1=hx-6;ey1=hy-5;ex2=hx-6;ey2=hy+5}
+    else if(dir.y===-1){ex1=hx-5;ey1=hy-6;ex2=hx+5;ey2=hy-6}
+    else{ex1=hx-5;ey1=hy+6;ex2=hx+5;ey2=hy+6}
+
+    for(const [ex,ey] of [[ex1,ey1],[ex2,ey2]]){
+      ctx.beginPath();ctx.fillStyle='#f5f8ea';ctx.arc(ex,ey,2.7,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.fillStyle='#111';ctx.arc(ex+dir.x*1.1,ey+dir.y*1.1,1.2,0,Math.PI*2);ctx.fill();
+    }
+
+    const tx=hx+dir.x*(headR+1),ty=hy+dir.y*(headR+1);
+    ctx.strokeStyle='#bd2731';ctx.lineWidth=1.4;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(tx+dir.x*5,ty+dir.y*5);ctx.stroke();
+
+    if(shieldActive){
+      ctx.beginPath();ctx.strokeStyle='#d5f5ff';ctx.lineWidth=2.5;ctx.arc(hx,hy,headR+4,0,Math.PI*2);ctx.stroke();
+    }
+  }
+
+  function smoothAxis(from,to,t){
+    let delta=to-from;
+    if(delta>CELLS/2)delta-=CELLS;
+    if(delta<-CELLS/2)delta+=CELLS;
+    let value=from+(delta*t);
+    value=((value%CELLS)+CELLS)%CELLS;
+    return value;
+  }
+
+  function interpolatedSnake(now){
+    if(!running || paused || gameOver || !prevSnake.length)return snake;
+
+    const duration=Math.max(45,currentSpeed());
+    const t=Math.max(0,Math.min(1,(now-moveStartedAt)/duration));
+    const body=[];
+
+    for(let i=0;i<snake.length;i++){
+      const target=snake[i];
+      const from=prevSnake[i] || prevSnake[prevSnake.length-1] || target;
+      body.push({
+        x:smoothAxis(from.x,target.x,t),
+        y:smoothAxis(from.y,target.y,t)
+      });
+    }
+    return body;
   }
 
   function drawOverlay(){
@@ -553,16 +730,39 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     ctx.textAlign='start';
   }
 
-  function draw(){
-    const bg=level>=8?'#829769':level>=5?'#98aa78':'#a9b982';
+  function draw(now=performance.now()){
+    const bg=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+    bg.addColorStop(0,'#b9ca96');
+    bg.addColorStop(1,'#98aa76');
     ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
-    drawGrid();drawObstacles();drawFood();drawSnake();drawOverlay();
+
+    ctx.fillStyle='rgba(41,57,31,.035)';
+    for(let i=0;i<28;i++){
+      const x=(i*73)%canvas.width,y=(i*47)%canvas.height;
+      ctx.beginPath();ctx.arc(x,y,1.6,0,Math.PI*2);ctx.fill();
+    }
+
+    drawObstacles();
+    drawFood();
+    drawSnake(interpolatedSnake(now));
+
+    if(now<hitPulseUntil){
+      ctx.fillStyle='rgba(125,20,20,.08)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
+    drawOverlay();
+  }
+
+  function animationLoop(now){
+    draw(now);
+    animationFrameId=requestAnimationFrame(animationLoop);
   }
 
   document.querySelectorAll('[data-dir]').forEach(btn=>btn.addEventListener('pointerdown',e=>{e.preventDefault();requestDirection(btn.dataset.dir)}));
   playBtn.addEventListener('click',startGame);
   pauseBtn.addEventListener('click',togglePause);
   restartBtn.addEventListener('click',()=>{if(runStarted)recordRound();resetRound();startGame()});
+  goRestartBtn.addEventListener('click',()=>{resetRound();startGame()});
 
   document.addEventListener('keydown',e=>{
     const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
@@ -595,6 +795,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   });
 
   resetRound();
+  if(!animationFrameId) animationFrameId=requestAnimationFrame(animationLoop);
   loadSnakeRanking();
 })();
 </script>
