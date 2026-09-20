@@ -1100,6 +1100,8 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+<link rel="stylesheet" href="ha-location-ux.css">
+<script src="ha-location-ux.js"></script>
 </head>
 
 <body class="delivery-stage-1">
@@ -1524,6 +1526,103 @@ let sm=null,em=null,line=null;
 let routeKm=0,routeMin=0,pickupMin=0;
 let selected=document.querySelector('.type.selected');
 
+let haLocationPromise=null;
+
+function haLocationErrorText(err){
+  if(err && err.code===1) return 'صلاحية الموقع مرفوضة. اسمح للتطبيق باستخدام الموقع ثم حاول مرة ثانية.';
+  if(err && err.code===2) return 'تعذر الوصول إلى GPS. شغّل الموقع بالجهاز ثم حاول مرة ثانية.';
+  if(err && err.code===3) return 'تحديد الموقع أخذ وقت طويل. حاول مرة ثانية أو تحرك لمكان إشارة GPS أفضل.';
+  return 'تعذر تحديد موقعك حالياً.';
+}
+
+function haSingleGeoRequest(options){
+  return new Promise((resolve,reject)=>{
+    if(!navigator.geolocation){
+      reject({code:2,message:'Geolocation unavailable'});
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(resolve,reject,options);
+  });
+}
+
+async function haGetReliableLocation(){
+  // نمنع أكثر من طلب GPS بنفس اللحظة داخل WebView.
+  if(haLocationPromise) return haLocationPromise;
+
+  haLocationPromise=(async()=>{
+    try{
+      return await haSingleGeoRequest({
+        enableHighAccuracy:true,
+        timeout:18000,
+        maximumAge:10000
+      });
+    }catch(firstError){
+      if(firstError && firstError.code===1) throw firstError;
+      try{
+        return await haSingleGeoRequest({
+          enableHighAccuracy:false,
+          timeout:10000,
+          maximumAge:120000
+        });
+      }catch(secondError){
+        throw secondError || firstError;
+      }
+    }
+  })();
+
+  try{
+    return await haLocationPromise;
+  }finally{
+    haLocationPromise=null;
+  }
+}
+
+function haShowLocationError(err,retryFn){
+  notice.textContent=haLocationErrorText(err);
+  const provinceLabel=document.getElementById('provinceName');
+  if(provinceLabel) provinceLabel.textContent='تعذر تحديد الموقع';
+
+  try{
+    if(window.HA_LocationUX && typeof HA_LocationUX.showEnablePrompt==='function'){
+      HA_LocationUX.showEnablePrompt(err,retryFn);
+    }
+  }catch(_e){}
+}
+
+async function haMoveMapToCurrentLocation(showSuccessMessage=true){
+  notice.textContent='جاري تحديد موقعك...';
+  try{
+    const pos=await haGetReliableLocation();
+    const lat=Number(pos.coords.latitude);
+    const lng=Number(pos.coords.longitude);
+    if(!Number.isFinite(lat)||!Number.isFinite(lng)) throw {code:2,message:'Invalid coordinates'};
+
+    const raw=L.latLng(lat,lng);
+
+    // مهم: نعتمد GPS نفسه ولا ننقل النقطة إلى شارع آخر أثناء تحديد الموقع.
+    setMode('start');
+    map.setView(raw,17);
+    startMapPick();
+    window.pendingStartLabel='موقعك الحالي';
+    haAutoLocationCentered=true;
+
+    // اسم المحافظة بالخلفية فقط، وفشله لا يعتبر فشل GPS.
+    try{ detectProvinceFromPoint(raw); }catch(_e){}
+
+    if(showSuccessMessage){
+      const acc=Math.round(Number(pos.coords.accuracy)||0);
+      notice.textContent=acc>0
+        ? 'تم تحديد موقعك. دقة الموقع تقريباً ±'+acc+' متر. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق أو الاستلام.'
+        : 'تم تحديد موقعك. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق أو الاستلام.';
+    }
+    return raw;
+  }catch(err){
+    haShowLocationError(err,()=>haMoveMapToCurrentLocation(true));
+    throw err;
+  }
+}
+
+
 function setMode(x){
  mode=x;
  centerPin.classList.toggle('destination',x==='end');
@@ -1663,73 +1762,26 @@ function setPoint(kind,p,label){
 
 
 locateBtn.onclick=()=>{
- if(!navigator.geolocation){
-   notice.textContent='المتصفح لا يدعم تحديد الموقع.';
-   return;
- }
-
- notice.textContent='جاري تحديد موقعك...';
-
- navigator.geolocation.getCurrentPosition(async pos=>{
-   const p=await snap(L.latLng(pos.coords.latitude,pos.coords.longitude));
-   detectProvinceFromPoint(p);
-
-   // زر الدنبوس ينقل الخريطة فقط ولا يثبت الاستلام تلقائياً.
-   setMode('start');
-   map.setView(p,16);
-   startMapPick();
-   window.pendingStartLabel='موقعك الحالي';
-   
-   notice.textContent='تم نقل الخريطة إلى موقعك. حرّك الدبوس إذا تريد، ثم اضغط «تثبيت الاستلام».';
- },()=>{
-   notice.textContent='تعذر تحديد موقعك. تأكد من تشغيل GPS والسماح للموقع.';
- },{
-   enableHighAccuracy:true,
-   timeout:10000
- });
+  haMoveMapToCurrentLocation(true).catch(()=>{});
 };
 
 // ===== فتح الخريطة مباشرة على موقع المستخدم الحقيقي =====
 let haAutoLocationCentered=false;
 function autoCenterOnCurrentLocation(){
-  if(haAutoLocationCentered || !navigator.geolocation) return;
-
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const raw=L.latLng(pos.coords.latitude,pos.coords.longitude);
-
-    // ننقل الخريطة فوراً إلى GPS بدون انتظار خدمات الطرق أو البحث.
-    setMode('start');
-    map.setView(raw,16);
-    startMapPick();
-    window.pendingStartLabel='موقعك الحالي';
-    haAutoLocationCentered=true;
-
-    // تحديد المحافظة بالخلفية.
-    try{ detectProvinceFromPoint(raw); }catch(e){}
-
-    // نحاول تقريب النقطة إلى أقرب شارع بدون تعطيل الانتقال الفوري.
-    try{
-      snap(raw).then(p=>{
-        if(p && Number.isFinite(p.lat) && Number.isFinite(p.lng)){
-          map.setView(p,16);
-        }
-      }).catch(()=>{});
-    }catch(e){}
-
-    notice.textContent='تم نقل الخريطة تلقائياً إلى موقعك الحالي. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق.';
-  },()=>{
-    // إذا المستخدم رفض الموقع تبقى الخريطة على عرض العراق بدل محافظة خاطئة.
-    notice.textContent='فعّل GPS واسمح للتطبيق باستخدام الموقع حتى تفتح الخريطة على مكانك تلقائياً.';
-  },{
-    enableHighAccuracy:true,
-    timeout:12000,
-    maximumAge:15000
-  });
+  if(haAutoLocationCentered) return;
+  haMoveMapToCurrentLocation(false).then(pos=>{
+    if(pos){
+      notice.textContent='تم فتح الخريطة على موقعك الحالي. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق أو الاستلام.';
+    }
+  }).catch(()=>{});
 }
 
-// التشغيل التلقائي عند فتح الصفحة.
-setTimeout(autoCenterOnCurrentLocation,180);
-window.addEventListener('load',()=>setTimeout(autoCenterOnCurrentLocation,120));
+// تشغيل مرة واحدة فقط حتى لا تتكرر نافذة صلاحية الموقع داخل التطبيق.
+if(document.readyState==='complete'){
+  setTimeout(autoCenterOnCurrentLocation,180);
+}else{
+  window.addEventListener('load',()=>setTimeout(autoCenterOnCurrentLocation,180),{once:true});
+}
 
 
 async function searchCurrentPlace(){
@@ -1843,23 +1895,19 @@ async function detectProvinceFromPoint(p){
   }
 }
 
-document.getElementById('provinceBtn').addEventListener('click',()=>{
-  if(!navigator.geolocation){
-    document.getElementById('provinceName').textContent='المتصفح لا يدعم تحديد الموقع';
-    return;
-  }
+document.getElementById('provinceBtn').addEventListener('click',async()=>{
+  const label=document.getElementById('provinceName');
+  label.textContent='جاري تحديد موقعك...';
 
-  document.getElementById('provinceName').textContent='جاري تحديد موقعك...';
-
-  navigator.geolocation.getCurrentPosition(async pos=>{
-    const p=L.latLng(pos.coords.latitude,pos.coords.longitude);
+  try{
+    const pos=await haGetReliableLocation();
+    const p=L.latLng(Number(pos.coords.latitude),Number(pos.coords.longitude));
+    map.setView(p,17);
     await detectProvinceFromPoint(p);
-  },()=>{
-    document.getElementById('provinceName').textContent='تعذر تحديد موقعك';
-  },{
-    enableHighAccuracy:true,
-    timeout:10000
-  });
+  }catch(err){
+    label.textContent='تعذر تحديد الموقع';
+    haShowLocationError(err,()=>document.getElementById('provinceBtn').click());
+  }
 });
 
 async function route(a,b){
