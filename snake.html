@@ -136,8 +136,8 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   const CELLS=18;
   const SIZE=canvas.width/CELLS;
 
-  let snake,foods,dir,nextDir,score,level,timer,running=false,paused=false;
-  let obstacles=[],shieldActive=false,foodsEaten=0,steps=0;
+  let snake,food,dir,nextDir,score,level,timer,running=false,paused=false,gameOver=false;
+  let obstacles=[],shieldActive=false,foodsEaten=0,steps=0,lastFoodPos=null;
   let rankPlayId='',runStarted=false;
   let best=Number(localStorage.getItem('ha_snake_best')||0);
   bestEl.textContent=best;
@@ -183,10 +183,6 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
   function cellKey(p){return p.x+','+p.y}
 
-  function occupiedByFood(x,y){
-    return Array.isArray(foods) && foods.some(f=>f.x===x&&f.y===y);
-  }
-
   function reset(message='اضغط تشغيل أو اسحب على شاشة اللعب'){
     clearInterval(timer);
     rankPlayId=HA_GameRanking.newPlayId('snake');
@@ -202,15 +198,17 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     steps=0;
     shieldActive=false;
     obstacles=[];
+    lastFoodPos=null;
 
     running=false;
     paused=false;
+    gameOver=false;
 
     scoreEl.textContent='0';
     levelEl.textContent='1';
     shieldHud.textContent='—';
 
-    foods=spawnFoods(3);
+    food=randomFood('normal');
     msg.textContent=message;
     pauseBtn.textContent='Ⅱ إيقاف مؤقت';
     draw();
@@ -237,13 +235,10 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     clearInterval(timer);
     running=false;
     paused=false;
+    gameOver=true;
     recordRound();
-    msg.textContent=message;
+    msg.textContent=message+' — اضغط إعادة للمحاولة';
     draw();
-    setTimeout(()=>{
-      reset(message);
-      start();
-    },650);
   }
 
   function occupiedBySnake(x,y){
@@ -254,18 +249,18 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     return obstacles.some(o=>o.x===x&&o.y===y);
   }
 
-  function randomEmptyCell(){
+  function randomEmptyCell(avoid=null){
     let p,tries=0;
     do{
       p={x:Math.floor(Math.random()*CELLS),y:Math.floor(Math.random()*CELLS)};
       tries++;
     }while(
-      tries<500 &&
+      tries<700 &&
       (
         occupiedBySnake(p.x,p.y) ||
         occupiedByObstacle(p.x,p.y) ||
-        occupiedByFood(p.x,p.y) ||
-        (snake && Math.abs(p.x-snake[0].x)+Math.abs(p.y-snake[0].y)<3)
+        (snake && Math.abs(p.x-snake[0].x)+Math.abs(p.y-snake[0].y)<3) ||
+        (avoid && Math.abs(p.x-avoid.x)+Math.abs(p.y-avoid.y)<5)
       )
     );
     return p;
@@ -281,24 +276,9 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
       else type='normal';
     }
 
-    const p=randomEmptyCell();
+    const p=randomEmptyCell(lastFoodPos);
+    lastFoodPos={x:p.x,y:p.y};
     return {...p,type};
-  }
-
-  function spawnFoods(count=3){
-    const list=[];
-    const oldFoods=foods;
-    foods=[]; // مؤقتاً حتى randomEmptyCell يقدر يبني العناصر وحدة وحدة بدون تداخل
-
-    for(let i=0;i<count;i++){
-      let forced=null;
-      if(i===0) forced='normal'; // نخلي على الأقل كرة عادية دائماً
-      const item=randomFood(forced);
-      foods.push(item);
-      list.push(item);
-    }
-
-    return list;
   }
 
   function rebuildObstacles(){
@@ -319,7 +299,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
       // لا نخلي العائق قريب من بداية الحية ولا فوق الأكل.
       const nearHead=Math.abs(p.x-snake[0].x)+Math.abs(p.y-snake[0].y)<4;
-      const onFood=occupiedByFood(p.x,p.y);
+      const onFood=food && p.x===food.x && p.y===food.y;
       const duplicate=occupiedByObstacle(p.x,p.y);
       const onSnake=occupiedBySnake(p.x,p.y);
 
@@ -347,8 +327,13 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     }
     if(running)return;
 
+    if(gameOver){
+      reset();
+    }
+
     running=true;
     paused=false;
+    gameOver=false;
     runStarted=true;
     msg.textContent='';
     startLoop();
@@ -473,12 +458,9 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
     snake.unshift(head);
 
-    const eatenIndex=foods.findIndex(f=>head.x===f.x&&head.y===f.y);
-
-    if(eatenIndex!==-1){
+    if(head.x===food.x&&head.y===food.y){
       foodsEaten++;
-      const eatenFood=foods[eatenIndex];
-      const result=applyFoodEffect(eatenFood.type);
+      const result=applyFoodEffect(food.type);
 
       // النمو: لأن الرأس انضاف، نقرر كم جزء نخلي قبل حذف الذيل.
       if(result.grow<=0){
@@ -494,13 +476,12 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
       scoreEl.textContent=score;
       updateLevel();
 
-      // بعد الأكل تطلع كرة جديدة بمكان مختلف.
+      // كل 5 أكلات نضمن أكل خاص حتى تبقى اللعبة متنوعة.
       let forced=null;
       if(foodsEaten%10===0)forced='shield';
       else if(foodsEaten%5===0)forced='gold';
 
-      foods.splice(eatenIndex,1);
-      foods.push(randomFood(forced));
+      food=randomFood(forced);
     }else{
       snake.pop();
     }
@@ -529,7 +510,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     });
   }
 
-  function drawOneFood(food){
+  function drawFood(){
     const cx=food.x*SIZE+SIZE/2;
     const cy=food.y*SIZE+SIZE/2;
 
@@ -578,10 +559,6 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
       ctx.fillText('☠',cx,cy+5);
       ctx.textAlign='start';
     }
-  }
-
-  function drawFood(){
-    (foods||[]).forEach(drawOneFood);
   }
 
   function draw(){
