@@ -1272,7 +1272,7 @@ html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-push-dispatch.js?v=qalat-sukkar-1km-1"></script>
+<script src="transport-push-dispatch.js?v=iraq-wide-1"></script>
 
 <script>
 /* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
@@ -1548,19 +1548,17 @@ function haSingleGeoRequest(options){
 }
 
 async function haGetReliableLocation(){
-  // طلب واحد فقط بنفس اللحظة حتى ما تصير أكثر من نافذة صلاحيات داخل الـ WebView.
+  // نمنع أكثر من طلب GPS بنفس اللحظة داخل WebView.
   if(haLocationPromise) return haLocationPromise;
 
   haLocationPromise=(async()=>{
     try{
-      // المحاولة الأولى: GPS دقيق.
       return await haSingleGeoRequest({
         enableHighAccuracy:true,
         timeout:18000,
         maximumAge:10000
       });
     }catch(firstError){
-      // إذا GPS الدقيق تأخر/تعذر، نجرب موقع الشبكة أو آخر موقع معروف.
       if(firstError && firstError.code===1) throw firstError;
       try{
         return await haSingleGeoRequest({
@@ -1582,8 +1580,7 @@ async function haGetReliableLocation(){
 }
 
 function haShowLocationError(err,retryFn){
-  const msg=haLocationErrorText(err);
-  notice.textContent=msg;
+  notice.textContent=haLocationErrorText(err);
   const provinceLabel=document.getElementById('provinceName');
   if(provinceLabel) provinceLabel.textContent='تعذر تحديد الموقع';
 
@@ -1604,21 +1601,21 @@ async function haMoveMapToCurrentLocation(showSuccessMessage=true){
 
     const raw=L.latLng(lat,lng);
 
-    // نستخدم إحداثيات GPS نفسها حتى لا تتحول النقطة إلى شارع بعيد.
+    // مهم: نعتمد GPS نفسه ولا ننقل النقطة إلى شارع آخر أثناء تحديد الموقع.
     setMode('start');
     map.setView(raw,17);
     startMapPick();
     window.pendingStartLabel='موقعك الحالي';
     haAutoLocationCentered=true;
 
-    // تحديث المحافظة بالخلفية، وفشل اسم المحافظة لا يعتبر فشل GPS.
+    // اسم المحافظة بالخلفية فقط، وفشله لا يعتبر فشل GPS.
     try{ detectProvinceFromPoint(raw); }catch(_e){}
 
     if(showSuccessMessage){
       const acc=Math.round(Number(pos.coords.accuracy)||0);
       notice.textContent=acc>0
-        ? 'تم تحديد موقعك. دقة الموقع تقريباً ±'+acc+' متر. حرّك الدبوس إذا تريد ثم ثبّت الانطلاق.'
-        : 'تم تحديد موقعك. حرّك الدبوس إذا تريد ثم ثبّت الانطلاق.';
+        ? 'تم تحديد موقعك. دقة الموقع تقريباً ±'+acc+' متر. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق أو الاستلام.'
+        : 'تم تحديد موقعك. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق أو الاستلام.';
     }
     return raw;
   }catch(err){
@@ -1756,7 +1753,7 @@ function autoCenterOnCurrentLocation(){
   if(haAutoLocationCentered) return;
   haMoveMapToCurrentLocation(false).then(pos=>{
     if(pos){
-      notice.textContent='تم فتح الخريطة على موقعك الحالي. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق.';
+      notice.textContent='تم فتح الخريطة على موقعك الحالي. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق أو الاستلام.';
     }
   }).catch(()=>{});
 }
@@ -2017,18 +2014,7 @@ order.onclick=async()=>{
     return;
   }
 
-
-  // HA: النقل يعمل داخل نطاق قلعة سكر فقط.
-  if(window.HA_TransportPush && typeof window.HA_TransportPush.validateRouteArea==='function'){
-    const areaCheck=window.HA_TransportPush.validateRouteArea(
-      {lat:start.lat,lng:start.lng},
-      {lat:end.lat,lng:end.lng}
-    );
-    if(!areaCheck.ok){
-      window.HA_TransportPush.showAreaMessage(areaCheck);
-      return;
-    }
-  }
+  // HA: الخدمة متاحة على مستوى العراق بدون حصر بمنطقة محددة.
 
   const rideRef=db.ref('rides').push();
   activeRideId=rideRef.key;
@@ -2621,6 +2607,30 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   document.getElementById('cancelOtherText').classList.remove('show');
 };
 </script>
-<script src="ha-offline-qalat-map.js"></script>
+
+<script>
+/* HA: إلغاء خريطة قلعة سكر الأوفلاين القديمة نهائياً */
+(function(){
+  try{ localStorage.removeItem('ha_qalat_sukkar_offline_map_v1_ready'); }catch(_e){}
+  try{
+    if('caches' in window){
+      caches.delete('ha-qalat-sukkar-map-v1').catch(()=>{});
+    }
+  }catch(_e){}
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(list=>{
+        list.forEach(reg=>{
+          const urls=[reg.active?.scriptURL,reg.waiting?.scriptURL,reg.installing?.scriptURL].filter(Boolean);
+          if(urls.some(u=>String(u).includes('ha-offline-map-sw.js'))){
+            reg.unregister().catch(()=>{});
+          }
+        });
+      }).catch(()=>{});
+    }
+  }catch(_e){}
+})();
+</script>
+
 </body>
 </html>

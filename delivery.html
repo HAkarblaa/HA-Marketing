@@ -1265,7 +1265,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-push-dispatch.js?v=qalat-sukkar-1km-1"></script>
+<script src="transport-push-dispatch.js?v=iraq-wide-1"></script>
 <script src="transport-profile.js"></script>
 
 <script>
@@ -2100,18 +2100,7 @@ order.onclick=async()=>{
     order.disabled=false; order.textContent=oldText; return;
   }
 
-
-  // HA: النقل يعمل داخل نطاق قلعة سكر فقط.
-  if(window.HA_TransportPush && typeof window.HA_TransportPush.validateRouteArea==='function'){
-    const areaCheck=window.HA_TransportPush.validateRouteArea(
-      {lat:start.lat,lng:start.lng},
-      {lat:end.lat,lng:end.lng}
-    );
-    if(!areaCheck.ok){
-      window.HA_TransportPush.showAreaMessage(areaCheck);
-      return;
-    }
-  }
+  // HA: الخدمة متاحة على مستوى العراق بدون حصر بمنطقة محددة.
 
   const rideRef=db.ref('rides').push();
   activeDeliveryRideId=rideRef.key;
@@ -2843,6 +2832,30 @@ window.addEventListener('load',()=>{
   }catch(e){console.error(e)}
 });
 </script>
-<script src="ha-offline-qalat-map.js"></script>
+
+<script>
+/* HA: إلغاء خريطة قلعة سكر الأوفلاين القديمة نهائياً */
+(function(){
+  try{ localStorage.removeItem('ha_qalat_sukkar_offline_map_v1_ready'); }catch(_e){}
+  try{
+    if('caches' in window){
+      caches.delete('ha-qalat-sukkar-map-v1').catch(()=>{});
+    }
+  }catch(_e){}
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(list=>{
+        list.forEach(reg=>{
+          const urls=[reg.active?.scriptURL,reg.waiting?.scriptURL,reg.installing?.scriptURL].filter(Boolean);
+          if(urls.some(u=>String(u).includes('ha-offline-map-sw.js'))){
+            reg.unregister().catch(()=>{});
+          }
+        });
+      }).catch(()=>{});
+    }
+  }catch(_e){}
+})();
+</script>
+
 </body>
 </html>
