@@ -62,6 +62,170 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
   .hint-box{right:8px;bottom:56px;width:calc(100% - 16px);padding:12px}
 }
 
+
+/* ===== ترتيب الأزرار وواجهة التحكم ===== */
+.top-actions{
+  display:flex;gap:6px;align-items:center;justify-content:flex-end;
+  padding:5px;border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;background:rgba(5,11,18,.38);backdrop-filter:blur(8px)
+}
+.top-actions .ghost{
+  min-width:78px;padding:10px 12px;border-radius:12px;
+  background:linear-gradient(180deg,#182638,#0d1622);
+  border-color:rgba(255,212,0,.18);font-size:13px
+}
+#portraitBtnTop{display:none}
+
+.mobile-controls{
+  grid-template-columns:minmax(0,1fr) minmax(135px,.65fr);
+  grid-template-areas:
+    "pad jump"
+    "actions actions";
+  gap:9px;margin-top:10px;padding:10px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(17,28,42,.96),rgba(8,14,23,.96));
+  box-shadow:0 12px 28px rgba(0,0,0,.24);
+  direction:ltr
+}
+.mobile-controls .actions{
+  grid-area:actions;display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  direction:rtl
+}
+.mobile-controls .actions button{
+  min-height:43px;border-radius:13px;padding:9px 12px;font-size:13px
+}
+.mobile-controls .pad{
+  grid-area:pad;display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  min-width:0
+}
+.mobile-controls .ctrl{
+  min-width:0;width:100%;min-height:68px;border-radius:17px;
+  border:1px solid rgba(255,241,145,.38);
+  background:linear-gradient(180deg,#ffe96d,#ffd000);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 18px rgba(0,0,0,.23);
+  transition:transform .08s ease,filter .08s ease
+}
+.mobile-controls .ctrl:active{transform:translateY(2px) scale(.98);filter:brightness(.92)}
+.mobile-controls .jump{
+  grid-area:jump;min-width:0;width:100%;min-height:68px;
+  background:linear-gradient(135deg,#ffc400,#ff8a1f);
+  border-color:rgba(255,221,127,.55);font-size:19px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px rgba(255,145,24,.15)
+}
+
+.orientation-exit{
+  position:absolute;top:10px;right:10px;z-index:30;
+  min-width:46px;height:42px;
+  border:1px solid rgba(255,212,0,.58);
+  background:rgba(8,15,24,.92);color:#ffe36d;
+  border-radius:13px;padding:7px 11px;font-weight:900;
+  display:none;cursor:pointer;backdrop-filter:blur(8px)
+}
+#gameShell{position:relative}
+
+@media (max-width:720px){
+  .topbar{
+    display:grid;grid-template-columns:auto 1fr;grid-template-areas:
+      "back brand"
+      "tools tools";
+    align-items:center;gap:8px
+  }
+  .topbar>a.ghost{grid-area:back;padding:9px 11px;border-radius:13px;font-size:12px}
+  .brand{grid-area:brand;justify-self:end;min-width:0}
+  .top-actions{grid-area:tools;width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .top-actions .ghost{width:100%;min-width:0}
+}
+
+@media (max-width:480px){
+  .mobile-controls{padding:8px;gap:7px;border-radius:16px}
+  .mobile-controls .ctrl{min-height:60px;font-size:30px;border-radius:15px}
+  .mobile-controls .jump{min-height:60px;font-size:17px}
+  .mobile-controls .actions button{min-height:40px;padding:8px;font-size:12px}
+}
+
+/* ===== وضع اللعب بالعرض ===== */
+#gameShell:fullscreen,
+#gameShell.landscape-fallback{
+  background:#07111f;border-radius:0;padding:8px;
+  display:grid;grid-template-columns:minmax(0,1fr) 190px;
+  grid-template-areas:"game controls";
+  gap:8px;align-items:center;overflow:hidden
+}
+#gameShell:fullscreen{width:100%;height:100%}
+#gameShell:fullscreen .orientation-exit,
+#gameShell.landscape-fallback .orientation-exit{display:block}
+
+#gameShell:fullscreen .canvas-wrap,
+#gameShell.landscape-fallback .canvas-wrap{
+  grid-area:game;width:100%;max-height:100%;align-self:center
+}
+#gameShell:fullscreen canvas,
+#gameShell.landscape-fallback canvas{
+  width:100%;height:auto;max-height:calc(100vh - 16px);object-fit:contain
+}
+
+#gameShell:fullscreen .mobile-controls,
+#gameShell.landscape-fallback .mobile-controls{
+  grid-area:controls;
+  margin:0;padding:8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-areas:
+    "jump jump"
+    "pad pad"
+    "actions actions";
+  gap:8px;align-self:center;
+  border-radius:18px;
+  background:linear-gradient(180deg,#111d2b,#080f18)
+}
+#gameShell:fullscreen .mobile-controls .actions,
+#gameShell.landscape-fallback .mobile-controls .actions{
+  grid-area:actions;display:grid;grid-template-columns:1fr 1fr;gap:6px
+}
+#gameShell:fullscreen .mobile-controls .actions button,
+#gameShell.landscape-fallback .mobile-controls .actions button{
+  min-height:40px;padding:7px 6px;font-size:11px;border-radius:11px
+}
+#gameShell:fullscreen .mobile-controls .jump,
+#gameShell.landscape-fallback .mobile-controls .jump{
+  grid-area:jump;min-height:76px;font-size:18px;border-radius:16px
+}
+#gameShell:fullscreen .mobile-controls .pad,
+#gameShell.landscape-fallback .mobile-controls .pad{
+  grid-area:pad;display:grid;grid-template-columns:1fr 1fr;gap:7px
+}
+#gameShell:fullscreen .mobile-controls .ctrl,
+#gameShell.landscape-fallback .mobile-controls .ctrl{
+  min-width:0;width:100%;min-height:58px
+}
+#gameShell:fullscreen .hint-btn,
+#gameShell.landscape-fallback .hint-btn{
+  right:8px;bottom:8px;width:38px;height:38px;font-size:20px
+}
+
+/* بديل للأجهزة التي تمنع قفل اتجاه الشاشة */
+#gameShell.landscape-fallback{
+  position:fixed;z-index:99999;left:0;top:0;
+  width:100vh;height:100vw;
+  transform:rotate(90deg) translateY(-100%);
+  transform-origin:top left
+}
+body.landscape-lock{overflow:hidden}
+
+@media (orientation:landscape) and (max-height:600px){
+  #gameShell:fullscreen,
+  #gameShell.landscape-fallback{
+    grid-template-columns:minmax(0,1fr) 174px
+  }
+  #gameShell:fullscreen .mobile-controls,
+  #gameShell.landscape-fallback .mobile-controls{padding:6px;gap:6px}
+  #gameShell:fullscreen .mobile-controls .jump,
+  #gameShell.landscape-fallback .mobile-controls .jump{min-height:64px}
+  #gameShell:fullscreen .mobile-controls .ctrl,
+  #gameShell.landscape-fallback .mobile-controls .ctrl{min-height:48px;font-size:27px}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -70,11 +234,16 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
   <div class="topbar">
     <a class="ghost" href="entertainment.html">↩ رجوع للترفيه</a>
     <div class="brand"><div class="logo">👿</div><div><h1>لعبة ليفل ديفل</h1><p>50 مرحلة متدرجة الصعوبة - HA Marketing</p></div></div>
-    <button class="ghost" id="fullscreenBtn">⛶ ملء الشاشة</button>
+    <div class="top-actions">
+      <button class="ghost" id="landscapeBtn" type="button">↔ عرض</button>
+      <button class="ghost" id="portraitBtnTop" type="button">↕ شاشة طبيعية</button>
+      <button class="ghost" id="fullscreenBtn" type="button">⛶ ملء</button>
+    </div>
   </div>
 
   <div class="layout">
-    <div class="stagebox">
+    <div class="stagebox" id="gameShell">
+      <button class="orientation-exit" id="portraitBtn" type="button">↕ طبيعي</button>
       <div class="canvas-wrap" id="wrap">
         <canvas id="game" width="960" height="600"></canvas>
         <div class="hud">
@@ -947,7 +1116,71 @@ updateStageUI();
 draw();
 document.getElementById('startBtn').onclick = startGame;
 document.getElementById('restartBtn').onclick = restartCurrent;
-document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
+
+const gameShell=document.getElementById('gameShell');
+
+async function enterLandscapeMode(){
+  // نحاول أولاً الطريقة الأصلية للأندرويد/المتصفح: ملء الشاشة + قفل Landscape.
+  let locked=false;
+  try{
+    if(gameShell.requestFullscreen && !document.fullscreenElement){
+      await gameShell.requestFullscreen();
+    }
+    if(screen.orientation && typeof screen.orientation.lock==='function'){
+      await screen.orientation.lock('landscape');
+      locked=true;
+    }
+  }catch(_e){}
+
+  // بعض المتصفحات/WebView تمنع orientation.lock، لذلك عندنا بديل بصري مضمون.
+  setTimeout(()=>{
+    const actuallyLandscape=window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
+    if(!locked && !actuallyLandscape){
+      try{
+        if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+      }catch(_e){}
+      gameShell.classList.add('landscape-fallback');
+      document.body.classList.add('landscape-lock');
+    }
+  },180);
+}
+
+async function returnPortraitMode(){
+  gameShell.classList.remove('landscape-fallback');
+  document.body.classList.remove('landscape-lock');
+
+  try{
+    if(screen.orientation && typeof screen.orientation.unlock==='function'){
+      screen.orientation.unlock();
+    }
+  }catch(_e){}
+
+  try{
+    if(document.fullscreenElement && document.exitFullscreen){
+      await document.exitFullscreen();
+    }
+  }catch(_e){}
+}
+
+document.getElementById('landscapeBtn').onclick=enterLandscapeMode;
+document.getElementById('portraitBtn').onclick=returnPortraitMode;
+document.getElementById('portraitBtnTop').onclick=returnPortraitMode;
+
+document.getElementById('fullscreenBtn').onclick = async ()=>{
+  try{
+    if(!document.fullscreenElement) await gameShell.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){}
+};
+
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement && !gameShell.classList.contains('landscape-fallback')){
+    try{
+      if(screen.orientation && typeof screen.orientation.unlock==='function') screen.orientation.unlock();
+    }catch(_e){}
+  }
+});
+
 document.getElementById('hintBtn').onclick = showHint;
 document.getElementById('hintClose').onclick = hideHint;
 
