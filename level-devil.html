@@ -63,7 +63,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 }
 
 
-/* ===== ترتيب الأزرار وواجهة التحكم ===== */
+/* ===== توزيع أزرار اللعب: الاتجاهات بجهة والقفز بالجهة الثانية ===== */
 .top-actions{
   display:flex;gap:6px;align-items:center;justify-content:flex-end;
   padding:5px;border:1px solid rgba(255,255,255,.08);
@@ -76,46 +76,49 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 }
 #portraitBtnTop{display:none}
 
+/* الشاشة الطبيعية: الاتجاهات يسار والقفز يمين */
 .mobile-controls{
-  grid-template-columns:minmax(0,1fr) minmax(135px,.65fr);
+  display:grid;
+  grid-template-columns:minmax(150px,1fr) minmax(150px,1fr);
   grid-template-areas:
     "pad jump"
     "actions actions";
-  gap:9px;margin-top:10px;padding:10px;
+  gap:10px 18px;margin-top:10px;padding:11px;
   border:1px solid rgba(255,255,255,.08);
   border-radius:20px;
   background:linear-gradient(180deg,rgba(17,28,42,.96),rgba(8,14,23,.96));
   box-shadow:0 12px 28px rgba(0,0,0,.24);
-  direction:ltr
-}
-.mobile-controls .actions{
-  grid-area:actions;display:grid;grid-template-columns:1fr 1fr;gap:8px;
-  direction:rtl
-}
-.mobile-controls .actions button{
-  min-height:43px;border-radius:13px;padding:9px 12px;font-size:13px
+  direction:ltr;align-items:stretch
 }
 .mobile-controls .pad{
   grid-area:pad;display:grid;grid-template-columns:1fr 1fr;gap:8px;
-  min-width:0
+  width:100%;min-width:0;justify-self:start
+}
+.mobile-controls .jump{
+  grid-area:jump;width:100%;min-width:0;min-height:70px;
+  justify-self:end;border-radius:18px;
+  background:linear-gradient(135deg,#ffc400,#ff8a1f);
+  border-color:rgba(255,221,127,.55);font-size:20px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px rgba(255,145,24,.15)
 }
 .mobile-controls .ctrl{
-  min-width:0;width:100%;min-height:68px;border-radius:17px;
+  min-width:0;width:100%;min-height:70px;border-radius:18px;
   border:1px solid rgba(255,241,145,.38);
   background:linear-gradient(180deg,#ffe96d,#ffd000);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 18px rgba(0,0,0,.23);
   transition:transform .08s ease,filter .08s ease
 }
 .mobile-controls .ctrl:active{transform:translateY(2px) scale(.98);filter:brightness(.92)}
-.mobile-controls .jump{
-  grid-area:jump;min-width:0;width:100%;min-height:68px;
-  background:linear-gradient(135deg,#ffc400,#ff8a1f);
-  border-color:rgba(255,221,127,.55);font-size:19px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px rgba(255,145,24,.15)
+.mobile-controls .actions{
+  grid-area:actions;display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  direction:rtl;width:100%;max-width:420px;justify-self:center
+}
+.mobile-controls .actions button{
+  min-height:43px;border-radius:13px;padding:9px 12px;font-size:13px
 }
 
 .orientation-exit{
-  position:absolute;top:10px;right:10px;z-index:30;
+  position:absolute;top:10px;right:10px;z-index:40;
   min-width:46px;height:42px;
   border:1px solid rgba(255,212,0,.58);
   background:rgba(8,15,24,.92);color:#ffe36d;
@@ -138,19 +141,22 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 }
 
 @media (max-width:480px){
-  .mobile-controls{padding:8px;gap:7px;border-radius:16px}
-  .mobile-controls .ctrl{min-height:60px;font-size:30px;border-radius:15px}
-  .mobile-controls .jump{min-height:60px;font-size:17px}
+  .mobile-controls{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:8px 12px;padding:8px;border-radius:16px
+  }
+  .mobile-controls .ctrl{min-height:61px;font-size:30px;border-radius:15px}
+  .mobile-controls .jump{min-height:61px;font-size:18px;border-radius:15px}
   .mobile-controls .actions button{min-height:40px;padding:8px;font-size:12px}
 }
 
-/* ===== وضع اللعب بالعرض ===== */
+/* ===== وضع اللعب بالعرض =====
+   الاتجاهات تكون بالجهة اليسرى والقفز بالجهة اليمنى،
+   وابدأ/إعادة بالمنتصف تحتهم. */
 #gameShell:fullscreen,
 #gameShell.landscape-fallback{
   background:#07111f;border-radius:0;padding:8px;
-  display:grid;grid-template-columns:minmax(0,1fr) 190px;
-  grid-template-areas:"game controls";
-  gap:8px;align-items:center;overflow:hidden
+  display:block;overflow:hidden
 }
 #gameShell:fullscreen{width:100%;height:100%}
 #gameShell:fullscreen .orientation-exit,
@@ -158,50 +164,58 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 
 #gameShell:fullscreen .canvas-wrap,
 #gameShell.landscape-fallback .canvas-wrap{
-  grid-area:game;width:100%;max-height:100%;align-self:center
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center
 }
 #gameShell:fullscreen canvas,
 #gameShell.landscape-fallback canvas{
-  width:100%;height:auto;max-height:calc(100vh - 16px);object-fit:contain
+  width:100%;height:auto;max-height:100%;object-fit:contain
 }
 
 #gameShell:fullscreen .mobile-controls,
 #gameShell.landscape-fallback .mobile-controls{
-  grid-area:controls;
-  margin:0;padding:8px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  grid-template-areas:
-    "jump jump"
-    "pad pad"
-    "actions actions";
-  gap:8px;align-self:center;
-  border-radius:18px;
-  background:linear-gradient(180deg,#111d2b,#080f18)
+  position:absolute;inset:0;z-index:28;margin:0;padding:0;
+  display:block;background:transparent;border:0;border-radius:0;box-shadow:none;
+  pointer-events:none
 }
-#gameShell:fullscreen .mobile-controls .actions,
-#gameShell.landscape-fallback .mobile-controls .actions{
-  grid-area:actions;display:grid;grid-template-columns:1fr 1fr;gap:6px
-}
-#gameShell:fullscreen .mobile-controls .actions button,
-#gameShell.landscape-fallback .mobile-controls .actions button{
-  min-height:40px;padding:7px 6px;font-size:11px;border-radius:11px
-}
-#gameShell:fullscreen .mobile-controls .jump,
-#gameShell.landscape-fallback .mobile-controls .jump{
-  grid-area:jump;min-height:76px;font-size:18px;border-radius:16px
-}
+
+/* اتجاهات الجهة اليسرى */
 #gameShell:fullscreen .mobile-controls .pad,
 #gameShell.landscape-fallback .mobile-controls .pad{
-  grid-area:pad;display:grid;grid-template-columns:1fr 1fr;gap:7px
+  position:absolute;left:14px;bottom:76px;width:210px;
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;
+  pointer-events:auto
 }
 #gameShell:fullscreen .mobile-controls .ctrl,
 #gameShell.landscape-fallback .mobile-controls .ctrl{
-  min-width:0;width:100%;min-height:58px
+  min-width:0;width:100%;min-height:64px;font-size:30px;
+  background:linear-gradient(180deg,rgba(255,235,112,.94),rgba(255,207,0,.94));
+  box-shadow:0 9px 24px rgba(0,0,0,.3)
+}
+
+/* القفز بالجهة اليمنى */
+#gameShell:fullscreen .mobile-controls .jump,
+#gameShell.landscape-fallback .mobile-controls .jump{
+  position:absolute;right:14px;bottom:76px;width:160px;min-height:64px;
+  pointer-events:auto;font-size:19px;
+  background:linear-gradient(135deg,rgba(255,196,0,.96),rgba(255,138,31,.96));
+  box-shadow:0 9px 24px rgba(0,0,0,.3)
+}
+
+/* ابدأ وإعادة بالمنتصف تحت أزرار اللعب */
+#gameShell:fullscreen .mobile-controls .actions,
+#gameShell.landscape-fallback .mobile-controls .actions{
+  position:absolute;left:50%;bottom:13px;transform:translateX(-50%);
+  width:min(330px,46%);display:grid;grid-template-columns:1fr 1fr;gap:7px;
+  pointer-events:auto;direction:rtl
+}
+#gameShell:fullscreen .mobile-controls .actions button,
+#gameShell.landscape-fallback .mobile-controls .actions button{
+  min-height:46px;padding:8px 9px;font-size:12px;border-radius:12px;
+  background:rgba(8,15,24,.9);backdrop-filter:blur(8px)
 }
 #gameShell:fullscreen .hint-btn,
 #gameShell.landscape-fallback .hint-btn{
-  right:8px;bottom:8px;width:38px;height:38px;font-size:20px
+  right:12px;bottom:150px;width:40px;height:40px;font-size:20px
 }
 
 /* بديل للأجهزة التي تمنع قفل اتجاه الشاشة */
@@ -214,16 +228,24 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 body.landscape-lock{overflow:hidden}
 
 @media (orientation:landscape) and (max-height:600px){
-  #gameShell:fullscreen,
-  #gameShell.landscape-fallback{
-    grid-template-columns:minmax(0,1fr) 174px
+  #gameShell:fullscreen .mobile-controls .pad,
+  #gameShell.landscape-fallback .mobile-controls .pad{
+    left:10px;bottom:66px;width:185px;gap:7px
   }
-  #gameShell:fullscreen .mobile-controls,
-  #gameShell.landscape-fallback .mobile-controls{padding:6px;gap:6px}
   #gameShell:fullscreen .mobile-controls .jump,
-  #gameShell.landscape-fallback .mobile-controls .jump{min-height:64px}
+  #gameShell.landscape-fallback .mobile-controls .jump{
+    right:10px;bottom:66px;width:145px;min-height:56px
+  }
   #gameShell:fullscreen .mobile-controls .ctrl,
-  #gameShell.landscape-fallback .mobile-controls .ctrl{min-height:48px;font-size:27px}
+  #gameShell.landscape-fallback .mobile-controls .ctrl{min-height:56px;font-size:27px}
+  #gameShell:fullscreen .mobile-controls .actions,
+  #gameShell.landscape-fallback .mobile-controls .actions{
+    bottom:8px;width:min(300px,44%)
+  }
+  #gameShell:fullscreen .mobile-controls .actions button,
+  #gameShell.landscape-fallback .mobile-controls .actions button{min-height:40px}
+  #gameShell:fullscreen .hint-btn,
+  #gameShell.landscape-fallback .hint-btn{bottom:130px}
 }
 
 </style>
