@@ -37,6 +37,31 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 .note{color:var(--muted);font-size:13px;line-height:1.8}
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
 @media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
+
+.hint-btn{
+  position:absolute;right:12px;bottom:12px;z-index:12;
+  width:44px;height:44px;border:1px solid rgba(255,212,0,.65);
+  border-radius:50%;background:linear-gradient(180deg,#fff3a0,#ffd400);
+  color:#17120a;font-size:23px;display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.28),0 0 18px rgba(255,212,0,.2)
+}
+.hint-btn:active{transform:scale(.96)}
+.hint-box{
+  position:absolute;right:12px;bottom:64px;z-index:13;width:min(360px,calc(100% - 24px));
+  background:rgba(8,15,24,.96);border:1px solid rgba(255,212,0,.5);
+  border-radius:18px;padding:13px 14px;box-shadow:0 16px 38px rgba(0,0,0,.38);
+  display:none
+}
+.hint-box.show{display:block}
+.hint-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.hint-head b{color:#ffe36d;font-size:15px}
+.hint-close{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;padding:0 3px}
+.hint-text{color:#eef4fa;font-size:13px;line-height:1.8}
+@media (max-width:480px){
+  .hint-btn{right:8px;bottom:8px;width:40px;height:40px;font-size:21px}
+  .hint-box{right:8px;bottom:56px;width:calc(100% - 16px);padding:12px}
+}
+
 </style>
 </head>
 <body>
@@ -57,6 +82,15 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
           <div class="badge">أفضل مرحلة: <span id="hudBest">1</span></div>
         </div>
         <div class="center-msg" id="overlay"><div class="box"><h2>ابدأ اللعب</h2><p>عندك 50 مرحلة. كل مرحلة أصعب من اللي قبلها، وما تنفتح المرحلة التالية إلا بعد ما توصل للباب الأخضر وتفوز بالمرحلة الحالية.</p></div></div>
+
+        <button class="hint-btn" id="hintBtn" type="button" aria-label="إظهار تلميح المرحلة" title="تلميح">💡</button>
+        <div class="hint-box" id="hintBox">
+          <div class="hint-head">
+            <b>💡 تلميح المرحلة <span id="hintLevelNo">1</span></b>
+            <button class="hint-close" id="hintClose" type="button" aria-label="إغلاق">×</button>
+          </div>
+          <div class="hint-text" id="hintText"></div>
+        </div>
       </div>
       <div class="mobile-controls">
         <div class="pad">
@@ -209,14 +243,15 @@ function saveProgress(){
 }
 
 const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawnY:0};
-let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let coins=[]; let exitDoor=null;
+let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let movingHazards=[]; let fallingSurprises=[]; let hiddenPits=[]; let disappearingPlatforms=[]; let surpriseSpikes=[]; let fakeDoors=[]; let coins=[]; let exitDoor=null;
 
 function parseLevel(index){
+  const hintBoxEl=document.getElementById('hintBox'); if(hintBoxEl) hintBoxEl.classList.remove('show');
   if(index < 0 || index >= levels.length) index = 0;
   if(index >= unlocked) index = Math.max(0, unlocked-1);
   currentLevelIndex = index;
   levelTransitioning = false;
-  tiles=[]; spikes=[]; traps=[]; movers=[]; coins=[]; exitDoor=null;
+  tiles=[]; spikes=[]; traps=[]; movers=[]; movingHazards=[]; fallingSurprises=[]; hiddenPits=[]; disappearingPlatforms=[]; surpriseSpikes=[]; fakeDoors=[]; coins=[]; exitDoor=null;
   const map = levels[index].map;
   for(let r=0;r<map.length;r++){
     const row = map[r];
@@ -232,6 +267,83 @@ function parseLevel(index){
       if(ch==='P'){ player.x=x+10; player.y=y+4; player.spawnX=player.x; player.spawnY=player.y; }
     }
   }
+  // فخاخ متحركة إضافية: تبدأ مبكراً وتزداد بالمراحل المتقدمة
+  const levelNo = index + 1;
+  const pattern = (levelNo - 1) % 10;
+  const tier = Math.floor((levelNo - 1) / 10);
+
+  if(levelNo >= 1){
+    const minX = 150 + (pattern % 3) * 70;
+    movingHazards.push({
+      x:minX, y:7*TILE+8, w:34, h:34,
+      axis:'x', min:minX, max:Math.min(W-120,minX+190),
+      dir:1, speed:1.8 + tier*0.22, angle:0
+    });
+  }
+
+  if(levelNo >= 21){
+    const minX = 440 + (pattern % 2) * 60;
+    movingHazards.push({
+      x:minX, y:6*TILE-6, w:34, h:34,
+      axis:'x', min:minX, max:Math.min(W-100,minX+170),
+      dir:-1, speed:2.15 + tier*0.2, angle:0
+    });
+  }
+
+  if(levelNo >= 36){
+    const minY = 4*TILE+10;
+    movingHazards.push({
+      x:10*TILE + (pattern%4)*TILE, y:minY, w:34, h:34,
+      axis:'y', min:minY, max:7*TILE-10,
+      dir:1, speed:1.65 + tier*0.18, angle:0
+    });
+  }
+
+  // فخ مفاجئ ينزل من فوق من أول مرحلة.
+  // مكانه يتغير من مرحلة للثانية حتى ما يصير محفوظ.
+  const fallX = (6 + ((pattern * 3 + tier) % 9)) * TILE + 7;
+  fallingSurprises.push({
+    x:fallX, y:-56, w:38, h:38,
+    triggerX:fallX-42, triggered:false, delay:0, falling:false, vy:0, angle:0
+  });
+
+  // هاوية مخفية من أول مرحلة: قطعة أرض تنفتح فجأة تحت اللاعب.
+  // نختار عمود موجود فعلياً بالأرض وبعيد نسبياً عن نقطة البداية.
+  const pitCandidates = tiles.filter(t =>
+    t.y===8*TILE &&
+    t.x>=5*TILE && t.x<=16*TILE &&
+    Math.abs((t.x+TILE/2)-(player.spawnX+player.w/2)) > TILE*2
+  );
+  if(pitCandidates.length){
+    const base = pitCandidates[(pattern + tier) % pitCandidates.length];
+    hiddenPits.push({
+      x:base.x, y:base.y, w:TILE, h:TILE,
+      state:'hidden', timer:0, opened:false
+    });
+  }
+
+  // منصة تختفي من أول مرحلة: تبدو طبيعية ثم تسقط بعد الوقوف عليها بقليل.
+  const disappearX = (8 + (pattern % 5)) * TILE;
+  disappearingPlatforms.push({
+    x:disappearX, y:6*TILE, w:TILE, h:18,
+    state:'solid', timer:0, alpha:1
+  });
+
+  // أشواك مفاجئة من الأرض من أول مرحلة.
+  const spikeX = (11 + ((pattern + tier) % 5)) * TILE;
+  surpriseSpikes.push({
+    x:spikeX, y:8*TILE, w:TILE, h:TILE,
+    state:'hidden', timer:0, rise:0
+  });
+
+  // باب وهمي من أول مرحلة: عند لمسه يختفي ولا ينهي المرحلة.
+  // نضعه في مكان مختلف عن الباب الحقيقي حتى يبقى مجرد خدعة اختيارية.
+  const fakeX = Math.min(W-2*TILE, (13 + (pattern % 4))*TILE);
+  fakeDoors.push({
+    x:fakeX, y:7*TILE, w:TILE, h:TILE,
+    visible:true, triggered:false
+  });
+
   player.vx=0; player.vy=0; player.onGround=false;
   updateStageUI();
 }
@@ -297,6 +409,84 @@ function update(dt){
     return;
   }
   movers.forEach(m=>{ m.x += m.speed*m.dir; if(m.x<m.min||m.x>m.max){ m.dir*=-1; m.x += m.speed*m.dir;} });
+
+  movingHazards.forEach(h=>{
+    if(h.axis==='x'){
+      h.x += h.speed*h.dir;
+      if(h.x<h.min || h.x>h.max){ h.dir*=-1; h.x += h.speed*h.dir; }
+    }else{
+      h.y += h.speed*h.dir;
+      if(h.y<h.min || h.y>h.max){ h.dir*=-1; h.y += h.speed*h.dir; }
+    }
+    h.angle += 0.11 + h.speed*0.01;
+  });
+
+  // الفخ النازل من فوق: يتفعل فجأة عندما يمشي اللاعب تحته.
+  fallingSurprises.forEach(f=>{
+    if(!f.triggered && player.x + player.w/2 >= f.triggerX){
+      f.triggered=true;
+      f.delay=8; // تأخير قصير جداً حتى يكون الفخ مفاجئ
+    }
+    if(f.triggered && !f.falling){
+      f.delay--;
+      if(f.delay<=0) f.falling=true;
+    }
+    if(f.falling){
+      f.vy += 0.72;
+      f.y += f.vy;
+      f.angle += 0.17;
+    }
+  });
+
+  // الهاوية المخفية: تنفتح تحت قدم اللاعب بعد لحظات قليلة جداً.
+  hiddenPits.forEach(p=>{
+    if(p.state==='hidden'){
+      const footX = player.x + player.w/2;
+      const standingOver = player.onGround && footX > p.x+7 && footX < p.x+p.w-7 &&
+                           player.y + player.h <= p.y+8 && player.y + player.h >= p.y-12;
+      if(standingOver){
+        p.state='cracking';
+        p.timer=7;
+      }
+    }else if(p.state==='cracking'){
+      p.timer--;
+      if(p.timer<=0){
+        p.state='open';
+        p.opened=true;
+        // احذف عمود الأرض حتى تتحول فعلياً إلى هاوية ويسقط اللاعب.
+        tiles = tiles.filter(t => !(t.x===p.x && t.y>=8*TILE));
+      }
+    }
+  });
+
+  // المنصة المختفية تبدأ بالوميض بعد ما يوقف اللاعب عليها، ثم تختفي تماماً.
+  disappearingPlatforms.forEach(p=>{
+    if(p.state==='solid'){
+      const feet=player.y+player.h;
+      const over=player.x+player.w>p.x+5 && player.x<p.x+p.w-5;
+      if(player.onGround && over && feet>=p.y-8 && feet<=p.y+8){
+        p.state='warning';
+        p.timer=34;
+      }
+    }else if(p.state==='warning'){
+      p.timer--;
+      p.alpha = 0.45 + Math.abs(Math.sin(p.timer*0.55))*0.55;
+      if(p.timer<=0){ p.state='gone'; p.alpha=0; }
+    }
+  });
+
+  // الأشواك المخفية تظهر فجأة عندما يقترب اللاعب منها.
+  surpriseSpikes.forEach(s=>{
+    if(s.state==='hidden'){
+      const cx=player.x+player.w/2;
+      if(cx>s.x-34 && cx<s.x+s.w+34){ s.state='rising'; s.timer=7; }
+    }else if(s.state==='rising'){
+      s.timer--;
+      s.rise=Math.min(1,s.rise+0.22);
+      if(s.timer<=0){ s.state='active'; s.rise=1; }
+    }
+  });
+
   traps.forEach(t=>{
     const triggerZone={x:t.x,y:t.y-10,w:t.w,h:t.h+20};
     if(!t.armed && rectsIntersect({...player},triggerZone)) t.armed = true;
@@ -315,7 +505,7 @@ function update(dt){
 
   // horizontal
   player.x += player.vx;
-  const solids = [...tiles, ...traps.filter(t=>!t.falling), ...movers];
+  const solids = [...tiles, ...traps.filter(t=>!t.falling), ...movers, ...disappearingPlatforms.filter(p=>p.state!=='gone')];
   for(const s of solids){
     if(rectsIntersect(player,{x:s.x,y:s.y,w:s.w,h:s.h})){
       if(player.vx>0) player.x = s.x - player.w;
@@ -338,7 +528,28 @@ function update(dt){
   if(player.y>H+120) return killPlayer();
 
   for(const s of spikes){ if(rectsIntersect(player, {x:s.x+8,y:s.y+16,w:s.w-16,h:s.h-16})) return killPlayer(); }
+  for(const h of movingHazards){
+    if(rectsIntersect(player,{x:h.x+5,y:h.y+5,w:h.w-10,h:h.h-10})) return killPlayer();
+  }
+  for(const f of fallingSurprises){
+    if(f.falling && rectsIntersect(player,{x:f.x+4,y:f.y+4,w:f.w-8,h:f.h-8})) return killPlayer();
+  }
+  for(const s of surpriseSpikes){
+    if((s.state==='rising'||s.state==='active') && s.rise>.45){
+      const hh=(TILE-10)*s.rise;
+      if(rectsIntersect(player,{x:s.x+8,y:s.y+TILE-hh,w:s.w-16,h:hh})) return killPlayer();
+    }
+  }
   for(const m of movers){ if(rectsIntersect(player, {x:m.x,y:m.y,w:m.w,h:m.h})) return killPlayer(); }
+
+  for(const d of fakeDoors){
+    if(d.visible && rectsIntersect(player,{x:d.x+8,y:d.y+8,w:d.w-16,h:d.h-8})){
+      d.visible=false; d.triggered=true;
+      showTempMessage('😈 باب وهمي! دور على الباب الحقيقي');
+      beep(180,0.16,'square');
+    }
+  }
+
   for(const c of coins){ if(!c.taken && Math.hypot((player.x+player.w/2)-c.x,(player.y+player.h/2)-c.y)<20){ c.taken=true; beep(840,0.05);} }
   if(exitDoor && rectsIntersect(player,{x:exitDoor.x+8,y:exitDoor.y+8,w:exitDoor.w-16,h:exitDoor.h-8})) return completeLevel();
   if(tempMessageTimer>0) tempMessageTimer--;
@@ -359,6 +570,12 @@ function draw(){
   tiles.forEach(t=> drawBlock(t.x,t.y,'#ffd400','#9a6700'));
   traps.forEach(t=>{ if(t.y<H+50) drawTrapBlock(t.x,t.y,t.armed?'#ff3b30':'#ff9f1c', t.armed?'#8b0000':'#a85a00'); });
   movers.forEach(m=>{ctx.fillStyle='#ff2d55'; roundRect(m.x,m.y,m.w,m.h,8); ctx.fillStyle='rgba(255,255,255,.25)'; ctx.fillRect(m.x+6,m.y+4,m.w-12,5);});
+  movingHazards.forEach(h=>drawMovingHazard(h));
+  fallingSurprises.forEach(f=>drawFallingSurprise(f));
+  hiddenPits.forEach(p=>drawHiddenPit(p));
+  disappearingPlatforms.forEach(p=>drawDisappearingPlatform(p));
+  surpriseSpikes.forEach(s=>drawSurpriseSpikes(s));
+  fakeDoors.forEach(d=>{ if(d.visible) drawFakeDoor(d.x,d.y); });
   spikes.forEach(s=> drawSpikes(s.x,s.y));
   coins.forEach(c=>{ if(!c.taken){ ctx.beginPath(); ctx.fillStyle='#facc15'; ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#9a6e0a'; ctx.font='bold 12px Tahoma'; ctx.fillText('$',c.x-4,c.y+4);} });
   if(exitDoor){ drawDoor(exitDoor.x, exitDoor.y); }
@@ -374,6 +591,137 @@ function draw(){
 
 function drawBlock(x,y,fill,stroke){ ctx.fillStyle=fill; roundRect(x+2,y+2,TILE-4,TILE-4,9); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x+10,y+10,TILE-18,7); ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.strokeRect(x+3,y+3,TILE-6,TILE-6); }
 function drawTrapBlock(x,y,fill,stroke){ ctx.fillStyle=fill; roundRect(x+2,y+2,TILE-4,TILE-4,9); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x+8,y+10,TILE-16,7); ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.strokeRect(x+3,y+3,TILE-6,TILE-6); }
+
+function drawMovingHazard(h){
+  const cx=h.x+h.w/2, cy=h.y+h.h/2;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(h.angle);
+
+  // أسنان الفخ الدائري
+  ctx.fillStyle='#ff3b30';
+  for(let i=0;i<12;i++){
+    ctx.rotate(Math.PI*2/12);
+    ctx.beginPath();
+    ctx.moveTo(-4,-h.h/2+5);
+    ctx.lineTo(0,-h.h/2-7);
+    ctx.lineTo(4,-h.h/2+5);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  ctx.beginPath();
+  ctx.fillStyle='#c91f1f';
+  ctx.arc(0,0,h.w/2-3,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.fillStyle='#f2f2f2';
+  ctx.arc(0,0,h.w/2-9,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.fillStyle='#6b7280';
+  ctx.arc(0,0,6,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawFallingSurprise(f){
+  // قبل التفعيل يكون مخفي فوق الشاشة، وبعدها ينزل ككتلة مسننة.
+  if(!f.triggered && f.y<0) return;
+  ctx.save();
+  ctx.translate(f.x+f.w/2,f.y+f.h/2);
+  ctx.rotate(f.angle);
+  ctx.fillStyle='#6b0f13';
+  roundRect(-f.w/2,-f.h/2,f.w,f.h,7);
+  ctx.fillStyle='#ff3040';
+  for(let i=0;i<4;i++){
+    const a=(Math.PI*2/4)*i;
+    ctx.save();
+    ctx.rotate(a);
+    ctx.beginPath();
+    ctx.moveTo(-6,-f.h/2+3);
+    ctx.lineTo(0,-f.h/2-12);
+    ctx.lineTo(6,-f.h/2+3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.fillStyle='#d1d5db';
+  ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawHiddenPit(p){
+  if(p.state==='hidden') return; // تبقى الأرض طبيعية قبل ما تنكشف
+  if(p.state==='cracking'){
+    ctx.save();
+    ctx.strokeStyle='#7a2a18';
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(p.x+8,p.y+5);
+    ctx.lineTo(p.x+22,p.y+18);
+    ctx.lineTo(p.x+15,p.y+31);
+    ctx.lineTo(p.x+34,p.y+44);
+    ctx.moveTo(p.x+22,p.y+18);
+    ctx.lineTo(p.x+38,p.y+11);
+    ctx.stroke();
+    ctx.restore();
+  }else if(p.state==='open'){
+    ctx.fillStyle='#020304';
+    ctx.fillRect(p.x,8*TILE,TILE,H-8*TILE);
+    const g=ctx.createLinearGradient(p.x,8*TILE,p.x+TILE,8*TILE);
+    g.addColorStop(0,'rgba(255,70,30,.14)');
+    g.addColorStop(.5,'rgba(0,0,0,0)');
+    g.addColorStop(1,'rgba(255,70,30,.14)');
+    ctx.fillStyle=g;
+    ctx.fillRect(p.x,8*TILE,TILE,H-8*TILE);
+  }
+}
+
+function drawDisappearingPlatform(p){
+  if(p.state==='gone') return;
+  ctx.save();
+  ctx.globalAlpha=p.alpha;
+  ctx.fillStyle=p.state==='warning'?'#f59e0b':'#ffd400';
+  roundRect(p.x,p.y,p.w,p.h,7);
+  ctx.fillStyle='rgba(255,255,255,.28)';
+  ctx.fillRect(p.x+8,p.y+4,p.w-16,4);
+  if(p.state==='warning'){
+    ctx.strokeStyle='#7c2d12'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(p.x+10,p.y+4); ctx.lineTo(p.x+22,p.y+14); ctx.lineTo(p.x+35,p.y+5); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawSurpriseSpikes(s){
+  if(s.state==='hidden') return;
+  const rise=Math.max(.05,s.rise);
+  const baseY=s.y+TILE-6;
+  ctx.fillStyle='#ef233c';
+  for(let i=0;i<4;i++){
+    const x=s.x+6+i*10;
+    const h=34*rise;
+    ctx.beginPath();
+    ctx.moveTo(x,baseY);
+    ctx.lineTo(x+5,baseY-h);
+    ctx.lineTo(x+10,baseY);
+    ctx.closePath();ctx.fill();
+  }
+}
+
+function drawFakeDoor(x,y){
+  ctx.save();
+  ctx.globalAlpha=.96;
+  ctx.fillStyle='#22c55e'; roundRect(x+8,y+4,TILE-16,TILE-8,12);
+  ctx.fillStyle='#166534'; roundRect(x+14,y+10,TILE-28,TILE-20,8);
+  ctx.fillStyle='#fff7a8'; ctx.beginPath(); ctx.arc(x+TILE-18,y+TILE/2,3,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.strokeRect(x+11,y+7,TILE-22,TILE-14);
+  ctx.restore();
+}
+
 function drawSpikes(x,y){ ctx.fillStyle='#ff1f1f'; for(let i=0;i<4;i++){ ctx.beginPath(); ctx.moveTo(x+6+i*10,y+TILE-6); ctx.lineTo(x+11+i*10,y+12); ctx.lineTo(x+16+i*10,y+TILE-6); ctx.closePath(); ctx.fill(); } }
 function drawDoor(x,y){ ctx.fillStyle='#12d65a'; roundRect(x+8,y+4,TILE-16,TILE-8,12); ctx.fillStyle='#14532d'; roundRect(x+14,y+10,TILE-28,TILE-20,8); ctx.fillStyle='#fef08a'; ctx.beginPath(); ctx.arc(x+TILE-18,y+TILE/2,3,0,Math.PI*2); ctx.fill(); }
 function drawPlayer(x,y,face){ ctx.fillStyle='#16202a'; roundRect(x+6,y+10,18,24,8); ctx.fillStyle='#ffd400'; ctx.beginPath(); ctx.arc(x+14,y+10,10,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x+11+(face>0?2:-2),y+8,2.2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(x+17+(face>0?2:-2),y+8,2.2,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#ff9f1c'; ctx.fillRect(x+9,y+32,6,10); ctx.fillRect(x+18,y+32,6,10); }
@@ -447,6 +795,52 @@ function beep(freq=440,duration=0.08,type='square'){
   }catch(e){}
 }
 
+
+function getLevelHint(levelNumber){
+  const pattern = (levelNumber - 1) % 10;
+  const tier = Math.floor((levelNumber - 1) / 10);
+
+  const routes = [
+    'تحرك باتجاه اليمين، وتدرّج على المنصات الوسطية. لا تحاول القفز مباشرة للباب؛ اصعد منصة ثم منصة إلى أن توصل للباب الأخضر.',
+    'ابدأ من الأرض باتجاه اليمين، وبعد أول فجوة اصعد للمنصة الوسطى. من هناك واصل قفزات قصيرة باتجاه الباب الأخضر.',
+    'الباب أعلى الجهة اليمنى. استعمل المنصة القريبة من الوسط كنقطة انتقال، وبعدها اصعد للمنصة الأعلى قبل الباب.',
+    'لا تستعجل بالقفزة الأخيرة. وصل أولاً للمنصة الموجودة في النصف الثاني، وبعدها اقفز باتجاه الباب من مسافة قريبة.',
+    'المسار الأسهل هو من اليسار إلى الوسط ثم للأعلى. استخدم المنصات كدرجات ولا تحاول تجاوز أكثر من فجوة بقفزة واحدة.',
+    'تحرك يميناً حتى منتصف المرحلة، ثم اصعد على المنصة المرتفعة. من هناك تكون قفزة الباب أقصر وأسهل.',
+    'انتبه للفراغات في الأرض. اعبرها بقفزات قصيرة، ثم استعمل المنصة العليا في الجهة اليمنى للوصول للباب.',
+    'لا تبقى على الأرض للنهاية. بعد منتصف المرحلة اصعد للأعلى، لأن الباب يحتاج وصول من منصة قريبة وليس من الأرض مباشرة.',
+    'خذ المسار الآمن عبر المنصات الوسطية. القفز السريع من الأرض للباب غالباً يسقطك؛ اصعد تدريجياً.',
+    'وصل أولاً للمنصة الموجودة قبل الباب مباشرة، ثم خذ قفزة أخيرة قصيرة باتجاه الباب الأخضر.'
+  ];
+
+  let extra = '';
+  if(levelNumber >= 41){
+    extra = ' انتبه جداً للفخاخ الدائرية المتحركة أفقياً وعمودياً والمنصات الحمراء والبلوكات الخادعة؛ انتظر توقيتها قبل القفز.';
+  }else if(levelNumber >= 26){
+    extra = ' من هالمرحلة فصاعداً أكو أكثر من فخ متحرك أفقي، فراقب مساره وانتظر الفراغ المناسب قبل العبور.';
+  }else if(levelNumber >= 11){
+    extra = ' إذا شفت منصة أو فخ دائري أحمر متحرك، اضبط توقيت القفزة وتجاوز مساره قبل ما يقرب منك.';
+  }else if(tier >= 1){
+    extra = ' البلوكات البرتقالية ممكن تنهار، فلا توقف عليها أكثر من اللازم.';
+  }
+
+  const surprise = levelNumber <= 10
+    ? ' وانتبه: من المراحل الأولى أكو هاوية مخفية، فخ ينزل من فوق، أشواك تطلع فجأة، منصة تختفي، وباب وهمي يخدعك. تحرك بحذر ولا تثق بأي شي بسرعة.'
+    : ' وانتبه للفخاخ المفاجئة: هاويات مخفية، أشواك تظهر فجأة، منصات تختفي، أبواب وهمية وفخاخ تنزل من فوق.';
+  return routes[pattern] + extra + surprise;
+}
+
+function showHint(){
+  const n = currentLevelIndex + 1;
+  document.getElementById('hintLevelNo').textContent = n;
+  document.getElementById('hintText').textContent = getLevelHint(n);
+  document.getElementById('hintBox').classList.add('show');
+}
+
+function hideHint(){
+  document.getElementById('hintBox').classList.remove('show');
+}
+
 // UI bindings
 loadProgress();
 buildLevelButtons();
@@ -456,6 +850,9 @@ draw();
 document.getElementById('startBtn').onclick = startGame;
 document.getElementById('restartBtn').onclick = restartCurrent;
 document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
+document.getElementById('hintBtn').onclick = showHint;
+document.getElementById('hintClose').onclick = hideHint;
+
 </script>
 </body>
 </html>
