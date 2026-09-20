@@ -14,7 +14,6 @@
     'snake.html':{key:'snake',title:'لعبة الحية',icon:'🐍'},
     'bird-game.html':{key:'bird-game',title:'لعبة الطائر',icon:'🐦'},
     'level-devil.html':{key:'level-devil',title:'ليفل ديفل',icon:'👿'},
-    'car-racing.html':{key:'car-racing',title:'سباق السيارات',icon:'🏎️'},
     'war-game.html':{key:'war-game',title:'حرب الدبابات',icon:'🪖'},
     'penalties.html':{key:'penalties',title:'ركلات الجزاء',icon:'⚽'}
   };
@@ -90,7 +89,6 @@
       {key:'snake',title:'لعبة الحية',icon:'🐍'},
       {key:'bird-game',title:'لعبة الطائر',icon:'🐦'},
       {key:'level-devil',title:'ليفل ديفل',icon:'👿'},
-      {key:'car-racing',title:'سباق السيارات',icon:'🏎️'},
       {key:'war-game',title:'حرب الدبابات',icon:'🪖'}
     ];
     const target=gameList[dateSeed()%gameList.length];
@@ -147,9 +145,8 @@
   }
 
   function localBestSignals(){
-    let snake=0,car=0,level=0,bird=0;
+    let snake=0,level=0,bird=0;
     try{snake=Number(localStorage.getItem('ha_snake_best_v2')||0)}catch(_e){}
-    try{car=Number(localStorage.getItem('ha_car_best_v2')||0)}catch(_e){}
     try{
       const p=JSON.parse(localStorage.getItem('ha_level_devil_progress_v1')||'{}');
       level=Number(p.bestLevel||p.unlocked||0);
@@ -159,7 +156,7 @@
       const players=d?.games?.['bird-game']?.players||{};
       bird=Math.max(0,...Object.values(players).map(x=>Number(x.bestScore||0)));
     }catch(_e){}
-    return {snake,car,level,bird};
+    return {snake,level,bird};
   }
 
   function achievements(d=read()){
@@ -173,7 +170,6 @@
       {id:'streak3',icon:'📅',title:'3 أيام متتالية',desc:'العب 3 أيام بدون انقطاع',done:(d.streak||0)>=3},
       {id:'streak7',icon:'🏅',title:'أسبوع كامل',desc:'العب 7 أيام متتالية',done:(d.streak||0)>=7},
       {id:'snake100',icon:'🐍',title:'محترف الحية',desc:'أفضل نتيجة 100+',done:sig.snake>=100},
-      {id:'car1000',icon:'🏎️',title:'سائق سريع',desc:'أفضل نتيجة سيارات 1000+',done:sig.car>=1000},
       {id:'level10',icon:'👿',title:'كاسر الفخاخ',desc:'وصل مرحلة 10 بليفل ديفل',done:sig.level>=10},
       {id:'bird15',icon:'🐦',title:'طيران عالي',desc:'أفضل نتيجة طائر 15+',done:sig.bird>=15}
     ];
