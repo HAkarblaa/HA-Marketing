@@ -492,8 +492,18 @@ function buildLevel(n){
   const spikeSlots=[2,5,8,11,14,17];
   const trapSlots =[3,7,10,13,16];
   const coinSlots =[4,9,15];
-  const spikeCount=Math.min(1+tier+Math.floor(pattern/3),5);
-  const trapCount =Math.min(tier+Math.floor((pattern+1)/4),4);
+  // أول 5 مراحل أسهل، وبعدها تزيد الفخاخ بشكل واضح.
+  const spikeCount =
+    n<=2 ? 0 :
+    n<=5 ? 1 :
+    n<=10 ? 2 :
+    Math.min(2+tier+Math.floor(pattern/4),6);
+
+  const trapCount =
+    n<=3 ? 0 :
+    n<=5 ? 1 :
+    n<=10 ? 1+Math.floor((pattern+1)/5) :
+    Math.min(1+tier+Math.floor((pattern+2)/4),5);
   for(let i=0;i<spikeCount;i++){
     const c=spikeSlots[(i+pattern)%spikeSlots.length];
     if(g[7][c]==='.' && g[8][c]==='#') g[7][c]='s';
@@ -554,82 +564,201 @@ function parseLevel(index){
       if(ch==='P'){ player.x=x+10; player.y=y+4; player.spawnX=player.x; player.spawnY=player.y; }
     }
   }
-  // فخاخ متحركة إضافية: تبدأ مبكراً وتزداد بالمراحل المتقدمة
+  // توزيع الصعوبة:
+  // 1-5 سهلة نسبياً، وبعدها تزداد الفخاخ تدريجياً حتى المراحل الأخيرة.
   const levelNo = index + 1;
   const pattern = (levelNo - 1) % 10;
   const tier = Math.floor((levelNo - 1) / 10);
 
-  if(levelNo >= 1){
-    const minX = 150 + (pattern % 3) * 70;
+  function addMovingSaw(x,y,axis,min,max,dir,speed,size=34){
     movingHazards.push({
-      x:minX, y:7*TILE+8, w:34, h:34,
-      axis:'x', min:minX, max:Math.min(W-120,minX+190),
-      dir:1, speed:1.8 + tier*0.22, angle:0
+      x,y,w:size,h:size,axis,min,max,dir,speed,angle:0
     });
   }
 
-  if(levelNo >= 21){
-    const minX = 440 + (pattern % 2) * 60;
-    movingHazards.push({
-      x:minX, y:6*TILE-6, w:34, h:34,
-      axis:'x', min:minX, max:Math.min(W-100,minX+170),
-      dir:-1, speed:2.15 + tier*0.2, angle:0
+  function addFallingTrap(x,delay=10,size=38){
+    fallingSurprises.push({
+      x,y:-60,w:size,h:size,
+      triggerX:x-42,triggered:false,delay,
+      falling:false,vy:0,angle:0
     });
   }
 
-  if(levelNo >= 36){
-    const minY = 4*TILE+10;
-    movingHazards.push({
-      x:10*TILE + (pattern%4)*TILE, y:minY, w:34, h:34,
-      axis:'y', min:minY, max:7*TILE-10,
-      dir:1, speed:1.65 + tier*0.18, angle:0
-    });
-  }
-
-  // فخ مفاجئ ينزل من فوق من أول مرحلة.
-  // مكانه يتغير من مرحلة للثانية حتى ما يصير محفوظ.
-  const fallX = (6 + ((pattern * 3 + tier) % 9)) * TILE + 7;
-  fallingSurprises.push({
-    x:fallX, y:-56, w:38, h:38,
-    triggerX:fallX-42, triggered:false, delay:0, falling:false, vy:0, angle:0
-  });
-
-  // هاوية مخفية من أول مرحلة: قطعة أرض تنفتح فجأة تحت اللاعب.
-  // نختار عمود موجود فعلياً بالأرض وبعيد نسبياً عن نقطة البداية.
-  const pitCandidates = tiles.filter(t =>
-    t.y===8*TILE &&
-    t.x>=5*TILE && t.x<=16*TILE &&
-    Math.abs((t.x+TILE/2)-(player.spawnX+player.w/2)) > TILE*2
-  );
-  if(pitCandidates.length){
-    const base = pitCandidates[(pattern + tier) % pitCandidates.length];
+  function addHiddenPitByIndex(candidateIndex){
+    const pitCandidates = tiles.filter(t =>
+      t.y===8*TILE &&
+      t.x>=5*TILE && t.x<=17*TILE &&
+      Math.abs((t.x+TILE/2)-(player.spawnX+player.w/2)) > TILE*2 &&
+      !hiddenPits.some(p=>p.x===t.x)
+    );
+    if(!pitCandidates.length)return;
+    const base=pitCandidates[Math.abs(candidateIndex)%pitCandidates.length];
     hiddenPits.push({
-      x:base.x, y:base.y, w:TILE, h:TILE,
-      state:'hidden', timer:0, opened:false
+      x:base.x,y:base.y,w:TILE,h:TILE,
+      state:'hidden',timer:0,opened:false
     });
   }
 
-  // منصة تختفي من أول مرحلة: تبدو طبيعية ثم تسقط بعد الوقوف عليها بقليل.
-  const disappearX = (8 + (pattern % 5)) * TILE;
-  disappearingPlatforms.push({
-    x:disappearX, y:6*TILE, w:TILE, h:18,
-    state:'solid', timer:0, alpha:1
-  });
+  function addDisappear(x,y=6*TILE){
+    if(disappearingPlatforms.some(p=>Math.abs(p.x-x)<TILE*.6))return;
+    disappearingPlatforms.push({
+      x,y,w:TILE,h:18,state:'solid',timer:0,alpha:1
+    });
+  }
 
-  // أشواك مفاجئة من الأرض من أول مرحلة.
-  const spikeX = (11 + ((pattern + tier) % 5)) * TILE;
-  surpriseSpikes.push({
-    x:spikeX, y:8*TILE, w:TILE, h:TILE,
-    state:'hidden', timer:0, rise:0
-  });
+  function addSurpriseSpike(x){
+    if(surpriseSpikes.some(s=>Math.abs(s.x-x)<TILE*.6))return;
+    surpriseSpikes.push({
+      x,y:8*TILE,w:TILE,h:TILE,
+      state:'hidden',timer:0,rise:0
+    });
+  }
 
-  // باب وهمي من أول مرحلة: عند لمسه يختفي ولا ينهي المرحلة.
-  // نضعه في مكان مختلف عن الباب الحقيقي حتى يبقى مجرد خدعة اختيارية.
-  const fakeX = Math.min(W-2*TILE, (13 + (pattern % 4))*TILE);
-  fakeDoors.push({
-    x:fakeX, y:7*TILE, w:TILE, h:TILE,
-    visible:true, triggered:false
-  });
+  function addFakeDoor(x){
+    if(fakeDoors.some(d=>Math.abs(d.x-x)<TILE*.6))return;
+    fakeDoors.push({
+      x,y:7*TILE,w:TILE,h:TILE,
+      visible:true,triggered:false
+    });
+  }
+
+  // المرحلة 1: فخ متحرك واحد فقط وبطيء حتى يتعلم اللاعب الحركة.
+  {
+    const minX=210+(pattern%2)*55;
+    addMovingSaw(
+      minX,7*TILE+8,'x',
+      minX,Math.min(W-130,minX+135),
+      1,1.25+Math.min(.35,tier*.08),30
+    );
+  }
+
+  // المرحلة 3: أول فخ مفاجئ من فوق.
+  if(levelNo>=3){
+    const fallX=(7+((pattern*2)%7))*TILE+7;
+    addFallingTrap(fallX,levelNo<=5?16:10,levelNo<=5?32:38);
+  }
+
+  // المرحلة 4: أول هاوية مخفية.
+  if(levelNo>=4){
+    addHiddenPitByIndex(pattern+tier);
+  }
+
+  // المرحلة 5: منصة تختفي، لكن بوقت تحذير مريح.
+  if(levelNo>=5){
+    addDisappear((8+(pattern%5))*TILE);
+  }
+
+  // من المرحلة 6 تبدأ الزيادة الحقيقية بالفخاخ.
+  if(levelNo>=6){
+    addSurpriseSpike((11+((pattern+tier)%5))*TILE);
+  }
+
+  if(levelNo>=7){
+    addFakeDoor(Math.min(W-2*TILE,(13+(pattern%4))*TILE));
+  }
+
+  // فخ متحرك ثاني من المرحلة 9.
+  if(levelNo>=9){
+    const minX=430+(pattern%3)*48;
+    addMovingSaw(
+      minX,6*TILE-2,'x',
+      minX,Math.min(W-100,minX+175),
+      -1,1.65+tier*.12,32
+    );
+  }
+
+  // فخ سقوط ثاني من المرحلة 11.
+  if(levelNo>=11){
+    const x=(4+((pattern*3+tier)%8))*TILE+9;
+    addFallingTrap(x,9,38);
+  }
+
+  // هاوية ثانية من المرحلة 14.
+  if(levelNo>=14){
+    addHiddenPitByIndex(pattern+tier+4);
+  }
+
+  // منصة تختفي ثانية من المرحلة 16.
+  if(levelNo>=16){
+    addDisappear((12+((pattern+tier)%5))*TILE,5*TILE+8);
+  }
+
+  // أشواك مفاجئة ثانية من المرحلة 18.
+  if(levelNo>=18){
+    addSurpriseSpike((5+((pattern*2+tier)%5))*TILE);
+  }
+
+  // من المرحلة 21 نزيد عدد المناشير المتحركة.
+  if(levelNo>=21){
+    const minX=120+((pattern+tier)%4)*95;
+    addMovingSaw(
+      minX,5*TILE+8,'x',
+      minX,Math.min(W-90,minX+210),
+      1,2.05+tier*.13,34
+    );
+  }
+
+  // باب وهمي إضافي.
+  if(levelNo>=23){
+    addFakeDoor(Math.min(W-2*TILE,(8+((pattern+tier)%5))*TILE));
+  }
+
+  // فخ سقوط ثالث.
+  if(levelNo>=26){
+    const x=(10+((pattern+tier)%6))*TILE+5;
+    addFallingTrap(x,7,40);
+  }
+
+  // هاوية ثالثة.
+  if(levelNo>=29){
+    addHiddenPitByIndex(pattern+tier+8);
+  }
+
+  // أشواك مفاجئة ثالثة.
+  if(levelNo>=31){
+    addSurpriseSpike((14+((pattern+tier)%4))*TILE);
+  }
+
+  // من المرحلة 34 منصة تختفي ثالثة.
+  if(levelNo>=34){
+    addDisappear((4+((pattern*2+tier)%6))*TILE,6*TILE-8);
+  }
+
+  // من المرحلة 36 منشار عمودي.
+  if(levelNo>=36){
+    const minY=3*TILE+12;
+    const x=(9+((pattern+tier)%5))*TILE;
+    addMovingSaw(
+      x,minY,'y',
+      minY,7*TILE-12,
+      1,1.9+tier*.15,36
+    );
+  }
+
+  // المراحل 41+ تصير مزدحمة بفخاخ أكثر، لكن تبقى قابلة للعبور.
+  if(levelNo>=41){
+    const minX=300+((pattern+tier)%3)*80;
+    addMovingSaw(
+      minX,4*TILE+12,'x',
+      minX,Math.min(W-80,minX+220),
+      -1,2.35+tier*.12,36
+    );
+    addHiddenPitByIndex(pattern+tier+12);
+  }
+
+  if(levelNo>=44){
+    addSurpriseSpike((7+((pattern*3+tier)%6))*TILE);
+  }
+
+  if(levelNo>=46){
+    const x=(5+((pattern*4+tier)%10))*TILE+6;
+    addFallingTrap(x,6,42);
+  }
+
+  if(levelNo>=48){
+    addDisappear((15+((pattern+tier)%3))*TILE,5*TILE-4);
+    addFakeDoor(Math.min(W-2*TILE,(5+((pattern+tier)%5))*TILE));
+  }
 
   player.vx=0; player.vy=0; player.onGround=false;
   updateStageUI();
@@ -755,7 +884,8 @@ function update(dt){
       const over=player.x+player.w>p.x+5 && player.x<p.x+p.w-5;
       if(player.onGround && over && feet>=p.y-8 && feet<=p.y+8){
         p.state='warning';
-        p.timer=34;
+        // بالبداية نعطي اللاعب وقت أطول، وبعدها يصير الفخ أسرع.
+        p.timer = currentLevelIndex < 5 ? 52 : currentLevelIndex < 15 ? 40 : 30;
       }
     }else if(p.state==='warning'){
       p.timer--;
@@ -768,7 +898,10 @@ function update(dt){
   surpriseSpikes.forEach(s=>{
     if(s.state==='hidden'){
       const cx=player.x+player.w/2;
-      if(cx>s.x-34 && cx<s.x+s.w+34){ s.state='rising'; s.timer=7; }
+      if(cx>s.x-34 && cx<s.x+s.w+34){
+        s.state='rising';
+        s.timer = currentLevelIndex < 8 ? 11 : 7;
+      }
     }else if(s.state==='rising'){
       s.timer--;
       s.rise=Math.min(1,s.rise+0.22);
