@@ -63,7 +63,8 @@ body{margin:0;background:radial-gradient(circle at 50% -10%,#6d4b171f,transparen
 <script>
 const GAME_LABELS={
   snake:'🐍 الحية',
-  'bird-game':'🐦 الطائر'
+  'bird-game':'🐦 الطائر',
+  'level-devil':'👿 ليفل ديفل'
 };
 
 const HERO_TEXT={
@@ -74,14 +75,19 @@ const HERO_TEXT={
   'bird-game':{
     title:'تصنيف لعبة الطائر',
     text:'كل حاجز تتجاوزه يزيد نقاطك، ويظهر ترتيب اللاعبين حسب مجموع النقاط مع أفضل نتيجة وعدد مرات اللعب.'
+  },
+  'level-devil':{
+    title:'تصنيف لعبة ليفل ديفل',
+    text:'الترتيب يعتمد على تقدمك بالمراحل. كل مرحلة جديدة تكملها تنضاف للنقاط، وأفضل نتيجة تبين أعلى مرحلة وصلت إلها.'
   }
 };
 
-let current='snake';
+const requestedGame=new URLSearchParams(location.search).get('game');
+let current=GAME_LABELS[requestedGame]?requestedGame:'snake';
 
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-let birdDb=null;
+let scoreDb=null;
 
 function esc(v){
   return String(v??'').replace(/[&<>"']/g,c=>({
@@ -90,11 +96,11 @@ function esc(v){
 }
 function fmt(n){return Number(n||0).toLocaleString('ar-IQ')}
 
-function getBirdDb(){
-  if(birdDb)return birdDb;
+function getScoreDb(){
+  if(scoreDb)return scoreDb;
   if(!window.supabase||typeof window.supabase.createClient!=='function')return null;
   try{
-    birdDb=window.supabase.createClient(SB_URL,SB_KEY,{
+    scoreDb=window.supabase.createClient(SB_URL,SB_KEY,{
       auth:{
         persistSession:true,
         autoRefreshToken:true,
@@ -102,7 +108,7 @@ function getBirdDb(){
         storageKey:'ha-marketing-auth'
       }
     });
-    return birdDb;
+    return scoreDb;
   }catch(_e){
     return null;
   }
@@ -125,8 +131,8 @@ function buildTabs(){
   });
 }
 
-async function loadBird(){
-  const db=getBirdDb();
+async function loadDirectGame(gameKey){
+  const db=getScoreDb();
   if(!db){
     return {data:null,error:new Error('Supabase SDK غير جاهز')};
   }
@@ -135,8 +141,9 @@ async function loadBird(){
     const {data,error}=await db
       .from('ha_game_scores')
       .select('display_name,username,total_score,best_score,play_count,wins')
-      .eq('game_key','bird-game')
+      .eq('game_key',gameKey)
       .order('total_score',{ascending:false})
+      .order('best_score',{ascending:false})
       .limit(100);
 
     if(error)return {data:null,error};
@@ -161,8 +168,8 @@ async function load(){
   list.innerHTML='<div class="empty">جاري تحميل الترتيب...</div>';
 
   let result;
-  if(current==='bird-game'){
-    result=await loadBird();
+  if(current==='bird-game' || current==='level-devil'){
+    result=await loadDirectGame(current);
   }else{
     result=await HA_GameRanking.leaderboard(current,100);
   }
@@ -171,8 +178,8 @@ async function load(){
   const error=result?.error;
 
   if(error){
-    const help=current==='bird-game'
-      ? 'تأكد أن جدول <b>ha_game_scores</b> موجود وأن لعبة الطائر تسجل النتائج.'
+    const help=(current==='bird-game' || current==='level-devil')
+      ? 'تأكد أن جدول <b>ha_game_scores</b> موجود وأن اللعبة تسجل النتائج.'
       : 'إذا هذه أول مرة، شغّل ملف <b>GAME-RANKING-SETUP.sql</b> داخل Supabase مرة واحدة.';
     list.innerHTML='<div class="error">تعذر تحميل الترتيب.<br>'+help+'<br><small>'+esc(error.message||error)+'</small></div>';
     playersCount.textContent='0';
@@ -191,13 +198,14 @@ async function load(){
     return;
   }
 
+  const isLevelDevil=current==='level-devil';
   const header=`<div class="row headrow">
     <div>#</div>
     <div>المستخدم</div>
-    <div>النقاط</div>
-    <div class="best">أفضل نتيجة</div>
-    <div>مرات اللعب</div>
-    <div class="wins">الفوز</div>
+    <div>${isLevelDevil?'نقاط التقدم':'النقاط'}</div>
+    <div class="best">${isLevelDevil?'أفضل مرحلة':'أفضل نتيجة'}</div>
+    <div>${isLevelDevil?'مراحل مكتملة':'مرات اللعب'}</div>
+    <div class="wins">${isLevelDevil?'الإكمال':'الفوز'}</div>
   </div>`;
 
   list.innerHTML=header+rows.map(r=>{
@@ -213,10 +221,10 @@ async function load(){
         <b>${esc(r.full_name||'مستخدم')}</b>
         <small>${esc(u)}</small>
       </div>
-      <div class="cell"><b>${fmt(r.total_points)}</b><small>نقطة</small></div>
-      <div class="cell best"><b>${fmt(r.best_score)}</b><small>أفضل</small></div>
-      <div class="cell"><b>${fmt(r.games_played)}</b><small>لعبة</small></div>
-      <div class="cell wins"><b>${fmt(r.wins)}</b><small>فوز</small></div>
+      <div class="cell"><b>${fmt(r.total_points)}</b><small>${isLevelDevil?'تقدم':'نقطة'}</small></div>
+      <div class="cell best"><b>${fmt(r.best_score)}</b><small>${isLevelDevil?'مرحلة':'أفضل'}</small></div>
+      <div class="cell"><b>${fmt(r.games_played)}</b><small>${isLevelDevil?'مرحلة':'لعبة'}</small></div>
+      <div class="cell wins"><b>${fmt(r.wins)}</b><small>${isLevelDevil?'إكمال':'فوز'}</small></div>
     </div>`;
   }).join('');
 }
