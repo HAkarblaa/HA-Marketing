@@ -63,6 +63,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="page">
@@ -114,6 +115,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
           <div class="stat"><b id="statDeaths">0</b><span>عدد السقوط</span></div>
           <div class="stat"><b id="statWins">0</b><span>مرات الإكمال</span></div>
         </div>
+        <a class="btn" href="game-leaderboard.html?game=level-devil" style="display:block;text-align:center;margin-top:10px">🏆 عرض تصنيف ليفل ديفل</a>
       </div>
       <div class="card">
         <h3>المراحل - تفتح بالتسلسل</h3>
@@ -149,6 +151,100 @@ let bestLevel = 1;
 let keys = {left:false,right:false,jump:false};
 let jumpQueued = false;
 let levelTransitioning = false;
+
+let levelRankDb=null;
+
+function getLevelRankDb(){
+  if(levelRankDb)return levelRankDb;
+  if(!window.supabase || typeof window.supabase.createClient!=='function')return null;
+  try{
+    levelRankDb=window.supabase.createClient(
+      'https://ubayrhtshgtgggxprrek.supabase.co',
+      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+    );
+    return levelRankDb;
+  }catch(_e){return null}
+}
+
+async function saveLevelDevilRanking(completedLevel){
+  const db=getLevelRankDb();
+  if(!db)return;
+  try{
+    const {data:{session}}=await db.auth.getSession();
+    if(!session?.user)return;
+
+    const uid=session.user.id;
+    let displayName='مستخدم HA';
+    let username='user_'+uid.slice(0,6);
+
+    try{
+      const p=await db.from('profiles').select('full_name,username').eq('id',uid).maybeSingle();
+      if(p.data){
+        displayName=p.data.full_name||displayName;
+        username=p.data.username||username;
+      }
+    }catch(_e){}
+
+    const {data:old,error:readErr}=await db
+      .from('ha_game_scores')
+      .select('id,total_score,best_score,play_count,wins')
+      .eq('user_id',uid)
+      .eq('game_key','level-devil')
+      .maybeSingle();
+
+    if(readErr)throw readErr;
+
+    const lvl=Math.max(1,Math.min(50,Number(completedLevel)||1));
+
+    if(old){
+      const oldBest=Number(old.best_score||0);
+
+      // لا نكرر النقاط إذا اللاعب أعاد نفس المرحلة.
+      if(lvl<=oldBest){
+        await db.from('ha_game_scores').update({
+          username,
+          display_name:displayName,
+          game_title:'لعبة ليفل ديفل',
+          last_score:lvl
+        }).eq('id',old.id);
+        return;
+      }
+
+      const {error}=await db.from('ha_game_scores').update({
+        username,
+        display_name:displayName,
+        game_title:'لعبة ليفل ديفل',
+        total_score:Number(old.total_score||0)+lvl,
+        best_score:lvl,
+        play_count:Number(old.play_count||0)+1,
+        wins:Number(old.wins||0)+1,
+        last_score:lvl
+      }).eq('id',old.id);
+      if(error)throw error;
+    }else{
+      // إذا المستخدم كان واصل لمراحل قبل إضافة التصنيف، نعطيه مجموع
+      // المراحل من 1 إلى أعلى مرحلة أكملها حتى يكون التصنيف عادل.
+      const total=lvl*(lvl+1)/2;
+      const {error}=await db.from('ha_game_scores').insert({
+        user_id:uid,
+        username,
+        display_name:displayName,
+        game_key:'level-devil',
+        game_title:'لعبة ليفل ديفل',
+        total_score:total,
+        best_score:lvl,
+        play_count:lvl,
+        wins:lvl,
+        last_score:lvl
+      });
+      if(error)throw error;
+    }
+  }catch(e){
+    console.warn('level devil ranking:',e);
+  }
+}
+
 
 function makeRows(lines){
   return lines.map(s => (s + '....................').slice(0,20));
@@ -370,6 +466,8 @@ function completeLevel(){
   levelTransitioning = true;
 
   const completedIndex = currentLevelIndex;
+  const completedLevelNo = completedIndex + 1;
+  saveLevelDevilRanking(completedLevelNo);
   const nextIndex = completedIndex + 1;
 
   if(completedIndex === levels.length - 1){
