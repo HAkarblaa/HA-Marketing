@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<title>مركز اللاعب - HA Marketing</title>
+<style>
+:root{--bg:#05070a;--card:#0d141d;--card2:#111b27;--gold:#e4ad43;--gold2:#ffd774;--text:#fff;--muted:#aeb7c4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#6d4a151f,transparent 28%),linear-gradient(180deg,#030507,#09121c 55%,#030507);color:#fff;font-family:Tahoma,Arial,sans-serif;min-height:100vh;padding:8px 8px 30px}
+a{text-decoration:none;color:inherit}
+.page{width:min(760px,100%);margin:auto}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:52px}
+.back{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid #e8b94d66;background:#0b1119;color:#ffd774;font-size:25px}
+.title{text-align:center;flex:1}.title b{display:block;font-size:19px;color:#ffd774}.title small{color:#8f9bab;font-size:9px}
+.hero{margin-top:8px;border:1px solid #e4ad4338;border-radius:24px;padding:17px;background:linear-gradient(145deg,#17160f,#09111a);box-shadow:0 18px 42px #0007}
+.heroRow{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center}
+.level{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#2b2a18,#11170f 67%);border:3px solid #e4ad43;color:#ffd774;font-size:30px;font-weight:900;box-shadow:0 0 22px #e4ad4322}
+.hero h1{margin:0 0 5px;font-size:20px}.hero p{margin:0;color:#aeb7c4;font-size:10px}
+.bar{height:9px;border-radius:999px;background:#090d12;border:1px solid #ffffff10;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#9b6816,#ffd774);width:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.stat{padding:9px 5px;text-align:center;border-radius:13px;background:#0c121a;border:1px solid #ffffff0e}.stat b{display:block;color:#fff;font-size:16px}.stat small{font-size:8px;color:#8d98a6}
+.section{margin-top:12px;border:1px solid #ffffff12;border-radius:20px;padding:13px;background:linear-gradient(145deg,#0e1620,#070c12)}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.head h2{margin:0;color:#f2c760;font-size:16px}.head small{color:#8793a1;font-size:8px}
+.reward{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border-radius:15px;background:linear-gradient(135deg,#211b0f,#12170f);border:1px solid #e4ad433c}.reward b{display:block;color:#ffd774}.reward small{font-size:9px;color:#a9b1b9}.reward button,.claimBtn{border:0;border-radius:11px;background:#e4ad43;color:#181208;font-weight:900;padding:10px 12px;cursor:pointer}.reward button:disabled,.claimBtn:disabled{opacity:.45}
+.challengeList,.achievementGrid{display:grid;gap:7px}.challenge{padding:10px;border-radius:14px;background:#101923;border:1px solid #ffffff10}.challengeTop{display:flex;justify-content:space-between;gap:8px}.challenge b{font-size:11px}.challenge small{color:#95a0ad;font-size:8px}.miniBar{height:6px;background:#080d12;border-radius:999px;overflow:hidden;margin-top:7px}.miniBar i{display:block;height:100%;background:linear-gradient(90deg,#3e8c5f,#8cd69c)}
+.achievementGrid{grid-template-columns:repeat(2,1fr)}.ach{padding:10px;border-radius:14px;background:#0d141c;border:1px solid #ffffff0d;display:flex;gap:9px;align-items:center;opacity:.48}.ach.done{opacity:1;border-color:#e4ad4333}.ach .ico{font-size:24px}.ach b{display:block;font-size:10px}.ach small{font-size:8px;color:#8e99a5}
+.rank{display:grid;gap:6px}.rankRow{display:grid;grid-template-columns:32px 1fr auto;gap:8px;align-items:center;padding:9px;border-radius:12px;background:#0d141c;border:1px solid #ffffff0d}.rankRow b{font-size:10px}.rankRow span{color:#ffd774;font-size:11px;font-weight:900}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.actions a{padding:11px;border-radius:12px;text-align:center;background:#121b25;border:1px solid #ffffff13;font-weight:900;font-size:10px}.actions a.gold{background:#e4ad43;color:#181208}
+@media(max-width:440px){.heroRow{grid-template-columns:78px 1fr}.level{width:72px;height:72px;font-size:25px}.stats{grid-template-columns:repeat(2,1fr)}.achievementGrid{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <a class="back" href="entertainment.html">‹</a>
+    <div class="title"><b>🎮 مركز اللاعب</b><small>تحديات، مكافآت، إنجازات وتصنيف عام</small></div>
+    <div style="width:42px"></div>
+  </div>
+
+  <section class="hero">
+    <div class="heroRow">
+      <div class="level" id="levelNum">1</div>
+      <div>
+        <h1>مستواك العام</h1>
+        <p id="xpText">0 XP</p>
+        <div class="bar"><i id="xpBar"></i></div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="coins">0</b><small>عملات الألعاب</small></div>
+      <div class="stat"><b id="streak">0</b><small>سلسلة الأيام 🔥</small></div>
+      <div class="stat"><b id="sessions">0</b><small>إجمالي الجولات</small></div>
+      <div class="stat"><b id="games">0</b><small>ألعاب جربتها</small></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="head"><h2>🎁 مكافأة اليوم</h2><small>مرة واحدة يومياً</small></div>
+    <div class="reward">
+      <div><b id="rewardTitle">مكافأة دخول</b><small id="rewardDesc">عملات + XP</small></div>
+      <button id="rewardBtn">استلام</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="head"><h2>⚡ تحديات اليوم</h2><small id="challengeCount">0/3 مكتملة</small></div>
+    <div id="challengeList" class="challengeList"></div>
+    <button id="claimChallenges" class="claimBtn" style="width:100%;margin-top:9px">استلام التحديات المكتملة</button>
+  </section>
+
+  <section class="section">
+    <div class="head"><h2>🏅 الإنجازات</h2><small id="achCount">0/0</small></div>
+    <div id="achievementGrid" class="achievementGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="head"><h2>🏆 التصنيف العام</h2><small>مجموع نقاط الألعاب</small></div>
+    <div id="rank" class="rank"><div class="rankRow"><b>...</b><span></span></div></div>
+  </section>
+
+  <div class="actions">
+    <a class="gold" href="entertainment.html">🎮 اذهب للألعاب</a>
+    <a href="game-leaderboard.html">🏆 تصنيف كل لعبة</a>
+  </div>
+</div>
+
+<script src="ha-game-engagement.js"></script>
+<script>
+function renderCenter(){
+  const s=HAGameCenter.summary();
+  levelNum.textContent=s.level;
+  xpText.textContent=`${s.xp} XP — ${s.inLevel}/100 للمستوى التالي`;
+  xpBar.style.width=s.inLevel+'%';
+  coins.textContent=s.coins;
+  streak.textContent=s.streak;
+  sessions.textContent=s.sessions;
+  games.textContent=s.uniqueGames;
+
+  rewardTitle.textContent=s.reward.claimed?'✅ تم استلام مكافأة اليوم':'🎁 مكافأة الدخول اليومي';
+  rewardDesc.textContent=`${s.reward.coins} عملة + ${s.reward.xp} XP`;
+  rewardBtn.disabled=s.reward.claimed;
+  rewardBtn.textContent=s.reward.claimed?'تم الاستلام':'استلام';
+
+  let done=0,claimable=0;
+  challengeList.innerHTML=s.challenges.map(ch=>{
+    const complete=ch.progress>=ch.target;
+    if(complete)done++;
+    if(complete&&!ch.claimed)claimable++;
+    const pct=Math.min(100,Math.round(ch.progress/ch.target*100));
+    return `<div class="challenge">
+      <div class="challengeTop"><b>${ch.icon} ${ch.title}</b><small>${ch.claimed?'✅ مستلم':`${ch.progress}/${ch.target} — +${ch.reward} 🪙`}</small></div>
+      <div class="miniBar"><i style="width:${pct}%"></i></div>
+    </div>`;
+  }).join('');
+  challengeCount.textContent=`${done}/3 مكتملة`;
+  claimChallenges.disabled=claimable===0;
+  claimChallenges.textContent=claimable?`استلام ${claimable} تحدي مكتمل`:'لا توجد مكافأة جاهزة';
+
+  achCount.textContent=`${s.achievementsDone}/${s.achievements.length}`;
+  achievementGrid.innerHTML=s.achievements.map(a=>`
+    <div class="ach ${a.done?'done':''}">
+      <div class="ico">${a.icon}</div>
+      <div><b>${a.done?'✅ ':''}${a.title}</b><small>${a.desc}</small></div>
+    </div>`).join('');
+}
+rewardBtn.onclick=()=>{
+  HAGameCenter.claimDailyReward();
+  renderCenter();
+};
+claimChallenges.onclick=()=>{
+  const r=HAGameCenter.claimCompletedChallenges();
+  if(r.count) alert(`استلمت ${r.gained} عملة و XP`);
+  renderCenter();
+};
+
+async function renderRank(){
+  const rows=await HAGameCenter.overallLeaderboard(5);
+  rank.innerHTML=rows.length?rows.map((r,i)=>`
+    <div class="rankRow"><b>${i+1}</b><div>${r.name}</div><span>${Math.floor(r.score).toLocaleString()}</span></div>`).join('')
+    :'<div class="rankRow"><b>—</b><div>التصنيف يحتاج اتصال بالإنترنت وبيانات نتائج</div><span></span></div>';
+}
+renderCenter();
+renderRank();
+</script>
+</body>
+</html>
