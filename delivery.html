@@ -1065,15 +1065,6 @@ body.delivery-stage-1 #centerPin{
 }
 html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
 
-
-/* HA transport upgrade */
-.ha-history-fab{position:fixed;left:12px;top:52px;z-index:1800;text-decoration:none;background:#111;color:#fff;
-border-radius:12px;padding:8px 10px;font-size:11px;font-weight:700;box-shadow:0 4px 14px #0003}
-.ha-search-attempt{margin-top:9px;padding:8px 10px;border-radius:10px;background:#f5f7fb;color:#445;
-font-size:11px;font-weight:700;text-align:center;border:1px solid #e8ebf0}
-.ha-search-attempt b{color:#1110ff}
-.delivery-details .ha-money{background:#fffdf2;border-color:#e4c86a}
-
 </style>
 
 <style id="ha-mobile-confirm-button-fix">
@@ -1109,6 +1100,69 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
+
+<style id="ha-transport-trip-text-fix">
+/* ===== إصلاح وضوح الكتابات داخل تفاصيل الطلب في كل أقسام النقل ===== */
+html[data-ha-theme] #tripSheet.open,
+html[data-ha-theme] #tripSheet{
+  background:#fff !important;
+  color:#111 !important;
+}
+html[data-ha-theme] #tripSheet .trip-sheet-title,
+html[data-ha-theme] #tripSheet .vehicle-title,
+html[data-ha-theme] #tripSheet .type,
+html[data-ha-theme] #tripSheet .type .info,
+html[data-ha-theme] #tripSheet .type .info b,
+html[data-ha-theme] #tripSheet .type .info small,
+html[data-ha-theme] #tripSheet .type .price,
+html[data-ha-theme] #tripSheet .metric,
+html[data-ha-theme] #tripSheet .metric small,
+html[data-ha-theme] #tripSheet .metric b,
+html[data-ha-theme] #tripSheet .notice,
+html[data-ha-theme] #tripSheet .extra-summary,
+html[data-ha-theme] #tripSheet label,
+html[data-ha-theme] #tripSheet span,
+html[data-ha-theme] #tripSheet p,
+html[data-ha-theme] #tripSheet small,
+html[data-ha-theme] #tripSheet b,
+html[data-ha-theme] #tripSheet strong{
+  color:#111 !important;
+}
+html[data-ha-theme] #tripSheet .type{
+  background:#fff !important;
+  border-color:#e5e5e5 !important;
+  box-shadow:none !important;
+}
+html[data-ha-theme] #tripSheet .type.selected{
+  background:#f7f7f7 !important;
+  border-color:#111 !important;
+}
+html[data-ha-theme] #tripSheet .type .info small,
+html[data-ha-theme] #tripSheet .metric small{
+  color:#666 !important;
+}
+html[data-ha-theme] #tripSheet .metric{
+  background:#f4f4f4 !important;
+}
+html[data-ha-theme] #tripSheet .notice{
+  background:#fff8e7 !important;
+  color:#5f5540 !important;
+}
+html[data-ha-theme] #tripSheet .order{
+  background:#fff !important;
+  border-color:#e7e7e7 !important;
+}
+html[data-ha-theme] #tripSheet .extra-options-btn{
+  background:#f1f1f1 !important;
+  color:#111 !important;
+  border-color:#ddd !important;
+}
+html[data-ha-theme] #tripSheet #order{
+  background:#1717ff !important;
+  color:#fff !important;
+}
+</style>
+
 <link rel="stylesheet" href="ha-location-ux.css">
 <script src="ha-location-ux.js"></script>
 </head>
@@ -1213,7 +1267,6 @@ body:not(.trip-ready) #orderArea{display:none !important;}
   <input id="receiver" placeholder="اسم المستلم">
   <input id="phone" inputmode="numeric" placeholder="رقم موبايل المستلم">
   <input id="notes" placeholder="ملاحظة مختصرة للمندوب">
-  <input id="collectAmount" class="ha-money" inputmode="numeric" placeholder="المبلغ المطلوب تحصيله عند التسليم (اختياري)">
 </div>
 
 <div class="order" id="orderArea">
@@ -2075,48 +2128,11 @@ const haDestinationMapIcon=()=>haLiveEntityIcon('destination','🏁');
 
 let deliveryDriverMarker=null;
 
-
-let haDeliverySearchTimer=null;
-let haDeliverySearchAttemptNo=1;
-function haStopDeliverySearchTimer(){
-  if(haDeliverySearchTimer){clearInterval(haDeliverySearchTimer);haDeliverySearchTimer=null;}
-}
-function haStartDeliverySearchTimer(rideId,rideData){
-  haStopDeliverySearchTimer();
-  haDeliverySearchAttemptNo=Math.max(1,Number(rideData?.dispatchAttempt||1));
-  let left=25;
-  const box=document.getElementById('haDeliverySearchAttempt');
-  const paint=()=>{if(box)box.innerHTML='المحاولة <b>'+haDeliverySearchAttemptNo+'</b> • باقي <span>'+left+'</span> ثانية';};
-  paint();
-  haDeliverySearchTimer=setInterval(async()=>{
-    if(!activeDeliveryRideId || activeDeliveryRideId!==rideId){haStopDeliverySearchTimer();return;}
-    left--;
-    if(left<=0){
-      haDeliverySearchAttemptNo++;left=25;
-      try{
-        const snap=await db.ref('rides/'+rideId).once('value');
-        const ride=snap.val();
-        if(!ride || ride.status!=='searching'){haStopDeliverySearchTimer();return;}
-        await db.ref('rides/'+rideId).update({
-          dispatchAttempt:haDeliverySearchAttemptNo,
-          lastDispatchAt:firebase.database.ServerValue.TIMESTAMP
-        });
-        const t=document.querySelector('#deliverySearchBox .delivery-status-title');
-        const s=document.querySelector('#deliverySearchBox .delivery-status-sub');
-        if(t)t.textContent='جاري المحاولة مع مندوب آخر';
-        if(s)s.textContent='ماكو قبول لحد الآن، لذلك وسعنا البحث تلقائياً.';
-        if(window.HA_TransportPush)HA_TransportPush.dispatch(rideId,ride).catch(()=>{});
-      }catch(e){console.warn(e)}
-    }
-    paint();
-  },1000);
-}
 order.onclick=async()=>{
   const itemEl=document.getElementById('item');
   const receiverEl=document.getElementById('receiver');
   const phoneEl=document.getElementById('phone');
   const notesEl=document.getElementById('notes');
-  const collectAmountEl=document.getElementById('collectAmount');
 
   const item=itemEl ? itemEl.value.trim() : '';
   const phone=phoneEl ? phoneEl.value.trim() : '';
@@ -2147,24 +2163,6 @@ order.onclick=async()=>{
     order.disabled=false; order.textContent=oldText; return;
   }
 
-  const oldActiveId=localStorage.getItem('ha_active_delivery');
-  if(oldActiveId){
-    try{
-      const oldSnap=await db.ref('rides/'+oldActiveId).once('value');
-      const oldRide=oldSnap.val();
-      if(oldRide && !['finished','cancelled','rejected'].includes(oldRide.status)){
-        activeDeliveryRideId=oldActiveId;
-        openDeliveryPostOrder();
-        listenDeliveryRide(oldActiveId);
-        if(oldRide.status==='searching')haStartDeliverySearchTimer(oldActiveId,oldRide);
-        alert('عندك طلب مندوب فعال حالياً. رجعناك إليه بدل إنشاء طلب مكرر.');
-        order.disabled=false;order.textContent=oldText;
-        return;
-      }
-      localStorage.removeItem('ha_active_delivery');
-    }catch(e){console.warn(e)}
-  }
-
   // HA: الخدمة متاحة على مستوى العراق بدون حصر بمنطقة محددة.
 
   const rideRef=db.ref('rides').push();
@@ -2182,8 +2180,6 @@ order.onclick=async()=>{
     serviceType:'delivery',
     dispatchType:deliveryDispatchType,
     status:'searching',
-    dispatchAttempt:1,
-    lastDispatchAt:firebase.database.ServerValue.TIMESTAMP,
     createdAt:firebase.database.ServerValue.TIMESTAMP,
     customer:realCustomer,
     pickup:{lat:start.lat,lng:start.lng},
@@ -2202,8 +2198,7 @@ order.onclick=async()=>{
       item:item,
       receiver:receiverEl ? receiverEl.value.trim() : '',
       phone:phone,
-      notes:notesEl ? notesEl.value.trim() : '',
-      collectAmount:collectAmountEl ? Number(String(collectAmountEl.value||'').replace(/\D/g,''))||0 : 0
+      notes:notesEl ? notesEl.value.trim() : ''
     },
     extras:{
       extraDestination:extraDestinationCheck.checked ? (extraDestinationText.value.trim()+(extraDestinationText.dataset.lat?' | '+extraDestinationText.dataset.lat+','+extraDestinationText.dataset.lng:'')) : '',
@@ -2220,7 +2215,6 @@ order.onclick=async()=>{
     localStorage.setItem('ha_active_delivery',activeDeliveryRideId);
     openDeliveryPostOrder();
     listenDeliveryRide(activeDeliveryRideId);
-    haStartDeliverySearchTimer(activeDeliveryRideId,rideData);
   }catch(err){
     console.error(err);
     alert('تعذر إرسال طلب المندوب إلى قاعدة البيانات. حاول مرة ثانية.');
@@ -2301,7 +2295,6 @@ function listenDeliveryRide(rideId){
     }
 
     if(ride.status==='cancelled' && ride.cancelledBy==='driver'){
-      haStopDeliverySearchTimer();
       window.HA_NotifyMe?.({
         title:'❌ المندوب ألغى الطلب',
         body:ride.cancelReason ? 'سبب الإلغاء: '+ride.cancelReason : 'تم إلغاء الطلب من طرف المندوب.',
@@ -2312,7 +2305,6 @@ function listenDeliveryRide(rideId){
     }
 
     if(ride.status==='rejected'){
-      haStopDeliverySearchTimer();
       window.HA_NotifyMe?.({
         title:'⚠️ لم يتم قبول طلب التوصيل',
         body:'تم رفض طلب التوصيل. يمكنك إرسال طلب جديد.',
@@ -2334,7 +2326,6 @@ function listenDeliveryRide(rideId){
     }
 
     if(['accepted','arrived','started','finished'].includes(ride.status)){
-      haStopDeliverySearchTimer();
       document.getElementById('deliverySearchBox').style.display='none';
       document.getElementById('deliveryDriverCard').classList.add('show');
 
@@ -2379,7 +2370,6 @@ if(savedDeliveryId){
       activeDeliveryRideId=savedDeliveryId;
       openDeliveryPostOrder();
       listenDeliveryRide(savedDeliveryId);
-      if(s.val().status==='searching')haStartDeliverySearchTimer(savedDeliveryId,s.val());
     }
   });
 }
@@ -2545,7 +2535,7 @@ if(deliveryBackBtn){
     <div id="deliverySearchBox" class="delivery-search-box">
       <div class="delivery-loader"></div>
       <div class="delivery-status-title">جاري البحث عن أقرب مندوب</div>
-      <div class="delivery-status-sub">بعد قبول الطلب تظهر معلومات المندوب وموقعه هنا.</div><div id="haDeliverySearchAttempt" class="ha-search-attempt">المحاولة <b>1</b> • باقي <span>25</span> ثانية</div>
+      <div class="delivery-status-sub">بعد قبول الطلب تظهر معلومات المندوب وموقعه هنا.</div>
       <button id="deliverySearchCancelBtn" class="delivery-search-cancel" type="button">إلغاء الطلب</button>
     </div>
 
