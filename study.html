@@ -82,7 +82,7 @@ body{
 .study-slide-sub{margin:0 auto 15px;max-width:600px;color:#eef3f7;font-size:13px;line-height:1.7;text-shadow:0 3px 14px rgba(0,0,0,.4)}
 .study-details-btn{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:10px 20px;border-radius:999px;text-decoration:none;background:linear-gradient(135deg,#d99b2d,#f3c45f);border:1px solid #f2ce78;color:#17110a;font-size:12px;font-weight:900;box-shadow:0 8px 24px rgba(218,155,45,.24)}
 .study-arrow{position:absolute;z-index:4;top:50%;transform:translateY(-50%);width:45px;height:45px;border-radius:50%;border:1px solid rgba(239,199,104,.5);background:rgba(7,11,15,.68);color:#f4ce73;font-size:25px;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(7px)}
-.study-arrow.prev{right:14px}.study-arrow.next{left:14px}
+#studyArrowLeft{left:14px!important;right:auto!important;direction:ltr!important}#studyArrowRight{right:14px!important;left:auto!important;direction:ltr!important}
 .study-dots{position:absolute;z-index:4;left:50%;bottom:17px;transform:translateX(-50%);display:flex;gap:8px}
 .study-dots button{width:10px;height:10px;border:0;border-radius:50%;background:rgba(255,238,190,.38);padding:0;cursor:pointer}
 .study-dots button.active{background:#f2ca6c;transform:scale(1.17);box-shadow:0 0 14px rgba(242,202,108,.48)}
@@ -95,7 +95,7 @@ html[data-ha-theme="light"] .study-slider-admin{background:#fff;border-color:#de
   .study-slider{min-height:250px;border-radius:18px}
   .study-slide-content{min-height:250px;padding:33px 52px 48px}
   .study-slide-title{font-size:24px}.study-slide-sub{font-size:10px}.study-details-btn{min-height:39px;padding:9px 16px;font-size:11px}
-  .study-arrow{width:39px;height:39px;font-size:22px}.study-arrow.prev{right:9px}.study-arrow.next{left:9px}
+  .study-arrow{width:39px;height:39px;font-size:22px}#studyArrowLeft{left:9px!important;right:auto!important}#studyArrowRight{right:9px!important;left:auto!important}
 }
 
 .grid{
@@ -231,8 +231,8 @@ html[data-ha-theme="light"] .bottom a.active{color:#8f6318!important}
 <section class="study-slider" id="studySlider">
   <img id="studySlideImage" class="study-slide-image" src="study-slide-1-main.svg" alt="الدراسة">
   <div class="study-slide-shade"></div>
-  <button class="study-arrow prev" type="button" onclick="changeStudySlide(-1)" aria-label="السابق">›</button>
-  <button class="study-arrow next" type="button" onclick="changeStudySlide(1)" aria-label="التالي">‹</button>
+  <button id="studyArrowLeft" class="study-arrow prev" dir="ltr" type="button" onclick="changeStudySlide(-1)" aria-label="السابق">&#8592;</button>
+  <button id="studyArrowRight" class="study-arrow next" dir="ltr" type="button" onclick="changeStudySlide(1)" aria-label="التالي">&#8594;</button>
   <div class="study-slide-content">
     <div class="study-slide-chip"><span id="studySlideIcon">📚</span><span>الدراسة</span></div>
     <h1 id="studySlideTitle" class="study-slide-title">الدراسة</h1>
