@@ -34,10 +34,10 @@
 
     <section id="notifyView" class="view">
 
-      <div class="box" id="entertainmentSliderManager" style="display:none">
-        <h2>🎮 إدارة سلايدر الترفيه</h2>
-        <p class="small">إدارة خمس صور الحقل العلوي في صفحة الترفيه، مع زر التفاصيل والأسهم، مثل سلايدر التسوق.</p>
-        <a class="btn" href="admin-entertainment-slider.html" style="display:inline-block;text-decoration:none">فتح إدارة سلايدر الترفيه</a>
+      <div class="box" id="studySliderManager" style="display:none">
+        <h2>📚 إدارة سلايدر الدراسة</h2>
+        <p class="small">إدارة خمس صور الحقل العلوي في صفحة الدراسة، مع الأسهم وزر الدخول للتفاصيل.</p>
+        <a class="btn" href="admin-study-slider.html" style="display:inline-block;text-decoration:none">فتح إدارة صور الدراسة</a>
       </div>
       <div class="box"><h2>📚 إدارة دليل الدراسة</h2><p class="small">إضافة وحذف وتعديل المدارس والجامعات والمعاهد والمدرسين ومراكز التقوية.</p><a class="btn" href="admin-study.html" style="display:inline-block;text-decoration:none">فتح إدارة الدراسة</a></div>
       <div class="box" id="generalNotifyBox">
@@ -166,7 +166,7 @@ async function init(){
  who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');
  panel.style.display='block';
  renderSections();renderPerms();renderShopPerms();renderNoticeSections();
- if(adminRow.is_super_admin){const box=document.getElementById('entertainmentSliderManager'); if(box) box.style.display='block';}
+ if(adminRow.is_super_admin){const sb=document.getElementById('studySliderManager');if(sb)sb.style.display='block';}
  if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }

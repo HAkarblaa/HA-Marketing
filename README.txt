@@ -1,13 +1,21 @@
-الملفات الجاهزة لسلايدر الترفيه
+حزمة سلايدر الدراسة - HA Marketing
 
-استبدل/أضف هذه الملفات داخل المشروع:
-1) entertainment.html  -> صفحة الترفيه بعد إضافة 5 صور في الحقل العلوي مع أسهم وزر تفاصيل.
-2) admin-entertainment-slider.html -> صفحة خاصة بالأدمن الرئيسي لتبديل الصور والعنوان والوصف ورابط التفاصيل.
-3) admin-panel.html -> أضفت به زر فتح إدارة سلايدر الترفيه للـ Super Admin.
-4) ENTERTAINMENT-SLIDER-5-ADMIN.sql -> شغّله مرة واحدة داخل Supabase.
-5) ent-slide-1-games.svg إلى ent-slide-5-war.svg -> الصور الافتراضية الأولى للسلايدر.
+هذه الحزمة مبنية على ملف الموقع الجديد hh(20260921-085647).zip.
 
-المطلوب بعد الرفع:
-- ارفع الملفات إلى نفس مجلد الموقع.
-- شغّل ملف SQL داخل Supabase مرة واحدة.
-- بعدها الأدمن الرئيسي يفتح: admin-entertainment-slider.html ويبدّل الصور وقت ما يريد.
+استبدل/أضف الملفات التالية داخل نفس مجلد الموقع:
+- study.html (استبدال)
+- admin-panel.html (استبدال)
+- admin-study-slider.html (إضافة)
+- STUDY-SLIDER-5-ADMIN.sql (شغّله مرة واحدة داخل Supabase SQL Editor)
+- study-slide-1-main.svg
+- study-slide-2-ministerial.svg
+- study-slide-3-courses.svg
+- study-slide-4-tools.svg
+- study-slide-5-news.svg
+
+المميزات:
+- 5 صور في أعلى صفحة الدراسة.
+- أسهم يمين ويسار + انتقال تلقائي.
+- زر دخول للتفاصيل لكل صورة.
+- الأدمن الرئيسي فقط يقدر يغيّر الصورة والعنوان والوصف ونص الزر والرابط.
+- الصور المرفوعة تحفظ في Storage bucket اسمه study-slider.

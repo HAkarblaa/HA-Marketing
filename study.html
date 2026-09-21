@@ -62,6 +62,42 @@ body{
 .hero h1{margin:5px 0 4px;font-size:24px;color:#f2cb70}
 .hero p{margin:0;font-size:11px;color:#aeb7bf}
 
+
+.study-slider{
+  width:min(900px,94%);
+  margin:14px auto 10px;
+  min-height:300px;
+  border-radius:22px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(239,199,104,.34);
+  background:#090d10;
+  box-shadow:0 14px 34px rgba(0,0,0,.28);
+}
+.study-slide-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.05);transition:opacity .22s ease}
+.study-slide-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,5,8,.18),rgba(2,5,8,.64) 58%,rgba(2,5,8,.91));z-index:1}
+.study-slide-content{position:relative;z-index:2;min-height:300px;padding:42px 72px 58px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.study-slide-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;background:rgba(8,13,17,.67);border:1px solid rgba(239,199,104,.34);color:#ffe49a;font-size:11px;font-weight:800;backdrop-filter:blur(8px)}
+.study-slide-title{margin:10px 0 5px;font-size:30px;color:#f4ce73;text-shadow:0 4px 18px rgba(0,0,0,.45)}
+.study-slide-sub{margin:0 auto 15px;max-width:600px;color:#eef3f7;font-size:13px;line-height:1.7;text-shadow:0 3px 14px rgba(0,0,0,.4)}
+.study-details-btn{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:10px 20px;border-radius:999px;text-decoration:none;background:linear-gradient(135deg,#d99b2d,#f3c45f);border:1px solid #f2ce78;color:#17110a;font-size:12px;font-weight:900;box-shadow:0 8px 24px rgba(218,155,45,.24)}
+.study-arrow{position:absolute;z-index:4;top:50%;transform:translateY(-50%);width:45px;height:45px;border-radius:50%;border:1px solid rgba(239,199,104,.5);background:rgba(7,11,15,.68);color:#f4ce73;font-size:25px;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(7px)}
+.study-arrow.prev{right:14px}.study-arrow.next{left:14px}
+.study-dots{position:absolute;z-index:4;left:50%;bottom:17px;transform:translateX(-50%);display:flex;gap:8px}
+.study-dots button{width:10px;height:10px;border:0;border-radius:50%;background:rgba(255,238,190,.38);padding:0;cursor:pointer}
+.study-dots button.active{background:#f2ca6c;transform:scale(1.17);box-shadow:0 0 14px rgba(242,202,108,.48)}
+.study-slider-admin{width:min(900px,94%);margin:0 auto 10px;display:none;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:14px;background:#0e151a;border:1px solid rgba(239,199,104,.24);font-size:10px}
+.study-slider-admin b{color:#f2ca6c}.study-slider-admin a{color:#15100a;background:#efc768;border-radius:9px;padding:7px 10px;text-decoration:none;font-weight:900}
+html[data-ha-theme="light"] .study-slider{background:#eef4fa;border-color:rgba(203,151,45,.35)}
+html[data-ha-theme="light"] .study-slide-shade{background:linear-gradient(180deg,rgba(10,25,40,.06),rgba(8,22,35,.45) 60%,rgba(7,18,28,.72))}
+html[data-ha-theme="light"] .study-slider-admin{background:#fff;border-color:#dec78f}
+@media(max-width:560px){
+  .study-slider{min-height:250px;border-radius:18px}
+  .study-slide-content{min-height:250px;padding:33px 52px 48px}
+  .study-slide-title{font-size:24px}.study-slide-sub{font-size:10px}.study-details-btn{min-height:39px;padding:9px 16px;font-size:11px}
+  .study-arrow{width:39px;height:39px;font-size:22px}.study-arrow.prev{right:9px}.study-arrow.next{left:9px}
+}
+
 .grid{
   width:min(900px,94%);
   margin:10px auto 22px;
@@ -179,103 +215,6 @@ html[data-ha-theme="light"] .bottom a.active{color:#8f6318!important}
   .card h2{font-size:10px}
   .card p{display:none}
 }
-
-
-/* ===== Study advertising slider ===== */
-.hero{
-  width:min(900px,94%);
-  margin:14px auto 10px;
-  padding:0!important;
-  border-radius:20px!important;
-  overflow:hidden;
-  min-height:230px;
-  position:relative;
-  background:#080c0f!important;
-  border:1px solid rgba(239,199,104,.38)!important;
-  box-shadow:0 10px 28px rgba(0,0,0,.28);
-}
-.study-slider{position:relative;width:100%;height:250px;overflow:hidden}
-.study-slides{position:relative;width:100%;height:100%}
-.study-slide{
-  position:absolute;inset:0;
-  opacity:0;pointer-events:none;
-  transform:scale(1.02);
-  transition:opacity .55s ease,transform .7s ease;
-  color:#fff;text-decoration:none;
-}
-.study-slide.active{opacity:1;pointer-events:auto;transform:scale(1)}
-.study-slide img{width:100%;height:100%;object-fit:cover;display:block}
-.study-slide:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.72),rgba(0,0,0,.08) 68%)}
-.study-slide-info{position:absolute;z-index:2;right:18px;left:18px;bottom:18px;text-align:right}
-.study-slide-info h2{margin:0 0 5px;font-size:25px;color:#ffe39b;text-shadow:0 2px 9px #000}
-.study-slide-info p{margin:0;color:#f3f6f8;font-size:13px;line-height:1.55;text-shadow:0 1px 6px #000}
-.study-arrow{
-  position:absolute;z-index:4;top:50%;transform:translateY(-50%);
-  width:42px;height:42px;border-radius:50%;
-  display:grid;place-items:center;
-  border:1px solid rgba(239,199,104,.58);
-  background:rgba(5,8,10,.72);color:#f2cb70;
-  font-size:24px;cursor:pointer;
-}
-.study-arrow.prev{right:10px}.study-arrow.next{left:10px}
-.study-dots{position:absolute;z-index:4;left:16px;bottom:14px;display:flex;gap:7px}
-.study-dot{width:9px;height:9px;border:0;border-radius:50%;padding:0;background:rgba(255,255,255,.45);cursor:pointer}
-.study-dot.active{background:#f2cb70;transform:scale(1.2)}
-.study-slider-empty{height:250px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(145deg,#151b20,#080c0f);color:#f2cb70}
-html[data-ha-theme="light"] .hero{background:#fff!important;border-color:#d9c28f!important}
-html[data-ha-theme="light"] .study-arrow{background:rgba(255,255,255,.84);color:#8f6318}
-@media(max-width:560px){
-  .study-slider,.study-slider-empty{height:210px}
-  .study-slide-info{right:14px;left:14px;bottom:15px}
-  .study-slide-info h2{font-size:20px}
-  .study-slide-info p{font-size:11px;max-width:82%}
-  .study-arrow{width:37px;height:37px;font-size:21px}
-}
-
-
-/* ===== Study dynamic bottom bar ===== */
-.study-dynamic-bottom{
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  height:82px!important;
-}
-.study-dynamic-bottom.has-3{
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-}
-.study-dynamic-bottom.has-4{
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-}
-.study-dynamic-bottom a{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:4px!important;
-  min-width:0!important;
-  padding:7px 3px!important;
-  color:#aeb8c4!important;
-  font-size:11px!important;
-}
-.study-dynamic-bottom a span{
-  font-size:22px!important;
-  line-height:1!important;
-}
-.study-dynamic-bottom a b{
-  font-size:11px!important;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:100%;
-}
-.study-dynamic-bottom a.study-active{
-  color:#f0c86b!important;
-  background:radial-gradient(circle at 50% 100%,rgba(239,199,104,.15),transparent 64%)!important;
-}
-@media(max-width:420px){
-  .study-dynamic-bottom a b{font-size:10px!important}
-  .study-dynamic-bottom a span{font-size:20px!important}
-}
-
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ha-theme.js"></script>
@@ -289,14 +228,20 @@ html[data-ha-theme="light"] .study-arrow{background:rgba(255,255,255,.84);color:
   <a class="topbtn" href="index.html">⌂</a>
 </header>
 
-<section class="hero" aria-label="إعلانات قسم الدراسة">
-  <div class="study-slider" id="studySlider">
-    <div class="study-slides" id="studySlides"></div>
-    <button type="button" class="study-arrow prev" id="studyPrev" aria-label="السابق">›</button>
-    <button type="button" class="study-arrow next" id="studyNext" aria-label="التالي">‹</button>
-    <div class="study-dots" id="studyDots"></div>
+<section class="study-slider" id="studySlider">
+  <img id="studySlideImage" class="study-slide-image" src="study-slide-1-main.svg" alt="الدراسة">
+  <div class="study-slide-shade"></div>
+  <button class="study-arrow prev" type="button" onclick="changeStudySlide(-1)" aria-label="السابق">›</button>
+  <button class="study-arrow next" type="button" onclick="changeStudySlide(1)" aria-label="التالي">‹</button>
+  <div class="study-slide-content">
+    <div class="study-slide-chip"><span id="studySlideIcon">📚</span><span>الدراسة</span></div>
+    <h1 id="studySlideTitle" class="study-slide-title">الدراسة</h1>
+    <p id="studySlideSubtitle" class="study-slide-sub">كل الأدوات الدراسية بمكان واحد وبشكل مرتب</p>
+    <a id="studyDetailsBtn" class="study-details-btn" href="study-directory.html">الدخول للتفاصيل</a>
   </div>
+  <div id="studyDots" class="study-dots"></div>
 </section>
+<div id="studySliderAdmin" class="study-slider-admin"><b>📚 إدارة صور الدراسة</b><a href="admin-study-slider.html">فتح الإدارة</a></div>
 
 <main class="grid">
   <a class="card featured" href="ministerial-questions.html">
@@ -340,155 +285,39 @@ html[data-ha-theme="light"] .study-arrow{background:rgba(255,255,255,.84);color:
   </a>
 </main>
 
-<nav class="bottom study-dynamic-bottom" id="studyBottomNav">
-  <a id="teacherJoinTab" href="teacher-classes.html"><span>👨‍🏫</span><b>انضمام كمدرس</b></a>
-  <a id="myClassesTab" href="#" style="display:none"><span>📚</span><b>صفوفي (المدرسين)</b></a>
-  <a id="myClassTab" href="#" style="display:none"><span>🎒</span><b>صفي (الطلاب)</b></a>
-  <a id="studyNotificationsTab" href="notifications-center.html"><span>🔔</span><b>التبليغات</b></a>
+<nav class="bottom">
+  <a class="active" href="study.html">📚 الدراسة</a>
+  <a href="index.html">🏠 الرئيسية</a>
 </nav>
 
 
 <script>
-const studyDb=supabase.createClient(
-  'https://ubayrhtshgtgggxprrek.supabase.co',
-  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-);
-let studyBanners=[];
-let studyBannerIndex=0;
-let studyBannerTimer=null;
-const studyEsc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const studyFallback=[{
-  id:'fallback',
-  image_url:'main.jpg',
-  title:'الدراسة',
-  subtitle:'كل الأدوات الدراسية بمكان واحد وبشكل مرتب',
-  link_url:''
-}];
-
-function renderStudyBanners(){
-  const slides=document.getElementById('studySlides');
-  const dots=document.getElementById('studyDots');
-  const arr=studyBanners.length?studyBanners:studyFallback;
-  if(studyBannerIndex>=arr.length)studyBannerIndex=0;
-  slides.innerHTML=arr.map((b,i)=>{
-    const tag=b.link_url?'a':'div';
-    const href=b.link_url?` href="${studyEsc(b.link_url)}"`:'';
-    return `<${tag} class="study-slide ${i===studyBannerIndex?'active':''}"${href}>
-      <img src="${studyEsc(b.image_url||'main.jpg')}" alt="${studyEsc(b.title||'إعلان الدراسة')}" onerror="this.src='main.jpg'">
-      <div class="study-slide-info">
-        ${b.title?`<h2>${studyEsc(b.title)}</h2>`:''}
-        ${b.subtitle?`<p>${studyEsc(b.subtitle)}</p>`:''}
-      </div>
-    </${tag}>`;
-  }).join('');
-  dots.innerHTML=arr.length>1?arr.map((_,i)=>`<button type="button" class="study-dot ${i===studyBannerIndex?'active':''}" onclick="goStudyBanner(${i})" aria-label="إعلان ${i+1}"></button>`).join(''):'';
-  document.getElementById('studyPrev').style.display=arr.length>1?'grid':'none';
-  document.getElementById('studyNext').style.display=arr.length>1?'grid':'none';
-}
-function goStudyBanner(i){
-  const arr=studyBanners.length?studyBanners:studyFallback;
-  studyBannerIndex=(i+arr.length)%arr.length;
-  renderStudyBanners();
-  startStudySlider();
-}
-function nextStudyBanner(){goStudyBanner(studyBannerIndex+1)}
-function prevStudyBanner(){goStudyBanner(studyBannerIndex-1)}
-function startStudySlider(){
-  if(studyBannerTimer)clearInterval(studyBannerTimer);
-  const arr=studyBanners.length?studyBanners:studyFallback;
-  if(arr.length>1)studyBannerTimer=setInterval(()=>{
-    studyBannerIndex=(studyBannerIndex+1)%arr.length;
-    renderStudyBanners();
-  },4500);
-}
-async function loadStudyBanners(){
+const STUDY_SLIDER_DEFAULTS=[
+ {slot:1,title:'الدراسة',subtitle:'كل الأدوات الدراسية بمكان واحد وبشكل مرتب',button_text:'استكشف أدوات الدراسة',details_url:'study-directory.html',icon:'📚',image_url:'study-slide-1-main.svg'},
+ {slot:2,title:'الأسئلة الوزارية',subtitle:'الوصول إلى الأسئلة الوزارية للابتدائي والمتوسط والإعدادي والمهني.',button_text:'الدخول للأسئلة الوزارية',details_url:'ministerial-questions.html',icon:'📑',image_url:'study-slide-2-ministerial.svg'},
+ {slot:3,title:'الدورات',subtitle:'دورات أونلاين وحضورية وخيارات دراسية تساعدك على التطور.',button_text:'عرض الدورات',details_url:'courses.html',icon:'🎓',image_url:'study-slide-3-courses.svg'},
+ {slot:4,title:'تلخيص وأدوات الدراسة',subtitle:'تلخيص المواد وتنظيم المحتوى والاستفادة من أدوات الدراسة والملفات.',button_text:'فتح أدوات الدراسة',details_url:'study-summary.html',icon:'📝',image_url:'study-slide-4-tools.svg'},
+ {slot:5,title:'أخبار التعليم',subtitle:'تابع آخر أخبار التربية والتعليم العالي والجامعات من مكان واحد.',button_text:'عرض أخبار التعليم',details_url:'education-news.html',icon:'🏫',image_url:'study-slide-5-news.svg'}
+];
+let studySlides=[...STUDY_SLIDER_DEFAULTS],studySlideIndex=0,studyTimer=null;
+function studyNormalize(row,def){return{slot:Number(row?.slot||def.slot),title:String(row?.title||def.title),subtitle:String(row?.subtitle||def.subtitle),button_text:String(row?.button_text||def.button_text),details_url:String(row?.details_url||def.details_url),icon:String(row?.icon||def.icon),image_url:String(row?.image_url||def.image_url)}}
+function renderStudyDots(){const e=document.getElementById('studyDots');if(!e)return;e.innerHTML=studySlides.map((_,i)=>'<button type="button" class="'+(i===studySlideIndex?'active':'')+'" onclick="goStudySlide('+i+')" aria-label="الصورة '+(i+1)+'"></button>').join('')}
+function applyStudySlide(){const s=studySlides[studySlideIndex]||STUDY_SLIDER_DEFAULTS[0];const img=document.getElementById('studySlideImage');img.src=s.image_url;img.alt=s.title;document.getElementById('studySlideIcon').textContent=s.icon||'📚';document.getElementById('studySlideTitle').textContent=s.title;document.getElementById('studySlideSubtitle').textContent=s.subtitle;const b=document.getElementById('studyDetailsBtn');b.textContent=s.button_text||'الدخول للتفاصيل';b.href=s.details_url||'study.html';renderStudyDots()}
+function resetStudyTimer(){if(studyTimer)clearInterval(studyTimer);studyTimer=setInterval(()=>changeStudySlide(1),5000)}
+function changeStudySlide(step){studySlideIndex=(studySlideIndex+step+studySlides.length)%studySlides.length;applyStudySlide();resetStudyTimer()}
+function goStudySlide(i){studySlideIndex=i;applyStudySlide();resetStudyTimer()}
+async function loadStudySlider(){
+  applyStudySlide();resetStudyTimer();
+  if(!window.supabase)return;
   try{
-    const {data,error}=await studyDb.from('study_banners')
-      .select('id,image_url,title,subtitle,link_url,sort_order')
-      .eq('is_active',true)
-      .order('sort_order',{ascending:true})
-      .order('created_at',{ascending:false});
-    if(!error&&Array.isArray(data)&&data.length)studyBanners=data;
-  }catch(e){console.warn('study banners',e)}
-  renderStudyBanners();
-  startStudySlider();
+    const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+    const {data,error}=await db.from('study_slider_images').select('slot,title,subtitle,button_text,details_url,image_url,icon,is_active').eq('is_active',true).order('slot');
+    if(!error&&Array.isArray(data)&&data.length){studySlides=STUDY_SLIDER_DEFAULTS.map(def=>studyNormalize(data.find(x=>Number(x.slot)===def.slot)||{},def));studySlideIndex=0;applyStudySlide()}
+    const {data:{session}}=await db.auth.getSession();
+    if(session){let ok=false;try{const r=await db.rpc('is_super_admin');if(!r.error)ok=!!r.data}catch(_e){}if(!ok){try{const r=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',session.user.id).maybeSingle();ok=!!(r.data?.is_active&&r.data?.is_super_admin)}catch(_e){}}if(ok){const box=document.getElementById('studySliderAdmin');if(box)box.style.display='flex'}}
+  }catch(_e){}
 }
-document.getElementById('studyPrev')?.addEventListener('click',prevStudyBanner);
-document.getElementById('studyNext')?.addEventListener('click',nextStudyBanner);
-loadStudyBanners();
-</script>
-
-
-<script>
-/* ===== شريط الدراسة حسب نوع الحساب ===== */
-(async function setupStudyBottom(){
-  try{
-    const nav=document.getElementById('studyBottomNav');
-    const teacherJoin=document.getElementById('teacherJoinTab');
-    const myClasses=document.getElementById('myClassesTab');
-    const myClass=document.getElementById('myClassTab');
-    const notify=document.getElementById('studyNotificationsTab');
-
-    if(!nav || !window.supabase)return;
-
-    const {data:{session}}=await studyDb.auth.getSession();
-    const user=session?.user;
-
-    // غير مسجل: يظهر انضمام كمدرس + التبليغات.
-    if(!user || user.is_anonymous){
-      nav.classList.remove('has-3','has-4');
-      return;
-    }
-
-    const [teacherRes,membersRes]=await Promise.all([
-      studyDb.from('study_teachers')
-        .select('user_id,is_approved,is_active')
-        .eq('user_id',user.id)
-        .maybeSingle(),
-      studyDb.from('study_class_members')
-        .select('class_id,joined_at')
-        .eq('student_user_id',user.id)
-        .order('joined_at',{ascending:false})
-    ]);
-
-    const isTeacher=!!teacherRes.data;
-    const joinedClasses=Array.isArray(membersRes.data)?membersRes.data:[];
-    const isStudent=joinedClasses.length>0;
-
-    if(isTeacher){
-      teacherJoin.style.display='none';
-      myClasses.style.display='flex';
-      myClasses.href='teacher-my-classes.html';
-      myClasses.classList.add('study-active');
-    }else{
-      teacherJoin.style.display='flex';
-    }
-
-    if(isStudent){
-      myClasses.style.display='flex';
-      if(!isTeacher){
-        myClasses.href='student-my-classes.html';
-        myClasses.classList.add('study-active');
-      }
-
-      const latest=joinedClasses[0];
-      if(latest?.class_id){
-        myClass.style.display='flex';
-        myClass.href='study-class.html?class='+encodeURIComponent(latest.class_id);
-      }
-    }
-
-    const visible=[teacherJoin,myClasses,myClass,notify]
-      .filter(x=>x && getComputedStyle(x).display!=='none').length;
-
-    nav.classList.remove('has-3','has-4');
-    if(visible===3)nav.classList.add('has-3');
-    if(visible>=4)nav.classList.add('has-4');
-  }catch(e){
-    console.warn('study bottom setup',e);
-  }
-})();
+loadStudySlider();
 </script>
 
 </body>
