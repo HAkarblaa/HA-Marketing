@@ -57,6 +57,7 @@ button,input{font:inherit} a{color:inherit}
 .card:active{transform:scale(.975)}
 .card:hover{transform:translateY(-4px);border-color:rgba(239,189,94,.34);box-shadow:0 22px 52px #000b,0 0 28px rgba(var(--glow),.08)}
 .iconbox{position:relative;z-index:1;width:78px;height:78px;border-radius:24px;display:grid;place-items:center;font-size:42px;margin-bottom:14px;background:linear-gradient(145deg,rgba(var(--glow),.33),rgba(4,8,12,.85));border:1px solid rgba(var(--glow),.60);box-shadow:0 10px 25px #0007,inset 0 0 20px rgba(var(--glow),.14),0 0 22px rgba(var(--glow),.10)}
+.iconbox img{width:72%;height:72%;object-fit:contain;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(var(--glow),.24))}
 .card h2{position:relative;z-index:1;margin:0;font-size:clamp(16px,3.6vw,23px);font-weight:850;line-height:1.25}.card h2::after{content:"";display:block;width:27px;height:2px;margin:10px auto 9px;background:linear-gradient(90deg,#87601d,#ffd16b,#87601d);border-radius:8px;box-shadow:0 0 8px rgba(239,189,94,.4)}
 .card p{position:relative;z-index:1;margin:0;color:#adb2b7;font-size:clamp(11px,2.5vw,14px);line-height:1.55;max-width:190px}
 .card .soon{position:absolute;top:11px;left:11px;border:1px solid rgba(239,189,94,.4);color:#d6a950;background:#0a0d10;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800;z-index:2}
@@ -73,7 +74,7 @@ body.drawer-open{overflow:hidden} /* BOTTOM NAV */
 .coming-soon-modal{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}.coming-soon-modal.show{display:flex}.coming-soon-box{width:min(92vw,390px);background:linear-gradient(155deg,#11181e,#05080b);border:1px solid rgba(239,189,94,.42);border-radius:26px;padding:30px 22px;text-align:center;box-shadow:0 25px 80px #000}.coming-soon-icon{font-size:49px}.coming-soon-box h2{margin:10px 0 8px;color:#f0bd5c}.coming-soon-box p{color:#9da3a9;line-height:1.7}.coming-soon-close{border:1px solid rgba(239,189,94,.6);border-radius:14px;background:#0a0e12;color:#f0bd5c;padding:12px 31px;font-size:16px;font-weight:800;cursor:pointer}
 .ha-page-loading{position:fixed;inset:0;background:rgba(2,4,6,.90);z-index:100001;display:none;align-items:center;justify-content:center;flex-direction:column;gap:13px}.ha-page-loading.show{display:flex}.ha-page-spinner{width:50px;height:50px;border:4px solid #252b30;border-top-color:#eebc5d;border-radius:50%;animation:spin .8s linear infinite}.ha-page-loading-text{font-size:14px;color:#d4d5d6}@keyframes spin{to{transform:rotate(360deg)}}
 #haSplash{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 36%,#131a20,#030609 48%,#010203);display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .45s ease,visibility .45s ease}#haSplash.hide{opacity:0;visibility:hidden;pointer-events:none}.splash-card{text-align:center;width:min(92vw,430px)}.splash-card .ha-logo img{width:min(280px,68vw)}.splash-title{font-size:28px;font-weight:850;margin-top:23px;direction:ltr}.splash-text{color:#9aa0a5;margin-top:7px}.splash-continue{margin-top:26px;border:1px solid rgba(239,189,94,.65);background:linear-gradient(180deg,#15181a,#080b0d);color:#efbd5e;padding:14px 35px;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 0 25px rgba(239,189,94,.08)}
-#haNetBadge{position:fixed;bottom:105px;left:12px;z-index:9998;background:#11171d;color:#fff;padding:8px 12px;border:1px solid #333c43;border-radius:20px;font-size:11px;display:none;box-shadow:0 3px 12px #0007} @media(max-width:700px){ .shell{width:93%}.hero{min-height:350px;padding-inline:10px}.hero-controls{padding-inline:4px}.grid{gap:10px}.card{min-height:178px;padding:16px 7px 13px;border-radius:21px}.iconbox{width:61px;height:61px;border-radius:19px;font-size:34px;margin-bottom:11px}.card h2{font-size:14px}.card p{font-size:10px;line-height:1.45}.card h2::after{margin:7px auto 7px}.card .soon{font-size:7px;padding:3px 6px;top:7px;left:7px}.promo-pill{min-height:66px;margin-top:20px;padding-inline:17px}.promo-pill .ico{font-size:26px}.promo-pill .arrow{font-size:31px}.dec-laptop,.dec-cart{font-size:82px}.bottom-inner{height:80px}.bottom-brand{height:99px}.bottom-link .bi{font-size:25px}
+#haNetBadge{position:fixed;bottom:105px;left:12px;z-index:9998;background:#11171d;color:#fff;padding:8px 12px;border:1px solid #333c43;border-radius:20px;font-size:11px;display:none;box-shadow:0 3px 12px #0007} @media(max-width:700px){ .shell{width:93%}.hero{min-height:350px;padding-inline:10px}.hero-controls{padding-inline:4px}.grid{gap:10px}.card{min-height:178px;padding:16px 7px 13px;border-radius:21px}.iconbox{width:61px;height:61px;border-radius:19px;font-size:34px;margin-bottom:11px}.iconbox img{width:74%;height:74%}.card h2{font-size:14px}.card p{font-size:10px;line-height:1.45}.card h2::after{margin:7px auto 7px}.card .soon{font-size:7px;padding:3px 6px;top:7px;left:7px}.promo-pill{min-height:66px;margin-top:20px;padding-inline:17px}.promo-pill .ico{font-size:26px}.promo-pill .arrow{font-size:31px}.dec-laptop,.dec-cart{font-size:82px}.bottom-inner{height:80px}.bottom-brand{height:99px}.bottom-link .bi{font-size:25px}
 }
 @media(max-width:390px){.grid{gap:8px}.card{min-height:166px}.iconbox{width:56px;height:56px;font-size:31px}.card h2{font-size:13px}.card p{font-size:9px}.brand-name{font-size:36px}.ha-logo img{width:min(180px,58vw)}}
 
@@ -503,86 +504,6 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
 .c-contact{--glow:32,154,104}
 .c-suggest{--glow:235,170,55}
 
-
-/* ===== HA: ترتيب شعار شاشة الدخول ===== */
-#haSplash{
-  background:
-    radial-gradient(circle at 50% 38%,rgba(239,189,94,.10),transparent 28%),
-    radial-gradient(circle at 50% 36%,#131a20,#030609 52%,#010203);
-}
-#haSplash .splash-card{
-  width:min(88vw,360px);
-  padding:22px 18px 20px;
-  border:1px solid rgba(239,189,94,.14);
-  border-radius:28px;
-  background:linear-gradient(180deg,rgba(13,18,22,.42),rgba(4,7,9,.20));
-  box-shadow:0 24px 70px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.025);
-}
-#haSplash .splash-card .ha-logo{
-  position:relative;
-  display:block;
-  width:clamp(205px,52vw,245px);
-  height:clamp(116px,29vw,138px);
-  margin:0 auto 10px;
-  overflow:hidden;
-  border-radius:24px;
-  background:radial-gradient(circle at 50% 50%,rgba(239,189,94,.085),transparent 66%);
-  filter:none;
-}
-#haSplash .splash-card .ha-logo img{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:clamp(205px,52vw,245px) !important;
-  height:auto !important;
-  max-width:none !important;
-  transform:translate(-50%,-50%);
-  object-fit:contain;
-  filter:
-    brightness(0)
-    saturate(100%)
-    invert(83%)
-    sepia(44%)
-    saturate(918%)
-    hue-rotate(348deg)
-    brightness(102%)
-    contrast(95%)
-    drop-shadow(0 7px 12px rgba(0,0,0,.58))
-    drop-shadow(0 0 12px rgba(239,189,94,.20));
-}
-#haSplash .splash-title{
-  margin-top:6px;
-  font-size:clamp(24px,6vw,30px);
-  font-weight:900;
-  letter-spacing:.2px;
-  color:#f7f7f7;
-}
-#haSplash .splash-text{
-  margin-top:7px;
-  color:#aeb3b8;
-  font-size:14px;
-}
-#haSplash .splash-continue{
-  width:min(220px,78%);
-  min-height:48px;
-  margin-top:21px;
-  padding:11px 24px;
-  border-radius:16px;
-  font-size:16px;
-  box-shadow:0 8px 28px rgba(0,0,0,.28),0 0 22px rgba(239,189,94,.08);
-}
-@media(max-width:390px){
-  #haSplash{padding:16px}
-  #haSplash .splash-card{width:min(92vw,330px);padding:18px 14px}
-  #haSplash .splash-card .ha-logo{
-    width:205px;
-    height:116px;
-  }
-  #haSplash .splash-card .ha-logo img{width:205px !important}
-  #haSplash .splash-title{font-size:24px}
-  #haSplash .splash-text{font-size:13px}
-}
-
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
@@ -603,7 +524,7 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
   <span class="bell">🔔</span>
   <span class="txt"><b id="haDriverOrderTitle">عندك طلب نقل جديد</b><small id="haDriverOrderText">اضغط حتى تفتح واجهة السائق وتشوف الطلب.</small></span>
   <span id="haDriverOrderCount" class="count">1</span>
-</a> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
+</a> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox"><img src="icon-shop-premium.png" alt="تسوق الآن"></div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox"><img src="icon-service-premium.png" alt="طلب خدمة"></div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
       <span class="chat-live-badge"><i></i> متاح الآن</span>
       <div class="iconbox chat-iconbox">
         <span class="chat-main-icon">💬</span>
@@ -629,8 +550,8 @@ html.ha-super-admin .ha-ticker-admin{display:grid}
         <span>فتح الدردشة</span>
         <b>←</b>
       </div>
-    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل"><b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <a class="card c-contact" href="call-us.html" data-search="اتصل بنا اتصال تواصل هاتف">
-      <div class="iconbox">☎️</div><h2>اتصل بنا</h2><p>طرق التواصل مع HA Marketing</p>
+    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox"><img src="icon-study-premium.png" alt="دراسة"></div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox"><img src="icon-entertainment-premium.png" alt="ترفيه"></div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل"><b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox"><img src="icon-transport-premium.png" alt="طلب تكسي أو مندوب"></div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <a class="card c-contact" href="call-us.html" data-search="اتصل بنا اتصال تواصل هاتف">
+      <div class="iconbox"><img src="icon-contact-premium.png" alt="اتصل بنا"></div><h2>اتصل بنا</h2><p>طرق التواصل مع HA Marketing</p>
     </a>
     <a class="card c-suggest" href="suggestions.html" data-search="مقترحاتكم اقتراح فكرة ملاحظة">
       <div class="iconbox">💡</div><h2>مقترحاتكم</h2><p>اكتب اقتراحك ويوصل للأدمن الرئيسي</p>
