@@ -1,0 +1,55 @@
+/* HA Marketing — Forced Vivid Daylight Fix v3 */
+:root,html,html[data-ha-theme],html[data-ha-theme="light"],html[data-ha-theme="dark"]{
+  color-scheme:light!important;
+  --ha-bg:#f8fcff!important;--ha-bg2:#fffaf3!important;--ha-panel:#ffffff!important;--ha-panel2:#f6fbff!important;
+  --ha-text:#10243e!important;--ha-muted:#617289!important;--ha-gold:#ffb52f!important;--ha-gold2:#ffd85a!important;
+}
+html,body{background:linear-gradient(180deg,#fbfdff 0%,#f4faff 58%,#fffaf5 100%)!important;color:#10243e!important;}
+body::before{background:radial-gradient(circle at 9% 5%,rgba(255,214,91,.22),transparent 24%),radial-gradient(circle at 91% 7%,rgba(73,188,255,.23),transparent 28%),radial-gradient(circle at 55% 94%,rgba(255,123,175,.10),transparent 28%)!important;opacity:1!important;}
+.ha-theme-toggle,#haThemeToggle,[data-theme-toggle],[data-ha-theme-toggle]{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+
+/* Common bright surfaces */
+body :is(.wrap,.container,.page,.main,.content,.shell,.app,.view){color:#10243e!important;}
+body :is(.card,.c,.box,.panel,.tile,.qcard,.category,.role,.tool,.order,.order-row,.request-card,.provider-card,.service-card,.product-card,.store-card,.info-card,.status-card,.items,.delivery,.result,.feature,.option,.section-shell,.modal-content,.sheet-content,.dialog,.popup,.drawer,.side,.conversation,.messages,.composer,.list){
+  color:#10243e!important;border-color:rgba(59,153,222,.20)!important;
+}
+body :is(header,.header,.topbar,.navbar,.nav,.top,.head,.toolbar,.appbar){background:rgba(255,255,255,.96)!important;color:#10243e!important;border-color:#dceaf5!important;}
+body :is(h1,h2,h3,h4,h5,h6,.title,.name,.heading,label,b,strong){color:#10243e!important;text-shadow:none!important;}
+body :is(p,.muted,.sub,.subtitle,.desc,.description,small,.help,.hint){color:#617289!important;text-shadow:none!important;}
+body :is(input,select,textarea,.input,.search){background:#fff!important;color:#10243e!important;border-color:#d6e7f4!important;}
+body input::placeholder,body textarea::placeholder{color:#96a4b4!important;opacity:1!important;}
+body option{background:#fff!important;color:#10243e!important;}
+body :is(.overlay,.modal,.sheet,.popup-overlay,.drawer-overlay){background:rgba(78,108,138,.28)!important;}
+
+/* Home vivid layout */
+body .hero{background:radial-gradient(circle at 8% 22%,rgba(255,220,99,.35),transparent 24%),radial-gradient(circle at 91% 16%,rgba(70,190,255,.32),transparent 30%),radial-gradient(circle at 58% 105%,rgba(255,111,169,.12),transparent 30%),linear-gradient(135deg,#fffdf7 0%,#f8fdff 48%,#eaf7ff 100%)!important;border-color:rgba(255,178,42,.42)!important;box-shadow:0 14px 38px rgba(52,107,157,.10)!important;}
+body .hero::before{opacity:.52!important;filter:none!important;}
+body .brand-name{color:#102c49!important;text-shadow:none!important;}
+body .brand-name .gold{background:linear-gradient(135deg,#fff0a1,#ffc44a)!important;color:#102c49!important;-webkit-text-fill-color:#102c49!important;}
+body .brand-sub{color:#526b85!important;}
+body .promo-pill{background:rgba(255,255,255,.92)!important;color:#845700!important;border-color:#ffc45b!important;box-shadow:0 12px 30px rgba(71,111,149,.10)!important;}
+body .menu-btn,body .round-btn{background:#fff!important;color:#153b5e!important;border-color:#ffc65a!important;box-shadow:0 8px 22px rgba(48,98,144,.10)!important;}
+body .search-box{background:#fff!important;border-color:#cae5f7!important;box-shadow:0 14px 34px rgba(43,99,151,.11)!important;}
+body .search-box input{background:#f8fcff!important;color:#10243e!important;}
+body #mainGrid .card{box-shadow:0 14px 34px rgba(48,101,151,.10)!important;color:#10243e!important;}
+body #mainGrid .card:nth-child(6n+1){background:linear-gradient(145deg,#fff9e9,#fff0c8)!important;border-color:#ffd27a!important;}
+body #mainGrid .card:nth-child(6n+2){background:linear-gradient(145deg,#eefaff,#dff5ff)!important;border-color:#83d3ff!important;}
+body #mainGrid .card:nth-child(6n+3){background:linear-gradient(145deg,#fff1f7,#ffe3ee)!important;border-color:#ffb0d0!important;}
+body #mainGrid .card:nth-child(6n+4){background:linear-gradient(145deg,#effdf7,#dbf8e9)!important;border-color:#88dfb8!important;}
+body #mainGrid .card:nth-child(6n+5){background:linear-gradient(145deg,#f7f0ff,#ece1ff)!important;border-color:#cfb0ff!important;}
+body #mainGrid .card:nth-child(6n){background:linear-gradient(145deg,#fff8ec,#ffe9c7)!important;border-color:#ffc96e!important;}
+body #mainGrid .card h2{color:#10243e!important;} body #mainGrid .card p{color:#5e7186!important;}
+body #mainGrid .iconbox{background:rgba(255,255,255,.76)!important;border-color:rgba(55,151,220,.24)!important;box-shadow:0 9px 22px rgba(52,103,149,.10)!important;}
+
+/* Bottom bars */
+body :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom,.transport-bottom-nav){background:rgba(255,255,255,.98)!important;color:#47627b!important;border-color:#ffc95e!important;box-shadow:0 -10px 30px rgba(49,96,139,.13)!important;}
+body :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom,.transport-bottom-nav) a,
+body .transport-bottom-nav button{color:#49637a!important;background:transparent!important;text-shadow:none!important;}
+body :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom,.transport-bottom-nav) .active{background:linear-gradient(180deg,#fff8d8,#fff0ad)!important;color:#9b6300!important;border-radius:15px!important;}
+body .bottom-brand{background:linear-gradient(180deg,#fff9df,#fff1b5)!important;border-color:#ffc95e!important;}
+
+/* Drawer */
+body .shortcuts{background:linear-gradient(160deg,#fff,#f3faff)!important;color:#173551!important;border-color:#d3e8f6!important;box-shadow:0 24px 60px rgba(43,86,128,.18)!important;}
+body .shortcuts a{background:#fff!important;color:#173551!important;border-color:#e0edf5!important;}
+body .short-ico{background:linear-gradient(145deg,#fff5cf,#ffe49a)!important;color:#996300!important;border-color:#ffd166!important;}
+body .drawer-title{color:#174f7b!important;} body .drawer-title small{color:#78899a!important;} body .drawer-close{background:#edf7ff!important;color:#19466d!important;border-color:#c9e2f4!important;}

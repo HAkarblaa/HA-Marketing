@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<script id="ha-daylight-boot">(function(){try{var r=document.documentElement;r.setAttribute('data-ha-theme','light');r.style.colorScheme='light';['ha_theme_mode_v2','ha_theme_mode','ha-theme','theme'].forEach(function(k){localStorage.setItem(k,'light')});}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>الإشعارات - HA Marketing</title>
@@ -48,47 +49,10 @@ body{margin:0;min-height:100vh;background:radial-gradient(circle at 85% 5%,rgba(
 }
 .ha-push-toggle.on{background:linear-gradient(135deg,#2c6b34,#17461e);border-color:#58b765}
 
-
-.study-invite-card{
-  border:1px solid rgba(91,199,120,.48)!important;
-  background:linear-gradient(145deg,#102018,#08100c)!important;
-}
-.study-invite-badge{
-  display:inline-block;
-  margin-top:8px;
-  padding:4px 9px;
-  border-radius:999px;
-  border:1px solid rgba(91,199,120,.45);
-  color:#8ee7a6;
-  background:rgba(31,105,50,.18);
-  font-size:11px;
-  font-weight:800;
-}
-.study-invite-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:12px;
-}
-.study-invite-actions button{
-  min-height:44px;
-  border-radius:12px;
-  font:inherit;
-  font-weight:900;
-  cursor:pointer;
-}
-.study-invite-actions .accept{
-  border:1px solid #4caf65;
-  background:linear-gradient(145deg,#1c5b2d,#123b1d);
-  color:#b7f4c6;
-}
-.study-invite-actions .decline{
-  border:1px solid #7b3b45;
-  background:#241116;
-  color:#ffc1ca;
-}
-
 </style>
+<script src="ha-theme.js?v=20260925-v3"></script>
+<link rel="stylesheet" href="ha-theme.css?v=20260925-v3">
+<link rel="stylesheet" href="ha-daylight-force.css?v=20260925-v3">
 </head>
 <body>
 <header class="top">
@@ -143,7 +107,6 @@ const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefr
 
 let currentUser=null;
 let rows=[];
-let inviteRows=[];
 
 function toast(msg){
   const t=document.getElementById('toast');
@@ -177,106 +140,16 @@ function notifBody(n){return n.body||n.message||''}
 function notifType(n){return n.type||n.notice_type||n.kind||'general'}
 function notifSection(n){return n.section_key||n.department||''}
 function notifLink(n){return n.link||n.link_url||''}
-
-function renderStudyInvite(inv){
-  const item=document.createElement('article');
-  item.className='item study-invite-card';
-
-  const title=document.createElement('div');
-  title.className='title';
-  title.textContent='📚 دعوة للانضمام إلى صف';
-
-  const body=document.createElement('div');
-  body.className='body';
-  const parts=[];
-  if(inv.class_name)parts.push('الصف: '+inv.class_name);
-  if(inv.grade_name)parts.push(inv.grade_name+(inv.branch?' — '+inv.branch:''));
-  if(inv.subject)parts.push('المادة: '+inv.subject);
-  if(inv.teacher_name)parts.push('المدرس: '+inv.teacher_name);
-  body.textContent=parts.join('\n') || 'وصلك طلب انضمام إلى صف دراسي.';
-
-  const badge=document.createElement('span');
-  badge.className='study-invite-badge';
-  badge.textContent='بانتظار موافقتك';
-
-  const actions=document.createElement('div');
-  actions.className='study-invite-actions';
-
-  const accept=document.createElement('button');
-  accept.type='button';
-  accept.className='accept';
-  accept.textContent='✅ قبول الدعوة';
-  accept.onclick=async(e)=>{
-    e.stopPropagation();
-    await acceptStudyInvite(inv.id,accept);
-  };
-
-  const decline=document.createElement('button');
-  decline.type='button';
-  decline.className='decline';
-  decline.textContent='✖ رفض';
-  decline.onclick=async(e)=>{
-    e.stopPropagation();
-    await declineStudyInvite(inv.id,decline);
-  };
-
-  actions.append(accept,decline);
-  item.append(title,body,badge,actions);
-  return item;
-}
-
-async function acceptStudyInvite(inviteId,btn){
-  const old=btn.textContent;
-  btn.disabled=true;
-  btn.textContent='جاري القبول...';
-  try{
-    const {data,error}=await db.rpc('accept_study_class_invite',{p_invite_id:inviteId});
-    if(error)throw error;
-    toast('تم قبول الدعوة وإضافتك للصف');
-    await load();
-    const classId=Number(data);
-    if(Number.isInteger(classId)&&classId>0){
-      setTimeout(()=>location.href='study-class.html?class='+encodeURIComponent(classId),450);
-    }
-  }catch(e){
-    alert('تعذر قبول الدعوة: '+(e?.message||String(e)));
-    btn.disabled=false;
-    btn.textContent=old;
-  }
-}
-
-async function declineStudyInvite(inviteId,btn){
-  if(!confirm('رفض هذه الدعوة؟'))return;
-  const old=btn.textContent;
-  btn.disabled=true;
-  btn.textContent='جاري الرفض...';
-  try{
-    const {error}=await db.rpc('decline_study_class_invite',{p_invite_id:inviteId});
-    if(error)throw error;
-    toast('تم رفض الدعوة');
-    await load();
-  }catch(e){
-    alert('تعذر رفض الدعوة: '+(e?.message||String(e)));
-    btn.disabled=false;
-    btn.textContent=old;
-  }
-}
-
 function render(){
   const list=document.getElementById('list');
   const unread=rows.filter(x=>!x.is_read).length;
   document.getElementById('countLabel').textContent=`${unread} غير مقروء`;
 
-  if(!rows.length && !inviteRows.length){
+  if(!rows.length){
     list.innerHTML='<div class="empty">🔕 ما عندك إشعارات حالياً.</div>';
     return;
   }
   list.innerHTML='';
-
-  inviteRows.forEach(inv=>{
-    list.appendChild(renderStudyInvite(inv));
-  });
-
   rows.forEach(n=>{
     const item=document.createElement('article');
     item.className='item'+(!n.is_read?' unread':'');
@@ -316,76 +189,19 @@ async function load(){
   const list=document.getElementById('list');
   list.innerHTML='<div class="loading">جاري تحميل الإشعارات...</div>';
 
-  const notificationsPromise=db
+  const {data,error}=await db
     .from('notifications')
     .select('*')
     .order('created_at',{ascending:false})
     .limit(100);
 
-  const invitesPromise=db
-    .from('study_class_invites')
-    .select('id,class_id,teacher_user_id,invited_email,status,created_at')
-    .eq('status','pending')
-    .eq('invited_email',String(currentUser.email||'').toLowerCase())
-    .order('created_at',{ascending:false});
-
-  const [nRes,iRes]=await Promise.all([notificationsPromise,invitesPromise]);
-
-  if(nRes.error){
-    console.error(nRes.error);
+  if(error){
+    console.error(error);
     list.innerHTML='<div class="empty">تعذر تحميل الإشعارات حالياً.</div>';
     return;
   }
-
-  rows=nRes.data||[];
-  inviteRows=[];
-
-  if(!iRes.error && Array.isArray(iRes.data) && iRes.data.length){
-    const pending=iRes.data;
-    const classIds=[...new Set(pending.map(x=>x.class_id).filter(Boolean))];
-    const teacherIds=[...new Set(pending.map(x=>x.teacher_user_id).filter(Boolean))];
-
-    let classMap={},teacherMap={};
-
-    if(classIds.length){
-      const {data:classes}=await db
-        .from('study_classes')
-        .select('id,class_name,grade_name,branch,subject')
-        .in('id',classIds);
-      (classes||[]).forEach(c=>classMap[c.id]=c);
-    }
-
-    if(teacherIds.length){
-      const {data:teachers}=await db
-        .from('study_teachers')
-        .select('user_id,display_name')
-        .in('user_id',teacherIds);
-      (teachers||[]).forEach(t=>teacherMap[t.user_id]=t.display_name);
-    }
-
-    inviteRows=pending.map(inv=>{
-      const c=classMap[inv.class_id]||{};
-      return {
-        ...inv,
-        class_name:c.class_name||'',
-        grade_name:c.grade_name||'',
-        branch:c.branch||'',
-        subject:c.subject||'',
-        teacher_name:teacherMap[inv.teacher_user_id]||''
-      };
-    });
-  }
-
+  rows=data||[];
   render();
-
-  // إذا فتح الإشعار من رابط دعوة محدد، نخلي البطاقة ظاهرة بالأعلى تلقائياً.
-  const inviteParam=Number(new URLSearchParams(location.search).get('invite'));
-  if(inviteParam>0){
-    const target=inviteRows.find(x=>Number(x.id)===inviteParam);
-    if(target){
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-  }
 }
 async function markRead(id){
   const {error}=await db.from('notifications').update({is_read:true}).eq('id',id);

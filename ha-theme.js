@@ -16,3 +16,5 @@
   else daylight();
   window.addEventListener('storage',daylight);
 })();
+
+(function(){function kill(){document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';document.querySelectorAll('#haThemeToggle,.ha-theme-toggle,[data-theme-toggle],[data-ha-theme-toggle]').forEach(function(e){e.remove();});}kill();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',kill);else kill();window.addEventListener('pageshow',kill);})();
