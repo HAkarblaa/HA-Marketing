@@ -27,15 +27,15 @@ html[data-ha-theme="dark"]{
 /* ---------- Light mode ---------- */
 html[data-ha-theme="light"]{
   color-scheme:light;
-  --ha-mode-bg:#f8fbff;
-  --ha-mode-bg2:#eef5ff;
+  --ha-mode-bg:#fffdf7;
+  --ha-mode-bg2:#fff7e3;
   --ha-mode-panel:#ffffff;
-  --ha-mode-panel2:#f7fbff;
-  --ha-mode-text:#102235;
-  --ha-mode-muted:#64748b;
-  --ha-mode-border:rgba(61,134,214,.22);
-  --ha-mode-input:#ffffff;
-  --ha-mode-shadow:rgba(31,62,101,.12);
+  --ha-mode-panel2:#fffaf0;
+  --ha-mode-text:#241d13;
+  --ha-mode-muted:#756b5d;
+  --ha-mode-border:rgba(207,154,39,.28);
+  --ha-mode-input:#fffefb;
+  --ha-mode-shadow:rgba(116,82,24,.11);
 }
 
 /* Base page background */
@@ -84,7 +84,7 @@ html[data-ha-theme="light"] :is(
   .modal-content,.sheet-content,.dialog,.popup,.drawer,.side,
   .conversation,.messages,.composer,.list
 ){
-  background:linear-gradient(145deg,#ffffff,#f6f7f8) !important;
+  background:linear-gradient(145deg,#ffffff,#fff9ed) !important;
   border-color:var(--ha-mode-border) !important;
   box-shadow:0 8px 22px var(--ha-mode-shadow) !important;
 }
@@ -110,7 +110,7 @@ html[data-ha-theme="dark"] :is(.hero,.banner,.intro,.welcome,.hero-card){
 html[data-ha-theme="light"] :is(.hero,.banner,.intro,.welcome,.hero-card){
   background:
     radial-gradient(circle at 18% 8%,rgba(231,173,62,.11),transparent 35%),
-    linear-gradient(145deg,#ffffff,#f5f6f8) !important;
+    linear-gradient(145deg,#ffffff,#fff9ed) !important;
   color:#111315 !important;
   border-color:var(--ha-mode-border) !important;
 }
@@ -209,7 +209,7 @@ html[data-ha-theme="light"] .green{
   border-color:#a9ddbb !important;
 }
 html[data-ha-theme="light"] .blue{
-  background:#eef6ff !important;
+  background:#fff6df !important;
   color:#1c5f9d !important;
   border-color:#aed1f3 !important;
 }
@@ -268,15 +268,15 @@ html[data-ha-theme="dark"] .content{
 
 
 /* =========================================================
-   HA Marketing - Light Mode Vivid Enhancement
-   ألوان نهارية زاهية ونظيفة مع لمسات ذهبية وزرقاء.
+   HA Marketing - Sunny White Mode
+   الوضع الأساسي: أبيض شمسي دافئ بلمسات ذهبية.
    ========================================================= */
 html[data-ha-theme="light"] body{
   background:
-    radial-gradient(circle at 10% 0%,rgba(255,205,96,.20),transparent 24%),
-    radial-gradient(circle at 90% 10%,rgba(64,156,255,.14),transparent 28%),
-    linear-gradient(180deg,#ffffff 0%,#f7fbff 42%,#eef6ff 100%) !important;
-  color:#102235 !important;
+    radial-gradient(circle at 10% 0%,rgba(255,196,64,.24),transparent 26%),
+    radial-gradient(circle at 92% 8%,rgba(255,232,165,.32),transparent 30%),
+    linear-gradient(180deg,#ffffff 0%,#fffaf0 48%,#fffdf7 100%) !important;
+  color:#241d13 !important;
 }
 
 html[data-ha-theme="light"] body::before{
@@ -293,13 +293,13 @@ html[data-ha-theme="light"] :is(
   .conversation,.messages,.composer,.list
 ){
   background:
-    radial-gradient(circle at 90% 0%,rgba(255,205,92,.10),transparent 34%),
-    radial-gradient(circle at 0% 100%,rgba(71,158,255,.07),transparent 35%),
-    linear-gradient(145deg,#ffffff,#f7fbff) !important;
-  border-color:rgba(67,132,205,.20) !important;
+    radial-gradient(circle at 90% 0%,rgba(255,202,79,.14),transparent 34%),
+    radial-gradient(circle at 0% 100%,rgba(255,237,190,.20),transparent 38%),
+    linear-gradient(145deg,#ffffff,#fffaf0) !important;
+  border-color:rgba(207,154,39,.23) !important;
   box-shadow:
-    0 10px 28px rgba(37,76,120,.10),
-    0 2px 8px rgba(37,76,120,.06) !important;
+    0 10px 28px rgba(116,82,24,.10),
+    0 2px 8px rgba(116,82,24,.06) !important;
 }
 
 /* رؤوس الصفحات والشريط العلوي والسفلي */
@@ -307,27 +307,27 @@ html[data-ha-theme="light"] :is(
   header,.header,.topbar,.navbar,.nav,.top,.head,.toolbar,.appbar,
   .bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom,.shortcuts
 ){
-  background:rgba(255,255,255,.94) !important;
-  color:#102235 !important;
-  border-color:rgba(225,169,50,.28) !important;
-  box-shadow:0 6px 18px rgba(37,76,120,.08) !important;
+  background:rgba(255,253,247,.96) !important;
+  color:#241d13 !important;
+  border-color:rgba(214,160,45,.30) !important;
+  box-shadow:0 6px 18px rgba(116,82,24,.08) !important;
   backdrop-filter:blur(12px);
 }
 
 /* Hero */
 html[data-ha-theme="light"] :is(.hero,.banner,.intro,.welcome,.hero-card){
   background:
-    radial-gradient(circle at 15% 10%,rgba(255,206,97,.23),transparent 30%),
-    radial-gradient(circle at 88% 12%,rgba(80,162,255,.18),transparent 34%),
-    linear-gradient(145deg,#ffffff,#f3f8ff) !important;
-  color:#102235 !important;
-  border-color:rgba(220,162,42,.30) !important;
-  box-shadow:0 14px 34px rgba(48,91,140,.10) !important;
+    radial-gradient(circle at 15% 10%,rgba(255,203,77,.27),transparent 32%),
+    radial-gradient(circle at 88% 12%,rgba(255,235,174,.28),transparent 36%),
+    linear-gradient(145deg,#ffffff,#fff8e7) !important;
+  color:#241d13 !important;
+  border-color:rgba(220,162,42,.32) !important;
+  box-shadow:0 14px 34px rgba(116,82,24,.10) !important;
 }
 
 /* العناوين */
 html[data-ha-theme="light"] :is(h1,h2,h3,.title,.heading,.section-title){
-  color:#102235 !important;
+  color:#241d13 !important;
   text-shadow:none !important;
 }
 html[data-ha-theme="light"] :is(.gold,.accent,.highlight){
@@ -338,15 +338,15 @@ html[data-ha-theme="light"] :is(.gold,.accent,.highlight){
 html[data-ha-theme="light"] :is(
   p,.muted,.sub,.subtitle,.desc,.description,small,.help,.hint
 ){
-  color:#64748b !important;
+  color:#756b5d !important;
 }
 
 /* الأيقونات والدوائر */
 html[data-ha-theme="light"] :is(.iconbox,.qicon,.ico-box,.badgeIcon,.round,.round-btn,.menu-btn){
   background:
-    linear-gradient(145deg,#ffffff,#eef6ff) !important;
-  border-color:rgba(64,143,225,.30) !important;
-  box-shadow:0 7px 18px rgba(48,100,160,.10) !important;
+    linear-gradient(145deg,#ffffff,#fff7e4) !important;
+  border-color:rgba(213,158,39,.34) !important;
+  box-shadow:0 7px 18px rgba(116,82,24,.10) !important;
 }
 
 /* أزرار أساسية */
@@ -365,28 +365,28 @@ html[data-ha-theme="light"] :is(
 
 /* أزرار عادية */
 html[data-ha-theme="light"] button:not(.primary):not(.cta):not(.go):not(.save):not(.submit){
-  background:linear-gradient(145deg,#ffffff,#eef6ff) !important;
-  color:#12304d !important;
+  background:linear-gradient(145deg,#ffffff,#fff7e4) !important;
+  color:#2b2216 !important;
 }
 
 /* حقول الإدخال */
 html[data-ha-theme="light"] :is(input,select,textarea,.input,.search){
   background:#ffffff !important;
-  color:#102235 !important;
+  color:#241d13 !important;
   border-color:rgba(64,138,216,.24) !important;
   box-shadow:inset 0 1px 2px rgba(34,67,104,.04) !important;
 }
 html[data-ha-theme="light"] :is(input,select,textarea):focus{
-  border-color:#4d9be8 !important;
-  box-shadow:0 0 0 3px rgba(77,155,232,.12) !important;
+  border-color:#d6a02d !important;
+  box-shadow:0 0 0 3px rgba(214,160,45,.15) !important;
 }
 
 /* شريط الأخبار */
 html[data-ha-theme="light"] .ha-news-ticker{
   background:
-    linear-gradient(135deg,#ffffff,#f5f9ff) !important;
-  border-color:rgba(219,157,32,.38) !important;
-  box-shadow:0 8px 20px rgba(48,91,140,.09) !important;
+    linear-gradient(135deg,#ffffff,#fff8e9) !important;
+  border-color:rgba(219,157,32,.40) !important;
+  box-shadow:0 8px 20px rgba(116,82,24,.09) !important;
 }
 html[data-ha-theme="light"] .ha-ticker-track{
   color:#8c6115 !important;
@@ -394,11 +394,11 @@ html[data-ha-theme="light"] .ha-ticker-track{
 
 /* روابط القوائم */
 html[data-ha-theme="light"] .shortcuts a{
-  color:#16324d !important;
-  border-color:rgba(67,132,205,.14) !important;
+  color:#2d2417 !important;
+  border-color:rgba(207,154,39,.18) !important;
 }
 html[data-ha-theme="light"] .shortcuts a:hover{
-  background:#eef6ff !important;
+  background:#fff6df !important;
 }
 
 /* بطاقات الألوان المعروفة */
@@ -446,7 +446,7 @@ html[data-ha-theme="light"] table{
   overflow:hidden;
 }
 html[data-ha-theme="light"] th{
-  background:#eef6ff !important;
+  background:#fff6df !important;
   color:#173956 !important;
 }
 html[data-ha-theme="light"] tr:nth-child(even) td{
@@ -476,11 +476,11 @@ html[data-ha-theme="light"] .delete{
 
 /* زر تبديل الوضع */
 html[data-ha-theme="light"] .ha-theme-toggle{
-  background:linear-gradient(145deg,#ffffff,#eef6ff) !important;
-  color:#14314e !important;
+  background:linear-gradient(145deg,#ffffff,#fff5dc) !important;
+  color:#2b2114 !important;
   border-color:#e4b44c !important;
   box-shadow:
-    0 9px 24px rgba(48,91,140,.14),
+    0 9px 24px rgba(116,82,24,.14),
     0 0 0 3px rgba(228,180,76,.08) !important;
 }
 
@@ -502,14 +502,14 @@ html[data-ha-theme="light"] .ha-theme-toggle{
 
 /* ألوان أساسية أوضح */
 html[data-ha-theme="light"]{
-  --ha-fix-text:#102235;
-  --ha-fix-heading:#0b1f33;
-  --ha-fix-muted:#5f6d7a;
-  --ha-fix-soft:#73808d;
-  --ha-fix-link:#155b97;
+  --ha-fix-text:#241d13;
+  --ha-fix-heading:#1c160e;
+  --ha-fix-muted:#756b5d;
+  --ha-fix-soft:#8a7f70;
+  --ha-fix-link:#8a6115;
   --ha-fix-gold:#9b6713;
   --ha-fix-card:#ffffff;
-  --ha-fix-card2:#f6faff;
+  --ha-fix-card2:#fff9ed;
 }
 
 html[data-ha-theme="dark"]{
@@ -573,7 +573,7 @@ html[data-ha-theme] a:not(
 html[data-ha-theme="light"] #mainGrid .card{
   background:
     radial-gradient(circle at 50% 0,rgba(var(--glow),.10),transparent 38%),
-    linear-gradient(145deg,#ffffff,#f5f9ff) !important;
+    linear-gradient(145deg,#ffffff,#fff9ed) !important;
   border-color:rgba(var(--glow),.24) !important;
 }
 html[data-ha-theme="dark"] #mainGrid .card{
@@ -583,13 +583,13 @@ html[data-ha-theme="dark"] #mainGrid .card{
 }
 
 html[data-ha-theme="light"] #mainGrid .card h2{
-  color:#11263a !important;
+  color:#2a2115 !important;
 }
 html[data-ha-theme="dark"] #mainGrid .card h2{
   color:#ffffff !important;
 }
 html[data-ha-theme="light"] #mainGrid .card p{
-  color:#5f6d7b !important;
+  color:#756b5d !important;
 }
 html[data-ha-theme="dark"] #mainGrid .card p{
   color:#c4cbd1 !important;
@@ -599,7 +599,7 @@ html[data-ha-theme="light"] .iconbox{
   background:
     linear-gradient(145deg,rgba(var(--glow),.17),#ffffff) !important;
   border-color:rgba(var(--glow),.48) !important;
-  box-shadow:0 8px 20px rgba(33,72,114,.10) !important;
+  box-shadow:0 8px 20px rgba(116,82,24,.10) !important;
 }
 html[data-ha-theme="dark"] .iconbox{
   background:
@@ -608,10 +608,10 @@ html[data-ha-theme="dark"] .iconbox{
 
 /* اسم/نص البطل */
 html[data-ha-theme="light"] :is(.brand-name,.hero h1){
-  color:#10253a !important;
+  color:#2a2115 !important;
   background:none !important;
   -webkit-background-clip:border-box !important;
-  -webkit-text-fill-color:#10253a !important;
+  -webkit-text-fill-color:#2a2115 !important;
   text-shadow:none !important;
 }
 html[data-ha-theme="dark"] :is(.brand-name,.hero h1){
@@ -680,7 +680,7 @@ html[data-ha-theme="light"] :is(
   background:
     radial-gradient(circle at 90% 0,rgba(74,151,230,.07),transparent 35%),
     linear-gradient(145deg,#ffffff,#f4f9ff) !important;
-  color:#102235 !important;
+  color:#241d13 !important;
   border-color:rgba(53,119,188,.20) !important;
 }
 html[data-ha-theme="dark"] :is(
@@ -730,7 +730,7 @@ html[data-ha-theme="light"] :is(
   .request-card,.product-card,.store-card,.info-card,.status-card,
   .result,.feature,.option,.list,.conversation,.composer
 ){
-  color:#102235 !important;
+  color:#241d13 !important;
 }
 html[data-ha-theme="dark"] :is(
   .card,.box,.panel,.tile,.role,.tool,.order,.order-row,
@@ -772,7 +772,7 @@ html[data-ha-theme="dark"] :is(
 /* ===== حقول الإدخال ===== */
 html[data-ha-theme="light"] :is(input,select,textarea,.input,.search input){
   background:#ffffff !important;
-  color:#102235 !important;
+  color:#241d13 !important;
   -webkit-text-fill-color:#102235 !important;
   caret-color:#145f9e !important;
 }

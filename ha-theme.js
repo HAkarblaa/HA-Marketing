@@ -1,15 +1,15 @@
 (function(){
   'use strict';
 
-  var KEY='ha_theme_mode';
+  var KEY='ha_theme_mode_v2';
   var root=document.documentElement;
 
   function readTheme(){
     try{
       var v=localStorage.getItem(KEY);
-      return v==='light' ? 'light' : 'dark';
+      return v==='dark' ? 'dark' : 'light';
     }catch(e){
-      return 'dark';
+      return 'light';
     }
   }
 
