@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="theme-color" content="#f6fbff">
+<meta name="theme-color" content="#12a879">
 <title>HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -519,6 +519,7 @@ body .bottom-link .bi{color:inherit!important}
 body .promo-pill b,body .promo-pill span{color:#845700!important}
 body #haNetBadge{background:#fff8df!important;color:#7a5200!important;border-color:#ffd477!important;box-shadow:0 8px 20px rgba(75,103,129,.12)!important}
 </style>
+<link rel="stylesheet" href="ha-home-vivid-layout.css?v=20260925-v1">
 </head>
 <body>
 <div id="haPageLoading" class="ha-page-loading" aria-live="polite"><div class="ha-page-spinner"></div><div id="haPageLoadingText" class="ha-page-loading-text">جاري التحميل...</div></div> <div id="haSplash" aria-label="شاشة الدخول"> <div class="splash-card"> <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA logo"></div> <div class="splash-title">HA Marketing</div> <div class="splash-text">مرحباً بك في عالمك الخاص</div> <button class="splash-continue" type="button" onclick="continueLogin()">متابعة الدخول</button> </div>
@@ -536,39 +537,77 @@ body #haNetBadge{background:#fff8df!important;color:#7a5200!important;border-col
   <span class="bell">🔔</span>
   <span class="txt"><b id="haDriverOrderTitle">عندك طلب نقل جديد</b><small id="haDriverOrderText">اضغط حتى تفتح واجهة السائق وتشوف الطلب.</small></span>
   <span id="haDriverOrderCount" class="count">1</span>
-</a> <main class="shell content"> <div class="grid" id="mainGrid"> <a class="card c-shop" href="shop.html" data-search="تسوق الآن متجر منتجات شراء"><div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>تصفح المنتجات واطلب مباشرة</p></a> <a class="card c-service" href="services.html" data-search="طلب خدمة خدمات صيانة"><div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>أرسل تفاصيل الخدمة التي تحتاجها</p></a> <a class="card c-chat chat-card-premium" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم">
-      <span class="chat-live-badge"><i></i> متاح الآن</span>
-      <div class="iconbox chat-iconbox">
-        <span class="chat-main-icon">💬</span>
-        <span class="chat-mini-dot">●</span>
-      </div>
-      <h2>الدردشة</h2>
-      <p class="chat-subtitle">تواصل بسرعة داخل HA Marketing</p>
+</a> <main class="shell content ha-home-easy">
+  <section class="ha-home-heading">
+    <div>
+      <span class="ha-kicker">HA Marketing</span>
+      <h1>الخدمات الرئيسية</h1>
+      <p>كل ما تحتاجه في مكان واحد وبترتيب أسرع وأسهل</p>
+    </div>
+    <span class="ha-heading-mark" aria-hidden="true">✦</span>
+  </section>
 
-      <div class="chat-preview-row" aria-hidden="true">
-        <span class="chat-avatar">👤</span>
-        <span class="chat-avatar">👥</span>
-        <span class="chat-avatar">🎧</span>
-        <span class="chat-count">+3</span>
-      </div>
+  <div class="ha-home-search">
+    <span class="ha-search-voice" aria-hidden="true">🎙️</span>
+    <input id="homeSearchInput" type="search" placeholder="ماذا تريد أن تفعل اليوم؟" autocomplete="off"
+      oninput="document.getElementById('searchInput').value=this.value;searchCards()">
+    <span class="ha-search-glass" aria-hidden="true">⌕</span>
+  </div>
 
-      <div class="chat-features">
-        <span>💬 خاصة</span>
-        <span>👥 مجموعات</span>
-        <span>🎧 دعم</span>
-      </div>
-
-      <div class="chat-open-line">
-        <span>فتح الدردشة</span>
-        <b>←</b>
-      </div>
-    </a> <a class="card c-news" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>آخر الأخبار</h2><p>تابع آخر الأخبار والتحديثات</p></a> <a class="card c-religious" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الأمور الدينية</h2><p>القرآن الكريم ومحتوى ديني آخر</p></a> <a class="card c-study" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات"><div class="iconbox">📚</div><h2>دراسة</h2><p>محتوى دراسي وتعليمي للطلاب</p></a> <a class="card c-entertain" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة"><div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ترفيهي متنوع</p></a> <a class="card c-sports" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>رياضة</h2><p>أهم وأحدث الأنشطة الرياضية</p></a> <a class="card c-taxi" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل"><b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>اطلب تكسي أو مندوب توصيل بسهولة</p></a> <a class="card c-contact" href="call-us.html" data-search="اتصل بنا اتصال تواصل هاتف">
-      <div class="iconbox">☎️</div><h2>اتصل بنا</h2><p>طرق التواصل مع HA Marketing</p>
+  <section class="ha-primary-grid" id="mainGrid">
+    <a class="card c-shop ha-primary-card" href="shop.html" data-search="تسوق الآن متجر منتجات شراء">
+      <div class="iconbox">🛒</div><h2>تسوق الآن</h2><p>منتجات مميزة وبأفضل الأسعار</p>
     </a>
-    <a class="card c-suggest" href="suggestions.html" data-search="مقترحاتكم اقتراح فكرة ملاحظة">
-      <div class="iconbox">💡</div><h2>مقترحاتكم</h2><p>اكتب اقتراحك ويوصل للأدمن الرئيسي</p>
+    <a class="card c-service ha-primary-card" href="services.html" data-search="طلب خدمة خدمات صيانة">
+      <div class="iconbox">🛠️</div><h2>طلب خدمة</h2><p>خدمات متنوعة باحترافية</p>
     </a>
-    <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div> </div>
+    <a class="card c-study ha-primary-card" href="study.html" data-search="دراسة تعليم طلاب تلخيص مواد تحويل الملفات">
+      <div class="iconbox">🎓</div><h2>دراسة</h2><p>مناهج ومصادر وتجهيزات دراسية</p>
+    </a>
+    <a class="card c-taxi ha-primary-card" href="taxi-delivery.html" data-search="تكسي تاكسي مندوب توصيل تكتك ستوتة سيارة حمل">
+      <b id="haTransportOrderBadge" class="ha-transport-order-badge">0</b><div class="iconbox">🚕</div><h2>طلب تكسي أو مندوب</h2><p>تنقل وخدمات سريعة</p>
+    </a>
+    <a class="card c-entertain ha-primary-card" href="entertainment.html" data-search="ترفيه العاب معلومات اسئلة">
+      <div class="iconbox">🎮</div><h2>ترفيه</h2><p>ألعاب ومحتوى ممتع</p>
+    </a>
+    <a class="card c-contact ha-primary-card" href="call-us.html" data-search="اتصل بنا اتصال تواصل هاتف">
+      <div class="iconbox">☎️</div><h2>اتصل بنا</h2><p>دعم ومساعدة وتواصل مباشر</p>
+    </a>
+
+    <div class="ha-wide-promo">
+      <div class="ha-promo-copy">
+        <span class="ha-promo-badge">كل خدماتك أقرب</span>
+        <h2>كل احتياجاتك في مكان واحد</h2>
+        <p>تسوق، اطلب خدمة، ادرس، تنقل واستمتع بالمحتوى داخل HA Marketing.</p>
+        <a href="shop.html" class="ha-promo-btn">ابدأ الآن <b>←</b></a>
+      </div>
+      <div class="ha-promo-art" aria-hidden="true">
+        <span class="p1">🛍️</span><span class="p2">📱</span><span class="p3">🚕</span><span class="p4">📚</span><span class="p5">🎧</span>
+      </div>
+    </div>
+
+    <section class="ha-home-subsection ha-featured-section">
+      <div class="ha-sub-head"><div><h2>أقسام مختارة لك</h2><p>الأكثر استخداماً داخل التطبيق</p></div><span>★</span></div>
+      <div class="ha-featured-grid">
+        <a class="ha-feature-card shop" href="shop.html"><div class="fi">🛍️</div><div><h3>تسوق الآن</h3><p>منتجات متنوعة وبأفضل الأسعار</p></div><b>‹</b></a>
+        <a class="ha-feature-card taxi" href="taxi-delivery.html"><div class="fi">🚕</div><div><h3>طلب تكسي أو مندوب</h3><p>تنقل بسرعة وخدمات توصيل</p></div><b>‹</b></a>
+        <a class="ha-feature-card study" href="study.html"><div class="fi">🎓</div><div><h3>دراسة</h3><p>كل ما تحتاجه لمسيرتك الدراسية</p></div><b>‹</b></a>
+      </div>
+    </section>
+
+    <section class="ha-home-subsection ha-more-section">
+      <div class="ha-sub-head"><div><h2>خدمات إضافية</h2><p>أقسام مهمة تبقى قريبة منك</p></div><span>▦</span></div>
+      <div class="ha-more-grid">
+        <a class="card c-religious ha-more-card" href="religious.html" data-search="الأمور الدينية القرآن دعاء زيارة"><div class="iconbox">🕌</div><h2>الديني</h2><p>محتوى ديني موثوق وقيم إسلامية</p><i>‹</i></a>
+        <a class="card c-sports ha-more-card" href="sports.html" data-search="رياضة كرة القدم جم لياقة"><div class="iconbox">⚽</div><h2>الرياضة</h2><p>أخبار وفعاليات وكل ما يخص الرياضة</p><i>‹</i></a>
+        <a class="card c-chat ha-more-card" href="chat.html" data-search="الدردشة دردشة تواصل رسائل مجموعات دعم"><div class="iconbox">💬</div><h2>الدردشة</h2><p>تواصل مع الأصدقاء والمجتمع</p><i>‹</i></a>
+        <a class="card c-news ha-more-card" href="news.html" data-search="آخر الأخبار اخبار تحديثات"><div class="iconbox">📰</div><h2>الأخبار</h2><p>آخر الأخبار والمستجدات</p><i>‹</i></a>
+        <a class="card c-suggest ha-more-card" href="suggestions.html" data-search="مقترحاتكم اقتراح فكرة ملاحظة"><div class="iconbox">💡</div><h2>مقترحاتكم</h2><p>نستقبل آراءكم دائماً</p><i>‹</i></a>
+      </div>
+    </section>
+
+    <div id="noResults" class="no-results">ماكو قسم مطابق للبحث.</div>
+  </section>
 </main> <nav class="bottom-nav bottom-nav-five" aria-label="القائمة السفلية">
   <div class="bottom-inner bottom-inner-five">
     <a class="bottom-link active" href="index.html">
@@ -887,5 +926,11 @@ document.addEventListener('click',function(e){const a=e.target.closest('a[href]'
 })();
 </script>
 
+<script id="ha-home-search-sync">
+document.addEventListener('DOMContentLoaded',function(){
+  var a=document.getElementById('searchInput'),b=document.getElementById('homeSearchInput');
+  if(a&&b){a.addEventListener('input',function(){b.value=a.value||'';});}
+});
+</script>
 </body>
 </html>
