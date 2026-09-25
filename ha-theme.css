@@ -1,93 +1,24 @@
-/* =========================================================
-   HA Marketing — Vivid Daylight Global Override
-   الوضع النهاري الزاهي فقط، بدون وضع ليلي
-   ========================================================= */
-:root{
-  --ha-mode-bg:#f8fcff;
-  --ha-mode-bg2:#fffaf3;
-  --ha-mode-panel:#ffffff;
-  --ha-mode-panel2:#f6fbff;
-  --ha-mode-text:#10243e;
-  --ha-mode-muted:#617289;
-  --ha-mode-border:rgba(61,160,230,.20);
-  --ha-mode-input:#ffffff;
-  --ha-mode-shadow:rgba(41,92,139,.10);
-  --ha-mode-gold:#ffb52f;
-  --ha-mode-gold2:#ffd85a;
-  --ha-mode-danger:#d94c5a;
-  --ha-mode-success:#18a46b;
-}
+/* HA Marketing — Global Bright Override */
 html,html[data-ha-theme],html[data-ha-theme="light"],html[data-ha-theme="dark"]{color-scheme:light!important;}
-html[data-ha-theme="dark"]{
-  --ha-mode-bg:#f8fcff!important;--ha-mode-bg2:#fffaf3!important;--ha-mode-panel:#fff!important;--ha-mode-panel2:#f6fbff!important;
-  --ha-mode-text:#10243e!important;--ha-mode-muted:#617289!important;--ha-mode-border:rgba(61,160,230,.20)!important;--ha-mode-input:#fff!important;--ha-mode-shadow:rgba(41,92,139,.10)!important;
-}
-html[data-ha-theme] body,body{
-  background:
-    radial-gradient(circle at 8% 4%,rgba(255,216,90,.22),transparent 22%),
-    radial-gradient(circle at 92% 6%,rgba(71,188,255,.24),transparent 28%),
-    linear-gradient(180deg,#fbfdff,#f6fbff 58%,#fffaf4)!important;
-  color:#10243e!important;
-}
-html[data-ha-theme] body::before{opacity:.18!important;}
-
-html[data-ha-theme] :is(.wrap,.container,.page,.main,.content,.shell,.app,.view){color:#10243e!important;}
-html[data-ha-theme] :is(.card,.box,.panel,.tile,.qcard,.category,.role,.tool,.order,.order-row,.request-card,.provider-card,.service-card,.product-card,.store-card,.info-card,.status-card,.items,.delivery,.result,.feature,.option,.section-shell,.modal-content,.sheet-content,.dialog,.popup,.drawer,.side,.conversation,.messages,.composer,.list){
-  color:#10243e!important;border-color:rgba(67,161,229,.20)!important;
-}
-
-html[data-ha-theme] :is(header,.header,.topbar,.navbar,.nav,.top,.head,.toolbar,.appbar,.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom,.shortcuts,.transport-bottom-nav){
-  background:rgba(255,255,255,.96)!important;color:#10243e!important;border-color:rgba(255,180,52,.34)!important;
-}
-
-html[data-ha-theme] :is(h1,h2,h3,h4,h5,h6,.title,.name,.heading,label,b,strong){color:#10243e!important;}
-html[data-ha-theme] :is(p,.muted,.sub,.subtitle,.desc,.description,small,.help,.hint){color:#63758b!important;}
-html[data-ha-theme] :is(input,select,textarea,.input,.search){background:#fff!important;color:#10243e!important;border-color:#d5e5f3!important;}
-html[data-ha-theme] input::placeholder,html[data-ha-theme] textarea::placeholder{color:#96a4b4!important;opacity:1!important;}
-html[data-ha-theme] option{background:#fff!important;color:#10243e!important;}
-html[data-ha-theme] table{background:#fff!important;color:#10243e!important;}
-html[data-ha-theme] th{background:linear-gradient(135deg,#eaf7ff,#fff4d7)!important;color:#143e62!important;}
-html[data-ha-theme] td,html[data-ha-theme] th{border-color:#e0eaf2!important;}
-html[data-ha-theme] :is(.overlay,.modal,.sheet,.popup-overlay,.drawer-overlay){background:rgba(70,102,135,.28)!important;backdrop-filter:blur(5px);}
-html[data-ha-theme] :is(#map,.map,.leaflet-container,.map-shell,img,video,canvas,iframe){filter:none!important;}
-
-/* لا يوجد زر للوضع الليلي */
-.ha-theme-toggle,#haThemeToggle,[data-theme-toggle],[data-ha-theme-toggle]{display:none!important;visibility:hidden!important;}
-
-/* HOME — خلفية وهوية زاهية */
-body .hero{
-  background:
-    radial-gradient(circle at 8% 28%,rgba(255,212,86,.30),transparent 22%),
-    radial-gradient(circle at 88% 18%,rgba(66,188,255,.31),transparent 30%),
-    radial-gradient(circle at 48% 105%,rgba(255,112,171,.12),transparent 30%),
-    linear-gradient(135deg,#fffdf8 0%,#f8fdff 47%,#eaf7ff 100%)!important;
-  border-bottom:1px solid rgba(255,176,41,.44)!important;
-  box-shadow:0 12px 38px rgba(60,111,161,.08)!important;
-}
-body .hero::before{
-  background:
-    radial-gradient(circle at 12% 26%,rgba(255,255,255,.85),transparent 21%),
-    radial-gradient(circle at 84% 22%,rgba(255,255,255,.72),transparent 24%),
-    linear-gradient(115deg,transparent 0 38%,rgba(255,255,255,.35) 38.2% 38.8%,transparent 39% 100%)!important;
-  opacity:.7!important;
-}
-body .brand-name{color:#102b49!important;text-shadow:none!important;}
-body .brand-name .gold{background:linear-gradient(135deg,#ffe98a,#ffbe38)!important;color:#102b49!important;-webkit-text-fill-color:#102b49!important;border-radius:6px;padding:0 .08em;}
-body .brand-sub{color:#526b85!important;}
-body .round-btn,body .menu-btn{
-  background:rgba(255,255,255,.90)!important;color:#143a5e!important;border:1px solid rgba(255,177,47,.58)!important;
-  box-shadow:0 8px 22px rgba(55,107,158,.10)!important;
-}
-body .promo-pill{
-  background:rgba(255,255,255,.91)!important;color:#845700!important;border:1px solid rgba(255,174,39,.55)!important;
-  box-shadow:0 14px 32px rgba(95,113,132,.10)!important;
-}
-body .search-box{background:#fff!important;border-color:#d4e7f6!important;box-shadow:0 14px 34px rgba(46,103,157,.12)!important;}
-body .search-box input{background:#f8fcff!important;color:#10243e!important;}
-body .shell{background:transparent!important;}
-
-/* Home cards — ألوان مخصصة لكل قسم */
-body #mainGrid .card{box-shadow:0 14px 34px rgba(49,104,153,.10)!important;border-width:1px!important;}
+html[data-ha-theme="dark"]{color-scheme:light!important;}
+html body{background:linear-gradient(180deg,#fcfeff 0%,#f4faff 58%,#fff9f4 100%)!important;color:#10243e!important;}
+html body *{caret-color:#1a7ec8;}
+html body :is(.hero,.banner,.intro,.welcome,.hero-card){color:#10243e!important;}
+html body :is(#map,.map,.leaflet-container,.map-shell,img,video,canvas,iframe){filter:none!important;}
+html body :is(.overlay,.modal,.sheet,.popup-overlay,.drawer-overlay){background:rgba(70,102,135,.24)!important;}
+html body :is(.soon,.chat-live-badge,.badge-danger,.error,.danger){text-shadow:none!important;}
+html body .soon{background:#fff8e0!important;color:#996300!important;border-color:#ffd67a!important;}
+html body .no-results{background:#fff!important;color:#607187!important;border-color:#d8e8f5!important;}
+/* specific transport and cards readability */
+html body .transport-bottom-nav, html body .transport-bottom-nav *{text-shadow:none!important;}
+html body .transport-bottom-nav{background:rgba(255,255,255,.97)!important;border-top:1px solid rgba(255,180,52,.45)!important;}
+html body .transport-bottom-nav a, html body .transport-bottom-nav button{color:#46627a!important;}
+html body .transport-bottom-nav .active, html body .transport-bottom-nav a.active{background:linear-gradient(180deg,#fff8d9,#fff0b0)!important;color:#9b6500!important;border-radius:14px!important;}
+html body .coming-soon-box, html body .modal-content, html body .dialog{background:linear-gradient(150deg,#ffffff,#f6fbff)!important;color:#10243e!important;border-color:#d9e9f7!important;}
+html body .coming-soon-box h2{color:#a06a00!important;}
+html body .coming-soon-box p{color:#5f7287!important;}
+html body .coming-soon-close{background:linear-gradient(135deg,#ffd65a,#ffad33)!important;color:#593700!important;border-color:#ffb949!important;}
+/* home section extra color labels */
 body #mainGrid .c-shop{background:linear-gradient(145deg,#fff9e9,#fff0c8)!important;border-color:#ffd27a!important;}
 body #mainGrid .c-service{background:linear-gradient(145deg,#eefaff,#dff5ff)!important;border-color:#83d3ff!important;}
 body #mainGrid .c-study{background:linear-gradient(145deg,#fff1f7,#ffe3ee)!important;border-color:#ffb0d0!important;}
@@ -99,49 +30,3 @@ body #mainGrid .c-suggest{background:linear-gradient(145deg,#fffbea,#fff1b9)!imp
 body #mainGrid .c-news{background:linear-gradient(145deg,#eef6ff,#dfeeff)!important;border-color:#9fcaff!important;}
 body #mainGrid .c-religious{background:linear-gradient(145deg,#effdf6,#dcf8e8)!important;border-color:#9bdfb6!important;}
 body #mainGrid .c-chat{background:linear-gradient(145deg,#f2f3ff,#e5e8ff)!important;border-color:#b9c0ff!important;}
-body #mainGrid .card p{color:#5e7085!important;}
-body #mainGrid .card h2{color:#10243e!important;}
-body #mainGrid .iconbox{
-  background:rgba(255,255,255,.72)!important;border-color:rgba(76,154,215,.26)!important;
-  box-shadow:0 10px 22px rgba(56,106,149,.10)!important;
-}
-
-/* القائمة الجانبية */
-body .shortcuts{background:linear-gradient(160deg,#ffffff,#f4fbff)!important;border-color:#d2e8f7!important;box-shadow:0 24px 60px rgba(43,86,128,.18)!important;}
-body .drawer-title{color:#164d79!important;}
-body .drawer-title small{color:#78899a!important;}
-body .drawer-close{background:#edf7ff!important;color:#19466d!important;border-color:#cae3f5!important;}
-body .shortcuts a{background:#fff!important;color:#173551!important;border-color:#e1edf5!important;box-shadow:0 7px 16px rgba(56,102,144,.06)!important;}
-body .shortcuts a:hover{background:#eef9ff!important;border-color:#9ed7f8!important;}
-body .short-ico{background:linear-gradient(145deg,#fff5cf,#ffe7a2)!important;color:#9a6500!important;border-color:#ffd26d!important;}
-
-/* الشريط السفلي — أبيض وزاهي بدل الأسود */
-body .bottom-nav,body .transport-bottom-nav{
-  background:rgba(255,255,255,.97)!important;border-top:1px solid rgba(255,179,48,.55)!important;
-  box-shadow:0 -10px 34px rgba(45,94,138,.14)!important;
-}
-body .bottom-link,body .transport-bottom-nav a,body .transport-bottom-nav button{color:#4d647b!important;text-shadow:none!important;}
-body .bottom-link.active,body .transport-bottom-nav .active{color:#c47a00!important;background:linear-gradient(180deg,#fff8d8,#fff1b0)!important;border-radius:16px!important;}
-body .bottom-brand{background:linear-gradient(180deg,#fff9df,#fff3be)!important;border-top-color:#ffc74f!important;}
-body .bottom-brand strong{color:#17334e!important;}
-body .bottom-brand small{color:#8b743f!important;}
-
-/* النوافذ والتحميل */
-body .coming-soon-modal{background:rgba(63,91,119,.28)!important;}
-body .coming-soon-box{background:linear-gradient(145deg,#fff,#f3f9ff)!important;border-color:#cde5f5!important;box-shadow:0 24px 58px rgba(46,93,136,.18)!important;}
-body .coming-soon-box h2{color:#17527f!important;}body .coming-soon-box p{color:#6a7b8d!important;}
-body .coming-soon-close{background:linear-gradient(135deg,#ffe073,#ffb43b)!important;color:#573600!important;}
-body .ha-page-loading{background:rgba(245,251,255,.94)!important;}
-body .ha-page-spinner{border-color:#d9ebf7!important;border-top-color:#33aef4!important;}
-body .ha-page-loading-text{color:#183a58!important;}
-
-/* يمنع أي خلفية ليلية قديمة */
-html[data-ha-theme="dark"] body,
-html[data-ha-theme="dark"] .hero,
-html[data-ha-theme="dark"] .card,
-html[data-ha-theme="dark"] .box,
-html[data-ha-theme="dark"] .panel,
-html[data-ha-theme="dark"] .bottom-nav,
-html[data-ha-theme="dark"] .shortcuts{
-  color-scheme:light!important;
-}

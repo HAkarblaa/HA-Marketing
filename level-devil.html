@@ -1,8 +1,10 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<script id="ha-daylight-boot">(function(){try{var r=document.documentElement;r.setAttribute('data-ha-theme','light');r.style.colorScheme='light';['ha_theme_mode_v2','ha_theme_mode','ha-theme','theme'].forEach(function(k){localStorage.setItem(k,'light')});}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6fbff">
 <title>لعبة ليفل ديفل - HA Marketing</title>
 <style>
 :root{--bg:#07111f;--panel:#102033;--panel2:#16304b;--line:#35658f;--gold:#ffd400;--text:#fff;--muted:#d4dfeb;--accent:#ffd400;--accent2:#ff9f1c;--danger:#ff2d2d;--ok:#16c85b}
@@ -37,235 +39,22 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 .note{color:var(--muted);font-size:13px;line-height:1.8}
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
 @media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
-
-.hint-btn{
-  position:absolute;right:12px;bottom:12px;z-index:12;
-  width:44px;height:44px;border:1px solid rgba(255,212,0,.65);
-  border-radius:50%;background:linear-gradient(180deg,#fff3a0,#ffd400);
-  color:#17120a;font-size:23px;display:grid;place-items:center;cursor:pointer;
-  box-shadow:0 8px 22px rgba(0,0,0,.28),0 0 18px rgba(255,212,0,.2)
-}
-.hint-btn:active{transform:scale(.96)}
-.hint-box{
-  position:absolute;right:12px;bottom:64px;z-index:13;width:min(360px,calc(100% - 24px));
-  background:rgba(8,15,24,.96);border:1px solid rgba(255,212,0,.5);
-  border-radius:18px;padding:13px 14px;box-shadow:0 16px 38px rgba(0,0,0,.38);
-  display:none
-}
-.hint-box.show{display:block}
-.hint-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
-.hint-head b{color:#ffe36d;font-size:15px}
-.hint-close{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;padding:0 3px}
-.hint-text{color:#eef4fa;font-size:13px;line-height:1.8}
-@media (max-width:480px){
-  .hint-btn{right:8px;bottom:8px;width:40px;height:40px;font-size:21px}
-  .hint-box{right:8px;bottom:56px;width:calc(100% - 16px);padding:12px}
-}
-
-
-/* ===== توزيع أزرار اللعب: الاتجاهات بجهة والقفز بالجهة الثانية ===== */
-.top-actions{
-  display:flex;gap:6px;align-items:center;justify-content:flex-end;
-  padding:5px;border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;background:rgba(5,11,18,.38);backdrop-filter:blur(8px)
-}
-.top-actions .ghost{
-  min-width:78px;padding:10px 12px;border-radius:12px;
-  background:linear-gradient(180deg,#182638,#0d1622);
-  border-color:rgba(255,212,0,.18);font-size:13px
-}
-#portraitBtnTop{display:none}
-
-/* الشاشة الطبيعية: الاتجاهات يسار والقفز يمين */
-.mobile-controls{
-  display:grid;
-  grid-template-columns:minmax(150px,1fr) minmax(150px,1fr);
-  grid-template-areas:
-    "pad jump"
-    "actions actions";
-  gap:10px 18px;margin-top:10px;padding:11px;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:20px;
-  background:linear-gradient(180deg,rgba(17,28,42,.96),rgba(8,14,23,.96));
-  box-shadow:0 12px 28px rgba(0,0,0,.24);
-  direction:ltr;align-items:stretch
-}
-.mobile-controls .pad{
-  grid-area:pad;display:grid;grid-template-columns:1fr 1fr;gap:8px;
-  width:100%;min-width:0;justify-self:start
-}
-.mobile-controls .jump{
-  grid-area:jump;width:100%;min-width:0;min-height:70px;
-  justify-self:end;border-radius:18px;
-  background:linear-gradient(135deg,#ffc400,#ff8a1f);
-  border-color:rgba(255,221,127,.55);font-size:20px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px rgba(255,145,24,.15)
-}
-.mobile-controls .ctrl{
-  min-width:0;width:100%;min-height:70px;border-radius:18px;
-  border:1px solid rgba(255,241,145,.38);
-  background:linear-gradient(180deg,#ffe96d,#ffd000);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 18px rgba(0,0,0,.23);
-  transition:transform .08s ease,filter .08s ease
-}
-.mobile-controls .ctrl:active{transform:translateY(2px) scale(.98);filter:brightness(.92)}
-.mobile-controls .actions{
-  grid-area:actions;display:grid;grid-template-columns:1fr 1fr;gap:8px;
-  direction:rtl;width:100%;max-width:420px;justify-self:center
-}
-.mobile-controls .actions button{
-  min-height:43px;border-radius:13px;padding:9px 12px;font-size:13px
-}
-
-.orientation-exit{
-  position:absolute;top:10px;right:10px;z-index:40;
-  min-width:46px;height:42px;
-  border:1px solid rgba(255,212,0,.58);
-  background:rgba(8,15,24,.92);color:#ffe36d;
-  border-radius:13px;padding:7px 11px;font-weight:900;
-  display:none;cursor:pointer;backdrop-filter:blur(8px)
-}
-#gameShell{position:relative}
-
-@media (max-width:720px){
-  .topbar{
-    display:grid;grid-template-columns:auto 1fr;grid-template-areas:
-      "back brand"
-      "tools tools";
-    align-items:center;gap:8px
-  }
-  .topbar>a.ghost{grid-area:back;padding:9px 11px;border-radius:13px;font-size:12px}
-  .brand{grid-area:brand;justify-self:end;min-width:0}
-  .top-actions{grid-area:tools;width:100%;display:grid;grid-template-columns:1fr 1fr}
-  .top-actions .ghost{width:100%;min-width:0}
-}
-
-@media (max-width:480px){
-  .mobile-controls{
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    gap:8px 12px;padding:8px;border-radius:16px
-  }
-  .mobile-controls .ctrl{min-height:61px;font-size:30px;border-radius:15px}
-  .mobile-controls .jump{min-height:61px;font-size:18px;border-radius:15px}
-  .mobile-controls .actions button{min-height:40px;padding:8px;font-size:12px}
-}
-
-/* ===== وضع اللعب بالعرض =====
-   الاتجاهات تكون بالجهة اليسرى والقفز بالجهة اليمنى،
-   وابدأ/إعادة بالمنتصف تحتهم. */
-#gameShell:fullscreen,
-#gameShell.landscape-fallback{
-  background:#07111f;border-radius:0;padding:8px;
-  display:block;overflow:hidden
-}
-#gameShell:fullscreen{width:100%;height:100%}
-#gameShell:fullscreen .orientation-exit,
-#gameShell.landscape-fallback .orientation-exit{display:block}
-
-#gameShell:fullscreen .canvas-wrap,
-#gameShell.landscape-fallback .canvas-wrap{
-  width:100%;height:100%;display:flex;align-items:center;justify-content:center
-}
-#gameShell:fullscreen canvas,
-#gameShell.landscape-fallback canvas{
-  width:100%;height:auto;max-height:100%;object-fit:contain
-}
-
-#gameShell:fullscreen .mobile-controls,
-#gameShell.landscape-fallback .mobile-controls{
-  position:absolute;inset:0;z-index:28;margin:0;padding:0;
-  display:block;background:transparent;border:0;border-radius:0;box-shadow:none;
-  pointer-events:none
-}
-
-/* اتجاهات الجهة اليسرى */
-#gameShell:fullscreen .mobile-controls .pad,
-#gameShell.landscape-fallback .mobile-controls .pad{
-  position:absolute;left:14px;bottom:76px;width:210px;
-  display:grid;grid-template-columns:1fr 1fr;gap:9px;
-  pointer-events:auto
-}
-#gameShell:fullscreen .mobile-controls .ctrl,
-#gameShell.landscape-fallback .mobile-controls .ctrl{
-  min-width:0;width:100%;min-height:64px;font-size:30px;
-  background:linear-gradient(180deg,rgba(255,235,112,.94),rgba(255,207,0,.94));
-  box-shadow:0 9px 24px rgba(0,0,0,.3)
-}
-
-/* القفز بالجهة اليمنى */
-#gameShell:fullscreen .mobile-controls .jump,
-#gameShell.landscape-fallback .mobile-controls .jump{
-  position:absolute;right:14px;bottom:76px;width:160px;min-height:64px;
-  pointer-events:auto;font-size:19px;
-  background:linear-gradient(135deg,rgba(255,196,0,.96),rgba(255,138,31,.96));
-  box-shadow:0 9px 24px rgba(0,0,0,.3)
-}
-
-/* ابدأ وإعادة بالمنتصف تحت أزرار اللعب */
-#gameShell:fullscreen .mobile-controls .actions,
-#gameShell.landscape-fallback .mobile-controls .actions{
-  position:absolute;left:50%;bottom:13px;transform:translateX(-50%);
-  width:min(330px,46%);display:grid;grid-template-columns:1fr 1fr;gap:7px;
-  pointer-events:auto;direction:rtl
-}
-#gameShell:fullscreen .mobile-controls .actions button,
-#gameShell.landscape-fallback .mobile-controls .actions button{
-  min-height:46px;padding:8px 9px;font-size:12px;border-radius:12px;
-  background:rgba(8,15,24,.9);backdrop-filter:blur(8px)
-}
-#gameShell:fullscreen .hint-btn,
-#gameShell.landscape-fallback .hint-btn{
-  right:12px;bottom:150px;width:40px;height:40px;font-size:20px
-}
-
-/* بديل للأجهزة التي تمنع قفل اتجاه الشاشة */
-#gameShell.landscape-fallback{
-  position:fixed;z-index:99999;left:0;top:0;
-  width:100vh;height:100vw;
-  transform:rotate(90deg) translateY(-100%);
-  transform-origin:top left
-}
-body.landscape-lock{overflow:hidden}
-
-@media (orientation:landscape) and (max-height:600px){
-  #gameShell:fullscreen .mobile-controls .pad,
-  #gameShell.landscape-fallback .mobile-controls .pad{
-    left:10px;bottom:66px;width:185px;gap:7px
-  }
-  #gameShell:fullscreen .mobile-controls .jump,
-  #gameShell.landscape-fallback .mobile-controls .jump{
-    right:10px;bottom:66px;width:145px;min-height:56px
-  }
-  #gameShell:fullscreen .mobile-controls .ctrl,
-  #gameShell.landscape-fallback .mobile-controls .ctrl{min-height:56px;font-size:27px}
-  #gameShell:fullscreen .mobile-controls .actions,
-  #gameShell.landscape-fallback .mobile-controls .actions{
-    bottom:8px;width:min(300px,44%)
-  }
-  #gameShell:fullscreen .mobile-controls .actions button,
-  #gameShell.landscape-fallback .mobile-controls .actions button{min-height:40px}
-  #gameShell:fullscreen .hint-btn,
-  #gameShell.landscape-fallback .hint-btn{bottom:130px}
-}
-
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="ha-premium-theme.css?v=20260925-v4">
+<link rel="stylesheet" href="ha-theme.css?v=20260925-v4">
+<link rel="stylesheet" href="ha-daylight-force.css?v=20260925-v4">
+<script src="ha-theme.js?v=20260925-v4"></script>
 </head>
 <body>
 <div class="page">
   <div class="topbar">
     <a class="ghost" href="entertainment.html">↩ رجوع للترفيه</a>
     <div class="brand"><div class="logo">👿</div><div><h1>لعبة ليفل ديفل</h1><p>50 مرحلة متدرجة الصعوبة - HA Marketing</p></div></div>
-    <div class="top-actions">
-      <button class="ghost" id="landscapeBtn" type="button">↔ عرض</button>
-      <button class="ghost" id="portraitBtnTop" type="button">↕ شاشة طبيعية</button>
-      <button class="ghost" id="fullscreenBtn" type="button">⛶ ملء</button>
-    </div>
+    <button class="ghost" id="fullscreenBtn">⛶ ملء الشاشة</button>
   </div>
 
   <div class="layout">
-    <div class="stagebox" id="gameShell">
-      <button class="orientation-exit" id="portraitBtn" type="button">↕ طبيعي</button>
+    <div class="stagebox">
       <div class="canvas-wrap" id="wrap">
         <canvas id="game" width="960" height="600"></canvas>
         <div class="hud">
@@ -274,15 +63,6 @@ body.landscape-lock{overflow:hidden}
           <div class="badge">أفضل مرحلة: <span id="hudBest">1</span></div>
         </div>
         <div class="center-msg" id="overlay"><div class="box"><h2>ابدأ اللعب</h2><p>عندك 50 مرحلة. كل مرحلة أصعب من اللي قبلها، وما تنفتح المرحلة التالية إلا بعد ما توصل للباب الأخضر وتفوز بالمرحلة الحالية.</p></div></div>
-
-        <button class="hint-btn" id="hintBtn" type="button" aria-label="إظهار تلميح المرحلة" title="تلميح">💡</button>
-        <div class="hint-box" id="hintBox">
-          <div class="hint-head">
-            <b>💡 تلميح المرحلة <span id="hintLevelNo">1</span></b>
-            <button class="hint-close" id="hintClose" type="button" aria-label="إغلاق">×</button>
-          </div>
-          <div class="hint-text" id="hintText"></div>
-        </div>
       </div>
       <div class="mobile-controls">
         <div class="pad">
@@ -306,7 +86,6 @@ body.landscape-lock{overflow:hidden}
           <div class="stat"><b id="statDeaths">0</b><span>عدد السقوط</span></div>
           <div class="stat"><b id="statWins">0</b><span>مرات الإكمال</span></div>
         </div>
-        <a class="btn" href="game-leaderboard.html?game=level-devil" style="display:block;text-align:center;margin-top:10px">🏆 عرض تصنيف ليفل ديفل</a>
       </div>
       <div class="card">
         <h3>المراحل - تفتح بالتسلسل</h3>
@@ -342,100 +121,6 @@ let bestLevel = 1;
 let keys = {left:false,right:false,jump:false};
 let jumpQueued = false;
 let levelTransitioning = false;
-
-let levelRankDb=null;
-
-function getLevelRankDb(){
-  if(levelRankDb)return levelRankDb;
-  if(!window.supabase || typeof window.supabase.createClient!=='function')return null;
-  try{
-    levelRankDb=window.supabase.createClient(
-      'https://ubayrhtshgtgggxprrek.supabase.co',
-      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-    );
-    return levelRankDb;
-  }catch(_e){return null}
-}
-
-async function saveLevelDevilRanking(completedLevel){
-  const db=getLevelRankDb();
-  if(!db)return;
-  try{
-    const {data:{session}}=await db.auth.getSession();
-    if(!session?.user)return;
-
-    const uid=session.user.id;
-    let displayName='مستخدم HA';
-    let username='user_'+uid.slice(0,6);
-
-    try{
-      const p=await db.from('profiles').select('full_name,username').eq('id',uid).maybeSingle();
-      if(p.data){
-        displayName=p.data.full_name||displayName;
-        username=p.data.username||username;
-      }
-    }catch(_e){}
-
-    const {data:old,error:readErr}=await db
-      .from('ha_game_scores')
-      .select('id,total_score,best_score,play_count,wins')
-      .eq('user_id',uid)
-      .eq('game_key','level-devil')
-      .maybeSingle();
-
-    if(readErr)throw readErr;
-
-    const lvl=Math.max(1,Math.min(50,Number(completedLevel)||1));
-
-    if(old){
-      const oldBest=Number(old.best_score||0);
-
-      // لا نكرر النقاط إذا اللاعب أعاد نفس المرحلة.
-      if(lvl<=oldBest){
-        await db.from('ha_game_scores').update({
-          username,
-          display_name:displayName,
-          game_title:'لعبة ليفل ديفل',
-          last_score:lvl
-        }).eq('id',old.id);
-        return;
-      }
-
-      const {error}=await db.from('ha_game_scores').update({
-        username,
-        display_name:displayName,
-        game_title:'لعبة ليفل ديفل',
-        total_score:Number(old.total_score||0)+lvl,
-        best_score:lvl,
-        play_count:Number(old.play_count||0)+1,
-        wins:Number(old.wins||0)+1,
-        last_score:lvl
-      }).eq('id',old.id);
-      if(error)throw error;
-    }else{
-      // إذا المستخدم كان واصل لمراحل قبل إضافة التصنيف، نعطيه مجموع
-      // المراحل من 1 إلى أعلى مرحلة أكملها حتى يكون التصنيف عادل.
-      const total=lvl*(lvl+1)/2;
-      const {error}=await db.from('ha_game_scores').insert({
-        user_id:uid,
-        username,
-        display_name:displayName,
-        game_key:'level-devil',
-        game_title:'لعبة ليفل ديفل',
-        total_score:total,
-        best_score:lvl,
-        play_count:lvl,
-        wins:lvl,
-        last_score:lvl
-      });
-      if(error)throw error;
-    }
-  }catch(e){
-    console.warn('level devil ranking:',e);
-  }
-}
-
 
 function makeRows(lines){
   return lines.map(s => (s + '....................').slice(0,20));
@@ -488,21 +173,12 @@ function buildLevel(n){
   ];
   let g=makeRows(maps[pattern]).map(r=>r.split(''));
 
-  // المراحل 1-5 تعليمية وأسهل، وبعدها تزداد كثافة الفخاخ تدريجياً.
+  // فخاخ أساسية متدرجة؛ تبقى هناك دائماً مساحات قفز ممكنة
   const spikeSlots=[2,5,8,11,14,17];
   const trapSlots =[3,7,10,13,16];
   const coinSlots =[4,9,15];
-
-  let spikeCount=0;
-  let trapCount=0;
-  if(n<=2){ spikeCount=0; trapCount=0; }
-  else if(n<=5){ spikeCount=1; trapCount=0; }
-  else if(n<=10){ spikeCount=2; trapCount=1; }
-  else if(n<=20){ spikeCount=3; trapCount=2; }
-  else if(n<=30){ spikeCount=4; trapCount=3; }
-  else if(n<=40){ spikeCount=5; trapCount=4; }
-  else { spikeCount=6; trapCount=5; }
-
+  const spikeCount=Math.min(1+tier+Math.floor(pattern/3),5);
+  const trapCount =Math.min(tier+Math.floor((pattern+1)/4),4);
   for(let i=0;i<spikeCount;i++){
     const c=spikeSlots[(i+pattern)%spikeSlots.length];
     if(g[7][c]==='.' && g[8][c]==='#') g[7][c]='s';
@@ -511,13 +187,11 @@ function buildLevel(n){
     const c=trapSlots[(i+pattern)%trapSlots.length];
     if(g[8][c]==='#') g[8][c]='t';
   }
-
-  // منصات متحركة/خطرة تبدأ بعد المراحل التعليمية ثم تزيد لاحقاً.
-  if(n>=8){ const c=6+((pattern*2)%8); if(g[6][c]==='.') g[6][c]='m'; }
-  if(n>=22){ const c=11+((pattern)%5); if(g[5][c]==='.') g[5][c]='m'; }
-  if(n>=36){ const c=4+((pattern*3)%10); if(g[4][c]==='.') g[4][c]='m'; }
-
-  // العملات تبقى كعلامات تساعد اللاعب على قراءة المسار.
+  // منصات متحركة إضافية من المرحلة 11 فما فوق
+  if(n>=11){ const c=6+((pattern*2)%8); if(g[6][c]==='.') g[6][c]='m'; }
+  if(n>=26){ const c=11+((pattern)%5); if(g[5][c]==='.') g[5][c]='m'; }
+  if(n>=41){ const c=4+((pattern*3)%10); if(g[4][c]==='.') g[4][c]='m'; }
+  // عملات اختيارية كعلامات للمسار
   coinSlots.forEach((c,i)=>{ if(i<=tier && g[6][c]==='.') g[6][c]='c'; });
 
   return {name:'المرحلة '+n,map:g.map(r=>r.join(''))};
@@ -541,15 +215,14 @@ function saveProgress(){
 }
 
 const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawnY:0};
-let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let movingHazards=[]; let fallingSurprises=[]; let hiddenPits=[]; let disappearingPlatforms=[]; let surpriseSpikes=[]; let fakeDoors=[]; let coins=[]; let exitDoor=null;
+let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let coins=[]; let exitDoor=null;
 
 function parseLevel(index){
-  const hintBoxEl=document.getElementById('hintBox'); if(hintBoxEl) hintBoxEl.classList.remove('show');
   if(index < 0 || index >= levels.length) index = 0;
   if(index >= unlocked) index = Math.max(0, unlocked-1);
   currentLevelIndex = index;
   levelTransitioning = false;
-  tiles=[]; spikes=[]; traps=[]; movers=[]; movingHazards=[]; fallingSurprises=[]; hiddenPits=[]; disappearingPlatforms=[]; surpriseSpikes=[]; fakeDoors=[]; coins=[]; exitDoor=null;
+  tiles=[]; spikes=[]; traps=[]; movers=[]; coins=[]; exitDoor=null;
   const map = levels[index].map;
   for(let r=0;r<map.length;r++){
     const row = map[r];
@@ -565,113 +238,6 @@ function parseLevel(index){
       if(ch==='P'){ player.x=x+10; player.y=y+4; player.spawnX=player.x; player.spawnY=player.y; }
     }
   }
-  // توزيع صعوبة جديد:
-  // 1-5 سهلة وتعليمية، 6-10 تبدأ الخدع، وبعد 10 تزداد الفخاخ بشكل واضح.
-  const levelNo = index + 1;
-  const pattern = (levelNo - 1) % 10;
-  const tier = Math.floor((levelNo - 1) / 10);
-
-  // ===== المناشير المتحركة =====
-  // لا منشار في أول 5 مراحل.
-  if(levelNo >= 6){
-    const minX = 220 + (pattern % 3) * 65;
-    movingHazards.push({
-      x:minX, y:7*TILE+8, w:34, h:34,
-      axis:'x', min:minX, max:Math.min(W-130,minX+150),
-      dir:1, speed:1.45 + tier*0.18, angle:0
-    });
-  }
-  if(levelNo >= 18){
-    const minX = 470 + (pattern % 2) * 55;
-    movingHazards.push({
-      x:minX, y:6*TILE-6, w:34, h:34,
-      axis:'x', min:minX, max:Math.min(W-100,minX+175),
-      dir:-1, speed:1.85 + tier*0.18, angle:0
-    });
-  }
-  if(levelNo >= 31){
-    const minY = 4*TILE+8;
-    movingHazards.push({
-      x:(9+(pattern%5))*TILE, y:minY, w:34, h:34,
-      axis:'y', min:minY, max:7*TILE-8,
-      dir:1, speed:1.45 + tier*0.16, angle:0
-    });
-  }
-  if(levelNo >= 42){
-    const minX = 300 + (pattern % 4) * 55;
-    movingHazards.push({
-      x:minX, y:5*TILE+6, w:32, h:32,
-      axis:'x', min:minX, max:Math.min(W-110,minX+210),
-      dir:(pattern%2?1:-1), speed:2.05 + tier*0.15, angle:0
-    });
-  }
-
-  // ===== فخاخ تسقط من السقف =====
-  const fallCount = levelNo < 7 ? 0 : levelNo < 21 ? 1 : levelNo < 41 ? 2 : 3;
-  for(let i=0;i<fallCount;i++){
-    const col = 6 + ((pattern*3 + tier*2 + i*5) % 10);
-    const fallX = col*TILE + 7;
-    fallingSurprises.push({
-      x:fallX, y:-56-(i*45), w:38, h:38,
-      triggerX:fallX-44, triggered:false, delay:0, falling:false, vy:0, angle:0
-    });
-  }
-
-  // ===== حفر مخفية =====
-  // تبدأ من المرحلة 11، وبالمراحل المتقدمة يصير أكثر من حفرة.
-  const pitCandidates = tiles.filter(t =>
-    t.y===8*TILE &&
-    t.x>=5*TILE && t.x<=16*TILE &&
-    Math.abs((t.x+TILE/2)-(player.spawnX+player.w/2)) > TILE*2.5 &&
-    (!exitDoor || Math.abs((t.x+TILE/2)-(exitDoor.x+exitDoor.w/2)) > TILE*1.5)
-  );
-  const pitCount = levelNo < 11 ? 0 : levelNo < 30 ? 1 : 2;
-  const usedPitX = new Set();
-  for(let i=0;i<pitCount && pitCandidates.length;i++){
-    let base=null;
-    for(let step=0;step<pitCandidates.length;step++){
-      const candidate=pitCandidates[(pattern+tier+i*3+step)%pitCandidates.length];
-      if(!usedPitX.has(candidate.x)){ base=candidate; break; }
-    }
-    if(base){
-      usedPitX.add(base.x);
-      hiddenPits.push({x:base.x,y:base.y,w:TILE,h:TILE,state:'hidden',timer:0,opened:false});
-    }
-  }
-
-  // ===== منصات تختفي =====
-  // أول منصة من المرحلة 8، وبعد 25 و40 تزداد.
-  const disappearCount = levelNo < 8 ? 0 : levelNo < 25 ? 1 : levelNo < 40 ? 2 : 3;
-  for(let i=0;i<disappearCount;i++){
-    const disappearX = (7 + ((pattern + i*4) % 9)) * TILE;
-    const disappearY = (i%2===0 ? 6 : 5) * TILE;
-    disappearingPlatforms.push({
-      x:disappearX, y:disappearY, w:TILE, h:18,
-      state:'solid', timer:0, alpha:1
-    });
-  }
-
-  // ===== أشواك مفاجئة =====
-  // أول 5 مراحل بدون أشواك مفاجئة، ثم تزداد حتى 3 فخاخ.
-  const surpriseSpikeCount = levelNo < 6 ? 0 : levelNo < 16 ? 1 : levelNo < 34 ? 2 : 3;
-  for(let i=0;i<surpriseSpikeCount;i++){
-    const spikeX = (9 + ((pattern + tier + i*3) % 8)) * TILE;
-    surpriseSpikes.push({
-      x:spikeX, y:8*TILE, w:TILE, h:TILE,
-      state:'hidden', timer:0, rise:0
-    });
-  }
-
-  // ===== أبواب وهمية =====
-  // لا نخدع اللاعب بها بالبداية؛ تبدأ من المرحلة 9.
-  const fakeDoorCount = levelNo < 9 ? 0 : levelNo < 32 ? 1 : 2;
-  for(let i=0;i<fakeDoorCount;i++){
-    const fakeX = Math.min(W-2*TILE, (12 + ((pattern+i*3) % 5))*TILE);
-    if(!exitDoor || Math.abs(fakeX-exitDoor.x)>TILE){
-      fakeDoors.push({x:fakeX,y:7*TILE,w:TILE,h:TILE,visible:true,triggered:false});
-    }
-  }
-
   player.vx=0; player.vy=0; player.onGround=false;
   updateStageUI();
 }
@@ -698,8 +264,6 @@ function completeLevel(){
   levelTransitioning = true;
 
   const completedIndex = currentLevelIndex;
-  const completedLevelNo = completedIndex + 1;
-  saveLevelDevilRanking(completedLevelNo);
   const nextIndex = completedIndex + 1;
 
   if(completedIndex === levels.length - 1){
@@ -739,86 +303,6 @@ function update(dt){
     return;
   }
   movers.forEach(m=>{ m.x += m.speed*m.dir; if(m.x<m.min||m.x>m.max){ m.dir*=-1; m.x += m.speed*m.dir;} });
-
-  movingHazards.forEach(h=>{
-    if(h.axis==='x'){
-      h.x += h.speed*h.dir;
-      if(h.x<h.min || h.x>h.max){ h.dir*=-1; h.x += h.speed*h.dir; }
-    }else{
-      h.y += h.speed*h.dir;
-      if(h.y<h.min || h.y>h.max){ h.dir*=-1; h.y += h.speed*h.dir; }
-    }
-    h.angle += 0.11 + h.speed*0.01;
-  });
-
-  // الفخ النازل من فوق: يتفعل فجأة عندما يمشي اللاعب تحته.
-  fallingSurprises.forEach(f=>{
-    if(!f.triggered && player.x + player.w/2 >= f.triggerX){
-      f.triggered=true;
-      // بالمراحل الأولى التي يظهر بها هذا الفخ نعطي اللاعب وقت أطول، وبعدها يصير أسرع.
-      const lvl=currentLevelIndex+1;
-      f.delay = lvl<12 ? 18 : (lvl<25 ? 11 : 7);
-    }
-    if(f.triggered && !f.falling){
-      f.delay--;
-      if(f.delay<=0) f.falling=true;
-    }
-    if(f.falling){
-      f.vy += 0.72;
-      f.y += f.vy;
-      f.angle += 0.17;
-    }
-  });
-
-  // الهاوية المخفية: تنفتح تحت قدم اللاعب بعد لحظات قليلة جداً.
-  hiddenPits.forEach(p=>{
-    if(p.state==='hidden'){
-      const footX = player.x + player.w/2;
-      const standingOver = player.onGround && footX > p.x+7 && footX < p.x+p.w-7 &&
-                           player.y + player.h <= p.y+8 && player.y + player.h >= p.y-12;
-      if(standingOver){
-        p.state='cracking';
-        p.timer=(currentLevelIndex+1<20 ? 16 : 8);
-      }
-    }else if(p.state==='cracking'){
-      p.timer--;
-      if(p.timer<=0){
-        p.state='open';
-        p.opened=true;
-        // احذف عمود الأرض حتى تتحول فعلياً إلى هاوية ويسقط اللاعب.
-        tiles = tiles.filter(t => !(t.x===p.x && t.y>=8*TILE));
-      }
-    }
-  });
-
-  // المنصة المختفية تبدأ بالوميض بعد ما يوقف اللاعب عليها، ثم تختفي تماماً.
-  disappearingPlatforms.forEach(p=>{
-    if(p.state==='solid'){
-      const feet=player.y+player.h;
-      const over=player.x+player.w>p.x+5 && player.x<p.x+p.w-5;
-      if(player.onGround && over && feet>=p.y-8 && feet<=p.y+8){
-        p.state='warning';
-        p.timer=(currentLevelIndex+1<20 ? 50 : 32);
-      }
-    }else if(p.state==='warning'){
-      p.timer--;
-      p.alpha = 0.45 + Math.abs(Math.sin(p.timer*0.55))*0.55;
-      if(p.timer<=0){ p.state='gone'; p.alpha=0; }
-    }
-  });
-
-  // الأشواك المخفية تظهر فجأة عندما يقترب اللاعب منها.
-  surpriseSpikes.forEach(s=>{
-    if(s.state==='hidden'){
-      const cx=player.x+player.w/2;
-      if(cx>s.x-34 && cx<s.x+s.w+34){ s.state='rising'; s.timer=(currentLevelIndex+1<15 ? 12 : 7); }
-    }else if(s.state==='rising'){
-      s.timer--;
-      s.rise=Math.min(1,s.rise+(currentLevelIndex+1<15 ? 0.14 : 0.22));
-      if(s.timer<=0){ s.state='active'; s.rise=1; }
-    }
-  });
-
   traps.forEach(t=>{
     const triggerZone={x:t.x,y:t.y-10,w:t.w,h:t.h+20};
     if(!t.armed && rectsIntersect({...player},triggerZone)) t.armed = true;
@@ -837,7 +321,7 @@ function update(dt){
 
   // horizontal
   player.x += player.vx;
-  const solids = [...tiles, ...traps.filter(t=>!t.falling), ...movers, ...disappearingPlatforms.filter(p=>p.state!=='gone')];
+  const solids = [...tiles, ...traps.filter(t=>!t.falling), ...movers];
   for(const s of solids){
     if(rectsIntersect(player,{x:s.x,y:s.y,w:s.w,h:s.h})){
       if(player.vx>0) player.x = s.x - player.w;
@@ -860,28 +344,7 @@ function update(dt){
   if(player.y>H+120) return killPlayer();
 
   for(const s of spikes){ if(rectsIntersect(player, {x:s.x+8,y:s.y+16,w:s.w-16,h:s.h-16})) return killPlayer(); }
-  for(const h of movingHazards){
-    if(rectsIntersect(player,{x:h.x+5,y:h.y+5,w:h.w-10,h:h.h-10})) return killPlayer();
-  }
-  for(const f of fallingSurprises){
-    if(f.falling && rectsIntersect(player,{x:f.x+4,y:f.y+4,w:f.w-8,h:f.h-8})) return killPlayer();
-  }
-  for(const s of surpriseSpikes){
-    if((s.state==='rising'||s.state==='active') && s.rise>.45){
-      const hh=(TILE-10)*s.rise;
-      if(rectsIntersect(player,{x:s.x+8,y:s.y+TILE-hh,w:s.w-16,h:hh})) return killPlayer();
-    }
-  }
   for(const m of movers){ if(rectsIntersect(player, {x:m.x,y:m.y,w:m.w,h:m.h})) return killPlayer(); }
-
-  for(const d of fakeDoors){
-    if(d.visible && rectsIntersect(player,{x:d.x+8,y:d.y+8,w:d.w-16,h:d.h-8})){
-      d.visible=false; d.triggered=true;
-      showTempMessage('😈 باب وهمي! دور على الباب الحقيقي');
-      beep(180,0.16,'square');
-    }
-  }
-
   for(const c of coins){ if(!c.taken && Math.hypot((player.x+player.w/2)-c.x,(player.y+player.h/2)-c.y)<20){ c.taken=true; beep(840,0.05);} }
   if(exitDoor && rectsIntersect(player,{x:exitDoor.x+8,y:exitDoor.y+8,w:exitDoor.w-16,h:exitDoor.h-8})) return completeLevel();
   if(tempMessageTimer>0) tempMessageTimer--;
@@ -902,12 +365,6 @@ function draw(){
   tiles.forEach(t=> drawBlock(t.x,t.y,'#ffd400','#9a6700'));
   traps.forEach(t=>{ if(t.y<H+50) drawTrapBlock(t.x,t.y,t.armed?'#ff3b30':'#ff9f1c', t.armed?'#8b0000':'#a85a00'); });
   movers.forEach(m=>{ctx.fillStyle='#ff2d55'; roundRect(m.x,m.y,m.w,m.h,8); ctx.fillStyle='rgba(255,255,255,.25)'; ctx.fillRect(m.x+6,m.y+4,m.w-12,5);});
-  movingHazards.forEach(h=>drawMovingHazard(h));
-  fallingSurprises.forEach(f=>drawFallingSurprise(f));
-  hiddenPits.forEach(p=>drawHiddenPit(p));
-  disappearingPlatforms.forEach(p=>drawDisappearingPlatform(p));
-  surpriseSpikes.forEach(s=>drawSurpriseSpikes(s));
-  fakeDoors.forEach(d=>{ if(d.visible) drawFakeDoor(d.x,d.y); });
   spikes.forEach(s=> drawSpikes(s.x,s.y));
   coins.forEach(c=>{ if(!c.taken){ ctx.beginPath(); ctx.fillStyle='#facc15'; ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#9a6e0a'; ctx.font='bold 12px Tahoma'; ctx.fillText('$',c.x-4,c.y+4);} });
   if(exitDoor){ drawDoor(exitDoor.x, exitDoor.y); }
@@ -923,137 +380,6 @@ function draw(){
 
 function drawBlock(x,y,fill,stroke){ ctx.fillStyle=fill; roundRect(x+2,y+2,TILE-4,TILE-4,9); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x+10,y+10,TILE-18,7); ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.strokeRect(x+3,y+3,TILE-6,TILE-6); }
 function drawTrapBlock(x,y,fill,stroke){ ctx.fillStyle=fill; roundRect(x+2,y+2,TILE-4,TILE-4,9); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x+8,y+10,TILE-16,7); ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.strokeRect(x+3,y+3,TILE-6,TILE-6); }
-
-function drawMovingHazard(h){
-  const cx=h.x+h.w/2, cy=h.y+h.h/2;
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.rotate(h.angle);
-
-  // أسنان الفخ الدائري
-  ctx.fillStyle='#ff3b30';
-  for(let i=0;i<12;i++){
-    ctx.rotate(Math.PI*2/12);
-    ctx.beginPath();
-    ctx.moveTo(-4,-h.h/2+5);
-    ctx.lineTo(0,-h.h/2-7);
-    ctx.lineTo(4,-h.h/2+5);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  ctx.beginPath();
-  ctx.fillStyle='#c91f1f';
-  ctx.arc(0,0,h.w/2-3,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.fillStyle='#f2f2f2';
-  ctx.arc(0,0,h.w/2-9,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.fillStyle='#6b7280';
-  ctx.arc(0,0,6,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.restore();
-}
-
-function drawFallingSurprise(f){
-  // قبل التفعيل يكون مخفي فوق الشاشة، وبعدها ينزل ككتلة مسننة.
-  if(!f.triggered && f.y<0) return;
-  ctx.save();
-  ctx.translate(f.x+f.w/2,f.y+f.h/2);
-  ctx.rotate(f.angle);
-  ctx.fillStyle='#6b0f13';
-  roundRect(-f.w/2,-f.h/2,f.w,f.h,7);
-  ctx.fillStyle='#ff3040';
-  for(let i=0;i<4;i++){
-    const a=(Math.PI*2/4)*i;
-    ctx.save();
-    ctx.rotate(a);
-    ctx.beginPath();
-    ctx.moveTo(-6,-f.h/2+3);
-    ctx.lineTo(0,-f.h/2-12);
-    ctx.lineTo(6,-f.h/2+3);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-  ctx.fillStyle='#d1d5db';
-  ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2); ctx.fill();
-  ctx.restore();
-}
-
-function drawHiddenPit(p){
-  if(p.state==='hidden') return; // تبقى الأرض طبيعية قبل ما تنكشف
-  if(p.state==='cracking'){
-    ctx.save();
-    ctx.strokeStyle='#7a2a18';
-    ctx.lineWidth=3;
-    ctx.beginPath();
-    ctx.moveTo(p.x+8,p.y+5);
-    ctx.lineTo(p.x+22,p.y+18);
-    ctx.lineTo(p.x+15,p.y+31);
-    ctx.lineTo(p.x+34,p.y+44);
-    ctx.moveTo(p.x+22,p.y+18);
-    ctx.lineTo(p.x+38,p.y+11);
-    ctx.stroke();
-    ctx.restore();
-  }else if(p.state==='open'){
-    ctx.fillStyle='#020304';
-    ctx.fillRect(p.x,8*TILE,TILE,H-8*TILE);
-    const g=ctx.createLinearGradient(p.x,8*TILE,p.x+TILE,8*TILE);
-    g.addColorStop(0,'rgba(255,70,30,.14)');
-    g.addColorStop(.5,'rgba(0,0,0,0)');
-    g.addColorStop(1,'rgba(255,70,30,.14)');
-    ctx.fillStyle=g;
-    ctx.fillRect(p.x,8*TILE,TILE,H-8*TILE);
-  }
-}
-
-function drawDisappearingPlatform(p){
-  if(p.state==='gone') return;
-  ctx.save();
-  ctx.globalAlpha=p.alpha;
-  ctx.fillStyle=p.state==='warning'?'#f59e0b':'#ffd400';
-  roundRect(p.x,p.y,p.w,p.h,7);
-  ctx.fillStyle='rgba(255,255,255,.28)';
-  ctx.fillRect(p.x+8,p.y+4,p.w-16,4);
-  if(p.state==='warning'){
-    ctx.strokeStyle='#7c2d12'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(p.x+10,p.y+4); ctx.lineTo(p.x+22,p.y+14); ctx.lineTo(p.x+35,p.y+5); ctx.stroke();
-  }
-  ctx.restore();
-}
-
-function drawSurpriseSpikes(s){
-  if(s.state==='hidden') return;
-  const rise=Math.max(.05,s.rise);
-  const baseY=s.y+TILE-6;
-  ctx.fillStyle='#ef233c';
-  for(let i=0;i<4;i++){
-    const x=s.x+6+i*10;
-    const h=34*rise;
-    ctx.beginPath();
-    ctx.moveTo(x,baseY);
-    ctx.lineTo(x+5,baseY-h);
-    ctx.lineTo(x+10,baseY);
-    ctx.closePath();ctx.fill();
-  }
-}
-
-function drawFakeDoor(x,y){
-  ctx.save();
-  ctx.globalAlpha=.96;
-  ctx.fillStyle='#22c55e'; roundRect(x+8,y+4,TILE-16,TILE-8,12);
-  ctx.fillStyle='#166534'; roundRect(x+14,y+10,TILE-28,TILE-20,8);
-  ctx.fillStyle='#fff7a8'; ctx.beginPath(); ctx.arc(x+TILE-18,y+TILE/2,3,0,Math.PI*2); ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.strokeRect(x+11,y+7,TILE-22,TILE-14);
-  ctx.restore();
-}
-
 function drawSpikes(x,y){ ctx.fillStyle='#ff1f1f'; for(let i=0;i<4;i++){ ctx.beginPath(); ctx.moveTo(x+6+i*10,y+TILE-6); ctx.lineTo(x+11+i*10,y+12); ctx.lineTo(x+16+i*10,y+TILE-6); ctx.closePath(); ctx.fill(); } }
 function drawDoor(x,y){ ctx.fillStyle='#12d65a'; roundRect(x+8,y+4,TILE-16,TILE-8,12); ctx.fillStyle='#14532d'; roundRect(x+14,y+10,TILE-28,TILE-20,8); ctx.fillStyle='#fef08a'; ctx.beginPath(); ctx.arc(x+TILE-18,y+TILE/2,3,0,Math.PI*2); ctx.fill(); }
 function drawPlayer(x,y,face){ ctx.fillStyle='#16202a'; roundRect(x+6,y+10,18,24,8); ctx.fillStyle='#ffd400'; ctx.beginPath(); ctx.arc(x+14,y+10,10,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x+11+(face>0?2:-2),y+8,2.2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(x+17+(face>0?2:-2),y+8,2.2,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#ff9f1c'; ctx.fillRect(x+9,y+32,6,10); ctx.fillRect(x+18,y+32,6,10); }
@@ -1127,52 +453,6 @@ function beep(freq=440,duration=0.08,type='square'){
   }catch(e){}
 }
 
-
-function getLevelHint(levelNumber){
-  const pattern = (levelNumber - 1) % 10;
-  const tier = Math.floor((levelNumber - 1) / 10);
-
-  const routes = [
-    'تحرك باتجاه اليمين، وتدرّج على المنصات الوسطية. لا تحاول القفز مباشرة للباب؛ اصعد منصة ثم منصة إلى أن توصل للباب الأخضر.',
-    'ابدأ من الأرض باتجاه اليمين، وبعد أول فجوة اصعد للمنصة الوسطى. من هناك واصل قفزات قصيرة باتجاه الباب الأخضر.',
-    'الباب أعلى الجهة اليمنى. استعمل المنصة القريبة من الوسط كنقطة انتقال، وبعدها اصعد للمنصة الأعلى قبل الباب.',
-    'لا تستعجل بالقفزة الأخيرة. وصل أولاً للمنصة الموجودة في النصف الثاني، وبعدها اقفز باتجاه الباب من مسافة قريبة.',
-    'المسار الأسهل هو من اليسار إلى الوسط ثم للأعلى. استخدم المنصات كدرجات ولا تحاول تجاوز أكثر من فجوة بقفزة واحدة.',
-    'تحرك يميناً حتى منتصف المرحلة، ثم اصعد على المنصة المرتفعة. من هناك تكون قفزة الباب أقصر وأسهل.',
-    'انتبه للفراغات في الأرض. اعبرها بقفزات قصيرة، ثم استعمل المنصة العليا في الجهة اليمنى للوصول للباب.',
-    'لا تبقى على الأرض للنهاية. بعد منتصف المرحلة اصعد للأعلى، لأن الباب يحتاج وصول من منصة قريبة وليس من الأرض مباشرة.',
-    'خذ المسار الآمن عبر المنصات الوسطية. القفز السريع من الأرض للباب غالباً يسقطك؛ اصعد تدريجياً.',
-    'وصل أولاً للمنصة الموجودة قبل الباب مباشرة، ثم خذ قفزة أخيرة قصيرة باتجاه الباب الأخضر.'
-  ];
-
-  let extra = '';
-  if(levelNumber >= 41){
-    extra = ' انتبه جداً للفخاخ الدائرية المتحركة أفقياً وعمودياً والمنصات الحمراء والبلوكات الخادعة؛ انتظر توقيتها قبل القفز.';
-  }else if(levelNumber >= 26){
-    extra = ' من هالمرحلة فصاعداً أكو أكثر من فخ متحرك أفقي، فراقب مساره وانتظر الفراغ المناسب قبل العبور.';
-  }else if(levelNumber >= 11){
-    extra = ' إذا شفت منصة أو فخ دائري أحمر متحرك، اضبط توقيت القفزة وتجاوز مساره قبل ما يقرب منك.';
-  }else if(tier >= 1){
-    extra = ' البلوكات البرتقالية ممكن تنهار، فلا توقف عليها أكثر من اللازم.';
-  }
-
-  const surprise = levelNumber <= 10
-    ? ' وانتبه: من المراحل الأولى أكو هاوية مخفية، فخ ينزل من فوق، أشواك تطلع فجأة، منصة تختفي، وباب وهمي يخدعك. تحرك بحذر ولا تثق بأي شي بسرعة.'
-    : ' وانتبه للفخاخ المفاجئة: هاويات مخفية، أشواك تظهر فجأة، منصات تختفي، أبواب وهمية وفخاخ تنزل من فوق.';
-  return routes[pattern] + extra + surprise;
-}
-
-function showHint(){
-  const n = currentLevelIndex + 1;
-  document.getElementById('hintLevelNo').textContent = n;
-  document.getElementById('hintText').textContent = getLevelHint(n);
-  document.getElementById('hintBox').classList.add('show');
-}
-
-function hideHint(){
-  document.getElementById('hintBox').classList.remove('show');
-}
-
 // UI bindings
 loadProgress();
 buildLevelButtons();
@@ -1181,75 +461,7 @@ updateStageUI();
 draw();
 document.getElementById('startBtn').onclick = startGame;
 document.getElementById('restartBtn').onclick = restartCurrent;
-
-const gameShell=document.getElementById('gameShell');
-
-async function enterLandscapeMode(){
-  // نحاول أولاً الطريقة الأصلية للأندرويد/المتصفح: ملء الشاشة + قفل Landscape.
-  let locked=false;
-  try{
-    if(gameShell.requestFullscreen && !document.fullscreenElement){
-      await gameShell.requestFullscreen();
-    }
-    if(screen.orientation && typeof screen.orientation.lock==='function'){
-      await screen.orientation.lock('landscape');
-      locked=true;
-    }
-  }catch(_e){}
-
-  // بعض المتصفحات/WebView تمنع orientation.lock، لذلك عندنا بديل بصري مضمون.
-  setTimeout(()=>{
-    const actuallyLandscape=window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
-    if(!locked && !actuallyLandscape){
-      try{
-        if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
-      }catch(_e){}
-      gameShell.classList.add('landscape-fallback');
-      document.body.classList.add('landscape-lock');
-    }
-  },180);
-}
-
-async function returnPortraitMode(){
-  gameShell.classList.remove('landscape-fallback');
-  document.body.classList.remove('landscape-lock');
-
-  try{
-    if(screen.orientation && typeof screen.orientation.unlock==='function'){
-      screen.orientation.unlock();
-    }
-  }catch(_e){}
-
-  try{
-    if(document.fullscreenElement && document.exitFullscreen){
-      await document.exitFullscreen();
-    }
-  }catch(_e){}
-}
-
-document.getElementById('landscapeBtn').onclick=enterLandscapeMode;
-document.getElementById('portraitBtn').onclick=returnPortraitMode;
-document.getElementById('portraitBtnTop').onclick=returnPortraitMode;
-
-document.getElementById('fullscreenBtn').onclick = async ()=>{
-  try{
-    if(!document.fullscreenElement) await gameShell.requestFullscreen();
-    else await document.exitFullscreen();
-  }catch(e){}
-};
-
-document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement && !gameShell.classList.contains('landscape-fallback')){
-    try{
-      if(screen.orientation && typeof screen.orientation.unlock==='function') screen.orientation.unlock();
-    }catch(_e){}
-  }
-});
-
-document.getElementById('hintBtn').onclick = showHint;
-document.getElementById('hintClose').onclick = hideHint;
-
+document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
 </script>
-<script src="ha-game-engagement.js"></script>
 </body>
 </html>
