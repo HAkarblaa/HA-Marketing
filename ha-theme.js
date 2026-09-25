@@ -1,32 +1,18 @@
 (function(){
   'use strict';
-  var root=document.documentElement;
-
-  function daylightOnly(){
+  const root=document.documentElement;
+  const KEYS=['ha_theme_mode_v2','ha_theme_mode','ha-theme','theme'];
+  function daylight(){
     root.setAttribute('data-ha-theme','light');
     root.style.colorScheme='light';
-
-    /* حذف أي إعداد قديم خاص بالوضع الليلي */
-    try{
-      localStorage.removeItem('ha_theme_mode');
-      localStorage.removeItem('ha_theme_mode_v2');
-      localStorage.removeItem('ha-theme');
-      localStorage.removeItem('theme');
-    }catch(e){}
-
-    /* حذف زر/خاصية تبديل الخلفية إن كانت موجودة بصفحة قديمة */
-    document.querySelectorAll('#haThemeToggle,.ha-theme-toggle,[data-theme-toggle]').forEach(function(el){
-      el.remove();
-    });
+    try{KEYS.forEach(k=>localStorage.setItem(k,'light'));}catch(e){}
+    document.querySelectorAll('#haThemeToggle,.ha-theme-toggle,[data-theme-toggle],[data-ha-theme-toggle]').forEach(el=>el.remove());
+    try{window.dispatchEvent(new CustomEvent('ha-theme-changed',{detail:{theme:'light'}}));}catch(e){}
   }
-
-  window.haSetTheme=function(){ daylightOnly(); };
-  window.haToggleTheme=function(){ daylightOnly(); };
-
-  daylightOnly();
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',daylightOnly);
-  }else{
-    daylightOnly();
-  }
+  window.haSetTheme=daylight;
+  window.haToggleTheme=daylight;
+  daylight();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',daylight,{once:true});
+  else daylight();
+  window.addEventListener('storage',daylight);
 })();
