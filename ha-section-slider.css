@@ -1,0 +1,31 @@
+/* HA Marketing - 5 image smart slider */
+.ha-smart-slider{position:relative;margin-top:22px;border-radius:28px;overflow:hidden;min-height:300px;background:#dfeee7;box-shadow:0 14px 34px rgba(35,72,105,.12);isolation:isolate}
+.ha-smart-slider *{box-sizing:border-box}
+.ha-slider-loading{min-height:300px;display:grid;place-items:center;color:#638176;background:linear-gradient(135deg,#eef9f3,#e3f5ec);font-weight:800}
+.ha-slider-track{position:relative;min-height:300px}
+.ha-slide{position:absolute;inset:0;opacity:0;transform:translateX(18px) scale(.995);transition:opacity .55s ease,transform .55s ease;pointer-events:none;background:#0a714f}
+.ha-slide.active{opacity:1;transform:none;pointer-events:auto;z-index:2}
+.ha-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ha-slide:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(1,63,43,.10) 0%,rgba(2,74,50,.38) 46%,rgba(2,56,40,.88) 100%);z-index:1}
+.ha-slide-content{position:relative;z-index:2;min-height:300px;width:min(58%,610px);margin-inline-start:auto;padding:40px 46px 54px;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:right}
+.ha-slide-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:900;margin-bottom:10px}
+.ha-slide h3{margin:0 0 8px;color:#fff;font-size:clamp(26px,3.3vw,42px);font-weight:950;line-height:1.25;text-shadow:0 3px 14px rgba(0,0,0,.20)}
+.ha-slide p{margin:0;color:rgba(255,255,255,.90);font-size:15px;line-height:1.8;max-width:540px}
+.ha-slide-details{display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:#fff;color:#087554;border-radius:999px;padding:12px 20px;font-weight:950;box-shadow:0 10px 24px rgba(0,0,0,.18);transition:.18s transform,.18s box-shadow}
+.ha-slide-details:hover{transform:translateY(-2px);box-shadow:0 13px 26px rgba(0,0,0,.22)}
+.ha-slider-arrow{position:absolute;z-index:5;top:50%;transform:translateY(-50%);width:46px;height:46px;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.90);color:#087554;font-size:28px;font-weight:900;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.16);backdrop-filter:blur(9px);transition:.18s transform,.18s background}
+.ha-slider-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.05)}
+.ha-slider-arrow.prev{right:16px}.ha-slider-arrow.next{left:16px}
+.ha-slider-dots{position:absolute;z-index:6;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:7px;padding:7px 9px;background:rgba(0,0,0,.14);border-radius:999px;backdrop-filter:blur(5px)}
+.ha-slider-dot{width:8px;height:8px;border:0;padding:0;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer;transition:.2s}
+.ha-slider-dot.active{width:24px;border-radius:999px;background:#fff}
+.ha-slider-count{position:absolute;z-index:6;top:14px;left:14px;background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(6px);border-radius:999px;padding:6px 10px;font-size:10px;font-weight:900}
+@media(max-width:680px){
+ .ha-smart-slider,.ha-slider-track,.ha-slider-loading{min-height:238px;border-radius:23px}
+ .ha-slide-content{min-height:238px;width:78%;padding:28px 48px 44px 24px}
+ .ha-slide h3{font-size:23px}.ha-slide p{font-size:11px;line-height:1.65}.ha-slide-badge{font-size:9px;padding:5px 9px}.ha-slide-details{padding:9px 14px;font-size:11px;margin-top:13px}
+ .ha-slider-arrow{width:38px;height:38px;font-size:22px}.ha-slider-arrow.prev{right:9px}.ha-slider-arrow.next{left:9px}
+ .ha-slider-dots{bottom:10px}.ha-slider-count{top:9px;left:9px}
+}
+@media(max-width:420px){.ha-slide-content{width:84%;padding-inline-start:44px;padding-inline-end:18px}.ha-slide h3{font-size:20px}}
+@media(prefers-reduced-motion:reduce){.ha-slide{transition:none}.ha-slide-details,.ha-slider-arrow{transition:none}}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="480" viewBox="0 0 1080 480">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#087b59"/><stop offset="1" stop-color="#23b887"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="15" flood-opacity=".18"/></filter></defs>
+<rect width="1080" height="480" rx="34" fill="url(#g)"/>
+<circle cx="130" cy="90" r="150" fill="#fff" opacity=".07"/><circle cx="920" cy="55" r="190" fill="#fff" opacity=".06"/>
+<path d="M0 390 C220 310 330 455 560 370 S880 310 1080 380 V480 H0Z" fill="#fff" opacity=".07"/>
+<g filter="url(#s)"><rect x="55" y="68" width="360" height="345" rx="30" fill="#fff" opacity=".94"/><rect x="85" y="102" width="300" height="58" rx="18" fill="#e9c46a" opacity=".92"/><rect x="85" y="183" width="235" height="18" rx="9" fill="#dceae5"/><rect x="85" y="218" width="270" height="18" rx="9" fill="#e8f1ed"/><rect x="85" y="267" width="105" height="105" rx="24" fill="#23b887" opacity=".18"/><rect x="205" y="267" width="180" height="45" rx="18" fill="#087b59" opacity=".88"/><rect x="205" y="326" width="145" height="18" rx="9" fill="#dceae5"/></g>
+<g opacity=".95"><circle cx="815" cy="110" r="88" fill="#e9c46a"/><rect x="690" y="210" width="260" height="150" rx="38" fill="#fff" opacity=".92" transform="rotate(-5 820 285)"/><circle cx="840" cy="330" r="58" fill="#fff" opacity=".22"/><path d="M720 310 l55-65 50 45 60-78 68 98z" fill="#087b59" opacity=".72"/></g>
+<text x="1030" y="420" text-anchor="end" fill="#fff" font-family="Tahoma,Arial" font-size="28" font-weight="700" opacity=".90">HA Marketing</text>
+<text x="1030" y="455" text-anchor="end" fill="#fff" font-family="Tahoma,Arial" font-size="18" opacity=".76">اطلب خدمتك</text>
+</svg>

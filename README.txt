@@ -1,2 +1,12 @@
-ملفات الواجهة المعدلة حسب الصور المعتمدة: index.html, services.html, taxi-delivery.html, sports.html, entertainment.html, news.html, shop.html, study.html, religious.html مع ha-modern-green.css و ha-modern-green.js.
-ارفع هذه الملفات فوق الملفات الموجودة بنفس الأسماء.
+ملفات تعديل سلايدر الأقسام - HA Marketing
+
+يشمل:
+- 5 صور متحركة تلقائياً لكل قسم رئيسي.
+- أسهم يمين/يسار + نقاط تنقل.
+- زر (انقر على التفاصيل) لكل صورة.
+- 45 صورة افتراضية داخل images/sliders.
+- صفحة admin-section-sliders.html لإدارة الصور والعناوين والروابط من الأدمن الرئيسي فقط.
+- admin-panel.html مضاف له زر إدارة صور الأقسام.
+- SECTION-SLIDERS-SETUP.sql يجب تشغيله مرة واحدة في Supabase SQL Editor.
+
+ارفع الملفات بنفس المسارات إلى GitHub، وبالأخص مجلد images/sliders كاملاً.
