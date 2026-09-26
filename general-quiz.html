@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head>
-<script id="ha-daylight-boot">(function(){try{var r=document.documentElement;r.setAttribute('data-ha-theme','light');r.style.colorScheme='light';['ha_theme_mode_v2','ha_theme_mode','ha-theme','theme'].forEach(function(k){localStorage.setItem(k,'light')});}catch(e){}})();</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f6fbff">
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أسئلة عامة - HA Marketing</title><style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}.wrap{width:95%;max-width:1000px;margin:26px auto}h1{text-align:center}.sub{text-align:center;color:#666}
 .game{display:grid;grid-template-columns:75px 1fr;gap:14px}.side{position:sticky;top:18px;display:flex;flex-direction:column;align-items:center;gap:10px}.ball{width:58px;height:58px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
@@ -8,10 +6,8 @@
 .card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 18px #0001;min-height:430px}.top{display:flex;justify-content:space-between;align-items:center}.timer{width:54px;height:54px;border-radius:50%;background:conic-gradient(#111 var(--p,100%),#ddd 0);display:flex;align-items:center;justify-content:center;position:relative}.timer:before{content:"";position:absolute;inset:6px;background:#fff;border-radius:50%}.timer span{position:relative;font-weight:700}
 .q{font-size:24px;line-height:1.7;margin:20px 0}.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.ans{border:2px solid #e2e2e2;background:#fafafa;border-radius:14px;padding:15px;text-align:right;font-size:17px;cursor:pointer}.ans.correct{background:#e8f7eb;border-color:#34a853}.ans.wrong{background:#fdeaea;border-color:#d93025}.mark{font-size:50px;text-align:center;min-height:62px;margin-top:12px}.result{display:none;text-align:center}.result.show{display:block}.score{font-size:48px;font-weight:700;margin:18px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#f7f7f7;border-radius:12px;padding:13px}button.restart{border:0;background:#111;color:#fff;padding:13px 20px;border-radius:11px;margin-top:15px;cursor:pointer}.back{display:block;text-align:center;margin:25px;text-decoration:none;color:#111}
 @media(max-width:700px){.game{grid-template-columns:55px 1fr;gap:7px}.rail{height:290px}.answers{grid-template-columns:1fr}.q{font-size:20px}.stats{grid-template-columns:1fr}}
-</style><link rel="stylesheet" href="ha-premium-theme.css?v=20260925-v4">
-<link rel="stylesheet" href="ha-theme.css?v=20260925-v4">
-<link rel="stylesheet" href="ha-daylight-force.css?v=20260925-v4">
-<script src="ha-theme.js?v=20260925-v4"></script>
+</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
 </head><body><div class="wrap"><h1>❓ أسئلة عامة</h1><p class="sub">20 مرحلة، 15 ثانية لكل سؤال، والأسئلة تتغير بكل جولة.</p>
 <div class="game"><aside class="side"><div class="ball" id="ball">1</div><div class="rail"><div id="fill" class="fill"></div><div id="arr" class="arr">⬆️</div></div></aside>
 <main class="card"><div id="quiz"><div class="top"><b>المرحلة <span id="stage">1</span> من 20</b><div id="timer" class="timer"><span id="time">15</span></div></div><div id="q" class="q"></div><div id="answers" class="answers"></div><div id="mark" class="mark"></div></div>
