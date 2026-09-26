@@ -1,123 +1,14 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>طلب تكسي أو مندوب - HA Marketing</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f5f5f5;color:#111}
-.wrap{width:94%;max-width:850px;margin:35px auto}
-h1{text-align:center;margin-bottom:8px}
-.subtitle{text-align:center;color:#666;margin-bottom:25px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{min-height:230px;background:#fff;border-radius:18px;padding:25px 15px;text-decoration:none;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.10);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
-.icon{font-size:60px;margin-bottom:15px}
-.card h2{margin:0 0 10px;font-size:25px}
-.card p{margin:0;color:#666;line-height:1.7}
-.back{display:block;margin-top:20px;background:#eaeaea;color:#111;text-decoration:none;text-align:center;padding:13px;border-radius:10px}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.card{min-height:180px}}
-
-/* HA Marketing mobile compact grid: 3 cards per row */
-@media (max-width: 700px){
-  .grid,.cards,.menu-grid,.rooms,.categories,.category-grid,.services-grid,.service-grid,.games-grid,.options-grid,.quick-grid,.tools-grid,.subgrid,.main-grid,.dashboard-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    gap:7px !important;
-  }
-  .card,.menu-card,.room,.category,.category-card,.service-card,.game-card,.option-card,.quick-card,.tool-card,.subcard{
-    min-width:0 !important;
-    min-height:88px !important;
-    padding:9px 5px !important;
-    border-radius:12px !important;
-  }
-  .card .icon,.menu-card .icon,.room .icon,.category .icon,.category-card .icon,.service-card .icon,.game-card .icon,.option-card .icon,.quick-card .icon,.tool-card .icon,.subcard .subicon{
-    font-size:27px !important;
-    margin-bottom:4px !important;
-  }
-  .card h2,.card h3,.menu-card h2,.menu-card h3,.category-card h2,.category-card h3,.service-card h2,.service-card h3,.game-card h2,.game-card h3,.option-card h2,.quick-card h2,.tool-card h2,.subcard strong{
-    font-size:12px !important;
-    line-height:1.25 !important;
-    margin:2px 0 !important;
-  }
-  .card p,.menu-card p,.category-card p,.service-card p,.game-card p,.option-card p,.quick-card p,.tool-card p{
-    font-size:9px !important;
-    line-height:1.2 !important;
-    margin:2px 0 !important;
-  }
-}
-
-.driver-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.driver-tools a{display:block!important;visibility:visible!important;opacity:1!important;text-decoration:none!important;text-align:center!important;padding:14px 10px!important;border-radius:14px!important;font-weight:900!important;font-size:15px!important;position:relative!important;z-index:5!important}
-.driver-open-btn{background:linear-gradient(135deg,#ffd46a,#d99521)!important;color:#111!important;border:1px solid #ffd46a!important;box-shadow:0 8px 22px rgba(242,181,68,.22)!important}
-.driver-register-btn{background:#111!important;color:#fff!important;border:1px solid #444!important}
-@media(max-width:700px){.driver-tools{grid-template-columns:1fr;margin-top:12px}.driver-tools a{font-size:14px!important;padding:13px 9px!important}}
-</style>
-<link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
-<link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head>
-<body>
-<div class="wrap">
-<h1>🚕 طلب تكسي أو مندوب</h1>
-<p class="subtitle">اختر نوع الخدمة التي تحتاجها</p>
-
-<div class="grid">
- <a class="card" href="taxi.html">
-   <div class="icon">🚕</div>
-   <h2>تكسي</h2>
-   <p>اطلب سيارة وحدد موقع الانطلاق والوجهة</p>
- </a>
-
- <a class="card" href="delivery.html">
-   <div class="icon">🛵</div>
-   <h2>مندوب</h2>
-   <p>اطلب مندوب لاستلام أو توصيل طلبك</p>
- </a>
-
- <a class="card" href="tuktuk.html">
-   <div class="icon">🛺</div>
-   <h2>تكتك</h2>
-   <p>اطلب تكتك وحدد موقع الانطلاق والوجهة</p>
- </a>
-
-
-
- <a class="card" href="stoota.html">
-   <div class="icon">🛻</div>
-   <h2>الستوتة</h2>
-   <p>اطلب ستوتة وحدد الاستلام والتسليم وتابع الطلب</p>
- </a>
-
- <a class="card" href="cargo.html">
-   <div class="icon">🚚</div>
-   <h2>سيارة حمل</h2>
-   <p>اطلب سيارة حمل وحدد الاستلام والتسليم وتابع الطلب</p>
- </a>
-
- <a class="card" href="transport-directory.html?type=student_line">
-   <div class="icon">🎒</div>
-   <h2>خط الطلاب</h2>
-   <p>شوف الخطوط أو أضف طلب طالب بالمكان والوقت حتى يقبله سائق الخط</p>
- </a>
-
- <a class="card" href="transport-directory.html?type=employee_line">
-   <div class="icon">🧑‍💼</div>
-   <h2>خط الموظفين</h2>
-   <p>شوف الخطوط أو أضف طلب موظف بالمكان والوقت حتى يقبله سائق الخط</p>
- </a>
-
- <a class="card" href="transport-directory.html?type=garage">
-   <div class="icon">🅿️</div>
-   <h2>الكراج الموحد</h2>
-   <p>شوف سواق الكراج أو أضف طلبك حتى يقبله سائق من الكراج</p>
- </a>
-</div>
-
-<div class="driver-tools">
-  <a class="driver-open-btn" href="driver.html">🚕 فتح واجهة السائق</a>
-  <a class="driver-register-btn" href="transport-registration.html">📝 تسجيل سائق / مندوب / ستوتة / حمل</a>
-</div>
-
-<a class="back" href="index.html">← الرجوع إلى الرئيسية</a>
-</div>
-</body>
-</html>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>النقل - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css"></head><body><div class="ha-app"><header class="ha-header">
+  <div class="ha-topline">
+    <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
+    <div class="ha-location" id="haLocation"><span class="pin">📍</span><div><b>موقعك الحالي</b><small>اضغط لتحديد موقعك</small></div></div>
+    <div class="ha-bell">🔔</div>
+  </div>
+</header>
+<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تطلب؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>🚕 النقل</h1><p>تنقل بسهولة في أي وقت وأي مكان</p></div><a class="ha-more" href="index.html">العودة للرئيسية ←</a></div><div class="ha-cats"><a class="ha-cat yellow" data-search="تكسي" href="taxi.html"><span class="ico">🚕</span><strong>تكسي</strong><small>تنقل سريع وآمن</small></a><a class="ha-cat green" data-search="مندوب" href="delivery.html"><span class="ico">🛵</span><strong>مندوب</strong><small>توصيل طلبات ومشاوير</small></a><a class="ha-cat peach" data-search="تك تك" href="tuktuk.html"><span class="ico">🛺</span><strong>تك تك</strong><small>للمشاوير القصيرة</small></a><a class="ha-cat green" data-search="ستوتة" href="stoota.html"><span class="ico">🛵</span><strong>ستوتة</strong><small>مشاوير سريعة واقتصادية</small></a><a class="ha-cat purple" data-search="سيارة حمل" href="cargo.html"><span class="ico">🚚</span><strong>سيارة حمل</strong><small>لنقل الأثاث والبضائع</small></a><a class="ha-cat blue" data-search="خط الطلاب" href="transport-directory.html?type=student_line"><span class="ico">🚌</span><strong>خط الطلاب</strong><small>نقل آمن ومريح للطلاب</small></a></div><section class="ha-banner"><div class="ha-banner-text"><span class="ha-kicker">خدمات نقل موثوقة</span><h3>تنقل بكل راحة وأمان</h3><p>احجز الآن خدمات النقل بأسعار مناسبة وسائقين معتمدين في منطقتك</p><a class="ha-cta" href="taxi.html">← احجز الآن</a></div><div class="ha-banner-art">🚗🗺️</div><div class="ha-dots"><i></i><i></i><i></i></div></section><div class="ha-section-head"><h2>📍 خدمات النقل القريبة منك</h2><a class="ha-more" href="transport-directory.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="مندوب قريب منك" href="delivery.html"><div class="ftext"><h4>مندوب قريب منك</h4><p>توصيل سريع في منطقتك</p><span class="ha-arrow">‹</span></div><div class="fart">🛵</div></a><a class="ha-feature green" data-search="التكسي في منطقتك" href="taxi.html"><div class="ftext"><h4>التكسي في منطقتك</h4><p>متوفر الآن بالقرب منك</p><span class="ha-arrow">‹</span></div><div class="fart">🚕</div></a></div><div class="ha-section-head"><h2>🔥 خدمات النقل الأكثر طلباً</h2><a class="ha-more" href="transport-directory.html">عرض المزيد ←</a></div><div class="ha-grid"><a class="ha-card" data-search="سيارة حمل" href="cargo.html"><span class="fav">♡</span><div class="ha-thumb blue">🚚</div><div class="ha-card-body"><h5>سيارة حمل</h5><p>لنقل الأثاث والبضائع</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a><a class="ha-card" data-search="تك تك" href="tuktuk.html"><span class="fav">♡</span><div class="ha-thumb yellow">🛺</div><div class="ha-card-body"><h5>تك تك</h5><p>للمشاوير القصيرة</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a><a class="ha-card" data-search="مندوب" href="delivery.html"><span class="fav">♡</span><div class="ha-thumb green">🛵</div><div class="ha-card-body"><h5>مندوب</h5><p>توصيل سريع وآمن</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a><a class="ha-card" data-search="تكسي" href="taxi.html"><span class="fav">♡</span><div class="ha-thumb peach">🚕</div><div class="ha-card-body"><h5>تكسي</h5><p>أسرع خدمة نقل</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
+<a class="ha-nav active" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>
+<a class="ha-nav " href="orders-center.html"><span class="nicon">🛍️</span><span>طلباتي</span></a>
+<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>
+<a class="ha-nav " href="chat.html"><span class="nicon">💬</span><span>المحادثات</span></a>
+<a class="ha-nav " href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>
+</div></nav><script src="ha-modern-green.js"></script></body></html>
