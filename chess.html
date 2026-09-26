@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="ha-theme.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="game-ranking.js"></script>
+
+<link rel="stylesheet" href="ha-premium-blue-v2.css?v=20260926-1">
 </head><body><div class="wrap"><h1>♟️ شطرنج</h1><p class="sub">لعبة شطرنج مبسطة ضد الجهاز. حرّك قطعك البيضاء، والجهاز يلعب بالأسود.</p><div id="board" class="board"></div><div class="panel"><div id="status" class="status">دورك</div><button id="reset">مباراة جديدة</button></div><a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a></div>
 <script>
 const U={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',bK:'♚',bQ:'♛',bR:'♜',bB:'♝',bN:'♞',bP:'♟'};let b,sel=null,turn='w',over=false;let rankPoints=0,rankPlayId='',rankRecorded=false;

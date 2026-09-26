@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="ha-theme.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="game-ranking.js"></script>
+
+<link rel="stylesheet" href="ha-premium-blue-v2.css?v=20260926-1">
 </head><body><div class="wrap"><h1>🎲 طاولة</h1><p class="sub">نسخة مبسطة ضد الجهاز: سباق 7 أحجار. أنت تتحرك من اليمين إلى اليسار والجهاز بالعكس، وأول من يخرج أحجاره يفوز.</p><div id="board" class="board"></div><div class="panel"><div id="status" class="status">اضغط رمي النرد.</div><div id="dice" class="dice">🎲</div><button id="roll">رمي النرد</button> <button id="reset">لعبة جديدة</button></div><a class="back" href="entertainment.html">← الرجوع إلى الترفيه</a></div>
 <script>
 let you=[],cpu=[],turn='you',rolled=0,over=false;const N=12,COUNT=7;let rankPlayId='',rankRecorded=false;
