@@ -1,76 +1,18 @@
 (function(){
   'use strict';
-
-  var KEY='ha_theme_mode';
   var root=document.documentElement;
-
-  function readTheme(){
-    try{
-      var v=localStorage.getItem(KEY);
-      return v==='light' ? 'light' : 'dark';
-    }catch(e){
-      return 'dark';
-    }
+  root.setAttribute('data-ha-theme','light');
+  root.style.colorScheme='light';
+  try{localStorage.setItem('ha_theme_mode','light')}catch(e){}
+  function addCss(){
+    if(document.querySelector('link[href*="ha-modern-green.css"]'))return;
+    var l=document.createElement('link');l.rel='stylesheet';l.href='ha-modern-green.css?v=20260926-1';document.head.appendChild(l);
   }
-
-  function applyTheme(mode){
-    mode = mode==='light' ? 'light' : 'dark';
-    root.setAttribute('data-ha-theme',mode);
-    root.style.colorScheme = mode;
-
-    try{ localStorage.setItem(KEY,mode); }catch(e){}
-
-    var btn=document.getElementById('haThemeToggle');
-    if(btn){
-      var isDark=mode==='dark';
-      btn.innerHTML=isDark?'☀️':'🌙';
-      btn.setAttribute('aria-label',isDark?'تفعيل الوضع النهاري':'تفعيل الوضع المظلم');
-      btn.setAttribute('title',isDark?'الوضع النهاري':'الوضع المظلم');
-    }
-
-    try{
-      window.dispatchEvent(new CustomEvent('ha-theme-changed',{detail:{theme:mode}}));
-    }catch(e){}
+  function addJs(){
+    if(document.querySelector('script[src*="ha-modern-green.js"]'))return;
+    var s=document.createElement('script');s.src='ha-modern-green.js?v=20260926-1';s.defer=true;document.head.appendChild(s);
   }
-
-  window.haSetTheme=applyTheme;
-  window.haToggleTheme=function(){
-    applyTheme(root.getAttribute('data-ha-theme')==='light'?'dark':'light');
-  };
-
-  /* Apply before page paint as early as possible. */
-  applyTheme(readTheme());
-
-  function isHomePage(){
-    var p=(location.pathname||'').toLowerCase();
-    return p.endsWith('/index.html') ||
-           p.endsWith('/index-offline.html') ||
-           p==='/' ||
-           p.endsWith('/');
-  }
-
-  function addToggle(){
-    if(!isHomePage() || document.getElementById('haThemeToggle')) return;
-
-    var btn=document.createElement('button');
-    btn.type='button';
-    btn.id='haThemeToggle';
-    btn.className='ha-theme-toggle';
-    btn.onclick=window.haToggleTheme;
-    document.body.appendChild(btn);
-
-    applyTheme(root.getAttribute('data-ha-theme')||readTheme());
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',addToggle);
-  }else{
-    addToggle();
-  }
-
-  window.addEventListener('storage',function(e){
-    if(e.key===KEY){
-      applyTheme(e.newValue==='light'?'light':'dark');
-    }
-  });
+  window.haSetTheme=function(){root.setAttribute('data-ha-theme','light');root.style.colorScheme='light'};
+  window.haToggleTheme=window.haSetTheme;
+  addCss();addJs();
 })();
