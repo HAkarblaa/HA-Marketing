@@ -1,0 +1,230 @@
+/* =========================================================
+   HA Marketing — Premium Blue Luxury UI v2
+   Bright daylight / blue-led / gold accents / simple UX
+   ========================================================= */
+:root{
+  --ha-pb-bg:#eef6ff;
+  --ha-pb-bg2:#f8fbff;
+  --ha-pb-surface:#ffffff;
+  --ha-pb-surface2:#f3f8ff;
+  --ha-pb-blue:#0b63d8;
+  --ha-pb-blue2:#2f82f5;
+  --ha-pb-blue3:#79b9ff;
+  --ha-pb-navy:#102b4c;
+  --ha-pb-text:#15324f;
+  --ha-pb-muted:#6c7f94;
+  --ha-pb-gold:#d7a53b;
+  --ha-pb-gold2:#f4cf75;
+  --ha-pb-line:rgba(48,125,224,.20);
+  --ha-pb-shadow:0 16px 42px rgba(31,86,151,.12);
+  --ha-pb-shadow2:0 8px 24px rgba(31,86,151,.09);
+  --ha-pb-r:24px;
+  --ha-pb-r2:18px;
+  color-scheme:light!important;
+}
+html,html[data-ha-theme],html[data-ha-theme="light"],html[data-ha-theme="dark"]{color-scheme:light!important;background:#eef6ff!important}
+html body{
+  color:var(--ha-pb-text)!important;
+  background:
+    radial-gradient(circle at 7% -2%,rgba(244,207,117,.24),transparent 22%),
+    radial-gradient(circle at 96% 2%,rgba(121,185,255,.25),transparent 30%),
+    linear-gradient(180deg,#fbfdff 0%,#f3f8ff 45%,#edf6ff 100%)!important;
+  font-family:"Segoe UI",Tahoma,Arial,sans-serif!important;
+  text-rendering:optimizeLegibility;
+}
+html body::before{opacity:.08!important}
+
+/* keep media and maps natural */
+html body :is(img,video,canvas,iframe,#map,.map,.leaflet-container,.map-shell){filter:none!important}
+
+/* main containers */
+html body :is(.wrap,.container,.page,.main,.content,.shell,.app,.view){color:var(--ha-pb-text)!important}
+
+/* top bars */
+html body :is(header,.header,.topbar,.navbar,.nav,.top,.head,.toolbar,.appbar){
+  background:rgba(255,255,255,.94)!important;
+  color:var(--ha-pb-text)!important;
+  border-color:var(--ha-pb-line)!important;
+  box-shadow:0 8px 24px rgba(31,86,151,.08)!important;
+  backdrop-filter:blur(14px) saturate(1.15);
+}
+
+/* hero/banner */
+html body :is(.hero,.banner,.intro,.welcome,.hero-card){
+  background:
+    radial-gradient(circle at 12% 8%,rgba(244,207,117,.26),transparent 28%),
+    radial-gradient(circle at 90% 10%,rgba(121,185,255,.30),transparent 34%),
+    linear-gradient(145deg,#ffffff,#eff6ff)!important;
+  color:var(--ha-pb-text)!important;
+  border:1px solid rgba(47,130,245,.20)!important;
+  border-radius:28px!important;
+  box-shadow:var(--ha-pb-shadow)!important;
+  overflow:hidden;
+}
+html body :is(.hero,.banner,.intro,.welcome,.hero-card) :is(h1,h2,h3,strong,b){color:var(--ha-pb-navy)!important}
+html body :is(.hero,.banner,.intro,.welcome,.hero-card) :is(p,small,.sub,.subtitle){color:var(--ha-pb-muted)!important}
+
+/* cards / panels */
+html body :is(.card,.c,.box,.panel,.tile,.qcard,.category,.role,.tool,.order-row,.order,.items,.delivery,.result,.option,.feature,.service-card,.product-card,.store-card,.provider-card,.request-card,.modal-content,.sheet-content,.dialog,.status-card,.info-card,.section-shell,.conversation,.messages,.composer,.list,.item){
+  background:
+    radial-gradient(circle at 100% 0,rgba(121,185,255,.10),transparent 34%),
+    linear-gradient(145deg,#ffffff,#f5f9ff)!important;
+  color:var(--ha-pb-text)!important;
+  border:1px solid var(--ha-pb-line)!important;
+  border-radius:var(--ha-pb-r2)!important;
+  box-shadow:var(--ha-pb-shadow2)!important;
+}
+html body :is(.card,.c,.qcard,.category,.role,.tool,.service-card,.product-card,.store-card,.provider-card,.request-card){
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+@media (hover:hover){
+  html body :is(.card,.c,.qcard,.category,.role,.tool,.service-card,.product-card,.store-card,.provider-card,.request-card):hover{
+    transform:translateY(-3px)!important;
+    border-color:rgba(47,130,245,.34)!important;
+    box-shadow:0 18px 38px rgba(31,86,151,.15)!important;
+  }
+}
+html body :is(.card,.c,.qcard,.category,.role,.tool,.service-card,.product-card,.store-card,.provider-card,.request-card):active{transform:scale(.985)!important}
+
+/* headings & text */
+html body :is(h1,h2,h3,h4,h5,h6,.title,.name,.heading,.section-title,b,strong,label){color:var(--ha-pb-text)!important}
+html body :is(p,.muted,.sub,.subtitle,.desc,.description,small,.help,.hint){color:var(--ha-pb-muted)!important}
+html body a{color:var(--ha-pb-blue)}
+
+/* grids — roomier but simple */
+html body :is(.grid,.g,.service-grid,.categories,.quick,.roles,.tools-grid){gap:14px!important}
+
+/* icon boxes */
+html body :is(.iconbox,.qicon,.ico-box,.badgeIcon,.round,.round-btn,.menu-btn,.topbtn,.short-ico){
+  background:linear-gradient(145deg,#ffffff,#eaf4ff)!important;
+  color:var(--ha-pb-blue)!important;
+  border:1px solid rgba(47,130,245,.22)!important;
+  box-shadow:0 9px 22px rgba(31,86,151,.10)!important;
+}
+
+/* colored cards retain varied identity but stay blue-led */
+html body .blue{background:linear-gradient(145deg,#eef6ff,#dfeeff)!important;color:#135bb7!important;border-color:#b6d5ff!important}
+html body .green{background:linear-gradient(145deg,#effbf5,#e2f7ed)!important;color:#247c58!important;border-color:#bee7d2!important}
+html body .red{background:linear-gradient(145deg,#fff2f5,#ffe8ee)!important;color:#b53d50!important;border-color:#f1c1ca!important}
+html body .purple{background:linear-gradient(145deg,#f6f1ff,#ece4ff)!important;color:#6d53a7!important;border-color:#d7c8f3!important}
+html body :is(.gold,.orange){background:linear-gradient(145deg,#fff9e9,#fff0c9)!important;color:#946614!important;border-color:#efd69f!important}
+
+/* forms */
+html body :is(input,select,textarea,.input,.search,.search-box){
+  background:#fff!important;
+  color:var(--ha-pb-text)!important;
+  border:1px solid rgba(47,130,245,.20)!important;
+  border-radius:14px!important;
+  box-shadow:inset 0 1px 2px rgba(31,86,151,.03)!important;
+}
+html body :is(input,textarea)::placeholder{color:#98a7b8!important;opacity:1!important}
+html body :is(input,select,textarea,.input,.search):focus{border-color:var(--ha-pb-blue2)!important;box-shadow:0 0 0 4px rgba(47,130,245,.11)!important;outline:none!important}
+html body option{background:#fff!important;color:var(--ha-pb-text)!important}
+
+/* buttons */
+html body :is(button,.btn,.b,.button,a.btn,.primary,.cta,.go,.action,.save,.submit,input[type="submit"]){
+  background:linear-gradient(135deg,var(--ha-pb-blue2),var(--ha-pb-blue))!important;
+  color:#fff!important;
+  border:1px solid rgba(47,130,245,.45)!important;
+  border-radius:14px!important;
+  box-shadow:0 9px 20px rgba(11,99,216,.18)!important;
+  font-weight:800!important;
+}
+html body :is(button,.btn,.b,.button,a.btn,.primary,.cta,.go,.action,.save,.submit,input[type="submit"]):active{transform:scale(.985)!important}
+html body :is(.secondary,.ghost,.light,.btn-light){background:linear-gradient(145deg,#ffffff,#edf5ff)!important;color:var(--ha-pb-blue)!important;border-color:rgba(47,130,245,.24)!important;box-shadow:0 6px 16px rgba(31,86,151,.07)!important}
+html body :is(.danger,.reject,.delete,.remove){background:#fff1f4!important;color:#ba3c4f!important;border-color:#f0bdc6!important}
+
+/* badges */
+html body :is(.chip,.badge,.tag,.status,.pill,.label,.count){
+  background:linear-gradient(145deg,#ffffff,#eef5ff)!important;
+  color:var(--ha-pb-blue)!important;
+  border:1px solid rgba(47,130,245,.18)!important;
+  border-radius:999px!important;
+}
+
+/* tables */
+html body table{background:#fff!important;color:var(--ha-pb-text)!important;border-radius:16px!important;overflow:hidden!important}
+html body th{background:#edf5ff!important;color:var(--ha-pb-navy)!important}
+html body td,html body th{border-color:#dce8f5!important}
+html body tr:nth-child(even) td{background:#fbfdff!important}
+
+/* bottom nav */
+html body :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom){
+  background:rgba(255,255,255,.97)!important;
+  color:var(--ha-pb-muted)!important;
+  border-color:rgba(47,130,245,.20)!important;
+  box-shadow:0 -10px 28px rgba(31,86,151,.10)!important;
+  backdrop-filter:blur(14px) saturate(1.1);
+}
+html body :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom) a{color:#6e8197!important}
+html body :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom) :is(.active,.current,[aria-current="page"]){
+  color:var(--ha-pb-blue)!important;
+  background:linear-gradient(180deg,#eff6ff,#deedff)!important;
+  border-color:rgba(47,130,245,.26)!important;
+  border-radius:16px!important;
+}
+
+/* drawers / overlays */
+html body :is(.overlay,.modal,.sheet,.popup-overlay,.drawer-overlay){background:rgba(219,232,248,.72)!important;backdrop-filter:blur(7px)!important}
+html body .shortcuts{background:linear-gradient(160deg,#ffffff,#f2f8ff)!important;border-color:var(--ha-pb-line)!important;box-shadow:0 24px 60px rgba(31,86,151,.18)!important}
+html body .shortcuts a{background:#fff!important;color:var(--ha-pb-text)!important;border-color:#e0ebf7!important}
+
+/* selected/current */
+html body :is(.selected,.current,.on){border-color:rgba(47,130,245,.40)!important;box-shadow:0 0 0 3px rgba(47,130,245,.08),0 12px 26px rgba(31,86,151,.10)!important}
+
+/* shop/service links */
+html body :is(.tools a,.provider-links a){background:linear-gradient(145deg,#fff,#eef5ff)!important;color:var(--ha-pb-text)!important;border:1px solid rgba(47,130,245,.20)!important}
+html body :is(.tools a.primary,.provider-links a.primary){background:linear-gradient(135deg,var(--ha-pb-blue2),var(--ha-pb-blue))!important;color:#fff!important}
+
+/* chat */
+html body :is(.app,.side,.chat,.chatbox,.conversation,.list,.messages){background:#f7fbff!important;color:var(--ha-pb-text)!important}
+html body :is(.side,.head,.item,.tabs,.messages,.composer){border-color:#dce8f5!important}
+html body .item{background:#fff!important}
+html body .item:hover,html body .item.active{background:#edf5ff!important}
+html body .tabs button{background:#fff!important;color:#64778d!important;border-color:#dce8f5!important}
+html body .tabs .on{background:linear-gradient(135deg,var(--ha-pb-blue2),var(--ha-pb-blue))!important;color:#fff!important}
+
+/* transport sheets stay readable */
+html body #tripSheet,html body #tripSheet.open,html body .sheet-content{background:#fff!important;color:var(--ha-pb-text)!important}
+html body #tripSheet :is(b,strong,h1,h2,h3,h4,label,span,p,small){color:var(--ha-pb-text)!important}
+
+/* hide old night-mode toggle */
+.ha-theme-toggle,#haThemeToggle,[data-theme-toggle],[data-ha-theme-toggle]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
+/* micro delight without distraction */
+@keyframes haPbFadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+html body :is(.card,.qcard,.category,.service-card,.product-card,.store-card,.feature){animation:haPbFadeUp .32s ease both}
+html body :is(.card,.qcard,.category,.service-card,.product-card,.store-card,.feature):nth-child(2){animation-delay:.03s}
+html body :is(.card,.qcard,.category,.service-card,.product-card,.store-card,.feature):nth-child(3){animation-delay:.06s}
+html body :is(.card,.qcard,.category,.service-card,.product-card,.store-card,.feature):nth-child(4){animation-delay:.09s}
+
+/* main home refinements */
+html body .hero{border-radius:0 0 30px 30px!important}
+html body .brand-name{color:var(--ha-pb-navy)!important;text-shadow:none!important}
+html body .brand-name .gold{color:var(--ha-pb-blue)!important;background:linear-gradient(145deg,#e8f3ff,#fff4cf)!important;border-radius:10px;padding:0 .09em}
+html body .brand-sub{color:#6d8197!important}
+html body .promo-pill{background:rgba(255,255,255,.92)!important;border-color:rgba(47,130,245,.20)!important;box-shadow:0 12px 28px rgba(31,86,151,.10)!important}
+html body .promo-pill strong{color:var(--ha-pb-navy)!important}
+html body .promo-pill .arrow,html body .promo-pill .ico{color:var(--ha-pb-blue)!important}
+html body #mainGrid .card{min-height:190px!important}
+html body #mainGrid .card:nth-child(6n+1){background:linear-gradient(145deg,#f6f9ff,#e9f2ff)!important}
+html body #mainGrid .card:nth-child(6n+2){background:linear-gradient(145deg,#fffaf0,#fff0cf)!important}
+html body #mainGrid .card:nth-child(6n+3){background:linear-gradient(145deg,#f2f8ff,#e4f0ff)!important}
+html body #mainGrid .card:nth-child(6n+4){background:linear-gradient(145deg,#f8f4ff,#eee6ff)!important}
+html body #mainGrid .card:nth-child(6n+5){background:linear-gradient(145deg,#f2fbf7,#e5f7ef)!important}
+html body #mainGrid .card:nth-child(6n){background:linear-gradient(145deg,#fff4f7,#ffe8ee)!important}
+
+/* page-specific simple polish */
+html body .service-grid .service-card,html body .categories .category,html body .quick .qcard{min-height:118px!important}
+html body .service-card .ico,html body .category .icon,html body .qicon{filter:drop-shadow(0 6px 10px rgba(31,86,151,.10))}
+
+@media(max-width:700px){
+  html body{padding-bottom:max(84px,env(safe-area-inset-bottom))!important}
+  html body :is(.wrap,.container,.page,.main,.shell){width:min(100%,680px)!important;margin-left:auto!important;margin-right:auto!important}
+  html body :is(.card,.c,.qcard,.category,.service-card,.product-card,.store-card,.provider-card){border-radius:17px!important}
+  html body :is(.grid,.g,.service-grid,.categories,.quick){gap:9px!important}
+  html body :is(h1){font-size:clamp(22px,6vw,30px)!important}
+  html body :is(h2){font-size:clamp(15px,4.5vw,20px)!important}
+  html body :is(.hero,.banner,.intro,.welcome,.hero-card){border-radius:22px!important}
+  html body .bottom-nav{padding-inline:5px!important}
+}
