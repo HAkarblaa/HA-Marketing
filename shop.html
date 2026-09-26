@@ -3,60 +3,213 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0fa36c">
 <title>تسوق الآن - HA Marketing</title>
-<link rel="stylesheet" href="ha-easy-layout.css">
+<style>
+:root{--bg:#03070b;--panel:#07111b;--panel2:#0a1622;--gold:#f4c45f;--gold2:#a87520;--text:#fff;--muted:#aeb8c4;--line:#203244}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#102131 0,#050a0f 34%,#020406 72%);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}.page{width:min(100%,980px);margin:auto;padding:0 14px 110px}.hero{position:relative;overflow:hidden;border-radius:0 0 34px 34px;padding:22px 16px 26px;min-height:410px;background:radial-gradient(circle at 82% 24%,rgba(244,196,95,.18),transparent 22%),radial-gradient(circle at 15% 44%,rgba(53,125,178,.16),transparent 24%),linear-gradient(180deg,#09131d 0,#05090d 100%);border-bottom:1px solid rgba(244,196,95,.55);box-shadow:0 24px 60px #0008}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);opacity:.9}.hero:before{width:180px;height:180px;left:-70px;bottom:20px;background:radial-gradient(circle,#7a5420 0,transparent 68%)}.hero:after{width:240px;height:240px;right:-90px;top:80px;background:radial-gradient(circle,#1a5d82 0,transparent 70%)}.topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between}.round{width:48px;height:48px;border-radius:50%;border:1px solid rgba(244,196,95,.65);display:grid;place-items:center;background:#080d12;color:var(--gold);font-size:25px;box-shadow:0 0 22px rgba(244,196,95,.10)}.brand{text-align:center;line-height:1}.logo{font-size:52px;font-weight:900;letter-spacing:-5px;background:linear-gradient(180deg,#ffe9a4,#c58625);-webkit-background-clip:text;color:transparent}.brand strong{display:block;font-size:28px;margin-top:-2px}.brand small{display:block;color:#d8dde3;margin-top:9px;font-size:13px}.hero-content{position:relative;z-index:2;text-align:center;padding-top:28px}.hero-title{font-size:52px;margin:0;font-weight:900;background:linear-gradient(90deg,#fff4cf,#d79a34,#fff2bd);-webkit-background-clip:text;color:transparent;text-shadow:0 0 30px rgba(244,196,95,.10)}.hero-sub{font-size:20px;color:#d5dce4;margin:10px 0 24px}.decor{display:flex;justify-content:center;gap:30px;font-size:50px;filter:drop-shadow(0 8px 14px #000);margin-bottom:14px}.cta{margin:auto;max-width:720px;min-height:72px;border:1px solid var(--gold);border-radius:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:linear-gradient(180deg,#0a0f14,#05080b);box-shadow:0 0 0 2px rgba(244,196,95,.08),0 0 28px rgba(244,196,95,.16);font-size:20px;font-weight:800;color:#f6d786}.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.qcard,.category{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(16,32,47,.97),rgba(4,10,16,.98));border:1px solid #31465c;border-radius:24px;padding:18px 14px;text-align:center;box-shadow:inset 0 1px 0 #ffffff0c,0 10px 28px #0007;min-height:180px}.qcard:before,.category:before{content:"";position:absolute;inset:auto 0 0;height:3px;background:linear-gradient(90deg,transparent,var(--accent,var(--gold)),transparent);opacity:.9}.qicon,.category .icon{width:88px;height:88px;margin:0 auto 12px;border-radius:22px;display:grid;place-items:center;font-size:48px;background:linear-gradient(145deg,#121a25,#06090e);border:1px solid color-mix(in srgb,var(--accent,var(--gold)) 65%,#2d4050);box-shadow:0 0 26px color-mix(in srgb,var(--accent,var(--gold)) 18%,transparent)}.qcard h3,.category h2{margin:4px 0 7px;font-size:24px}.qcard p,.category p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}.gold{--accent:#f1bb4d}.red{--accent:#e74857}.blue{--accent:#2da5ef}.green{--accent:#4fca69}.purple{--accent:#a75bea}.orange{--accent:#f29a45}.section-title{display:flex;align-items:center;gap:10px;margin:34px 4px 14px;font-size:25px}.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#26445b,transparent)}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tool{padding:10px 14px;border:1px solid #2a3c4e;border-radius:14px;background:#0a121a;color:#e7edf4}.tool.primary{border-color:#a97927;color:#f4d37c}.categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.category{min-height:155px;padding:15px 8px}.category .icon{width:64px;height:64px;font-size:34px;border-radius:17px}.category h2{font-size:17px}.category p{font-size:11px}.bottom{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,980px);height:86px;background:linear-gradient(180deg,#080e14f5,#030608);border-top:1px solid #b47a23;display:grid;grid-template-columns:1fr 1.25fr 1fr;box-shadow:0 -10px 32px #000a}.bottom a{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;color:#9da9b5}.bottom a span{font-size:25px}.bottom .active{color:#f5ce6a;background:radial-gradient(circle at 50% 100%,rgba(244,196,95,.18),transparent 55%);border-left:1px solid #7b551d;border-right:1px solid #7b551d;border-radius:30px 30px 0 0}
+@media(max-width:560px){.page{padding:0 8px 100px}.hero{min-height:360px;padding:16px 10px 22px}.round{width:42px;height:42px}.logo{font-size:44px}.brand strong{font-size:23px}.brand small{font-size:11px}.hero-title{font-size:42px}.hero-sub{font-size:16px}.decor{font-size:40px}.cta{min-height:62px;font-size:16px;padding:0 18px}.qcard{min-height:155px;padding:13px 8px;border-radius:19px}.qicon{width:72px;height:72px;font-size:39px}.qcard h3{font-size:19px}.qcard p{font-size:12px}.categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.category{min-height:128px;border-radius:17px;padding:11px 5px}.category .icon{width:55px;height:55px;font-size:29px;margin-bottom:8px}.category h2{font-size:13px}.category p{font-size:9px}.bottom{height:78px}}
+
+/* ===== HA SHOP SIMPLE 3-COLUMN SQUARES ===== */
+.hero{
+  min-height:245px!important;
+  padding-bottom:22px!important;
+}
+.hero-content{padding-top:36px!important}
+.hero-title{font-size:46px!important}
+.hero-sub{font-size:16px!important;margin-bottom:0!important}
+.decor,.cta{display:none!important}
+
+/* كل 3 مربعات بجانب بعض */
+.quick{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin-top:16px!important;
+}
+.qcard{
+  min-height:0!important;
+  aspect-ratio:1/1!important;
+  padding:14px 8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+.qicon{
+  width:60px!important;
+  height:60px!important;
+  margin:0!important;
+  border-radius:17px!important;
+  font-size:32px!important;
+}
+.qcard h3{
+  margin:0!important;
+  font-size:16px!important;
+}
+.qcard p{display:none!important}
+
+/* خيارات المتجر كمربعات */
+.store-actions{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin:12px 0 8px;
+}
+.store-action{
+  min-height:0;
+  aspect-ratio:1/1;
+  padding:12px 8px;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  text-align:center;
+  background:linear-gradient(145deg,rgba(16,32,47,.97),rgba(4,10,16,.98));
+  border:1px solid #31465c;
+  box-shadow:inset 0 1px 0 #ffffff0c,0 10px 28px #0006;
+}
+.store-action span{
+  width:54px;height:54px;
+  border-radius:16px;
+  display:grid;place-items:center;
+  font-size:29px;
+  background:#0b1117;
+  border:1px solid var(--accent,var(--gold));
+}
+.store-action b{font-size:15px}
+.store-action small{font-size:10px;color:#9eabb6;line-height:1.45}
+.store-action.gold{--accent:#f1bb4d}
+.store-action.green{--accent:#4fca69}
+.store-action.blue{--accent:#2da5ef}
+.store-action.orange{--accent:#f29a45}
+.store-action.purple{--accent:#a75bea}
+
+/* أقسام التسوق أيضاً مربعات متساوية */
+.categories{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+.category{
+  min-height:0!important;
+  aspect-ratio:1/1!important;
+  padding:10px 5px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+}
+.category .icon{
+  width:52px!important;
+  height:52px!important;
+  margin:0!important;
+  font-size:28px!important;
+}
+.category h2{
+  margin:0!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+.category p{display:none!important}
+
+.section-title{
+  margin:24px 4px 11px!important;
+  font-size:21px!important;
+}
+
+html[data-ha-theme="light"] .store-action{
+  background:linear-gradient(145deg,#ffffff,#f4f9ff)!important;
+  color:#102235!important;
+  border-color:rgba(53,119,188,.20)!important;
+  box-shadow:0 8px 22px rgba(37,76,120,.10)!important;
+}
+html[data-ha-theme="light"] .store-action span{
+  background:#f5f9ff!important;
+}
+html[data-ha-theme="light"] .store-action b{
+  color:#102b45!important;
+}
+html[data-ha-theme="light"] .store-action small{
+  color:#607080!important;
+}
+html[data-ha-theme="dark"] .store-action b{
+  color:#f1c66a!important;
+}
+html[data-ha-theme="dark"] .store-action small{
+  color:#c1c8cd!important;
+}
+
+@media(max-width:560px){
+  .hero{min-height:210px!important}
+  .hero-title{font-size:38px!important}
+  .hero-sub{font-size:14px!important}
+  .quick,.store-actions,.categories{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+  .qcard,.store-action,.category{
+    border-radius:16px!important;
+    padding:8px 4px!important;
+  }
+  .qicon,.store-action span,.category .icon{
+    width:44px!important;height:44px!important;font-size:23px!important;border-radius:13px!important;
+  }
+  .qcard h3,.store-action b,.category h2{
+    font-size:12px!important;
+  }
+  .store-action small{
+    font-size:8px!important;
+  }
+}
+
+</style>
+<link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<link rel="stylesheet" href="ha-theme.css">
+
+<link rel="stylesheet" href="ha-premium-blue-v2.css?v=20260926-1">
 </head>
 <body>
 <div class="page">
-  <header class="hero-top">
-    <div class="status"><span>9:41</span><span>🔔</span></div>
-    <div class="brand-row">
-      <div class="loc"><strong>📍 موقعك الحالي</strong>الناصرية، ذي قار، العراق</div>
-      <div class="brand"><div><div class="brand-title">HA Marketing</div><div class="brand-sub">كل ما تحتاجه في مكان واحد</div></div><div class="logo-box">HA</div></div>
-    </div>
-    <div class="search"><div class="icon">🔍</div><div class="placeholder">ماذا تريد أن تبحث عنه؟</div><div class="icon">🎤</div></div>
-  </header>
-
-  <section class="section">
-    <div class="banner" style="--b1:#dff4ff;--b2:#ffffff">
-      <div class="content">
-        <h1>تسوق كل ما تحتاجه في مكان واحد</h1>
-        <p>منتجات متنوعة، أسعار زاهية وواضحة، وترتيب سهل للأقسام والعروض اليومية.</p>
-        <a class="cta" href="store.html">تسوق الآن ←</a>
-        <div class="dots"><span class="active"></span><span></span><span></span></div>
-      </div>
-      <div class="art">🛒</div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="title-row"><h3>الأقسام</h3><a href="#">عرض الكل</a></div>
-    <div class="icon-grid"><a class="icon-card" href="building-materials.html"><div class="i pastel-peach">👷</div><strong>مواد البناء</strong></a><a class="icon-card" href="shop-section.html"><div class="i pastel-blue">💻</div><strong>الإلكترونيات</strong></a><a class="icon-card" href="shop-section.html"><div class="i pastel-pink">👗</div><strong>الأزياء</strong></a><a class="icon-card" href="shop-section.html"><div class="i pastel-mint">🛋️</div><strong>المنزل</strong></a><a class="icon-card" href="cart.html"><div class="i pastel-yellow">🧺</div><strong>السلة</strong></a></div>
-  </section>
-
-  <section class="section">
-    <div class="banner small" style="--b1:#fff6d7;--b2:#ffe6a8">
-      <div class="content">
-        <span class="section-chip">🔥 عروض</span>
-        <h2>عروض اليوم</h2>
-        <p>أسعار خاصة لفترة محدودة مع شكل واضح ومنظم للمنتجات.</p>
-        <a class="cta" href="shop-orders.html">عرض المنتجات ←</a>
-      </div>
-      <div class="art">🏷️</div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="title-row"><h3>أقسام مختارة</h3></div>
-    <div class="cards-2"><a class="feature-card pastel-blue" href="product-details.html"><div class="txt"><h4>تصميم المواقع</h4><p>منتجات وأدوات رقمية وخيارات متعددة.</p><span class="mini">‹</span></div><div class="side-emoji">🌐</div></a><a class="feature-card pastel-pink" href="favorites.html"><div class="txt"><h4>الطلبات والمفضلة</h4><p>ادخل إلى الطلبات أو العناصر المحفوظة.</p><span class="mini">‹</span></div><div class="side-emoji">❤️</div></a></div>
-  </section>
-
-  <section class="section">
-    <div class="title-row"><h3>المنتجات الأكثر طلباً</h3><a href="#">عرض الكل</a></div>
-    <div class="list-grid"><a class="mini-card" href="product-details.html"><div class="thumb pastel-blue">🎧</div><div class="body"><h5>سماعات لاسلكية</h5><p>جودة عالية وسعر مناسب.</p><div class="meta"><span>75,000 د.ع</span><span>→</span></div></div></a><a class="mini-card" href="product-details.html"><div class="thumb pastel-mint">📱</div><div class="body"><h5>هاتف ذكي</h5><p>أداء قوي وتصميم حديث.</p><div class="meta"><span>450,000 د.ع</span><span>→</span></div></div></a><a class="mini-card" href="product-details.html"><div class="thumb pastel-peach">🧃</div><div class="body"><h5>خلاط كهربائي</h5><p>استخدام منزلي عملي.</p><div class="meta"><span>60,000 د.ع</span><span>→</span></div></div></a><a class="mini-card" href="building-materials.html"><div class="thumb pastel-yellow">🧱</div><div class="body"><h5>مواد بناء</h5><p>منتجات أساسية للبناء والتشطيب.</p><div class="meta"><span>قسم خاص</span><span>→</span></div></div></a></div>
-  </section>
+<section class="hero">
+  <div class="topbar"><a class="round" href="index.html">‹</a><div class="brand"><div class="logo">HA</div><strong><span style="color:#d69b34">HA</span> Marketing</strong><small>كل ما تحتاجه في مكان واحد</small></div><a class="round" href="#categories">⌕</a></div>
+  <div class="hero-content"><h1 class="hero-title">تسوق الآن</h1><div class="hero-sub">اختر القسم وابدأ التسوق</div></div>
+</section>
+<section class="quick">
+ <a class="qcard gold" href="#categories"><div class="qicon">📦</div><h3>المنتجات</h3></a>
+ <a class="qcard gold" href="cart.html"><div class="qicon">🛒</div><h3>السلة</h3></a>
+ <a class="qcard red" href="favorites.html"><div class="qicon">❤️</div><h3>المفضلة</h3></a>
+ <a class="qcard blue" href="shop-orders.html"><div class="qicon">🚚</div><h3>طلباتي</h3></a>
+ <a class="qcard orange" href="#categories"><div class="qicon">🏷️</div><h3>العروض</h3></a>
+ <a class="qcard green" href="cart.html"><div class="qicon">📋</div><h3>قوائم التسوق</h3></a>
+</section>
+<div class="section-title"><b>خيارات المتجر</b></div>
+<section class="store-actions">
+  <a class="store-action gold" href="marketplace-onboarding.html"><span>🏪</span><b>إضافة متجر</b><small>طلب وموافقة الإدارة</small></a>
+  <a class="store-action green" href="seller-dashboard.html"><span>➕</span><b>المتجر والمنتجات</b><small>إدارة المتجر</small></a>
+  <a class="store-action blue" href="work-center.html"><span>🧰</span><b>مركز العمل</b><small>إدارة حساب العمل</small></a>
+  <a class="store-action orange" href="store-accounting.html"><span>📒</span><b>الحسابات</b><small>حسابات المتجر</small></a>
+  <a class="store-action purple" href="shop-orders.html"><span>📦</span><b>الطلبات</b><small>متابعة الطلبات</small></a>
+</section>
+<div id="categories" class="section-title"><b>أقسام التسوق</b></div>
+<section class="categories">
+  <a class="category gold" href="shop-section.html?section=library"><div class="icon">📚</div><h2>مكتبة</h2></a>
+  <a class="category orange" href="shop-section.html?section=building_materials"><div class="icon">🏗️</div><h2>مواد البناء</h2></a>
+  <a class="category blue" href="shop-section.html?section=cards_credit"><div class="icon">💳</div><h2>بطاقات وأرصدة</h2></a>
+  <a class="category purple" href="shop-section.html?section=yugioh"><div class="icon">🃏</div><h2>أوراق يوغي</h2></a>
+  <a class="category green" href="shop-section.html?section=markets"><div class="icon">🛒</div><h2>أسواق</h2></a>
+  <a class="category red" href="shop-section.html?section=restaurants"><div class="icon">🍽️</div><h2>مطاعم</h2></a>
+  <a class="category green" href="shop-section.html?section=pharmacies"><div class="icon">💊</div><h2>الصيدليات</h2></a>
+  <a class="category purple" href="shop-section.html?section=flowers"><div class="icon">💐</div><h2>ورد</h2></a>
+  <a class="category blue" href="shop-section.html?section=home_appliances"><div class="icon">🏠</div><h2>أجهزة منزلية</h2></a>
+  <a class="category gold" href="shop-section.html?section=printers"><div class="icon">🖨️</div><h2>طابعات</h2></a>
+  <a class="category green" href="shop-section.html?section=devices"><div class="icon">📱</div><h2>أجهزة</h2></a>
+  <a class="category blue" href="shop-section.html?section=device_accessories"><div class="icon">🎧</div><h2>إكسسوارات</h2></a>
+  <a class="category red" href="shop-section.html?section=clothes"><div class="icon">👕</div><h2>ملابس</h2></a>
+  <a class="category orange" href="shop-section.html?section=shoes"><div class="icon">👟</div><h2>أحذية</h2></a>
+</section>
 </div>
-<nav class="bottom-nav"><div class="bottom-inner"><a class="nav-link " href="index.html"><span class="ni">🏠</span><span>الرئيسية</span></a><a class="nav-link " href="account.html"><span class="ni">👤</span><span>حسابي</span></a><a class="nav-link active" href="shop.html"><span class="ni">🛒</span><span>التسوق</span></a><a class="nav-link " href="chat.html"><span class="ni">💬</span><span>المحادثات</span></a><a class="nav-link " href="orders-center.html"><span class="ni">📋</span><span>طلباتي</span></a></div></nav>
-</body>
-</html>
+<nav class="bottom"><a href="index.html"><span>⌂</span>الرئيسية</a><a class="active" href="index.html"><span>▦</span>الأقسام</a><a href="tel:"><span>☎</span>اتصل بنا</a></nav>
+</body></html>
