@@ -1,0 +1,22 @@
+/* HA Marketing - interaction/click safety fix */
+html,body{pointer-events:auto!important}
+body::before,body::after,
+.ha-header::before,.ha-header::after,
+.ha-banner::before,.ha-slide::after{
+  pointer-events:none!important;
+}
+.ha-app,.ha-header,.ha-topline,.ha-search-wrap,.ha-main,.ha-cats,
+.ha-smart-slider,.ha-two,.ha-grid,.ha-bottom,.ha-bottom-inner{
+  pointer-events:auto!important;
+}
+a[href],button,input,select,textarea,[role="button"],[onclick],.ha-location,.ha-bell,
+.ha-cat,.ha-more,.ha-feature,.ha-card,.ha-nav,.ha-slide-details,.ha-slider-arrow,.ha-slider-dot{
+  pointer-events:auto!important;
+  touch-action:manipulation;
+}
+.ha-bottom{z-index:99990!important}
+.ha-slider-arrow,.ha-slider-dots,.ha-slider-count{pointer-events:auto!important}
+.ha-slide:not(.active){pointer-events:none!important}
+.ha-slide.active{pointer-events:auto!important}
+/* Prevent decorative/media layers from swallowing taps. */
+.ha-logo img,.ha-slide>img,.ha-thumb,.fart,.ico,.nicon{pointer-events:none!important}
