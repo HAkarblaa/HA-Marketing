@@ -1,255 +1,62 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<script id="ha-daylight-boot">(function(){try{var r=document.documentElement;r.setAttribute('data-ha-theme','light');r.style.colorScheme='light';['ha_theme_mode_v2','ha_theme_mode','ha-theme','theme'].forEach(function(k){localStorage.setItem(k,'light')});}catch(e){}})();</script>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f6fbff">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0fa36c">
 <title>الدراسة - HA Marketing</title>
-<style>
-*{box-sizing:border-box}
-:root{
-  --bg:#070a0d;
-  --card:#0f151a;
-  --card2:#080c0f;
-  --gold:#efc768;
-  --text:#f7f9fb;
-  --muted:#aeb7bf;
-  --line:#34414c;
-}
-html,body{margin:0;min-height:100%;font-family:Tahoma,Arial,sans-serif}
-body{
-  background:
-    radial-gradient(circle at 50% -10%,rgba(239,199,104,.14),transparent 32%),
-    linear-gradient(180deg,#070a0d,#030506);
-  color:var(--text);
-  padding-bottom:78px;
-}
-.topbar{
-  height:58px;
-  position:sticky;top:0;z-index:30;
-  display:grid;
-  grid-template-columns:44px 1fr 44px;
-  align-items:center;
-  gap:8px;
-  padding:7px 10px;
-  background:rgba(5,8,10,.94);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(239,199,104,.24);
-}
-.topbtn{
-  width:40px;height:40px;
-  display:grid;place-items:center;
-  border-radius:12px;
-  border:1px solid rgba(239,199,104,.30);
-  background:#10161b;
-  color:#f2ca6c;
-  text-decoration:none;
-  font-size:19px;
-}
-.top-title{text-align:center}
-.top-title b{display:block;font-size:17px}
-.top-title small{display:block;margin-top:2px;font-size:9px;color:#aeb7bf}
-
-.hero{
-  width:min(900px,94%);
-  margin:14px auto 10px;
-  padding:16px 14px;
-  border-radius:18px;
-  text-align:center;
-  background:linear-gradient(145deg,#12191e,#090d10);
-  border:1px solid rgba(239,199,104,.28);
-}
-.hero .ico{font-size:36px}
-.hero h1{margin:5px 0 4px;font-size:24px;color:#f2cb70}
-.hero p{margin:0;font-size:11px;color:#aeb7bf}
-
-.grid{
-  width:min(900px,94%);
-  margin:10px auto 22px;
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px;
-}
-.card{
-  aspect-ratio:1/1;
-  min-height:128px;
-  padding:10px 7px;
-  border-radius:18px;
-  border:1px solid rgba(101,126,147,.26);
-  background:
-    radial-gradient(circle at 50% 0,rgba(239,199,104,.06),transparent 40%),
-    linear-gradient(145deg,#11181d,#080c0f);
-  color:#fff;
-  text-decoration:none;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:7px;
-  box-shadow:0 8px 22px rgba(0,0,0,.25);
-}
-.card:active{transform:scale(.98)}
-.icon{
-  width:48px;height:48px;
-  border-radius:14px;
-  display:grid;place-items:center;
-  font-size:25px;
-  background:#0b1115;
-  border:1px solid rgba(239,199,104,.28);
-}
-.card h2{
-  margin:0;
-  font-size:13px;
-  line-height:1.35;
-  color:#f8fafb;
-}
-.card p{
-  margin:0;
-  font-size:8.5px;
-  line-height:1.45;
-  color:#9eabb5;
-  max-width:96%;
-}
-.featured{border-color:rgba(239,199,104,.45)}
-.featured .icon{border-color:rgba(239,199,104,.52);background:#171209}
-
-.bottom{
-  position:fixed;left:0;right:0;bottom:0;z-index:30;
-  height:58px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  background:rgba(5,8,10,.96);
-  border-top:1px solid rgba(239,199,104,.22);
-}
-.bottom a{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  color:#d8dde1;text-decoration:none;font-size:11px;
-}
-.bottom a.active{color:#f2cb70}
-
-html[data-ha-theme="light"] body{
-  background:linear-gradient(180deg,#f6faff,#edf4fb)!important;
-  color:#102235!important;
-}
-html[data-ha-theme="light"] .topbar,
-html[data-ha-theme="light"] .bottom{
-  background:rgba(255,255,255,.96)!important;
-  border-color:rgba(56,111,165,.16)!important;
-}
-html[data-ha-theme="light"] .topbtn{
-  background:#f1f6fb!important;
-  color:#8f6318!important;
-  border-color:#d9c28f!important;
-}
-html[data-ha-theme="light"] .top-title b{color:#102235!important}
-html[data-ha-theme="light"] .top-title small{color:#68798a!important}
-html[data-ha-theme="light"] .hero{
-  background:linear-gradient(145deg,#fff,#f4f9ff)!important;
-  border-color:rgba(203,151,45,.30)!important;
-}
-html[data-ha-theme="light"] .hero h1{color:#8d6115!important}
-html[data-ha-theme="light"] .hero p{color:#68798a!important}
-html[data-ha-theme="light"] .card{
-  background:linear-gradient(145deg,#fff,#f3f8fd)!important;
-  border-color:rgba(55,117,177,.17)!important;
-  color:#102235!important;
-  box-shadow:0 7px 20px rgba(38,75,112,.09)!important;
-}
-html[data-ha-theme="light"] .card h2{color:#17334d!important}
-html[data-ha-theme="light"] .card p{color:#6c7a88!important}
-html[data-ha-theme="light"] .icon{
-  background:#f4f8fc!important;
-  border-color:#d8c28f!important;
-}
-html[data-ha-theme="light"] .bottom a{color:#4b6174!important}
-html[data-ha-theme="light"] .bottom a.active{color:#8f6318!important}
-
-@media(max-width:560px){
-  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-  .card{min-height:105px;border-radius:15px;padding:7px 4px;gap:5px}
-  .icon{width:40px;height:40px;border-radius:12px;font-size:21px}
-  .card h2{font-size:11px}
-  .card p{font-size:7.2px}
-  .hero{padding:13px 10px}
-  .hero h1{font-size:21px}
-}
-@media(max-width:360px){
-  .grid{gap:5px}
-  .card{min-height:96px}
-  .card h2{font-size:10px}
-  .card p{display:none}
-}
-</style>
-<script src="ha-theme.js?v=20260925-v3"></script>
-<link rel="stylesheet" href="ha-theme.css?v=20260925-v3">
-<link rel="stylesheet" href="ha-daylight-force.css?v=20260925-v3">
-<link rel="stylesheet" href="ha-premium-theme.css?v=20260925-v4">
-<link rel="stylesheet" href="ha-theme.css?v=20260925-v4">
-<link rel="stylesheet" href="ha-daylight-force.css?v=20260925-v4">
-<script src="ha-theme.js?v=20260925-v4"></script>
+<link rel="stylesheet" href="ha-easy-layout.css">
 </head>
 <body>
+<div class="page">
+  <header class="hero-top">
+    <div class="status"><span>9:41</span><span>🔔</span></div>
+    <div class="brand-row">
+      <div class="loc"><strong>📍 موقعك الحالي</strong>الناصرية، ذي قار، العراق</div>
+      <div class="brand"><div><div class="brand-title">HA Marketing</div><div class="brand-sub">كل ما تحتاجه في مكان واحد</div></div><div class="logo-box">HA</div></div>
+    </div>
+    <div class="search"><div class="icon">🔍</div><div class="placeholder">ماذا تريد أن تستكشف اليوم؟</div><div class="icon">🎤</div></div>
+  </header>
 
-<header class="topbar">
-  <button class="topbtn" type="button" onclick="history.back()">→</button>
-  <div class="top-title"><b>الدراسة</b><small>HA Marketing</small></div>
-  <a class="topbtn" href="index.html">⌂</a>
-</header>
+  <section class="section">
+    <div class="banner" style="--b1:#e7fff0;--b2:#f5fbff">
+      <div class="content">
+        <h1>الدراسة</h1>
+        <p>مصادر تعليمية شاملة لرحلة نجاحك، بشكل سهل وواضح ومنظم.</p>
+        <a class="cta" href="courses.html">ابدأ الآن ←</a>
+        <div class="dots"><span class="active"></span><span></span><span></span></div>
+      </div>
+      <div class="art">🎓</div>
+    </div>
+  </section>
 
-<section class="hero">
-  <div class="ico">📚</div>
-  <h1>الدراسة</h1>
-  <p>كل الأدوات الدراسية بمكان واحد وبشكل مرتب</p>
-</section>
+  <section class="section">
+    <div class="title-row"><h3>أدوات الدراسة</h3><a href="#">عرض الكل</a></div>
+    <div class="icon-grid"><a class="icon-card" href="math-calculator.html"><div class="i pastel-blue">🧮</div><strong>الحاسبة</strong></a><a class="icon-card" href="study-planner.html"><div class="i pastel-pink">🗓️</div><strong>الجدول</strong></a><a class="icon-card" href="study-library.html"><div class="i pastel-yellow">📁</div><strong>الملفات</strong></a><a class="icon-card" href="courses.html"><div class="i pastel-lilac">▶️</div><strong>الدورات</strong></a><a class="icon-card" href="ministerial-questions.html"><div class="i pastel-mint">📝</div><strong>الأسئلة الوزارية</strong></a></div>
+  </section>
 
-<main class="grid">
-  <a class="card featured" href="ministerial-questions.html">
-    <div class="icon">📑</div><h2>الأسئلة الوزارية</h2><p>ابتدائي، متوسط، إعدادي، مهني، متميزين</p>
-  </a>
+  <section class="section">
+    <div class="banner small" style="--b1:#def2ff;--b2:#dfffee">
+      <div class="content">
+        <span class="section-chip">تعليم</span>
+        <h2>تعلم بسهولة وطوّر مستواك</h2>
+        <p>دورات وملخصات وأسئلة وزارية ومزيد من الموارد التعليمية.</p>
+        <a class="cta" href="study-summary.html">استكشف الآن ←</a>
+      </div>
+      <div class="art">📚</div>
+    </div>
+  </section>
 
-  <a class="card featured" href="courses.html">
-    <div class="icon">🎓</div><h2>الدورات</h2><p>أونلاين، حضوري، كلاهما</p>
-  </a>
+  <section class="section">
+    <div class="title-row"><h3>خدمات الدراسة القريبة منك</h3></div>
+    <div class="cards-2"><a class="feature-card pastel-pink" href="courses-online.html"><div class="txt"><h4>الدروس الإلكترونية</h4><p>دروس مسجلة وشرح مبسط في جميع المواد.</p><span class="mini">‹</span></div><div class="side-emoji">💻</div></a><a class="feature-card pastel-mint" href="ministerial-questions.html"><div class="txt"><h4>الأسئلة الوزارية</h4><p>أحدث الأسئلة الوزارية مع الحلول.</p><span class="mini">‹</span></div><div class="side-emoji">✅</div></a></div>
+  </section>
 
-  <a class="card" href="file-tools.html">
-    <div class="icon">📄</div><h2>تحويل وتعديل الملفات</h2><p>أدوات الملفات الدراسية</p>
-  </a>
-
-  <a class="card" href="study-summary.html">
-    <div class="icon">📝</div><h2>تلخيص المواد</h2><p>تلخيص وترتيب المحتوى</p>
-  </a>
-
-  <a class="card" href="study-language.html">
-    <div class="icon">🌐</div><h2>الإنجليزية والترجمة</h2><p>تعلم وترجمة النصوص</p>
-  </a>
-
-  <a class="card" href="math-calculator.html">
-    <div class="icon">🧮</div><h2>الحاسبة والمعادلات</h2><p>حساب وحل المعادلات</p>
-  </a>
-
-  <a class="card" href="study-planner.html">
-    <div class="icon">📅</div><h2>الجدول والتقويم</h2><p>تنظيم الدراسة والمواعيد</p>
-  </a>
-
-  <a class="card" href="education-news.html">
-    <div class="icon">🏫</div><h2>أخبار التربية</h2><p>آخر أخبار وزارة التربية</p>
-  </a>
-
-  <a class="card" href="higher-education-news.html">
-    <div class="icon">🏛️</div><h2>أخبار التعليم العالي</h2><p>آخر أخبار الجامعات والوزارة</p>
-  </a>
-
-  <a class="card" href="student-transport.html">
-    <div class="icon">🚌</div><h2>النقل الطلابي</h2><p>خدمات النقل الخاصة بالطلاب</p>
-  </a>
-</main>
-
-<nav class="bottom">
-  <a class="active" href="study.html">📚 الدراسة</a>
-  <a href="index.html">🏠 الرئيسية</a>
-</nav>
-
+  <section class="section">
+    <div class="title-row"><h3>الأكثر استخداماً</h3><a href="#">عرض الكل</a></div>
+    <div class="list-grid"><a class="mini-card" href="study-directory.html"><div class="thumb pastel-blue">🏫</div><div class="body"><h5>المراحل الدراسية</h5><p>ابتدائي، متوسط، إعدادي.</p><div class="meta"><span>ادخل</span><span>→</span></div></div></a><a class="mini-card" href="study-library.html"><div class="thumb pastel-yellow">📚</div><div class="body"><h5>المكتبة</h5><p>كتب ومصادر متنوعة.</p><div class="meta"><span>فتح</span><span>→</span></div></div></a><a class="mini-card" href="study-summary.html"><div class="thumb pastel-peach">📘</div><div class="body"><h5>الملخصات</h5><p>ملخصات لجميع المواد.</p><div class="meta"><span>عرض</span><span>→</span></div></div></a><a class="mini-card" href="ministerial-questions.html"><div class="thumb pastel-pink">📋</div><div class="body"><h5>الأسئلة الوزارية</h5><p>أسئلة مع الحلول.</p><div class="meta"><span>تصفح</span><span>→</span></div></div></a></div>
+  </section>
+</div>
+<nav class="bottom-nav"><div class="bottom-inner"><a class="nav-link " href="index.html"><span class="ni">🏠</span><span>الرئيسية</span></a><a class="nav-link " href="account.html"><span class="ni">👤</span><span>حسابي</span></a><a class="nav-link active" href="study.html"><span class="ni">🎓</span><span>الدراسة</span></a><a class="nav-link " href="chat.html"><span class="ni">💬</span><span>المحادثات</span></a><a class="nav-link " href="orders-center.html"><span class="ni">📋</span><span>طلباتي</span></a></div></nav>
 </body>
 </html>
