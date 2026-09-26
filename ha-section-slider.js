@@ -7,12 +7,22 @@ const DEFAULTS={"home": [{"slot": 1, "image_url": "images/sliders/home-1.svg", "
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 async function remote(section){
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 2500);
   try{
     const u=SB_URL+'/rest/v1/section_sliders?select=section_key,slot,image_url,title,subtitle,details_url,is_active&section_key=eq.'+encodeURIComponent(section)+'&order=slot.asc';
-    const r=await fetch(u,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},cache:'no-store'});
+    const r=await fetch(u,{
+      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},
+      cache:'no-store',
+      signal:controller.signal
+    });
     if(!r.ok) return null;
     return await r.json();
-  }catch(e){return null}
+  }catch(e){
+    return null;
+  }finally{
+    clearTimeout(timeout);
+  }
 }
 function merge(section,rows){
   const base=(DEFAULTS[section]||[]).map(x=>({...x}));
@@ -20,22 +30,39 @@ function merge(section,rows){
   return base.map(d=>{const r=rows.find(x=>Number(x.slot)===d.slot);return r?{...d,...r,image_url:r.image_url||d.image_url,title:r.title||d.title,subtitle:r.subtitle||d.subtitle,details_url:r.details_url||d.details_url}:d}).filter(x=>x.is_active!==false);
 }
 function initSlider(root,slides){
+  if(typeof root._haSliderCleanup==='function') root._haSliderCleanup();
   if(!slides.length){root.innerHTML='<div class="ha-slider-loading">لا توجد صور مفعلة حالياً.</div>';return}
   root.innerHTML=`<div class="ha-slider-track">${slides.map((s,i)=>`<article class="ha-slide ${i===0?'active':''}" data-index="${i}"><img src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="${i===0?'eager':'lazy'}"><div class="ha-slide-content"><span class="ha-slide-badge">HA Marketing</span><h3>${esc(s.title)}</h3><p>${esc(s.subtitle)}</p><a class="ha-slide-details" href="${esc(s.details_url)}">انقر على التفاصيل <span>←</span></a></div></article>`).join('')}</div><button class="ha-slider-arrow prev" type="button" aria-label="الصورة السابقة">›</button><button class="ha-slider-arrow next" type="button" aria-label="الصورة التالية">‹</button><div class="ha-slider-dots">${slides.map((_,i)=>`<button class="ha-slider-dot ${i===0?'active':''}" type="button" aria-label="الصورة ${i+1}"></button>`).join('')}</div><div class="ha-slider-count">1 / ${slides.length}</div>`;
   const els=[...root.querySelectorAll('.ha-slide')],dots=[...root.querySelectorAll('.ha-slider-dot')],count=root.querySelector('.ha-slider-count');
   let index=0,timer=null,startX=null;
-  function show(i,user=false){index=(i+els.length)%els.length;els.forEach((x,n)=>x.classList.toggle('active',n===index));dots.forEach((x,n)=>x.classList.toggle('active',n===index));count.textContent=(index+1)+' / '+els.length;if(user)restart()}
+  function show(i,user=false){index=(i+els.length)%els.length;els.forEach((x,n)=>x.classList.toggle('active',n===index));dots.forEach((x,n)=>x.classList.toggle('active',n===index));if(count)count.textContent=(index+1)+' / '+els.length;if(user)restart()}
   function play(){clearInterval(timer);if(els.length>1&&!matchMedia('(prefers-reduced-motion: reduce)').matches)timer=setInterval(()=>show(index+1),4500)}
   function restart(){play()}
-  root.querySelector('.prev').addEventListener('click',()=>show(index-1,true));
-  root.querySelector('.next').addEventListener('click',()=>show(index+1,true));
+  const prev=root.querySelector('.prev'),next=root.querySelector('.next');
+  const onPrev=()=>show(index-1,true),onNext=()=>show(index+1,true);
+  const onEnter=()=>clearInterval(timer),onLeave=()=>play();
+  const onTouchStart=e=>{startX=e.touches[0].clientX;clearInterval(timer)};
+  const onTouchEnd=e=>{if(startX!=null){const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45)show(index+(dx>0?-1:1));startX=null}play()};
+  const onVisibility=()=>document.hidden?clearInterval(timer):play();
+  prev?.addEventListener('click',onPrev); next?.addEventListener('click',onNext);
   dots.forEach((d,i)=>d.addEventListener('click',()=>show(i,true)));
-  root.addEventListener('mouseenter',()=>clearInterval(timer));root.addEventListener('mouseleave',play);
-  root.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;clearInterval(timer)},{passive:true});
-  root.addEventListener('touchend',e=>{if(startX!=null){const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45)show(index+(dx>0?-1:1));startX=null}play()},{passive:true});
-  document.addEventListener('visibilitychange',()=>document.hidden?clearInterval(timer):play());
+  root.addEventListener('mouseenter',onEnter);root.addEventListener('mouseleave',onLeave);
+  root.addEventListener('touchstart',onTouchStart,{passive:true});
+  root.addEventListener('touchend',onTouchEnd,{passive:true});
+  document.addEventListener('visibilitychange',onVisibility);
+  root._haSliderCleanup=()=>{clearInterval(timer);document.removeEventListener('visibilitychange',onVisibility)};
   play();
 }
-async function boot(){for(const root of document.querySelectorAll('[data-ha-slider]')){const section=root.dataset.haSlider;const rows=await remote(section);initSlider(root,merge(section,rows))}}
+function boot(){
+  document.querySelectorAll('[data-ha-slider]').forEach(root=>{
+    const section=root.dataset.haSlider;
+    // اعرض الصور المحلية فوراً حتى لا تنتظر Supabase أو يعلق الحقل عند ضعف الاتصال.
+    initSlider(root,merge(section,null));
+    // حدّثها من قاعدة البيانات بالخلفية فقط إذا وصل الرد بنجاح.
+    remote(section).then(rows=>{
+      if(Array.isArray(rows)&&rows.length) initSlider(root,merge(section,rows));
+    }).catch(()=>{});
+  });
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
