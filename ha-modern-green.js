@@ -16,7 +16,7 @@
     try{count=parseInt(localStorage.getItem('ha_notification_count')||'0',10)||0}catch(e){}
     var existing=q('.notification-badge,.badge-notification,[data-notification-count]');
     if(existing){var n=parseInt(existing.textContent||existing.getAttribute('data-notification-count')||'0',10);if(n>count)count=n}
-    qa('.ha-notify-count').forEach(function(el){el.textContent=count>99?'99+':String(count);el.classList.toggle('show',count>0)});
+    qa('.ha-notify-count').forEach(function(el){var v=count>99?'99+':String(count);if(el.textContent!==v)el.textContent=v;el.classList.toggle('show',count>0)});
   }
 
   function currentNavKey(){
@@ -166,41 +166,25 @@
   }
 
   function observeStates(){
-    /* Performance fix: the old observer rescanned the whole page on every text/DOM
-       mutation. Sliders, counters and async content can generate many mutations and
-       make taps/navigation feel frozen on mobile. Batch only structural changes. */
-    var scheduled=false;
-    var mo=new MutationObserver(function(mutations){
-      var relevant=false;
-      for(var i=0;i<mutations.length;i++){
-        if(mutations[i].type==='childList' && (mutations[i].addedNodes.length || mutations[i].removedNodes.length)){
-          relevant=true;break;
-        }
-      }
-      if(!relevant || scheduled)return;
-      scheduled=true;
-      var run=function(){scheduled=false;classifyStates();updateNotificationBadges()};
-      if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:300});
-      else setTimeout(run,80);
+    // بعض الصفحات تغيّر النصوص بشكل متكرر. تشغيل المعالجة مباشرة داخل
+    // MutationObserver كان يسبب سلسلة متواصلة من التغييرات ويجمّد الصفحة.
+    var pending=false;
+    var mo=new MutationObserver(function(){
+      if(pending)return;
+      pending=true;
+      requestAnimationFrame(function(){
+        pending=false;
+        classifyStates();
+        updateNotificationBadges();
+      });
     });
+    // يكفينا مراقبة إضافة/حذف العناصر، ولا نراقب كل تغيير حرفي بالنص.
     mo.observe(document.body,{childList:true,subtree:true});
-  }
-
-  function updateServiceWorkerInBackground(){
-    /* Do not block the first paint or the user's tap. */
-    if(!('serviceWorker' in navigator))return;
-    window.addEventListener('load',function(){
-      setTimeout(function(){
-        navigator.serviceWorker.register('./service-worker.js?v=20260927-speed1',{scope:'./'})
-          .then(function(reg){reg.update().catch(function(){})})
-          .catch(function(){});
-      },1200);
-    },{once:true});
   }
 
   function init(){
     if(isUserPage())document.body.classList.add('ha-unified-ui');
-    injectHeader();injectBottomNav();ensureApprovedControls();bindLocation();bindSearch();classifyStates();injectRequestSteps();injectRecommendations();trackUsage();updateNotificationBadges();observeStates();updateServiceWorkerInBackground();
+    injectHeader();injectBottomNav();ensureApprovedControls();bindLocation();bindSearch();classifyStates();injectRequestSteps();injectRecommendations();trackUsage();updateNotificationBadges();observeStates();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
