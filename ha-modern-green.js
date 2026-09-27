@@ -166,13 +166,41 @@
   }
 
   function observeStates(){
-    var mo=new MutationObserver(function(){classifyStates();updateNotificationBadges()});
-    mo.observe(document.body,{childList:true,subtree:true,characterData:true});
+    /* Performance fix: the old observer rescanned the whole page on every text/DOM
+       mutation. Sliders, counters and async content can generate many mutations and
+       make taps/navigation feel frozen on mobile. Batch only structural changes. */
+    var scheduled=false;
+    var mo=new MutationObserver(function(mutations){
+      var relevant=false;
+      for(var i=0;i<mutations.length;i++){
+        if(mutations[i].type==='childList' && (mutations[i].addedNodes.length || mutations[i].removedNodes.length)){
+          relevant=true;break;
+        }
+      }
+      if(!relevant || scheduled)return;
+      scheduled=true;
+      var run=function(){scheduled=false;classifyStates();updateNotificationBadges()};
+      if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:300});
+      else setTimeout(run,80);
+    });
+    mo.observe(document.body,{childList:true,subtree:true});
+  }
+
+  function updateServiceWorkerInBackground(){
+    /* Do not block the first paint or the user's tap. */
+    if(!('serviceWorker' in navigator))return;
+    window.addEventListener('load',function(){
+      setTimeout(function(){
+        navigator.serviceWorker.register('./service-worker.js?v=20260927-speed1',{scope:'./'})
+          .then(function(reg){reg.update().catch(function(){})})
+          .catch(function(){});
+      },1200);
+    },{once:true});
   }
 
   function init(){
     if(isUserPage())document.body.classList.add('ha-unified-ui');
-    injectHeader();injectBottomNav();ensureApprovedControls();bindLocation();bindSearch();classifyStates();injectRequestSteps();injectRecommendations();trackUsage();updateNotificationBadges();observeStates();
+    injectHeader();injectBottomNav();ensureApprovedControls();bindLocation();bindSearch();classifyStates();injectRequestSteps();injectRecommendations();trackUsage();updateNotificationBadges();observeStates();updateServiceWorkerInBackground();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
