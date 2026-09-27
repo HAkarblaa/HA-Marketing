@@ -1,17 +1,18 @@
-HA Marketing — ترتيب الأقسام الداخلية
+تعديل صلاحيات حذف المتاجر والمنتجات - HA Marketing
 
-استبدل الملفات الموجودة بنفس الأسماء، وأضف ملف:
-ha-sections-premium.css
+الملفات التي تستبدلها في الموقع:
+1) admin-shop.html
+2) seller-dashboard.html
 
-الملفات المعدلة:
-shop.html
-services.html
-study.html
-sports.html
-entertainment.html
-news.html
-religious.html
-taxi-delivery.html
-chat.html
+ملف قاعدة البيانات:
+3) SHOP-DELETE-PERMISSIONS.sql
+شغّله مرة واحدة من Supabase > SQL Editor > New Query > Run.
 
-مهم: هذا التعديل شكلي وخفيف فقط. لا يغير روابط الأقسام أو وظائفها ولا يضيف JavaScript ثقيل.
+الصلاحيات بعد التعديل:
+- الأدمن الرئيسي: حذف أي متجر وأي منتج.
+- أدمن قسم shop الذي عنده can_delete أو can_manage: حذف وإدارة المتاجر والمنتجات.
+- الموظف المعتمد المختص إذا department عنده shop أو marketplace أو shopping: إدارة وحذف المتاجر والمنتجات.
+- صاحب المتجر: حذف متجره فقط ومنتجاته فقط.
+
+مهم:
+حذف المتجر يطلب تأكيد إضافي بكتابة كلمة "حذف"، ويحذف منتجات ذلك المتجر أيضاً حتى لا تبقى منتجات بدون متجر.
