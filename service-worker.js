@@ -1,16 +1,33 @@
-const CACHE='ha-marketing-v2026-09-26-clickfix3';
-const CORE=['./index.html','./ha-modern-green.css?v=20260926-clickfix3','./ha-modern-green.js?v=20260926-clickfix3','./ha-section-slider.css?v=20260926-clickfix3','./ha-section-slider.js?v=20260926-clickfix3','./ha-logo-transparent.png'];
-self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await Promise.allSettled(CORE.map(u=>c.add(u)));await self.skipWaiting();})())});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys()){if(k.startsWith('ha-marketing-')&&k!==CACHE)await caches.delete(k)}await self.clients.claim();})())});
+const CACHE='ha-marketing-v2026-09-13-nearby-transport-push-1';
+const ASSETS=["./push-config.js","./transport-driver-push.js","./transport-push-dispatch.js","./cargo.html","./stoota.html","./ha-premium-theme.css", "./account-security.html", "./account.html", "./adhkar.html", "./admin-content.html", "./admin-marketplace.html", "./admin-panel.html", "./admin-services.html", "./admin-shop.html", "./admin-study.html", "./admin-transport.html", "./admin.html", "./age-calculator.html", "./ai.html", "./asmaa-allah.html", "./backgammon.html", "./building-materials.html", "./call-us.html", "./cart.html", "./chat.html", "./chess.html", "./coming-soon.html", "./contact.html", "./css/style.css", "./currency-prices.html", "./delete-account.html", "./delivery.html", "./domino.html", "./driver.html", "./duas.html", "./education-news.html", "./employee-location.html", "./employee-orders.html", "./employee-student-transport.html", "./entertainment.html", "./favorites.html", "./file-tools.html", "./firebase-auth-secure.js", "./firebase-messaging-sw.js", "./football-news.html", "./football.html", "./forgot-password.html", "./game-voice.js", "./games.html", "./general-info.html", "./general-quiz.html", "./gym.html", "./ha-stadium-bg.png", "./higher-education-news.html", "./hussaini-poems.html", "./images/2.jpg", "./images/4.jpg", "./images/5.jpg", "./images/placeholder.svg", "./index-offline.html", "./index.html", "./js/script.js", "./login.html", "./main.jpg", "./marketplace-onboarding.html", "./math-calculator.html", "./microphone.js", "./news.html", "./notification-config.js", "./notifications-center.html", "./notifications.js", "./orders-center.html", "./order-receipt.html", "./payments.html", "./penalties.html", "./personal-center.html", "./prayer-times.html", "./privacy-policy.html", "./product-details.html", "./provider-dashboard.html", "./qibla.html", "./quran.html", "./register.html", "./religious-occasions.html", "./religious-quiz.html", "./religious.html", "./ride-history.html", "./seller-dashboard.html", "./service-category.html", "./service-orders.html", "./service-provider.html", "./services.html", "./shop-business.html", "./shop-courier.html", "./shop-orders.html", "./shop-section.html", "./shop.html", "./sports-owner.html", "./sports.html", "./store-accounting.html", "./store.html", "./student-talents.html", "./student-transport.html", "./study-directory.html", "./study-grades.html", "./study-language.html", "./study-library.html", "./study-planner.html", "./study-profile.html", "./study.html", "./tajweed.html", "./tasbeeh.html", "./taxi-delivery.html", "./taxi.html", "./track-service.html", "./transport-call.js", "./transport-extras.js", "./transport-live-tracking.js", "./transport-notifications.js", "./transport-pricing.js", "./transport-profile.js", "./transport-rating.js", "./transport-registration.html", "./transport-ride-status.js", "./tuktuk.html", "./voice-message.js", "./worship-guide.html", "./yugioh.html", "./ziyarat.html"];
+self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await Promise.allSettled(ASSETS.map(u=>c.add(u)));self.skipWaiting();})())});
+self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim();})())});
 self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
   const u=new URL(e.request.url);
-  if(u.origin!==self.location.origin)return;
-  const isPage=e.request.mode==='navigate'||u.pathname.endsWith('.html')||u.pathname.endsWith('/');
-  const isCode=/\.(?:css|js)$/.test(u.pathname);
-  if(isPage||isCode){
-    e.respondWith((async()=>{try{const r=await fetch(e.request,{cache:'no-store'});if(r&&r.ok){const c=await caches.open(CACHE);c.put(e.request,r.clone())}return r}catch(_){return (await caches.match(e.request))||(isPage?await caches.match('./index.html'):Response.error())}})());
+  if(u.origin!==location.origin)return;
+
+  if(e.request.mode==='navigate'){
+    e.respondWith((async()=>{
+      const cached=await caches.match(e.request);
+      try{
+        const r=await fetch(e.request);
+        const c=await caches.open(CACHE);
+        c.put(e.request,r.clone());
+        return r;
+      }catch(_e){
+        return cached || (await caches.match('./index.html')) || (await caches.match('./index-offline.html'));
+      }
+    })());
     return;
   }
-  e.respondWith((async()=>{const hit=await caches.match(e.request);if(hit)return hit;try{const r=await fetch(e.request);if(r&&r.ok){const c=await caches.open(CACHE);c.put(e.request,r.clone())}return r}catch(_){return Response.error()}})());
+
+  e.respondWith(
+    caches.match(e.request).then(r=>
+      r || fetch(e.request).then(async n=>{
+        const c=await caches.open(CACHE);
+        c.put(e.request,n.clone());
+        return n;
+      }).catch(()=>r)
+    )
+  );
 });
