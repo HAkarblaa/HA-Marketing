@@ -1,25 +1,17 @@
-تحديث HA Marketing - الإضافات الجديدة
+HA Marketing — ترتيب الأقسام الداخلية
 
-استبدل الملفات التالية في GitHub:
-index.html
-admin.html
-ha-modern-green.js
+استبدل الملفات الموجودة بنفس الأسماء، وأضف ملف:
+ha-sections-premium.css
 
-وأضف الملفات الجديدة:
-ha-engagement.css
-ha-engagement.js
-admin-home-experience.html
-HOME-EXPERIENCE-SETUP.sql
+الملفات المعدلة:
+shop.html
+services.html
+study.html
+sports.html
+entertainment.html
+news.html
+religious.html
+taxi-delivery.html
+chat.html
 
-مهم:
-1) مشكلة التجمّد السابقة محفوظ إصلاحها داخل ha-modern-green.js.
-2) الإضافات الجديدة خفيفة ولا تستخدم حلقات مراقبة ثقيلة.
-3) لتفعيل تحكم الأدمن بالنص الموجود في الصفحة الرئيسية، شغّل HOME-EXPERIENCE-SETUP.sql مرة واحدة داخل Supabase SQL Editor.
-4) بدون تشغيل SQL، الموقع يبقى يشتغل ويعرض الإعدادات الافتراضية.
-
-الإضافات:
-- نقاط دخول يومية محلية على جهاز المستخدم.
-- عداد أيام الاستمرار.
-- استمر من حيث توقفت حسب آخر الأقسام المستخدمة.
-- تجربة رئيسية أكثر ترتيباً.
-- صفحة أدمن للتحكم بعنوان ورسالة وملاحظة الصفحة الرئيسية.
+مهم: هذا التعديل شكلي وخفيف فقط. لا يغير روابط الأقسام أو وظائفها ولا يضيف JavaScript ثقيل.
