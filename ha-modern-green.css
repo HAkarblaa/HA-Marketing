@@ -98,3 +98,9 @@ body.ha-unified-ui :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom) a{
  body.ha-unified-ui :is(.card,.box,.panel,.tile,.qcard,.category,.role,.tool,.order,.order-row,.request-card,.provider-card,.service-card,.product-card,.store-card,.status-card,.info-card){border-radius:18px!important}
 }
 @media(max-width:400px){.ha-cats{grid-template-columns:repeat(3,minmax(0,1fr))}.ha-brand-text small{display:none}.ha-location{max-width:126px}.ha-location .pin{display:none}.ha-banner-art{font-size:68px}.ha-banner h3{font-size:20px}.ha-smart-grid{grid-template-columns:1fr}.ha-smart-card:nth-child(3){grid-column:auto}}
+
+
+/* CLICK-FIX 2026-09-26: keep decorative layers from blocking controls */
+.ha-header::before,.ha-header::after,.ha-banner::before,.ha-global-shell::before{pointer-events:none!important}
+a,button,input,select,textarea,[role="button"]{pointer-events:auto}
+.ha-app,.ha-main,.ha-cats,.ha-grid,.ha-two,.ha-smart-slider,.ha-bottom,.ha-global-shell,.ha-global-search{pointer-events:auto}
