@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>الرئيسية - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css"><link rel="stylesheet" href="ha-section-slider.css?v=1"><link rel="stylesheet" href="ha-click-fix.css?v=1"></head><body><div class="ha-app"><header class="ha-header">
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>الرئيسية - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css?v=20260926-clickfix3"><link rel="stylesheet" href="ha-section-slider.css?v=20260926-clickfix3"></head><body><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
     <div class="ha-location" id="haLocation"><span class="pin">📍</span><div><b>موقعك الحالي</b><small>اضغط لتحديد موقعك</small></div></div>
@@ -11,4 +11,31 @@
 <a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>
 <a class="ha-nav " href="chat.html"><span class="nicon">💬</span><span>المحادثات</span></a>
 <a class="ha-nav " href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>
-</div></nav><script src="ha-modern-green.js"></script><script src="ha-section-slider.js?v=1"></script><script src="ha-click-fix.js?v=1"></script></body></html>
+</div></nav><script src="ha-modern-green.js?v=20260926-clickfix3"></script><script src="ha-section-slider.js?v=20260926-clickfix3"></script><script id="ha-clickfix-bootstrap">
+(async function(){
+  const V='20260926-clickfix3';
+  try{
+    if(!('serviceWorker' in navigator)) return;
+    const key='ha_clickfix_'+V;
+    if(sessionStorage.getItem(key)){
+      const reg=await navigator.serviceWorker.getRegistration('./');
+      if(reg) reg.update().catch(()=>{});
+      return;
+    }
+    sessionStorage.setItem(key,'1');
+    const regs=await navigator.serviceWorker.getRegistrations();
+    for(const reg of regs){
+      const url=(reg.active||reg.waiting||reg.installing)?.scriptURL||'';
+      if(!url.includes('firebase-messaging-sw.js') && (url.includes('service-worker.js')||url.includes('ha-offline-map-sw.js'))){
+        await reg.unregister().catch(()=>{});
+      }
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.startsWith('ha-marketing-')).map(k=>caches.delete(k)));
+    }
+    await navigator.serviceWorker.register('./service-worker.js?v='+V,{scope:'./'}).catch(()=>{});
+    location.reload();
+  }catch(e){console.warn('HA click-fix bootstrap',e)}
+})();
+</script></body></html>
