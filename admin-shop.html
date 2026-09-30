@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="ha-location-picker.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="ha-location-picker.js"></script></head><body><div class="wrap"><div class="row"><a class="btn light" href="admin-panel.html">← لوحة الإدارة</a><a class="btn light" href="shop.html">عرض تسوق الآن</a></div><h1>🛍️ إدارة تسوق الآن</h1><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
+<script src="ha-location-picker.js"></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head><body><div class="wrap"><div class="row"><a class="btn light" href="admin-panel.html">← لوحة الإدارة</a><a class="btn light" href="shop.html">عرض تسوق الآن</a></div><h1>🛍️ إدارة تسوق الآن</h1><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
 <div class="card"><h2>إضافة محل / سوق / جهة</h2><p class="muted">تظهر لك فقط مربعات تسوق الآن التي منحك الأدمن الرئيسي صلاحيتها.</p><select id="businessSection"></select><input id="businessName" placeholder="الاسم">
 <input id="businessLocation" type="hidden"><input id="businessMap" type="hidden">
 <div class="ha-location-box">
@@ -153,4 +153,4 @@ async function addCoupon(){if(!isSuper)return;const c=couponCode.value.trim().to
 async function loadCoupons(){if(!isSuper)return;const {data,error}=await db.from('shop_coupons').select('*').order('created_at',{ascending:false});if(error){coupons.textContent=error.message;return}coupons.innerHTML=(data||[]).map(c=>`<div class="card"><div class="row"><strong>${esc(c.code)}</strong><span>${c.discount_type==='percent'?c.discount_value+'%':Number(c.discount_value).toLocaleString('ar-IQ')+' د.ع'}</span></div><div class="row"><span class="muted">أقل طلب: ${Number(c.min_total||0).toLocaleString('ar-IQ')} د.ع</span><button class="danger" onclick="deleteCoupon(${c.id})">حذف</button></div></div>`).join('')||'<div class="card">لا توجد كوبونات.</div>'}
 async function deleteCoupon(id){if(!confirm('حذف الكوبون؟'))return;const {error}=await db.from('shop_coupons').delete().eq('id',id);if(error)alert(error.message);else loadCoupons()}
 async function statusSet(id,s){if(!isSuper||!s)return;const {error}=await db.rpc('admin_update_shop_order_status',{p_order_id:id,p_status:s});if(error)alert(error.message);else loadOrders()}init();
-</script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
