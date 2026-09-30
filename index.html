@@ -43,7 +43,26 @@ body.ha-shortcuts-open{overflow:hidden}
 @media(max-width:600px){
   .ha-menu-btn{width:40px;height:40px;border-radius:12px;font-size:20px}
 }
-</style><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
+</style><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1">
+<style id="ha-home-premium-icons-style">
+.ha-cat .ico{
+  width:62px!important;height:62px!important;
+  display:grid!important;place-items:center!important;
+  margin:0 auto 10px!important;background:transparent!important;
+  border:0!important;box-shadow:none!important;font-size:0!important
+}
+.ha-cat .ico img{width:62px;height:62px;display:block;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(25,61,85,.15))}
+.ha-feature .fart{font-size:0!important;display:grid!important;place-items:center!important}
+.ha-feature .fart img{width:74px;height:74px;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(25,61,85,.14))}
+.ha-bottom .nicon{font-size:0!important;width:28px;height:28px;display:grid!important;place-items:center!important}
+.ha-bottom .nicon img{width:28px;height:28px;display:block;object-fit:contain}
+@media(max-width:600px){
+  .ha-cat .ico,.ha-cat .ico img{width:54px!important;height:54px!important}
+  .ha-feature .fart img{width:64px;height:64px}
+  .ha-bottom .nicon,.ha-bottom .nicon img{width:25px;height:25px}
+}
+</style>
+</head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
 <aside class="ha-shortcuts-drawer" id="haShortcutsDrawer" aria-label="اختصارات HA Marketing">
   <div class="ha-shortcuts-head">
     <div class="ha-shortcuts-title">
@@ -79,12 +98,12 @@ body.ha-shortcuts-open{overflow:hidden}
     <div class="ha-bell">🔔</div><button class="ha-menu-btn" id="haShortcutsOpen" type="button" aria-label="الاختصارات">☰</button>
   </div>
 </header>
-<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico">🛒</span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico">⚙️</span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico">🎓</span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico">🚕</span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico">💡</span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico">🎬</span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart">🧑‍🔧</div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart">🏪</div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
-<a class="ha-nav active" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>
-<a class="ha-nav " href="orders-center.html"><span class="nicon">🛍️</span><span>طلباتي</span></a>
-<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>
-<a class="ha-nav " href="chat.html"><span class="nicon">💬</span><span>المحادثات</span></a>
-<a class="ha-nav " href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>
+<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico"><img src="home-icons/shop.svg" alt=""></span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico"><img src="home-icons/service.svg" alt=""></span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico"><img src="home-icons/study.svg" alt=""></span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico"><img src="home-icons/transport.svg" alt=""></span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico"><img src="home-icons/suggestions.svg" alt=""></span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico"><img src="home-icons/entertainment.svg" alt=""></span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart"><img src="home-icons/near-service.svg" alt=""></div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart"><img src="home-icons/near-shop.svg" alt=""></div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
+<a class="ha-nav active" href="index.html"><span class="nicon"><img src="home-icons/home.svg" alt=""></span><span>الرئيسية</span></a>
+<a class="ha-nav " href="orders-center.html"><span class="nicon"><img src="home-icons/orders.svg" alt=""></span><span>طلباتي</span></a>
+<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge"><img src="home-icons/notifications.svg" alt=""></span><span>الإشعارات</span></a>
+<a class="ha-nav " href="chat.html"><span class="nicon"><img src="home-icons/chat.svg" alt=""></span><span>المحادثات</span></a>
+<a class="ha-nav " href="account.html"><span class="nicon"><img src="home-icons/account.svg" alt=""></span><span>حسابي</span></a>
 </div></nav><script src="ha-modern-green.js?v=20260927-freezefix1"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20260927-1"></script><script id="ha-shortcuts-restore-script">
 (function(){
   const drawer=document.getElementById('haShortcutsDrawer');
