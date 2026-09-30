@@ -1,93 +1,287 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
+<head>
+<script id="ha-modern-boot">
+document.documentElement.setAttribute('data-ha-modern','1');
+document.documentElement.setAttribute('data-ha-theme','light');
+document.documentElement.style.colorScheme='light';
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
 <title>الإشعارات - HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
-:root{--gold:#efbd5e;--gold2:#8d5f1b;--bg:#020507;--panel:#0b1116;--panel2:#101820;--text:#f5f5f5;--muted:#8f9aa3;--line:rgba(239,189,94,.25);--red:#e53935}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at 85% 5%,rgba(239,189,94,.10),transparent 25%),linear-gradient(180deg,#020507,#05090d 55%,#020507);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif;padding-bottom:92px}
-.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px;background:rgba(4,8,11,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.top h1{margin:0;font-size:20px;color:#f3c86f}
-.top button,.top a{border:1px solid rgba(239,189,94,.35);background:#0b1116;color:#fff;border-radius:12px;padding:10px 12px;text-decoration:none;cursor:pointer;font-weight:800}
-.wrap{width:min(760px,94%);margin:18px auto}
-.hero{border:1px solid var(--line);background:linear-gradient(145deg,rgba(18,25,32,.96),rgba(6,10,14,.98));border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 15px 40px #0007}
-.hero h2{margin:0 0 6px;color:#f2c66d}.hero p{margin:0;color:var(--muted);line-height:1.7;font-size:13px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.toolbar button{border:1px solid rgba(239,189,94,.35);background:#0b1116;color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:800}
-.toolbar .primary{background:linear-gradient(135deg,#c78d2f,#efbd5e);color:#171006;border-color:#efbd5e}
-#countLabel{margin-right:auto;color:#f1c86f;font-size:13px;display:flex;align-items:center}
-.list{display:grid;gap:10px}
-.item{position:relative;border:1px solid rgba(239,189,94,.18);background:linear-gradient(145deg,#0c1218,#070b0f);border-radius:18px;padding:15px 14px;box-shadow:0 8px 24px #0005;cursor:pointer;transition:.18s}
-.item:hover{transform:translateY(-1px);border-color:rgba(239,189,94,.42)}
-.item.unread{border-color:rgba(239,189,94,.58);background:linear-gradient(145deg,#17160f,#0a0e12)}
-.item.unread::after{content:"";position:absolute;top:13px;left:13px;width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(229,57,53,.65)}
-.title{font-weight:900;font-size:15px;padding-left:18px}.body{color:#c8cdd2;line-height:1.65;margin-top:6px;font-size:13px;white-space:pre-wrap}.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;color:#7f8992;font-size:11px}
-.type{border:1px solid rgba(239,189,94,.24);border-radius:999px;padding:3px 8px;color:#e9c679}
-.section-badge{border:1px solid rgba(90,170,255,.30);border-radius:999px;padding:3px 8px;color:#9dcdff;background:rgba(34,96,150,.12)}
-.notice-img{width:100%;max-height:290px;object-fit:cover;border-radius:14px;margin-top:11px;border:1px solid rgba(239,189,94,.16);display:block}
-.content-preview{color:#aeb7bf;line-height:1.65;margin-top:9px;font-size:12px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.detail-modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center;padding:12px}
-.detail-modal.show{display:flex}.detail-card{width:min(720px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#101820,#070b0f);border:1px solid rgba(239,189,94,.38);border-radius:22px;padding:18px;box-shadow:0 25px 70px #000b}
-.detail-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.detail-head h2{margin:0;color:#f2c66d;font-size:20px}.detail-close{border:1px solid rgba(239,189,94,.35);background:#0b1116;color:#fff;border-radius:10px;width:40px;height:40px;font-size:22px;cursor:pointer}.detail-summary{color:#d6dbe0;line-height:1.8;margin:14px 0;white-space:pre-wrap}.detail-content{color:#f2f2f2;line-height:1.95;white-space:pre-wrap;border-top:1px solid rgba(239,189,94,.16);padding-top:14px}.detail-image{width:100%;max-height:380px;object-fit:contain;background:#05080a;border-radius:16px;margin:12px 0}.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.detail-actions a{background:linear-gradient(135deg,#c78d2f,#efbd5e);color:#171006;text-decoration:none;border-radius:11px;padding:11px 15px;font-weight:900}
-.empty,.loading{border:1px dashed rgba(239,189,94,.25);border-radius:18px;padding:28px 16px;text-align:center;color:#9aa3aa}
-.bottom{position:fixed;z-index:30;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(7,10,13,.97),#020406);border-top:1px solid rgba(239,189,94,.55);padding:6px max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom))}
-.bottom-inner{width:min(820px,100%);margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
-.bottom a{min-height:54px;border:1px solid rgba(239,189,94,.25);border-radius:12px;text-decoration:none;color:#f5f5f5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:800;background:linear-gradient(180deg,#10171d,#060a0d)}
-.bottom a.active{border-color:#efbd5e;color:#f4c96f;background:linear-gradient(145deg,#2a2112,#11100c)}
-.bottom .ico{font-size:20px}
-.toast{position:fixed;z-index:99;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:#111a20;border:1px solid rgba(239,189,94,.45);color:#fff;border-radius:14px;padding:11px 14px;opacity:0;pointer-events:none;transition:.2s;max-width:90%;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(max-width:450px){.wrap{width:95%}.top h1{font-size:18px}.hero{padding:15px}.item{padding:14px 12px}.bottom a{font-size:8px;min-height:50px}.bottom .ico{font-size:18px}}
-
-.ha-push-toggle{
-  width:100%;border:1px solid rgba(239,189,94,.45);background:#10171d;color:#fff;
-  border-radius:12px;padding:11px 12px;font-weight:800;cursor:pointer
+:root{
+  --bg:#f5faf8;
+  --card:#fff;
+  --text:#10233f;
+  --muted:#758499;
+  --green:#07885f;
+  --green2:#0aa171;
+  --green-soft:#e7f7f0;
+  --blue:#1769e0;
+  --blue-soft:#edf5ff;
+  --red:#ef4058;
+  --red-soft:#fff0f3;
+  --line:#e2ece8;
+  --shadow:0 10px 30px rgba(29,78,64,.08);
 }
-.ha-push-toggle.on{background:linear-gradient(135deg,#2c6b34,#17461e);border-color:#58b765}
+html,body{margin:0;min-height:100%;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+body{padding-bottom:100px}
 
+.top{
+  position:sticky;top:0;z-index:30;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.top-inner{
+  width:min(900px,94%);min-height:72px;margin:auto;
+  display:grid;grid-template-columns:92px 1fr 92px;align-items:center;gap:10px
+}
+.top h1{margin:0;text-align:center;font-size:22px;font-weight:900}
+.top h1 span{font-size:25px}
+.top a,.top button{
+  min-height:42px;border:1px solid var(--line);border-radius:14px;
+  background:#fff;color:var(--text);font:800 13px inherit;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  text-decoration:none;cursor:pointer
+}
+.top button{color:var(--green)}
+
+.wrap{width:min(900px,94%);margin:18px auto}
+
+.summary{
+  display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#ffffff,#f1fbf7);
+  border:1px solid #d9ebe4;border-radius:24px;padding:18px;
+  box-shadow:var(--shadow)
+}
+.summary-copy h2{margin:0 0 5px;font-size:20px}
+.summary-copy p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.stat{
+  min-width:92px;background:#fff;border:1px solid var(--line);
+  border-radius:17px;padding:10px;text-align:center
+}
+.stat b{display:block;font-size:23px;color:var(--green)}
+.stat small{font-size:10px;color:var(--muted)}
+
+.actions{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 10px
+}
+.actions button{
+  min-height:40px;border:1px solid var(--line);border-radius:13px;
+  background:#fff;color:#405269;padding:8px 12px;font:800 12px inherit;cursor:pointer
+}
+.actions .primary{background:var(--green);border-color:var(--green);color:#fff}
+.actions .danger{background:var(--red-soft);border-color:#ffd7df;color:#c42c47}
+.actions .push{background:var(--blue-soft);border-color:#d7e8ff;color:#1459bd}
+.actions .push.on{background:var(--green-soft);border-color:#cbe9dd;color:var(--green)}
+
+.filters{
+  display:flex;gap:7px;overflow:auto;padding:3px 1px 8px;scrollbar-width:none
+}
+.filters::-webkit-scrollbar{display:none}
+.filter{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#637286;
+  border-radius:999px;padding:8px 13px;font:800 11px inherit;cursor:pointer
+}
+.filter.active{background:var(--green-soft);border-color:#bfe2d3;color:var(--green)}
+
+.list{display:grid;gap:10px;margin-top:4px}
+.item{
+  position:relative;display:grid;grid-template-columns:46px minmax(0,1fr) auto;
+  gap:11px;align-items:start;background:var(--card);
+  border:1px solid var(--line);border-radius:18px;padding:13px;
+  box-shadow:0 6px 20px rgba(28,69,58,.055);
+  cursor:pointer;transition:.18s
+}
+.item:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.item.unread{border-color:#bfe4d5;background:linear-gradient(135deg,#fff,#f5fcf9)}
+.item.unread::before{
+  content:"";position:absolute;top:10px;left:10px;width:8px;height:8px;
+  border-radius:50%;background:var(--red)
+}
+.notice-icon{
+  width:46px;height:46px;border-radius:15px;display:grid;place-items:center;
+  background:var(--green-soft);font-size:22px
+}
+.item[data-type="order"] .notice-icon,
+.item[data-type="shop"] .notice-icon{background:#fff4df}
+.item[data-type="chat"] .notice-icon{background:#f2edff}
+.item[data-type="approval"] .notice-icon{background:#e9f9ee}
+.item[data-type="rejection"] .notice-icon{background:var(--red-soft)}
+.item[data-type="news"] .notice-icon{background:var(--blue-soft)}
+
+.notice-main{min-width:0}
+.title-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.title{font-weight:900;font-size:14px;color:#11243f}
+.unread-tag{
+  display:none;border-radius:999px;padding:3px 7px;
+  background:#fff0f3;color:#ce304b;font-size:9px;font-weight:900
+}
+.item.unread .unread-tag{display:inline-flex}
+.body{
+  color:#52637a;line-height:1.65;margin-top:5px;font-size:12px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.type,.section-badge{
+  border-radius:999px;padding:4px 8px;font-size:9px;font-weight:800
+}
+.type{background:#f1f5f7;color:#657284}
+.section-badge{background:var(--blue-soft);color:#1769e0}
+.time{font-size:10px;color:#95a0af}
+.chev{
+  width:30px;height:30px;border-radius:10px;background:#f3f7f6;
+  display:grid;place-items:center;color:#6f7e90;font-size:17px
+}
+.notice-img{
+  grid-column:2/4;width:100%;max-height:250px;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);margin-top:2px
+}
+.content-preview{
+  grid-column:2/4;color:#6d7b8c;line-height:1.6;font-size:11px;
+  padding:8px 10px;background:#f8fbfa;border-radius:11px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.empty,.loading{
+  border:1px dashed #cadbd4;background:#fff;border-radius:18px;
+  padding:30px 16px;text-align:center;color:#7e8c9c
+}
+
+.detail-modal{
+  position:fixed;inset:0;z-index:90;background:rgba(11,30,25,.45);
+  display:none;align-items:flex-end;justify-content:center;padding:12px
+}
+.detail-modal.show{display:flex}
+.detail-card{
+  width:min(720px,100%);max-height:88vh;overflow:auto;background:#fff;
+  border-radius:24px 24px 18px 18px;padding:18px;border:1px solid var(--line);
+  box-shadow:0 30px 80px rgba(10,35,28,.24)
+}
+.detail-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.detail-head h2{margin:0;font-size:20px}
+.detail-close{
+  width:40px;height:40px;border:0;border-radius:12px;background:#f0f5f3;
+  color:#314358;font-size:23px;cursor:pointer
+}
+.detail-summary{color:#4e6077;line-height:1.85;margin:13px 0;white-space:pre-wrap}
+.detail-content{
+  color:#263b54;line-height:1.9;white-space:pre-wrap;border-top:1px solid var(--line);
+  padding-top:13px
+}
+.detail-image{width:100%;max-height:380px;object-fit:contain;background:#f5f8f7;border-radius:16px;margin:12px 0}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.detail-actions a{
+  background:var(--green);color:#fff;text-decoration:none;
+  border-radius:12px;padding:10px 14px;font-weight:900;font-size:12px
+}
+
+.bottom{
+  position:fixed;z-index:40;left:50%;transform:translateX(-50%);
+  bottom:0;width:min(900px,100%);background:rgba(255,255,255,.97);
+  border-top:1px solid var(--line);box-shadow:0 -8px 28px rgba(22,67,55,.10);
+  padding:7px 8px max(7px,env(safe-area-inset-bottom))
+}
+.bottom-inner{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.bottom a{
+  min-height:58px;border-radius:15px;text-decoration:none;color:#617086;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;font-size:9px;font-weight:800
+}
+.bottom a.active{background:var(--green-soft);color:var(--green)}
+.bottom .ico{font-size:20px}
+
+.toast{
+  position:fixed;z-index:99;left:50%;bottom:102px;
+  transform:translateX(-50%) translateY(20px);background:#163b31;color:#fff;
+  border-radius:13px;padding:10px 13px;opacity:0;pointer-events:none;
+  transition:.2s;max-width:90%;text-align:center;font-size:12px
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:620px){
+  .top-inner{grid-template-columns:76px 1fr 76px;min-height:66px}
+  .top h1{font-size:18px}.top a,.top button{font-size:11px;padding:7px}
+  .wrap{width:95%;margin-top:12px}
+  .summary{grid-template-columns:1fr 74px 74px;padding:14px}
+  .summary-copy h2{font-size:16px}
+  .summary-copy p{font-size:10px}
+  .stat{min-width:0;padding:8px 4px}.stat b{font-size:19px}
+  .actions{gap:6px}.actions button{flex:1;min-width:calc(50% - 4px);font-size:10px}
+  .item{grid-template-columns:40px minmax(0,1fr) 28px;padding:11px;gap:9px}
+  .notice-icon{width:40px;height:40px;border-radius:13px;font-size:19px}
+  .title{font-size:13px}.body{font-size:11px}
+  .notice-img,.content-preview{grid-column:2/4}
+  .bottom a{min-height:54px;font-size:8px}.bottom .ico{font-size:18px}
+}
 </style>
+
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head>
+</head>
 <body>
+
 <header class="top">
-  <a href="index.html">→ رجوع</a>
-  <h1>🔔 الإشعارات</h1>
-  <button id="refreshBtn" type="button">تحديث</button>
+  <div class="top-inner">
+    <a href="index.html">→ رجوع</a>
+    <h1><span>🔔</span> الإشعارات</h1>
+    <button id="refreshBtn" type="button">↻ تحديث</button>
+  </div>
 </header>
 
 <main class="wrap">
-  <section class="hero">
-    <h2>مركز إشعارات HA Marketing</h2>
-    <p>هنا تظهر إشعارات الطلبات والموافقات والرسائل والتحديثات المهمة المرتبطة بحسابك.</p>
+
+  <section class="summary">
+    <div class="summary-copy">
+      <h2>مركز الإشعارات</h2>
+      <p>طلباتك، الرسائل، الموافقات، والتحديثات المهمة بمكان واحد.</p>
+    </div>
+    <div class="stat"><b id="unreadCount">0</b><small>غير مقروء</small></div>
+    <div class="stat"><b id="totalCount">0</b><small>الإجمالي</small></div>
   </section>
 
-  <div class="toolbar">
-    <button id="markAllBtn" class="primary" type="button">✓ تعليم الكل كمقروء</button>
-    <button id="haPushButton" data-ha-push-button class="ha-push-toggle" type="button">🔕 تشغيل إشعارات الموبايل</button>
-    <button id="clearReadBtn" type="button">🗑 حذف المقروء</button>
-    <span id="countLabel">0 غير مقروء</span>
+  <div class="actions">
+    <button id="markAllBtn" class="primary" type="button">✓ قراءة الكل</button>
+    <button id="haPushButton" data-ha-push-button class="push" type="button">🔔 إشعارات الموبايل</button>
+    <button id="clearReadBtn" class="danger" type="button">🗑 حذف المقروء</button>
   </div>
 
-  <div id="list" class="list"><div class="loading">جاري تحميل الإشعارات...</div></div>
+  <div class="filters" id="filters">
+    <button class="filter active" data-filter="all">الكل</button>
+    <button class="filter" data-filter="unread">غير المقروء</button>
+    <button class="filter" data-filter="order">الطلبات</button>
+    <button class="filter" data-filter="chat">المحادثات</button>
+    <button class="filter" data-filter="admin">الإدارة والتحديثات</button>
+  </div>
+
+  <div id="list" class="list">
+    <div class="loading">جاري تحميل الإشعارات...</div>
+  </div>
+
 </main>
 
 <nav class="bottom">
   <div class="bottom-inner">
-    <a href="index.html"><span class="ico">⌂</span><span>الرئيسية</span></a>
+    <a href="index.html"><span class="ico">🏠</span><span>الرئيسية</span></a>
     <a class="active" href="notifications-center.html"><span class="ico">🔔</span><span>الإشعارات</span></a>
     <a href="orders-center.html"><span class="ico">📋</span><span>الطلبات</span></a>
+    <a href="chat.html"><span class="ico">💬</span><span>المحادثات</span></a>
     <a href="account.html"><span class="ico">👤</span><span>حسابي</span></a>
-    <a href="call-us.html"><span class="ico">☎</span><span>اتصل بنا</span></a>
   </div>
 </nav>
 
 <div id="detailModal" class="detail-modal" aria-hidden="true">
   <div class="detail-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-    <div class="detail-head"><h2 id="detailTitle">تفاصيل الإشعار</h2><button id="detailClose" class="detail-close" type="button" aria-label="إغلاق">×</button></div>
+    <div class="detail-head">
+      <h2 id="detailTitle">تفاصيل الإشعار</h2>
+      <button id="detailClose" class="detail-close" type="button" aria-label="إغلاق">×</button>
+    </div>
     <div id="detailMeta" class="meta"></div>
     <img id="detailImage" class="detail-image" alt="صورة التبليغ" style="display:none">
     <div id="detailSummary" class="detail-summary"></div>
@@ -101,10 +295,13 @@ body{margin:0;min-height:100vh;background:radial-gradient(circle at 85% 5%,rgba(
 <script>
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const db=supabase.createClient(SB_URL,SB_KEY,{
+  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}
+});
 
 let currentUser=null;
 let rows=[];
+let currentFilter='all';
 
 function toast(msg){
   const t=document.getElementById('toast');
@@ -113,9 +310,10 @@ function toast(msg){
   clearTimeout(toast._t);
   toast._t=setTimeout(()=>t.classList.remove('show'),2200);
 }
+
 function fmtTime(v){
   try{
-    const d=new Date(v), now=new Date(), diff=Math.floor((now-d)/1000);
+    const d=new Date(v),now=new Date(),diff=Math.floor((now-d)/1000);
     if(diff<60)return 'الآن';
     if(diff<3600)return `قبل ${Math.floor(diff/60)} دقيقة`;
     if(diff<86400)return `قبل ${Math.floor(diff/3600)} ساعة`;
@@ -123,39 +321,94 @@ function fmtTime(v){
     return d.toLocaleString('ar-IQ',{dateStyle:'medium',timeStyle:'short'});
   }catch{return ''}
 }
+
 function typeLabel(v){
   const map={
-    announcement:'تبليغ',news:'خبر',general:'عام',order:'طلب',approval:'موافقة',rejection:'رفض',
-    chat:'دردشة',taxi:'تكسي',delivery:'توصيل',service:'خدمة',shop:'متجر',admin_broadcast:'تبليغ إداري'
+    announcement:'تبليغ',news:'خبر',general:'عام',order:'طلب',approval:'موافقة',
+    rejection:'رفض',chat:'دردشة',taxi:'تكسي',delivery:'توصيل',service:'خدمة',
+    shop:'متجر',admin_broadcast:'إدارة'
   };
   return map[v]||v||'عام';
 }
+
+function typeIcon(v){
+  const map={
+    announcement:'📢',news:'📰',general:'🔔',order:'📦',approval:'✅',
+    rejection:'❌',chat:'💬',taxi:'🚕',delivery:'🛵',service:'🛠️',
+    shop:'🛍️',admin_broadcast:'🛡️'
+  };
+  return map[v]||'🔔';
+}
+
 function sectionLabel(v){
-  const map={general:'عام',shop:'تسوق الآن',services:'طلب خدمة',chat:'الدردشة',news:'آخر الأخبار',religious:'الأمور الدينية',study:'الدراسة',entertainment:'الترفيه',sports:'الرياضة',transport:'التكسي والمندوب',appointments:'المواعيد',employees:'الموظفين',users:'المستخدمين'};
+  const map={
+    general:'عام',shop:'التسوق',services:'طلب خدمة',chat:'الدردشة',
+    news:'الأخبار',religious:'الدينية',study:'الدراسة',entertainment:'الترفيه',
+    sports:'الرياضة',transport:'النقل',appointments:'المواعيد',
+    employees:'الموظفين',users:'المستخدمين'
+  };
   return map[v]||v||'';
 }
+
 function notifBody(n){return n.body||n.message||''}
 function notifType(n){return n.type||n.notice_type||n.kind||'general'}
 function notifSection(n){return n.section_key||n.department||''}
 function notifLink(n){return n.link||n.link_url||''}
-function render(){
-  const list=document.getElementById('list');
-  const unread=rows.filter(x=>!x.is_read).length;
-  document.getElementById('countLabel').textContent=`${unread} غير مقروء`;
 
-  if(!rows.length){
-    list.innerHTML='<div class="empty">🔕 ما عندك إشعارات حالياً.</div>';
+function filteredRows(){
+  if(currentFilter==='unread')return rows.filter(x=>!x.is_read);
+  if(currentFilter==='order')return rows.filter(x=>['order','shop','service','taxi','delivery'].includes(notifType(x)));
+  if(currentFilter==='chat')return rows.filter(x=>notifType(x)==='chat'||notifSection(x)==='chat');
+  if(currentFilter==='admin')return rows.filter(x=>['announcement','news','approval','rejection','admin_broadcast','general'].includes(notifType(x)));
+  return rows;
+}
+
+function updateCounts(){
+  document.getElementById('unreadCount').textContent=rows.filter(x=>!x.is_read).length;
+  document.getElementById('totalCount').textContent=rows.length;
+}
+
+function render(){
+  updateCounts();
+
+  const list=document.getElementById('list');
+  const data=filteredRows();
+
+  if(!data.length){
+    list.innerHTML='<div class="empty">🔕 لا توجد إشعارات بهذا القسم.</div>';
     return;
   }
+
   list.innerHTML='';
-  rows.forEach(n=>{
+
+  data.forEach(n=>{
+    const typ=notifType(n);
+    const sec=notifSection(n);
+
     const item=document.createElement('article');
     item.className='item'+(!n.is_read?' unread':'');
+    item.dataset.type=typ;
     item.tabIndex=0;
+
+    const icon=document.createElement('div');
+    icon.className='notice-icon';
+    icon.textContent=typeIcon(typ);
+
+    const main=document.createElement('div');
+    main.className='notice-main';
+
+    const titleRow=document.createElement('div');
+    titleRow.className='title-row';
 
     const title=document.createElement('div');
     title.className='title';
     title.textContent=n.title||'إشعار';
+
+    const unreadTag=document.createElement('span');
+    unreadTag.className='unread-tag';
+    unreadTag.textContent='جديد';
+
+    titleRow.append(title,unreadTag);
 
     const body=document.createElement('div');
     body.className='body';
@@ -163,27 +416,63 @@ function render(){
 
     const meta=document.createElement('div');
     meta.className='meta';
-    const sec=notifSection(n);
-    if(sec){const s=document.createElement('span');s.className='section-badge';s.textContent='القسم: '+sectionLabel(sec);meta.appendChild(s)}
+
+    if(sec){
+      const s=document.createElement('span');
+      s.className='section-badge';
+      s.textContent=sectionLabel(sec);
+      meta.appendChild(s);
+    }
+
     const type=document.createElement('span');
     type.className='type';
-    type.textContent=typeLabel(notifType(n));
-    const time=document.createElement('span');
-    time.textContent=fmtTime(n.created_at);
-    meta.append(type,time);
+    type.textContent=typeLabel(typ);
 
-    item.append(title,body,meta);
-    if(n.image_url){const img=document.createElement('img');img.className='notice-img';img.src=n.image_url;img.alt=n.title||'صورة التبليغ';img.loading='lazy';item.appendChild(img)}
-    if(n.content){const cp=document.createElement('div');cp.className='content-preview';cp.textContent=n.content;item.appendChild(cp)}
+    const time=document.createElement('span');
+    time.className='time';
+    time.textContent=fmtTime(n.created_at);
+
+    meta.append(type,time);
+    main.append(titleRow,body,meta);
+
+    const chev=document.createElement('div');
+    chev.className='chev';
+    chev.textContent='‹';
+
+    item.append(icon,main,chev);
+
+    if(n.image_url){
+      const img=document.createElement('img');
+      img.className='notice-img';
+      img.src=n.image_url;
+      img.alt=n.title||'صورة التبليغ';
+      img.loading='lazy';
+      item.appendChild(img);
+    }
+
+    if(n.content){
+      const cp=document.createElement('div');
+      cp.className='content-preview';
+      cp.textContent=n.content;
+      item.appendChild(cp);
+    }
 
     const open=()=>openNotification(n);
     item.addEventListener('click',open);
-    item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+    item.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){
+        e.preventDefault();
+        open();
+      }
+    });
+
     list.appendChild(item);
   });
 }
+
 async function load(){
   if(!currentUser)return;
+
   const list=document.getElementById('list');
   list.innerHTML='<div class="loading">جاري تحميل الإشعارات...</div>';
 
@@ -198,58 +487,137 @@ async function load(){
     list.innerHTML='<div class="empty">تعذر تحميل الإشعارات حالياً.</div>';
     return;
   }
+
   rows=data||[];
   render();
 }
+
 async function markRead(id){
   const {error}=await db.from('notifications').update({is_read:true}).eq('id',id);
   if(error)console.warn(error);
 }
+
 async function openNotification(n){
-  if(!n.is_read){await markRead(n.id);n.is_read=true;render();}
-  const rich=!!(n.content||n.image_url||notifSection(n)||notifType(n)==='news'||n.kind==='admin_broadcast');
+  if(!n.is_read){
+    await markRead(n.id);
+    n.is_read=true;
+    render();
+  }
+
+  const rich=!!(
+    n.content||n.image_url||notifSection(n)||
+    notifType(n)==='news'||n.kind==='admin_broadcast'
+  );
+
   if(rich){
     detailTitle.textContent=n.title||'تفاصيل الإشعار';
     detailSummary.textContent=notifBody(n);
     detailContent.textContent=n.content||'';
     detailContent.style.display=n.content?'block':'none';
+
     const sec=notifSection(n),typ=notifType(n);
     detailMeta.innerHTML='';
-    if(sec){const s=document.createElement('span');s.className='section-badge';s.textContent='القسم: '+sectionLabel(sec);detailMeta.appendChild(s)}
-    const t=document.createElement('span');t.className='type';t.textContent=typeLabel(typ);detailMeta.appendChild(t);
-    const tm=document.createElement('span');tm.textContent=fmtTime(n.created_at);detailMeta.appendChild(tm);
-    if(n.image_url){detailImage.src=n.image_url;detailImage.style.display='block'}else{detailImage.removeAttribute('src');detailImage.style.display='none'}
+
+    if(sec){
+      const s=document.createElement('span');
+      s.className='section-badge';
+      s.textContent=sectionLabel(sec);
+      detailMeta.appendChild(s);
+    }
+
+    const t=document.createElement('span');
+    t.className='type';
+    t.textContent=typeLabel(typ);
+    detailMeta.appendChild(t);
+
+    const tm=document.createElement('span');
+    tm.className='time';
+    tm.textContent=fmtTime(n.created_at);
+    detailMeta.appendChild(tm);
+
+    if(n.image_url){
+      detailImage.src=n.image_url;
+      detailImage.style.display='block';
+    }else{
+      detailImage.removeAttribute('src');
+      detailImage.style.display='none';
+    }
+
     detailActions.innerHTML='';
     const link=String(notifLink(n)||'').trim();
+
     if(link&&/^(https?:\/\/|[a-zA-Z0-9_.-]+\.html(?:[?#].*)?$)/.test(link)){
-      const a=document.createElement('a');a.href=link;a.textContent='فتح القسم';detailActions.appendChild(a);
+      const a=document.createElement('a');
+      a.href=link;
+      a.textContent='فتح التفاصيل';
+      detailActions.appendChild(a);
     }
-    detailModal.classList.add('show');detailModal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+
+    detailModal.classList.add('show');
+    detailModal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
     return;
   }
+
   const link=String(notifLink(n)||'').trim();
-  if(link&&/^(https?:\/\/|[a-zA-Z0-9_.-]+\.html(?:[?#].*)?$)/.test(link))location.href=link;
+  if(link&&/^(https?:\/\/|[a-zA-Z0-9_.-]+\.html(?:[?#].*)?$)/.test(link)){
+    location.href=link;
+  }
 }
-function closeDetail(){detailModal.classList.remove('show');detailModal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+
+function closeDetail(){
+  detailModal.classList.remove('show');
+  detailModal.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+}
+
 async function markAll(){
   const ids=rows.filter(x=>!x.is_read).map(x=>x.id);
-  if(!ids.length){toast('كل الإشعارات مقروءة');return}
+  if(!ids.length){
+    toast('كل الإشعارات مقروءة');
+    return;
+  }
+
   const {error}=await db.from('notifications').update({is_read:true}).in('id',ids);
-  if(error){toast('تعذر تحديث الإشعارات');return}
+  if(error){
+    toast('تعذر تحديث الإشعارات');
+    return;
+  }
+
   rows.forEach(x=>x.is_read=true);
   render();
   toast('تم تعليم الكل كمقروء');
 }
+
 async function clearRead(){
   const ids=rows.filter(x=>x.is_read).map(x=>x.id);
-  if(!ids.length){toast('ماكو إشعارات مقروءة للحذف');return}
+  if(!ids.length){
+    toast('لا توجد إشعارات مقروءة للحذف');
+    return;
+  }
+
   if(!confirm('حذف جميع الإشعارات المقروءة؟'))return;
+
   const {error}=await db.from('notifications').delete().in('id',ids);
-  if(error){toast('تعذر حذف الإشعارات');return}
+  if(error){
+    toast('تعذر حذف الإشعارات');
+    return;
+  }
+
   rows=rows.filter(x=>!x.is_read);
   render();
   toast('تم حذف الإشعارات المقروءة');
 }
+
+document.querySelectorAll('.filter').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter=btn.dataset.filter||'all';
+    render();
+  });
+});
+
 async function init(){
   if(!navigator.onLine){
     document.getElementById('list').innerHTML='<div class="empty">📡 تحتاج إنترنت لعرض أحدث الإشعارات.</div>';
@@ -257,10 +625,12 @@ async function init(){
   }
 
   const {data:{session}}=await db.auth.getSession();
-  if(!session?.user || session.user.is_anonymous){
+
+  if(!session?.user||session.user.is_anonymous){
     location.replace('login.html');
     return;
   }
+
   currentUser=session.user;
   await load();
 
@@ -271,12 +641,14 @@ async function init(){
     )
     .subscribe();
 }
+
 document.getElementById('refreshBtn').onclick=load;
 document.getElementById('markAllBtn').onclick=markAll;
 document.getElementById('clearReadBtn').onclick=clearRead;
 detailClose.onclick=closeDetail;
 detailModal.addEventListener('click',e=>{if(e.target===detailModal)closeDetail()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&detailModal.classList.contains('show'))closeDetail()});
+
 init();
 </script>
 
