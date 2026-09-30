@@ -4,7 +4,32 @@
 .image-preview{display:none;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:8px;border:1px solid #ddd}
 .image-actions{display:flex;gap:8px;flex-wrap:wrap}
 .image-actions input{margin:0;flex:1;min-width:210px}
-.note{font-size:12px;color:#777;margin-top:6px}@media(max-width:720px){.card{padding:11px;font-size:13px}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+.note{font-size:12px;color:#777;margin-top:6px}@media(max-width:720px){.card{padding:11px;font-size:13px}}
+.products-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+.products-toolbar .products-title{margin:0}
+.products-toolbar .products-count{background:#eef6ff;color:#1769e0;border-radius:999px;padding:7px 11px;font-weight:700;font-size:13px}
+.products-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.seller-product-card{background:#fff;border:1px solid #e8edf3;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(20,54,90,.08);transition:.2s ease;min-width:0}
+.seller-product-card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,54,90,.12)}
+.seller-product-image{position:relative;height:175px;background:linear-gradient(135deg,#eef6ff,#f8fbff);overflow:hidden}
+.seller-product-image img{width:100%;height:100%;object-fit:cover;display:block}
+.seller-product-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px}
+.seller-status{position:absolute;top:10px;right:10px;background:#12a864;color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800}
+.seller-status.off{background:#8b95a7}
+.seller-stock{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.94);color:#24344d;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;box-shadow:0 2px 10px #0001}
+.seller-product-body{padding:13px}
+.seller-product-name{font-size:16px;font-weight:800;color:#10233f;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seller-product-desc{font-size:12px;color:#7b8798;margin-top:5px;line-height:1.6;height:38px;overflow:hidden}
+.seller-product-price{font-size:18px;font-weight:900;color:#087d4b;margin-top:9px}
+.seller-product-actions{display:grid;grid-template-columns:1fr 1fr 44px;gap:7px;margin-top:12px}
+.seller-product-actions button{padding:9px 7px;border-radius:11px;font-size:12px;font-weight:800}
+.seller-product-actions .edit-product{background:#eaf3ff;color:#1769e0}
+.seller-product-actions .toggle-product{background:#eaf9f1;color:#087d4b}
+.seller-product-actions .toggle-product.off{background:#f0f2f5;color:#657084}
+.seller-product-actions .delete-product{background:#fff0f2;color:#cf193c;padding:9px}
+@media(max-width:900px){.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.products-grid{grid-template-columns:1fr}.seller-product-image{height:210px}}
+</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
 <option value="markets">أسواق</option>
@@ -41,7 +66,7 @@
 <img id="productImagePreview" class="image-preview" alt="معاينة صورة المنتج">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card"><h2>منتجاتي</h2><div id="products">جاري التحميل...</div></div><div class="card" id="orders" style="scroll-margin-top:20px"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card"><div class="products-toolbar"><h2 class="products-title">🛍️ منتجات متجري</h2><span id="productsCount" class="products-count">0 منتج</span></div><div id="products" class="products-grid">جاري التحميل...</div></div><div class="card" id="orders" style="scroll-margin-top:20px"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
@@ -337,7 +362,106 @@ async function addProduct(){
   alert('✅ تمت إضافة المنتج');
   loadProducts();
 }
-async function loadProducts(){const {data,error}=await db.from('products').select('id,name,price,stock,is_active').eq('seller_user_id',me.id).order('created_at',{ascending:false});productsEl.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class="row card"><div><b>${esc(x.name)}</b><div class="muted">${Number(x.price).toLocaleString('ar-IQ')} د.ع — مخزون ${x.stock}</div></div><button class="danger" onclick="delP(${x.id})">حذف</button></div>`).join('')||'لا توجد منتجات.'}async function delP(id){if(!confirm('حذف المنتج نهائياً؟'))return;const {error}=await db.rpc('delete_shop_product',{p_product_id:id});if(error)alert('تعذر الحذف: '+error.message);else loadProducts()}async function loadOrders(){const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';const {data,error}=await db.rpc('get_seller_shop_orders');if(error){el.innerHTML='<div class="card">شغّل SHOP-COURIER-INTEGRATION.sql أولاً.<br>'+esc(error.message)+'</div>';return}const arr=Array.isArray(data)?data:[];el.innerHTML=arr.map(o=>{const d=o.delivery;const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');let delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:`<div class="delivery">لم يُطلب مندوب بعد.</div>`;let action='';if(o.order_status!=='cancelled'&&(!d||['cancelled','ready'].includes(d.status))){action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button class="blue" onclick="requestCourier(${o.order_id})">✅ الطلب جاهز — اطلب مندوب</button>`}return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: ${esc(o.customer_name)} — ${esc(o.phone)}<br>${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="row" style="margin-top:8px"><b>${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${delivery}</div>`}).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>'}async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}
+async function loadProducts(){
+  productsEl.innerHTML='<div class="muted">جاري التحميل...</div>';
+  const {data,error}=await db.from('products')
+    .select('id,name,price,stock,is_active,image_url,description')
+    .eq('seller_user_id',me.id)
+    .order('created_at',{ascending:false});
+
+  const countEl=document.getElementById('productsCount');
+  if(error){
+    productsEl.innerHTML='<div class="muted">'+esc(error.message)+'</div>';
+    if(countEl)countEl.textContent='0 منتج';
+    return;
+  }
+
+  const arr=data||[];
+  if(countEl)countEl.textContent=arr.length+' منتج';
+
+  if(!arr.length){
+    productsEl.innerHTML='<div class="muted" style="grid-column:1/-1;text-align:center;padding:28px">لا توجد منتجات بعد.</div>';
+    return;
+  }
+
+  productsEl.innerHTML=arr.map(x=>{
+    const active=x.is_active!==false;
+    const img=x.image_url
+      ? `<img src="${esc(x.image_url)}" alt="${esc(x.name)}">`
+      : `<div class="seller-product-placeholder">🛍️</div>`;
+
+    return `<article class="seller-product-card">
+      <div class="seller-product-image">
+        ${img}
+        <span class="seller-status ${active?'':'off'}">${active?'متوفر':'موقوف'}</span>
+        <span class="seller-stock">المخزون: ${Number(x.stock||0).toLocaleString('ar-IQ')}</span>
+      </div>
+      <div class="seller-product-body">
+        <div class="seller-product-name">${esc(x.name)}</div>
+        <div class="seller-product-desc">${esc(x.description||'بدون وصف')}</div>
+        <div class="seller-product-price">${Number(x.price||0).toLocaleString('ar-IQ')} د.ع</div>
+        <div class="seller-product-actions">
+          <button class="toggle-product ${active?'':'off'}" onclick="toggleP(${x.id},${active})">${active?'إيقاف':'تفعيل'}</button>
+          <button class="edit-product" onclick="editP(${x.id})">✏️ تعديل</button>
+          <button class="delete-product" onclick="delP(${x.id})" aria-label="حذف">🗑️</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+async function toggleP(id,current){
+  const {error}=await db.from('products')
+    .update({is_active:!current})
+    .eq('id',id)
+    .eq('seller_user_id',me.id);
+  if(error)return alert('تعذر تحديث حالة المنتج: '+error.message);
+  loadProducts();
+}
+
+async function editP(id){
+  const {data:x,error}=await db.from('products')
+    .select('id,name,price,stock,description')
+    .eq('id',id)
+    .eq('seller_user_id',me.id)
+    .maybeSingle();
+
+  if(error||!x)return alert('تعذر فتح المنتج للتعديل.');
+
+  const name=prompt('اسم المنتج',x.name||'');
+  if(name===null)return;
+
+  const price=prompt('السعر',x.price??0);
+  if(price===null)return;
+
+  const stock=prompt('المخزون',x.stock??0);
+  if(stock===null)return;
+
+  const description=prompt('الوصف',x.description||'');
+  if(description===null)return;
+
+  const {error:updateError}=await db.from('products')
+    .update({
+      name:name.trim(),
+      price:Number(price||0),
+      stock:Number(stock||0),
+      description:description.trim()
+    })
+    .eq('id',id)
+    .eq('seller_user_id',me.id);
+
+  if(updateError)return alert('تعذر تعديل المنتج: '+updateError.message);
+  loadProducts();
+}
+
+async function delP(id){
+  if(!confirm('حذف المنتج نهائياً؟'))return;
+  const {error}=await db.rpc('delete_shop_product',{p_product_id:id});
+  if(error)alert('تعذر الحذف: '+error.message);
+  else loadProducts();
+}
+
+async function loadOrders(){const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';const {data,error}=await db.rpc('get_seller_shop_orders');if(error){el.innerHTML='<div class="card">شغّل SHOP-COURIER-INTEGRATION.sql أولاً.<br>'+esc(error.message)+'</div>';return}const arr=Array.isArray(data)?data:[];el.innerHTML=arr.map(o=>{const d=o.delivery;const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');let delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:`<div class="delivery">لم يُطلب مندوب بعد.</div>`;let action='';if(o.order_status!=='cancelled'&&(!d||['cancelled','ready'].includes(d.status))){action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button class="blue" onclick="requestCourier(${o.order_id})">✅ الطلب جاهز — اطلب مندوب</button>`}return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: ${esc(o.customer_name)} — ${esc(o.phone)}<br>${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="row" style="margin-top:8px"><b>${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${delivery}</div>`}).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>'}async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}
 if(deleteStoreBtn){deleteStoreBtn.onclick=async()=>{
   if(!store?.id)return;
   const ok=confirm('⚠️ حذف المتجر نهائياً؟ سيتم حذف منتجات هذا المتجر أيضاً. لا يمكن التراجع عن العملية.');
