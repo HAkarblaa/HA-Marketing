@@ -94,6 +94,207 @@ body.ha-shortcuts-open{overflow:hidden}
   .ha-feature .fart .ha-home-icon-img{width:66px!important;height:66px!important}
   .ha-bottom .nicon .ha-home-icon-img{width:26px!important;height:26px!important}
 }
+</style><style id="ha-home-premium-cards-v2">
+/* ===== مربعات الواجهة الرئيسية الفخمة ===== */
+.ha-main .ha-cats{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+  align-items:stretch!important;
+  margin-top:14px!important;
+}
+
+.ha-main .ha-cat{
+  position:relative!important;
+  min-height:210px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:25px!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+  align-items:stretch!important;
+  text-align:right!important;
+  text-decoration:none!important;
+  box-shadow:
+    0 16px 30px rgba(21,48,73,.13),
+    inset 0 1px 0 rgba(255,255,255,.45)!important;
+  transform:translateZ(0);
+  transition:transform .2s ease,box-shadow .2s ease!important;
+  isolation:isolate;
+}
+
+.ha-main .ha-cat:hover{
+  transform:translateY(-4px)!important;
+  box-shadow:0 20px 38px rgba(21,48,73,.18)!important;
+}
+
+.ha-main .ha-cat::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 20% 12%,rgba(255,255,255,.52),transparent 27%),
+    radial-gradient(circle at 88% 28%,rgba(255,255,255,.17),transparent 29%),
+    linear-gradient(145deg,var(--c1),var(--c2));
+}
+
+.ha-main .ha-cat::after{
+  content:"›";
+  position:absolute;
+  left:15px;
+  bottom:17px;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(5,32,63,.25);
+  border:1px solid rgba(255,255,255,.34);
+  box-shadow:0 8px 18px rgba(0,0,0,.14);
+  color:#fff;
+  font-size:35px;
+  font-weight:700;
+  line-height:1;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+.ha-main .ha-cat[href="shop.html"]{--c1:#49e64b;--c2:#08a93c}
+.ha-main .ha-cat[href="services.html"]{--c1:#ff8bb4;--c2:#f13268}
+.ha-main .ha-cat[href="study.html"]{--c1:#35c8ff;--c2:#0878e6}
+.ha-main .ha-cat[href="taxi-delivery.html"]{--c1:#ffd94b;--c2:#f58b00}
+.ha-main .ha-cat[href="suggestions.html"]{--c1:#42e5df;--c2:#04a9b9}
+.ha-main .ha-cat[href="entertainment.html"]{--c1:#cb70ff;--c2:#6a24dc}
+
+/* خلفية زخرفية */
+.ha-main .ha-cat > .ico::before,
+.ha-main .ha-cat > .ico::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  z-index:-1;
+}
+.ha-main .ha-cat > .ico::before{
+  width:150px;height:150px;right:-38px;top:-42px;
+}
+.ha-main .ha-cat > .ico::after{
+  width:90px;height:90px;left:20px;top:28px;
+}
+
+/* الصورة / الأيقونة الكبيرة */
+.ha-main .ha-cat .ico{
+  position:absolute!important;
+  top:13px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:128px!important;
+  height:128px!important;
+  margin:0!important;
+  display:grid!important;
+  place-items:center!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  z-index:1;
+}
+
+.ha-main .ha-cat .ico img,
+.ha-main .ha-cat .ico svg,
+.ha-main .ha-cat .ico .ha-home-icon-img{
+  width:122px!important;
+  height:122px!important;
+  max-width:none!important;
+  display:block!important;
+  object-fit:contain!important;
+  opacity:1!important;
+  filter:drop-shadow(0 12px 12px rgba(8,35,68,.25))!important;
+}
+
+/* الجزء السفلي مثل النموذج */
+.ha-main .ha-cat strong,
+.ha-main .ha-cat small{
+  position:relative;
+  z-index:2;
+  color:#fff!important;
+  padding-right:18px!important;
+  padding-left:70px!important;
+  text-shadow:0 2px 5px rgba(15,40,65,.18);
+}
+
+.ha-main .ha-cat strong{
+  display:block!important;
+  margin-top:136px!important;
+  margin-bottom:2px!important;
+  padding-top:15px!important;
+  font-size:22px!important;
+  font-weight:900!important;
+  line-height:1.2!important;
+  background:linear-gradient(to top,rgba(0,0,0,.21),rgba(0,0,0,.04));
+}
+
+.ha-main .ha-cat small{
+  display:block!important;
+  min-height:45px!important;
+  padding-top:3px!important;
+  padding-bottom:16px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.45!important;
+  background:linear-gradient(to top,rgba(0,0,0,.25),rgba(0,0,0,.21));
+}
+
+/* تنسيق الهاتف: مربعين بالصف مثل الصورة */
+@media(max-width:700px){
+  .ha-main .ha-cats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .ha-main .ha-cat{
+    min-height:184px!important;
+    border-radius:21px!important;
+  }
+  .ha-main .ha-cat .ico{
+    top:9px!important;
+    width:106px!important;
+    height:106px!important;
+  }
+  .ha-main .ha-cat .ico img,
+  .ha-main .ha-cat .ico svg,
+  .ha-main .ha-cat .ico .ha-home-icon-img{
+    width:102px!important;
+    height:102px!important;
+  }
+  .ha-main .ha-cat strong{
+    margin-top:113px!important;
+    font-size:18px!important;
+    padding-right:13px!important;
+    padding-left:55px!important;
+    padding-top:12px!important;
+  }
+  .ha-main .ha-cat small{
+    min-height:42px!important;
+    font-size:10.5px!important;
+    padding-right:13px!important;
+    padding-left:55px!important;
+    padding-bottom:13px!important;
+  }
+  .ha-main .ha-cat::after{
+    left:10px;
+    bottom:13px;
+    width:38px;
+    height:38px;
+    font-size:29px;
+  }
+}
+
+@media(min-width:701px) and (max-width:1050px){
+  .ha-main .ha-cats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
 </style></head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
 <aside class="ha-shortcuts-drawer" id="haShortcutsDrawer" aria-label="اختصارات HA Marketing">
   <div class="ha-shortcuts-head">
