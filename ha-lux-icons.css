@@ -1,0 +1,118 @@
+:root{
+  --ha-lux-gold:#f6c95f;
+  --ha-lux-gold2:#fff1ad;
+  --ha-lux-navy:#0b2d67;
+  --ha-lux-blue:#1467d7;
+  --ha-lux-teal:#08a89b;
+}
+.ha-lux-icon{
+  --ha-lux-a:#0b3f91;
+  --ha-lux-b:#08a89b;
+  --ha-lux-glow:rgba(20,103,215,.24);
+  position:relative!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  width:50px!important;
+  height:50px!important;
+  min-width:50px!important;
+  min-height:50px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:16px!important;
+  color:#fff!important;
+  background:
+    radial-gradient(circle at 25% 15%,rgba(255,255,255,.40),transparent 31%),
+    linear-gradient(145deg,var(--ha-lux-a),var(--ha-lux-b))!important;
+  border:1.5px solid rgba(255,213,103,.86)!important;
+  box-shadow:
+    0 8px 18px var(--ha-lux-glow),
+    0 2px 5px rgba(11,34,65,.14),
+    inset 0 1px 0 rgba(255,255,255,.58),
+    inset 0 -2px 7px rgba(0,0,0,.13)!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  line-height:1!important;
+  font-size:0!important;
+  text-shadow:none!important;
+  vertical-align:middle;
+}
+.ha-lux-icon::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:72%;height:46%;
+  left:7%;top:5%;
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,0));
+  transform:rotate(-12deg);
+  pointer-events:none;
+}
+.ha-lux-icon::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:34%;height:34%;
+  right:-9%;bottom:-10%;
+  border-radius:50%;
+  background:rgba(255,211,93,.22);
+  filter:blur(2px);
+  pointer-events:none;
+}
+.ha-lux-icon svg{
+  position:relative;z-index:2;
+  width:58%!important;height:58%!important;
+  display:block!important;
+  fill:none!important;
+  stroke:#fff!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.2));
+  overflow:visible;
+}
+.ha-lux-icon svg .ha-gold{
+  stroke:var(--ha-lux-gold2)!important;
+}
+.ha-lux-icon--nav{
+  width:31px!important;height:31px!important;min-width:31px!important;min-height:31px!important;
+  border-radius:10px!important;
+  border-width:1px!important;
+  box-shadow:0 4px 10px var(--ha-lux-glow),inset 0 1px 0 rgba(255,255,255,.48)!important;
+}
+.ha-lux-icon--nav svg{width:57%!important;height:57%!important;stroke-width:2!important}
+.ha-lux-icon--small{
+  width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;border-radius:12px!important
+}
+.ha-lux-icon--small svg{width:56%!important;height:56%!important}
+.ha-lux-icon--hero{
+  width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;border-radius:18px!important
+}
+
+/* Color families keep the whole app consistent but make sections recognizable. */
+.ha-lux-icon[data-ha-lux-variant="teal"]{--ha-lux-a:#073f80;--ha-lux-b:#06b4a1;--ha-lux-glow:rgba(6,180,161,.25)}
+.ha-lux-icon[data-ha-lux-variant="blue"]{--ha-lux-a:#102f7d;--ha-lux-b:#168be5;--ha-lux-glow:rgba(22,139,229,.25)}
+.ha-lux-icon[data-ha-lux-variant="royal"]{--ha-lux-a:#103477;--ha-lux-b:#1d63d4;--ha-lux-glow:rgba(29,99,212,.24)}
+.ha-lux-icon[data-ha-lux-variant="amber"]{--ha-lux-a:#174a94;--ha-lux-b:#d79019;--ha-lux-glow:rgba(215,144,25,.24)}
+.ha-lux-icon[data-ha-lux-variant="violet"]{--ha-lux-a:#3d168c;--ha-lux-b:#a127c8;--ha-lux-glow:rgba(161,39,200,.25)}
+.ha-lux-icon[data-ha-lux-variant="emerald"]{--ha-lux-a:#075b5f;--ha-lux-b:#15a56b;--ha-lux-glow:rgba(21,165,107,.24)}
+.ha-lux-icon[data-ha-lux-variant="purple"]{--ha-lux-a:#38237d;--ha-lux-b:#7662d9;--ha-lux-glow:rgba(118,98,217,.24)}
+.ha-lux-icon[data-ha-lux-variant="sky"]{--ha-lux-a:#075b98;--ha-lux-b:#22a7dc;--ha-lux-glow:rgba(34,167,220,.24)}
+.ha-lux-icon[data-ha-lux-variant="indigo"]{--ha-lux-a:#1b356d;--ha-lux-b:#5663bb;--ha-lux-glow:rgba(86,99,187,.22)}
+.ha-lux-icon[data-ha-lux-variant="gold"]{--ha-lux-a:#775216;--ha-lux-b:#d49a23;--ha-lux-glow:rgba(212,154,35,.25)}
+.ha-lux-icon[data-ha-lux-variant="navy"]{--ha-lux-a:#10294d;--ha-lux-b:#215a91;--ha-lux-glow:rgba(33,90,145,.23)}
+.ha-lux-icon[data-ha-lux-variant="rose"]{--ha-lux-a:#8b2454;--ha-lux-b:#d34e85;--ha-lux-glow:rgba(211,78,133,.23)}
+
+/* Existing app icon holders */
+.ha-cat .ico.ha-lux-icon{margin-inline:auto!important;margin-bottom:8px!important}
+.ha-nav .nicon.ha-lux-icon,.ha-rbn-icon.ha-lux-icon{margin-inline:auto!important}
+.shortcuts .short-ico.ha-lux-icon,.ha-shortcuts-list .ico.ha-lux-icon{margin-inline-end:3px!important}
+.iconbox.ha-lux-icon,.notice-icon.ha-lux-icon{flex:0 0 auto!important}
+
+/* Do not let old emoji/card styles paint another white square around the premium icon. */
+.ha-lux-icon.emoji,.ha-lux-icon.ico,.ha-lux-icon.nicon,.ha-lux-icon.short-ico{
+  font-family:inherit!important;
+}
+@media(max-width:520px){
+  .ha-cat .ico.ha-lux-icon{width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;border-radius:15px!important}
+  .ha-lux-icon--nav{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important}
+}

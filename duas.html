@@ -16,7 +16,7 @@
 @media(max-width:600px){#text{font-size:22px}}
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
 <body><div class="wrap">
 <h1>🤲 الأدعية</h1>
 <p class="sub">اضغط على الاسم، ويظهر النص داخل نفس صفحة موقعك بدون تحويل المستخدم إلى موقع آخر.</p>
@@ -79,4 +79,4 @@ function closeReader(){
 document.querySelectorAll('.item').forEach(b=>b.onclick=()=>openReader(b.dataset.name,b.dataset.url));
 document.getElementById('backBtn').onclick=()=>opened?history.back():closeReader();
 window.addEventListener('popstate',()=>{if(opened)closeReader()});
-</script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
