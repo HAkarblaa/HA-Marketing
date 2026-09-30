@@ -51,15 +51,15 @@ body.ha-shortcuts-open{overflow:hidden}
   margin:0 auto 10px!important;background:transparent!important;
   border:0!important;box-shadow:none!important;font-size:0!important
 }
-.ha-cat .ico img{width:62px;height:62px;display:block;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(25,61,85,.15))}
+.ha-cat .ico img,.ha-cat .ico svg{width:62px;height:62px;display:block;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(25,61,85,.15))}
 .ha-feature .fart{font-size:0!important;display:grid!important;place-items:center!important}
-.ha-feature .fart img{width:74px;height:74px;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(25,61,85,.14))}
+.ha-feature .fart img,.ha-feature .fart svg{width:74px;height:74px;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(25,61,85,.14))}
 .ha-bottom .nicon{font-size:0!important;width:28px;height:28px;display:grid!important;place-items:center!important}
-.ha-bottom .nicon img{width:28px;height:28px;display:block;object-fit:contain}
+.ha-bottom .nicon img,.ha-bottom .nicon svg{width:28px;height:28px;display:block;object-fit:contain}
 @media(max-width:600px){
-  .ha-cat .ico,.ha-cat .ico img{width:54px!important;height:54px!important}
-  .ha-feature .fart img{width:64px;height:64px}
-  .ha-bottom .nicon,.ha-bottom .nicon img{width:25px;height:25px}
+  .ha-cat .ico,.ha-cat .ico img,.ha-cat .ico svg{width:54px!important;height:54px!important}
+  .ha-feature .fart img,.ha-feature .fart svg{width:64px;height:64px}
+  .ha-bottom .nicon,.ha-bottom .nicon img,.ha-bottom .nicon svg{width:25px;height:25px}
 }
 </style>
 </head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
@@ -98,12 +98,312 @@ body.ha-shortcuts-open{overflow:hidden}
     <div class="ha-bell">🔔</div><button class="ha-menu-btn" id="haShortcutsOpen" type="button" aria-label="الاختصارات">☰</button>
   </div>
 </header>
-<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico"><img src="home-icons/shop.svg" alt=""></span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico"><img src="home-icons/service.svg" alt=""></span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico"><img src="home-icons/study.svg" alt=""></span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico"><img src="home-icons/transport.svg" alt=""></span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico"><img src="home-icons/suggestions.svg" alt=""></span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico"><img src="home-icons/entertainment.svg" alt=""></span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart"><img src="home-icons/near-service.svg" alt=""></div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart"><img src="home-icons/near-shop.svg" alt=""></div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
-<a class="ha-nav active" href="index.html"><span class="nicon"><img src="home-icons/home.svg" alt=""></span><span>الرئيسية</span></a>
-<a class="ha-nav " href="orders-center.html"><span class="nicon"><img src="home-icons/orders.svg" alt=""></span><span>طلباتي</span></a>
-<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge"><img src="home-icons/notifications.svg" alt=""></span><span>الإشعارات</span></a>
-<a class="ha-nav " href="chat.html"><span class="nicon"><img src="home-icons/chat.svg" alt=""></span><span>المحادثات</span></a>
-<a class="ha-nav " href="account.html"><span class="nicon"><img src="home-icons/account.svg" alt=""></span><span>حسابي</span></a>
+<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0cc7bd"/>
+    <stop offset="1" stop-color="#0754c8"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M34 49h10l7 30h42l9-25H49" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="59" cy="91" r="7" fill="url(#gold)"/><circle cx="88" cy="91" r="7" fill="url(#gold)"/>
+<path d="M45 38h14" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
+
+</svg></span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#12b9ff"/>
+    <stop offset="1" stop-color="#1b55d9"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M76 34a20 20 0 0 0-18 28L34 86a10 10 0 0 0 14 14l24-24a20 20 0 0 0 28-18l-14 9-14-14 9-14a20 20 0 0 0-5-5Z" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
+<circle cx="42" cy="92" r="5" fill="url(#gold)"/>
+
+</svg></span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#1a56db"/>
+    <stop offset="1" stop-color="#0b84ff"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M24 55 64 35l40 20-40 20L24 55Z" fill="#fff"/>
+<path d="M40 64v18c13 11 35 11 48 0V64" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linejoin="round"/>
+<path d="M101 58v25" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+<circle cx="101" cy="88" r="5" fill="url(#gold)"/>
+
+</svg></span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ffb11a"/>
+    <stop offset="1" stop-color="#f05a19"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M31 74h66l-7-24a10 10 0 0 0-10-7H49a10 10 0 0 0-10 7l-8 24Z" fill="#fff"/>
+<path d="M38 73h53v13H38Z" fill="url(#gold)"/>
+<circle cx="45" cy="88" r="8" fill="#10233f"/><circle cx="85" cy="88" r="8" fill="#10233f"/>
+<path d="M45 58h39" stroke="#0b6fc7" stroke-width="7" stroke-linecap="round"/>
+
+</svg></span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#18c985"/>
+    <stop offset="1" stop-color="#08795c"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M64 29a28 28 0 0 0-17 50c6 5 7 9 7 13h20c0-4 1-8 7-13a28 28 0 0 0-17-50Z" fill="#fff"/>
+<path d="M56 99h16M58 108h12" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
+<path d="M64 40v20M54 52h20" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
+
+</svg></span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8d28e8"/>
+    <stop offset="1" stop-color="#4b159c"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M40 54h48a18 18 0 0 1 17 24l-7 20a9 9 0 0 1-15 3L73 90H55l-10 11a9 9 0 0 1-15-3l-7-20a18 18 0 0 1 17-24Z" fill="#fff"/>
+<path d="M43 68v16M35 76h16" stroke="#5f22bd" stroke-width="6" stroke-linecap="round"/>
+<circle cx="84" cy="72" r="5" fill="url(#gold)"/><circle cx="94" cy="82" r="5" fill="url(#gold)"/>
+
+</svg></span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10a8ee"/>
+    <stop offset="1" stop-color="#1d60cf"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M42 72 64 52l22 20v26H42V72Z" fill="#fff"/>
+<path d="M36 74 64 47l28 27" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M58 98V80h13v18" fill="#20a8db"/>
+<path d="M77 38a15 15 0 0 0-14 20l-14 14 10 10 14-14a15 15 0 0 0 18-19l-10 7-8-8 4-10Z" fill="#fff" opacity=".9"/>
+
+</svg></div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#15bf8a"/>
+    <stop offset="1" stop-color="#08745b"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M32 50h64l-5-14H37l-5 14Z" fill="url(#gold)"/>
+<path d="M36 50v49h56V50" fill="#fff"/>
+<path d="M29 50c0 8 7 14 15 14s15-6 15-14c0 8 6 14 14 14s15-6 15-14c0 8 5 14 13 14" fill="none" stroke="#0c9b72" stroke-width="7" stroke-linecap="round"/>
+<path d="M48 99V78h16v21M72 75h12v12H72z" fill="#16b98a"/>
+
+</svg></div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
+<a class="ha-nav active" href="index.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#16bd8b"/>
+    <stop offset="1" stop-color="#08735b"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M28 62 64 32l36 30v36H76V74H52v24H28V62Z" fill="#fff"/>
+<path d="M23 64 64 29l41 35" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg></span><span>الرئيسية</span></a>
+<a class="ha-nav " href="orders-center.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#11afd9"/>
+    <stop offset="1" stop-color="#0867c7"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M36 39h56l-4 62H40l-4-62Z" fill="#fff"/>
+<path d="M49 45a15 15 0 0 1 30 0" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round"/>
+<path d="M49 65h30M49 79h24" stroke="#0c78c8" stroke-width="6" stroke-linecap="round"/>
+
+</svg></span><span>طلباتي</span></a>
+<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ffb41d"/>
+    <stop offset="1" stop-color="#f27b0c"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M64 29c-15 0-25 11-25 26v15c0 8-4 13-10 18h70c-6-5-10-10-10-18V55c0-15-10-26-25-26Z" fill="#fff"/>
+<path d="M54 94c3 9 17 9 20 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+<circle cx="92" cy="37" r="9" fill="#ef4058"/>
+
+</svg></span><span>الإشعارات</span></a>
+<a class="ha-nav " href="chat.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8a35df"/>
+    <stop offset="1" stop-color="#4b189c"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<path d="M31 38h66v45H59L43 96V83H31V38Z" fill="#fff"/>
+<circle cx="49" cy="61" r="5" fill="#6b28c9"/><circle cx="64" cy="61" r="5" fill="#6b28c9"/><circle cx="79" cy="61" r="5" fill="#6b28c9"/>
+
+</svg></span><span>المحادثات</span></a>
+<a class="ha-nav " href="account.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#126bd4"/>
+    <stop offset="1" stop-color="#093c8f"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<circle cx="64" cy="49" r="18" fill="#fff"/>
+<path d="M32 99c4-20 17-30 32-30s28 10 32 30" fill="#fff"/>
+<path d="M38 99h52" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
+
+</svg></span><span>حسابي</span></a>
 </div></nav><script src="ha-modern-green.js?v=20260927-freezefix1"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20260927-1"></script><script id="ha-shortcuts-restore-script">
 (function(){
   const drawer=document.getElementById('haShortcutsDrawer');
