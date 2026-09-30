@@ -21,7 +21,7 @@
 .seller-product-name{font-size:16px;font-weight:800;color:#10233f;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .seller-product-desc{font-size:12px;color:#7b8798;margin-top:5px;line-height:1.6;height:38px;overflow:hidden}
 .seller-product-price{font-size:18px;font-weight:900;color:#087d4b;margin-top:9px}
-.seller-product-actions{display:grid;grid-template-columns:1fr 1fr 44px;gap:7px;margin-top:12px}
+.seller-product-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:12px}
 .seller-product-actions button{padding:9px 7px;border-radius:11px;font-size:12px;font-weight:800}
 .seller-product-actions .edit-product{background:#eaf3ff;color:#1769e0}
 .seller-product-actions .toggle-product{background:#eaf9f1;color:#087d4b}
@@ -393,7 +393,7 @@ async function loadProducts(){
         <div class="seller-product-actions">
           <button class="toggle-product ${active?'':'off'}" onclick="toggleP(${x.id},${active})">${active?'إيقاف':'تفعيل'}</button>
           <button class="edit-product" onclick="editP(${x.id})">✏️ تعديل</button>
-          <button class="delete-product" onclick="delP(${x.id})" aria-label="حذف">🗑️</button>
+          <button class="delete-product" onclick="deleteMyProduct(${x.id})">🗑️ حذف</button>
         </div>
       </div>
     </article>`;
@@ -444,11 +444,39 @@ async function editP(id){
   loadProducts();
 }
 
-async function delP(id){
-  if(!confirm('حذف المنتج نهائياً؟'))return;
-  const {error}=await db.rpc('delete_shop_product',{p_product_id:id});
-  if(error)alert('تعذر الحذف: '+error.message);
-  else loadProducts();
+async function deleteMyProduct(id){
+  const {data:product,error:readError}=await db.from('products')
+    .select('id,name,seller_user_id')
+    .eq('id',id)
+    .maybeSingle();
+
+  if(readError || !product){
+    alert('تعذر العثور على المنتج');
+    return;
+  }
+
+  if(product.seller_user_id!==me.id){
+    alert('لا يمكنك حذف منتج لا يخص متجرك');
+    return;
+  }
+
+  if(!confirm('حذف المنتج "'+product.name+'" نهائياً؟'))return;
+
+  let result=await db.rpc('delete_shop_product',{p_product_id:id});
+
+  if(result.error){
+    result=await db.from('products')
+      .delete()
+      .eq('id',id)
+      .eq('seller_user_id',me.id);
+  }
+
+  if(result.error){
+    alert('تعذر حذف المنتج: '+result.error.message);
+    return;
+  }
+
+  await loadProducts();
 }
 
 async function loadOrders(){const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';const {data,error}=await db.rpc('get_seller_shop_orders');if(error){el.innerHTML='<div class="card">شغّل SHOP-COURIER-INTEGRATION.sql أولاً.<br>'+esc(error.message)+'</div>';return}const arr=Array.isArray(data)?data:[];el.innerHTML=arr.map(o=>{const d=o.delivery;const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');let delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:`<div class="delivery">لم يُطلب مندوب بعد.</div>`;let action='';if(o.order_status!=='cancelled'&&(!d||['cancelled','ready'].includes(d.status))){action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button class="blue" onclick="requestCourier(${o.order_id})">✅ الطلب جاهز — اطلب مندوب</button>`}return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: ${esc(o.customer_name)} — ${esc(o.phone)}<br>${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="row" style="margin-top:8px"><b>${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${delivery}</div>`}).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>'}async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}
