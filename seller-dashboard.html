@@ -31,7 +31,10 @@
 @media(max-width:520px){.products-grid{grid-template-columns:1fr}.seller-product-image{height:210px}}
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="ha-location-picker.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="ha-location-picker.js"></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
 <option value="markets">أسواق</option>
 <option value="restaurants">مطاعم</option>
 <option value="flowers">ورد</option>
@@ -45,10 +48,21 @@
 <option value="building_materials">مواد البناء</option>
 <option value="cards_credit">بطاقات وأرصدة</option>
 <option value="yugioh">أوراق يوغي</option>
-</select><input id="storeName" placeholder="اسم المتجر"><input id="location" placeholder="العنوان / موقع استلام المندوب">
-<div class="row" style="margin:0 0 10px">
-  <button id="storeLocateBtn" type="button" class="blue">📍 تحديد موقع المتجر</button>
-  <div id="storeLocStatus" class="muted">لم يتم تحديد الموقع بعد.</div>
+</select><input id="storeName" placeholder="اسم المتجر">
+<input id="location" type="hidden">
+<div class="ha-location-box">
+  <div class="ha-location-grid">
+    <select id="storeGovernorate"><option value="">اختر المحافظة</option></select>
+    <input id="storeArea" placeholder="القضاء / الناحية / الحي">
+    <input id="storeAddress" class="full" placeholder="العنوان التفصيلي للمتجر">
+  </div>
+  <input id="storeLatInput" type="hidden"><input id="storeLngInput" type="hidden">
+  <div class="ha-location-actions">
+    <button id="storeMapBtn" type="button" class="light">🗺️ اختيار المتجر من الخريطة</button>
+    <button id="storeLocateBtn" type="button" class="blue">📍 دبوس موقعي الحالي</button>
+  </div>
+  <div id="storeLocStatus" class="ha-location-status">حدد موقع المتجر من الخريطة أو استخدم دبوس موقعك الحالي.</div>
+  <div id="storeMap" class="ha-location-map"></div>
 </div>
 <div class="image-picker">
 <label>صورة المتجر</label>
@@ -111,6 +125,15 @@ const storeImagePreview=document.getElementById('storeImagePreview');
 const productImageFile=document.getElementById('productImageFile');
 const productImagePreview=document.getElementById('productImagePreview');
 const storeLocStatus=document.getElementById('storeLocStatus');
+const storePicker=HA_LocationPicker.attach({
+  governorate:'#storeGovernorate',area:'#storeArea',address:'#storeAddress',
+  lat:'#storeLatInput',lng:'#storeLngInput',map:'#storeMap',
+  mapButton:'#storeMapBtn',gpsButton:'#storeLocateBtn',status:'#storeLocStatus',
+  onChange:v=>{
+    storeLat=v.lat;storeLng=v.lng;
+    if(locationEl)locationEl.value=v.location_text||'';
+  }
+});
 async function fileToCompressedDataUrl(file,maxSide=1200,quality=.78){
   if(!file)return null;
   if(!file.type.startsWith('image/'))throw new Error('الملف المختار ليس صورة.');
@@ -163,7 +186,10 @@ if(productImageFile){
     }
   });
 }
-const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;if(deleteStoreBtn)deleteStoreBtn.style.display='inline-block';sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();loadProducts();loadOrders()}let saveStoreBusy=false;
+const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;if(deleteStoreBtn)deleteStoreBtn.style.display='inline-block';sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';
+const oldLoc=HA_LocationPicker.splitLocation(s.location_text||'');
+storePicker.setValue({...oldLoc,lat:s.lat,lng:s.lng});
+storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();loadProducts();loadOrders()}let saveStoreBusy=false;
 
 function withTimeout(promise,ms=15000){
   return Promise.race([
@@ -181,10 +207,19 @@ async function saveStore(){
   }
 
   const storeNameValue=(storeNameEl?.value||'').trim();
+  const storeLocation=storePicker.getValue();
 
   if(!storeNameValue){
     alert('اكتب اسم المتجر');
     storeNameEl?.focus();
+    return;
+  }
+  if(!storeLocation.governorate||!storeLocation.area||!storeLocation.address){
+    alert('اختر المحافظة واكتب القضاء/الناحية/الحي والعنوان');
+    return;
+  }
+  if(storeLocation.lat==null||storeLocation.lng==null){
+    alert('حدد موقع المتجر من الخريطة أو استخدم دبوس موقعك الحالي');
     return;
   }
 
@@ -206,9 +241,10 @@ async function saveStore(){
       owner_user_id:me.id,
       section_key:sectionEl?.value||'markets',
       name:storeNameValue,
-      location_text:(locationEl?.value||'').trim()||null,
-      lat:storeLat,
-      lng:storeLng,
+      location_text:storeLocation.location_text,
+      lat:storeLocation.lat,
+      lng:storeLocation.lng,
+      map_url:storeLocation.map_url,
       description:(descEl?.value||'').trim()||null,
       is_active:true
     };
@@ -313,16 +349,7 @@ function bindSaveStoreButton(){
 }
 bindSaveStoreButton();
 
-if(storeLocateBtn){storeLocateBtn.onclick=async()=>{
-  storeLocStatus.textContent='جاري تحديد الموقع...';
-  try{
-    const pos=await HA_Nearby.getCurrent({allowCache:false});
-    storeLat=pos.lat;storeLng=pos.lng;
-    storeLocStatus.textContent='✅ تم تحديد موقع المتجر بدقة';
-  }catch(e){
-    storeLocStatus.textContent='تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.';
-  }
-};}
+
 async function addProduct(){
   if(!store)return alert('احفظ المتجر أولاً');
 
@@ -475,7 +502,7 @@ if(deleteStoreBtn){deleteStoreBtn.onclick=async()=>{
   alert('✅ تم حذف المتجر ومنتجاته.');
   store=null;storeImageData=null;productImageData=null;storeLat=null;storeLng=null;
   if(deleteStoreBtn)deleteStoreBtn.style.display='none';
-  if(storeNameEl)storeNameEl.value=''; if(locationEl)locationEl.value=''; if(descEl)descEl.value='';
+  if(storeNameEl)storeNameEl.value=''; if(locationEl)locationEl.value=''; storePicker.reset(); if(descEl)descEl.value='';
   showPreview(storeImagePreview,null); loadProducts();
 };}
 init().catch(e=>{

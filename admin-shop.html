@@ -1,7 +1,26 @@
 <!doctype html><html lang="ar" dir="rtl"><head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة تسوق الآن - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:24px auto}h1{text-align:center}.card{background:#fff;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 4px 16px #0001}.btn,button{display:inline-block;border:0;border-radius:10px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer}.light{background:#eee;color:#111}.danger{background:#a90020}.muted{color:#666;line-height:1.7}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:9px;margin:6px 0;font:inherit}textarea{min-height:90px}.badge{background:#eee;padding:5px 9px;border-radius:999px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.preview{width:100%;max-height:220px;object-fit:contain;background:#f3f3f3;border-radius:12px;display:none}.tabs{display:flex;gap:8px;flex-wrap:wrap}.section{display:none}.section.on{display:block}@media(max-width:650px){.grid{grid-template-columns:1fr}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head><body><div class="wrap"><div class="row"><a class="btn light" href="admin-panel.html">← لوحة الإدارة</a><a class="btn light" href="shop.html">عرض تسوق الآن</a></div><h1>🛍️ إدارة تسوق الآن</h1><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
-<div class="card"><h2>إضافة محل / سوق / جهة</h2><p class="muted">تظهر لك فقط مربعات تسوق الآن التي منحك الأدمن الرئيسي صلاحيتها.</p><select id="businessSection"></select><input id="businessName" placeholder="الاسم"><input id="businessLocation" placeholder="الموقع / العنوان"><textarea id="businessDesc" placeholder="وصف أو تفاصيل إضافية (اختياري)"></textarea><input id="businessMap" placeholder="رابط الخريطة (اختياري)"><input id="businessPage" placeholder="رابط صفحة المتجر الداخلية (اختياري)"><label>الصورة</label><input id="businessImage" type="file" accept="image/*"><img id="preview" class="preview" alt=""><div class="row"><button onclick="addBusiness()">إضافة</button><button class="light" onclick="clearBusinessForm()">مسح الحقول</button></div><div id="businessStatus" class="muted"></div></div>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="ha-location-picker.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="ha-location-picker.js"></script></head><body><div class="wrap"><div class="row"><a class="btn light" href="admin-panel.html">← لوحة الإدارة</a><a class="btn light" href="shop.html">عرض تسوق الآن</a></div><h1>🛍️ إدارة تسوق الآن</h1><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
+<div class="card"><h2>إضافة محل / سوق / جهة</h2><p class="muted">تظهر لك فقط مربعات تسوق الآن التي منحك الأدمن الرئيسي صلاحيتها.</p><select id="businessSection"></select><input id="businessName" placeholder="الاسم">
+<input id="businessLocation" type="hidden"><input id="businessMap" type="hidden">
+<div class="ha-location-box">
+  <div class="ha-location-grid">
+    <select id="businessGovernorate"><option value="">اختر المحافظة</option></select>
+    <input id="businessArea" placeholder="القضاء / الناحية / الحي">
+    <input id="businessAddress" class="full" placeholder="العنوان التفصيلي">
+  </div>
+  <input id="businessLat" type="hidden"><input id="businessLng" type="hidden">
+  <div class="ha-location-actions">
+    <button id="businessMapBtn" class="light" type="button">🗺️ اختيار العنوان من الخريطة</button>
+    <button id="businessGpsBtn" class="light" type="button">📍 استخدام دبوس الموقع الحالي</button>
+  </div>
+  <div id="businessLocationStatus" class="ha-location-status">حدد الموقع من الخريطة أو استخدم دبوس الموقع الحالي.</div>
+  <div id="businessPickerMap" class="ha-location-map"></div>
+</div>
+<textarea id="businessDesc" placeholder="وصف أو تفاصيل إضافية (اختياري)"></textarea><input id="businessPage" placeholder="رابط صفحة المتجر الداخلية (اختياري)"><label>الصورة</label><input id="businessImage" type="file" accept="image/*"><img id="preview" class="preview" alt=""><div class="row"><button onclick="addBusiness()">إضافة</button><button class="light" onclick="clearBusinessForm()">مسح الحقول</button></div><div id="businessStatus" class="muted"></div></div>
 <h2>الإضافات الحالية</h2><div id="businesses"></div>
 <div id="superOnly" style="display:none"><div class="card tabs"><button onclick="showLegacy('dashSec')">الإحصائيات</button><button class="light" onclick="showLegacy('productsSec')">المنتجات</button><button class="light" onclick="showLegacy('ordersSec')">طلبات الشراء</button><button class="light" onclick="showLegacy('couponsSec')">الكوبونات</button></div>
 <section id="dashSec" class="section on"><div id="dashboard" class="grid"></div></section>
@@ -9,13 +28,77 @@
 <section id="ordersSec" class="section"><div id="orders"></div></section>
 <section id="couponsSec" class="section"><div class="card"><h2>إضافة كوبون</h2><input id="couponCode" placeholder="رمز الكوبون مثال HA10"><select id="couponType"><option value="percent">نسبة مئوية %</option><option value="fixed">مبلغ ثابت</option></select><input id="couponValue" type="number" min="0" placeholder="قيمة الخصم"><input id="couponMin" type="number" min="0" value="0" placeholder="أقل مجموع للطلب"><button onclick="addCoupon()">إضافة الكوبون</button></div><div id="coupons"></div></section></div>
 </div></div><script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}});const SECTIONS={library:'📚 مكتبة',building_materials:'🏗️ مواد البناء',cards_credit:'💳 بطاقات وأرصدة',yugioh:'🃏 أوراق يوغي',markets:'🛒 أسواق',restaurants:'🍽️ مطاعم',flowers:'💐 ورد',home_appliances:'🏠 أجهزة منزلية',printers:'🖨️ طابعات',devices:'📱 أجهزة',device_accessories:'🎧 إكسسوارات الأجهزة',clothes:'👕 ملابس',shoes:'👟 أحذية'};const PRINCIPAL_SUPER_ADMIN_UID='f65185bb-1761-42c0-b358-1b0277555e24';let me=null,isSuper=false,canManageShop=false,allowed=[];const st={new:'جديد',confirmed:'مؤكد',preparing:'قيد التجهيز',out_for_delivery:'خرج للتوصيل',completed:'مكتمل',cancelled:'ملغي'};function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function showLegacy(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on')}
+let editingBusinessId=null;
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,storageKey:'ha-marketing-auth'}});const businessPicker=HA_LocationPicker.attach({
+  governorate:'#businessGovernorate',area:'#businessArea',address:'#businessAddress',
+  lat:'#businessLat',lng:'#businessLng',map:'#businessPickerMap',
+  mapButton:'#businessMapBtn',gpsButton:'#businessGpsBtn',status:'#businessLocationStatus',
+  onChange:v=>{
+    businessLocation.value=v.location_text||'';
+    businessMap.value=v.map_url||'';
+  }
+});const SECTIONS={library:'📚 مكتبة',building_materials:'🏗️ مواد البناء',cards_credit:'💳 بطاقات وأرصدة',yugioh:'🃏 أوراق يوغي',markets:'🛒 أسواق',restaurants:'🍽️ مطاعم',flowers:'💐 ورد',home_appliances:'🏠 أجهزة منزلية',printers:'🖨️ طابعات',devices:'📱 أجهزة',device_accessories:'🎧 إكسسوارات الأجهزة',clothes:'👕 ملابس',shoes:'👟 أحذية'};const PRINCIPAL_SUPER_ADMIN_UID='f65185bb-1761-42c0-b358-1b0277555e24';let me=null,isSuper=false,canManageShop=false,allowed=[];const st={new:'جديد',confirmed:'مؤكد',preparing:'قيد التجهيز',out_for_delivery:'خرج للتوصيل',completed:'مكتمل',cancelled:'ملغي'};function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function showLegacy(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on')}
 async function init(){const {data:{session}}=await db.auth.getSession();me=session?.user||null;if(!me){gate.textContent='يجب تسجيل الدخول';return}let a=null,isAdmin=false;try{const r=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',me.id).maybeSingle();a=r.data||null}catch(_e){}isAdmin=!!a?.is_active;isSuper=!!(a?.is_active&&a?.is_super_admin);try{const r=await db.rpc('is_app_admin');if(!r.error)isAdmin=isAdmin||!!r.data}catch(_e){}try{const r=await db.rpc('is_admin');if(!r.error)isAdmin=isAdmin||!!r.data}catch(_e){}try{const r=await db.rpc('is_super_admin');if(!r.error){isSuper=isSuper||!!r.data;isAdmin=isAdmin||!!r.data}}catch(_e){}if(me.id===PRINCIPAL_SUPER_ADMIN_UID){isSuper=true;isAdmin=true}try{const r=await db.rpc('can_manage_shop_delete');if(!r.error){canManageShop=!!r.data;isAdmin=isAdmin||canManageShop}}catch(_e){}if(!isAdmin){gate.innerHTML='لا تملك صلاحية الإدارة.<br><small>إذا كان هذا حساب الأدمن الرئيسي، شغّل ملف SUPER-ADMIN-SHOP-PERMISSION-FIX.sql مرة واحدة في Supabase.</small>';return}if(isSuper)allowed=Object.keys(SECTIONS);else{const {data:p,error}=await db.from('shop_admin_permissions').select('section_key').eq('admin_user_id',me.id).eq('can_manage',true);if(error){gate.textContent='تعذر تحميل صلاحيات التسوق: '+error.message;return}allowed=(p||[]).map(x=>x.section_key)}if(!allowed.length){gate.textContent='حسابك أدمن، لكن لم يتم منحك أي مربع داخل تسوق الآن.';return}gate.textContent=isSuper?'Super Admin — إضافة وتعديل وحذف في جميع مربعات التسوق':'الصلاحية: '+allowed.map(x=>SECTIONS[x]||x).join('، ');panel.style.display='block';businessSection.innerHTML=allowed.map(k=>`<option value="${k}">${esc(SECTIONS[k]||k)}</option>`).join('');businessImage.addEventListener('change',()=>{const f=businessImage.files?.[0];if(!f){preview.style.display='none';return}preview.src=URL.createObjectURL(f);preview.style.display='block'});await loadBusinesses();if(isSuper||canManageShop){superOnly.style.display='block';const {data:c}=await db.from('product_categories').select('id,name').order('sort_order');cat.innerHTML=(c||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');await loadProducts();if(isSuper)await Promise.all([loadOrders(),loadCoupons()])}}
-function clearBusinessForm(){businessName.value=businessLocation.value=businessDesc.value=businessMap.value=businessPage.value='';businessImage.value='';preview.style.display='none';businessStatus.textContent=''}
+function clearBusinessForm(){
+  editingBusinessId=null;
+  businessName.value=businessLocation.value=businessDesc.value=businessMap.value=businessPage.value='';
+  businessImage.value='';
+  preview.style.display='none';
+  businessStatus.textContent='';
+  businessPicker.reset();
+}
 async function uploadImage(section){const f=businessImage.files?.[0];if(!f)return null;if(f.size>6*1024*1024)throw new Error('حجم الصورة يجب أن يكون أقل من 6MB');const ext=(f.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${section}/${me.id}-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await db.storage.from('shop-images').upload(path,f,{cacheControl:'3600',upsert:false});if(error)throw error;return db.storage.from('shop-images').getPublicUrl(path).data.publicUrl}
-async function addBusiness(){const section=businessSection.value,n=businessName.value.trim(),loc=businessLocation.value.trim();if(!allowed.includes(section)||!n||!loc)return alert('اختر القسم واكتب الاسم والموقع');businessStatus.textContent='جاري الحفظ...';try{const imageUrl=await uploadImage(section);const {error}=await db.from('shop_businesses').insert({section_key:section,name:n,location_text:loc,description:businessDesc.value.trim()||null,map_url:businessMap.value.trim()||null,page_url:businessPage.value.trim()||null,image_url:imageUrl,created_by:me.id});if(error)throw error;clearBusinessForm();businessStatus.textContent='تمت الإضافة.';await loadBusinesses()}catch(e){businessStatus.textContent='تعذر الحفظ: '+(e.message||e)}}
+async function addBusiness(){
+  const section=businessSection.value,n=businessName.value.trim(),loc=businessPicker.getValue();
+  if(!allowed.includes(section)||!n)return alert('اختر القسم واكتب الاسم');
+  if(!loc.governorate||!loc.area||!loc.address)return alert('اختر المحافظة واكتب القضاء/الناحية/الحي والعنوان');
+  if(loc.lat==null||loc.lng==null)return alert('حدد الموقع من الخريطة أو استخدم دبوس الموقع الحالي');
+
+  businessStatus.textContent='جاري الحفظ...';
+  try{
+    const payload={
+      section_key:section,
+      name:n,
+      location_text:loc.location_text,
+      description:businessDesc.value.trim()||null,
+      map_url:loc.map_url,
+      lat:loc.lat,
+      lng:loc.lng,
+      page_url:businessPage.value.trim()||null,
+      created_by:me.id
+    };
+    const imageUrl=await uploadImage(section);
+    if(imageUrl)payload.image_url=imageUrl;
+
+    let q=editingBusinessId
+      ? db.from('shop_businesses').update({...payload,updated_at:new Date().toISOString()}).eq('id',editingBusinessId)
+      : db.from('shop_businesses').insert(payload);
+
+    const {error}=await q;
+    if(error)throw error;
+    clearBusinessForm();
+    businessStatus.textContent=editingBusinessId?'تم التعديل.':'تمت الإضافة.';
+    await loadBusinesses();
+  }catch(e){
+    businessStatus.textContent='تعذر الحفظ: '+(e.message||e);
+  }
+}
 async function loadBusinesses(){const {data,error}=await db.from('shop_businesses').select('*').in('section_key',allowed).order('created_at',{ascending:false});if(error){businesses.textContent=error.message;return}businesses.innerHTML=(data||[]).map(x=>`<div class="card"><div class="row"><strong>${esc(x.name)}</strong><span class="badge">${esc(SECTIONS[x.section_key]||x.section_key)}</span></div><div class="muted">📍 ${esc(x.location_text||'')}<br>${esc(x.description||'')}</div>${x.image_url?`<img src="${esc(x.image_url)}" style="width:110px;height:80px;object-fit:cover;border-radius:10px;margin-top:8px">`:''}<div class="row" style="margin-top:10px"><button class="light" onclick="editBusiness(${x.id})">تعديل</button><button class="${x.is_active?'danger':'btn'}" onclick="toggleBusiness(${x.id},${!x.is_active})">${x.is_active?'إيقاف':'تفعيل'}</button><button class="danger" onclick="deleteBusiness(${x.id})">حذف</button></div></div>`).join('')||'<div class="card">لا توجد إضافات حالياً.</div>'}
-async function editBusiness(id){const {data:x,error}=await db.from('shop_businesses').select('*').eq('id',id).maybeSingle();if(error||!x||!allowed.includes(x.section_key))return alert('تعذر فتح العنصر');const n=prompt('الاسم:',x.name);if(n===null||!n.trim())return;const l=prompt('الموقع:',x.location_text||'');if(l===null||!l.trim())return;const d=prompt('الوصف:',x.description||'');if(d===null)return;const {error:e}=await db.from('shop_businesses').update({name:n.trim(),location_text:l.trim(),description:d.trim()||null,updated_at:new Date().toISOString()}).eq('id',id);if(e)alert(e.message);else loadBusinesses()}
+async function editBusiness(id){
+  const {data:x,error}=await db.from('shop_businesses').select('*').eq('id',id).maybeSingle();
+  if(error||!x||!allowed.includes(x.section_key))return alert('تعذر فتح العنصر');
+
+  editingBusinessId=id;
+  businessSection.value=x.section_key;
+  businessName.value=x.name||'';
+  businessDesc.value=x.description||'';
+  businessPage.value=x.page_url||'';
+
+  const old=HA_LocationPicker.splitLocation(x.location_text||'');
+  businessPicker.setValue({...old,lat:x.lat,lng:x.lng});
+  businessStatus.textContent='✏️ وضع التعديل: عدّل البيانات واضغط إضافة/حفظ.';
+  scrollTo({top:0,behavior:'smooth'});
+}
 async function toggleBusiness(id,v){const {error}=await db.from('shop_businesses').update({is_active:v,updated_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);else loadBusinesses()}
 async function deleteBusiness(id){if(!confirm('⚠️ حذف المتجر نهائياً؟ سيتم حذف منتجاته أيضاً.'))return;const typed=prompt('للتأكيد اكتب كلمة: حذف');if(typed!=='حذف')return;const {error}=await db.rpc('delete_shop_business',{p_business_id:id});if(error)alert('تعذر الحذف: '+error.message);else loadBusinesses()}
 async function addProduct(){if(!(isSuper||canManageShop))return;const n=name.value.trim(),pr=Number(price.value),stck=Number(stock.value),dp=discountPrice.value===''?null:Number(discountPrice.value),mq=Math.max(1,Number(minQty.value||1));if(!n||!Number.isFinite(pr)||pr<0||!Number.isInteger(stck)||stck<0||!Number.isInteger(mq)){alert('تحقق من الاسم والسعر والمخزون');return}const opts=options.value.split(',').map(x=>x.trim()).filter(Boolean);const {error}=await db.from('products').insert({category_id:Number(cat.value),name:n,description:desc.value.trim()||null,specifications:specifications.value.trim()||null,price:pr,discount_price:dp,stock:stck,min_order_qty:mq,options_json:opts,image_url:image.value.trim()||null,sku:sku.value.trim()||null});if(error)alert(error.message);else{name.value=desc.value=specifications.value=price.value=discountPrice.value=stock.value=image.value=sku.value=options.value='';minQty.value='1';loadProducts()}}

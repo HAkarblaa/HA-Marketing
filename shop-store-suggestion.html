@@ -26,7 +26,10 @@ textarea{min-height:120px;resize:vertical}
 .badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eaf7f2;color:#087a5a;font-size:12px;font-weight:800}
 small{color:#7d8997}
 </style>
-</head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="ha-location-picker.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="ha-location-picker.js"></script></head>
 <body>
 <div class="wrap">
   <div class="top">
@@ -45,8 +48,21 @@ small{color:#7d8997}
     <label for="storeName">اسم المتجر</label>
     <input id="storeName" maxlength="120" placeholder="مثال: متجر HA للأجهزة">
 
-    <label for="storeLocation">الموقع / العنوان</label>
-    <input id="storeLocation" maxlength="240" placeholder="المحافظة، المنطقة أو العنوان">
+    <label>موقع المتجر</label>
+    <div class="ha-location-box">
+      <div class="ha-location-grid">
+        <select id="suggestGovernorate"><option value="">اختر المحافظة</option></select>
+        <input id="suggestArea" maxlength="160" placeholder="القضاء / الناحية / الحي">
+        <input id="storeLocation" class="full" maxlength="240" placeholder="العنوان التفصيلي">
+      </div>
+      <input id="suggestLat" type="hidden"><input id="suggestLng" type="hidden">
+      <div class="ha-location-actions">
+        <button id="suggestMapBtn" class="light" type="button">🗺️ اختيار العنوان من الخريطة</button>
+        <button id="suggestGpsBtn" class="light" type="button">📍 استخدام دبوس الموقع الحالي</button>
+      </div>
+      <div id="suggestLocationStatus" class="ha-location-status">حدد الموقع من الخريطة أو استخدم دبوس الموقع الحالي.</div>
+      <div id="suggestMap" class="ha-location-map"></div>
+    </div>
 
     <label for="storeLink">رابط المتجر أو صفحته (اختياري)</label>
     <input id="storeLink" maxlength="500" placeholder="https://...">
@@ -71,6 +87,12 @@ const db=supabase.createClient(
   {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
 );
 
+const suggestionPicker=HA_LocationPicker.attach({
+  governorate:'#suggestGovernorate',area:'#suggestArea',address:'#storeLocation',
+  lat:'#suggestLat',lng:'#suggestLng',map:'#suggestMap',
+  mapButton:'#suggestMapBtn',gpsButton:'#suggestGpsBtn',status:'#suggestLocationStatus'
+});
+
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[c]));
@@ -89,17 +111,21 @@ async function init(){
 
 sendBtn.onclick=async()=>{
   const name=storeName.value.trim();
-  const locationText=storeLocation.value.trim();
+  const loc=suggestionPicker.getValue();
   const link=storeLink.value.trim();
   const details=storeDetails.value.trim();
 
   if(name.length<2)return alert('اكتب اسم المتجر');
-  if(locationText.length<2)return alert('اكتب موقع أو عنوان المتجر');
+  if(!loc.governorate||!loc.area||!loc.address)return alert('اختر المحافظة واكتب القضاء/الناحية/الحي والعنوان');
+  if(loc.lat==null||loc.lng==null)return alert('حدد موقع المتجر من الخريطة أو استخدم دبوس الموقع الحالي');
 
   const message=[
     '[اقتراح متجر]',
     'اسم المتجر: '+name,
-    'الموقع / العنوان: '+locationText,
+    'المحافظة: '+loc.governorate,
+    'القضاء / الناحية / الحي: '+loc.area,
+    'العنوان: '+loc.address,
+    'الإحداثيات: '+loc.lat+','+loc.lng,
     link?'الرابط: '+link:'',
     details?'التفاصيل: '+details:''
   ].filter(Boolean).join('\n');
@@ -116,7 +142,7 @@ sendBtn.onclick=async()=>{
   }
 
   storeName.value='';
-  storeLocation.value='';
+  suggestionPicker.reset();
   storeLink.value='';
   storeDetails.value='';
   status.textContent='✅ تم إرسال اقتراح المتجر إلى الأدمن الرئيسي.';

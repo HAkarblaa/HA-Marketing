@@ -1,0 +1,11 @@
+.ha-location-box{margin:10px 0;padding:14px;border:1px solid #d8e5e1;border-radius:16px;background:#f8fcfb}
+.ha-location-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ha-location-grid .full{grid-column:1/-1}
+.ha-location-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.ha-location-actions button{flex:1;min-width:170px}
+.ha-location-map{display:none;height:330px;border-radius:15px;overflow:hidden;border:1px solid #d3dfdc;margin-top:10px;background:#eef5f2;z-index:1}
+.ha-location-map.show{display:block}
+.ha-location-status{font-size:12px;color:#657483;line-height:1.7;margin-top:7px}
+.ha-location-status.ok{color:#087d5b;font-weight:700}
+.ha-location-status.bad{color:#b42318;font-weight:700}
+@media(max-width:620px){.ha-location-grid{grid-template-columns:1fr}.ha-location-grid .full{grid-column:auto}.ha-location-map{height:290px}}
