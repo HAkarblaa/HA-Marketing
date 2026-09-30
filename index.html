@@ -43,8 +43,7 @@ body.ha-shortcuts-open{overflow:hidden}
 @media(max-width:600px){
   .ha-menu-btn{width:40px;height:40px;border-radius:12px;font-size:20px}
 }
-</style><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1">
-<style id="ha-home-premium-icons-style">
+</style><style id="ha-home-premium-icons-style">
 .ha-cat .ico{
   width:62px!important;height:62px!important;
   display:grid!important;place-items:center!important;
@@ -62,7 +61,40 @@ body.ha-shortcuts-open{overflow:hidden}
   .ha-bottom .nicon,.ha-bottom .nicon img,.ha-bottom .nicon svg{width:25px;height:25px}
 }
 </style>
-</head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
+<style id="ha-home-icons-final-fix">
+.ha-cat .ico{
+  width:66px!important;height:66px!important;
+  display:grid!important;place-items:center!important;
+  margin:0 auto 9px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  filter:none!important;
+}
+.ha-cat .ico .ha-home-icon-img{
+  width:66px!important;height:66px!important;
+  display:block!important;object-fit:contain!important;
+  opacity:1!important;visibility:visible!important;
+  filter:drop-shadow(0 7px 9px rgba(20,52,75,.18))!important;
+}
+.ha-feature .fart .ha-home-icon-img{
+  width:76px!important;height:76px!important;
+  display:block!important;object-fit:contain!important;opacity:1!important;
+  filter:drop-shadow(0 8px 11px rgba(20,52,75,.16))!important;
+}
+.ha-bottom .nicon .ha-home-icon-img{
+  width:29px!important;height:29px!important;
+  display:block!important;object-fit:contain!important;opacity:1!important;
+  filter:none!important;
+}
+@media(max-width:600px){
+  .ha-cat .ico,.ha-cat .ico .ha-home-icon-img{width:58px!important;height:58px!important}
+  .ha-feature .fart .ha-home-icon-img{width:66px!important;height:66px!important}
+  .ha-bottom .nicon .ha-home-icon-img{width:26px!important;height:26px!important}
+}
+</style></head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
 <aside class="ha-shortcuts-drawer" id="haShortcutsDrawer" aria-label="اختصارات HA Marketing">
   <div class="ha-shortcuts-head">
     <div class="ha-shortcuts-title">
@@ -98,312 +130,12 @@ body.ha-shortcuts-open{overflow:hidden}
     <div class="ha-bell">🔔</div><button class="ha-menu-btn" id="haShortcutsOpen" type="button" aria-label="الاختصارات">☰</button>
   </div>
 </header>
-<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#0cc7bd"/>
-    <stop offset="1" stop-color="#0754c8"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M34 49h10l7 30h42l9-25H49" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="59" cy="91" r="7" fill="url(#gold)"/><circle cx="88" cy="91" r="7" fill="url(#gold)"/>
-<path d="M45 38h14" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
-
-</svg></span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#12b9ff"/>
-    <stop offset="1" stop-color="#1b55d9"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M76 34a20 20 0 0 0-18 28L34 86a10 10 0 0 0 14 14l24-24a20 20 0 0 0 28-18l-14 9-14-14 9-14a20 20 0 0 0-5-5Z" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
-<circle cx="42" cy="92" r="5" fill="url(#gold)"/>
-
-</svg></span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#1a56db"/>
-    <stop offset="1" stop-color="#0b84ff"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M24 55 64 35l40 20-40 20L24 55Z" fill="#fff"/>
-<path d="M40 64v18c13 11 35 11 48 0V64" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linejoin="round"/>
-<path d="M101 58v25" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-<circle cx="101" cy="88" r="5" fill="url(#gold)"/>
-
-</svg></span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ffb11a"/>
-    <stop offset="1" stop-color="#f05a19"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M31 74h66l-7-24a10 10 0 0 0-10-7H49a10 10 0 0 0-10 7l-8 24Z" fill="#fff"/>
-<path d="M38 73h53v13H38Z" fill="url(#gold)"/>
-<circle cx="45" cy="88" r="8" fill="#10233f"/><circle cx="85" cy="88" r="8" fill="#10233f"/>
-<path d="M45 58h39" stroke="#0b6fc7" stroke-width="7" stroke-linecap="round"/>
-
-</svg></span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#18c985"/>
-    <stop offset="1" stop-color="#08795c"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M64 29a28 28 0 0 0-17 50c6 5 7 9 7 13h20c0-4 1-8 7-13a28 28 0 0 0-17-50Z" fill="#fff"/>
-<path d="M56 99h16M58 108h12" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
-<path d="M64 40v20M54 52h20" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
-
-</svg></span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#8d28e8"/>
-    <stop offset="1" stop-color="#4b159c"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M40 54h48a18 18 0 0 1 17 24l-7 20a9 9 0 0 1-15 3L73 90H55l-10 11a9 9 0 0 1-15-3l-7-20a18 18 0 0 1 17-24Z" fill="#fff"/>
-<path d="M43 68v16M35 76h16" stroke="#5f22bd" stroke-width="6" stroke-linecap="round"/>
-<circle cx="84" cy="72" r="5" fill="url(#gold)"/><circle cx="94" cy="82" r="5" fill="url(#gold)"/>
-
-</svg></span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#10a8ee"/>
-    <stop offset="1" stop-color="#1d60cf"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M42 72 64 52l22 20v26H42V72Z" fill="#fff"/>
-<path d="M36 74 64 47l28 27" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M58 98V80h13v18" fill="#20a8db"/>
-<path d="M77 38a15 15 0 0 0-14 20l-14 14 10 10 14-14a15 15 0 0 0 18-19l-10 7-8-8 4-10Z" fill="#fff" opacity=".9"/>
-
-</svg></div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#15bf8a"/>
-    <stop offset="1" stop-color="#08745b"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M32 50h64l-5-14H37l-5 14Z" fill="url(#gold)"/>
-<path d="M36 50v49h56V50" fill="#fff"/>
-<path d="M29 50c0 8 7 14 15 14s15-6 15-14c0 8 6 14 14 14s15-6 15-14c0 8 5 14 13 14" fill="none" stroke="#0c9b72" stroke-width="7" stroke-linecap="round"/>
-<path d="M48 99V78h16v21M72 75h12v12H72z" fill="#16b98a"/>
-
-</svg></div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
-<a class="ha-nav active" href="index.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#16bd8b"/>
-    <stop offset="1" stop-color="#08735b"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M28 62 64 32l36 30v36H76V74H52v24H28V62Z" fill="#fff"/>
-<path d="M23 64 64 29l41 35" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-
-</svg></span><span>الرئيسية</span></a>
-<a class="ha-nav " href="orders-center.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#11afd9"/>
-    <stop offset="1" stop-color="#0867c7"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M36 39h56l-4 62H40l-4-62Z" fill="#fff"/>
-<path d="M49 45a15 15 0 0 1 30 0" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round"/>
-<path d="M49 65h30M49 79h24" stroke="#0c78c8" stroke-width="6" stroke-linecap="round"/>
-
-</svg></span><span>طلباتي</span></a>
-<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ffb41d"/>
-    <stop offset="1" stop-color="#f27b0c"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M64 29c-15 0-25 11-25 26v15c0 8-4 13-10 18h70c-6-5-10-10-10-18V55c0-15-10-26-25-26Z" fill="#fff"/>
-<path d="M54 94c3 9 17 9 20 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
-<circle cx="92" cy="37" r="9" fill="#ef4058"/>
-
-</svg></span><span>الإشعارات</span></a>
-<a class="ha-nav " href="chat.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#8a35df"/>
-    <stop offset="1" stop-color="#4b189c"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<path d="M31 38h66v45H59L43 96V83H31V38Z" fill="#fff"/>
-<circle cx="49" cy="61" r="5" fill="#6b28c9"/><circle cx="64" cy="61" r="5" fill="#6b28c9"/><circle cx="79" cy="61" r="5" fill="#6b28c9"/>
-
-</svg></span><span>المحادثات</span></a>
-<a class="ha-nav " href="account.html"><span class="nicon"><svg class="ha-inline-home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#126bd4"/>
-    <stop offset="1" stop-color="#093c8f"/>
-  </linearGradient>
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#fff0a8"/>
-    <stop offset=".45" stop-color="#f7c84b"/>
-    <stop offset="1" stop-color="#cf8e08"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
-  </filter>
-</defs>
-<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" filter="url(#shadow)"/>
-<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
-<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
-
-<circle cx="64" cy="49" r="18" fill="#fff"/>
-<path d="M32 99c4-20 17-30 32-30s28 10 32 30" fill="#fff"/>
-<path d="M38 99h52" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
-
-</svg></span><span>حسابي</span></a>
+<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwY2M3YmQiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA3NTRjOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzEiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzEiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMSkiIGZpbHRlcj0idXJsKCNzaGFkb3dfMSkiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik0zNCA0OWgxMGw3IDMwaDQybDktMjVINDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPGNpcmNsZSBjeD0iNTkiIGN5PSI5MSIgcj0iNyIgZmlsbD0idXJsKCNnb2xkXzEpIi8+PGNpcmNsZSBjeD0iODgiIGN5PSI5MSIgcj0iNyIgZmlsbD0idXJsKCNnb2xkXzEpIi8+CjxwYXRoIGQ9Ik00NSAzOGgxNCIgc3Ryb2tlPSJ1cmwoI2dvbGRfMSkiIHN0cm9rZS13aWR0aD0iOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cgo8L3N2Zz4=" alt=""></span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18yIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMmI5ZmYiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzFiNTVkOSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzIiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzIiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMikiIGZpbHRlcj0idXJsKCNzaGFkb3dfMikiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik03NiAzNGEyMCAyMCAwIDAgMC0xOCAyOEwzNCA4NmExMCAxMCAwIDAgMCAxNCAxNGwyNC0yNGEyMCAyMCAwIDAgMCAyOC0xOGwtMTQgOS0xNC0xNCA5LTE0YTIwIDIwIDAgMCAwLTUtNVoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxjaXJjbGUgY3g9IjQyIiBjeT0iOTIiIHI9IjUiIGZpbGw9InVybCgjZ29sZF8yKSIvPgoKPC9zdmc+" alt=""></span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18zIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxYTU2ZGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBiODRmZiIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzMiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzMiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMykiIGZpbHRlcj0idXJsKCNzaGFkb3dfMykiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik0yNCA1NSA2NCAzNWw0MCAyMC00MCAyMEwyNCA1NVoiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTQwIDY0djE4YzEzIDExIDM1IDExIDQ4IDBWNjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNnb2xkXzMpIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTEwMSA1OHYyNSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSIxMDEiIGN5PSI4OCIgcj0iNSIgZmlsbD0idXJsKCNnb2xkXzMpIi8+Cgo8L3N2Zz4=" alt=""></span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ180IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmIxMWEiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2YwNWExOSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzQiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzQiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfNCkiIGZpbHRlcj0idXJsKCNzaGFkb3dfNCkiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik0zMSA3NGg2NmwtNy0yNGExMCAxMCAwIDAgMC0xMC03SDQ5YTEwIDEwIDAgMCAwLTEwIDdsLTggMjRaIiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik0zOCA3M2g1M3YxM0gzOFoiIGZpbGw9InVybCgjZ29sZF80KSIvPgo8Y2lyY2xlIGN4PSI0NSIgY3k9Ijg4IiByPSI4IiBmaWxsPSIjMTAyMzNmIi8+PGNpcmNsZSBjeD0iODUiIGN5PSI4OCIgcj0iOCIgZmlsbD0iIzEwMjMzZiIvPgo8cGF0aCBkPSJNNDUgNThoMzkiIHN0cm9rZT0iIzBiNmZjNyIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KCjwvc3ZnPg==" alt=""></span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ181IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxOGM5ODUiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA4Nzk1YyIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzUiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzUiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfNSkiIGZpbHRlcj0idXJsKCNzaGFkb3dfNSkiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik02NCAyOWEyOCAyOCAwIDAgMC0xNyA1MGM2IDUgNyA5IDcgMTNoMjBjMC00IDEtOCA3LTEzYTI4IDI4IDAgMCAwLTE3LTUwWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNTYgOTloMTZNNTggMTA4aDEyIiBzdHJva2U9InVybCgjZ29sZF81KSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTY0IDQwdjIwTTU0IDUyaDIwIiBzdHJva2U9InVybCgjZ29sZF81KSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KCjwvc3ZnPg==" alt=""></span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ182IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM4ZDI4ZTgiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzRiMTU5YyIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzYiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzYiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfNikiIGZpbHRlcj0idXJsKCNzaGFkb3dfNikiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik00MCA1NGg0OGExOCAxOCAwIDAgMSAxNyAyNGwtNyAyMGE5IDkgMCAwIDEtMTUgM0w3MyA5MEg1NWwtMTAgMTFhOSA5IDAgMCAxLTE1LTNsLTctMjBhMTggMTggMCAwIDEgMTctMjRaIiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik00MyA2OHYxNk0zNSA3NmgxNiIgc3Ryb2tlPSIjNWYyMmJkIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI4NCIgY3k9IjcyIiByPSI1IiBmaWxsPSJ1cmwoI2dvbGRfNikiLz48Y2lyY2xlIGN4PSI5NCIgY3k9IjgyIiByPSI1IiBmaWxsPSJ1cmwoI2dvbGRfNikiLz4KCjwvc3ZnPg==" alt=""></span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ183IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMGE4ZWUiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzFkNjBjZiIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzciIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfNykiIGZpbHRlcj0idXJsKCNzaGFkb3dfNykiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik00MiA3MiA2NCA1MmwyMiAyMHYyNkg0MlY3MloiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTM2IDc0IDY0IDQ3bDI4IDI3IiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZF83KSIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTU4IDk4VjgwaDEzdjE4IiBmaWxsPSIjMjBhOGRiIi8+CjxwYXRoIGQ9Ik03NyAzOGExNSAxNSAwIDAgMC0xNCAyMGwtMTQgMTQgMTAgMTAgMTQtMTRhMTUgMTUgMCAwIDAgMTgtMTlsLTEwIDctOC04IDQtMTBaIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuOSIvPgoKPC9zdmc+" alt=""></div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ184IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxNWJmOGEiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA4NzQ1YiIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzgiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzgiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfOCkiIGZpbHRlcj0idXJsKCNzaGFkb3dfOCkiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik0zMiA1MGg2NGwtNS0xNEgzN2wtNSAxNFoiIGZpbGw9InVybCgjZ29sZF84KSIvPgo8cGF0aCBkPSJNMzYgNTB2NDloNTZWNTAiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTI5IDUwYzAgOCA3IDE0IDE1IDE0czE1LTYgMTUtMTRjMCA4IDYgMTQgMTQgMTRzMTUtNiAxNS0xNGMwIDggNSAxNCAxMyAxNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGM5YjcyIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNNDggOTlWNzhoMTZ2MjFNNzIgNzVoMTJ2MTJINzJ6IiBmaWxsPSIjMTZiOThhIi8+Cgo8L3N2Zz4=" alt=""></div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
+<a class="ha-nav active" href="index.html"><span class="nicon"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ185IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxNmJkOGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA4NzM1YiIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkXzkiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmN2M4NGIiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2NmOGUwOCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGZpbHRlciBpZD0ic2hhZG93XzkiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfOSkiIGZpbHRlcj0idXJsKCNzaGFkb3dfOSkiLz4KPHBhdGggZD0iTTI0IDI5QzQxIDE0IDgzIDEwIDEwNiAyOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjIyIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSI5NSIgY3k9IjMxIiByPSI4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTMiLz4KCjxwYXRoIGQ9Ik0yOCA2MiA2NCAzMmwzNiAzMHYzNkg3NlY3NEg1MnYyNEgyOFY2MloiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTIzIDY0IDY0IDI5bDQxIDM1IiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZ29sZF85KSIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCjwvc3ZnPg==" alt=""></span><span>الرئيسية</span></a>
+<a class="ha-nav " href="orders-center.html"><span class="nicon"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMTFhZmQ5Ii8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwODY3YzciLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTAiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTApIiBmaWx0ZXI9InVybCgjc2hhZG93XzEwKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPHBhdGggZD0iTTM2IDM5aDU2bC00IDYySDQwbC00LTYyWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNDkgNDVhMTUgMTUgMCAwIDEgMzAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dvbGRfMTApIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNNDkgNjVoMzBNNDkgNzloMjQiIHN0cm9rZT0iIzBjNzhjOCIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KCjwvc3ZnPg==" alt=""></span><span>طلباتي</span></a>
+<a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZiNDFkIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmMjdiMGMiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTEiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTEpIiBmaWx0ZXI9InVybCgjc2hhZG93XzExKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPHBhdGggZD0iTTY0IDI5Yy0xNSAwLTI1IDExLTI1IDI2djE1YzAgOC00IDEzLTEwIDE4aDcwYy02LTUtMTAtMTAtMTAtMThWNTVjMC0xNS0xMC0yNi0yNS0yNloiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTU0IDk0YzMgOSAxNyA5IDIwIDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iOTIiIGN5PSIzNyIgcj0iOSIgZmlsbD0iI2VmNDA1OCIvPgoKPC9zdmc+" alt=""></span><span>الإشعارات</span></a>
+<a class="ha-nav " href="chat.html"><span class="nicon"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjOGEzNWRmIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM0YjE4OWMiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTIiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTIpIiBmaWx0ZXI9InVybCgjc2hhZG93XzEyKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPHBhdGggZD0iTTMxIDM4aDY2djQ1SDU5TDQzIDk2VjgzSDMxVjM4WiIgZmlsbD0iI2ZmZiIvPgo8Y2lyY2xlIGN4PSI0OSIgY3k9IjYxIiByPSI1IiBmaWxsPSIjNmIyOGM5Ii8+PGNpcmNsZSBjeD0iNjQiIGN5PSI2MSIgcj0iNSIgZmlsbD0iIzZiMjhjOSIvPjxjaXJjbGUgY3g9Ijc5IiBjeT0iNjEiIHI9IjUiIGZpbGw9IiM2YjI4YzkiLz4KCjwvc3ZnPg==" alt=""></span><span>المحادثات</span></a>
+<a class="ha-nav " href="account.html"><span class="nicon"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMTI2YmQ0Ii8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwOTNjOGYiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTMiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTMpIiBmaWx0ZXI9InVybCgjc2hhZG93XzEzKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPGNpcmNsZSBjeD0iNjQiIGN5PSI0OSIgcj0iMTgiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTMyIDk5YzQtMjAgMTctMzAgMzItMzBzMjggMTAgMzIgMzAiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTM4IDk5aDUyIiBzdHJva2U9InVybCgjZ29sZF8xMykiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cgo8L3N2Zz4=" alt=""></span><span>حسابي</span></a>
 </div></nav><script src="ha-modern-green.js?v=20260927-freezefix1"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20260927-1"></script><script id="ha-shortcuts-restore-script">
 (function(){
   const drawer=document.getElementById('haShortcutsDrawer');
@@ -449,4 +181,4 @@ body.ha-shortcuts-open{overflow:hidden}
   if(window.supabase)checkAdmin();
   else window.addEventListener('load',checkAdmin,{once:true});
 })();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script></body></html>
