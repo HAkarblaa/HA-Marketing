@@ -72,13 +72,14 @@ async function load(){
   list.innerHTML=(data||[]).map(x=>`
     <div class="card ${x.status==='new'?'new':''}">
       <div class="row">
-        <b>مقترح #${x.id}</b>
+        <b>${String(x.message||'').startsWith('[اقتراح متجر]')?'🏪 اقتراح متجر':'💡 مقترح'} #${x.id}</b>
         <span class="badge">${names[x.status]||esc(x.status)}</span>
       </div>
       <p style="line-height:1.9">${esc(x.message)}</p>
       <div class="muted">${new Date(x.created_at).toLocaleString('ar-IQ')}</div>
       ${x.admin_note?`<div class="muted">ملاحظة الإدارة: ${esc(x.admin_note)}</div>`:''}
       <div class="row" style="margin-top:10px">
+        ${String(x.message||'').startsWith('[اقتراح متجر]')?`<a class="btn" href="admin-shop.html">🏪 إضافة متجر</a>`:''}
         <button class="ok" onclick="review(${x.id},'reviewed')">تمت المراجعة</button>
         <button class="light" onclick="review(${x.id},'closed')">إغلاق</button>
       </div>
