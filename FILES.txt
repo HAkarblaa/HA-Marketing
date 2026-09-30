@@ -1,0 +1,8 @@
+ملفات التعديل فقط:
+ha-all-sections-premium.css
+shop.html
+services.html
+study.html
+taxi-delivery.html
+entertainment.html
+suggestions.html
