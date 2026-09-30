@@ -1,8 +1,82 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>الرئيسية - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-section-slider.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-engagement.css?v=20260927-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script></head><body><div class="ha-app"><header class="ha-header">
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>الرئيسية - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-section-slider.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-engagement.css?v=20260927-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><style id="ha-shortcuts-restore-style">
+.ha-menu-btn{
+  width:44px;height:44px;border:1px solid #dce9e5;border-radius:14px;
+  background:#fff;color:#0d6f53;font-size:22px;font-weight:900;cursor:pointer;
+  display:grid;place-items:center;box-shadow:0 7px 20px rgba(24,82,66,.08)
+}
+.ha-shortcuts-drawer{
+  position:fixed;top:0;right:-340px;width:min(86vw,330px);height:100dvh;
+  z-index:2147483000;background:#fff;border-left:1px solid #e1ebe7;
+  box-shadow:-18px 0 50px rgba(20,63,52,.16);
+  padding:18px 14px calc(95px + env(safe-area-inset-bottom));
+  transition:right .25s ease;overflow:auto
+}
+.ha-shortcuts-drawer.show{right:0}
+.ha-shortcuts-overlay{
+  position:fixed;inset:0;z-index:2147482999;background:rgba(12,35,29,.32);
+  backdrop-filter:blur(2px);display:none
+}
+.ha-shortcuts-overlay.show{display:block}
+.ha-shortcuts-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 4px 14px}
+.ha-shortcuts-title{display:flex;flex-direction:column;gap:2px}
+.ha-shortcuts-title strong{font-size:19px;color:#10253b}
+.ha-shortcuts-title small{font-size:11px;color:#76869a}
+.ha-shortcuts-close{
+  width:38px;height:38px;border:0;border-radius:12px;background:#eef7f3;
+  color:#087d5b;font-size:25px;cursor:pointer
+}
+.ha-shortcuts-list{display:grid;gap:8px}
+.ha-shortcuts-list a{
+  display:flex;align-items:center;gap:11px;min-height:52px;padding:10px 12px;
+  border:1px solid #e5eeeb;border-radius:15px;background:#fbfefd;
+  color:#17304a;text-decoration:none;font-weight:800;font-size:13px
+}
+.ha-shortcuts-list a:hover{background:#eef9f4;border-color:#cde6dc}
+.ha-shortcuts-list .ico{
+  width:34px;height:34px;border-radius:11px;background:#edf7f3;
+  display:grid;place-items:center;font-size:18px;flex:0 0 34px
+}
+.ha-shortcuts-sep{height:1px;background:#edf2f0;margin:7px 2px}
+.ha-admin-shortcut{display:none!important}
+html.ha-shortcuts-admin .ha-admin-shortcut{display:flex!important}
+body.ha-shortcuts-open{overflow:hidden}
+@media(max-width:600px){
+  .ha-menu-btn{width:40px;height:40px;border-radius:12px;font-size:20px}
+}
+</style></head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
+<aside class="ha-shortcuts-drawer" id="haShortcutsDrawer" aria-label="اختصارات HA Marketing">
+  <div class="ha-shortcuts-head">
+    <div class="ha-shortcuts-title">
+      <strong>HA Marketing</strong>
+      <small>اختصارات سريعة</small>
+    </div>
+    <button class="ha-shortcuts-close" id="haShortcutsClose" type="button" aria-label="إغلاق">×</button>
+  </div>
+
+  <div class="ha-shortcuts-list">
+    <a href="account.html"><span class="ico">👤</span><span>الحساب الشخصي</span></a>
+    <a href="notifications-center.html"><span class="ico">🔔</span><span>الإشعارات</span></a>
+    <a href="orders-center.html"><span class="ico">📦</span><span>طلباتي</span></a>
+    <a href="chat.html"><span class="ico">💬</span><span>المحادثات</span></a>
+
+    <div class="ha-shortcuts-sep"></div>
+
+    <a href="shop.html"><span class="ico">🛒</span><span>التسوق</span></a>
+    <a href="services.html"><span class="ico">🛠️</span><span>طلب خدمة</span></a>
+    <a href="study.html"><span class="ico">🎓</span><span>الدراسة</span></a>
+    <a href="taxi-delivery.html"><span class="ico">🚕</span><span>النقل والتكسي</span></a>
+    <a href="entertainment.html"><span class="ico">🎮</span><span>الترفيه والألعاب</span></a>
+
+    <div class="ha-shortcuts-sep"></div>
+
+    <a class="ha-admin-shortcut" href="admin-panel.html"><span class="ico">🛡️</span><span>لوحة الإدارة</span></a>
+    <a class="ha-admin-shortcut" href="admin-marketplace.html"><span class="ico">📥</span><span>طلبات الانضمام والصلاحيات</span></a>
+  </div>
+</aside><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
     <div class="ha-location" id="haLocation"><span class="pin">📍</span><div><b>موقعك الحالي</b><small>اضغط لتحديد موقعك</small></div></div>
-    <div class="ha-bell">🔔</div>
+    <div class="ha-bell">🔔</div><button class="ha-menu-btn" id="haShortcutsOpen" type="button" aria-label="الاختصارات">☰</button>
   </div>
 </header>
 <div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تفعل؟"><span class="mic">🎙</span></div></div><main class="ha-main"><div class="ha-section-head"><div class="ha-section-titlebox"><h1>اختر القسم الذي تحتاجه</h1><p>كل خدمات HA Marketing مرتبة بشكل سريع وواضح</p></div><a class="ha-more" href="#all">عرض الكل ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="التسوق" href="shop.html"><span class="ico">🛒</span><strong>التسوق</strong><small>منتجات وخدمات</small></a><a class="ha-cat pink" data-search="طلب خدمة" href="services.html"><span class="ico">⚙️</span><strong>طلب خدمة</strong><small>خدمات احترافية</small></a><a class="ha-cat blue" data-search="الدراسة" href="study.html"><span class="ico">🎓</span><strong>الدراسة</strong><small>دورات وكتب</small></a><a class="ha-cat yellow" data-search="طلب النقل والتكسي النقل تكسي" href="taxi-delivery.html"><span class="ico">🚕</span><strong>طلب النقل والتكسي</strong><small>حجوزات وتنقل</small></a><a class="ha-cat green" data-search="مقترحاتكم مقترحات" href="suggestions.html"><span class="ico">💡</span><strong>مقترحاتكم</strong><small>أرسل رأيك ومقترحك</small></a><a class="ha-cat green" data-search="الترفيه ألعاب فعاليات" href="entertainment.html"><span class="ico">🎬</span><strong>الترفيه</strong><small>ألعاب وفعاليات</small></a></div><section class="ha-smart-slider" data-ha-slider="home" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📍 الخدمات القريبة منك</h2><a class="ha-more" href="services.html">عرض المزيد ←</a></div><div class="ha-two"><a class="ha-feature blue" data-search="خدمات منزلية" href="services.html"><div class="ftext"><h4>خدمات منزلية</h4><p>صيانة وتنظيف ونقل</p><span class="ha-arrow">‹</span></div><div class="fart">🧑‍🔧</div></a><a class="ha-feature green" data-search="متاجر ومنتجات محلية" href="shop.html"><div class="ftext"><h4>متاجر ومنتجات محلية</h4><p>أفضل العروض القريبة منك</p><span class="ha-arrow">‹</span></div><div class="fart">🏪</div></a></div><div class="ha-section-head"><h2>🔥 الأكثر طلباً</h2><a class="ha-more" href="#">عرض المزيد ←</a></div><div class="ha-grid"><a class="ha-card" data-search="دورات دراسية" href="study.html"><span class="fav">♡</span><div class="ha-thumb yellow">🎓</div><div class="ha-card-body"><h5>دورات دراسية</h5><p>طوّر مهاراتك</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a><a class="ha-card" data-search="تصميم جرافيك" href="services.html"><span class="fav">♡</span><div class="ha-thumb pink">🎨</div><div class="ha-card-body"><h5>تصميم جرافيك</h5><p>إبداع بلا حدود</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a><a class="ha-card" data-search="خدمات تسويقية" href="services.html"><span class="fav">♡</span><div class="ha-thumb blue">💻</div><div class="ha-card-body"><h5>خدمات تسويقية</h5><p>لأعمالك التجارية</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a><a class="ha-card" data-search="منتجات مميزة" href="shop.html"><span class="fav">♡</span><div class="ha-thumb green">🛍️</div><div class="ha-card-body"><h5>منتجات مميزة</h5><p>أفضل العروض</p><div class="ha-meta"><span>استكشف</span><span>★ 4.8</span></div><span class="ha-action">فتح</span></div></a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
@@ -11,4 +85,49 @@
 <a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>
 <a class="ha-nav " href="chat.html"><span class="nicon">💬</span><span>المحادثات</span></a>
 <a class="ha-nav " href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>
-</div></nav><script src="ha-modern-green.js?v=20260927-freezefix1"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20260927-1"></script></body></html>
+</div></nav><script src="ha-modern-green.js?v=20260927-freezefix1"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20260927-1"></script><script id="ha-shortcuts-restore-script">
+(function(){
+  const drawer=document.getElementById('haShortcutsDrawer');
+  const overlay=document.getElementById('haShortcutsOverlay');
+  const openBtn=document.getElementById('haShortcutsOpen');
+  const closeBtn=document.getElementById('haShortcutsClose');
+
+  function openMenu(){
+    drawer?.classList.add('show');
+    overlay?.classList.add('show');
+    document.body.classList.add('ha-shortcuts-open');
+  }
+
+  function closeMenu(){
+    drawer?.classList.remove('show');
+    overlay?.classList.remove('show');
+    document.body.classList.remove('ha-shortcuts-open');
+  }
+
+  openBtn?.addEventListener('click',openMenu);
+  closeBtn?.addEventListener('click',closeMenu);
+  overlay?.addEventListener('click',closeMenu);
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape')closeMenu();
+  });
+
+  async function checkAdmin(){
+    try{
+      if(!window.supabase)return;
+      const db=window.supabase.createClient(
+        'https://ubayrhtshgtgggxprrek.supabase.co',
+        'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+        {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+      );
+      const {data:{session}}=await db.auth.getSession();
+      if(!session)return;
+      const {data}=await db.rpc('is_super_admin');
+      if(data===true)document.documentElement.classList.add('ha-shortcuts-admin');
+    }catch(_e){}
+  }
+
+  if(window.supabase)checkAdmin();
+  else window.addEventListener('load',checkAdmin,{once:true});
+})();
+</script></body></html>
