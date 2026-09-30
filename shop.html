@@ -332,6 +332,128 @@ body.ha-all-sections-layout .ha-shop-extra-card small{
 }
 </style>
 
+
+<style id="ha-shop-final-balanced-20261001">
+/* ===== الترتيب النهائي المتناسق: 4 مربعات بكل صف ===== */
+body.ha-all-sections-layout .ha-main{
+  max-width:1120px!important;
+  padding-bottom:120px!important;
+}
+body.ha-all-sections-layout .ha-shop-premium-cats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  direction:rtl!important;
+}
+body.ha-all-sections-layout .ha-shop-premium-cats > a{
+  width:100%!important;
+  height:275px!important;
+  min-height:275px!important;
+  max-height:275px!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  border-radius:22px!important;
+  box-sizing:border-box!important;
+}
+
+/* بطاقات الصور الخمس */
+body.ha-all-sections-layout .ha-shop-img-card{
+  background-position:center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+}
+
+/* الثلاث بطاقات الإضافية بنفس الحجم والشكل */
+body.ha-all-sections-layout .ha-shop-extra-card{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+  align-items:stretch!important;
+  padding:0!important;
+  overflow:hidden!important;
+  box-shadow:0 12px 26px rgba(18,58,82,.12)!important;
+}
+body.ha-all-sections-layout .ha-shop-extra-card .ico{
+  top:26px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:78px!important;
+  height:78px!important;
+  font-size:38px!important;
+  border-radius:22px!important;
+  box-shadow:0 10px 22px rgba(18,54,82,.16)!important;
+}
+body.ha-all-sections-layout .ha-shop-extra-card strong{
+  font-size:18px!important;
+  line-height:1.2!important;
+  padding:12px 14px 3px!important;
+  text-align:center!important;
+}
+body.ha-all-sections-layout .ha-shop-extra-card small{
+  font-size:11px!important;
+  line-height:1.35!important;
+  min-height:34px!important;
+  padding:0 14px 16px!important;
+  text-align:center!important;
+}
+body.ha-all-sections-layout .ha-shop-extra-card strong::after{
+  left:14px!important;
+  bottom:-28px!important;
+  width:36px!important;
+  height:36px!important;
+  font-size:25px!important;
+}
+
+/* توحيد الظل والحدود */
+body.ha-all-sections-layout .ha-shop-premium-cats > a{
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 12px 26px rgba(18,58,82,.12)!important;
+}
+body.ha-all-sections-layout .ha-shop-premium-cats > a:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:0 17px 32px rgba(18,58,82,.18)!important;
+}
+
+/* منع الشريط السفلي من تغطية الصف الأخير */
+body.ha-all-sections-layout .ha-cats{margin-bottom:36px!important;}
+body.ha-all-sections-layout #haRoleBottomNav{z-index:9999!important;}
+
+@media(max-width:1050px){
+  body.ha-all-sections-layout .ha-shop-premium-cats{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.ha-all-sections-layout .ha-shop-premium-cats > a{
+    height:260px!important;
+    min-height:260px!important;
+    max-height:260px!important;
+  }
+}
+@media(max-width:700px){
+  body.ha-all-sections-layout .ha-shop-premium-cats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  body.ha-all-sections-layout .ha-shop-premium-cats > a{
+    height:235px!important;
+    min-height:235px!important;
+    max-height:235px!important;
+    border-radius:18px!important;
+  }
+  body.ha-all-sections-layout .ha-shop-extra-card .ico{
+    top:20px!important;
+    width:66px!important;
+    height:66px!important;
+    font-size:32px!important;
+    border-radius:18px!important;
+  }
+  body.ha-all-sections-layout .ha-shop-extra-card strong{font-size:16px!important;}
+  body.ha-all-sections-layout .ha-shop-extra-card small{font-size:10px!important;}
+}
+</style>
+
 </head><body class="ha-premium-section-page ha-all-sections-layout"><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
