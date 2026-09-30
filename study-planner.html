@@ -9,7 +9,7 @@
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"></head><body>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head><body>
 <div class="wrap">
  <div class="top"><a href="study.html">← رجوع</a><h1>📅 الجدول الدراسي والتقويم</h1><a href="index.html">🏠</a></div>
  <div class="hero"><h2>نظّم أسبوعك ومواعيدك</h2><p>اكتب موادك لكل يوم من السبت إلى الخميس، 6 محاضرات يومياً. واضغط على أي يوم في التقويم لإضافة امتحان أو موعد أو ملاحظة.</p></div>
@@ -34,4 +34,4 @@ function renderEventList(){let a=events[selectedDate]||[];eventList.innerHTML=a.
 
 const TKEY='ha_study_tasks_v2';let studyTasks=JSON.parse(localStorage.getItem(TKEY)||'[]');function renderTasks(){let done=studyTasks.filter(x=>x.done).length;tasks.innerHTML=studyTasks.map(x=>`<div class=event><div><b>${esc(x.goal||'هدف دراسي')}</b><br><small>${esc(x.task)} • ${x.minutes} دقيقة</small></div><div><button onclick="toggleTask(${x.id})">${x.done?'↩️':'✅'}</button><button onclick="removeTask(${x.id})">حذف</button></div></div>`).join('')||'<p class=hint>أضف أهدافك وواجباتك لليوم.</p>';progress.textContent=studyTasks.length?`الإنجاز: ${done} من ${studyTasks.length} — ${Math.round(done/studyTasks.length*100)}%`:'لا توجد مهام بعد.'}function addTask(){if(!task.value.trim())return alert('اكتب المهمة');studyTasks.unshift({id:Date.now(),goal:goal.value.trim(),task:task.value.trim(),minutes:Number(minutes.value)||30,done:false});localStorage.setItem(TKEY,JSON.stringify(studyTasks));goal.value='';task.value='';renderTasks()}function toggleTask(id){let x=studyTasks.find(x=>x.id===id);if(x)x.done=!x.done;localStorage.setItem(TKEY,JSON.stringify(studyTasks));renderTasks()}function removeTask(id){studyTasks=studyTasks.filter(x=>x.id!==id);localStorage.setItem(TKEY,JSON.stringify(studyTasks));renderTasks()}
 buildSchedule();renderCalendar();renderTasks();
-</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
