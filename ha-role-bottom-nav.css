@@ -1,0 +1,95 @@
+:root{
+  --ha-rbn-bg:rgba(255,255,255,.97);
+  --ha-rbn-text:#52637a;
+  --ha-rbn-active:#07885f;
+  --ha-rbn-active-bg:#e4f6ef;
+  --ha-rbn-border:#dfeae6;
+}
+body.ha-role-bottom-active{
+  padding-bottom:calc(94px + env(safe-area-inset-bottom)) !important;
+}
+body.ha-role-bottom-active nav.ha-bottom:not(#haRoleBottomNav),
+body.ha-role-bottom-active nav.bottom:not(#haRoleBottomNav),
+body.ha-role-bottom-active nav.bottom-nav:not(#haRoleBottomNav){
+  display:none !important;
+}
+#haRoleBottomNav{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:0;
+  width:min(100%,950px);
+  z-index:2147482000;
+  padding:7px 10px max(7px,env(safe-area-inset-bottom));
+  background:var(--ha-rbn-bg);
+  border-top:1px solid var(--ha-rbn-border);
+  box-shadow:0 -10px 34px rgba(22,65,55,.12);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+#haRoleBottomNav .ha-rbn-inner{
+  min-height:62px;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  align-items:stretch;
+  gap:4px;
+}
+#haRoleBottomNav .ha-rbn-item{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  padding:6px 3px;
+  border-radius:17px;
+  color:var(--ha-rbn-text);
+  text-decoration:none;
+  font-family:Tahoma,Arial,sans-serif;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  transition:.18s ease;
+}
+#haRoleBottomNav .ha-rbn-item .ha-rbn-icon{
+  font-size:20px;
+  line-height:1;
+}
+#haRoleBottomNav .ha-rbn-item .ha-rbn-label{
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#haRoleBottomNav .ha-rbn-item.active{
+  color:var(--ha-rbn-active);
+  background:var(--ha-rbn-active-bg);
+}
+#haRoleBottomNav .ha-rbn-role{
+  position:absolute;
+  top:-17px;
+  left:50%;
+  transform:translateX(-50%);
+  max-width:80%;
+  height:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 10px;
+  border:1px solid var(--ha-rbn-border);
+  border-radius:999px;
+  background:#fff;
+  color:#64748b;
+  box-shadow:0 4px 12px rgba(20,40,50,.08);
+  font:700 9px Tahoma,Arial,sans-serif;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+@media(max-width:430px){
+  #haRoleBottomNav{padding-left:5px;padding-right:5px}
+  #haRoleBottomNav .ha-rbn-inner{gap:2px}
+  #haRoleBottomNav .ha-rbn-item{font-size:9px;padding-inline:1px;border-radius:14px}
+  #haRoleBottomNav .ha-rbn-item .ha-rbn-icon{font-size:18px}
+}

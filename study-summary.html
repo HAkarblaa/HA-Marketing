@@ -29,7 +29,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
 </style>
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"></head>
 <body>
 <div class="topbar">
   <button class="back" onclick="history.length>1?history.back():location.href='study.html'" aria-label="رجوع">→</button>
@@ -234,5 +234,5 @@ function downloadSummary(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ملخص-'+(selectedFile?selectedFile.name.replace(/\.[^.]+$/,''):'المادة')+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
 </script>
-</body>
+<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script></body>
 </html>

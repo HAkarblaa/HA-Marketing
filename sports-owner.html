@@ -21,7 +21,7 @@ input,select,textarea{width:100%;padding:11px;border-radius:11px;border:1px soli
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"></head>
 <body>
 <div class="w">
   <div class="top">
@@ -196,5 +196,5 @@ async function loadBookings(){
 async function setSt(id,status){const {error}=await db.from('sports_bookings').update({status,updated_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);else loadBookings()}
 init();
 </script>
-</body>
+<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script></body>
 </html>
