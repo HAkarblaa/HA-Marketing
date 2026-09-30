@@ -6,7 +6,7 @@
 .image-actions input{margin:0;flex:1;min-width:210px}
 .note{font-size:12px;color:#777;margin-top:6px}@media(max-width:720px){.card{padding:11px;font-size:13px}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card"><h2>متجري</h2><select id="section">
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
 <option value="markets">أسواق</option>
 <option value="restaurants">مطاعم</option>
 <option value="flowers">ورد</option>
@@ -33,7 +33,7 @@
 <img id="storeImagePreview" class="image-preview" alt="معاينة صورة المتجر">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="desc" placeholder="وصف المتجر"></textarea><div class="row" style="margin-top:8px"><button id="saveStoreBtn" type="button">حفظ المتجر</button><button id="deleteStoreBtn" type="button" class="danger" style="display:none">🗑️ حذف المتجر</button></div><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
+<textarea id="desc" placeholder="وصف المتجر"></textarea><div class="row" style="margin-top:8px"><button id="saveStoreBtn" type="button">حفظ المتجر</button><button id="deleteStoreBtn" type="button" class="danger" style="display:none">🗑️ حذف المتجر</button></div><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card" id="add-product" style="scroll-margin-top:20px"><h2>إضافة منتج</h2><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
 <label>صورة المنتج</label>
 <div class="image-actions">
   <input id="productImageFile" type="file" accept="image/*" capture="environment">
@@ -41,7 +41,7 @@
 <img id="productImagePreview" class="image-preview" alt="معاينة صورة المنتج">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card"><h2>منتجاتي</h2><div id="products">جاري التحميل...</div></div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card"><h2>منتجاتي</h2><div id="products">جاري التحميل...</div></div><div class="card" id="orders" style="scroll-margin-top:20px"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
