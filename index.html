@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>الرئيسية - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-section-slider.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-engagement.css?v=20260927-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><style id="ha-shortcuts-restore-style">
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07885f"><title>الرئيسية - HA Marketing</title><link rel="stylesheet" href="ha-modern-green.css?v=20261001-compact3"><link rel="stylesheet" href="ha-section-slider.css?v=20260927-freezefix1"><link rel="stylesheet" href="ha-engagement.css?v=20261001-compact3"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><style id="ha-shortcuts-restore-style">
 .ha-menu-btn{
   width:44px;height:44px;border:1px solid #dce9e5;border-radius:14px;
   background:#fff;color:#0d6f53;font-size:22px;font-weight:900;cursor:pointer;
@@ -1025,7 +1025,1017 @@ body{
     border-radius:22px!important;
   }
 }
-</style></head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
+</style><style id="ha-home-bars-clean-fix-20261001">
+/* ===== تصغير وترتيب الشريط العلوي ===== */
+.ha-header{
+  min-height:142px!important;
+  padding:12px 20px 58px!important;
+  border-radius:0 0 28px 28px!important;
+}
+.ha-topline{
+  min-height:54px!important;
+  gap:8px!important;
+  align-items:center!important;
+}
+.ha-logo{
+  width:50px!important;
+  height:50px!important;
+  flex:0 0 50px!important;
+  border-radius:15px!important;
+}
+.ha-logo img{
+  width:40px!important;
+  height:40px!important;
+}
+.ha-brand-text strong{
+  font-size:25px!important;
+  line-height:1.05!important;
+}
+.ha-brand-text small{
+  font-size:10px!important;
+  margin-top:3px!important;
+}
+.ha-location{
+  min-height:46px!important;
+  padding:6px 10px!important;
+  border-radius:15px!important;
+}
+.ha-location .pin{
+  width:31px!important;
+  height:31px!important;
+  border-radius:10px!important;
+  font-size:16px!important;
+}
+.ha-location b{font-size:11px!important}
+.ha-location small{font-size:8px!important}
+
+.ha-bell,
+.ha-menu-btn{
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  border-radius:13px!important;
+  font-size:20px!important;
+}
+
+/* البحث يصير أصغر وأقرب للهيدر */
+.ha-search-wrap{
+  width:calc(100% - 48px)!important;
+  margin:-45px auto 24px!important;
+}
+.ha-search{
+  min-height:56px!important;
+  grid-template-columns:42px 1fr 42px!important;
+  padding:6px!important;
+  gap:7px!important;
+  border-radius:18px!important;
+}
+.ha-search input{
+  min-height:42px!important;
+  border-radius:13px!important;
+  font-size:13px!important;
+}
+.ha-search .glass,
+.ha-search .mic{
+  width:40px!important;
+  height:40px!important;
+  border-radius:12px!important;
+  font-size:18px!important;
+}
+
+/* ===== الشريط السفلي مستقيم ومتمركز ===== */
+.ha-bottom{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:0!important;
+  top:auto!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+  width:min(920px,calc(100vw - 24px))!important;
+  min-width:0!important;
+  height:auto!important;
+  padding:7px 10px max(7px,env(safe-area-inset-bottom))!important;
+  border-radius:22px 22px 0 0!important;
+  box-sizing:border-box!important;
+  background:rgba(255,255,255,.985)!important;
+  box-shadow:0 -8px 24px rgba(20,58,76,.12)!important;
+  border:1px solid #e1eae7!important;
+  border-bottom:0!important;
+  z-index:999999!important;
+}
+
+.ha-bottom .ha-bottom-inner{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  align-items:center!important;
+  justify-items:stretch!important;
+  gap:5px!important;
+}
+
+.ha-bottom .ha-nav{
+  width:100%!important;
+  min-width:0!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:6px 4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  border-radius:16px!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  transform:none!important;
+}
+
+.ha-bottom .ha-nav .nicon{
+  width:27px!important;
+  height:27px!important;
+  min-width:27px!important;
+  min-height:27px!important;
+  margin:0!important;
+}
+.ha-bottom .ha-nav .nicon img,
+.ha-bottom .ha-nav .nicon svg,
+.ha-bottom .ha-nav .nicon .ha-home-icon-img{
+  width:27px!important;
+  height:27px!important;
+  display:block!important;
+  object-fit:contain!important;
+}
+.ha-bottom .ha-nav > span:last-child{
+  font-size:10px!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+}
+.ha-bottom .ha-nav.active{
+  background:linear-gradient(145deg,#e8f5ff,#d9edff)!important;
+  color:#0878e6!important;
+}
+
+/* لوحة الاختصارات أصغر وأرتب */
+.ha-shortcuts-drawer{
+  width:min(78vw,280px)!important;
+  right:-290px!important;
+  padding:14px 12px calc(82px + env(safe-area-inset-bottom))!important;
+}
+.ha-shortcuts-drawer.show{right:0!important}
+.ha-shortcuts-title strong{font-size:17px!important}
+.ha-shortcuts-title small{font-size:10px!important}
+.ha-shortcuts-list{gap:7px!important}
+.ha-shortcuts-list a{
+  min-height:46px!important;
+  padding:8px 10px!important;
+  border-radius:13px!important;
+  font-size:12px!important;
+}
+.ha-shortcuts-list .ico{
+  width:31px!important;
+  height:31px!important;
+  flex:0 0 31px!important;
+  border-radius:10px!important;
+  font-size:16px!important;
+}
+.ha-shortcuts-close{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+  font-size:22px!important;
+}
+
+/* موبايل */
+@media(max-width:700px){
+  .ha-header{
+    min-height:170px!important;
+    padding:12px 12px 66px!important;
+    border-radius:0 0 24px 24px!important;
+  }
+  .ha-topline{
+    grid-template-columns:42px 42px minmax(105px,1fr) minmax(125px,1.1fr)!important;
+    min-height:48px!important;
+    gap:6px!important;
+  }
+  .ha-logo{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+    border-radius:13px!important;
+  }
+  .ha-logo img{width:36px!important;height:36px!important}
+  .ha-brand-text strong{font-size:17px!important}
+  .ha-brand-text small{display:none!important}
+  .ha-location{
+    min-height:42px!important;
+    padding:5px 7px!important;
+  }
+  .ha-location .pin{width:28px!important;height:28px!important}
+  .ha-bell,.ha-menu-btn{
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    border-radius:12px!important;
+  }
+  .ha-search-wrap{
+    width:calc(100% - 22px)!important;
+    margin:-54px auto 22px!important;
+  }
+  .ha-search{
+    min-height:52px!important;
+    grid-template-columns:38px 1fr 38px!important;
+    border-radius:16px!important;
+  }
+  .ha-search input{min-height:38px!important;font-size:12px!important}
+  .ha-search .glass,.ha-search .mic{
+    width:36px!important;height:36px!important;border-radius:11px!important
+  }
+  .ha-bottom{
+    width:calc(100vw - 12px)!important;
+    padding:6px 6px max(6px,env(safe-area-inset-bottom))!important;
+    border-radius:18px 18px 0 0!important;
+  }
+  .ha-bottom .ha-bottom-inner{gap:2px!important}
+  .ha-bottom .ha-nav{
+    min-height:54px!important;
+    padding:5px 2px!important;
+    border-radius:14px!important;
+  }
+  .ha-bottom .ha-nav .nicon,
+  .ha-bottom .ha-nav .nicon img,
+  .ha-bottom .ha-nav .nicon svg,
+  .ha-bottom .ha-nav .nicon .ha-home-icon-img{
+    width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important;
+  }
+  .ha-bottom .ha-nav > span:last-child{font-size:9px!important}
+}
+</style>
+<link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
+<style id="ha-compact-topbar-all-pages-20261001">
+/* ===== تصغير وترتيب القائمة العلوية في جميع الأقسام ===== */
+.ha-header{
+  min-height:118px!important;
+  padding:10px 16px 48px!important;
+  border-radius:0 0 24px 24px!important;
+}
+.ha-topline{
+  min-height:46px!important;
+  display:grid!important;
+  grid-template-columns:minmax(210px,1fr) minmax(150px,210px) 40px 40px!important;
+  gap:7px!important;
+  align-items:center!important;
+  direction:rtl!important;
+}
+.ha-brand{
+  min-width:0!important;
+  gap:8px!important;
+}
+.ha-logo{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  border-radius:13px!important;
+}
+.ha-logo img{
+  width:34px!important;
+  height:34px!important;
+  object-fit:contain!important;
+}
+.ha-brand-text{
+  min-width:0!important;
+}
+.ha-brand-text strong{
+  font-size:20px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+.ha-brand-text small{
+  font-size:8.5px!important;
+  margin-top:3px!important;
+  white-space:nowrap!important;
+}
+.ha-location{
+  min-height:40px!important;
+  height:40px!important;
+  padding:5px 8px!important;
+  border-radius:13px!important;
+  gap:6px!important;
+  overflow:hidden!important;
+}
+.ha-location .pin{
+  width:28px!important;
+  height:28px!important;
+  flex:0 0 28px!important;
+  border-radius:9px!important;
+  font-size:14px!important;
+}
+.ha-location b{
+  font-size:10px!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+}
+.ha-location small{
+  font-size:7px!important;
+  line-height:1.05!important;
+  margin-top:2px!important;
+  white-space:nowrap!important;
+}
+.ha-bell,
+.ha-menu-btn,
+.ha-page-menu{
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  min-height:38px!important;
+  border-radius:11px!important;
+  padding:0!important;
+  margin:0!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+
+/* البحث أصغر ولا يطول الهيدر */
+.ha-search-wrap{
+  width:calc(100% - 30px)!important;
+  margin:-40px auto 20px!important;
+}
+.ha-search{
+  min-height:50px!important;
+  grid-template-columns:38px 1fr 38px!important;
+  padding:5px!important;
+  gap:5px!important;
+  border-radius:16px!important;
+}
+.ha-search input{
+  min-height:38px!important;
+  height:38px!important;
+  border-radius:12px!important;
+  padding:0 12px!important;
+  font-size:12px!important;
+}
+.ha-search .glass,
+.ha-search .mic{
+  width:36px!important;
+  height:36px!important;
+  min-width:36px!important;
+  min-height:36px!important;
+  border-radius:11px!important;
+  font-size:16px!important;
+}
+
+/* ===== الهاتف ===== */
+@media(max-width:700px){
+  .ha-header{
+    min-height:108px!important;
+    padding:8px 8px 45px!important;
+    border-radius:0 0 20px 20px!important;
+  }
+  .ha-topline{
+    min-height:42px!important;
+    grid-template-columns:minmax(112px,1.4fr) minmax(82px,.9fr) 34px 34px!important;
+    gap:5px!important;
+    direction:rtl!important;
+  }
+  .ha-brand{
+    gap:5px!important;
+  }
+  .ha-logo{
+    width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+    border-radius:11px!important;
+  }
+  .ha-logo img{
+    width:29px!important;
+    height:29px!important;
+  }
+  .ha-brand-text strong{
+    font-size:15px!important;
+    line-height:1!important;
+  }
+  .ha-brand-text small{
+    font-size:6.5px!important;
+    margin-top:2px!important;
+  }
+  .ha-location{
+    min-height:34px!important;
+    height:34px!important;
+    padding:3px 5px!important;
+    border-radius:10px!important;
+    gap:4px!important;
+  }
+  .ha-location .pin{
+    width:23px!important;
+    height:23px!important;
+    flex:0 0 23px!important;
+    border-radius:8px!important;
+    font-size:12px!important;
+  }
+  .ha-location b{
+    font-size:8.5px!important;
+  }
+  .ha-location small{
+    font-size:6px!important;
+  }
+  .ha-bell,
+  .ha-menu-btn,
+  .ha-page-menu{
+    width:32px!important;
+    height:32px!important;
+    min-width:32px!important;
+    min-height:32px!important;
+    border-radius:10px!important;
+    font-size:15px!important;
+  }
+  .ha-search-wrap{
+    width:calc(100% - 16px)!important;
+    margin:-38px auto 18px!important;
+  }
+  .ha-search{
+    min-height:46px!important;
+    grid-template-columns:34px 1fr 34px!important;
+    padding:4px!important;
+    border-radius:14px!important;
+  }
+  .ha-search input{
+    min-height:34px!important;
+    height:34px!important;
+    border-radius:10px!important;
+    padding:0 10px!important;
+    font-size:11px!important;
+  }
+  .ha-search .glass,
+  .ha-search .mic{
+    width:32px!important;
+    height:32px!important;
+    min-width:32px!important;
+    min-height:32px!important;
+    border-radius:9px!important;
+    font-size:14px!important;
+  }
+}
+
+/* ===== الشاشات الضيقة جداً ===== */
+@media(max-width:420px){
+  .ha-topline{
+    grid-template-columns:minmax(96px,1.25fr) minmax(72px,.85fr) 30px 30px!important;
+    gap:4px!important;
+  }
+  .ha-logo{
+    width:32px!important;
+    height:32px!important;
+    flex-basis:32px!important;
+  }
+  .ha-logo img{
+    width:26px!important;
+    height:26px!important;
+  }
+  .ha-brand-text strong{
+    font-size:13px!important;
+  }
+  .ha-brand-text small{
+    display:none!important;
+  }
+  .ha-location{
+    height:31px!important;
+    min-height:31px!important;
+  }
+  .ha-location .pin{
+    width:21px!important;
+    height:21px!important;
+    flex-basis:21px!important;
+  }
+  .ha-location small{
+    display:none!important;
+  }
+  .ha-bell,
+  .ha-menu-btn,
+  .ha-page-menu{
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    font-size:14px!important;
+  }
+}
+</style>
+<style id="ha-searchbar-stable-position-20261001">
+/* ===== تثبيت مكان شريط البحث بكل الأقسام ===== */
+.ha-search-wrap{
+  position:relative!important;
+  display:block!important;
+  clear:both!important;
+  float:none!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  inset:auto!important;
+  transform:none!important;
+  width:calc(100% - 40px)!important;
+  max-width:1140px!important;
+  margin:-18px auto 26px!important;
+  padding:0!important;
+  z-index:20!important;
+  box-sizing:border-box!important;
+}
+
+.ha-search{
+  position:relative!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  transform:none!important;
+  width:100%!important;
+  min-height:50px!important;
+  margin:0!important;
+  padding:5px 6px!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) 38px!important;
+  align-items:center!important;
+  gap:6px!important;
+  border-radius:16px!important;
+  box-sizing:border-box!important;
+  background:rgba(255,255,255,.98)!important;
+  border:1px solid #dfe9ef!important;
+  box-shadow:0 10px 24px rgba(20,59,82,.10)!important;
+  overflow:hidden!important;
+}
+
+.ha-search input{
+  position:static!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:38px!important;
+  min-height:38px!important;
+  margin:0!important;
+  padding:0 12px!important;
+  border-radius:11px!important;
+  border:1px solid #edf2f5!important;
+  outline:0!important;
+  box-sizing:border-box!important;
+  background:#fbfdff!important;
+  font-size:12px!important;
+}
+
+.ha-search .glass,
+.ha-search .mic{
+  position:static!important;
+  transform:none!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  box-sizing:border-box!important;
+  font-size:15px!important;
+}
+
+/* يمنع أي محتوى من الصعود فوق شريط البحث */
+.ha-search-wrap + .ha-main,
+.ha-search-wrap + main,
+.ha-search-wrap ~ .ha-main:first-of-type{
+  position:relative!important;
+  z-index:1!important;
+  margin-top:0!important;
+}
+
+/* الهاتف */
+@media(max-width:700px){
+  .ha-search-wrap{
+    width:calc(100% - 16px)!important;
+    max-width:none!important;
+    margin:-12px auto 18px!important;
+    z-index:20!important;
+  }
+  .ha-search{
+    min-height:46px!important;
+    grid-template-columns:34px minmax(0,1fr) 34px!important;
+    gap:4px!important;
+    padding:4px 5px!important;
+    border-radius:14px!important;
+  }
+  .ha-search input{
+    height:34px!important;
+    min-height:34px!important;
+    padding:0 10px!important;
+    border-radius:10px!important;
+    font-size:11px!important;
+  }
+  .ha-search .glass,
+  .ha-search .mic{
+    width:30px!important;
+    height:30px!important;
+    min-width:30px!important;
+    min-height:30px!important;
+    border-radius:9px!important;
+    font-size:13px!important;
+  }
+}
+
+/* الشاشات الضيقة جداً */
+@media(max-width:420px){
+  .ha-search-wrap{
+    width:calc(100% - 12px)!important;
+    margin:-10px auto 16px!important;
+  }
+  .ha-search{
+    min-height:44px!important;
+    grid-template-columns:32px minmax(0,1fr) 32px!important;
+  }
+  .ha-search input{
+    height:32px!important;
+    min-height:32px!important;
+    font-size:10.5px!important;
+  }
+  .ha-search .glass,
+  .ha-search .mic{
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    min-height:28px!important;
+  }
+}
+</style>
+<style id="ha-mobile-header-final-compact-20261001">
+/* ===== إصلاح نهائي للهيدر على الموبايل ===== */
+@media (max-width:700px){
+
+  .ha-header{
+    min-height:88px!important;
+    height:auto!important;
+    padding:7px 8px 28px!important;
+    border-radius:0 0 19px 19px!important;
+    overflow:hidden!important;
+  }
+
+  /* سطر واحد مرتب:
+     يسار: القائمة + الجرس | الوسط: الموقع | يمين: الشعار والاسم */
+  .ha-header .ha-topline{
+    width:100%!important;
+    min-height:38px!important;
+    height:38px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    grid-template-columns:30px 30px 78px minmax(105px,1fr)!important;
+    grid-template-areas:"menu bell location brand"!important;
+    align-items:center!important;
+    justify-content:stretch!important;
+    gap:4px!important;
+    direction:ltr!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-brand{
+    grid-area:brand!important;
+    min-width:0!important;
+    max-width:none!important;
+    width:auto!important;
+    height:36px!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    flex-direction:row-reverse!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+    direction:rtl!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-logo{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+    flex:0 0 34px!important;
+    margin:0!important;
+    padding:0!important;
+    border-radius:10px!important;
+  }
+
+  .ha-header .ha-logo img{
+    width:27px!important;
+    height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+    object-fit:contain!important;
+  }
+
+  .ha-header .ha-brand-text{
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    text-align:right!important;
+  }
+
+  .ha-header .ha-brand-text strong{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:12.5px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ha-header .ha-brand-text small{
+    display:none!important;
+  }
+
+  .ha-header .ha-location{
+    grid-area:location!important;
+    width:78px!important;
+    min-width:78px!important;
+    max-width:78px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    margin:0!important;
+    padding:3px 4px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:3px!important;
+    border-radius:9px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+  }
+
+  .ha-header .ha-location .pin{
+    width:20px!important;
+    height:20px!important;
+    min-width:20px!important;
+    min-height:20px!important;
+    flex:0 0 20px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:7px!important;
+    font-size:10px!important;
+  }
+
+  .ha-header .ha-location > div{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-location b{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:7.5px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ha-header .ha-location small{
+    display:none!important;
+  }
+
+  .ha-header .ha-bell{
+    grid-area:bell!important;
+  }
+
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    grid-area:menu!important;
+  }
+
+  .ha-header .ha-bell,
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    max-width:29px!important;
+    max-height:29px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:9px!important;
+    font-size:13px!important;
+    line-height:1!important;
+    box-sizing:border-box!important;
+  }
+
+  /* البحث مباشرة تحت الهيدر بدون فراغ أو تداخل */
+  .ha-search-wrap{
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+    float:none!important;
+    clear:both!important;
+    width:calc(100% - 12px)!important;
+    max-width:none!important;
+    margin:-14px auto 16px!important;
+    padding:0!important;
+    z-index:30!important;
+  }
+
+  .ha-search{
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+    width:100%!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding:4px!important;
+    display:grid!important;
+    grid-template-columns:30px minmax(0,1fr) 30px!important;
+    align-items:center!important;
+    gap:4px!important;
+    border-radius:13px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  .ha-search input{
+    position:static!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:31px!important;
+    min-height:31px!important;
+    margin:0!important;
+    padding:0 9px!important;
+    border-radius:9px!important;
+    box-sizing:border-box!important;
+    font-size:10.5px!important;
+  }
+
+  .ha-search .glass,
+  .ha-search .mic{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:27px!important;
+    height:27px!important;
+    min-width:27px!important;
+    min-height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+    margin:0 auto!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:8px!important;
+    font-size:12px!important;
+  }
+}
+
+/* شاشات صغيرة جداً */
+@media (max-width:390px){
+  .ha-header{
+    min-height:84px!important;
+    padding:6px 6px 27px!important;
+  }
+
+  .ha-header .ha-topline{
+    grid-template-columns:28px 28px 70px minmax(92px,1fr)!important;
+    gap:3px!important;
+  }
+
+  .ha-header .ha-logo{
+    width:31px!important;
+    height:31px!important;
+    min-width:31px!important;
+    min-height:31px!important;
+    flex-basis:31px!important;
+  }
+
+  .ha-header .ha-logo img{
+    width:25px!important;
+    height:25px!important;
+  }
+
+  .ha-header .ha-brand-text strong{
+    font-size:11.5px!important;
+  }
+
+  .ha-header .ha-location{
+    width:70px!important;
+    min-width:70px!important;
+    max-width:70px!important;
+    height:30px!important;
+    min-height:30px!important;
+    max-height:30px!important;
+  }
+
+  .ha-header .ha-bell,
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    width:27px!important;
+    height:27px!important;
+    min-width:27px!important;
+    min-height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+  }
+
+  .ha-search-wrap{
+    width:calc(100% - 10px)!important;
+    margin:-13px auto 14px!important;
+  }
+}
+</style>
+<style id="ha-search-bar-attached-fix-20261001">
+/* تقريب شريط البحث من الهيدر وتثبيته ملاصقاً أسفل القائمة العلوية */
+.ha-header{
+  padding-bottom:18px !important;
+}
+
+.ha-search-wrap{
+  width:calc(100% - 28px) !important;
+  margin:-6px auto 18px !important;
+  z-index:35 !important;
+}
+
+.ha-search{
+  min-height:48px !important;
+  border-radius:15px !important;
+  box-shadow:0 8px 18px rgba(20,59,82,.08) !important;
+}
+
+.ha-search-wrap + .ha-main,
+.ha-search-wrap + main,
+.ha-search-wrap ~ .ha-main:first-of-type{
+  margin-top:0 !important;
+}
+
+@media (max-width:900px){
+  .ha-header{
+    padding-bottom:16px !important;
+  }
+  .ha-search-wrap{
+    width:calc(100% - 16px) !important;
+    margin:-4px auto 14px !important;
+  }
+  .ha-search{
+    min-height:45px !important;
+  }
+}
+
+@media (max-width:700px){
+  .ha-header{
+    padding-bottom:14px !important;
+  }
+  .ha-search-wrap{
+    width:calc(100% - 12px) !important;
+    margin:-2px auto 12px !important;
+  }
+  .ha-search{
+    min-height:43px !important;
+    border-radius:13px !important;
+  }
+}
+
+@media (max-width:420px){
+  .ha-search-wrap{
+    width:calc(100% - 10px) !important;
+    margin:-1px auto 10px !important;
+  }
+  .ha-search{
+    min-height:41px !important;
+  }
+}
+</style>
+<style id="ha-hide-home-extras-final-20261001">
+/* إخفاء العناصر المطلوبة من الواجهة الرئيسية فقط */
+.ha-engage,
+.ha-smart-section{
+  display:none !important;
+}
+</style>
+</head><body><div class="ha-shortcuts-overlay" id="haShortcutsOverlay"></div>
 <aside class="ha-shortcuts-drawer" id="haShortcutsDrawer" aria-label="اختصارات HA Marketing">
   <div class="ha-shortcuts-head">
     <div class="ha-shortcuts-title">
@@ -1067,7 +2077,7 @@ body{
 <a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZiNDFkIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmMjdiMGMiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTEiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTEpIiBmaWx0ZXI9InVybCgjc2hhZG93XzExKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPHBhdGggZD0iTTY0IDI5Yy0xNSAwLTI1IDExLTI1IDI2djE1YzAgOC00IDEzLTEwIDE4aDcwYy02LTUtMTAtMTAtMTAtMThWNTVjMC0xNS0xMC0yNi0yNS0yNloiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTU0IDk0YzMgOSAxNyA5IDIwIDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iOTIiIGN5PSIzNyIgcj0iOSIgZmlsbD0iI2VmNDA1OCIvPgoKPC9zdmc+" alt=""></span><span>الإشعارات</span></a>
 <a class="ha-nav " href="chat.html"><span class="nicon"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjOGEzNWRmIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM0YjE4OWMiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTIiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTIpIiBmaWx0ZXI9InVybCgjc2hhZG93XzEyKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPHBhdGggZD0iTTMxIDM4aDY2djQ1SDU5TDQzIDk2VjgzSDMxVjM4WiIgZmlsbD0iI2ZmZiIvPgo8Y2lyY2xlIGN4PSI0OSIgY3k9IjYxIiByPSI1IiBmaWxsPSIjNmIyOGM5Ii8+PGNpcmNsZSBjeD0iNjQiIGN5PSI2MSIgcj0iNSIgZmlsbD0iIzZiMjhjOSIvPjxjaXJjbGUgY3g9Ijc5IiBjeT0iNjEiIHI9IjUiIGZpbGw9IiM2YjI4YzkiLz4KCjwvc3ZnPg==" alt=""></span><span>المحادثات</span></a>
 <a class="ha-nav " href="account.html"><span class="nicon"><img class="ha-home-icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPGRlZnM+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ18xMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMTI2YmQ0Ii8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwOTNjOGYiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ29sZF8xMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmMGE4Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40NSIgc3RvcC1jb2xvcj0iI2Y3Yzg0YiIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2Y4ZTA4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8ZmlsdGVyIGlkPSJzaGFkb3dfMTMiIHg9Ii0zMCUiIHk9Ii0zMCUiIHdpZHRoPSIxNjAlIiBoZWlnaHQ9IjE2MCUiPgogICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjYiIHN0ZERldmlhdGlvbj0iNiIgZmxvb2QtY29sb3I9IiMxMDIzM2YiIGZsb29kLW9wYWNpdHk9Ii4yNCIvPgogIDwvZmlsdGVyPgo8L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiByeD0iMzAiIGZpbGw9InVybCgjYmdfMTMpIiBmaWx0ZXI9InVybCgjc2hhZG93XzEzKSIvPgo8cGF0aCBkPSJNMjQgMjlDNDEgMTQgODMgMTAgMTA2IDI5IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9Ijk1IiBjeT0iMzEiIHI9IjgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xMyIvPgoKPGNpcmNsZSBjeD0iNjQiIGN5PSI0OSIgcj0iMTgiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTMyIDk5YzQtMjAgMTctMzAgMzItMzBzMjggMTAgMzIgMzAiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTM4IDk5aDUyIiBzdHJva2U9InVybCgjZ29sZF8xMykiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cgo8L3N2Zz4=" alt=""></span><span>حسابي</span></a>
-</div></nav><script src="ha-modern-green.js?v=20260927-freezefix1"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20260927-1"></script><script id="ha-shortcuts-restore-script">
+</div></nav><script src="ha-modern-green.js?v=20261001-hide-final5"></script><script src="ha-section-slider.js?v=20260930-arrows2"></script><script src="ha-engagement.js?v=20261001-hide-final5"></script><script id="ha-shortcuts-restore-script">
 (function(){
   const drawer=document.getElementById('haShortcutsDrawer');
   const overlay=document.getElementById('haShortcutsOverlay');
@@ -1112,18 +2122,118 @@ body{
   if(window.supabase)checkAdmin();
   else window.addEventListener('load',checkAdmin,{once:true});
 })();
-<script id="ha-hide-home-sections">
+</script><script id="ha-admin-home-card-images-loader">
 (function(){
-  function hideNearby(){
-    var heads=Array.from(document.querySelectorAll('.ha-section-head h2'));
-    var target=heads.find(function(h){return /الخدمات القريبة منك/.test((h.textContent||'').trim())});
-    if(!target)return;
-    var head=target.closest('.ha-section-head');
-    if(head)head.style.display='none';
-    var next=head && head.nextElementSibling;
-    if(next && next.classList.contains('ha-two'))next.style.display='none';
+  const SUPABASE_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+  const SUPABASE_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+  const selectors={
+    shop:'shop.html',
+    services:'services.html',
+    study:'study.html',
+    transport:'taxi-delivery.html',
+    entertainment:'entertainment.html',
+    suggestions:'suggestions.html'
+  };
+
+  function cssUrl(v){
+    return String(v||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/[\r\n]/g,'');
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hideNearby);
-  else hideNearby();
+
+  async function loadAdminCardImages(){
+    try{
+      if(!window.supabase) return;
+      const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+        auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}
+      });
+      const {data,error}=await db.from('home_category_cards')
+        .select('section_key,image_url,is_active')
+        .eq('is_active',true);
+      if(error || !Array.isArray(data) || !data.length) return;
+
+      let css='';
+      data.forEach(row=>{
+        const href=selectors[row.section_key];
+        const url=cssUrl(row.image_url);
+        if(!href || !url) return;
+        css += `.ha-main .ha-cats .ha-cat[href="${href}"]::before{background-image:url("${url}")!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important;}\n`;
+      });
+      if(!css) return;
+      let st=document.getElementById('ha-admin-card-image-overrides');
+      if(!st){st=document.createElement('style');st.id='ha-admin-card-image-overrides';document.head.appendChild(st)}
+      st.textContent=css;
+    }catch(_e){}
+  }
+
+  function boot(){
+    if(window.supabase){loadAdminCardImages();return;}
+    let tries=0;
+    const timer=setInterval(()=>{
+      tries++;
+      if(window.supabase){clearInterval(timer);loadAdminCardImages()}
+      else if(tries>40)clearInterval(timer);
+    },150);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
 })();
-</script></script></body></html>
+</script>
+<script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<script id="ha-hide-home-extras-final-script-20261001">
+(function(){
+  'use strict';
+
+  function isHome(){
+    var p=(location.pathname||'').split('/').pop().toLowerCase();
+    return !p || p==='index.html';
+  }
+
+  function removeHomeExtras(){
+    if(!isHome()) return;
+
+    /* كل احتياجاتك + مكافأة الدخول + استمر من حيث توقفت */
+    document.querySelectorAll('.ha-engage').forEach(function(el){
+      el.remove();
+    });
+
+    /* مقترح لك */
+    document.querySelectorAll('.ha-smart-section').forEach(function(el){
+      el.remove();
+    });
+
+    /* الخدمات القريبة منك + البطاقات التابعة إلها */
+    document.querySelectorAll('.ha-section-head').forEach(function(head){
+      var txt=(head.textContent||'').replace(/\s+/g,' ').trim();
+      if(txt.indexOf('الخدمات القريبة منك')!==-1){
+        var next=head.nextElementSibling;
+        head.remove();
+        if(next && (next.classList.contains('ha-two') ||
+                    next.classList.contains('ha-feature-grid') ||
+                    next.classList.contains('ha-nearby-grid'))){
+          next.remove();
+        }
+      }
+    });
+  }
+
+  removeHomeExtras();
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',removeHomeExtras,{once:true});
+  }
+
+  window.addEventListener('load',removeHomeExtras,{once:true});
+
+  /* العناصر الديناميكية قد تُضاف بعد تحميل الصفحة؛ احذفها فوراً */
+  var observer=new MutationObserver(function(){
+    removeHomeExtras();
+  });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+
+  /* بعد اكتمال كل الإضافات نوقف المراقبة */
+  setTimeout(function(){
+    removeHomeExtras();
+    observer.disconnect();
+  },8000);
+})();
+</script>
+</body></html>

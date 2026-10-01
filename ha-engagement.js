@@ -20,12 +20,10 @@
   function bindTracking(){document.addEventListener('click',function(e){var a=e.target.closest('a[href]');if(!a)return;var href=(a.getAttribute('href')||'').split('?')[0];saveRecent(href)},true)}
   function renderRecent(){var box=document.getElementById('haRecentGrid');if(!box)return;var arr=loadRecent();if(!arr.length)arr=['shop.html','study.html','services.html','taxi-delivery.html'];box.innerHTML=arr.slice(0,4).map(function(h){var s=SECTIONS[h]||['✨','قسم'];return '<a class="ha-recent-item" href="'+h+'"><span class="ha-recent-ico">'+s[0]+'</span><span><b>'+s[1]+'</b><small>فتح سريع</small></span></a>'}).join('')}
   function renderBase(){
-    var p=(location.pathname||'').split('/').pop().toLowerCase()||'index.html';
-    if(p==='index.html')return;
     var main=document.querySelector('.ha-main'); if(!main||document.querySelector('.ha-engage'))return;
     var stats=updateDaily(), wrap=document.createElement('section');wrap.className='ha-engage';
-    wrap.innerHTML='<a id="haAdminExperience" class="ha-admin-banner" href="admin-home-experience.html"><span><b>⚙️ إدارة تجربة الصفحة الرئيسية</b><small>العنوان والرسالة والملاحظة العامة</small></span><span>‹</span></a>';
-    var slider=document.querySelector('.ha-smart-slider');if(slider)slider.parentNode.insertBefore(wrap,slider);else main.appendChild(wrap);
+    wrap.innerHTML='<div class="ha-engage-top"><div class="ha-engage-card ha-welcome"><small>تجربتك داخل HA Marketing</small><h3 id="haExperienceTitle">كل احتياجاتك من مكان واحد</h3><p id="haExperienceText">وصول أسرع للأقسام التي تستخدمها، مع حفظ آخر اختياراتك على هذا الجهاز.</p><div class="ha-stats"><span class="ha-pill">⭐ نقاطك <b>'+stats.points+'</b></span><span class="ha-pill">🔥 أيام الاستمرار <b>'+stats.streak+'</b></span></div><div id="haExperienceNote" class="ha-engage-note"></div></div><div class="ha-engage-card ha-daily"><span class="ha-mini-label">مكافأة الدخول اليومية</span><strong>+5</strong><p>تُضاف مرة واحدة في اليوم. بدون إشعارات مزعجة أو نوافذ إجبارية.</p></div></div><div class="ha-engage-card"><div class="ha-smart-title"><h3>استمر من حيث توقفت</h3><span>آخر الأقسام المستخدمة</span></div><div id="haRecentGrid" class="ha-recent-grid"></div></div><a id="haAdminExperience" class="ha-admin-banner" href="admin-home-experience.html"><span><b>⚙️ إدارة تجربة الصفحة الرئيسية</b><small>العنوان والرسالة والملاحظة العامة</small></span><span>‹</span></a>';
+    var slider=document.querySelector('.ha-smart-slider');if(slider)slider.parentNode.insertBefore(wrap,slider);else main.appendChild(wrap);renderRecent();
   }
   async function loadRemoteConfig(){
     if(!window.supabase||!window.supabase.createClient)return;
@@ -36,6 +34,15 @@
       var u=await db.auth.getUser();var id=u&&u.data&&u.data.user&&u.data.user.id;if(id){var p=await db.from('profiles').select('account_type').eq('id',id).maybeSingle();if(p.data&&p.data.account_type==='admin')document.getElementById('haAdminExperience').classList.add('show')}
     }catch(e){}
   }
-  function init(){renderBase();bindTracking();if(document.getElementById('haAdminExperience'))loadRemoteConfig()}
+  function init(){
+    var p=(location.pathname||'').split('/').pop().toLowerCase()||'index.html';
+    if(p==='index.html'){
+      bindTracking();
+      return;
+    }
+    renderBase();
+    bindTracking();
+    loadRemoteConfig();
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
