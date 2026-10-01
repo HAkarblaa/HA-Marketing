@@ -13,7 +13,8 @@
 .top{display:flex;justify-content:space-between;gap:8px}.top b{font-size:14px}.status{font-size:10px;padding:5px 8px;border-radius:999px;background:#eef4ff;color:#2351a5}
 .meta{margin-top:9px;display:grid;gap:5px;font-size:11px;color:#666}.price{font-weight:800;color:#111}.empty{text-align:center;color:#777;padding:40px 15px}
 </style>
-<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"></head><body class="ha-ui-final ha-family-transport"><div class="ha-family-strip"><a href="taxi-delivery.html">← النقل والتكسي</a><div><b>طلباتي</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
+<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-1">
+</head><body class="ha-ui-final ha-family-transport"><div class="ha-family-strip"><a href="taxi-delivery.html">← النقل والتكسي</a><div><b>طلباتي</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
 <div class="page">
 <div class="head"><button class="back" onclick="history.back()">‹</button><h1>🕘 طلباتي السابقة</h1></div>
 <div class="filters"><button class="active" data-f="all">الكل</button><button data-f="active">الفعالة</button><button data-f="finished">المكتملة</button><button data-f="cancelled">الملغاة</button></div>
@@ -67,4 +68,5 @@ document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{document.querySe
  }catch(e){console.error(e);list.innerHTML='<div class="empty">تعذر تحميل الطلبات.</div>'}
 })();
 </script>
-<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+</body></html>

@@ -70,7 +70,8 @@
   display:none;object-fit:cover;background:#f4f8f6
 }
 @media(max-width:650px){.ha-simple-row{grid-template-columns:1fr}}
-</style><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"></head><body class="ha-ui-final ha-family-shop"><div class="ha-family-strip"><a href="shop.html">← التسوق</a><div><b>لوحة البائع</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
+</style><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-1">
+</head><body class="ha-ui-final ha-family-shop"><div class="ha-family-strip"><a href="shop.html">← التسوق</a><div><b>لوحة البائع</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
 <option value="markets">أسواق</option>
 <option value="restaurants">مطاعم</option>
 <option value="flowers">ورد</option>
@@ -500,4 +501,5 @@ init().catch(e=>{
   console.error(e);
   const g=document.getElementById('gate');
   if(g) g.innerHTML='❌ تعذر فتح لوحة البائع: '+esc(e?.message||String(e));
-});</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+});</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+</body></html>
