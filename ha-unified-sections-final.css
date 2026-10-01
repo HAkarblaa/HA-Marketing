@@ -1,0 +1,41 @@
+/* HA Marketing - final unified sections */
+:root{--ha-blue:#0878e6;--ha-green:#0aa978;--ha-dark:#102948;--ha-muted:#74869c;--ha-border:#deebe7;--ha-shadow:0 14px 32px rgba(17,57,78,.11)}
+html{background:#f7fbfc;color-scheme:light}
+body.ha-ui-final{background:radial-gradient(circle at 8% 12%,rgba(44,184,255,.08),transparent 28%),radial-gradient(circle at 92% 25%,rgba(14,199,141,.08),transparent 30%),#f7fbfc!important;color:var(--ha-dark)!important;font-family:Tahoma,Arial,sans-serif!important}
+body.ha-ui-final .wrap,body.ha-ui-final .page,body.ha-ui-final .app{width:min(1120px,94%)!important;margin-left:auto!important;margin-right:auto!important}
+body.ha-ui-final .top,body.ha-ui-final .head,body.ha-ui-final .topbar{border-radius:22px!important;background:linear-gradient(115deg,#0878e6,#0aa978)!important;color:#fff!important;border:0!important;box-shadow:var(--ha-shadow)!important;padding:14px 16px!important}
+body.ha-ui-final .top *,body.ha-ui-final .head *,body.ha-ui-final .topbar *{color:inherit}
+body.ha-ui-final .card,body.ha-ui-final .box,body.ha-ui-final .section,body.ha-ui-final .hero,body.ha-ui-final .filters,body.ha-ui-final .request-card,body.ha-ui-final .simple-order-card,body.ha-ui-final .summary,body.ha-ui-final .ha-location-box{background:#fff!important;color:var(--ha-dark)!important;border:1px solid var(--ha-border)!important;border-radius:20px!important;box-shadow:0 10px 25px rgba(18,58,77,.08)!important}
+body.ha-ui-final input,body.ha-ui-final textarea,body.ha-ui-final select{background:#fbfdff!important;color:var(--ha-dark)!important;border:1px solid #d9e7e3!important;border-radius:13px!important;min-height:44px!important;outline:none!important}
+body.ha-ui-final textarea{padding:12px!important}
+body.ha-ui-final button,body.ha-ui-final .btn{border-radius:13px!important;min-height:42px!important;border:0!important;background:linear-gradient(145deg,#1689ed,#0878e6)!important;color:#fff!important;box-shadow:0 7px 16px rgba(8,120,230,.16)!important;text-decoration:none!important}
+body.ha-ui-final .light,body.ha-ui-final .secondary{background:#eef7ff!important;color:#14527e!important;border:1px solid #dbeaf5!important}
+body.ha-ui-final .muted,body.ha-ui-final small,body.ha-ui-final .hint{color:var(--ha-muted)!important}
+body.ha-ui-final .grid{gap:14px!important}
+body.ha-ui-final table{background:#fff!important;border-radius:16px!important;overflow:hidden!important;border-collapse:separate!important;border-spacing:0!important;box-shadow:0 8px 20px rgba(18,58,77,.06)!important}
+body.ha-ui-final th{background:#eef8f5!important;color:#124a67!important}
+body.ha-ui-final td,body.ha-ui-final th{border-color:#e4eeeb!important}
+body.ha-ui-final .status,body.ha-ui-final .notice,body.ha-ui-final .empty,body.ha-ui-final .loading{border-radius:14px!important;background:#f2f8fb!important;color:#60748b!important;border:1px solid #e1ece8!important}
+body.ha-ui-final .ha-family-strip{width:min(1120px,94%);margin:14px auto 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-radius:18px;background:#fff;border:1px solid var(--ha-border);box-shadow:0 10px 24px rgba(18,58,77,.08)}
+body.ha-ui-final .ha-family-strip b{font-size:17px;color:var(--ha-dark)}
+body.ha-ui-final .ha-family-strip small{display:block;margin-top:3px}
+body.ha-ui-final .ha-family-strip a{padding:9px 12px;border-radius:12px;background:#eef8f4;color:#087b5c;text-decoration:none;font-weight:800}
+body.ha-ui-final .ha-section-cover{margin:0 0 16px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.9);box-shadow:0 15px 34px rgba(18,58,80,.13);background:#eef7fb}
+body.ha-ui-final .ha-section-cover img{display:block;width:100%;height:auto;object-fit:contain}
+body.ha-ui-final.ha-family-services{--ha-accent:#ef4777} body.ha-ui-final.ha-family-study{--ha-accent:#1588ee} body.ha-ui-final.ha-family-transport{--ha-accent:#f3a313} body.ha-ui-final.ha-family-entertainment{--ha-accent:#8a43e8}
+body.ha-ui-final .ha-cats{align-items:stretch!important}
+body.ha-ui-final .ha-cat{border-radius:22px!important;box-shadow:0 12px 27px rgba(18,58,80,.12)!important}
+body.ha-ui-final .ha-card{border-radius:20px!important;box-shadow:0 10px 24px rgba(18,58,80,.08)!important}
+body.ha-ui-final .ha-feature{border-radius:20px!important}
+body.ha-ui-final .ha-bottom,body.ha-ui-final #haRoleBottomNav{background:rgba(255,255,255,.98)!important;box-shadow:0 -9px 28px rgba(18,58,80,.11)!important;border-top:1px solid #e0eae7!important}
+/* suggestions */
+body.ha-ui-final.ha-family-suggestions .hero{background:linear-gradient(145deg,#effcff,#eefbf5)!important;text-align:center!important}
+body.ha-ui-final.ha-family-suggestions .hero h1{color:#087b5c!important}
+body.ha-ui-final.ha-family-suggestions .send{background:linear-gradient(145deg,#0db383,#07885f)!important;color:#fff!important}
+/* shop final 4x2 */
+body.ha-ui-final.ha-family-shop .ha-shop-premium-cats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;align-items:stretch!important}
+body.ha-ui-final.ha-family-shop .ha-shop-premium-cats>a{width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:.90/1!important;border-radius:22px!important;overflow:hidden!important;padding:0!important;background-position:center!important;background-size:100% 100%!important;background-repeat:no-repeat!important}
+body.ha-ui-final.ha-family-shop .ha-shop-premium-cats>a::before,body.ha-ui-final.ha-family-shop .ha-shop-premium-cats>a::after{display:none!important;content:none!important}
+body.ha-ui-final.ha-family-shop .ha-shop-premium-cats>a>.ico,body.ha-ui-final.ha-family-shop .ha-shop-premium-cats>a>strong,body.ha-ui-final.ha-family-shop .ha-shop-premium-cats>a>small{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+@media(max-width:900px){body.ha-ui-final.ha-family-shop .ha-shop-premium-cats{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:700px){body.ha-ui-final .wrap,body.ha-ui-final .page,body.ha-ui-final .app{width:calc(100% - 20px)!important}body.ha-ui-final .ha-family-strip{width:calc(100% - 20px);margin-top:10px}body.ha-ui-final .ha-section-cover{border-radius:20px}body.ha-ui-final.ha-family-shop .ha-shop-premium-cats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}body.ha-ui-final .ha-cats{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.ha-ui-final .ha-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
