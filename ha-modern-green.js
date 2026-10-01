@@ -142,7 +142,8 @@
   }
   function injectRecommendations(){
     if(!isUserPage()||q('.ha-smart-section'))return;
-    if(!['index.html','shop.html','study.html','services.html','taxi-delivery.html','sports.html','entertainment.html','religious.html','news.html'].includes(path()))return;
+    if(path()==='index.html')return;
+    if(!['shop.html','study.html','services.html','taxi-delivery.html','sports.html','entertainment.html','religious.html','news.html'].includes(path()))return;
     var items=smartItems();
     var sec=document.createElement('section');sec.className='ha-smart-section';
     sec.innerHTML='<div class="ha-smart-head"><h3>مقترح لك ✨</h3><span class="ha-smart-note">حسب استخدامك داخل التطبيق</span></div><div class="ha-smart-grid">'+items.map(function(x){return '<a class="ha-smart-card" href="'+x.href+'"><span class="ha-smart-ico">'+x.ico+'</span><span><b>'+x.title+'</b><small>'+(x.count?'من الأقسام الأكثر استخداماً لديك':'وصول سريع')+'</small></span></a>'}).join('')+'</div>';
