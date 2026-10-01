@@ -29,24 +29,47 @@
 @media(max-width:640px){.ha-card-editor-grid{grid-template-columns:1fr}.ha-card-editor-modal{padding:14px;border-radius:20px}.ha-card-edit-btn{width:31px!important;height:31px!important;top:6px!important;left:6px!important}.ha-recent-item,.ha-smart-card,.ha-feature{border-radius:17px!important}}
 
 
-/* Compact cards: keep admin edit control tiny so card size never changes */
-.ha-recent-item>.ha-card-edit-btn,
-.ha-smart-card>.ha-card-edit-btn,
-.ha-feature>.ha-card-edit-btn{
-  width:24px!important;
-  height:24px!important;
-  top:5px!important;
-  left:5px!important;
-  border-radius:8px!important;
-  font-size:12px!important;
+/* ===== صور واجهات الأقسام: نفس حجم قسم الخدمات ===== */
+.ha-section-cover-standard,
+.ha-shop-premium-hero.ha-section-cover-standard,
+.ha-generated-section-cover{
+  width:100%!important;
+  aspect-ratio:2 / 1!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0 0 16px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border-radius:26px!important;
+  border:1px solid rgba(255,255,255,.92)!important;
+  background:#eef7fb!important;
+  box-shadow:0 15px 34px rgba(18,58,80,.13)!important;
+  position:relative!important;
 }
-
-/* Uploaded admin image fills the compact card without resizing it */
-.ha-recent-item>.ha-card-custom-bg,
-.ha-smart-card>.ha-card-custom-bg,
-.ha-feature>.ha-card-custom-bg{
-  inset:0!important;
-  border-radius:inherit!important;
-  background-position:center!important;
-  background-repeat:no-repeat!important;
+.ha-section-cover-standard>img,
+.ha-shop-premium-hero.ha-section-cover-standard>img,
+.ha-generated-section-cover>img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  margin:0!important;
+  padding:0!important;
+}
+.ha-section-cover-standard>.ha-card-edit-btn{
+  top:10px!important;
+  left:10px!important;
+}
+@media(max-width:700px){
+  .ha-section-cover-standard,
+  .ha-shop-premium-hero.ha-section-cover-standard,
+  .ha-generated-section-cover{
+    aspect-ratio:2 / 1!important;
+    border-radius:20px!important;
+    margin-bottom:12px!important;
+  }
 }
