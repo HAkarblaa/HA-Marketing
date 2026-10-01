@@ -1,0 +1,279 @@
+/* HA Marketing - compact/stable mobile top menu */
+@media (max-width:700px){
+
+  .ha-header{
+    min-height:94px!important;
+    height:auto!important;
+    padding:8px 10px 30px!important;
+    border-radius:0 0 20px 20px!important;
+  }
+
+  .ha-header .ha-topline{
+    width:100%!important;
+    min-height:40px!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+    direction:rtl!important;
+    overflow:visible!important;
+  }
+
+  .ha-header .ha-brand{
+    order:1!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    width:auto!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    gap:5px!important;
+    direction:rtl!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-logo{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+    flex:0 0 34px!important;
+    border-radius:10px!important;
+    margin:0!important;
+  }
+
+  .ha-header .ha-logo img{
+    width:28px!important;
+    height:28px!important;
+    object-fit:contain!important;
+  }
+
+  .ha-header .ha-brand-text{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-brand-text strong{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:14px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ha-header .ha-brand-text small{
+    display:none!important;
+  }
+
+  .ha-header .ha-location{
+    order:2!important;
+    flex:0 0 80px!important;
+    width:80px!important;
+    min-width:80px!important;
+    max-width:80px!important;
+    height:34px!important;
+    min-height:34px!important;
+    margin:0!important;
+    padding:3px 5px!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:4px!important;
+    border-radius:10px!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+  }
+
+  .ha-header .ha-location .pin{
+    width:22px!important;
+    height:22px!important;
+    min-width:22px!important;
+    flex:0 0 22px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:11px!important;
+    border-radius:7px!important;
+  }
+
+  .ha-header .ha-location > div{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-location b{
+    display:block!important;
+    margin:0!important;
+    font-size:8px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ha-header .ha-location small{
+    display:none!important;
+  }
+
+  .ha-header .ha-bell,
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    width:32px!important;
+    height:32px!important;
+    min-width:32px!important;
+    min-height:32px!important;
+    max-width:32px!important;
+    max-height:32px!important;
+    flex:0 0 32px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:9px!important;
+    font-size:14px!important;
+    line-height:1!important;
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+  }
+
+  .ha-header .ha-bell{order:3!important;}
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{order:4!important;}
+
+  /* Search stays directly under the compact header */
+  .ha-search-wrap{
+    position:relative!important;
+    top:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    inset:auto!important;
+    transform:none!important;
+    clear:both!important;
+    float:none!important;
+    width:calc(100% - 16px)!important;
+    max-width:none!important;
+    margin:-18px auto 16px!important;
+    padding:0!important;
+    z-index:30!important;
+  }
+
+  .ha-search{
+    width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:4px 5px!important;
+    display:grid!important;
+    grid-template-columns:32px minmax(0,1fr) 32px!important;
+    align-items:center!important;
+    gap:4px!important;
+    border-radius:14px!important;
+    overflow:hidden!important;
+  }
+
+  .ha-search input{
+    width:100%!important;
+    min-width:0!important;
+    height:32px!important;
+    min-height:32px!important;
+    margin:0!important;
+    padding:0 9px!important;
+    font-size:10.5px!important;
+    border-radius:9px!important;
+  }
+
+  .ha-search .glass,
+  .ha-search .mic{
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    margin:0 auto!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:8px!important;
+    font-size:13px!important;
+    position:static!important;
+    transform:none!important;
+  }
+}
+
+@media (max-width:420px){
+  .ha-header{
+    min-height:88px!important;
+    padding:7px 7px 28px!important;
+  }
+
+  .ha-header .ha-topline{
+    gap:4px!important;
+  }
+
+  .ha-header .ha-logo{
+    width:31px!important;
+    height:31px!important;
+    min-width:31px!important;
+    min-height:31px!important;
+    flex-basis:31px!important;
+  }
+
+  .ha-header .ha-logo img{
+    width:25px!important;
+    height:25px!important;
+  }
+
+  .ha-header .ha-brand-text strong{
+    font-size:12.5px!important;
+  }
+
+  .ha-header .ha-location{
+    flex-basis:70px!important;
+    width:70px!important;
+    min-width:70px!important;
+    max-width:70px!important;
+    height:31px!important;
+    min-height:31px!important;
+    padding:3px 4px!important;
+  }
+
+  .ha-header .ha-location .pin{
+    width:20px!important;
+    height:20px!important;
+    min-width:20px!important;
+    flex-basis:20px!important;
+    font-size:10px!important;
+  }
+
+  .ha-header .ha-location b{
+    font-size:7.5px!important;
+  }
+
+  .ha-header .ha-bell,
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    max-width:29px!important;
+    max-height:29px!important;
+    flex-basis:29px!important;
+    font-size:13px!important;
+  }
+
+  .ha-search-wrap{
+    width:calc(100% - 12px)!important;
+    margin:-16px auto 14px!important;
+  }
+}
