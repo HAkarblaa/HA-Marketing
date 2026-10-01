@@ -27,3 +27,26 @@
 .ha-card-editor-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.ha-card-editor-actions button{border:0;border-radius:12px;padding:10px 14px;font:inherit;font-weight:800;cursor:pointer}.ha-card-editor-save{background:#0878e6;color:#fff}.ha-card-editor-reset{background:#fff0f1;color:#aa2339;border:1px solid #ffd8de!important}.ha-card-editor-cancel{background:#eef4f7;color:#173554}.ha-card-editor-note{font-size:11px;color:#71849a;line-height:1.6;margin-top:8px}
 .ha-card-editor-toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:2147483646;background:#102948;color:#fff;border-radius:12px;padding:10px 14px;font:700 12px Arial;box-shadow:0 10px 28px rgba(0,0,0,.2);display:none}.ha-card-editor-toast.show{display:block}
 @media(max-width:640px){.ha-card-editor-grid{grid-template-columns:1fr}.ha-card-editor-modal{padding:14px;border-radius:20px}.ha-card-edit-btn{width:31px!important;height:31px!important;top:6px!important;left:6px!important}.ha-recent-item,.ha-smart-card,.ha-feature{border-radius:17px!important}}
+
+
+/* Compact cards: keep admin edit control tiny so card size never changes */
+.ha-recent-item>.ha-card-edit-btn,
+.ha-smart-card>.ha-card-edit-btn,
+.ha-feature>.ha-card-edit-btn{
+  width:24px!important;
+  height:24px!important;
+  top:5px!important;
+  left:5px!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+}
+
+/* Uploaded admin image fills the compact card without resizing it */
+.ha-recent-item>.ha-card-custom-bg,
+.ha-smart-card>.ha-card-custom-bg,
+.ha-feature>.ha-card-custom-bg{
+  inset:0!important;
+  border-radius:inherit!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}

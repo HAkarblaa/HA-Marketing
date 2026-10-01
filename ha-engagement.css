@@ -2,117 +2,134 @@
 .ha-engage{margin:18px 0;display:grid;gap:14px}.ha-engage-top{display:grid;grid-template-columns:1.4fr .9fr;gap:12px}.ha-engage-card{background:#fff;border:1px solid #e8eee9;border-radius:22px;padding:16px;box-shadow:0 9px 28px rgba(15,72,52,.07);position:relative;overflow:hidden}.ha-engage-card:before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(7,136,95,.07);left:-35px;top:-45px;pointer-events:none}.ha-welcome small,.ha-mini-label{display:block;color:#68776f;font-size:12px;margin-bottom:5px}.ha-welcome h3{margin:0 0 7px;font-size:20px;color:#123f31}.ha-welcome p{margin:0;color:#66756e;line-height:1.7;font-size:14px}.ha-stats{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.ha-pill{display:inline-flex;align-items:center;gap:7px;background:#f2faf6;border:1px solid #dbeee4;border-radius:999px;padding:8px 11px;font-size:12px;color:#285b49}.ha-pill b{font-size:14px;color:#087f5b}.ha-daily{display:flex;flex-direction:column;justify-content:center;min-height:140px}.ha-daily strong{font-size:30px;color:#087f5b;margin:3px 0}.ha-daily p{margin:0;color:#68776f;font-size:13px;line-height:1.6}.ha-smart-title{display:flex;justify-content:space-between;align-items:center;gap:10px}.ha-smart-title h3{margin:0;font-size:18px;color:#173f32}.ha-smart-title span{font-size:12px;color:#73847c}.ha-recent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.ha-recent-item{display:flex;align-items:center;gap:10px;text-decoration:none;color:#173f32;background:#f8fbf9;border:1px solid #e7efe9;border-radius:16px;padding:11px;min-width:0;transition:transform .15s ease,box-shadow .15s ease}.ha-recent-item:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(15,72,52,.08)}.ha-recent-ico{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#fff;font-size:20px;flex:none}.ha-recent-item b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ha-recent-item small{display:block;color:#7b8983;font-size:11px;margin-top:3px}.ha-admin-banner{display:none;background:linear-gradient(135deg,#0a865f,#075b43);color:#fff;border-radius:20px;padding:16px;text-decoration:none;box-shadow:0 10px 24px rgba(7,91,67,.18)}.ha-admin-banner.show{display:flex;align-items:center;justify-content:space-between;gap:12px}.ha-admin-banner b{font-size:16px}.ha-admin-banner small{display:block;color:#d8f4e8;margin-top:4px}.ha-engage-note{display:none;margin-top:12px;background:#fff8e7;border:1px solid #f3dfad;color:#74551a;border-radius:15px;padding:11px 13px;font-size:13px;line-height:1.7}.ha-engage-note.show{display:block}@media(max-width:760px){.ha-engage-top{grid-template-columns:1fr}.ha-recent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ha-engage-card{border-radius:18px;padding:14px}}@media(prefers-reduced-motion:reduce){.ha-recent-item{transition:none}}
 
 
-/* ===== Premium refresh: engagement / recent sections ===== */
+/* ===== 2026-10-01: compact premium cards ===== */
 .ha-engage{
-  gap:14px!important;
-  margin:18px 0 22px!important;
-}
-.ha-engage-top{
   gap:12px!important;
 }
 .ha-engage-card{
-  border-radius:24px!important;
-  border:1px solid rgba(255,255,255,.9)!important;
-  box-shadow:0 14px 30px rgba(20,57,82,.11)!important;
-}
-.ha-engage-card:before{
-  width:150px!important;
-  height:150px!important;
-  background:rgba(255,255,255,.13)!important;
+  border-radius:20px!important;
+  box-shadow:0 10px 24px rgba(18,58,82,.09)!important;
 }
 
-/* بطاقة كل احتياجاتك */
-.ha-engage-card.ha-welcome{
-  background:linear-gradient(135deg,#0a89e8 0%,#09b485 100%)!important;
-  color:#fff!important;
-}
-.ha-welcome small,
-.ha-welcome h3,
-.ha-welcome p{
-  color:#fff!important;
-}
-.ha-welcome small{opacity:.86!important}
-.ha-welcome p{opacity:.9!important}
-.ha-welcome .ha-pill{
-  background:rgba(255,255,255,.17)!important;
-  border:1px solid rgba(255,255,255,.27)!important;
-  color:#fff!important;
-  backdrop-filter:blur(5px);
-}
-.ha-welcome .ha-pill b{color:#fff!important}
-
-/* مكافأة الدخول */
-.ha-engage-card.ha-daily{
-  background:linear-gradient(145deg,#ffd65b,#ff9d1b)!important;
-}
-.ha-daily .ha-mini-label,
-.ha-daily strong,
-.ha-daily p{
-  color:#fff!important;
-}
-.ha-daily strong{
-  font-size:36px!important;
-  text-shadow:0 3px 10px rgba(120,68,0,.14)!important;
-}
-
-/* استمر من حيث توقفت */
+/* استمر من حيث توقفت - يبقى مختصر بنفس الحجم */
 .ha-engage-card:has(.ha-recent-grid){
-  background:linear-gradient(145deg,#ffffff,#f5f9ff)!important;
-  padding:17px!important;
-}
-.ha-smart-title h3{
-  color:#102a49!important;
-  font-size:20px!important;
-  font-weight:900!important;
-}
-.ha-smart-title span{
-  color:#74859a!important;
-  font-size:11px!important;
+  padding:14px!important;
+  background:linear-gradient(145deg,#ffffff,#f6faff)!important;
 }
 .ha-recent-grid{
-  gap:11px!important;
+  gap:9px!important;
 }
 .ha-recent-item{
-  min-height:76px!important;
-  padding:12px!important;
+  min-height:68px!important;
+  padding:9px 11px!important;
+  gap:9px!important;
   border:0!important;
-  border-radius:18px!important;
-  box-shadow:0 10px 22px rgba(18,58,82,.11)!important;
+  border-radius:17px!important;
   color:#fff!important;
+  box-shadow:0 9px 20px rgba(18,58,82,.11)!important;
+  overflow:hidden!important;
+  position:relative!important;
+  isolation:isolate!important;
 }
-.ha-recent-item:nth-child(4n+1){background:linear-gradient(145deg,#3ed966,#0bac45)!important}
-.ha-recent-item:nth-child(4n+2){background:linear-gradient(145deg,#48c7ff,#1380e8)!important}
-.ha-recent-item:nth-child(4n+3){background:linear-gradient(145deg,#ffc84f,#f59a11)!important}
-.ha-recent-item:nth-child(4n+4){background:linear-gradient(145deg,#bc72ff,#7130df)!important}
+.ha-recent-item::before{
+  content:"";
+  position:absolute;
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  right:-24px;
+  top:-35px;
+  background:rgba(255,255,255,.13);
+  z-index:-1;
+}
+.ha-recent-item:nth-child(4n+1){background:linear-gradient(145deg,#36d96a,#08a947)!important}
+.ha-recent-item:nth-child(4n+2){background:linear-gradient(145deg,#43c8ff,#147ee3)!important}
+.ha-recent-item:nth-child(4n+3){background:linear-gradient(145deg,#ffc948,#f49a12)!important}
+.ha-recent-item:nth-child(4n+4){background:linear-gradient(145deg,#bd73ff,#7130df)!important}
 .ha-recent-ico{
-  width:44px!important;
-  height:44px!important;
-  border-radius:14px!important;
-  background:rgba(255,255,255,.9)!important;
-  box-shadow:0 7px 15px rgba(20,45,70,.13)!important;
+  width:38px!important;
+  height:38px!important;
+  flex:0 0 38px!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:0 5px 12px rgba(20,50,70,.12)!important;
+  font-size:19px!important;
 }
 .ha-recent-item b{
   color:#fff!important;
-  font-size:14px!important;
+  font-size:12px!important;
   font-weight:900!important;
+  line-height:1.15!important;
 }
 .ha-recent-item small{
-  color:rgba(255,255,255,.9)!important;
-  font-size:10px!important;
+  color:rgba(255,255,255,.90)!important;
+  font-size:9px!important;
+  margin-top:2px!important;
 }
 
-/* موبايل */
+/* بطاقتا التجربة ومكافأة الدخول - أصغر وأوضح */
+.ha-engage-top{
+  gap:10px!important;
+}
+.ha-engage-card.ha-welcome{
+  background:linear-gradient(145deg,#1688ed,#08ad84)!important;
+  color:#fff!important;
+}
+.ha-welcome small,.ha-welcome h3,.ha-welcome p{
+  color:#fff!important;
+}
+.ha-welcome p,.ha-welcome small{opacity:.9!important}
+.ha-welcome .ha-pill{
+  background:rgba(255,255,255,.15)!important;
+  border-color:rgba(255,255,255,.25)!important;
+  color:#fff!important;
+}
+.ha-welcome .ha-pill b{color:#fff!important}
+.ha-engage-card.ha-daily{
+  background:linear-gradient(145deg,#ffd45c,#ff9a18)!important;
+  color:#fff!important;
+}
+.ha-daily .ha-mini-label,.ha-daily strong,.ha-daily p{
+  color:#fff!important;
+}
+
 @media(max-width:760px){
-  .ha-engage-top{grid-template-columns:1fr 1fr!important}
-  .ha-engage-card{padding:12px!important;border-radius:18px!important}
-  .ha-welcome h3{font-size:16px!important}
-  .ha-welcome p,.ha-daily p{font-size:10px!important;line-height:1.45!important}
-  .ha-daily strong{font-size:28px!important}
-  .ha-recent-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
-  .ha-recent-item{min-height:68px!important;padding:9px!important;border-radius:16px!important}
-  .ha-recent-ico{width:38px!important;height:38px!important}
-  .ha-recent-item b{font-size:12px!important}
-  .ha-recent-item small{font-size:9px!important}
+  .ha-engage-top{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .ha-engage-card{
+    padding:11px!important;
+    border-radius:17px!important;
+  }
+  .ha-welcome h3{
+    font-size:14px!important;
+  }
+  .ha-welcome p,.ha-daily p{
+    font-size:9px!important;
+    line-height:1.4!important;
+  }
+  .ha-daily{
+    min-height:100px!important;
+  }
+  .ha-daily strong{
+    font-size:24px!important;
+  }
+  .ha-recent-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+  .ha-recent-item{
+    min-height:62px!important;
+    padding:8px!important;
+    border-radius:15px!important;
+  }
+  .ha-recent-ico{
+    width:34px!important;
+    height:34px!important;
+    flex-basis:34px!important;
+  }
+  .ha-recent-item b{font-size:11px!important}
+  .ha-recent-item small{font-size:8px!important}
 }
 @media(max-width:430px){
   .ha-engage-top{grid-template-columns:1fr!important}
