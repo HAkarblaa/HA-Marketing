@@ -972,6 +972,302 @@ body.ha-ui-final.ha-family-shop #superAdminAddStoreBox{background-image:url("dat
   }
 }
 </style>
+<style id="ha-mobile-header-final-compact-20261001">
+/* ===== إصلاح نهائي للهيدر على الموبايل ===== */
+@media (max-width:700px){
+
+  .ha-header{
+    min-height:88px!important;
+    height:auto!important;
+    padding:7px 8px 28px!important;
+    border-radius:0 0 19px 19px!important;
+    overflow:hidden!important;
+  }
+
+  /* سطر واحد مرتب:
+     يسار: القائمة + الجرس | الوسط: الموقع | يمين: الشعار والاسم */
+  .ha-header .ha-topline{
+    width:100%!important;
+    min-height:38px!important;
+    height:38px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    grid-template-columns:30px 30px 78px minmax(105px,1fr)!important;
+    grid-template-areas:"menu bell location brand"!important;
+    align-items:center!important;
+    justify-content:stretch!important;
+    gap:4px!important;
+    direction:ltr!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-brand{
+    grid-area:brand!important;
+    min-width:0!important;
+    max-width:none!important;
+    width:auto!important;
+    height:36px!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    flex-direction:row-reverse!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+    direction:rtl!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-logo{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+    flex:0 0 34px!important;
+    margin:0!important;
+    padding:0!important;
+    border-radius:10px!important;
+  }
+
+  .ha-header .ha-logo img{
+    width:27px!important;
+    height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+    object-fit:contain!important;
+  }
+
+  .ha-header .ha-brand-text{
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    text-align:right!important;
+  }
+
+  .ha-header .ha-brand-text strong{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:12.5px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ha-header .ha-brand-text small{
+    display:none!important;
+  }
+
+  .ha-header .ha-location{
+    grid-area:location!important;
+    width:78px!important;
+    min-width:78px!important;
+    max-width:78px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    margin:0!important;
+    padding:3px 4px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:3px!important;
+    border-radius:9px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+  }
+
+  .ha-header .ha-location .pin{
+    width:20px!important;
+    height:20px!important;
+    min-width:20px!important;
+    min-height:20px!important;
+    flex:0 0 20px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:7px!important;
+    font-size:10px!important;
+  }
+
+  .ha-header .ha-location > div{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+
+  .ha-header .ha-location b{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:7.5px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ha-header .ha-location small{
+    display:none!important;
+  }
+
+  .ha-header .ha-bell{
+    grid-area:bell!important;
+  }
+
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    grid-area:menu!important;
+  }
+
+  .ha-header .ha-bell,
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    max-width:29px!important;
+    max-height:29px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:9px!important;
+    font-size:13px!important;
+    line-height:1!important;
+    box-sizing:border-box!important;
+  }
+
+  /* البحث مباشرة تحت الهيدر بدون فراغ أو تداخل */
+  .ha-search-wrap{
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+    float:none!important;
+    clear:both!important;
+    width:calc(100% - 12px)!important;
+    max-width:none!important;
+    margin:-14px auto 16px!important;
+    padding:0!important;
+    z-index:30!important;
+  }
+
+  .ha-search{
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+    width:100%!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding:4px!important;
+    display:grid!important;
+    grid-template-columns:30px minmax(0,1fr) 30px!important;
+    align-items:center!important;
+    gap:4px!important;
+    border-radius:13px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  .ha-search input{
+    position:static!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:31px!important;
+    min-height:31px!important;
+    margin:0!important;
+    padding:0 9px!important;
+    border-radius:9px!important;
+    box-sizing:border-box!important;
+    font-size:10.5px!important;
+  }
+
+  .ha-search .glass,
+  .ha-search .mic{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:27px!important;
+    height:27px!important;
+    min-width:27px!important;
+    min-height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+    margin:0 auto!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:8px!important;
+    font-size:12px!important;
+  }
+}
+
+/* شاشات صغيرة جداً */
+@media (max-width:390px){
+  .ha-header{
+    min-height:84px!important;
+    padding:6px 6px 27px!important;
+  }
+
+  .ha-header .ha-topline{
+    grid-template-columns:28px 28px 70px minmax(92px,1fr)!important;
+    gap:3px!important;
+  }
+
+  .ha-header .ha-logo{
+    width:31px!important;
+    height:31px!important;
+    min-width:31px!important;
+    min-height:31px!important;
+    flex-basis:31px!important;
+  }
+
+  .ha-header .ha-logo img{
+    width:25px!important;
+    height:25px!important;
+  }
+
+  .ha-header .ha-brand-text strong{
+    font-size:11.5px!important;
+  }
+
+  .ha-header .ha-location{
+    width:70px!important;
+    min-width:70px!important;
+    max-width:70px!important;
+    height:30px!important;
+    min-height:30px!important;
+    max-height:30px!important;
+  }
+
+  .ha-header .ha-bell,
+  .ha-header .ha-menu-btn,
+  .ha-header .ha-page-menu{
+    width:27px!important;
+    height:27px!important;
+    min-width:27px!important;
+    min-height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+  }
+
+  .ha-search-wrap{
+    width:calc(100% - 10px)!important;
+    margin:-13px auto 14px!important;
+  }
+}
+</style>
 </head><body class="ha-premium-section-page ha-all-sections-layout ha-ui-final ha-family-shop"><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
