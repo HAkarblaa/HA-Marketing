@@ -1,0 +1,49 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة صور مربعات الرئيسية - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f8fb;color:#102948}.wrap{width:min(1050px,94%);margin:24px auto 70px}.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.top h1{font-size:25px;margin:0;flex:1}.btn,button{border:0;border-radius:13px;padding:11px 15px;cursor:pointer;text-decoration:none;font-weight:800;font:inherit}.primary{background:#0878e6;color:#fff}.green{background:#07885f;color:#fff}.light{background:#fff;color:#173554;border:1px solid #dce8ef}.danger{background:#fff0f1;color:#a52336;border:1px solid #ffd7dd}.gate,.msg{background:#fff;border:1px solid #dfe9ef;border-radius:16px;padding:14px;box-shadow:0 8px 22px #1735540d}.msg{margin:12px 0;display:none}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#fff;border:1px solid #dfe9ef;border-radius:22px;padding:14px;box-shadow:0 12px 28px #17355410}.card h2{font-size:19px;margin:0 0 10px}.preview{width:100%;aspect-ratio:1.86/1;border-radius:17px;overflow:hidden;background:#eef4f8;border:1px solid #e2edf2;display:grid;place-items:center;margin-bottom:12px}.preview img{width:100%;height:100%;object-fit:fill;display:block}.preview span{color:#8291a3;font-size:13px}.field{margin:10px 0}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px;color:#4b6078}.field input[type=text],.field input[type=url]{width:100%;border:1px solid #cfdee7;border-radius:12px;padding:11px;font:inherit;outline:none}.field input[type=file]{width:100%;padding:9px;border:1px dashed #bed1dc;border-radius:12px;background:#f8fbfd}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.muted{color:#74879b;font-size:12px;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#edf7ff;color:#0878e6;font-size:11px;font-weight:800;margin-right:6px}@media(max-width:720px){.grid{grid-template-columns:1fr}.top h1{font-size:21px}}
+</style></head><body><div class="wrap"><div class="top"><h1>🖼️ إدارة صور مربعات الصفحة الرئيسية</h1><a class="btn light" href="admin-panel.html">← لوحة الإدارة</a><a class="btn light" href="index.html">معاينة الرئيسية</a></div><div id="gate" class="gate">جاري التحقق من صلاحية الأدمن الرئيسي...</div><div id="panel" style="display:none"><div id="msg" class="msg"></div><p class="muted">يمكنك رفع صورة من الجهاز أو وضع رابط صورة. يفضّل أن تكون الصورة بنسبة قريبة من <b>1.86 : 1</b> مثل 1200×645 حتى تظهر كاملة داخل المربع بدون قص.</p><div id="cards" class="grid"></div></div></div><script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const defs=[
+ {key:'shop',label:'التسوق',href:'shop.html',fallback:'shop.jpg'},
+ {key:'services',label:'طلب خدمة',href:'services.html',fallback:'services.jpg'},
+ {key:'study',label:'الدراسة',href:'study.html',fallback:'study.jpg'},
+ {key:'transport',label:'النقل والتكسي',href:'taxi-delivery.html',fallback:'transport.jpg'},
+ {key:'entertainment',label:'الترفيه',href:'entertainment.html',fallback:'entertainment.jpg'},
+ {key:'suggestions',label:'مقترح متجر',href:'suggestions.html',fallback:'suggestions.jpg'}
+];
+let me=null,isSuper=false,rows={};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function showMsg(t,ok=true){msg.style.display='block';msg.style.background=ok?'#ecfbf4':'#fff0f1';msg.style.color=ok?'#087f5b':'#a52336';msg.textContent=t;setTimeout(()=>msg.style.display='none',4500)}
+function render(){
+ cards.innerHTML=defs.map(d=>{const r=rows[d.key];const img=r?.image_url||d.fallback;return `<section class="card" data-key="${d.key}"><h2>${d.label}<span class="badge">${d.key}</span></h2><div class="preview" id="pv-${d.key}"><img src="${esc(img)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">لا توجد معاينة</span></div><div class="field"><label>رفع صورة من الجهاز</label><input id="file-${d.key}" type="file" accept="image/*"></div><div class="field"><label>أو رابط الصورة</label><input id="url-${d.key}" type="url" value="${esc(r?.image_url||'')}" placeholder="https://..."></div><div class="actions"><button class="primary" onclick="saveCard('${d.key}',this)">حفظ الصورة</button><button class="danger" onclick="restoreCard('${d.key}',this)">رجوع للافتراضية</button><a class="btn light" href="${d.href}" target="_blank">فتح القسم</a></div></section>`}).join('');
+ defs.forEach(d=>{const f=document.getElementById('file-'+d.key);f?.addEventListener('change',()=>{const file=f.files?.[0];if(!file)return;const im=document.querySelector('#pv-'+d.key+' img');im.src=URL.createObjectURL(file);im.style.display='block';im.nextElementSibling.style.display='none'})})
+}
+async function init(){
+ const {data:{session}}=await db.auth.getSession(); if(!session){gate.textContent='يجب تسجيل الدخول أولاً.';return} me=session.user;
+ try{const r=await db.rpc('is_super_admin');isSuper=!r.error&&r.data===true}catch(_e){}
+ if(!isSuper){try{const a=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',me.id).maybeSingle();isSuper=!!(a.data?.is_active&&a.data?.is_super_admin)}catch(_e){}}
+ if(!isSuper){gate.textContent='هذه الصفحة للأدمن الرئيسي فقط.';return}
+ gate.style.display='none';panel.style.display='block';await load();
+}
+async function load(){
+ const {data,error}=await db.from('home_category_cards').select('section_key,image_url,is_active,updated_at');
+ if(error){showMsg('شغّل ملف HOME-CATEGORY-CARDS-SETUP.sql مرة واحدة داخل Supabase: '+error.message,false);rows={};render();return}
+ rows={};(data||[]).forEach(x=>rows[x.section_key]=x);render();
+}
+async function uploadImage(key,file){
+ if(!file)return null;
+ if(!String(file.type||'').startsWith('image/'))throw new Error('اختر ملف صورة فقط.');
+ if(file.size>8*1024*1024)throw new Error('حجم الصورة يجب أن يكون أقل من 8MB.');
+ const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';
+ const path=key+'/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+ const {error}=await db.storage.from('home-category-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||undefined});
+ if(error)throw error;
+ return db.storage.from('home-category-images').getPublicUrl(path).data.publicUrl;
+}
+async function saveCard(key,btn){
+ if(!isSuper)return;try{btn.disabled=true;showMsg('جاري الحفظ...');const file=document.getElementById('file-'+key).files?.[0];let url=document.getElementById('url-'+key).value.trim();if(file)url=await uploadImage(key,file);if(!url)throw new Error('اختر صورة أو ضع رابط صورة.');const {error}=await db.from('home_category_cards').upsert({section_key:key,image_url:url,is_active:true,updated_by:me.id,updated_at:new Date().toISOString()},{onConflict:'section_key'});if(error)throw error;showMsg('✅ تم حفظ صورة القسم وستظهر في الرئيسية.');await load()}catch(e){showMsg('❌ '+(e?.message||e),false)}finally{btn.disabled=false}
+}
+async function restoreCard(key,btn){
+ if(!isSuper)return;if(!confirm('ترجع صورة هذا القسم إلى الصورة الافتراضية؟'))return;try{btn.disabled=true;const {error}=await db.from('home_category_cards').delete().eq('section_key',key);if(error)throw error;showMsg('✅ رجعت الصورة الافتراضية.');await load()}catch(e){showMsg('❌ '+(e?.message||e),false)}finally{btn.disabled=false}
+}
+init();
+</script></body></html>

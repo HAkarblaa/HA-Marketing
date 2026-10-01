@@ -1112,4 +1112,59 @@ body{
   if(window.supabase)checkAdmin();
   else window.addEventListener('load',checkAdmin,{once:true});
 })();
-</script></body></html>
+</script><script id="ha-admin-home-card-images-loader">
+(function(){
+  const SUPABASE_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+  const SUPABASE_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+  const selectors={
+    shop:'shop.html',
+    services:'services.html',
+    study:'study.html',
+    transport:'taxi-delivery.html',
+    entertainment:'entertainment.html',
+    suggestions:'suggestions.html'
+  };
+
+  function cssUrl(v){
+    return String(v||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/[\r\n]/g,'');
+  }
+
+  async function loadAdminCardImages(){
+    try{
+      if(!window.supabase) return;
+      const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+        auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}
+      });
+      const {data,error}=await db.from('home_category_cards')
+        .select('section_key,image_url,is_active')
+        .eq('is_active',true);
+      if(error || !Array.isArray(data) || !data.length) return;
+
+      let css='';
+      data.forEach(row=>{
+        const href=selectors[row.section_key];
+        const url=cssUrl(row.image_url);
+        if(!href || !url) return;
+        css += `.ha-main .ha-cats .ha-cat[href="${href}"]::before{background-image:url("${url}")!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important;}\n`;
+      });
+      if(!css) return;
+      let st=document.getElementById('ha-admin-card-image-overrides');
+      if(!st){st=document.createElement('style');st.id='ha-admin-card-image-overrides';document.head.appendChild(st)}
+      st.textContent=css;
+    }catch(_e){}
+  }
+
+  function boot(){
+    if(window.supabase){loadAdminCardImages();return;}
+    let tries=0;
+    const timer=setInterval(()=>{
+      tries++;
+      if(window.supabase){clearInterval(timer);loadAdminCardImages()}
+      else if(tries>40)clearInterval(timer);
+    },150);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
+</body></html>
