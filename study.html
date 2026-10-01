@@ -249,6 +249,150 @@
   }
 }
 </style>
+<style id="ha-searchbar-stable-position-20261001">
+/* ===== تثبيت مكان شريط البحث بكل الأقسام ===== */
+.ha-search-wrap{
+  position:relative!important;
+  display:block!important;
+  clear:both!important;
+  float:none!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  inset:auto!important;
+  transform:none!important;
+  width:calc(100% - 40px)!important;
+  max-width:1140px!important;
+  margin:-18px auto 26px!important;
+  padding:0!important;
+  z-index:20!important;
+  box-sizing:border-box!important;
+}
+
+.ha-search{
+  position:relative!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  transform:none!important;
+  width:100%!important;
+  min-height:50px!important;
+  margin:0!important;
+  padding:5px 6px!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) 38px!important;
+  align-items:center!important;
+  gap:6px!important;
+  border-radius:16px!important;
+  box-sizing:border-box!important;
+  background:rgba(255,255,255,.98)!important;
+  border:1px solid #dfe9ef!important;
+  box-shadow:0 10px 24px rgba(20,59,82,.10)!important;
+  overflow:hidden!important;
+}
+
+.ha-search input{
+  position:static!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:38px!important;
+  min-height:38px!important;
+  margin:0!important;
+  padding:0 12px!important;
+  border-radius:11px!important;
+  border:1px solid #edf2f5!important;
+  outline:0!important;
+  box-sizing:border-box!important;
+  background:#fbfdff!important;
+  font-size:12px!important;
+}
+
+.ha-search .glass,
+.ha-search .mic{
+  position:static!important;
+  transform:none!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  box-sizing:border-box!important;
+  font-size:15px!important;
+}
+
+/* يمنع أي محتوى من الصعود فوق شريط البحث */
+.ha-search-wrap + .ha-main,
+.ha-search-wrap + main,
+.ha-search-wrap ~ .ha-main:first-of-type{
+  position:relative!important;
+  z-index:1!important;
+  margin-top:0!important;
+}
+
+/* الهاتف */
+@media(max-width:700px){
+  .ha-search-wrap{
+    width:calc(100% - 16px)!important;
+    max-width:none!important;
+    margin:-12px auto 18px!important;
+    z-index:20!important;
+  }
+  .ha-search{
+    min-height:46px!important;
+    grid-template-columns:34px minmax(0,1fr) 34px!important;
+    gap:4px!important;
+    padding:4px 5px!important;
+    border-radius:14px!important;
+  }
+  .ha-search input{
+    height:34px!important;
+    min-height:34px!important;
+    padding:0 10px!important;
+    border-radius:10px!important;
+    font-size:11px!important;
+  }
+  .ha-search .glass,
+  .ha-search .mic{
+    width:30px!important;
+    height:30px!important;
+    min-width:30px!important;
+    min-height:30px!important;
+    border-radius:9px!important;
+    font-size:13px!important;
+  }
+}
+
+/* الشاشات الضيقة جداً */
+@media(max-width:420px){
+  .ha-search-wrap{
+    width:calc(100% - 12px)!important;
+    margin:-10px auto 16px!important;
+  }
+  .ha-search{
+    min-height:44px!important;
+    grid-template-columns:32px minmax(0,1fr) 32px!important;
+  }
+  .ha-search input{
+    height:32px!important;
+    min-height:32px!important;
+    font-size:10.5px!important;
+  }
+  .ha-search .glass,
+  .ha-search .mic{
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    min-height:28px!important;
+  }
+}
+</style>
 </head><body class="ha-premium-section-page ha-all-sections-layout ha-ui-final ha-family-study"><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
