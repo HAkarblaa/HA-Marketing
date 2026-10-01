@@ -224,3 +224,124 @@
   }
   .ha-slide h3{font-size:20px!important}
 }
+
+
+/* ===== تصغير السلايدر المتحرك بكل الأقسام ===== */
+.ha-smart-slider,
+.ha-slider-track,
+.ha-slider-loading,
+.ha-slide{
+  height:220px!important;
+  min-height:220px!important;
+}
+
+.ha-slide-content{
+  height:220px!important;
+  min-height:220px!important;
+  padding:26px 44px 38px!important;
+}
+
+.ha-slide h3{
+  font-size:clamp(23px,2.8vw,34px)!important;
+}
+
+.ha-slide p{
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+
+.ha-slide-badge{
+  padding:5px 9px!important;
+  font-size:9px!important;
+  margin-bottom:7px!important;
+}
+
+.ha-slide-details{
+  margin-top:11px!important;
+  padding:9px 15px!important;
+  font-size:10px!important;
+}
+
+.ha-slider-arrow{
+  width:38px!important;
+  height:38px!important;
+  font-size:21px!important;
+  border-radius:11px!important;
+}
+
+.ha-slider-dots{
+  bottom:9px!important;
+  padding:5px 7px!important;
+}
+
+.ha-slider-count{
+  top:9px!important;
+  left:9px!important;
+  padding:4px 8px!important;
+  font-size:8px!important;
+}
+
+@media(max-width:680px){
+  .ha-smart-slider,
+  .ha-slider-track,
+  .ha-slider-loading,
+  .ha-slide{
+    height:165px!important;
+    min-height:165px!important;
+    border-radius:18px!important;
+  }
+
+  .ha-slide-content{
+    height:165px!important;
+    min-height:165px!important;
+    width:79%!important;
+    padding:18px 38px 29px 15px!important;
+  }
+
+  .ha-slide h3{font-size:18px!important}
+  .ha-slide p{font-size:9px!important}
+  .ha-slide-badge{font-size:7px!important;padding:3px 7px!important}
+  .ha-slide-details{
+    margin-top:7px!important;
+    padding:6px 10px!important;
+    font-size:8.5px!important;
+  }
+  .ha-slider-arrow{
+    width:30px!important;
+    height:30px!important;
+    font-size:17px!important;
+    border-radius:9px!important;
+  }
+  .ha-slider-dots{
+    bottom:6px!important;
+    gap:5px!important;
+    padding:4px 6px!important;
+  }
+  .ha-slider-dot{
+    width:6px!important;
+    height:6px!important;
+  }
+  .ha-slider-dot.active{
+    width:18px!important;
+  }
+}
+
+@media(max-width:420px){
+  .ha-smart-slider,
+  .ha-slider-track,
+  .ha-slider-loading,
+  .ha-slide{
+    height:150px!important;
+    min-height:150px!important;
+  }
+
+  .ha-slide-content{
+    height:150px!important;
+    min-height:150px!important;
+    width:82%!important;
+    padding:16px 35px 27px 13px!important;
+  }
+
+  .ha-slide h3{font-size:16px!important}
+  .ha-slide p{font-size:8px!important}
+}
