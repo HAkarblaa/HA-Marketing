@@ -98,3 +98,118 @@ body.ha-unified-ui :is(.bottom,.bottom-nav,.bottomBar,.bottom-bar,nav.bottom) a{
  body.ha-unified-ui :is(.card,.box,.panel,.tile,.qcard,.category,.role,.tool,.order,.order-row,.request-card,.provider-card,.service-card,.product-card,.store-card,.status-card,.info-card){border-radius:18px!important}
 }
 @media(max-width:400px){.ha-cats{grid-template-columns:repeat(3,minmax(0,1fr))}.ha-brand-text small{display:none}.ha-location{max-width:126px}.ha-location .pin{display:none}.ha-banner-art{font-size:68px}.ha-banner h3{font-size:20px}.ha-smart-grid{grid-template-columns:1fr}.ha-smart-card:nth-child(3){grid-column:auto}}
+
+
+/* ===== Premium refresh: suggested / nearby cards ===== */
+.ha-smart-section{
+  margin:20px auto 105px!important;
+}
+.ha-smart-head{
+  margin-bottom:10px!important;
+}
+.ha-smart-head h3{
+  color:#102a49!important;
+  font-size:22px!important;
+  font-weight:900!important;
+}
+.ha-smart-note{
+  color:#75869a!important;
+  font-size:11px!important;
+}
+
+.ha-smart-grid{
+  gap:12px!important;
+}
+.ha-smart-card{
+  min-height:88px!important;
+  border:0!important;
+  border-radius:20px!important;
+  padding:13px 14px!important;
+  color:#fff!important;
+  box-shadow:0 12px 26px rgba(20,57,82,.12)!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+.ha-smart-card:nth-child(8n+1){background:linear-gradient(145deg,#42d96a,#0eae48)!important}
+.ha-smart-card:nth-child(8n+2){background:linear-gradient(145deg,#49c8ff,#1481e7)!important}
+.ha-smart-card:nth-child(8n+3){background:linear-gradient(145deg,#ff7ea6,#ed3d72)!important}
+.ha-smart-card:nth-child(8n+4){background:linear-gradient(145deg,#ffc84f,#f39b16)!important}
+.ha-smart-card:nth-child(8n+5){background:linear-gradient(145deg,#bc74ff,#7130df)!important}
+.ha-smart-card:nth-child(8n+6){background:linear-gradient(145deg,#42ddd5,#08aeb1)!important}
+.ha-smart-card:nth-child(8n+7){background:linear-gradient(145deg,#ff8b68,#ed5d3a)!important}
+.ha-smart-card:nth-child(8n+8){background:linear-gradient(145deg,#6f9cff,#4569dd)!important}
+.ha-smart-card:before{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  left:-22px;
+  top:-30px;
+  pointer-events:none;
+}
+.ha-smart-ico{
+  width:48px!important;
+  height:48px!important;
+  border-radius:15px!important;
+  background:rgba(255,255,255,.92)!important;
+  box-shadow:0 7px 16px rgba(20,45,70,.12)!important;
+}
+.ha-smart-card b{
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+.ha-smart-card small{
+  color:rgba(255,255,255,.9)!important;
+  font-size:10px!important;
+}
+
+/* الخدمات القريبة منك */
+.ha-two{
+  gap:12px!important;
+}
+.ha-feature{
+  min-height:130px!important;
+  border:0!important;
+  border-radius:22px!important;
+  box-shadow:0 13px 28px rgba(20,57,82,.11)!important;
+  overflow:hidden!important;
+  position:relative!important;
+}
+.ha-feature.blue{
+  background:linear-gradient(145deg,#45c7ff,#1380e8)!important;
+}
+.ha-feature.green{
+  background:linear-gradient(145deg,#43d86b,#0eae48)!important;
+}
+.ha-feature h4,
+.ha-feature p{
+  color:#fff!important;
+}
+.ha-feature p{opacity:.9!important}
+.ha-feature .fart{
+  background:rgba(255,255,255,.9)!important;
+  border-radius:18px!important;
+  padding:7px!important;
+  min-width:70px!important;
+  box-shadow:0 7px 16px rgba(20,45,70,.12)!important;
+}
+.ha-feature .ha-arrow{
+  background:rgba(0,59,123,.25)!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.3)!important;
+}
+
+@media(max-width:760px){
+  .ha-smart-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .ha-smart-card:nth-child(3){grid-column:auto!important}
+  .ha-smart-card{min-height:75px!important;padding:10px!important;border-radius:17px!important}
+  .ha-smart-ico{width:40px!important;height:40px!important}
+  .ha-smart-card b{font-size:12px!important}
+  .ha-smart-card small{font-size:9px!important}
+  .ha-feature{min-height:110px!important;padding:12px!important;border-radius:18px!important}
+  .ha-feature h4{font-size:14px!important}
+  .ha-feature p{font-size:10px!important}
+}
