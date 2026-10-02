@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>طلب تكسي - HA Marketing</title>
@@ -1050,10 +1050,84 @@ html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
+<style id="ha-taxi-point-button-fix">
+/* تثبيت زر تحديد نقطة الانطلاق/الوصول فوق الشريط السفلي حتى يبقى ظاهر دائماً */
+body:not(.trip-ready) #selectionPanel{
+  display:block!important;
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:88px!important;
+  transform:translateX(-50%)!important;
+  width:min(760px,calc(100% - 24px))!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  z-index:2147481500!important;
+  pointer-events:none!important;
+}
+
+body:not(.trip-ready) #locationStep{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  pointer-events:auto!important;
+}
+
+body:not(.trip-ready) #stepSelectBtn{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:100%!important;
+  min-height:52px!important;
+  margin:0!important;
+  padding:14px 16px!important;
+  border:0!important;
+  border-radius:16px!important;
+  background:linear-gradient(135deg,#f59d16,#ef6c00)!important;
+  color:#fff!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  line-height:1.2!important;
+  text-align:center!important;
+  box-shadow:0 10px 26px rgba(65,48,20,.20)!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
+}
+
+body:not(.trip-ready) #stepSelectBtn.destination{
+  background:linear-gradient(135deg,#2589ec,#1b55d9)!important;
+}
+
+/* الخريطة لا تنزل تحت زر التثبيت */
+body:not(.trip-ready) .map-wrap{
+  padding-bottom:64px!important;
+}
+
+/* على الموبايل نخليه فوق الشريط السفلي مباشرة */
+@media(max-width:700px){
+  body:not(.trip-ready) #selectionPanel{
+    bottom:82px!important;
+    width:calc(100% - 18px)!important;
+  }
+
+  body:not(.trip-ready) #stepSelectBtn{
+    min-height:50px!important;
+    border-radius:15px!important;
+    font-size:14px!important;
+  }
+
+  body:not(.trip-ready) .map-wrap{
+    padding-bottom:62px!important;
+  }
+}
+</style>
 </head>
 
-<body class="ha-ui-final ha-family-transport">
+<body>
 <div class="app">
 
 <div class="head">
@@ -2572,6 +2646,5 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
 };
 </script>
 <script src="ha-offline-qalat-map.js"></script>
-<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
 </body>
 </html>
