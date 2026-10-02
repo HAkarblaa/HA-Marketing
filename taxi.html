@@ -1550,6 +1550,554 @@ body.delivery-stage-3 #selectionPanel{
   }
 }
 </style>
+<style id="ha-transport-reference-style">
+/* =========================================================
+   HA Marketing - ترتيب النقل مثل النموذج المرسل
+   خريطة بالأعلى -> بحث/تثبيت النقطة -> اختيار المركبة -> تأكيد
+   ========================================================= */
+
+/* الصفحة نفسها */
+html,body{
+  background:#f6f8fa!important;
+}
+
+.app{
+  width:min(100%,760px)!important;
+  max-width:760px!important;
+  margin:0 auto!important;
+  background:#fff!important;
+  min-height:auto!important;
+  border-radius:0!important;
+}
+
+/* رأس صغير ومرتب بدل المساحات الكبيرة */
+.head{
+  min-height:44px!important;
+  padding:7px 10px!important;
+  background:#fff!important;
+  border-bottom:1px solid #edf1f4!important;
+  position:relative!important;
+  z-index:900!important;
+}
+
+.head h1{
+  font-size:13px!important;
+  font-weight:900!important;
+  color:#20354b!important;
+}
+
+.back{
+  width:34px!important;
+  height:34px!important;
+  background:#fff!important;
+  border:1px solid #dde6eb!important;
+  color:#526477!important;
+  box-shadow:0 3px 10px rgba(30,65,90,.08)!important;
+}
+
+/* الخريطة هي العنصر الرئيسي */
+.map-wrap{
+  width:100%!important;
+  height:53dvh!important;
+  min-height:330px!important;
+  max-height:560px!important;
+  padding:0!important;
+  margin:0!important;
+  position:relative!important;
+  overflow:hidden!important;
+  background:#eef2f4!important;
+}
+
+#map{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:none!important;
+}
+
+/* زر المحافظة أصغر وأهدأ */
+.map-wrap .province-bar{
+  top:10px!important;
+  left:10px!important;
+  right:auto!important;
+  z-index:850!important;
+}
+.map-wrap .province-bar button{
+  min-width:120px!important;
+  max-width:175px!important;
+  min-height:34px!important;
+  padding:6px 9px!important;
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #e1e6ea!important;
+  border-radius:12px!important;
+  box-shadow:0 4px 13px rgba(30,60,80,.13)!important;
+}
+
+/* تحديد موقعي مثل النموذج */
+.locate-btn{
+  left:auto!important;
+  right:13px!important;
+  bottom:13px!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  border:1px solid #e0e6ea!important;
+  box-shadow:0 5px 15px rgba(25,55,75,.16)!important;
+}
+
+/* دبوس واضح بوسط الخريطة */
+.center-pin{
+  z-index:1200!important;
+}
+.moving-pin{
+  width:25px!important;
+  height:25px!important;
+  box-shadow:0 4px 11px rgba(0,0,0,.24)!important;
+}
+
+/* شريط البحث تحت الخريطة بالضبط */
+.single-search-wrap{
+  position:relative!important;
+  z-index:950!important;
+  width:100%!important;
+  padding:9px 12px 7px!important;
+  margin:0!important;
+  background:#fff!important;
+  border-top:1px solid #edf1f4!important;
+}
+
+.single-search-row{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:1fr 42px!important;
+  gap:7px!important;
+}
+
+.single-search-row input{
+  min-height:44px!important;
+  padding:10px 13px!important;
+  border:1px solid #dfe6eb!important;
+  border-radius:12px!important;
+  background:#fafcfd!important;
+  color:#263b50!important;
+  font-size:12px!important;
+  outline:none!important;
+}
+.single-search-row input:focus{
+  border-color:#5b8df5!important;
+  box-shadow:0 0 0 3px rgba(47,100,230,.08)!important;
+}
+.single-search-row button{
+  min-width:42px!important;
+  min-height:44px!important;
+  padding:0!important;
+  border-radius:12px!important;
+  background:#f2f5f7!important;
+  color:#445a70!important;
+  font-size:0!important;
+}
+.single-search-row button::before{
+  content:"⌕";
+  font-size:21px;
+  font-weight:900;
+}
+
+/* نتائج البحث */
+.results{
+  margin-top:6px!important;
+  border:1px solid #e1e8ed!important;
+  border-radius:12px!important;
+  box-shadow:0 8px 22px rgba(30,60,80,.10)!important;
+  background:#fff!important;
+  max-height:180px!important;
+  overflow:auto!important;
+}
+.results button{
+  min-height:42px!important;
+  padding:9px 11px!important;
+  font-size:11px!important;
+  color:#30465b!important;
+  background:#fff!important;
+}
+
+/* زر تثبيت الانطلاق/الوصول - مثل الفيديو */
+body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #selectionPanel,
+body.delivery-stage-1 #selectionPanel{
+  display:block!important;
+  position:sticky!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:82px!important;
+  transform:none!important;
+  z-index:1800!important;
+  width:auto!important;
+  margin:0!important;
+  padding:6px 12px 10px!important;
+  background:#fff!important;
+  border:0!important;
+  box-shadow:none!important;
+  pointer-events:auto!important;
+}
+
+body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #locationStep,
+body.delivery-stage-1 #locationStep{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn,
+body.delivery-stage-1 #stepSelectBtn{
+  display:block!important;
+  width:100%!important;
+  min-height:48px!important;
+  margin:0!important;
+  padding:12px 14px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:#154af3!important;
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  box-shadow:0 5px 14px rgba(21,74,243,.20)!important;
+}
+
+body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn.destination,
+body.delivery-stage-1 #stepSelectBtn.destination{
+  background:#154af3!important;
+}
+
+/* بعد تثبيت النقطتين: القائمة لا تغطي الخريطة، بل تصير تحتها مثل النموذج */
+body.trip-ready{
+  overflow:auto!important;
+  padding-bottom:90px!important;
+}
+body.trip-ready .app{
+  min-height:auto!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+
+body.trip-ready .map-wrap,
+body.delivery-stage-2 .map-wrap,
+body.delivery-stage-3 .map-wrap{
+  height:40dvh!important;
+  min-height:280px!important;
+  max-height:420px!important;
+  flex:none!important;
+}
+
+#tripSheet.open{
+  display:flex!important;
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:10px 12px 14px!important;
+  overflow:visible!important;
+  background:#fff!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  border-top:1px solid #edf1f4!important;
+}
+
+#tripSheet.open::before{
+  display:none!important;
+}
+
+.trip-sheet-title{
+  display:none!important;
+}
+
+/* عنوان اختيار نوع المركبة */
+#tripSheet .vehicle-title,
+.delivery-stage-title{
+  margin:2px 2px 8px!important;
+  text-align:right!important;
+  color:#273b50!important;
+  font-size:12px!important;
+  font-weight:900!important;
+}
+
+/* كروت المركبات مثل الفيديو: صفوف نظيفة وسعر واضح */
+#tripSheet .type,
+.types .type{
+  min-height:62px!important;
+  margin:0!important;
+  padding:8px 7px!important;
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #edf1f4!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+
+#tripSheet .type:last-of-type,
+.types .type:last-of-type{
+  border-bottom:0!important;
+}
+
+#tripSheet .type.selected,
+.types .type.selected{
+  background:#f0efff!important;
+  border:0!important;
+  border-bottom:1px solid #e7e4ff!important;
+  box-shadow:none!important;
+}
+
+#tripSheet .vehicle,
+.types .vehicle{
+  width:48px!important;
+  min-width:48px!important;
+  text-align:center!important;
+  font-size:30px!important;
+}
+
+#tripSheet .info,
+.types .info{
+  min-width:0!important;
+}
+
+#tripSheet .info b,
+.types .info b{
+  display:block!important;
+  color:#263b50!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  line-height:1.4!important;
+}
+
+#tripSheet .info small,
+.types .info small{
+  display:block!important;
+  margin-top:2px!important;
+  color:#8794a2!important;
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+
+#tripSheet .price,
+.types .price{
+  min-width:84px!important;
+  text-align:left!important;
+  color:#263b50!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+}
+
+/* معلومات المسافة والوقت والسعر تكون صغيرة وواضحة */
+#tripSheet .metrics,
+.metrics{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  margin:8px 0 4px!important;
+}
+
+#tripSheet .metric,
+.metrics .metric{
+  min-height:47px!important;
+  padding:6px 4px!important;
+  background:#f6f7f9!important;
+  border:0!important;
+  border-radius:8px!important;
+}
+
+#tripSheet .metric small,
+.metrics .metric small{
+  color:#929daa!important;
+  font-size:8px!important;
+  font-weight:700!important;
+  margin-bottom:2px!important;
+}
+
+#tripSheet .metric b,
+.metrics .metric b{
+  color:#263b50!important;
+  font-size:10.5px!important;
+  font-weight:900!important;
+}
+
+/* التنبيه والملخص */
+#tripSheet .notice,
+.notice{
+  margin:5px 0!important;
+  padding:7px 8px!important;
+  border-radius:8px!important;
+  border:0!important;
+  background:#f7f8fa!important;
+  color:#718090!important;
+  font-size:9px!important;
+  line-height:1.5!important;
+}
+
+#tripSheet .extra-summary,
+.extra-summary{
+  margin:5px 0!important;
+  padding:7px 8px!important;
+  border-radius:8px!important;
+  background:#f7f8fa!important;
+  color:#627387!important;
+  font-size:9px!important;
+}
+
+/* زر الخيارات */
+#tripSheet .extra-options-btn,
+.extra-options-btn{
+  min-height:42px!important;
+  margin:5px 0!important;
+  padding:9px 10px!important;
+  border:1px solid #e0e6ea!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#475b70!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+
+/* زر تأكيد الطلب يكون واضح بالأزرق مثل النموذج */
+#tripSheet .order{
+  position:sticky!important;
+  bottom:82px!important;
+  z-index:1900!important;
+  margin:7px -12px -14px!important;
+  padding:8px 12px 10px!important;
+  background:#fff!important;
+  border-top:1px solid #e8edf1!important;
+}
+
+#tripSheet #order,
+.order #order,
+#continueDeliveryDetails{
+  width:100%!important;
+  min-height:48px!important;
+  padding:12px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:#154af3!important;
+  color:#fff!important;
+  font-size:12.5px!important;
+  font-weight:900!important;
+  box-shadow:0 5px 14px rgba(21,74,243,.18)!important;
+}
+
+#tripSheet #order:disabled,
+.order #order:disabled{
+  background:#aeb8c3!important;
+  box-shadow:none!important;
+}
+
+/* تفاصيل المندوب بالمرحلة الأخيرة */
+body.delivery-stage-3 #tripSheet.open{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+body.delivery-stage-3 #deliveryDetailsStage{
+  height:auto!important;
+  display:block!important;
+}
+body.delivery-stage-3 .delivery-details{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+}
+body.delivery-stage-3 .delivery-details input{
+  min-height:46px!important;
+  padding:10px 11px!important;
+  border:1px solid #dfe6eb!important;
+  border-radius:9px!important;
+  background:#fafcfd!important;
+  color:#263b50!important;
+  font-size:11px!important;
+}
+
+/* لا نريد لوحات تغطي الخريطة */
+body.trip-sheet-open{
+  overflow:auto!important;
+  padding-bottom:90px!important;
+}
+
+/* موبايل */
+@media(max-width:600px){
+  .map-wrap{
+    height:48dvh!important;
+    min-height:300px!important;
+  }
+
+  body.trip-ready .map-wrap,
+  body.delivery-stage-2 .map-wrap,
+  body.delivery-stage-3 .map-wrap{
+    height:36dvh!important;
+    min-height:245px!important;
+    max-height:330px!important;
+  }
+
+  .single-search-wrap{
+    padding:7px 9px 6px!important;
+  }
+
+  body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #selectionPanel,
+  body.delivery-stage-1 #selectionPanel{
+    bottom:78px!important;
+    padding:5px 9px 8px!important;
+  }
+
+  #tripSheet.open{
+    padding:8px 9px 12px!important;
+  }
+
+  #tripSheet .type,
+  .types .type{
+    min-height:57px!important;
+    grid-template-columns:42px minmax(0,1fr) auto!important;
+    gap:6px!important;
+    padding:7px 5px!important;
+  }
+
+  #tripSheet .vehicle,
+  .types .vehicle{
+    width:42px!important;
+    min-width:42px!important;
+    font-size:26px!important;
+  }
+
+  #tripSheet .info b,
+  .types .info b{
+    font-size:11.5px!important;
+  }
+
+  #tripSheet .info small,
+  .types .info small{
+    font-size:8.5px!important;
+  }
+
+  #tripSheet .price,
+  .types .price{
+    min-width:74px!important;
+    font-size:10.5px!important;
+  }
+
+  #tripSheet .order{
+    bottom:78px!important;
+    margin:7px -9px -12px!important;
+    padding:7px 9px 9px!important;
+  }
+}
+</style>
 </head>
 
 <body>
