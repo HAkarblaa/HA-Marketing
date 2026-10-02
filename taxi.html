@@ -7,2095 +7,430 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f4f4f4;color:#111}
-.app{width:100%;max-width:760px;margin:auto;background:#fff;min-height:100vh}
-.head{display:flex;align-items:center;justify-content:space-between;padding:5px 10px}
-.head h1{font-size:12px;margin:0;font-weight:700}
-.back{width:30px;height:30px;border:0;border-radius:50%;background:#f1f1f1;font-size:17px;cursor:pointer}
 
-.search{padding:4px 14px 8px}
-.search-row{display:grid;grid-template-columns:1fr auto;gap:7px;margin:7px 0}
-.search input{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font-size:15px}
-.search button{border:0;border-radius:10px;background:#111;color:#fff;padding:0 14px}
-.results{display:none;border:1px solid #eee;border-radius:10px;overflow:hidden}
-.results button{width:100%;background:#fff;border:0;border-bottom:1px solid #eee;text-align:right;padding:9px;font-size:14px}
-
-.map-wrap{position:relative}
-#map{height:42vh;min-height:285px;background:#ededed}
-.locate-btn{
- position:absolute;left:14px;bottom:18px;z-index:600;
- width:46px;height:46px;border:0;border-radius:13px 13px 13px 4px;
- background:#fff;box-shadow:0 3px 10px #0003;font-size:25px;cursor:pointer;
- display:flex;align-items:center;justify-content:center
-}
-.center-pin{
- position:absolute;left:50%;top:50%;z-index:550;
- transform:translate(-50%,-100%);
- width:34px;height:42px;pointer-events:none;display:none
-}
-.center-pin.show{display:block}
-.moving-pin{
- position:absolute;left:6px;top:2px;width:24px;height:24px;
- background:#f47b20;border:3px solid #fff;border-radius:50% 50% 50% 0;
- transform:rotate(-45deg);box-shadow:0 3px 8px #0004
-}
-.moving-pin:after{
- content:"";position:absolute;width:7px;height:7px;background:#fff;
- border-radius:50%;left:6px;top:6px
-}
-.center-pin.destination .moving-pin{background:#2563eb}
-
-.confirm-map{
- position:absolute;right:14px;bottom:18px;z-index:600;
- border:0;border-radius:12px;background:#111;color:#fff;
- padding:9px 13px;font-size:13px;font-weight:700;cursor:pointer;display:none;
- box-shadow:0 3px 10px #0003;border:1px solid #fff
-}
-.confirm-map.show{display:block}
-
-.box{
- margin:12px 14px 0;position:relative;z-index:500;background:#fff;
- border-radius:18px;padding:13px;border:1px solid #eee
-}
-.row{display:flex;gap:9px;align-items:center;padding:8px 3px}
-.row+.row{border-top:1px solid #eee}
-.dot{width:13px;height:13px;border-radius:50%;background:#ef6c00}
-.dot.end{background:#1110ff;border-radius:4px}
-.loc{flex:1}.loc b{display:block;font-size:14px}.loc span{font-size:12px;color:#777}
-
-.actions{display:flex;gap:7px;margin-top:8px}
-.actions button{flex:1;border:0;border-radius:10px;padding:8px;background:#eee;font-size:11px}
-.actions .active{background:#111;color:#fff}
-
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:11px 14px}
-.metric{text-align:center;background:#f7f7f7;border-radius:11px;padding:9px}
-.metric small{display:block;color:#777;font-size:10px}
-.metric b{font-size:13px}
-
-.types{padding:4px 14px}
-.type{
- display:flex;align-items:center;gap:9px;border:2px solid transparent;
- border-radius:12px;padding:10px 7px;margin:3px 0;background:#fff;cursor:pointer
-}
-.type.selected{border-color:#111;background:#f7f7f7}
-.vehicle{font-size:30px;width:42px;text-align:center}
-.info{flex:1}
-.info b{font-size:14px}
-.info small{display:block;color:#777;font-size:10px;margin-top:2px}
-.price{font-weight:700;font-size:13px}
-
-.notice{
- margin:9px 14px;padding:8px;border-radius:11px;background:#fff8e7;
- color:#666;font-size:10px;line-height:1.5;text-align:center
-}
-.order{position:sticky;bottom:0;background:#fff;padding:12px;border-top:1px solid #eee}
-.order button{
- width:100%;border:0;border-radius:12px;padding:14px;background:#1110ff;
- color:#fff;font-size:17px;font-weight:700
-}
-.order button:disabled{background:#aaa}
-
-
-.vehicle-title{
-  font-size:14px;font-weight:700;text-align:center;margin:2px 0 9px
-}
-.type{
-  display:flex;align-items:center;gap:9px;border:2px solid transparent;
-  border-radius:12px;padding:10px 7px;margin:5px 0;background:#fff;cursor:pointer
-}
-.type.selected{border-color:#111;background:#f7f7f7}
-.vehicle{font-size:30px;width:42px;text-align:center}
-.info{flex:1}
-.info b{font-size:16px}
-.info small{display:block;color:#777;font-size:12px;margin-top:2px}
-.price{font-weight:700;font-size:15px}
-
-
-.extra-options-btn{
-  width:100%;margin-bottom:8px;background:#f1f1f1!important;color:#111!important;
-  border:1px solid #ddd!important;border-radius:12px!important;padding:12px!important;
-  font-size:15px!important;font-weight:700!important;cursor:pointer
-}
-.extra-options-btn:disabled{background:#eee!important;color:#aaa!important;cursor:not-allowed}
-.extra-sheet{
-  position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.42);
-  display:none;align-items:flex-end;justify-content:center;padding:0
-}
-.extra-sheet.show{display:flex}
-.extra-card{
-  width:min(760px,100%);background:#fff;border-radius:22px 22px 0 0;
-  padding:16px 15px 22px;max-height:80vh;overflow:auto
-}
-.extra-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.extra-head h3{margin:0;font-size:19px}
-.extra-head button{width:38px;height:38px;border:0;border-radius:50%;background:#eee;font-size:22px;cursor:pointer}
-.extra-option{
-  display:flex;align-items:center;gap:10px;background:#f8f8f8;
-  border-radius:12px;padding:13px;margin:8px 0;cursor:pointer;font-size:15px
-}
-.extra-option input{width:20px;height:20px}
-.extra-fields{display:none;margin:-2px 0 8px}
-.extra-fields.show{display:block}
-.extra-fields input,.extra-fields select{
-  width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font-size:14px;background:#fff
-}
-.save-extra{
-  width:100%;border:0;border-radius:12px;background:#111;color:#fff;
-  padding:13px;font-size:16px;font-weight:700;margin-top:10px;cursor:pointer
-}
-.extra-summary{
-  margin:8px 14px 0;padding:9px 11px;background:#f7f7f7;border-radius:11px;
-  color:#555;font-size:12px;line-height:1.6;display:none
-}
-
-
-.location-entry{padding:9px 2px}
-.location-entry+.location-entry{border-top:1px solid #eee}
-.location-title{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.location-title b{font-size:13px;font-weight:700}
-.location-title span:last-child{margin-right:auto;color:#777;font-size:10px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.start-pin{font-size:20px;color:#ef6c00;line-height:1}
-.end-pin{font-size:19px;color:#2563eb;line-height:1}
-.inline-search{display:grid;grid-template-columns:1fr auto;gap:7px}
-.inline-search input{width:100%;padding:13px 12px;border:1px solid #ccc;border-radius:11px;font-size:14px}
-.inline-search button{border:0;border-radius:11px;background:#111;color:#fff;padding:0 16px;font-size:13px}
-
-
-.single-search-wrap{padding:6px 14px 10px;background:#fff}
-.single-search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
-.single-search-row input{
-  width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:10px;
-  font-size:12px;background:#fff
-}
-.single-search-row button{
-  border:0;border-radius:11px;background:#111;color:#fff;
-  padding:0 16px;font-size:13px;cursor:pointer
-}
-.confirm-map.start-confirm{background:#ef6c00;color:#fff}
-.confirm-map.end-confirm{background:#1b55d9;color:#fff}
-
-
-.step-select-btn{
-  width:100%;border:0;border-radius:13px;padding:14px 12px;
-  background:#ef6c00;color:#fff;font-size:15px;font-weight:700;cursor:pointer
-}
-.step-select-btn.destination{
-  background:#1b55d9;
-}
-
-
-/* القائمة السفلية الكاملة: ظاهرة كاملة بدون سحب */
-#tripSheet{display:none}
-#tripSheet.open{
-  display:flex;
-  flex-direction:column;
-  position:fixed;
-  left:50%;
-  bottom:0;
-  transform:translateX(-50%);
-  width:min(760px,100%);
-  height:58vh;
-  z-index:1500;
-  background:#fff;
-  border-radius:20px 20px 0 0;
-  padding:8px 12px 8px;
-  overflow:hidden;
-  box-shadow:0 -6px 24px #0003;
-}
-#tripSheet.open:before{
-  content:"";
-  display:block;
-  width:42px;
-  height:4px;
-  border-radius:10px;
-  background:#ccc;
-  margin:-1px auto 6px;
-}
-.trip-sheet-title{
-  font-size:13px;
-  font-weight:700;
-  text-align:center;
-  margin:0 0 2px;
-}
-
-/* نخلي كل عناصر القائمة مضغوطة حتى تبين كلها بنفس الشاشة */
-#tripSheet .vehicle-title{font-size:12px;margin:0 0 4px}
-#tripSheet .type{
-  padding:4px 6px;
-  margin:3px 0;
-  min-height:36px;
-  border-radius:10px
-}
-#tripSheet .vehicle{font-size:21px;width:31px}
-#tripSheet .info b{font-size:12px}
-#tripSheet .info small{font-size:9px;margin-top:0}
-#tripSheet .price{font-size:12px}
-
-#tripSheet .metrics{
-  margin:5px 0;
-  gap:5px;
-  grid-template-columns:repeat(3,1fr)
-}
-#tripSheet .metric{
-  padding:5px 3px;
-  border-radius:9px
-}
-#tripSheet .metric small{font-size:9px;margin-bottom:1px}
-#tripSheet .metric b{font-size:11px}
-
-#tripSheet .notice{
-  margin:2px 0;
-  padding:5px 6px;
-  font-size:9px;
-  line-height:1.3
-}
-#tripSheet .extra-summary{
-  margin:4px 0 0;
-  padding:5px 6px;
-  font-size:9px
-}
-#tripSheet .order{
-  position:static;
-  margin-top:auto;
-  padding:6px 0 0;
-  border-top:1px solid #eee;
-  background:#fff;
-  flex-shrink:0
-}
-#tripSheet .extra-options-btn{
-  display:block!important;
-  width:100%!important;
-  margin:0 0 5px!important;
-  padding:9px!important;
-  font-size:12px!important;
-  background:#f1f1f1!important;
-  color:#111!important
-}
-#tripSheet #order{
-  display:block!important;
-  width:100%!important;
-  padding:10px!important;
-  font-size:14px!important;
-  background:#1110ff!important;
-  color:#fff!important
-}
-
-body.trip-sheet-open{
-  padding-bottom:0;
-  overflow:hidden;
-}
-@media(max-width:560px){
- #tripSheet .metrics{grid-template-columns:repeat(3,1fr)}
-}
-
-/* البحث داخل المساحة أسفل الخريطة */
-.single-search-wrap{
-  padding:8px 14px 6px !important;
-  background:#fff;
-  margin:0 !important;
-}
-.single-search-row{
-  width:100%;
-}
-
-
-/* إلغاء الفراغ أسفل زر تثبيت الانطلاق/الوصول */
-#selectionPanel{
-  margin-bottom:0 !important;
-}
-#locationStep{
-  margin:0 !important;
-  padding:0 !important;
-}
-#stepSelectBtn{
-  margin-bottom:0 !important;
-}
-body:not(.trip-ready) .order,
-body:not(.trip-ready) #extraSummary{
-  margin:0 !important;
-}
-
-
-/* حسب الصورة: إلغاء المساحة البيضاء الكبيرة تحت زر التثبيت */
-html, body{
-  margin:0;
-  padding:0;
-}
-
-body:not(.trip-ready){
-  min-height:0 !important;
-  height:auto !important;
-  padding-bottom:0 !important;
-  overflow-x:hidden;
-}
-
-body:not(.trip-ready) #selectionPanel{
-  margin-bottom:8px !important;
-}
-
-/* أي عناصر تخص تفاصيل الرحلة تبقى مخفية قبل تثبيت النقطتين */
-body:not(.trip-ready) #tripSheet,
-body:not(.trip-ready) #orderArea,
-body:not(.trip-ready) #extraSummary{
-  display:none !important;
-}
-
-/* لا نضيف ارتفاع أو حشو بعد آخر مربع */
-body:not(.trip-ready) main,
-body:not(.trip-ready) .app,
-body:not(.trip-ready) .page{
-  min-height:0 !important;
-  padding-bottom:0 !important;
-}
-
-
-/* ===== إصلاح الفراغ الأبيض نهائياً ===== */
-body:not(.trip-ready){
-  overflow:hidden !important;
-}
-
-body:not(.trip-ready) .app{
-  height:100dvh !important;
-  min-height:100dvh !important;
-  display:flex !important;
-  flex-direction:column !important;
-  overflow:hidden !important;
-}
-
-/* العنوان يبقى بحجمه الطبيعي */
-body:not(.trip-ready) .head{
-  flex:0 0 auto !important;
-}
-
-/* الخريطة تأخذ كل الفراغ المتبقي تلقائياً */
-body:not(.trip-ready) .map-wrap{
-  flex:1 1 auto !important;
-  min-height:0 !important;
-  display:flex !important;
-  position:relative !important;
-}
-
-body:not(.trip-ready) #map{
-  flex:1 1 auto !important;
-  width:100% !important;
-  height:auto !important;
-  min-height:0 !important;
-  max-height:none !important;
-}
-
-/* البحث والتثبيت يبقون ظاهرين بالكامل أسفل الخريطة */
-body:not(.trip-ready) .single-search-wrap{
-  flex:0 0 auto !important;
-  padding:7px 14px 5px !important;
-}
-
-body:not(.trip-ready) #selectionPanel{
-  flex:0 0 auto !important;
-  position:relative !important;
-  left:auto !important;
-  right:auto !important;
-  bottom:auto !important;
-  width:auto !important;
-  margin:5px 14px 8px !important;
-  padding:9px !important;
-  box-shadow:none !important;
-}
-
-/* لا يوجد أي عنصر إضافي أسفل زر التثبيت قبل إكمال النقطتين */
-body:not(.trip-ready) #tripSheet,
-body:not(.trip-ready) #orderArea,
-body:not(.trip-ready) #extraSummary{
-  display:none !important;
-}
-
-
-/* ===== تحسين عرض الموبايل ===== */
-@media(max-width:600px){
-  body.trip-ready{
-    overflow:hidden !important;
-  }
-
-  body.trip-ready .app{
-    height:100dvh !important;
-    min-height:100dvh !important;
-    overflow:hidden !important;
-  }
-
-  body.trip-ready .head{
-    height:36px !important;
-    min-height:36px !important;
-    padding:4px 9px !important;
-  }
-
-  body.trip-ready .map-wrap{
-    height:40dvh !important;
-    min-height:40dvh !important;
-    flex:0 0 40dvh !important;
-  }
-
-  body.trip-ready #map{
-    height:40dvh !important;
-    min-height:40dvh !important;
-  }
-
-  body.trip-ready #tripSheet.open{
-    display:flex !important;
-    height:60dvh !important;
-    max-height:60dvh !important;
-    overflow:hidden !important;
-  }
-}
-
-
-.province-bar{
-  padding:6px 14px 4px;
-  background:#fff;
-  flex:0 0 auto;
-}
-.province-bar button{
-  width:100%;
-  min-height:43px;
-  border:1px solid #ddd;
-  border-radius:12px;
-  background:#f8f8f8;
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  gap:9px;
-  padding:9px 12px;
-  cursor:pointer;
-  text-align:right;
-}
-.province-label{
-  font-size:12px;
-  font-weight:700;
-  color:#111;
-}
-.province-name{
-  font-size:12px;
-  color:#666;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-}
-.province-arrow{
-  font-size:17px;
-  color:#777;
-}
-.province-bar button.detecting .province-name{
-  color:#999;
-}
-
-
-/* المحافظة: اختيار صغير بالأعلى */
-.province-bar{
-  padding:5px 12px 3px !important;
-  display:flex !important;
-  justify-content:flex-start !important;
-  background:#fff;
-}
-.province-bar button{
-  width:auto !important;
-  min-width:145px !important;
-  max-width:220px !important;
-  min-height:34px !important;
-  display:flex !important;
-  align-items:center !important;
-  gap:6px !important;
-  padding:6px 9px !important;
-  border-radius:9px !important;
-}
-.province-label{
-  font-size:11px !important;
-}
-.province-name{
-  font-size:10px !important;
-  max-width:120px !important;
-}
-.province-arrow{
-  font-size:14px !important;
-  margin-right:auto;
-}
-
-
-/* اختيار المحافظة داخل الخريطة مقابل أزرار التكبير والتصغير */
-.map-wrap .province-bar{
-  position:absolute !important;
-  top:10px !important;
-  right:10px !important;
-  left:auto !important;
-  z-index:700 !important;
-  padding:0 !important;
-  margin:0 !important;
-  background:transparent !important;
-  width:auto !important;
-}
-.map-wrap .province-bar button{
-  width:auto !important;
-  min-width:120px !important;
-  max-width:180px !important;
-  min-height:32px !important;
-  background:#fff !important;
-  box-shadow:0 1px 5px #0003 !important;
-  border:1px solid #ccc !important;
-  border-radius:6px !important;
-  padding:5px 8px !important;
-}
-
-
-/* المحافظة مقابيل + و - بالجهة الثانية من الخريطة */
-.map-wrap .province-bar{
-  position:absolute !important;
-  top:10px !important;
-  right:10px !important;
-  left:auto !important;
-  z-index:800 !important;
-}
-.leaflet-top.leaflet-left{
-  left:10px !important;
-  right:auto !important;
-}
-
-
-/* اختيار المحافظة في جهة اليسار من الخريطة */
-.map-wrap .province-bar{
-  position:absolute !important;
-  top:10px !important;
-  left:10px !important;
-  right:auto !important;
-  z-index:800 !important;
-}
-
-/* خلي أزرار التكبير والتصغير بالجهة المقابلة */
-.leaflet-top.leaflet-left{
-  left:auto !important;
-  right:10px !important;
-}
-
-
-/* ===== ما بعد تأكيد الطلب ===== */
-.post-order-screen{
-  position:fixed;
-  inset:0;
-  z-index:3000;
-  background:#fff;
-  display:none;
-  flex-direction:column;
-}
-.post-order-screen.show{display:flex}
-.post-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 12px;
-  border-bottom:1px solid #eee;
-}
-.post-head h2{
-  margin:0;
-  font-size:16px;
-}
-.post-map{
-  flex:1;
-  min-height:280px;
-  background:#eee;
-}
-.post-panel{
-  padding:12px 14px 16px;
-  background:#fff;
-  border-top:1px solid #eee;
-}
-.searching-box{
-  text-align:center;
-  padding:18px 10px;
-}
-.loader{
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  border:5px solid #e5e5e5;
-  border-top-color:#111;
-  margin:0 auto 12px;
-  animation:spin 1s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.status-title{
-  font-size:18px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-.status-sub{
-  color:#666;
-  font-size:13px;
-  line-height:1.6;
-}
-.search-cancel-trip{
-  width:100%;
-  margin-top:14px;
-  border:1px solid #e0e0e0;
-  border-radius:12px;
-  padding:12px;
-  background:#f5f5f5;
-  color:#b42318;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-}
-.search-cancel-trip:active{transform:scale(.99)}
-.driver-card{
-  display:none;
-  background:#f8f8f8;
-  border-radius:14px;
-  padding:12px;
-  margin-top:8px;
-}
-.driver-card.show{display:block}
-.driver-top{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.driver-avatar{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:#ddd;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-}
-.driver-info{flex:1}
-.driver-info b{display:block;font-size:15px}
-.driver-info span{font-size:12px;color:#666}
-.driver-meta{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  margin-top:10px;
-}
-.driver-meta div{
-  background:#fff;
-  border-radius:9px;
-  padding:8px 5px;
-  text-align:center;
-}
-.driver-meta small{display:block;color:#777;font-size:10px}
-.driver-meta b{font-size:12px}
-.post-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:10px;
-}
-.post-actions button{
-  border:0;
-  border-radius:10px;
-  padding:11px;
-  font-size:13px;
-  cursor:pointer;
-}
-.call-driver{background:#111;color:#fff}
-.cancel-trip{background:#eee;color:#111}
-
-
-/* ===== معلومات السائق والتواصل ===== */
-.driver-avatar{
-  width:58px !important;
-  height:58px !important;
-  padding:0 !important;
-  overflow:hidden !important;
-  background:#e9e9e9 !important;
-}
-.driver-avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.driver-details{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-  margin-top:10px;
-}
-.driver-detail{
-  background:#fff;
-  border-radius:9px;
-  padding:7px 8px;
-}
-.driver-detail small{
-  display:block;
-  color:#777;
-  font-size:10px;
-  margin-bottom:2px;
-}
-.driver-detail b{
-  font-size:12px;
-}
-.post-actions{
-  grid-template-columns:repeat(2,1fr) !important;
-}
-.whatsapp-driver{background:#eef8f0 !important;color:#176b2f !important}
-.chat-driver{background:#eef3ff !important;color:#174ea6 !important}
-.call-driver{background:#111 !important;color:#fff !important}
-.cancel-trip{background:#eee !important;color:#111 !important}
-
-/* رسائل داخل التطبيق */
-.chat-sheet{
-  position:fixed;
-  inset:0;
-  z-index:4000;
-  background:rgba(0,0,0,.38);
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-}
-.chat-sheet.show{display:flex}
-.chat-box{
-  width:min(760px,100%);
-  height:min(68vh,560px);
-  background:#fff;
-  border-radius:22px 22px 0 0;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-.chat-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:11px 13px;
-  border-bottom:1px solid #eee;
-}
-.chat-head b{font-size:15px}
-.chat-head button{
-  width:36px;height:36px;border:0;border-radius:50%;
-  background:#eee;font-size:20px;cursor:pointer
-}
-.chat-messages{
-  flex:1;
-  overflow:auto;
-  padding:12px;
-  background:#f6f6f6;
-}
-.msg{
-  max-width:78%;
-  padding:9px 11px;
-  border-radius:13px;
-  margin:6px 0;
-  font-size:13px;
-  line-height:1.5;
-}
-.msg.me{
-  margin-right:auto;
-  background:#1769e0;
-  color:#fff;
-  border-bottom-left-radius:4px;
-}
-.msg.driver{
-  margin-left:auto;
-  background:#fff;
-  color:#111;
-  border:1px solid #e5e5e5;
-  border-bottom-right-radius:4px;
-}
-.chat-send{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:7px;
-  padding:10px;
-  border-top:1px solid #eee;
-}
-.chat-send input{
-  width:100%;
-  border:1px solid #ccc;
-  border-radius:11px;
-  padding:11px;
-  font-size:14px;
-}
-.chat-send button{
-  border:0;
-  border-radius:11px;
-  background:#1769e0;
-  color:#fff;
-  padding:0 16px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-
-/* ===== شاشة انتهاء الرحلة ===== */
-.finish-box{
-  display:none;
-  text-align:center;
-  padding:18px 12px;
-}
-.finish-box.show{display:block}
-.finish-icon{
-  width:62px;height:62px;border-radius:50%;
-  background:#eaf7ee;color:#16803b;
-  display:flex;align-items:center;justify-content:center;
-  font-size:34px;font-weight:700;margin:0 auto 10px
-}
-.finish-box h3{margin:0 0 6px;font-size:19px}
-.finish-box p{margin:0 0 12px;color:#666;font-size:13px}
-.finish-price{
-  background:#f7f7f7;border-radius:11px;
-  padding:10px;margin:8px 0 12px;font-weight:700
-}
-.finish-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.finish-actions button{
-  border:0;border-radius:11px;padding:12px;
-  font-size:14px;font-weight:700;cursor:pointer
-}
-.finish-home{background:#1769e0;color:#fff}
-.finish-rate{background:#f1f1f1;color:#111}
-
-
-/* ===== نافذة إلغاء الطلب ===== */
-.cancel-reason-sheet{
-  position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.42);
-  display:none;align-items:flex-end;justify-content:center
-}
-.cancel-reason-sheet.show{display:flex}
-.cancel-reason-card{
-  width:min(760px,100%);background:#fff;border-radius:22px 22px 0 0;
-  padding:16px 14px 18px
-}
-.cancel-reason-head{
-  display:flex;align-items:center;justify-content:space-between;margin-bottom:10px
-}
-.cancel-reason-head h3{margin:0;font-size:18px}
-.cancel-reason-head button{
-  width:36px;height:36px;border:0;border-radius:50%;background:#eee;font-size:20px
-}
-.cancel-reason-option{
-  display:flex;align-items:center;gap:9px;padding:12px 10px;
-  border:1px solid #eee;border-radius:11px;margin:7px 0;background:#fafafa
-}
-.cancel-reason-option input{width:18px;height:18px}
-.cancel-other{
-  display:none;width:100%;padding:10px;border:1px solid #ccc;
-  border-radius:10px;margin-top:7px;font-size:14px
-}
-.cancel-other.show{display:block}
-.confirm-cancel-btn{
-  width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;
-  background:#c62828;color:#fff;font-size:15px;font-weight:700
-}
-
-
-
-/* ===== HA: خريطة فاتحة وواضحة مثل النموذج ===== */
-#map,
-#postMap{
-  background:#f1f0f2 !important;
-}
-
-#map .leaflet-tile-pane,
-#postMap .leaflet-tile-pane{
-  filter:saturate(1.22) contrast(1.08) brightness(1.035);
-}
-
-#map .leaflet-control-attribution,
-#postMap .leaflet-control-attribution{
-  background:rgba(255,255,255,.78) !important;
-  color:#666 !important;
-  font-size:10px !important;
-  padding:2px 5px !important;
-  border-radius:8px 0 0 0;
-}
-
-#map .leaflet-control-zoom,
-#postMap .leaflet-control-zoom{
-  border:0 !important;
-  border-radius:16px !important;
-  overflow:hidden;
-  box-shadow:0 4px 15px rgba(0,0,0,.16) !important;
-}
-
-#map .leaflet-control-zoom a,
-#postMap .leaflet-control-zoom a{
-  width:42px !important;
-  height:42px !important;
-  line-height:42px !important;
-  background:#fff !important;
-  color:#666d78 !important;
-  border:0 !important;
-  font-size:22px !important;
-}
-
-#map .leaflet-control-zoom a + a,
-#postMap .leaflet-control-zoom a + a{
-  border-top:1px solid #ececec !important;
-}
-
-.locate-btn{
-  width:50px !important;
-  height:50px !important;
-  border-radius:50% !important;
-  background:#fff !important;
-  box-shadow:0 4px 15px rgba(0,0,0,.17) !important;
-  border:1px solid #eeeeee !important;
-  font-size:0 !important;
-  color:#626a75 !important;
-}
-
-.locate-btn::before{
-  content:"◎";
-  font-size:31px;
-  line-height:1;
-  font-weight:700;
-  color:#626a75;
-}
-
-.map-wrap .province-bar button{
-  background:#fff !important;
-  border:1px solid #eeeeee !important;
-  border-radius:14px !important;
-  box-shadow:0 4px 15px rgba(0,0,0,.14) !important;
-}
-
-.moving-pin{
-  background:#ef6c00 !important;
-  border-color:#fff !important;
-  box-shadow:0 4px 10px rgba(0,0,0,.28) !important;
-}
-
-.center-pin.destination .moving-pin{
-  background:#2563eb !important;
-}
-
-.leaflet-container{
-  font-family:Arial,Tahoma,sans-serif !important;
-}
-
-
-/* ===== HA DISTINCT LIVE MAP ICONS ===== */
-.ha-live-entity-icon{
-  background:transparent!important;
-  border:0!important;
-}
-.ha-live-entity{
-  width:42px;
-  height:42px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  font-size:25px;
-  background:#fff;
-  border:2px solid rgba(255,255,255,.95);
-  box-shadow:0 5px 16px rgba(0,0,0,.30),0 0 0 2px rgba(20,30,40,.16);
-  line-height:1;
-  position:relative;
-}
-.ha-live-entity::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  bottom:-6px;
-  width:10px;
-  height:10px;
-  transform:translateX(-50%) rotate(45deg);
-  background:inherit;
-  border-right:2px solid rgba(255,255,255,.95);
-  border-bottom:2px solid rgba(255,255,255,.95);
-}
-.ha-live-entity.driver{background:#fff7df}
-.ha-live-entity.customer{background:#eaf4ff}
-.ha-live-entity.goods{background:#fff1df}
-.ha-live-entity.destination{background:#eefbed}
-.ha-live-entity span{position:relative;z-index:2}
-
-
-/* ===== HA SECOND ADDRESS MAP PICKER ===== */
-.extra-address-confirm{
-  position:absolute;
-  z-index:850;
-  left:50%;
-  bottom:16px;
-  transform:translateX(-50%);
-  display:none;
-  min-width:170px;
-  max-width:calc(100% - 28px);
-  padding:10px 15px;
-  border:0;
-  border-radius:14px;
-  background:linear-gradient(135deg,#a55df0,#7040c8);
-  color:#fff;
-  font-weight:900;
-  font-size:13px;
-  box-shadow:0 8px 25px rgba(70,35,120,.30);
-}
-.extra-address-confirm.show{display:block}
-.center-pin.extra-address .moving-pin{
-  background:#8b5cf6!important;
-  border-color:#fff!important;
-  box-shadow:0 4px 16px rgba(139,92,246,.45)!important;
-}
-.ha-extra-address-mode .single-search-wrap{
-  display:block!important;
-  position:relative!important;
-  z-index:900!important;
-  margin-top:8px!important;
-}
-.ha-extra-address-mode #selectionPanel,
-.ha-extra-address-mode #tripSheet{
-  display:none!important;
-}
-html[data-ha-theme="light"] .extra-address-confirm{color:#fff!important}
-
-</style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<style id="ha-taxi-point-button-fix" media="not all">
-/* تثبيت زر تحديد نقطة الانطلاق/الوصول فوق الشريط السفلي حتى يبقى ظاهر دائماً */
-body:not(.trip-ready) #selectionPanel{
-  display:block!important;
-  position:fixed!important;
-  left:50%!important;
-  right:auto!important;
-  bottom:88px!important;
-  transform:translateX(-50%)!important;
-  width:min(760px,calc(100% - 24px))!important;
-  margin:0!important;
-  padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
-  z-index:2147481500!important;
-  pointer-events:none!important;
+
+
+
+
+<style id="ha-transport-new-system">
+:root{
+  --ha-blue:#1677ff;
+  --ha-blue2:#0c5bea;
+  --ha-green:#12a86e;
+  --ha-red:#f23845;
+  --ha-text:#102946;
+  --ha-muted:#718196;
+  --ha-line:#e5edf2;
+  --ha-card:#ffffff;
+  --ha-bg:#f5f8fb;
 }
-
-body:not(.trip-ready) #locationStep{
-  display:block!important;
-  width:100%!important;
-  margin:0!important;
-  padding:0!important;
-  pointer-events:auto!important;
-}
-
-body:not(.trip-ready) #stepSelectBtn{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  width:100%!important;
-  min-height:52px!important;
-  margin:0!important;
-  padding:14px 16px!important;
-  border:0!important;
-  border-radius:16px!important;
-  background:linear-gradient(135deg,#f59d16,#ef6c00)!important;
-  color:#fff!important;
-  font-size:15px!important;
-  font-weight:900!important;
-  line-height:1.2!important;
-  text-align:center!important;
-  box-shadow:0 10px 26px rgba(65,48,20,.20)!important;
-  cursor:pointer!important;
-  pointer-events:auto!important;
-}
-
-body:not(.trip-ready) #stepSelectBtn.destination{
-  background:linear-gradient(135deg,#2589ec,#1b55d9)!important;
-}
-
-/* الخريطة لا تنزل تحت زر التثبيت */
-body:not(.trip-ready) .map-wrap{
-  padding-bottom:64px!important;
-}
-
-/* على الموبايل نخليه فوق الشريط السفلي مباشرة */
-@media(max-width:700px){
-  body:not(.trip-ready) #selectionPanel{
-    bottom:82px!important;
-    width:calc(100% - 18px)!important;
-  }
-
-  body:not(.trip-ready) #stepSelectBtn{
-    min-height:50px!important;
-    border-radius:15px!important;
-    font-size:14px!important;
-  }
-
-  body:not(.trip-ready) .map-wrap{
-    padding-bottom:62px!important;
-  }
-}
-</style>
-<style id="ha-transport-fixed-point-button">
-/* HA Marketing - تثبيت زر اختيار النقطة في جميع أقسام النقل */
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #selectionPanel,
-body.delivery-stage-1 #selectionPanel{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  position:fixed!important;
-  left:50%!important;
-  right:auto!important;
-  bottom:88px!important;
-  transform:translateX(-50%)!important;
-  width:min(760px,calc(100% - 24px))!important;
-  min-height:0!important;
-  height:auto!important;
-  margin:0!important;
-  padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  z-index:2147481500!important;
-  pointer-events:none!important;
-}
-
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #locationStep,
-body.delivery-stage-1 #locationStep{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  width:100%!important;
-  min-height:0!important;
-  height:auto!important;
-  margin:0!important;
-  padding:0!important;
-  pointer-events:auto!important;
-}
-
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn,
-body.delivery-stage-1 #stepSelectBtn{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  width:100%!important;
-  min-height:52px!important;
-  height:auto!important;
-  margin:0!important;
-  padding:14px 16px!important;
-  border:0!important;
-  border-radius:16px!important;
-  background:linear-gradient(135deg,#f59d16,#ef6c00)!important;
-  color:#fff!important;
-  font:900 15px/1.2 Arial,Tahoma,sans-serif!important;
-  text-align:center!important;
-  box-shadow:0 10px 26px rgba(65,48,20,.20)!important;
-  cursor:pointer!important;
-  pointer-events:auto!important;
-  touch-action:manipulation!important;
-  -webkit-tap-highlight-color:transparent!important;
-}
-
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn.destination,
-body.delivery-stage-1 #stepSelectBtn.destination{
-  background:linear-gradient(135deg,#2589ec,#1b55d9)!important;
-}
-
-/* الدبوس في منتصف الخريطة يبقى ظاهر وقت اختيار النقطة */
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #centerPin,
-body.delivery-stage-1 #centerPin{
-  visibility:visible!important;
-  opacity:1!important;
-  z-index:1600!important;
-}
-
-/* مساحة آمنة حتى ما يغطي الزر الخريطة أو الشريط السفلي */
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) .map-wrap,
-body.delivery-stage-1 .map-wrap{
-  padding-bottom:64px!important;
-}
-
-/* لا نخلي أي CSS قديم يرجع الزر داخل الصفحة أو يخفيه */
-body.delivery-stage-2 #selectionPanel,
-body.delivery-stage-3 #selectionPanel{
-  display:none!important;
-}
-
-@media(max-width:700px){
-  body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #selectionPanel,
-  body.delivery-stage-1 #selectionPanel{
-    bottom:82px!important;
-    width:calc(100% - 18px)!important;
-  }
-
-  body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn,
-  body.delivery-stage-1 #stepSelectBtn{
-    min-height:50px!important;
-    padding:13px 14px!important;
-    border-radius:15px!important;
-    font-size:14px!important;
-  }
-
-  body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) .map-wrap,
-  body.delivery-stage-1 .map-wrap{
-    padding-bottom:62px!important;
-  }
-}
-</style>
-<style id="ha-transport-clear-details-v2">
-/* ===== HA Marketing: توضيح وترتيب تفاصيل النقل بكل الأقسام ===== */
-
-/* لوحة تفاصيل الرحلة */
-#tripSheet.open{
-  background:#fff!important;
-  border-radius:22px 22px 0 0!important;
-  padding:10px 12px 12px!important;
-  box-shadow:0 -10px 30px rgba(22,49,72,.18)!important;
-}
-
-.trip-sheet-title,
-#tripSheet .trip-sheet-title,
-#tripSheet .vehicle-title,
-.delivery-stage-title{
-  color:#102946!important;
-  font-weight:900!important;
-  letter-spacing:0!important;
-}
-
-/* عنوان اختيار المركبة أو وسيلة النقل */
-#tripSheet .vehicle-title{
-  font-size:15px!important;
-  margin:2px 0 8px!important;
-  text-align:right!important;
-}
-
-/* كل نوع سيارة/مركبة يصير كارت واضح */
-#tripSheet .type,
-.types .type{
-  min-height:58px!important;
-  padding:9px 10px!important;
-  margin:6px 0!important;
-  display:flex!important;
-  align-items:center!important;
-  gap:10px!important;
-  border:1px solid #dfe7ec!important;
-  border-radius:14px!important;
-  background:#fff!important;
-  box-shadow:0 4px 12px rgba(25,57,80,.05)!important;
-}
-
-#tripSheet .type.selected,
-.types .type.selected{
-  border:2px solid #138b67!important;
-  background:#f0fbf6!important;
-  box-shadow:0 6px 16px rgba(19,139,103,.10)!important;
-}
-
-#tripSheet .vehicle,
-.types .vehicle{
-  width:42px!important;
-  min-width:42px!important;
-  font-size:29px!important;
-  text-align:center!important;
-}
-
-#tripSheet .info,
-.types .info{
-  min-width:0!important;
-}
-
-#tripSheet .info b,
-.types .info b{
-  display:block!important;
-  color:#132a44!important;
-  font-size:14px!important;
-  font-weight:900!important;
-  line-height:1.35!important;
-}
-
-#tripSheet .info small,
-.types .info small{
-  display:block!important;
-  color:#718196!important;
-  font-size:10.5px!important;
-  line-height:1.45!important;
-  margin-top:2px!important;
-}
-
-#tripSheet .price,
-.types .price{
-  color:#087b59!important;
-  font-size:13px!important;
-  font-weight:950!important;
-  white-space:nowrap!important;
-}
-
-/* المسافة + الوقت + السعر */
-#tripSheet .metrics,
-.metrics{
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:7px!important;
-  margin:8px 0!important;
-}
-
-#tripSheet .metric,
-.metrics .metric{
-  min-height:55px!important;
-  padding:8px 5px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  background:#f7fafc!important;
-  border:1px solid #e3eaf0!important;
-  border-radius:12px!important;
-  text-align:center!important;
-}
-
-#tripSheet .metric small,
-.metrics .metric small{
-  display:block!important;
-  color:#758497!important;
-  font-size:9.5px!important;
-  font-weight:700!important;
-  margin-bottom:3px!important;
-}
-
-#tripSheet .metric b,
-.metrics .metric b{
-  display:block!important;
-  color:#122a43!important;
-  font-size:12.5px!important;
-  font-weight:950!important;
-  line-height:1.35!important;
-}
-
-/* الرسائل والحالة */
-#tripSheet .notice,
-.notice{
-  margin:6px 0!important;
-  padding:9px 10px!important;
-  border-radius:12px!important;
-  background:#fff7df!important;
-  color:#72530a!important;
-  border:1px solid #f3df9a!important;
-  font-size:10.5px!important;
-  font-weight:700!important;
-  line-height:1.55!important;
-}
-
-#tripSheet .extra-summary,
-.extra-summary{
-  margin:6px 0!important;
-  padding:8px 9px!important;
-  border-radius:11px!important;
-  background:#f4f7f9!important;
-  color:#536579!important;
-  font-size:10.5px!important;
-  line-height:1.55!important;
-}
-
-/* تفاصيل الأسعار إذا موجودة */
-.price-breakdown{
-  margin:7px 0!important;
-  padding:9px 10px!important;
-  background:#f7fafc!important;
-  border:1px solid #e2e9ef!important;
-  border-radius:12px!important;
-  color:#4f6174!important;
-  font-size:10.5px!important;
-  line-height:1.7!important;
-}
-.price-breakdown b{
-  color:#102946!important;
-  font-size:12px!important;
-}
-
-/* تفاصيل طلب المندوب */
-.delivery-details{
-  gap:8px!important;
-}
-.delivery-details input{
-  min-height:44px!important;
-  padding:10px 11px!important;
-  border:1px solid #d8e2e7!important;
-  border-radius:11px!important;
-  background:#fff!important;
-  color:#102946!important;
-  font-size:12px!important;
-}
-
-/* الأزرار الرئيسية */
-#tripSheet .order{
-  margin-top:8px!important;
-  padding:8px 0 0!important;
-  border-top:1px solid #e8eef2!important;
-  background:#fff!important;
-}
-
-#tripSheet #order,
-.order #order,
-#continueDeliveryDetails{
-  width:100%!important;
-  min-height:48px!important;
-  padding:12px 14px!important;
-  border:0!important;
-  border-radius:13px!important;
-  background:linear-gradient(135deg,#138c69,#087b59)!important;
-  color:#fff!important;
-  font-size:14px!important;
-  font-weight:950!important;
-  box-shadow:0 7px 18px rgba(8,123,89,.16)!important;
-}
-
-#tripSheet #order:disabled,
-.order #order:disabled{
-  background:#b9c4cb!important;
-  box-shadow:none!important;
-}
-
-/* زر الخيارات الإضافية */
-#tripSheet .extra-options-btn,
-.extra-options-btn{
-  width:100%!important;
-  min-height:43px!important;
-  margin:0 0 7px!important;
-  padding:10px 11px!important;
-  border:1px solid #dfe7ec!important;
-  border-radius:12px!important;
-  background:#f5f8fa!important;
-  color:#2d4358!important;
-  font-size:12px!important;
-  font-weight:900!important;
-}
-
-/* حالة الطلب الجاهز */
-#tripSheet .ready-status,
-#tripSheet .status-ready,
-#tripSheet .order-status,
-#tripSheet [class*="ready"],
-#tripSheet [id*="ready"]{
-  color:#087b59!important;
-  font-weight:900!important;
-}
-
-/* عنوان تفاصيل الرحلة إذا كان داخل اللوحة */
-#tripSheet h2,
-#tripSheet h3,
-#tripSheet h4{
-  color:#102946!important;
-  font-weight:900!important;
-}
-
-/* لا نخلي نص باهت بشكل مبالغ */
-#tripSheet small,
-#tripSheet span,
-#tripSheet p{
-  opacity:1!important;
-}
-
-/* موبايل: تكبير بسيط مع بقاء كلشي ضمن الشاشة */
-@media(max-width:600px){
-  #tripSheet.open{
-    padding:9px 10px 10px!important;
-  }
-
-  #tripSheet .vehicle-title{
-    font-size:13px!important;
-    margin-bottom:6px!important;
-  }
-
-  #tripSheet .type,
-  .types .type{
-    min-height:52px!important;
-    padding:7px 8px!important;
-    margin:5px 0!important;
-    border-radius:12px!important;
-  }
-
-  #tripSheet .vehicle,
-  .types .vehicle{
-    width:36px!important;
-    min-width:36px!important;
-    font-size:24px!important;
-  }
-
-  #tripSheet .info b,
-  .types .info b{
-    font-size:12.5px!important;
-  }
-
-  #tripSheet .info small,
-  .types .info small{
-    font-size:9.5px!important;
-  }
-
-  #tripSheet .price,
-  .types .price{
-    font-size:11.5px!important;
-  }
-
-  #tripSheet .metric,
-  .metrics .metric{
-    min-height:50px!important;
-    padding:6px 3px!important;
-  }
-
-  #tripSheet .metric small,
-  .metrics .metric small{
-    font-size:8.7px!important;
-  }
-
-  #tripSheet .metric b,
-  .metrics .metric b{
-    font-size:11.5px!important;
-  }
-
-  #tripSheet #order,
-  .order #order,
-  #continueDeliveryDetails{
-    min-height:46px!important;
-    font-size:13px!important;
-  }
-}
-</style>
-<style id="ha-transport-reference-style">
-/* =========================================================
-   HA Marketing - ترتيب النقل مثل النموذج المرسل
-   خريطة بالأعلى -> بحث/تثبيت النقطة -> اختيار المركبة -> تأكيد
-   ========================================================= */
-
-/* الصفحة نفسها */
-html,body{
-  background:#f6f8fa!important;
-}
-
+*{box-sizing:border-box}
+html,body{margin:0!important;padding:0!important;background:var(--ha-bg)!important;color:var(--ha-text)!important;font-family:Tahoma,Arial,sans-serif!important}
+body{padding-bottom:88px!important}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
 .app{
   width:min(100%,760px)!important;
   max-width:760px!important;
+  min-height:0!important;
   margin:0 auto!important;
   background:#fff!important;
-  min-height:auto!important;
   border-radius:0!important;
+  overflow:visible!important;
 }
 
-/* رأس صغير ومرتب بدل المساحات الكبيرة */
+/* ===== الرأس ===== */
 .head{
-  min-height:44px!important;
-  padding:7px 10px!important;
+  min-height:54px!important;
+  display:grid!important;
+  grid-template-columns:42px 1fr 42px!important;
+  align-items:center!important;
+  padding:7px 11px!important;
   background:#fff!important;
-  border-bottom:1px solid #edf1f4!important;
+  border-bottom:1px solid var(--ha-line)!important;
   position:relative!important;
-  z-index:900!important;
+  z-index:1000!important;
 }
-
 .head h1{
-  font-size:13px!important;
-  font-weight:900!important;
-  color:#20354b!important;
-}
-
-.back{
-  width:34px!important;
-  height:34px!important;
-  background:#fff!important;
-  border:1px solid #dde6eb!important;
-  color:#526477!important;
-  box-shadow:0 3px 10px rgba(30,65,90,.08)!important;
-}
-
-/* الخريطة هي العنصر الرئيسي */
-.map-wrap{
-  width:100%!important;
-  height:53dvh!important;
-  min-height:330px!important;
-  max-height:560px!important;
-  padding:0!important;
   margin:0!important;
-  position:relative!important;
-  overflow:hidden!important;
-  background:#eef2f4!important;
+  text-align:center!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  color:#102946!important;
+}
+.back{
+  width:38px!important;height:38px!important;
+  border:1px solid #dfe8ed!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#385069!important;
+  font-size:23px!important;
+  line-height:1!important;
+  display:grid!important;
+  place-items:center!important;
+  box-shadow:0 4px 11px rgba(30,60,80,.07)!important;
 }
 
+/* ===== الخريطة ===== */
+.map-wrap{
+  position:relative!important;
+  width:100%!important;
+  height:44dvh!important;
+  min-height:305px!important;
+  max-height:500px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:#edf2f5!important;
+}
 #map{
   width:100%!important;
   height:100%!important;
   min-height:100%!important;
-  max-height:none!important;
+  background:#edf2f5!important;
 }
+.leaflet-container{font-family:Tahoma,Arial,sans-serif!important}
+#map .leaflet-tile-pane,
+#postMap .leaflet-tile-pane,
+#deliveryPostMap .leaflet-tile-pane{filter:saturate(1.08) contrast(1.03) brightness(1.04)}
+.leaflet-top.leaflet-left{left:auto!important;right:11px!important}
+.leaflet-control-zoom{
+  border:0!important;border-radius:14px!important;overflow:hidden!important;
+  box-shadow:0 5px 16px rgba(21,50,70,.14)!important
+}
+.leaflet-control-zoom a{
+  width:39px!important;height:39px!important;line-height:39px!important;
+  border:0!important;background:#fff!important;color:#526579!important;font-size:20px!important
+}
+.leaflet-control-zoom a+a{border-top:1px solid #edf1f4!important}
 
-/* زر المحافظة أصغر وأهدأ */
-.map-wrap .province-bar{
-  top:10px!important;
-  left:10px!important;
-  right:auto!important;
-  z-index:850!important;
+/* المحافظة */
+.province-bar{
+  position:absolute!important;top:10px!important;left:10px!important;right:auto!important;
+  z-index:850!important;padding:0!important;margin:0!important;background:transparent!important
 }
-.map-wrap .province-bar button{
-  min-width:120px!important;
-  max-width:175px!important;
-  min-height:34px!important;
-  padding:6px 9px!important;
-  background:rgba(255,255,255,.96)!important;
-  border:1px solid #e1e6ea!important;
-  border-radius:12px!important;
-  box-shadow:0 4px 13px rgba(30,60,80,.13)!important;
+.province-bar button{
+  min-width:130px!important;max-width:185px!important;min-height:38px!important;
+  display:flex!important;align-items:center!important;gap:6px!important;
+  padding:7px 10px!important;background:rgba(255,255,255,.97)!important;
+  border:1px solid #e2e9ed!important;border-radius:13px!important;
+  box-shadow:0 5px 15px rgba(26,55,75,.13)!important;color:#43586d!important
 }
+.province-label{font-size:10px!important;font-weight:900!important}
+.province-name{font-size:9px!important;max-width:100px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.province-arrow{font-size:13px!important;margin-right:auto!important}
 
-/* تحديد موقعي مثل النموذج */
+/* موقع المستخدم */
 .locate-btn{
-  left:auto!important;
-  right:13px!important;
-  bottom:13px!important;
-  width:44px!important;
-  height:44px!important;
-  border-radius:50%!important;
-  background:#fff!important;
-  border:1px solid #e0e6ea!important;
-  box-shadow:0 5px 15px rgba(25,55,75,.16)!important;
+  position:absolute!important;left:13px!important;right:auto!important;bottom:13px!important;z-index:850!important;
+  width:44px!important;height:44px!important;border:1px solid #e1e7eb!important;border-radius:50%!important;
+  background:#fff!important;box-shadow:0 5px 16px rgba(25,55,75,.16)!important;
+  color:#536579!important;font-size:0!important
 }
+.locate-btn::before{content:"◎";font-size:27px!important;font-weight:950!important}
 
-/* دبوس واضح بوسط الخريطة */
+/* دبوس المنتصف */
 .center-pin{
-  z-index:1200!important;
+  position:absolute!important;left:50%!important;top:50%!important;
+  transform:translate(-50%,-100%)!important;z-index:840!important;
+  width:34px!important;height:43px!important;pointer-events:none!important
 }
+.center-pin.show{display:block!important}
 .moving-pin{
-  width:25px!important;
-  height:25px!important;
-  box-shadow:0 4px 11px rgba(0,0,0,.24)!important;
+  position:absolute!important;left:6px!important;top:2px!important;width:24px!important;height:24px!important;
+  background:#ff7a00!important;border:3px solid #fff!important;border-radius:50% 50% 50% 0!important;
+  transform:rotate(-45deg)!important;box-shadow:0 4px 10px rgba(0,0,0,.25)!important
 }
+.moving-pin::after{
+  content:""!important;position:absolute!important;width:7px!important;height:7px!important;
+  left:6px!important;top:6px!important;border-radius:50%!important;background:#fff!important
+}
+.center-pin.destination .moving-pin{background:var(--ha-blue)!important}
 
-/* شريط البحث تحت الخريطة بالضبط */
+/* ===== البحث ===== */
 .single-search-wrap{
-  position:relative!important;
-  z-index:950!important;
-  width:100%!important;
-  padding:9px 12px 7px!important;
-  margin:0!important;
-  background:#fff!important;
-  border-top:1px solid #edf1f4!important;
+  width:100%!important;padding:10px 12px 7px!important;margin:0!important;background:#fff!important;
+  border-top:1px solid #edf1f4!important
 }
-
-.single-search-row{
-  width:100%!important;
-  display:grid!important;
-  grid-template-columns:1fr 42px!important;
-  gap:7px!important;
-}
-
+.single-search-row{display:grid!important;grid-template-columns:1fr 44px!important;gap:7px!important}
 .single-search-row input{
-  min-height:44px!important;
-  padding:10px 13px!important;
-  border:1px solid #dfe6eb!important;
-  border-radius:12px!important;
-  background:#fafcfd!important;
-  color:#263b50!important;
-  font-size:12px!important;
-  outline:none!important;
+  width:100%!important;min-height:46px!important;padding:10px 13px!important;
+  border:1px solid #dfe7ec!important;border-radius:13px!important;background:#f9fbfc!important;
+  color:#263b50!important;font-size:12px!important;outline:none!important
 }
-.single-search-row input:focus{
-  border-color:#5b8df5!important;
-  box-shadow:0 0 0 3px rgba(47,100,230,.08)!important;
-}
+.single-search-row input:focus{border-color:#6b9cff!important;box-shadow:0 0 0 3px rgba(29,106,255,.08)!important}
 .single-search-row button{
-  min-width:42px!important;
-  min-height:44px!important;
-  padding:0!important;
-  border-radius:12px!important;
-  background:#f2f5f7!important;
-  color:#445a70!important;
-  font-size:0!important;
+  min-height:46px!important;border:0!important;border-radius:13px!important;background:#edf4ff!important;color:#176cda!important;
+  font-size:0!important
 }
-.single-search-row button::before{
-  content:"⌕";
-  font-size:21px;
-  font-weight:900;
-}
-
-/* نتائج البحث */
+.single-search-row button::before{content:"⌕";font-size:21px!important;font-weight:950!important}
 .results{
-  margin-top:6px!important;
-  border:1px solid #e1e8ed!important;
-  border-radius:12px!important;
-  box-shadow:0 8px 22px rgba(30,60,80,.10)!important;
-  background:#fff!important;
-  max-height:180px!important;
-  overflow:auto!important;
+  display:none;margin-top:6px!important;background:#fff!important;border:1px solid #e1e8ed!important;
+  border-radius:12px!important;box-shadow:0 8px 22px rgba(25,55,75,.10)!important;overflow:hidden!important;max-height:190px!important
 }
-.results button{
-  min-height:42px!important;
-  padding:9px 11px!important;
-  font-size:11px!important;
-  color:#30465b!important;
-  background:#fff!important;
-}
+.results button{width:100%!important;min-height:42px!important;padding:9px 11px!important;background:#fff!important;border:0!important;border-bottom:1px solid #edf1f4!important;text-align:right!important;color:#40556a!important;font-size:11px!important}
 
-/* زر تثبيت الانطلاق/الوصول - مثل الفيديو */
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #selectionPanel,
-body.delivery-stage-1 #selectionPanel{
-  display:block!important;
-  position:sticky!important;
-  left:auto!important;
-  right:auto!important;
-  bottom:82px!important;
-  transform:none!important;
-  z-index:1800!important;
-  width:auto!important;
-  margin:0!important;
-  padding:6px 12px 10px!important;
-  background:#fff!important;
-  border:0!important;
-  box-shadow:none!important;
-  pointer-events:auto!important;
+/* ===== زر تثبيت النقطة ===== */
+#selectionPanel{
+  width:100%!important;margin:0!important;padding:7px 12px 11px!important;background:#fff!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;position:relative!important;z-index:900!important
 }
+#locationStep{display:block!important;width:100%!important;margin:0!important;padding:0!important}
+#stepSelectBtn{
+  display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:50px!important;
+  margin:0!important;padding:12px 14px!important;border:0!important;border-radius:12px!important;
+  background:linear-gradient(135deg,var(--ha-blue),var(--ha-blue2))!important;color:#fff!important;
+  font-size:13px!important;font-weight:950!important;box-shadow:0 7px 18px rgba(22,95,230,.18)!important
+}
+#stepSelectBtn.destination{background:linear-gradient(135deg,#1fa26f,#0b8d5d)!important}
 
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #locationStep,
-body.delivery-stage-1 #locationStep{
-  display:block!important;
-  width:100%!important;
-  margin:0!important;
-  padding:0!important;
-}
-
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn,
-body.delivery-stage-1 #stepSelectBtn{
-  display:block!important;
-  width:100%!important;
-  min-height:48px!important;
-  margin:0!important;
-  padding:12px 14px!important;
-  border:0!important;
-  border-radius:8px!important;
-  background:#154af3!important;
-  color:#fff!important;
-  font-size:13px!important;
-  font-weight:900!important;
-  box-shadow:0 5px 14px rgba(21,74,243,.20)!important;
-}
-
-body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #stepSelectBtn.destination,
-body.delivery-stage-1 #stepSelectBtn.destination{
-  background:#154af3!important;
-}
-
-/* بعد تثبيت النقطتين: القائمة لا تغطي الخريطة، بل تصير تحتها مثل النموذج */
-body.trip-ready{
-  overflow:auto!important;
-  padding-bottom:90px!important;
-}
-body.trip-ready .app{
-  min-height:auto!important;
-  height:auto!important;
-  overflow:visible!important;
-}
-
-body.trip-ready .map-wrap,
-body.delivery-stage-2 .map-wrap,
-body.delivery-stage-3 .map-wrap{
-  height:40dvh!important;
-  min-height:280px!important;
-  max-height:420px!important;
-  flex:none!important;
-}
-
+/* ===== لوحة اختيار المركبة ===== */
+#tripSheet{display:none!important}
 #tripSheet.open{
-  display:flex!important;
-  position:relative!important;
-  left:auto!important;
-  right:auto!important;
-  bottom:auto!important;
-  transform:none!important;
-  width:100%!important;
-  height:auto!important;
-  max-height:none!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:10px 12px 14px!important;
-  overflow:visible!important;
-  background:#fff!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  border-top:1px solid #edf1f4!important;
+  display:block!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;transform:none!important;
+  width:100%!important;height:auto!important;max-height:none!important;margin:0!important;padding:10px 12px 14px!important;
+  overflow:visible!important;background:#fff!important;border-radius:0!important;border-top:1px solid var(--ha-line)!important;box-shadow:none!important
 }
+#tripSheet.open::before{display:none!important}
+.trip-sheet-title{font-size:14px!important;font-weight:950!important;text-align:right!important;margin:0 0 4px!important;color:#102946!important}
+.vehicle-title{font-size:12px!important;font-weight:900!important;text-align:right!important;margin:2px 0 8px!important;color:#40546a!important}
+#vehicleStep{width:100%!important}
 
-#tripSheet.open::before{
-  display:none!important;
+/* المركبات */
+.type{
+  min-height:66px!important;margin:0!important;padding:7px 8px!important;display:grid!important;
+  grid-template-columns:56px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;
+  background:#fff!important;border:0!important;border-bottom:1px solid #edf1f4!important;border-radius:0!important;box-shadow:none!important
 }
-
-.trip-sheet-title{
-  display:none!important;
+.type:last-child{border-bottom:0!important}
+.type.selected{
+  background:linear-gradient(90deg,#f1f4ff,#f8faff)!important;
+  border-right:4px solid var(--ha-blue)!important
 }
-
-/* عنوان اختيار نوع المركبة */
-#tripSheet .vehicle-title,
-.delivery-stage-title{
-  margin:2px 2px 8px!important;
-  text-align:right!important;
-  color:#273b50!important;
-  font-size:12px!important;
-  font-weight:900!important;
+.vehicle{
+  width:56px!important;min-width:56px!important;height:48px!important;display:grid!important;place-items:center!important;
+  border-radius:12px!important;background:linear-gradient(145deg,#f3f7fb,#eaf0f5)!important;
+  font-size:29px!important;text-align:center!important;box-shadow:inset 0 0 0 1px #e3eaf0!important
 }
+.info{min-width:0!important}
+.info b{display:block!important;color:#20364c!important;font-size:13px!important;font-weight:950!important;line-height:1.35!important}
+.info small{display:block!important;margin-top:3px!important;color:#8794a2!important;font-size:9px!important;line-height:1.35!important}
+.price{min-width:90px!important;text-align:left!important;color:#0a7e59!important;font-size:12px!important;font-weight:950!important;white-space:nowrap!important}
 
-/* كروت المركبات مثل الفيديو: صفوف نظيفة وسعر واضح */
-#tripSheet .type,
-.types .type{
-  min-height:62px!important;
-  margin:0!important;
-  padding:8px 7px!important;
-  display:grid!important;
-  grid-template-columns:48px minmax(0,1fr) auto!important;
-  align-items:center!important;
-  gap:8px!important;
-  background:#fff!important;
-  border:0!important;
-  border-bottom:1px solid #edf1f4!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-}
-
-#tripSheet .type:last-of-type,
-.types .type:last-of-type{
-  border-bottom:0!important;
-}
-
-#tripSheet .type.selected,
-.types .type.selected{
-  background:#f0efff!important;
-  border:0!important;
-  border-bottom:1px solid #e7e4ff!important;
-  box-shadow:none!important;
-}
-
-#tripSheet .vehicle,
-.types .vehicle{
-  width:48px!important;
-  min-width:48px!important;
-  text-align:center!important;
-  font-size:30px!important;
-}
-
-#tripSheet .info,
-.types .info{
-  min-width:0!important;
-}
-
-#tripSheet .info b,
-.types .info b{
-  display:block!important;
-  color:#263b50!important;
-  font-size:12px!important;
-  font-weight:900!important;
-  line-height:1.4!important;
-}
-
-#tripSheet .info small,
-.types .info small{
-  display:block!important;
-  margin-top:2px!important;
-  color:#8794a2!important;
-  font-size:9px!important;
-  line-height:1.35!important;
-}
-
-#tripSheet .price,
-.types .price{
-  min-width:84px!important;
-  text-align:left!important;
-  color:#263b50!important;
-  font-size:12px!important;
-  font-weight:900!important;
-  white-space:nowrap!important;
-}
-
-/* معلومات المسافة والوقت والسعر تكون صغيرة وواضحة */
-#tripSheet .metrics,
+/* المقاييس */
 .metrics{
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:5px!important;
-  margin:8px 0 4px!important;
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;
+  margin:9px 0 6px!important
 }
-
-#tripSheet .metric,
-.metrics .metric{
-  min-height:47px!important;
-  padding:6px 4px!important;
-  background:#f6f7f9!important;
-  border:0!important;
-  border-radius:8px!important;
+.metric{
+  min-height:58px!important;padding:8px 5px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  text-align:center!important;background:#f6f9fb!important;border:1px solid #e7edf1!important;border-radius:13px!important
 }
+.metric small{display:block!important;color:#8996a4!important;font-size:8.5px!important;font-weight:800!important;margin-bottom:3px!important}
+.metric b{display:block!important;color:#20364b!important;font-size:11.5px!important;font-weight:950!important;line-height:1.35!important}
 
-#tripSheet .metric small,
-.metrics .metric small{
-  color:#929daa!important;
-  font-size:8px!important;
-  font-weight:700!important;
-  margin-bottom:2px!important;
-}
-
-#tripSheet .metric b,
-.metrics .metric b{
-  color:#263b50!important;
-  font-size:10.5px!important;
-  font-weight:900!important;
-}
-
-/* التنبيه والملخص */
-#tripSheet .notice,
 .notice{
-  margin:5px 0!important;
-  padding:7px 8px!important;
-  border-radius:8px!important;
-  border:0!important;
-  background:#f7f8fa!important;
-  color:#718090!important;
-  font-size:9px!important;
-  line-height:1.5!important;
+  margin:5px 0!important;padding:9px 10px!important;background:#f2fbf6!important;border:1px solid #d8f0e4!important;border-radius:12px!important;
+  color:#0c7f59!important;font-size:10px!important;font-weight:800!important;line-height:1.5!important;text-align:center!important
 }
+.extra-summary{display:none;margin:6px 0!important;padding:8px 9px!important;background:#f5f8fa!important;border-radius:10px!important;color:#617285!important;font-size:9.5px!important;line-height:1.5!important}
 
-#tripSheet .extra-summary,
-.extra-summary{
-  margin:5px 0!important;
-  padding:7px 8px!important;
-  border-radius:8px!important;
-  background:#f7f8fa!important;
-  color:#627387!important;
-  font-size:9px!important;
+/* الإجراءات */
+.order{
+  position:sticky!important;bottom:82px!important;z-index:1600!important;margin:8px -12px -14px!important;padding:8px 12px 11px!important;
+  background:#fff!important;border-top:1px solid #e7edf1!important
 }
-
-/* زر الخيارات */
-#tripSheet .extra-options-btn,
 .extra-options-btn{
-  min-height:42px!important;
-  margin:5px 0!important;
-  padding:9px 10px!important;
-  border:1px solid #e0e6ea!important;
-  border-radius:8px!important;
-  background:#fff!important;
-  color:#475b70!important;
-  font-size:10px!important;
-  font-weight:900!important;
+  width:100%!important;min-height:42px!important;margin:0 0 7px!important;padding:9px 10px!important;
+  background:#f5f7f9!important;color:#4e6277!important;border:1px solid #e2e8ec!important;border-radius:11px!important;
+  font-size:10px!important;font-weight:900!important
+}
+#order{
+  width:100%!important;min-height:50px!important;padding:12px 14px!important;border:0!important;border-radius:12px!important;
+  background:linear-gradient(135deg,var(--ha-blue),var(--ha-blue2))!important;color:#fff!important;
+  font-size:13px!important;font-weight:950!important;box-shadow:0 7px 18px rgba(22,95,230,.18)!important
+}
+#order:disabled{background:#aeb8c3!important;box-shadow:none!important}
+
+/* ===== النوافذ السفلية ===== */
+.extra-sheet,.chat-sheet,.cancel-reason-sheet{
+  position:fixed!important;inset:0!important;z-index:2147482500!important;background:rgba(10,25,40,.45)!important;
+  display:none!important;align-items:flex-end!important;justify-content:center!important
+}
+.extra-sheet.show,.chat-sheet.show,.cancel-reason-sheet.show{display:flex!important}
+.extra-card,.chat-box,.cancel-reason-card{
+  width:min(760px,100%)!important;max-height:82dvh!important;overflow:auto!important;background:#fff!important;
+  border-radius:24px 24px 0 0!important;padding:16px 14px 18px!important;box-shadow:0 -12px 35px rgba(10,30,45,.22)!important
+}
+.extra-head,.chat-head,.cancel-reason-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin-bottom:10px!important}
+.extra-head h3,.cancel-reason-head h3{margin:0!important;font-size:16px!important;color:#102946!important}
+.extra-head button,.chat-head button,.cancel-reason-head button{width:36px!important;height:36px!important;border:0!important;border-radius:50%!important;background:#eef2f5!important;color:#42566b!important}
+.extra-option,.cancel-reason-option{
+  display:flex!important;align-items:center!important;gap:10px!important;padding:12px 10px!important;margin:7px 0!important;
+  background:#f8fafb!important;border:1px solid #e9eef2!important;border-radius:12px!important;font-size:12px!important
+}
+.extra-fields{display:none!important;margin:5px 0 8px!important}.extra-fields.show{display:block!important}
+.extra-fields input,.extra-fields select,.cancel-other{
+  width:100%!important;min-height:44px!important;padding:10px 11px!important;border:1px solid #dce5ea!important;border-radius:11px!important;background:#fff!important;font-size:12px!important
+}
+.save-extra,.confirm-cancel-btn{
+  width:100%!important;min-height:48px!important;border:0!important;border-radius:12px!important;
+  background:var(--ha-blue)!important;color:#fff!important;font-size:13px!important;font-weight:950!important;margin-top:9px!important
+}
+.confirm-cancel-btn{background:var(--ha-red)!important}
+
+/* ===== شاشة ما بعد الطلب ===== */
+.post-order-screen,.delivery-post-screen{
+  position:fixed!important;inset:0!important;z-index:2147482400!important;background:#f5f8fb!important;
+  display:none!important;flex-direction:column!important;overflow:auto!important
+}
+.post-order-screen.show,.delivery-post-screen.show{display:flex!important}
+.post-head,.delivery-post-head{
+  min-height:54px!important;display:grid!important;grid-template-columns:42px 1fr 42px!important;align-items:center!important;
+  padding:7px 11px!important;background:#fff!important;border-bottom:1px solid var(--ha-line)!important
+}
+.post-head h2,.delivery-post-head h2{margin:0!important;text-align:center!important;font-size:15px!important;color:#102946!important}
+.post-map,.delivery-post-map{
+  width:100%!important;height:40dvh!important;min-height:280px!important;max-height:430px!important;background:#edf2f5!important
+}
+.post-panel,.delivery-post-panel{
+  width:min(100%,760px)!important;margin:0 auto!important;padding:12px!important;background:#fff!important
 }
 
-/* زر تأكيد الطلب يكون واضح بالأزرق مثل النموذج */
-#tripSheet .order{
-  position:sticky!important;
-  bottom:82px!important;
-  z-index:1900!important;
-  margin:7px -12px -14px!important;
-  padding:8px 12px 10px!important;
-  background:#fff!important;
-  border-top:1px solid #e8edf1!important;
+/* البحث عن سائق */
+.searching-box,.delivery-search-box{
+  text-align:center!important;padding:18px 14px!important;background:#fff!important;border-radius:18px!important;
+  border:1px solid #e6edf1!important;box-shadow:0 8px 22px rgba(25,55,75,.06)!important
+}
+.loader{
+  width:70px!important;height:70px!important;border-radius:50%!important;border:8px solid #e7efff!important;border-top-color:var(--ha-blue)!important;
+  margin:6px auto 14px!important;animation:spin 1s linear infinite!important
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status-title{font-size:17px!important;font-weight:950!important;color:#102946!important;margin-bottom:6px!important}
+.status-sub{font-size:11px!important;color:#7a8999!important;line-height:1.6!important}
+.search-cancel-trip,.delivery-search-cancel{
+  width:100%!important;min-height:46px!important;margin-top:14px!important;border:0!important;border-radius:12px!important;
+  background:#f1f4f7!important;color:#b52b40!important;font-size:12px!important;font-weight:900!important
 }
 
-#tripSheet #order,
-.order #order,
-#continueDeliveryDetails{
-  width:100%!important;
-  min-height:48px!important;
-  padding:12px!important;
-  border:0!important;
-  border-radius:8px!important;
-  background:#154af3!important;
-  color:#fff!important;
-  font-size:12.5px!important;
-  font-weight:900!important;
-  box-shadow:0 5px 14px rgba(21,74,243,.18)!important;
+/* كارت السائق */
+.driver-card,.delivery-driver-card{
+  display:none!important;background:#fff!important;border-radius:20px!important;padding:13px!important;
+  border:1px solid #e5edf1!important;box-shadow:0 10px 28px rgba(25,55,75,.08)!important
 }
+.driver-card.show,.delivery-driver-card.show{display:block!important}
+.driver-top,.delivery-driver-top{display:flex!important;align-items:center!important;gap:10px!important}
+.driver-avatar,.delivery-driver-avatar{
+  width:62px!important;height:62px!important;min-width:62px!important;border-radius:50%!important;overflow:hidden!important;background:#edf1f4!important;
+  box-shadow:0 0 0 3px #fff,0 0 0 4px #dfe7ec!important
+}
+.driver-avatar img,.delivery-driver-avatar img{width:100%!important;height:100%!important;object-fit:cover!important}
+.driver-info,.delivery-driver-info{flex:1!important;min-width:0!important}
+.driver-info b,.delivery-driver-info b{display:block!important;font-size:14px!important;color:#102946!important}
+.driver-info span,.delivery-driver-info span{display:block!important;margin-top:3px!important;color:#748396!important;font-size:10px!important}
+.driver-details,.delivery-driver-details{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin-top:10px!important
+}
+.driver-detail,.delivery-driver-details>div{
+  background:#f7f9fb!important;border-radius:11px!important;padding:8px!important;border:1px solid #e8eef2!important
+}
+.driver-detail small,.delivery-driver-details small{display:block!important;color:#8794a2!important;font-size:8px!important;margin-bottom:2px!important}
+.driver-detail b,.delivery-driver-details b{font-size:10.5px!important;color:#253a4f!important}
+.driver-meta{
+  display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:7px!important;margin-top:9px!important
+}
+.driver-meta>div{
+  padding:8px 5px!important;text-align:center!important;border-radius:11px!important;background:#f4f8fb!important;border:1px solid #e6edf1!important
+}
+.driver-meta small{display:block!important;font-size:8px!important;color:#8794a2!important}
+.driver-meta b{display:block!important;margin-top:2px!important;font-size:10.5px!important;color:#102946!important}
+.post-actions,.delivery-post-actions{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin-top:10px!important
+}
+.post-actions button,.delivery-post-actions button{
+  min-height:44px!important;border:0!important;border-radius:11px!important;font-size:11px!important;font-weight:900!important
+}
+.call-driver,.delivery-call{background:#17a66d!important;color:#fff!important}
+.app-call-driver,.delivery-app-call{background:#1677ff!important;color:#fff!important}
+.whatsapp-driver{background:#eaf8ef!important;color:#14713a!important}
+.chat-driver,.delivery-chat{background:#edf4ff!important;color:#185daf!important}
+.cancel-trip,.delivery-cancel{background:#fff0f2!important;color:#bd2942!important}
 
-#tripSheet #order:disabled,
-.order #order:disabled{
-  background:#aeb8c3!important;
-  box-shadow:none!important;
-}
+/* انتهاء الرحلة */
+.finish-box{display:none!important;text-align:center!important;padding:18px 12px!important}
+.finish-box.show{display:block!important}
+.finish-icon{width:64px!important;height:64px!important;margin:0 auto 10px!important;border-radius:50%!important;background:#e8f8ef!important;color:#12844e!important;display:grid!important;place-items:center!important;font-size:34px!important}
+.finish-price{padding:10px!important;border-radius:12px!important;background:#f6f9fb!important;color:#102946!important;font-weight:950!important}
 
-/* تفاصيل المندوب بالمرحلة الأخيرة */
-body.delivery-stage-3 #tripSheet.open{
-  height:auto!important;
-  max-height:none!important;
-  overflow:visible!important;
-}
-body.delivery-stage-3 #deliveryDetailsStage{
-  height:auto!important;
-  display:block!important;
-}
-body.delivery-stage-3 .delivery-details{
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  gap:7px!important;
-}
-body.delivery-stage-3 .delivery-details input{
-  min-height:46px!important;
-  padding:10px 11px!important;
-  border:1px solid #dfe6eb!important;
-  border-radius:9px!important;
-  background:#fafcfd!important;
-  color:#263b50!important;
-  font-size:11px!important;
-}
+/* شات داخلي */
+.chat-box{height:min(68dvh,560px)!important;display:flex!important;flex-direction:column!important;padding:0!important}
+.chat-head{padding:11px 13px!important;border-bottom:1px solid var(--ha-line)!important;margin:0!important}
+.chat-messages,.delivery-chat-messages{flex:1!important;overflow:auto!important;padding:12px!important;background:#f6f8fa!important}
+.msg{max-width:78%!important;padding:9px 11px!important;border-radius:13px!important;margin:6px 0!important;font-size:11px!important;line-height:1.5!important}
+.msg.me{margin-right:auto!important;background:#176fe5!important;color:#fff!important}
+.msg.driver{margin-left:auto!important;background:#fff!important;color:#102946!important;border:1px solid #e5ebef!important}
+.chat-send,.delivery-chat-send{display:grid!important;grid-template-columns:1fr auto!important;gap:7px!important;padding:10px!important;border-top:1px solid var(--ha-line)!important}
+.chat-send input,.delivery-chat-send input{min-height:43px!important;border:1px solid #dce5ea!important;border-radius:11px!important;padding:10px!important;font-size:11px!important}
+.chat-send button,.delivery-chat-send button{border:0!important;border-radius:11px!important;background:#176fe5!important;color:#fff!important;padding:0 15px!important;font-weight:900!important}
 
-/* لا نريد لوحات تغطي الخريطة */
-body.trip-sheet-open{
-  overflow:auto!important;
-  padding-bottom:90px!important;
+/* ===== التوصيل ===== */
+#deliveryTransportStage{display:block}
+#deliveryDetailsStage{display:none}
+.delivery-details{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+.delivery-details input{
+  min-height:46px!important;padding:10px 11px!important;border:1px solid #dce5ea!important;border-radius:11px!important;background:#f9fbfc!important;font-size:11px!important
 }
+#continueToDeliveryDetails{
+  width:100%!important;min-height:48px!important;margin-top:7px!important;border:0!important;border-radius:12px!important;
+  background:linear-gradient(135deg,var(--ha-blue),var(--ha-blue2))!important;color:#fff!important;font-size:12px!important;font-weight:950!important
+}
+body.delivery-stage-2 #deliveryTransportStage{display:block!important}
+body.delivery-stage-3 #deliveryTransportStage{display:none!important}
+body.delivery-stage-3 #deliveryDetailsStage{display:block!important}
 
-/* موبايل */
+/* لا نخلي CSS قديم يفرض ارتفاع ثابت */
+body.trip-sheet-open,body.trip-ready{overflow:auto!important;height:auto!important;min-height:100%!important}
+
+/* ===== موبايل ===== */
 @media(max-width:600px){
-  .map-wrap{
-    height:48dvh!important;
-    min-height:300px!important;
-  }
+  body{padding-bottom:84px!important}
+  .head{min-height:50px!important;padding:6px 9px!important}
+  .head h1{font-size:13px!important}
+  .back{width:35px!important;height:35px!important;border-radius:11px!important}
 
-  body.trip-ready .map-wrap,
-  body.delivery-stage-2 .map-wrap,
-  body.delivery-stage-3 .map-wrap{
-    height:36dvh!important;
-    min-height:245px!important;
-    max-height:330px!important;
-  }
+  .map-wrap{height:39dvh!important;min-height:255px!important;max-height:355px!important}
+  .single-search-wrap{padding:7px 9px 6px!important}
+  #selectionPanel{padding:5px 9px 8px!important}
+  #stepSelectBtn{min-height:47px!important;font-size:12px!important}
 
-  .single-search-wrap{
-    padding:7px 9px 6px!important;
-  }
+  #tripSheet.open{padding:8px 9px 12px!important}
+  .trip-sheet-title{font-size:12px!important}
+  .vehicle-title{font-size:11px!important}
+  .type{min-height:58px!important;grid-template-columns:48px minmax(0,1fr) auto!important;gap:7px!important;padding:6px!important}
+  .vehicle{width:48px!important;min-width:48px!important;height:43px!important;font-size:25px!important}
+  .info b{font-size:11.5px!important}.info small{font-size:8.3px!important}
+  .price{min-width:76px!important;font-size:10.5px!important}
+  .metric{min-height:50px!important;padding:6px 3px!important}
+  .metric small{font-size:7.8px!important}.metric b{font-size:10px!important}
+  .order{bottom:78px!important;margin:7px -9px -12px!important;padding:7px 9px 9px!important}
+  #order{min-height:47px!important;font-size:12px!important}
+  .extra-options-btn{min-height:39px!important}
 
-  body:not(.trip-ready):not(.delivery-stage-2):not(.delivery-stage-3) #selectionPanel,
-  body.delivery-stage-1 #selectionPanel{
-    bottom:78px!important;
-    padding:5px 9px 8px!important;
-  }
+  .post-map,.delivery-post-map{height:35dvh!important;min-height:235px!important;max-height:320px!important}
+  .post-panel,.delivery-post-panel{padding:9px!important}
+  .driver-details,.delivery-driver-details{grid-template-columns:1fr 1fr!important}
+  .post-actions,.delivery-post-actions{grid-template-columns:1fr 1fr!important}
+  .delivery-details{grid-template-columns:1fr!important}
+}
 
-  #tripSheet.open{
-    padding:8px 9px 12px!important;
-  }
-
-  #tripSheet .type,
-  .types .type{
-    min-height:57px!important;
-    grid-template-columns:42px minmax(0,1fr) auto!important;
-    gap:6px!important;
-    padding:7px 5px!important;
-  }
-
-  #tripSheet .vehicle,
-  .types .vehicle{
-    width:42px!important;
-    min-width:42px!important;
-    font-size:26px!important;
-  }
-
-  #tripSheet .info b,
-  .types .info b{
-    font-size:11.5px!important;
-  }
-
-  #tripSheet .info small,
-  .types .info small{
-    font-size:8.5px!important;
-  }
-
-  #tripSheet .price,
-  .types .price{
-    min-width:74px!important;
-    font-size:10.5px!important;
-  }
-
-  #tripSheet .order{
-    bottom:78px!important;
-    margin:7px -9px -12px!important;
-    padding:7px 9px 9px!important;
-  }
+/* أي زر خاص بتثبيت عنوان إضافي يبقى مرتب */
+.extra-address-confirm{
+  position:absolute!important;left:68px!important;bottom:13px!important;z-index:860!important;
+  min-height:42px!important;padding:8px 11px!important;border:0!important;border-radius:12px!important;
+  background:#fff!important;color:#176cda!important;box-shadow:0 5px 15px rgba(25,55,75,.14)!important;font-size:10px!important;font-weight:900!important
 }
 </style>
 </head>
@@ -2147,7 +482,7 @@ body.trip-sheet-open{
 </div>
 
 <div id="tripSheet">
-  <div class="trip-sheet-title">تفاصيل الرحلة</div>
+  <div class="trip-sheet-title">تفاصيل طلب التكسي</div>
   <div id="vehicleStep" style="display:none">
     <div class="vehicle-title">اختر نوع السيارة</div>
 
@@ -2182,7 +517,7 @@ body.trip-sheet-open{
 
 <div class="order" id="orderArea">
   <button id="extraOptionsBtn" class="extra-options-btn" type="button" disabled>⚙️ خيارات إضافية</button>
-  <button id="order" disabled>تأكيد التكسي</button>
+  <button id="order" disabled>تأكيد الطلب</button>
 </div>
 
 
@@ -2247,8 +582,8 @@ body.trip-sheet-open{
   <div class="post-panel">
     <div id="searchingBox" class="searching-box">
       <div class="loader"></div>
-      <div class="status-title">جاري البحث عن أقرب سائق</div>
-      <div class="status-sub">راح تظهر معلومات السائق هنا بعد قبول الطلب.</div>
+      <div class="status-title">جاري البحث عن سائق قريب</div>
+      <div class="status-sub">سيتم عرض معلومات السائق فور قبول الطلب.</div>
       <button id="searchCancelTripBtn" class="search-cancel-trip" type="button">إلغاء الطلب</button>
     </div>
 
@@ -3087,7 +1422,7 @@ function resetRouteDisplay(){
  });
 
  order.disabled=true;
- order.textContent='تأكيد التكسي';
+ order.textContent='تأكيد الطلب';
  document.getElementById('extraOptionsBtn').disabled=true;
 }
 
@@ -3276,8 +1611,8 @@ function openPostOrder(){
   document.getElementById('searchingBox').style.display='block';
   const searchLoader=document.querySelector('#searchingBox .loader');
   if(searchLoader) searchLoader.style.display='block';
-  document.querySelector('#searchingBox .status-title').textContent='جاري البحث عن أقرب سائق';
-  document.querySelector('#searchingBox .status-sub').textContent='راح تظهر معلومات السائق هنا بعد قبول الطلب.';
+  document.querySelector('#searchingBox .status-title').textContent='جاري البحث عن سائق قريب';
+  document.querySelector('#searchingBox .status-sub').textContent='سيتم عرض معلومات السائق فور قبول الطلب.';
   const searchCancelBtn=document.getElementById('searchCancelTripBtn');
   if(searchCancelBtn) searchCancelBtn.style.display='block';
   document.getElementById('driverCard').classList.remove('show');
@@ -3527,7 +1862,7 @@ document.getElementById('finishRateBtn').onclick=()=>{
 document.getElementById('cancelTripBtn').onclick=()=>openCancelReason();
 document.getElementById('searchCancelTripBtn').onclick=()=>openCancelReason();
 
-// نخلي زر تأكيد التكسي يفتح واجهة البحث بعد التحقق الحالي
+// نخلي زر تأكيد الطلب يفتح واجهة البحث بعد التحقق الحالي
 
 
 </script>
