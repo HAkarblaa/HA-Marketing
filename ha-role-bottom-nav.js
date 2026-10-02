@@ -344,60 +344,73 @@
     );
   }
 
+  function iconSvg(key){
+    const map={
+      home:'<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5z"/></svg>',
+      account:'<svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.6-5 3.1-7.5 7.5-7.5S18.9 16 19.5 21z"/></svg>',
+      notify:'<svg viewBox="0 0 24 24"><path d="M6 17h12l-1.5-2.5V10a4.5 4.5 0 0 0-9 0v4.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>',
+      orders:'<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+      requests:'<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+      cart:'<svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 10h9.8l2-7H7"/><circle cx="9" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>',
+      shop:'<svg viewBox="0 0 24 24"><path d="M4 9h16l-1-5H5z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>',
+      store:'<svg viewBox="0 0 24 24"><path d="M4 9h16l-1-5H5z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>',
+      add:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>',
+      join:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-4 2.4-6 5.5-6 1.8 0 3.1.6 4 1.5M18 10v7M14.5 13.5h7"/></svg>',
+      services:'<svg viewBox="0 0 24 24"><path d="m14.5 5.5 4 4-9 9-4 1 1-4z"/><path d="m13 7 4 4M5 5l4 4"/></svg>',
+      profile:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="9" r="3"/><path d="M8.5 17c.5-2.4 1.7-3.6 3.5-3.6s3 1.2 3.5 3.6"/></svg>',
+      jobs:'<svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M9 6V4h6v2M3.5 11h17"/></svg>',
+      track:'<svg viewBox="0 0 24 24"><path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+      study:'<svg viewBox="0 0 24 24"><path d="m3 8 9-5 9 5-9 5z"/><path d="M6 10.5V16c3.5 2.4 8.5 2.4 12 0v-5.5"/></svg>',
+      classes:'<svg viewBox="0 0 24 24"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></svg>',
+      library:'<svg viewBox="0 0 24 24"><path d="M4 4h5v16H4zM10 4h5v16h-5zM16 4h4v16h-4z"/></svg>',
+      transport:'<svg viewBox="0 0 24 24"><path d="M5 7h14l2 6v5H3v-5z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+      driver:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4.2 3-6.3 7-6.3s6.3 2.1 7 6.3"/></svg>',
+      rides:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>',
+      taxi:'<svg viewBox="0 0 24 24"><path d="M6 8h12l2 5v5H4v-5z"/><path d="M9 8V6h6v2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+      delivery:'<svg viewBox="0 0 24 24"><path d="M3 10h11v7H3zM14 12h4l3 3v2h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+      sports:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-.8 3.5h-4.4L9 9z"/></svg>',
+      fun:'<svg viewBox="0 0 24 24"><path d="M7 8h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.2 2l-1.3-1.5h-5L8.2 17A3 3 0 0 1 3 15v-3a4 4 0 0 1 4-4z"/></svg>',
+      games:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"/><path d="M8 10v4M6 12h4"/></svg>',
+      rank:'<svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M12 13v4M8 21h8M9 17h6"/></svg>',
+      news:'<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+      religious:'<svg viewBox="0 0 24 24"><path d="M4 20h16M6 20v-9l6-5 6 5v9M9 20v-5h6v5"/></svg>',
+      quran:'<svg viewBox="0 0 24 24"><path d="M4 5c3-1 5-.5 8 1v14c-3-1.5-5-2-8-1zM20 5c-3-1-5-.5-8 1v14c3-1.5 5-2 8-1z"/></svg>',
+      duas:'<svg viewBox="0 0 24 24"><path d="M7 13c-1-3 0-5 2-6 1 0 2 1 2 3v3M17 13c1-3 0-5-2-6-1 0-2 1-2 3v3"/></svg>',
+      manage:'<svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.7 2.7 8 7 10 4.3-2 7-5.3 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>',
+      section:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>',
+      courier:'<svg viewBox="0 0 24 24"><path d="M3 9h11v7H3zM14 11h4l3 3v2h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+      student:'<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2"/></svg>',
+      gyms:'<svg viewBox="0 0 24 24"><path d="M3 9h3v6H3zM18 9h3v6h-3zM6 7h3v10H6zM15 7h3v10h-3zM9 11h6v2H9z"/></svg>',
+      football:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>'
+    };
+    return map[key]||map.section;
+  }
+
   function render(nav,section){
     document.getElementById('haRoleBottomNav')?.remove();
 
     const active=activeKey(section,nav);
-
-    /* المحادثات مخفية نهائياً من كل الأشرطة */
-    let items=(nav.items||[]).filter(x=>{
+    const items=(nav.items||[]).filter(x=>{
       const href=String(x.href||'').split('?')[0].split('#')[0].toLowerCase();
       const label=String(x.label||'').trim();
-      return x.key!=='chat' &&
-             href!=='chat.html' &&
-             label!=='المحادثات' &&
-             label!=='الدردشة';
-    });
-
-    /* نحافظ على خمس خانات مرتبة قدر الإمكان مثل الرئيسية */
-    if(section==='news' && !items.some(x=>x.key==='orders')){
-      items.splice(Math.max(1,items.length-1),0,it('orders','📦','طلباتي','orders-center.html'));
-    }
-    if(section==='general' && !items.some(x=>x.key==='sections')){
-      items.splice(1,0,it('sections','📂','الأقسام','index.html#all'));
-    }
-
-    items=items.slice(0,5);
+      return x.key!=='chat' && href!=='chat.html' && label!=='المحادثات' && label!=='الدردشة';
+    }).slice(0,5);
 
     const el=document.createElement('nav');
     el.id='haRoleBottomNav';
     el.dataset.section=section||'general';
     el.setAttribute('aria-label','الشريط السفلي');
+    el.style.setProperty('--ha-nav-count',String(Math.max(1,items.length)));
 
-    el.innerHTML=
-      `<div class="ha-rbn-inner" style="--ha-nav-count:${Math.max(1,items.length)}">`+
-      items.map(x=>
-        `<a class="ha-rbn-item ${x.key===active?'active':''}" href="${x.href}">
-          <span class="ha-rbn-icon">${x.icon}</span>
-          <span class="ha-rbn-label">${x.label}</span>
-        </a>`
-      ).join('')+
-      `</div>`;
+    el.innerHTML='<div class="ha-rbn-inner">'+items.map(x=>
+      `<a class="ha-rbn-item ${x.key===active?'active':''}" href="${x.href}">
+        <span class="ha-rbn-icon" data-key="${x.key}">${iconSvg(x.key)}</span>
+        <span class="ha-rbn-label">${x.label}</span>
+      </a>`
+    ).join('')+'</div>';
 
     document.body.appendChild(el);
     document.body.classList.add('ha-role-bottom-active');
-  }
-
-  function hideOldChatShortcuts(){
-    document.querySelectorAll('a,button').forEach(el=>{
-      const href=String(el.getAttribute('href')||'').split('?')[0].split('#')[0].toLowerCase();
-      const text=String(el.textContent||'').replace(/\s+/g,' ').trim();
-      if(href==='chat.html' || text==='المحادثات' || text==='الدردشة'){
-        if(el.closest('nav,.ha-bottom,.bottom-nav,.ha-shortcuts,.shortcuts,.quick-actions')){
-          el.style.setProperty('display','none','important');
-        }
-      }
-    });
   }
 
   async function start(){
@@ -405,14 +418,10 @@
       const sec=sectionOf();
       const c=await context();
       render(choose(sec,c),sec);
-      hideOldChatShortcuts();
-      watchChatShortcuts();
     }catch(_e){
       render(choose(sectionOf(),{
         apps:[],profile:null,transport:null,teacher:null,isAdmin:false,canSports:false,guest:true
       }),sectionOf());
-      hideOldChatShortcuts();
-      watchChatShortcuts();
     }
   }
 
