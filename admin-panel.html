@@ -75,8 +75,8 @@
     <section id="liveUsersView" class="view">
       <div class="box">
         <div class="live-note">
-          <div><h2 style="margin:0 0 4px">🟢 المستخدمون النشطون الآن</h2><div class="small">أعداد حقيقية للحسابات المتصلة: يعتبر الحساب نشطاً إذا وصل منه اتصال خلال آخر 90 ثانية.</div></div>
-          <button class="live-refresh" type="button" onclick="loadLiveUsers()">↻ تحديث الآن</button>
+          <div><h2 style="margin:0 0 4px">🟢 المستخدمون النشطون الآن</h2><div class="small">أعداد مباشرة حسب الاتصال الفعلي بالتطبيق: يدخل الحساب فور دخوله ويختفي من القائمة عند مغادرة التطبيق أو انقطاع الاتصال.</div></div>
+          <button class="live-refresh" type="button" onclick="refreshLiveUsersNow()">↻ تحديث الآن</button>
         </div>
         <div class="live-summary">
           <div class="live-stat"><small>إجمالي النشطين</small><strong id="liveTotalCount">0</strong></div>
@@ -93,7 +93,7 @@
             <div id="liveRegularList"><div class="live-empty">جاري التحميل...</div></div>
           </div>
         </div>
-        <div id="liveUsersStatus" class="status">يتم التحديث تلقائياً كل 10 ثوانٍ.</div>
+        <div id="liveUsersStatus" class="status">مباشر — يتحدث تلقائياً عند دخول أو خروج أي مستخدم.</div>
       </div>
     </section>
 
@@ -207,7 +207,7 @@ async function init(){
  who.innerHTML='تم الدخول كأدمن '+(adminRow.is_super_admin?'<span class="badge">Super Admin — كل الأقسام</span>':'<span class="badge">أدمن أقسام محددة</span>');
  panel.style.display='block';
  renderSections();renderPerms();renderShopPerms();renderNoticeSections();
- if(adminRow.is_super_admin){await loadAdmins();await loadLiveUsers()}else{adminsTab.style.display='none';liveUsersTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
+ if(adminRow.is_super_admin){await loadAdmins()}else{adminsTab.style.display='none';liveUsersTab.style.display='none';adminManager.innerHTML='<h2>إدارة الأدمنية</h2><p>هذه الصفحة متاحة للـSuper Admin فقط.</p>';adminList.textContent='';}
  if(location.hash==='#notify'){showTab('notifyView',document.querySelectorAll('.tab')[1])}
 }
 function renderSections(){sectionCards.innerHTML=SECTIONS.map(([k,n,i,url])=>{const ok=can(k);return '<div class="section-card '+(ok?'':'locked')+'"><div class="ico">'+i+'</div><h3>'+n+'</h3><p>'+(ok?'لديك صلاحية هذا القسم':'لا توجد صلاحية لهذا القسم')+'</p>'+(ok&&url!=='#'?'<a href="'+url+'">فتح القسم</a>':'')+'</div>'}).join('')}
@@ -268,51 +268,125 @@ async function disableAdmin(){
  const {error}=await db.rpc('admin_disable_user',{p_identifier:id});adminStatus.textContent=error?error.message:'تم إيقاف الصلاحية.';await loadAdmins();
 }
 
-let liveUsersTimer=null;
-function liveAgo(ts){
- const n=Date.now()-new Date(ts).getTime();
- if(!Number.isFinite(n)||n<0)return 'الآن';
- const s=Math.floor(n/1000);
- if(s<15)return 'الآن';
- if(s<60)return 'منذ '+s+' ث';
- return 'منذ '+Math.floor(s/60)+' د';
-}
+let livePresenceChannel=null;
+let livePresenceRows=[];
+let livePresenceConnected=false;
+
 function liveRow(u){
  const role=u.user_kind==='employee'?(u.employee_role||'موظف'):'مستخدم عادي';
  const page=String(u.current_page||'داخل التطبيق').replace(/^HA Marketing\s*[-–—]?\s*/i,'').trim()||'داخل التطبيق';
- const net=u.network_type&&u.network_type!=='online'?u.network_type:'متصل';
- return '<div class="live-user"><span class="live-dot"></span><div class="live-info"><b>'+esc(u.display_name||u.username||'مستخدم')+'</b><small>'+esc(role)+' • '+esc(page)+'</small></div><div class="live-side"><span>● متصل</span><small>'+esc(net)+' • '+liveAgo(u.last_seen)+'</small></div></div>';
+ return '<div class="live-user"><span class="live-dot"></span><div class="live-info"><b>'+
+   esc(u.display_name||u.username||'مستخدم')+
+   '</b><small>'+esc(role)+' • '+esc(page)+
+   '</small></div><div class="live-side"><span>● متصل الآن</span><small>اتصال مباشر</small></div></div>';
 }
+
+function renderLiveRows(rows){
+ const employees=rows.filter(x=>x.user_kind==='employee');
+ const regular=rows.filter(x=>x.user_kind!=='employee');
+
+ liveTotalCount.textContent=rows.length.toLocaleString('ar-IQ');
+ liveEmployeesCount.textContent=employees.length.toLocaleString('ar-IQ');
+ liveRegularCount.textContent=regular.length.toLocaleString('ar-IQ');
+ liveEmployeeBadge.textContent=employees.length.toLocaleString('ar-IQ');
+ liveRegularBadge.textContent=regular.length.toLocaleString('ar-IQ');
+
+ liveEmployeeList.innerHTML=employees.length
+   ?employees.map(liveRow).join('')
+   :'<div class="live-empty">لا يوجد موظفون متصلون الآن.</div>';
+
+ liveRegularList.innerHTML=regular.length
+   ?regular.map(liveRow).join('')
+   :'<div class="live-empty">لا يوجد مستخدمون عاديون متصلون الآن.</div>';
+
+ const status=document.getElementById('liveUsersStatus');
+ status.innerHTML=livePresenceConnected
+   ?'<span class="ok">● مباشر الآن</span> — يتحدث عند الدخول والخروج بدون انتظار 90 ثانية.'
+   :'<span class="small">جاري الاتصال بخدمة الحضور المباشر...</span>';
+}
+
+function flattenPresence(){
+ if(!livePresenceChannel)return [];
+ const state=livePresenceChannel.presenceState()||{};
+ const byUser=new Map();
+
+ Object.entries(state).forEach(([key,metas])=>{
+   (Array.isArray(metas)?metas:[]).forEach(m=>{
+     const uid=String(m.user_id||key||'');
+     if(!uid)return;
+
+     const row={
+       user_id:uid,
+       display_name:m.display_name||m.username||'مستخدم',
+       username:m.username||'',
+       user_kind:m.user_kind==='employee'?'employee':'regular',
+       employee_role:m.employee_role||(m.user_kind==='employee'?'موظف':'مستخدم عادي'),
+       current_page:m.current_page||'داخل التطبيق',
+       online_since:m.online_since||null
+     };
+
+     const prev=byUser.get(uid);
+     if(!prev)byUser.set(uid,row);
+     else{
+       const a=new Date(prev.online_since||0).getTime()||0;
+       const b=new Date(row.online_since||0).getTime()||0;
+       if(b>=a)byUser.set(uid,row);
+     }
+   });
+ });
+
+ return [...byUser.values()];
+}
+
 async function loadLiveUsers(){
  if(!adminRow?.is_super_admin)return;
- const status=document.getElementById('liveUsersStatus');
- try{
-   const {data,error}=await db.rpc('admin_active_users');
-   if(error)throw error;
-   const rows=Array.isArray(data)?data:[];
-   const employees=rows.filter(x=>x.user_kind==='employee');
-   const regular=rows.filter(x=>x.user_kind!=='employee');
-   liveTotalCount.textContent=rows.length.toLocaleString('ar-IQ');
-   liveEmployeesCount.textContent=employees.length.toLocaleString('ar-IQ');
-   liveRegularCount.textContent=regular.length.toLocaleString('ar-IQ');
-   liveEmployeeBadge.textContent=employees.length.toLocaleString('ar-IQ');
-   liveRegularBadge.textContent=regular.length.toLocaleString('ar-IQ');
-   liveEmployeeList.innerHTML=employees.length?employees.map(liveRow).join(''):'<div class="live-empty">لا يوجد موظفون متصلون الآن.</div>';
-   liveRegularList.innerHTML=regular.length?regular.map(liveRow).join(''):'<div class="live-empty">لا يوجد مستخدمون عاديون متصلون الآن.</div>';
-   status.innerHTML='<span class="ok">● مباشر</span> — آخر تحديث: '+new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
- }catch(e){
-   status.innerHTML='<span class="err">تعذر تحميل النشطين: '+esc(e?.message||e)+'</span><br><span class="small">شغّل ملف HA-REAL-ACTIVE-USERS.sql مرة واحدة في Supabase.</span>';
+ livePresenceRows=flattenPresence();
+ renderLiveRows(livePresenceRows);
+}
+
+async function refreshLiveUsersNow(){
+ await loadLiveUsers();
+}
+
+async function startLiveUsersRefresh(){
+ if(!adminRow?.is_super_admin)return;
+ if(livePresenceChannel){
+   loadLiveUsers();
+   return;
  }
+
+ livePresenceConnected=false;
+ renderLiveRows([]);
+
+ livePresenceChannel=db.channel('ha-online-users-v2');
+
+ livePresenceChannel
+   .on('presence',{event:'sync'},()=>loadLiveUsers())
+   .on('presence',{event:'join'},()=>loadLiveUsers())
+   .on('presence',{event:'leave'},()=>loadLiveUsers())
+   .subscribe(status=>{
+     if(status==='SUBSCRIBED'){
+       livePresenceConnected=true;
+       loadLiveUsers();
+     }else if(status==='CLOSED'||status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+       livePresenceConnected=false;
+       renderLiveRows(livePresenceRows);
+     }
+   });
 }
-function startLiveUsersRefresh(){
- stopLiveUsersRefresh();
- loadLiveUsers();
- liveUsersTimer=setInterval(loadLiveUsers,10000);
+
+async function stopLiveUsersRefresh(){
+ if(!livePresenceChannel)return;
+ try{await db.removeChannel(livePresenceChannel)}catch(_e){}
+ livePresenceChannel=null;
+ livePresenceConnected=false;
 }
-function stopLiveUsersRefresh(){
- if(liveUsersTimer){clearInterval(liveUsersTimer);liveUsersTimer=null;}
-}
-window.addEventListener('beforeunload',stopLiveUsersRefresh);
+
+window.addEventListener('beforeunload',()=>{
+ if(livePresenceChannel){
+   try{db.removeChannel(livePresenceChannel)}catch(_e){}
+ }
+});
 
 async function loadAdmins(){
  const {data,error}=await db.from('app_admins').select('user_id,is_super_admin,is_active,created_at').order('created_at',{ascending:false});if(error){adminList.textContent='تعذر التحميل: '+error.message;return}
