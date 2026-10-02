@@ -1954,5 +1954,67 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
 };
 </script>
 <script src="ha-offline-qalat-map.js"></script>
+<script id="ha-hide-transport-steps">
+(function(){
+  'use strict';
+
+  const labels = ['الاختيار','التفاصيل','التأكيد','التأكيد','التايد','التأيد'];
+
+  function norm(s){
+    return String(s || '')
+      .replace(/\s+/g,' ')
+      .replace(/[١1]/g,'1')
+      .replace(/[٢2]/g,'2')
+      .replace(/[٣3]/g,'3')
+      .trim();
+  }
+
+  function looksLikeStepText(t){
+    const x = norm(t);
+    return (
+      /^الاختيار\s*1$/.test(x) ||
+      /^التفاصيل\s*2$/.test(x) ||
+      /^(?:التأكيد|التأكيد|التأيد|التايد)\s*3$/.test(x)
+    );
+  }
+
+  function removeStepper(){
+    const all = [...document.querySelectorAll('body *')];
+    const hits = all.filter(el => {
+      if (el.children.length > 4) return false;
+      return looksLikeStepText(el.textContent);
+    });
+
+    if(hits.length < 2) return;
+
+    for(const el of hits){
+      let p = el.parentElement;
+      for(let i=0; p && i<5; i++, p=p.parentElement){
+        const txt = norm(p.textContent);
+        const has1 = /الاختيار\s*1/.test(txt);
+        const has2 = /التفاصيل\s*2/.test(txt);
+        const has3 = /(?:التأكيد|التأكيد|التأيد|التايد)\s*3/.test(txt);
+
+        if(has1 && has2 && has3){
+          p.remove();
+          return;
+        }
+      }
+    }
+
+    hits.forEach(el => el.remove());
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', removeStepper, {once:true});
+  }else{
+    removeStepper();
+  }
+
+  const obs = new MutationObserver(removeStepper);
+  obs.observe(document.documentElement,{childList:true,subtree:true});
+  setTimeout(()=>obs.disconnect(),12000);
+})();
+</script>
 </body>
 </html>
