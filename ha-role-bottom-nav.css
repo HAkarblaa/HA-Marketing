@@ -188,3 +188,181 @@ body.ha-role-bottom-active .bottom-nav:not(#haRoleBottomNav){
     font-size:15px;
   }
 }
+
+/* ===== أيقونات الشريط السفلي بنفس نمط الواجهة الرئيسية ===== */
+#haRoleBottomNav .ha-rbn-icon{
+  --ico1:#168be6;
+  --ico2:#0e68c9;
+  position:relative!important;
+  width:31px!important;
+  height:31px!important;
+  min-width:31px!important;
+  min-height:31px!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  border-radius:9px!important;
+  background:
+    radial-gradient(circle at 30% 22%,rgba(255,255,255,.36),transparent 34%),
+    linear-gradient(145deg,var(--ico1),var(--ico2))!important;
+  border:1px solid rgba(255,255,255,.46)!important;
+  box-shadow:
+    0 4px 9px rgba(33,76,115,.18),
+    inset 0 1px 1px rgba(255,255,255,.42)!important;
+  font-size:0!important;
+}
+
+#haRoleBottomNav .ha-rbn-icon::after{
+  content:""!important;
+  position:absolute!important;
+  inset:1px!important;
+  border-radius:8px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.16),transparent 48%)!important;
+  pointer-events:none!important;
+}
+
+#haRoleBottomNav .ha-rbn-icon svg{
+  position:relative!important;
+  z-index:2!important;
+  width:19px!important;
+  height:19px!important;
+  display:block!important;
+  overflow:visible!important;
+  fill:none!important;
+  stroke:#fff!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))!important;
+}
+
+/* ألوان نفس نمط أيقونات الرئيسية */
+#haRoleBottomNav .ha-rbn-icon[data-key="home"]{
+  --ico1:#16b78b;
+  --ico2:#07845f;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="notify"]{
+  --ico1:#ffb126;
+  --ico2:#f08700;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="account"],
+#haRoleBottomNav .ha-rbn-icon[data-key="profile"]{
+  --ico1:#177fda;
+  --ico2:#075db8;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="orders"],
+#haRoleBottomNav .ha-rbn-icon[data-key="requests"],
+#haRoleBottomNav .ha-rbn-icon[data-key="rides"],
+#haRoleBottomNav .ha-rbn-icon[data-key="jobs"]{
+  --ico1:#20a6e8;
+  --ico2:#087bc4;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="shop"],
+#haRoleBottomNav .ha-rbn-icon[data-key="cart"],
+#haRoleBottomNav .ha-rbn-icon[data-key="store"]{
+  --ico1:#14c18c;
+  --ico2:#07885f;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="services"],
+#haRoleBottomNav .ha-rbn-icon[data-key="manage"],
+#haRoleBottomNav .ha-rbn-icon[data-key="track"]{
+  --ico1:#319cf0;
+  --ico2:#106fc8;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="study"],
+#haRoleBottomNav .ha-rbn-icon[data-key="classes"],
+#haRoleBottomNav .ha-rbn-icon[data-key="library"],
+#haRoleBottomNav .ha-rbn-icon[data-key="student"]{
+  --ico1:#7e53db;
+  --ico2:#5c2bb9;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="transport"],
+#haRoleBottomNav .ha-rbn-icon[data-key="taxi"],
+#haRoleBottomNav .ha-rbn-icon[data-key="driver"],
+#haRoleBottomNav .ha-rbn-icon[data-key="delivery"],
+#haRoleBottomNav .ha-rbn-icon[data-key="courier"]{
+  --ico1:#ffb624;
+  --ico2:#ef8500;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="sports"],
+#haRoleBottomNav .ha-rbn-icon[data-key="gyms"],
+#haRoleBottomNav .ha-rbn-icon[data-key="football"]{
+  --ico1:#26bd75;
+  --ico2:#098b56;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="fun"],
+#haRoleBottomNav .ha-rbn-icon[data-key="games"],
+#haRoleBottomNav .ha-rbn-icon[data-key="rank"]{
+  --ico1:#9159ee;
+  --ico2:#6730c8;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="news"],
+#haRoleBottomNav .ha-rbn-icon[data-key="section"]{
+  --ico1:#2699ea;
+  --ico2:#0877c9;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="religious"],
+#haRoleBottomNav .ha-rbn-icon[data-key="quran"],
+#haRoleBottomNav .ha-rbn-icon[data-key="duas"]{
+  --ico1:#17b99a;
+  --ico2:#087f69;
+}
+#haRoleBottomNav .ha-rbn-icon[data-key="add"],
+#haRoleBottomNav .ha-rbn-icon[data-key="join"]{
+  --ico1:#9d62ef;
+  --ico2:#7137c8;
+}
+
+/* العنصر المحدد مثل الرئيسية */
+#haRoleBottomNav .ha-rbn-item.active{
+  background:linear-gradient(145deg,#e8f6ff,#dbeeff)!important;
+  color:#08785e!important;
+}
+#haRoleBottomNav[data-section="shop"] .ha-rbn-item.active,
+#haRoleBottomNav[data-section="services"] .ha-rbn-item.active,
+#haRoleBottomNav[data-section="sports"] .ha-rbn-item.active,
+#haRoleBottomNav[data-section="religious"] .ha-rbn-item.active{
+  background:linear-gradient(145deg,#e7f8ed,#d9f3e4)!important;
+}
+#haRoleBottomNav[data-section="study"] .ha-rbn-item.active{
+  background:linear-gradient(145deg,#eef1ff,#e3e9ff)!important;
+}
+#haRoleBottomNav[data-section="transport"] .ha-rbn-item.active{
+  background:linear-gradient(145deg,#fff5df,#ffebc5)!important;
+}
+#haRoleBottomNav[data-section="entertainment"] .ha-rbn-item.active{
+  background:linear-gradient(145deg,#f3ebff,#eadcff)!important;
+}
+
+#haRoleBottomNav .ha-rbn-item.active .ha-rbn-icon{
+  transform:translateY(-1px)!important;
+  box-shadow:
+    0 5px 11px rgba(33,76,115,.20),
+    inset 0 1px 1px rgba(255,255,255,.50)!important;
+}
+
+@media(max-width:620px){
+  #haRoleBottomNav .ha-rbn-icon{
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    border-radius:9px!important;
+  }
+  #haRoleBottomNav .ha-rbn-icon svg{
+    width:18px!important;
+    height:18px!important;
+  }
+}
+@media(max-width:390px){
+  #haRoleBottomNav .ha-rbn-icon{
+    width:27px!important;
+    height:27px!important;
+    min-width:27px!important;
+    min-height:27px!important;
+  }
+  #haRoleBottomNav .ha-rbn-icon svg{
+    width:17px!important;
+    height:17px!important;
+  }
+}
