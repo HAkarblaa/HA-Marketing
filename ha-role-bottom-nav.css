@@ -1,143 +1,190 @@
 :root{
-  --ha-rbn-bg:rgba(255,255,255,.97);
-  --ha-rbn-text:#52637a;
-  --ha-rbn-active:#07885f;
-  --ha-rbn-active-bg:#e4f6ef;
-  --ha-rbn-border:#dfeae6;
+  --ha-rbn-bg:rgba(255,255,255,.985);
+  --ha-rbn-text:#66758b;
+  --ha-rbn-active:#07865f;
+  --ha-rbn-active-bg:#dff0ff;
+  --ha-rbn-icon-bg:#eef4f8;
+  --ha-rbn-border:#dfe8ee;
+  --ha-rbn-shadow:0 12px 34px rgba(31,61,83,.16);
 }
+
+#haRoleBottomNav[data-section="general"]{--ha-rbn-active:#07865f;--ha-rbn-active-bg:#dff0ff}
+#haRoleBottomNav[data-section="shop"]{--ha-rbn-active:#07865f;--ha-rbn-active-bg:#dcf5e9}
+#haRoleBottomNav[data-section="services"]{--ha-rbn-active:#07865f;--ha-rbn-active-bg:#dff5ea}
+#haRoleBottomNav[data-section="study"]{--ha-rbn-active:#176fd0;--ha-rbn-active-bg:#e3f0ff}
+#haRoleBottomNav[data-section="transport"]{--ha-rbn-active:#c97800;--ha-rbn-active-bg:#fff0d7}
+#haRoleBottomNav[data-section="sports"]{--ha-rbn-active:#07865f;--ha-rbn-active-bg:#def5ea}
+#haRoleBottomNav[data-section="entertainment"]{--ha-rbn-active:#7440c7;--ha-rbn-active-bg:#efe6ff}
+#haRoleBottomNav[data-section="news"]{--ha-rbn-active:#176fd0;--ha-rbn-active-bg:#e3f0ff}
+#haRoleBottomNav[data-section="religious"]{--ha-rbn-active:#087b62;--ha-rbn-active-bg:#e1f5ed}
+
 body.ha-role-bottom-active{
-  padding-bottom:calc(94px + env(safe-area-inset-bottom)) !important;
+  padding-bottom:calc(96px + env(safe-area-inset-bottom))!important;
 }
+
 body.ha-role-bottom-active nav.ha-bottom:not(#haRoleBottomNav),
 body.ha-role-bottom-active nav.bottom:not(#haRoleBottomNav),
-body.ha-role-bottom-active nav.bottom-nav:not(#haRoleBottomNav){
-  display:none !important;
+body.ha-role-bottom-active nav.bottom-nav:not(#haRoleBottomNav),
+body.ha-role-bottom-active .bottom-nav:not(#haRoleBottomNav){
+  display:none!important;
 }
+
 #haRoleBottomNav{
   position:fixed;
   left:50%;
+  bottom:8px;
   transform:translateX(-50%);
-  bottom:0;
-  width:min(100%,950px);
   z-index:2147482000;
-  padding:7px 10px max(7px,env(safe-area-inset-bottom));
+  width:min(920px,calc(100% - 28px));
+  min-height:72px;
+  padding:7px 8px max(7px,env(safe-area-inset-bottom));
+  border:1px solid var(--ha-rbn-border);
+  border-radius:23px;
   background:var(--ha-rbn-bg);
-  border-top:1px solid var(--ha-rbn-border);
-  box-shadow:0 -10px 34px rgba(22,65,55,.12);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  box-shadow:var(--ha-rbn-shadow);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  direction:rtl;
 }
+
 #haRoleBottomNav .ha-rbn-inner{
-  min-height:62px;
+  min-height:58px;
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-columns:repeat(var(--ha-rbn-cols,5),minmax(0,1fr));
   align-items:stretch;
-  gap:4px;
+  gap:5px;
 }
+
 #haRoleBottomNav .ha-rbn-item{
   min-width:0;
+  min-height:58px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:3px;
-  padding:6px 3px;
-  border-radius:17px;
+  gap:4px;
+  padding:6px 4px;
+  border-radius:18px;
   color:var(--ha-rbn-text);
   text-decoration:none;
   font-family:Tahoma,Arial,sans-serif;
-  font-size:10.5px;
+  font-size:10px;
   font-weight:800;
-  line-height:1.15;
+  line-height:1.1;
   white-space:nowrap;
   overflow:hidden;
-  transition:.18s ease;
+  transition:background .16s ease,color .16s ease,transform .16s ease;
 }
-#haRoleBottomNav .ha-rbn-item .ha-rbn-icon{
-  font-size:20px;
+
+#haRoleBottomNav .ha-rbn-item:active{transform:scale(.97)}
+
+#haRoleBottomNav .ha-rbn-icon{
+  width:29px;
+  height:29px;
+  min-width:29px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:var(--ha-rbn-icon-bg);
+  box-shadow:inset 0 0 0 1px rgba(120,145,165,.08);
+  font-size:18px;
   line-height:1;
 }
-#haRoleBottomNav .ha-rbn-item .ha-rbn-label{
+
+#haRoleBottomNav .ha-rbn-label{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
 #haRoleBottomNav .ha-rbn-item.active{
   color:var(--ha-rbn-active);
   background:var(--ha-rbn-active-bg);
 }
+
+#haRoleBottomNav .ha-rbn-item.active .ha-rbn-icon{
+  background:#fff;
+  box-shadow:0 5px 13px rgba(42,78,104,.12);
+}
+
 #haRoleBottomNav .ha-rbn-role{
   position:absolute;
-  top:-17px;
+  top:-13px;
   left:50%;
   transform:translateX(-50%);
-  max-width:80%;
-  height:22px;
+  max-width:76%;
+  min-height:21px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:0 10px;
+  padding:3px 9px;
   border:1px solid var(--ha-rbn-border);
   border-radius:999px;
   background:#fff;
-  color:#64748b;
-  box-shadow:0 4px 12px rgba(20,40,50,.08);
-  font:700 9px Tahoma,Arial,sans-serif;
+  color:#718096;
+  box-shadow:0 4px 10px rgba(25,50,70,.09);
+  font:800 8px Tahoma,Arial,sans-serif;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
-@media(max-width:430px){
-  #haRoleBottomNav{padding-left:5px;padding-right:5px}
-  #haRoleBottomNav .ha-rbn-inner{gap:2px}
-  #haRoleBottomNav .ha-rbn-item{font-size:9px;padding-inline:1px;border-radius:14px}
-  #haRoleBottomNav .ha-rbn-item .ha-rbn-icon{font-size:18px}
-}
 
-/* ===== تصغير وترتيب اسم الدور فوق الشريط السفلي بكل الأقسام ===== */
-#haRoleBottomNav .ha-rbn-role{
-  top:-10px!important;
-  left:50%!important;
-  transform:translateX(-50%)!important;
-  max-width:58%!important;
-  height:16px!important;
-  min-height:16px!important;
-  padding:0 6px!important;
-  border-radius:999px!important;
-  border:1px solid #e3ebe8!important;
-  background:rgba(255,255,255,.96)!important;
-  color:#697b8f!important;
-  box-shadow:0 2px 7px rgba(20,40,50,.06)!important;
-  font:700 7.5px Tahoma,Arial,sans-serif!important;
-  line-height:16px!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  z-index:2!important;
-  pointer-events:none!important;
-}
+@media(max-width:620px){
+  body.ha-role-bottom-active{
+    padding-bottom:calc(88px + env(safe-area-inset-bottom))!important;
+  }
 
-@media(max-width:700px){
+  #haRoleBottomNav{
+    bottom:4px;
+    width:calc(100% - 10px);
+    min-height:69px;
+    padding:5px 5px max(5px,env(safe-area-inset-bottom));
+    border-radius:21px;
+  }
+
+  #haRoleBottomNav .ha-rbn-inner{
+    min-height:57px;
+    gap:2px;
+  }
+
+  #haRoleBottomNav .ha-rbn-item{
+    min-height:56px;
+    gap:3px;
+    padding:5px 1px;
+    border-radius:16px;
+    font-size:8.8px;
+  }
+
+  #haRoleBottomNav .ha-rbn-icon{
+    width:27px;
+    height:27px;
+    min-width:27px;
+    border-radius:8px;
+    font-size:16px;
+  }
+
   #haRoleBottomNav .ha-rbn-role{
-    top:-8px!important;
-    max-width:50%!important;
-    height:14px!important;
-    min-height:14px!important;
-    padding:0 5px!important;
-    font-size:7px!important;
-    line-height:14px!important;
-    box-shadow:0 1px 5px rgba(20,40,50,.05)!important;
+    top:-11px;
+    min-height:19px;
+    padding:2px 8px;
+    font-size:7.4px;
   }
 }
 
-@media(max-width:430px){
-  #haRoleBottomNav .ha-rbn-role{
-    top:-7px!important;
-    max-width:46%!important;
-    height:13px!important;
-    min-height:13px!important;
-    padding:0 4px!important;
-    font-size:6.5px!important;
-    line-height:13px!important;
+@media(max-width:390px){
+  #haRoleBottomNav{
+    width:calc(100% - 8px);
+    border-radius:19px;
+  }
+
+  #haRoleBottomNav .ha-rbn-item{
+    font-size:8px;
+  }
+
+  #haRoleBottomNav .ha-rbn-icon{
+    width:25px;
+    height:25px;
+    min-width:25px;
+    font-size:15px;
   }
 }

@@ -350,18 +350,24 @@
     const active=activeKey(section,nav);
     const el=document.createElement('nav');
     el.id='haRoleBottomNav';
+    el.dataset.section=section||'general';
     el.setAttribute('aria-label','الشريط السفلي حسب نوع الحساب');
 
     const visibleItems=nav.items.filter(x=>{
       const href=String(x.href||'').split('?')[0].split('#')[0].toLowerCase();
       const label=String(x.label||'').trim();
-      return x.key!=='chat' && href!=='chat.html' && label!=='المحادثات' && label!=='الدردشة';
-    });
+      return x.key!=='chat' &&
+             href!=='chat.html' &&
+             label!=='المحادثات' &&
+             label!=='الدردشة';
+    }).slice(0,5);
+
+    el.style.setProperty('--ha-rbn-cols',String(Math.max(1,visibleItems.length)));
 
     el.innerHTML=
       `<div class="ha-rbn-role">${nav.role}</div>`+
       `<div class="ha-rbn-inner">`+
-      visibleItems.slice(0,5).map(x=>
+      visibleItems.map(x=>
         `<a class="ha-rbn-item ${x.key===active?'active':''}" href="${x.href}">
           <span class="ha-rbn-icon">${x.icon}</span>
           <span class="ha-rbn-label">${x.label}</span>
@@ -373,7 +379,6 @@
     document.body.classList.add('ha-role-bottom-active');
   }
 
-  async function start(){
   function hideChatShortcuts(){
     document.querySelectorAll('a,button').forEach(el=>{
       const href=String(el.getAttribute('href')||'').split('?')[0].split('#')[0].toLowerCase();
