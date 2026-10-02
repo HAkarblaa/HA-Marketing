@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>طلبات المتاجر - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:#f5f8fb;color:#10233f}
+.wrap{width:min(94%,1050px);margin:18px auto 90px}.top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+a,button{border:0;border-radius:11px;padding:10px 13px;text-decoration:none;font:inherit;font-weight:900;cursor:pointer}
+.back{background:#fff;color:#17324b;border:1px solid #dce5ea}.approve{background:#07865f;color:#fff}.reject{background:#b92a43;color:#fff}.light{background:#edf3f6;color:#354a60}
+.card{background:#fff;border:1px solid #e0e8ed;border-radius:18px;padding:14px;margin:11px 0;box-shadow:0 8px 24px rgba(20,55,80,.07)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.muted{color:#708093;font-size:12px;line-height:1.7}
+.badge{padding:5px 8px;border-radius:999px;background:#fff3d8;color:#9c6600;font-size:10px;font-weight:900}
+.badge.approved{background:#e6f8ee;color:#087b52}.badge.rejected{background:#fff0f2;color:#bd2942}
+img{width:115px;height:90px;object-fit:contain;background:#f4f7f9;border-radius:12px;margin-top:8px}
+select{padding:9px;border:1px solid #d5e0e5;border-radius:10px;background:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="admin-panel.html">← لوحة الإدارة</a>
+    <h1>🏪 طلبات المتاجر</h1>
+    <select id="filter">
+      <option value="pending">قيد الموافقة</option>
+      <option value="approved">المعتمدة</option>
+      <option value="rejected">المرفوضة</option>
+      <option value="all">الكل</option>
+    </select>
+  </div>
+  <div id="gate" class="card">جاري التحقق...</div>
+  <div id="list"></div>
+</div>
+<script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const $=id=>document.getElementById(id);
+const SEC={markets:'الأسواق',library:'مكتبة',printers:'مطبعة',devices:'موبايلات',home_appliances:'الأجهزة الإلكترونية',device_accessories:'إكسسوارات',clothes:'ملابس',shoes:'أحذية',restaurants:'مطاعم',flowers:'ورد وهدايا',building_materials:'مواد البناء',cards_credit:'بطاقات وأرصدة',yugioh:'أوراق يوغي'};
+let me=null;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='login.html?next=admin-store-requests.html';return}
+  me=session.user;
+  const {data:ok,error}=await db.rpc('is_super_admin');
+  if(error||!ok){$('gate').textContent='هذه الصفحة للأدمن الرئيسي فقط.';return}
+  $('gate').textContent='✅ صلاحية الأدمن الرئيسي فعالة';
+  $('filter').onchange=load;
+  await load();
+}
+
+async function load(){
+  let q=db.from('shop_businesses')
+    .select('id,name,section_key,location_text,description,image_url,approval_status,approval_note,owner_user_id,application_id,requested_at,created_at')
+    .order('requested_at',{ascending:false,nullsFirst:false})
+    .order('created_at',{ascending:false});
+  if($('filter').value!=='all')q=q.eq('approval_status',$('filter').value);
+  const {data,error}=await q;
+  if(error){$('list').innerHTML='<div class="card">'+esc(error.message)+'</div>';return}
+  const arr=data||[];
+
+  let profiles={};
+  const ids=[...new Set(arr.map(x=>x.owner_user_id).filter(Boolean))];
+  if(ids.length){
+    const r=await db.from('profiles').select('id,full_name,username,phone').in('id',ids);
+    (r.data||[]).forEach(p=>profiles[p.id]=p);
+  }
+
+  $('list').innerHTML=arr.map(x=>{
+    const p=profiles[x.owner_user_id]||{};
+    const st=x.approval_status||'approved';
+    const badge=st==='approved'?'معتمد':st==='rejected'?'مرفوض':'قيد الموافقة';
+    const cls=st==='approved'?'approved':st==='rejected'?'rejected':'';
+    const initial=x.application_id!=null;
+    return `<div class="card">
+      <div class="row">
+        <div><b>🏪 ${esc(x.name)}</b><div class="muted">${esc(SEC[x.section_key]||x.section_key)}</div></div>
+        <span class="badge ${cls}">${badge}</span>
+      </div>
+      <div class="muted" style="margin-top:7px">
+        👤 ${esc(p.full_name||p.username||'صاحب المتجر')} ${p.phone?'— '+esc(p.phone):''}<br>
+        📍 ${esc(x.location_text||'')}<br>
+        ${esc(x.description||'')}
+        ${initial?'<br><b>هذا هو المتجر الأول المرتبط بطلب البائع.</b>':''}
+      </div>
+      ${x.image_url?`<img src="${esc(x.image_url)}" alt="">`:''}
+      ${x.approval_note?`<div class="muted" style="margin-top:7px">ملاحظة الإدارة: ${esc(x.approval_note)}</div>`:''}
+      <div class="row" style="margin-top:10px">
+        ${st!=='approved'?`<button class="approve" onclick="reviewStore(${x.id},'approved',${initial})">موافقة</button>`:''}
+        ${st!=='rejected'?`<button class="reject" onclick="reviewStore(${x.id},'rejected',false)">رفض</button>`:''}
+        <button class="light" onclick="reviewStore(${x.id},'pending',false)">إرجاع للمراجعة</button>
+      </div>
+    </div>`;
+  }).join('')||'<div class="card">لا توجد طلبات بهذه الحالة.</div>';
+}
+
+async function reviewStore(id,status,initial){
+  if(initial && status==='approved'){
+    if(!confirm('هذا المتجر الأول مرتبط بطلب البائع. إذا كان طلب البائع غير معتمد سيطلب منك النظام الموافقة عليه أولاً. متابعة؟'))return;
+  }
+  let note='';
+  if(status==='rejected')note=prompt('سبب الرفض (اختياري):','')||'';
+  const {error}=await db.rpc('admin_review_shop_business',{p_business_id:id,p_status:status,p_note:note||null});
+  if(error){alert(error.message);return}
+  await load();
+}
+init();
+</script>
+</body>
+</html>

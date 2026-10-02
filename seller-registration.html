@@ -3,47 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>تسجيل بائع / صاحب متجر - HA Marketing</title>
+<title>انضم كبائع - HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="ha-direct-role-registration.css?v=20261002-1">
-<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20261002-direct1">
+<link rel="stylesheet" href="ha-seller-store-flow.css?v=20261002-1">
+<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20261002-1">
 </head>
-<body class="ha-ui-final"
- data-role="seller"
- data-role-label="بائع / صاحب متجر"
- data-back="shop.html"
- data-approved-href="seller-dashboard.html">
-<div class="ha-reg-wrap">
-  <div class="ha-reg-top">
-    <a id="regBack" class="ha-reg-back" href="shop.html">← رجوع</a>
-    <a class="ha-reg-home" href="index.html">الرئيسية</a>
+<body class="ha-ui-final ha-family-shop">
+<div class="ha-wrap">
+  <div class="ha-top">
+    <a class="ha-back" href="shop.html">← التسوق</a>
+    <a class="ha-home" href="index.html">الرئيسية</a>
   </div>
 
-  <section class="ha-reg-hero">
-    <h1>🏪 تسجيل بائع / صاحب متجر</h1>
-    <p>أدخل بياناتك مباشرة لإرسال طلب اعتماد البائع. ماكو بوابة اختيار قبل التسجيل.</p>
+  <section class="ha-hero">
+    <h1>🏪 انضم كبائع</h1>
+    <p>أول مرة تسجل، اختَر قسم متجرك وأدخل معلومات المتجر. طلب البائع والمتجر الأول يروحان معاً للأدمن الرئيسي.</p>
   </section>
 
-  <section class="ha-reg-card">
-    <h2>بيانات التسجيل</h2>
-    <div class="ha-reg-grid">
-      <input id="regName" placeholder="الاسم الكامل / اسم النشاط">
-      <input id="regPhone" inputmode="tel" placeholder="رقم الهاتف">
-      <input id="regGov" placeholder="المحافظة">
-      <input id="regAddress" placeholder="العنوان / المنطقة">
-      <textarea id="regDetails" class="full" placeholder="اكتب نوع المنتجات أو اسم النشاط وأي تفاصيل تساعد الإدارة."></textarea>
+  <section id="approvedBox" class="ha-card" style="display:none">
+    <h2>✅ حسابك بائع معتمد</h2>
+    <div class="ha-status ok">إذا تريد تضيف متجر ثاني، استخدم «إضافة متجر جديد». كل متجر جديد يحتاج موافقة الأدمن الرئيسي قبل ما يظهر للزبائن.</div>
+    <div class="ha-actions">
+      <a class="ha-link" href="seller-dashboard.html">متجري</a>
+      <a class="ha-link" href="seller-store-request.html">➕ إضافة متجر جديد</a>
     </div>
-    <button id="regSubmit" class="ha-reg-submit" type="button">إرسال طلب التسجيل</button>
-    <div id="regStatus" class="ha-reg-status">بعد الإرسال يروح الطلب مباشرة للإدارة للمراجعة.</div>
   </section>
 
-  <section class="ha-reg-card">
-    <h2>حالة طلبي</h2>
-    <div id="regHistory" class="ha-reg-history">جاري التحميل...</div>
+  <section id="formBox" class="ha-card">
+    <h2>بيانات البائع</h2>
+    <div class="ha-grid">
+      <div><label>الاسم الكامل</label><input id="sellerName" placeholder="الاسم الكامل"></div>
+      <div><label>رقم الهاتف</label><input id="sellerPhone" inputmode="tel" placeholder="07XXXXXXXXX"></div>
+    </div>
+
+    <h2 style="margin-top:18px">معلومات المتجر الأول</h2>
+    <div class="ha-grid">
+      <div>
+        <label>قسم المتجر</label>
+        <select id="storeSection">
+          <option value="markets">🛒 الأسواق</option>
+          <option value="library">📚 مكتبة</option>
+          <option value="printers">🖨️ مطبعة</option>
+          <option value="devices">📱 موبايلات</option>
+          <option value="home_appliances">💻 الأجهزة الإلكترونية</option>
+          <option value="device_accessories">🎧 إكسسوارات</option>
+          <option value="clothes">👕 ملابس</option>
+          <option value="shoes">👟 أحذية</option>
+          <option value="restaurants">🍽️ مطاعم</option>
+          <option value="flowers">💐 ورد وهدايا</option>
+          <option value="building_materials">🏗️ مواد البناء</option>
+        </select>
+      </div>
+      <div><label>اسم المتجر</label><input id="storeName" placeholder="اسم المتجر"></div>
+      <div><label>المحافظة</label><select id="storeGovernorate"></select></div>
+      <div><label>القضاء / الناحية / الحي</label><input id="storeArea" placeholder="مثال: المركز / الحسين"></div>
+      <div class="full"><label>العنوان التفصيلي</label><input id="storeAddress" placeholder="الشارع / أقرب نقطة دالة"></div>
+      <div class="full">
+        <label>الموقع</label>
+        <div class="ha-row">
+          <button id="gpsBtn" type="button" class="ha-gps">📍 تحديد موقعي الحالي</button>
+          <span id="gpsStatus" class="ha-badge">اختياري</span>
+        </div>
+      </div>
+      <div class="full"><label>وصف المتجر</label><textarea id="storeDescription" placeholder="شنو يبيع المتجر؟ وأي معلومات مهمة"></textarea></div>
+      <div class="full">
+        <label>صورة المتجر (اختياري)</label>
+        <input id="storeImage" type="file" accept="image/*">
+        <img id="storePreview" class="ha-preview" alt="معاينة صورة المتجر">
+      </div>
+    </div>
+
+    <button id="submitSeller" class="ha-submit" type="button">إرسال طلب البائع والمتجر</button>
+    <div id="sellerStatus" class="ha-status">بعد الإرسال يبقى الطلب قيد المراجعة إلى أن يوافق الأدمن الرئيسي.</div>
+  </section>
+
+  <section class="ha-card">
+    <h2>حالة الطلب</h2>
+    <div id="requestStatus" class="ha-status">جاري التحميل...</div>
+    <div id="storeStatus" class="ha-store-summary" style="display:none"></div>
   </section>
 </div>
 
-<script src="ha-direct-role-registration.js?v=20261002-1"></script>
-<script src="ha-role-bottom-nav.js?v=20261002-direct1" defer></script>
+<script src="ha-seller-registration.js?v=20261002-1"></script>
+<script src="ha-role-bottom-nav.js?v=20261002-1" defer></script>
 </body>
 </html>
