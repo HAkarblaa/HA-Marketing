@@ -109,19 +109,34 @@
   }
 
   function injectRequestSteps(){
-    if(!isUserPage()||q('.ha-request-steps'))return;
     var p=path();
-    if(!['taxi.html','delivery.html','tuktuk.html','cargo.html','contact.html','add-service.html','service-category.html','service-provider.html'].includes(p))return;
+
+    /* صفحات النقل لا نعرض بها شريط الاختيار / التفاصيل / التأكيد */
+    if(['taxi.html','delivery.html','tuktuk.html','cargo.html'].includes(p)){
+      qa('.ha-request-steps').forEach(function(el){el.remove()});
+      return;
+    }
+
+    if(!isUserPage()||q('.ha-request-steps'))return;
+    if(!['contact.html','add-service.html','service-category.html','service-provider.html'].includes(p))return;
+
     var steps=document.createElement('div');
     steps.className='ha-request-steps';
     steps.innerHTML='<div class="ha-step active"><span class="num">1</span>الاختيار</div><div class="ha-step"><span class="num">2</span>التفاصيل</div><div class="ha-step"><span class="num">3</span>التأكيد</div>';
     var anchor=q('.wrap,.container,.main,.content,.page')||document.body;
-    if(anchor!==document.body)anchor.insertBefore(steps,anchor.firstChild);else document.body.insertBefore(steps,document.body.firstChild.nextSibling);
+    if(anchor!==document.body)anchor.insertBefore(steps,anchor.firstChild);
+    else document.body.insertBefore(steps,document.body.firstChild.nextSibling);
+
     document.addEventListener('focusin',function(e){
-      if(e.target.matches('input,select,textarea')){qa('.ha-step',steps).forEach(function(x,i){x.classList.toggle('active',i<=1)})}
+      if(e.target.matches('input,select,textarea')){
+        qa('.ha-step',steps).forEach(function(x,i){x.classList.toggle('active',i<=1)})
+      }
     });
+
     document.addEventListener('click',function(e){
-      if(e.target.closest('.primary,.submit,#submitBtn,[type="submit"]'))qa('.ha-step',steps).forEach(function(x){x.classList.add('active')});
+      if(e.target.closest('.primary,.submit,#submitBtn,[type="submit"]')){
+        qa('.ha-step',steps).forEach(function(x){x.classList.add('active')})
+      }
     });
   }
 
@@ -142,7 +157,7 @@
   }
   function injectRecommendations(){
     if(!isUserPage()||q('.ha-smart-section'))return;
-    if(!['index.html','shop.html','study.html','taxi-delivery.html','sports.html','entertainment.html','religious.html','news.html'].includes(path()))return;
+    if(!['index.html','shop.html','study.html','services.html','taxi-delivery.html','sports.html','entertainment.html','religious.html','news.html'].includes(path()))return;
     var items=smartItems();
     var sec=document.createElement('section');sec.className='ha-smart-section';
     sec.innerHTML='<div class="ha-smart-head"><h3>مقترح لك ✨</h3><span class="ha-smart-note">حسب استخدامك داخل التطبيق</span></div><div class="ha-smart-grid">'+items.map(function(x){return '<a class="ha-smart-card" href="'+x.href+'"><span class="ha-smart-ico">'+x.ico+'</span><span><b>'+x.title+'</b><small>'+(x.count?'من الأقسام الأكثر استخداماً لديك':'وصول سريع')+'</small></span></a>'}).join('')+'</div>';
@@ -187,14 +202,4 @@
     injectHeader();injectBottomNav();ensureApprovedControls();bindLocation();bindSearch();classifyStates();injectRequestSteps();injectRecommendations();trackUsage();updateNotificationBadges();observeStates();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-})();
-
-/* HA realtime online presence loader */
-(function(){
-  if(window.__haPresenceScriptRequested||window.__haRealtimePresenceLoaded)return;
-  window.__haPresenceScriptRequested=true;
-  var s=document.createElement('script');
-  s.src='ha-presence.js?v=20261002-realtime2';
-  s.defer=true;
-  document.head.appendChild(s);
 })();
