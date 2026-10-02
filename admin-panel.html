@@ -32,7 +32,113 @@
 @media(max-width:700px){.tabs{grid-template-columns:1fr 1fr!important}.live-summary{grid-template-columns:repeat(3,1fr)}.live-stat{padding:10px 5px}.live-stat strong{font-size:23px}.live-stat small{font-size:9px}.live-columns{grid-template-columns:1fr}.live-list{min-height:120px}}
 
 </style>
-<link rel="stylesheet" href="ha-premium-theme.css"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
+<link rel="stylesheet" href="ha-premium-theme.css"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><style id="ha-admin-bottom-tools-style">
+body{padding-bottom:94px!important}
+
+.ha-admin-bottom-tools{
+  position:fixed;
+  left:50%;
+  bottom:10px;
+  transform:translateX(-50%);
+  z-index:999999;
+  width:min(940px,calc(100% - 24px));
+  min-height:68px;
+  padding:7px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+  background:rgba(255,255,255,.96);
+  border:1px solid #dbe6ec;
+  border-radius:22px;
+  box-shadow:0 12px 34px rgba(24,49,70,.18);
+  backdrop-filter:blur(12px);
+  direction:rtl;
+}
+
+.ha-admin-bottom-tools a{
+  min-width:0;
+  min-height:54px;
+  padding:7px 6px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  text-decoration:none;
+  color:#33465d;
+  border-radius:16px;
+  font-size:11px;
+  font-weight:900;
+  line-height:1.2;
+  text-align:center;
+  transition:.16s ease;
+}
+
+.ha-admin-bottom-tools a:hover{
+  background:#eef8f4;
+  color:#087b59;
+}
+
+.ha-admin-bottom-tools .ha-tool-icon{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#edf5f8;
+  font-size:16px;
+}
+
+.ha-admin-bottom-tools a:nth-child(1) .ha-tool-icon{
+  background:#e8f8f1;
+}
+.ha-admin-bottom-tools a:nth-child(2) .ha-tool-icon{
+  background:#eaf2ff;
+}
+.ha-admin-bottom-tools a:nth-child(3) .ha-tool-icon{
+  background:#fff3e8;
+}
+.ha-admin-bottom-tools a:nth-child(4) .ha-tool-icon{
+  background:#f3edff;
+}
+
+@media(max-width:620px){
+  body{padding-bottom:86px!important}
+  .ha-admin-bottom-tools{
+    bottom:6px;
+    width:calc(100% - 12px);
+    min-height:64px;
+    padding:5px;
+    gap:3px;
+    border-radius:18px;
+  }
+  .ha-admin-bottom-tools a{
+    min-height:52px;
+    padding:5px 2px;
+    gap:3px;
+    border-radius:13px;
+    font-size:8.5px;
+  }
+  .ha-admin-bottom-tools .ha-tool-icon{
+    width:25px;
+    height:25px;
+    border-radius:8px;
+    font-size:14px;
+  }
+}
+
+@media(max-width:390px){
+  .ha-admin-bottom-tools a{
+    font-size:7.8px;
+  }
+  .ha-admin-bottom-tools .ha-tool-icon{
+    width:23px;
+    height:23px;
+    font-size:13px;
+  }
+}
+</style>
+</head>
 <body>
 <div class="top"><b>🛡️ لوحة الإدارة العامة</b><a href="index.html">الرئيسية</a></div>
 <div class="wrap">
@@ -397,6 +503,6 @@ async function loadAdmins(){
 }
 init();
 </script>
-<div style="position:fixed;right:14px;bottom:14px;z-index:999"><a href="admin-section-sliders.html" style="display:block;background:#087b59;color:#fff;text-decoration:none;padding:12px 16px;border-radius:14px;box-shadow:0 5px 20px #087b5933;margin-bottom:8px">🖼️ إدارة صور الأقسام</a><a href="admin-home-cards.html" style="display:block;background:#0878e6;color:#fff;text-decoration:none;padding:12px 16px;border-radius:14px;box-shadow:0 5px 20px #0878e633;margin-bottom:8px">🖼️ صور مربعات الرئيسية</a><a href="admin-marketplace.html" style="display:block;background:#111;color:#fff;text-decoration:none;padding:12px 16px;border-radius:14px;box-shadow:0 5px 20px #0003;margin-bottom:8px">🤝 طلبات البائعين ومقدمي الخدمة والسائقين</a></div><div style="position:fixed;left:14px;bottom:14px;z-index:999"><a href="admin-content.html" style="display:block;background:#111;color:#fff;text-decoration:none;padding:12px 16px;border-radius:14px;box-shadow:0 5px 20px #0003">📝 إدارة الأخبار والمحتوى</a></div>
-<script src="ha-lux-icons.js?v=20260930-1" defer></script><div style="position:fixed;right:14px;bottom:82px;z-index:999999"><a href="admin-card-designer.html" style="display:block;background:#0878e6;color:#fff;text-decoration:none;padding:12px 16px;border-radius:14px;box-shadow:0 5px 20px #0878e633;margin-bottom:8px">🎨 تصميم المربعات وصور الأقسام</a></div></body>
+
+<script src="ha-lux-icons.js?v=20260930-1" defer></script></body>
 </html>
