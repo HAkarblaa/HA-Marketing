@@ -46,7 +46,7 @@ async function init(){
 
   const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'service_provider'});
   if(permError){
-    gate.innerHTML='تعذر التحقق من صلاحية مقدم الخدمة: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';
+    gate.innerHTML='تعذر التحقق من صلاحية مقدم الخدمة: '+esc(permError.message)+'<br><a href="service-provider-registration.html">فتح تسجيل مقدم الخدمة</a>';
     return;
   }
   if(!ok){

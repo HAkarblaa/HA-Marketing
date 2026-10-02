@@ -150,7 +150,7 @@
         it('shop','🛍️','التسوق','shop.html'),
         it('cart','🛒','السلة','cart.html'),
         it('orders','📦','طلباتي','shop-orders.html'),
-        it('join','🏪','انضم كبائع','marketplace-onboarding.html')
+        it('join','🏪','انضم كبائع','seller-registration.html')
       ]};
     }
 
@@ -178,7 +178,7 @@
         it('services','🛠️','طلب خدمة','services.html'),
         it('orders','📋','طلباتي','service-orders.html'),
         it('track','📍','التتبع','track-service.html'),
-        it('join','➕','انضم كمقدم','marketplace-onboarding.html')
+        it('join','➕','انضم كمقدم','service-provider-registration.html')
       ]};
     }
 

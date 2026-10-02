@@ -1,0 +1,31 @@
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f5fbff;color:#10233f}
+a{text-decoration:none}
+.ha-reg-wrap{width:min(94%,760px);margin:18px auto 110px}
+.ha-reg-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ha-reg-back,.ha-reg-home{padding:9px 12px;border-radius:12px;background:#fff;border:1px solid #dce7ec;color:#14324b;font-weight:800}
+.ha-reg-hero{margin-top:12px;padding:20px;border-radius:22px;background:linear-gradient(135deg,#138fe0,#0bb888);color:#fff;box-shadow:0 14px 34px rgba(20,75,110,.15)}
+.ha-reg-hero h1{margin:0 0 6px;font-size:26px}
+.ha-reg-hero p{margin:0;line-height:1.7;font-size:13px;opacity:.95}
+.ha-reg-card{background:#fff;border:1px solid #e0eaee;border-radius:20px;padding:16px;margin-top:12px;box-shadow:0 10px 26px rgba(30,65,90,.08)}
+.ha-reg-card h2{margin:0 0 12px;font-size:20px}
+.ha-reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ha-reg-grid .full{grid-column:1/-1}
+.ha-reg-card input,.ha-reg-card textarea{width:100%;padding:12px 13px;border:1px solid #d5e0e5;border-radius:12px;font:inherit;background:#fff}
+.ha-reg-card textarea{min-height:110px;resize:vertical}
+.ha-reg-submit{width:100%;margin-top:11px;padding:13px;border:0;border-radius:13px;background:#07865f;color:#fff;font:900 15px Tahoma,Arial;cursor:pointer}
+.ha-reg-status{margin-top:10px;padding:10px 12px;border-radius:12px;background:#f1f6f8;color:#50657a;font-size:12px;line-height:1.6}
+.ha-reg-status.ok{background:#e9f8f1;color:#087a50}
+.ha-reg-status.err{background:#fff0f2;color:#c22742}
+.ha-reg-history{display:grid;gap:8px}
+.ha-reg-history-item{padding:11px;border:1px solid #e3eaee;border-radius:14px;background:#fbfdfe}
+.ha-reg-history-item b{display:block;margin-bottom:5px}
+.ha-reg-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef3f6;font-size:10px;font-weight:900}
+.ha-reg-note{font-size:11px;color:#6b7a8c;margin-top:6px}
+@media(max-width:600px){
+  .ha-reg-wrap{width:calc(100% - 18px);margin-top:10px}
+  .ha-reg-grid{grid-template-columns:1fr}
+  .ha-reg-grid .full{grid-column:auto}
+  .ha-reg-hero{padding:16px}
+  .ha-reg-hero h1{font-size:21px}
+}

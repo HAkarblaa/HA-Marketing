@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تسجيل إدارة الألعاب - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="ha-direct-role-registration.css?v=20261002-1">
+<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20261002-direct1">
+</head>
+<body class="ha-ui-final"
+ data-role="games_manager"
+ data-role-label="إدارة الألعاب"
+ data-back="entertainment.html"
+ data-approved-href="games.html#manageGames">
+<div class="ha-reg-wrap">
+  <div class="ha-reg-top">
+    <a id="regBack" class="ha-reg-back" href="entertainment.html">← رجوع</a>
+    <a class="ha-reg-home" href="index.html">الرئيسية</a>
+  </div>
+
+  <section class="ha-reg-hero">
+    <h1>🎮 تسجيل إدارة الألعاب</h1>
+    <p>أرسل طلب إدارة الألعاب مباشرة بدون المرور ببوابة الانضمام.</p>
+  </section>
+
+  <section class="ha-reg-card">
+    <h2>بيانات التسجيل</h2>
+    <div class="ha-reg-grid">
+      <input id="regName" placeholder="الاسم الكامل / اسم النشاط">
+      <input id="regPhone" inputmode="tel" placeholder="رقم الهاتف">
+      <input id="regGov" placeholder="المحافظة">
+      <input id="regAddress" placeholder="العنوان / المنطقة">
+      <textarea id="regDetails" class="full" placeholder="اكتب خبرتك أو نوع الألعاب والمحتوى الذي تريد إدارته."></textarea>
+    </div>
+    <button id="regSubmit" class="ha-reg-submit" type="button">إرسال طلب التسجيل</button>
+    <div id="regStatus" class="ha-reg-status">بعد الإرسال يروح الطلب مباشرة للإدارة للمراجعة.</div>
+  </section>
+
+  <section class="ha-reg-card">
+    <h2>حالة طلبي</h2>
+    <div id="regHistory" class="ha-reg-history">جاري التحميل...</div>
+  </section>
+</div>
+
+<script src="ha-direct-role-registration.js?v=20261002-1"></script>
+<script src="ha-role-bottom-nav.js?v=20261002-direct1" defer></script>
+</body>
+</html>
