@@ -352,10 +352,16 @@
     el.id='haRoleBottomNav';
     el.setAttribute('aria-label','الشريط السفلي حسب نوع الحساب');
 
+    const visibleItems=nav.items.filter(x=>{
+      const href=String(x.href||'').split('?')[0].split('#')[0].toLowerCase();
+      const label=String(x.label||'').trim();
+      return x.key!=='chat' && href!=='chat.html' && label!=='المحادثات' && label!=='الدردشة';
+    });
+
     el.innerHTML=
       `<div class="ha-rbn-role">${nav.role}</div>`+
       `<div class="ha-rbn-inner">`+
-      nav.items.slice(0,5).map(x=>
+      visibleItems.slice(0,5).map(x=>
         `<a class="ha-rbn-item ${x.key===active?'active':''}" href="${x.href}">
           <span class="ha-rbn-icon">${x.icon}</span>
           <span class="ha-rbn-label">${x.label}</span>
@@ -368,14 +374,38 @@
   }
 
   async function start(){
+  function hideChatShortcuts(){
+    document.querySelectorAll('a,button').forEach(el=>{
+      const href=String(el.getAttribute('href')||'').split('?')[0].split('#')[0].toLowerCase();
+      const txt=String(el.textContent||'').replace(/\s+/g,' ').trim();
+      if(href==='chat.html' || txt==='المحادثات' || txt==='الدردشة'){
+        const navLike=el.closest('nav,.ha-bottom-nav,.bottom-nav,.ha-rbn-inner,.ha-shortcuts,.shortcuts,.ha-actions,.quick-actions');
+        if(navLike || href==='chat.html'){
+          el.style.setProperty('display','none','important');
+          el.setAttribute('aria-hidden','true');
+        }
+      }
+    });
+  }
+
+  function watchChatShortcuts(){
+    hideChatShortcuts();
+    const obs=new MutationObserver(hideChatShortcuts);
+    obs.observe(document.documentElement,{childList:true,subtree:true});
+    setTimeout(()=>obs.disconnect(),10000);
+  }
+
+  async function start(){
     try{
       const sec=sectionOf();
       const c=await context();
       render(choose(sec,c),sec);
+      watchChatShortcuts();
     }catch(_e){
       render(choose(sectionOf(),{
         apps:[],profile:null,transport:null,teacher:null,isAdmin:false,canSports:false,guest:true
       }),sectionOf());
+      watchChatShortcuts();
     }
   }
 
