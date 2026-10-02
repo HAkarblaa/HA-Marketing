@@ -188,3 +188,4 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
+\n/* HA real online presence loader */\n(function(){\n  if(window.__haPresenceScriptRequested||window.__haPresenceLoaded)return;\n  window.__haPresenceScriptRequested=true;\n  var s=document.createElement('script');\n  s.src='ha-presence.js?v=20261002-1';\n  s.defer=true;\n  document.head.appendChild(s);\n})();\n
