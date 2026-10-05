@@ -65,114 +65,249 @@ input[type=number],input[type=text],select{width:100%;padding:12px;border:1px so
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><style id="ha-file-tools-order-fix">
-/* ترتيب صفحة تحويل الملفات: البحث ثم الأقسام مباشرة */
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><style id="ha-file-tools-home-layout">
+/* نفس ترتيب الواجهة الرئيسية: عنوان القسم -> البحث -> المربعات مباشرة */
+body{
+  padding-bottom:100px!important;
+}
+
+.top{
+  width:min(1100px,100%)!important;
+  margin:0 auto!important;
+  background:#fff!important;
+  color:#102946!important;
+  border-bottom:1px solid #e5edf2!important;
+  box-shadow:none!important;
+  min-height:58px!important;
+}
+.top a{
+  width:40px!important;
+  height:40px!important;
+  background:#fff!important;
+  border:1px solid #e1e8ed!important;
+  border-radius:12px!important;
+  box-shadow:0 4px 12px rgba(30,60,80,.07)!important;
+}
+.top h1{
+  font-size:18px!important;
+  color:#102946!important;
+  font-weight:900!important;
+}
+
+.ha-file-home-head{
+  width:min(1085px,94%)!important;
+  margin:18px auto 8px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+}
+.ha-file-titlebox h2{
+  margin:0!important;
+  color:#102946!important;
+  font-size:29px!important;
+  font-weight:950!important;
+  line-height:1.25!important;
+}
+.ha-file-titlebox p{
+  margin:5px 0 0!important;
+  color:#728398!important;
+  font-size:12px!important;
+  line-height:1.6!important;
+}
+
 .search{
-  width:min(1000px,94%)!important;
-  margin:12px auto 10px!important;
-  position:relative!important;
-  z-index:2!important;
+  width:min(1085px,94%)!important;
+  margin:12px auto!important;
+}
+.search input{
+  width:100%!important;
+  min-height:54px!important;
+  padding:13px 18px!important;
+  border:1px solid #dce7ed!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  color:#263b50!important;
+  font-size:14px!important;
+  box-shadow:0 5px 16px rgba(30,60,80,.06)!important;
 }
 
 #tools.grid{
-  width:min(1000px,94%)!important;
-  margin:8px auto 18px!important;
+  width:min(1085px,94%)!important;
+  margin:10px auto 20px!important;
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:12px!important;
+  gap:14px!important;
   align-items:stretch!important;
-  position:relative!important;
-  z-index:1!important;
 }
 
 #tools .tool{
-  width:100%!important;
+  position:relative!important;
   min-width:0!important;
-  min-height:145px!important;
+  min-height:170px!important;
   margin:0!important;
-  padding:16px 10px!important;
+  padding:18px 14px 16px!important;
   display:flex!important;
   flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  border-radius:17px!important;
-  background:#fff!important;
-  position:relative!important;
-  inset:auto!important;
+  align-items:flex-start!important;
+  justify-content:flex-end!important;
+  overflow:hidden!important;
+  text-align:right!important;
+  border:1px solid rgba(255,255,255,.7)!important;
+  border-radius:22px!important;
+  box-shadow:0 9px 24px rgba(25,55,80,.09)!important;
+  color:#102946!important;
   transform:none!important;
+  inset:auto!important;
+}
+
+/* ألوان متنوعة مثل مربعات الواجهة */
+#tools .tool:nth-child(6n+1){background:linear-gradient(145deg,#e7f7ff,#cfeeff)!important}
+#tools .tool:nth-child(6n+2){background:linear-gradient(145deg,#f1eaff,#e4d7ff)!important}
+#tools .tool:nth-child(6n+3){background:linear-gradient(145deg,#fff4d8,#ffe7ad)!important}
+#tools .tool:nth-child(6n+4){background:linear-gradient(145deg,#e8fbef,#cdf2dc)!important}
+#tools .tool:nth-child(6n+5){background:linear-gradient(145deg,#ffe9ef,#ffd3df)!important}
+#tools .tool:nth-child(6n+6){background:linear-gradient(145deg,#e8f4ff,#d8eaff)!important}
+
+#tools .tool::after{
+  content:"‹";
+  position:absolute!important;
+  left:12px!important;
+  bottom:12px!important;
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:rgba(16,41,70,.11)!important;
+  color:#102946!important;
+  font-size:25px!important;
+  font-weight:900!important;
 }
 
 #tools .tool .ico{
-  margin:0 0 7px!important;
-  font-size:36px!important;
+  position:absolute!important;
+  top:16px!important;
+  right:16px!important;
+  margin:0!important;
+  font-size:47px!important;
+  line-height:1!important;
+  filter:drop-shadow(0 6px 8px rgba(20,50,70,.12))!important;
 }
 
 #tools .tool h3{
-  margin:4px 0!important;
-  font-size:16px!important;
-  line-height:1.35!important;
-  text-align:center!important;
+  max-width:82%!important;
+  margin:56px 0 5px!important;
+  color:#102946!important;
+  font-size:18px!important;
+  font-weight:950!important;
+  line-height:1.3!important;
+  text-align:right!important;
 }
-
 #tools .tool p{
+  max-width:82%!important;
   margin:0!important;
+  color:#63758a!important;
   font-size:11px!important;
-  line-height:1.5!important;
-  text-align:center!important;
-  color:#66788a!important;
+  line-height:1.55!important;
+  text-align:right!important;
 }
-
 #tools .tool .badge{
   margin-top:8px!important;
+  padding:5px 8px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.65)!important;
+  color:#4d6177!important;
+  font-size:9px!important;
+  font-weight:800!important;
 }
 
 .notice{
-  width:min(1000px,94%)!important;
+  width:min(1085px,94%)!important;
   margin:0 auto 110px!important;
-  position:relative!important;
-  clear:both!important;
+  padding:12px 14px!important;
+  border:1px solid #e3eaf0!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  color:#66788c!important;
+  font-size:11px!important;
+  line-height:1.7!important;
+  box-shadow:none!important;
 }
 
-/* لا نخلي شريط الأسفل يغطي آخر الأقسام */
-body{
-  padding-bottom:95px!important;
+/* المودالات تبقى كما هي */
+.modal .box{
+  text-align:right!important;
 }
 
-@media(max-width:800px){
+@media(max-width:760px){
+  .ha-file-home-head{
+    margin-top:13px!important;
+  }
+  .ha-file-titlebox h2{
+    font-size:22px!important;
+  }
+  .ha-file-titlebox p{
+    font-size:10.5px!important;
+  }
+  .search input{
+    min-height:49px!important;
+    font-size:12px!important;
+  }
   #tools.grid{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     gap:10px!important;
   }
   #tools .tool{
-    min-height:130px!important;
-    padding:13px 8px!important;
+    min-height:145px!important;
+    padding:14px 10px 13px!important;
+    border-radius:18px!important;
+  }
+  #tools .tool .ico{
+    top:13px!important;
+    right:13px!important;
+    font-size:38px!important;
+  }
+  #tools .tool h3{
+    margin-top:49px!important;
+    font-size:14px!important;
+  }
+  #tools .tool p{
+    font-size:9.5px!important;
+  }
+  #tools .tool::after{
+    left:9px!important;
+    bottom:9px!important;
+    width:32px!important;
+    height:32px!important;
+    font-size:21px!important;
   }
 }
 
-@media(max-width:430px){
+@media(max-width:390px){
   #tools.grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
     gap:8px!important;
   }
   #tools .tool{
-    min-height:118px!important;
-    border-radius:14px!important;
-    padding:11px 6px!important;
+    min-height:136px!important;
   }
-  #tools .tool .ico{font-size:30px!important}
-  #tools .tool h3{font-size:13px!important}
-  #tools .tool p{font-size:9.5px!important}
-  #tools .tool .badge{font-size:9px!important}
+  #tools .tool h3{
+    font-size:13px!important;
+  }
+  #tools .tool p{
+    font-size:9px!important;
+  }
 }
 </style>
 </head>
 <body>
 <div class="top"><a href="study.html">→</a><h1>📁 تحويل وتعديل الملفات</h1><a href="index.html">🏠</a></div>
 
-<section class="hero">
-  <div style="font-size:50px">🧰</div>
-  <h2>أدوات الملفات الدراسية</h2>
-  <p>اختر العملية. الأدوات المتاحة تعالج ملفاتك داخل صفحة التطبيق نفسها ولا ترفعها إلى خادم.</p>
+<section class="ha-file-home-head">
+  <div class="ha-file-titlebox">
+    <h2>اختر أداة الملفات التي تحتاجها</h2>
+    <p>كل أدوات تحويل وتعديل الملفات مرتبة بشكل سريع وواضح</p>
+  </div>
 </section>
 
 <div class="search"><input id="q" placeholder="ابحث عن خدمة... مثل دمج PDF أو صور إلى PDF" oninput="filterTools()"></div>
