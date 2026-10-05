@@ -752,7 +752,7 @@
 </style>
 <style id="ha-study-tools-two-style">
 .ha-study-tools-two{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
   max-width:760px!important;
   margin-inline:auto!important;
 }
@@ -769,6 +769,18 @@
   }
 }
 </style>
+<style id="ha-study-file-converter-card">
+@media(max-width:430px){
+  .ha-study-tools-two{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .ha-study-tools-two .ha-cat:last-child{
+    grid-column:1/-1!important;
+    width:calc(50% - 5px)!important;
+    justify-self:center!important;
+  }
+}
+</style>
 </head><body class="ha-premium-section-page ha-all-sections-layout ha-ui-final ha-family-study"><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
@@ -776,7 +788,7 @@
     <div class="ha-bell">🔔</div><a class="ha-page-menu" href="index.html" aria-label="الرئيسية">☰</a>
   </div>
 </header>
-<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تتعلم؟"><span class="mic" aria-label="خيارات البحث">☷</span></div></div><main class="ha-main"><section class="ha-section-cover"><img src="study.jpg" alt="الدراسة"></section><div class="ha-section-head"><div class="ha-section-titlebox"><h1>🎓 الدراسة</h1><p>كل ما تحتاجه للتعلم في مكان واحد</p></div><a class="ha-more" href="index.html">العودة للرئيسية ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="ابتدائي" href="study-directory.html"><span class="ico">🏫</span><strong>ابتدائي</strong><small>الصفوف الأولى</small></a><a class="ha-cat blue" data-search="متوسط" href="study-directory.html"><span class="ico">📚</span><strong>متوسط</strong><small>من الأول إلى الثالث</small></a><a class="ha-cat yellow" data-search="إعدادي" href="study-directory.html"><span class="ico">📖</span><strong>إعدادي</strong><small>علمي وأدبي</small></a><a class="ha-cat purple" data-search="جامعي" href="higher-education-news.html"><span class="ico">🎓</span><strong>جامعي</strong><small>جميع التخصصات</small></a><a class="ha-cat green" data-search="دورات" href="courses.html"><span class="ico">📜</span><strong>دورات</strong><small>دورات تعليمية</small></a><a class="ha-cat blue" data-search="كتب" href="study-library.html"><span class="ico">📚</span><strong>كتب</strong><small>مكتبة الكتب</small></a></div><section class="ha-smart-slider" data-ha-slider="study" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📊 أدوات الدراسة الأكثر استخداماً</h2></div><div class="ha-cats ha-study-tools-two"><a class="ha-cat blue" data-search="التلخيص تلخيص النصوص الدراسة" href="study-summary.html"><span class="ico">📝</span><strong>التلخيص</strong><small>تلخيص النصوص والدروس بسهولة</small></a><a class="ha-cat purple" data-search="الترجمة مترجم لغات" href="study-language.html#translate"><span class="ico">🌐</span><strong>الترجمة</strong><small>ترجمة النصوص والملفات</small></a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
+<div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تتعلم؟"><span class="mic" aria-label="خيارات البحث">☷</span></div></div><main class="ha-main"><section class="ha-section-cover"><img src="study.jpg" alt="الدراسة"></section><div class="ha-section-head"><div class="ha-section-titlebox"><h1>🎓 الدراسة</h1><p>كل ما تحتاجه للتعلم في مكان واحد</p></div><a class="ha-more" href="index.html">العودة للرئيسية ←</a></div><div class="ha-cats"><a class="ha-cat pink" data-search="ابتدائي" href="study-directory.html"><span class="ico">🏫</span><strong>ابتدائي</strong><small>الصفوف الأولى</small></a><a class="ha-cat blue" data-search="متوسط" href="study-directory.html"><span class="ico">📚</span><strong>متوسط</strong><small>من الأول إلى الثالث</small></a><a class="ha-cat yellow" data-search="إعدادي" href="study-directory.html"><span class="ico">📖</span><strong>إعدادي</strong><small>علمي وأدبي</small></a><a class="ha-cat purple" data-search="جامعي" href="higher-education-news.html"><span class="ico">🎓</span><strong>جامعي</strong><small>جميع التخصصات</small></a><a class="ha-cat green" data-search="دورات" href="courses.html"><span class="ico">📜</span><strong>دورات</strong><small>دورات تعليمية</small></a><a class="ha-cat blue" data-search="كتب" href="study-library.html"><span class="ico">📚</span><strong>كتب</strong><small>مكتبة الكتب</small></a></div><section class="ha-smart-slider" data-ha-slider="study" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div class="ha-section-head"><h2>📊 أدوات الدراسة الأكثر استخداماً</h2></div><div class="ha-cats ha-study-tools-two"><a class="ha-cat blue" data-search="التلخيص تلخيص النصوص الدراسة" href="study-summary.html"><span class="ico">📝</span><strong>التلخيص</strong><small>تلخيص النصوص والدروس بسهولة</small></a><a class="ha-cat purple" data-search="الترجمة مترجم لغات" href="study-language.html#translate"><span class="ico">🌐</span><strong>الترجمة</strong><small>ترجمة النصوص والملفات</small></a><a class="ha-cat yellow" data-search="تحويل الملفات PDF Word صور تحويل" href="file-tools.html"><span class="ico">🔄</span><strong>تحويل الملفات</strong><small>PDF وWord والصور والمزيد</small></a></div><div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
 <a class="ha-nav active" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>
 <a class="ha-nav " href="orders-center.html"><span class="nicon">🛍️</span><span>طلباتي</span></a>
 <a class="ha-nav " href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>
