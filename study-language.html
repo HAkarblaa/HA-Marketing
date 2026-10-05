@@ -36,31 +36,135 @@ body.file-fullscreen #pages{padding-bottom:40px}
 }
 @media(max-width:600px){.tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}}
 
-.paragraphTranslation{display:grid;gap:12px;margin-top:14px}
-.translationPair{background:#fff;border:1px solid #ddd;border-radius:14px;padding:14px}
-.translationPair .original{white-space:pre-wrap;line-height:1.8;color:#444;direction:auto;text-align:start}
-.translationPair .translated{white-space:pre-wrap;line-height:1.9;color:#111;font-weight:600;direction:rtl;text-align:right;border-top:1px dashed #ddd;margin-top:10px;padding-top:10px}
-.translationPair .partNo{font-size:12px;color:#777;margin-bottom:7px}
-.translationPair.pending .translated{color:#888;font-weight:400}
 
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
+<style id="ha-file-translator-download-only-style">
+#files .box{max-width:760px;margin-inline:auto}
+.file-download-only{margin-top:14px}
+.file-target-row{
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.file-target-row label{font-size:13px;font-weight:800;color:#44566a}
+.file-target-row select{margin:0}
+.hidden-file-input{display:none!important}
+.file-upload-big{
+  width:100%;
+  min-height:150px;
+  border:2px dashed #b9cde0;
+  border-radius:18px;
+  background:linear-gradient(145deg,#f8fbff,#eef7ff);
+  color:#173d68;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  cursor:pointer;
+  transition:.16s ease;
+}
+.file-upload-big:hover{border-color:#4d91d8;transform:translateY(-1px)}
+.file-upload-big .file-upload-icon{font-size:34px}
+.file-upload-big b{font-size:17px}
+.file-upload-big small{font-size:11px;color:#728398}
+.file-translate-status{
+  margin-top:12px;
+  padding:12px 13px;
+  border-radius:13px;
+  background:#f4f7f9;
+  border:1px solid #e3e9ed;
+  color:#526579;
+  font-size:12px;
+  line-height:1.7;
+}
+.file-translate-status.busy{background:#eef6ff;border-color:#d3e6fb;color:#1769c2}
+.file-translate-status.ok{background:#eaf8f0;border-color:#cfeedd;color:#08794e}
+.file-translate-status.err{background:#fff0f2;border-color:#f3ced4;color:#b32740}
+.file-done-box{
+  margin-top:12px;
+  padding:13px;
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  border-radius:15px;
+  border:1px solid #cfe9db;
+  background:#f1fbf5;
+}
+.file-done-box.hidden{display:none!important}
+.done-check{
+  width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#0a9b65;color:#fff;font-size:24px;font-weight:900;
+}
+.done-text b{display:block;color:#0b6848;font-size:14px}
+.done-text small{display:block;margin-top:3px;color:#668073;font-size:10px;line-height:1.5}
+#downloadTranslatedFileBtn{white-space:nowrap;background:#07865f}
+@media(max-width:620px){
+  .file-target-row{grid-template-columns:1fr;gap:4px}
+  .file-upload-big{min-height:125px}
+  .file-done-box{grid-template-columns:42px 1fr}
+  #downloadTranslatedFileBtn{grid-column:1/-1;width:100%}
+}
+</style>
 </head><body class="ha-ui-final ha-family-study"><div class="ha-family-strip"><a href="study.html">← الدراسة</a><div><b>الإنجليزية والترجمة</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="top"><button onclick="history.back()">←</button><h1>🇬🇧 تعلم الإنجليزية والترجمة</h1></div><main class="wrap"><div class="tabs"><button class="on" onclick="tab('learn',this)">تعلم الإنجليزية</button><button onclick="tab('translate',this)">الترجمة</button><button onclick="tab('files',this)">ترجمة ملف</button></div>
 <section id="learn" class="lesson show"><div class="box"><h2>مدرب الإنجليزية</h2><p>اختر مستواك والموضوع، والمساعد يعطيك درساً وتمارين وتصحيحاً.</p><div class="row"><select id="level"><option>مبتدئ</option><option>متوسط</option><option>متقدم</option></select><select id="topic"><option>المحادثة اليومية</option><option>القواعد</option><option>المفردات</option><option>العمل</option><option>السفر</option><option>المدرسة والجامعة</option></select></div><div class="chips"><button onclick="askLearn('اعطني درس اليوم')">درس اليوم</button><button onclick="askLearn('اختبرني 5 أسئلة')">اختبار سريع</button><button onclick="askLearn('اعطني 10 كلمات جديدة مع أمثلة')">مفردات</button><button onclick="askLearn('ابدأ محادثة إنجليزية وصحح أخطائي')">محادثة</button></div><textarea id="learnQ" placeholder="اكتب سؤالاً أو جملة بالإنجليزية حتى أصححها..."></textarea><button class="btn" onclick="learn()">إرسال للمدرب</button></div><div class="box"><h2>النتيجة</h2><div id="learnOut" class="result">جاهز.</div><div class="actions" style="margin-top:8px"><button class="speak" onclick="speakElement('learnOut',detectSpeechLang(document.getElementById('learnOut').textContent))">🔊 نطق النتيجة</button><button class="speak" onclick="stopSpeak()">⏹ إيقاف</button></div></div></section>
 <section id="translate" class="lesson"><div class="box"><h2>المترجم متعدد اللغات</h2><div class="langrow"><select id="fromLang"><option value="auto">تحديد تلقائي</option><option>العربية</option><option>الإنجليزية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select><button class="swap" type="button" title="تبديل اللغتين" onclick="swapLanguages()">⇄</button><select id="toLang"><option>الإنجليزية</option><option>العربية</option><option>الفارسية</option><option>التركية</option><option>الفرنسية</option><option>الألمانية</option><option>الإسبانية</option><option>الإيطالية</option><option>الروسية</option><option>الكردية</option><option>الأردية</option><option>الصينية</option><option>اليابانية</option><option>الكورية</option><option>الهندية</option></select></div><textarea id="translationText" placeholder="اكتب أو الصق النص المراد ترجمته..."></textarea><div class="actions"><button class="btn" id="translateBtn" onclick="translateText()">ترجمة</button><button class="btn secondary" onclick="copyTranslation()">نسخ الترجمة</button><button class="btn secondary" onclick="clearTranslation()">مسح</button></div><div class="hint">إذا كانت لغة النص غير معروفة، اترك المصدر على «تحديد تلقائي».</div></div><div class="box"><h2>الترجمة</h2><div id="transOut" class="result">—</div><div class="actions" style="margin-top:8px"></div></div>
 </section>
 <section id="files" class="lesson"><div class="box">
 <h2>📄 ترجمة ملف</h2>
-<p class="hint">اختر ملف PDF أو Word أو TXT، وسيبدأ ترجمته تلقائياً إلى العربية. يظهر كل جزء من النص الأصلي وتحته ترجمته مباشرة.</p>
-<div class="filebar">
-  <input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" onchange="openAndTranslateFile()">
-  <button class="btn" onclick="document.getElementById('fileInput').click()">اختيار ملف</button>
+<p class="hint">ارفع ملف PDF أو Word أو TXT. تتم الترجمة داخلياً فقرةً فقرةً مع الحفاظ على ترتيب النص والأرقام والأسماء، ولا يتم عرض محتوى الملف أو الفقرات على الشاشة.</p>
+
+<div class="file-download-only">
+  <div class="file-target-row">
+    <label for="fileTargetLang">لغة الملف المترجم</label>
+    <select id="fileTargetLang">
+      <option>العربية</option>
+      <option>الإنجليزية</option>
+      <option>الفارسية</option>
+      <option>التركية</option>
+      <option>الفرنسية</option>
+      <option>الألمانية</option>
+      <option>الإسبانية</option>
+      <option>الإيطالية</option>
+      <option>الروسية</option>
+      <option>الكردية</option>
+      <option>الأردية</option>
+      <option>الصينية</option>
+      <option>اليابانية</option>
+      <option>الكورية</option>
+      <option>الهندية</option>
+    </select>
+  </div>
+
+  <input id="fileInput" class="hidden-file-input" type="file"
+    accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+    onchange="openAndTranslateFile()">
+
+  <button class="file-upload-big" type="button" onclick="document.getElementById('fileInput').click()">
+    <span class="file-upload-icon">⬆️</span>
+    <b>رفع ملف للترجمة</b>
+    <small>PDF / Word / TXT</small>
+  </button>
+
+  <div id="fileProgress" class="file-translate-status">جاهز لرفع الملف.</div>
+
+  <div id="fileDoneBox" class="file-done-box hidden">
+    <div class="done-check">✓</div>
+    <div class="done-text">
+      <b id="fileDoneTitle">اكتملت الترجمة</b>
+      <small id="fileDoneMeta">الملف المترجم جاهز للتحميل والفتح.</small>
+    </div>
+    <button id="downloadTranslatedFileBtn" class="btn" type="button" onclick="downloadLastTranslatedFile()">
+      تحميل الملف المترجم
+    </button>
+  </div>
 </div>
-<div id="fileProgress" class="progress"></div>
-<div class="actions" style="margin-top:12px">
-</div>
-<div id="paragraphTranslation" class="paragraphTranslation"></div>
 </div></section></main>
 <script>
 const SUPA_URL='https://ubayrhtshgtgggxprrek.supabase.co';
@@ -189,20 +293,26 @@ function speakText(text,lang){
 function speakElement(id,lang){const el=document.getElementById(id);const text=('value' in el?el.value:el.textContent);speakText(text,lang||detectSpeechLang(text))}
 function detectSpeechLang(text){return /[\u0600-\u06FF]/.test(text||'')?'ar-IQ':'en-US'}
 
-let currentFileName='', fileTranslateBusy=false, translatedFileParts=[];
 
-function paragraphParts(text, max=3000){
-  const clean=String(text||'').replace(/\r/g,'').trim();
-  if(!clean)return [];
-  let raw=clean.split(/\n\s*\n+/).map(x=>x.trim()).filter(Boolean);
-  // بعض PDF لا يحتوي فواصل فقرات؛ نقسمه بشكل آمن إلى أجزاء قابلة للترجمة.
-  if(raw.length<=1){
-    raw=clean.split(/\n+/).map(x=>x.trim()).filter(Boolean);
-  }
+let currentFileName='', fileTranslateBusy=false, translatedFileParts=[];
+let lastTranslatedBlob=null, lastTranslatedName='';
+
+function paragraphParts(text,max=2200){
+  // نحافظ على الفقرات وترتيبها. لا نلغي الأسطر الفارغة إلا عند الحاجة للتقسيم.
+  const normalized=String(text||'').replace(/\r\n?/g,'\n');
+  if(!normalized.trim())return [];
+
+  const raw=normalized.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);
+  const sourceParts=raw.length?raw:normalized.split(/\n/).map(x=>x.trim()).filter(Boolean);
   const out=[];
-  for(let p of raw){
-    if(p.length<=max){out.push(p);continue}
-    let rest=p;
+
+  for(const paragraph of sourceParts){
+    if(paragraph.length<=max){
+      out.push(paragraph);
+      continue;
+    }
+
+    let rest=paragraph;
     while(rest.length>max){
       let cut=rest.lastIndexOf(' ',max);
       if(cut<Math.floor(max*.55))cut=max;
@@ -215,45 +325,135 @@ function paragraphParts(text, max=3000){
 }
 
 async function extractTranslationFile(f){
-  if(f.name.toLowerCase().endsWith('.txt')) return await f.text();
+  const lower=f.name.toLowerCase();
 
-  if(f.name.toLowerCase().endsWith('.docx')){
-    const ab=await f.arrayBuffer();
-    const r=await mammoth.extractRawText({arrayBuffer:ab});
-    return r.value||'';
+  if(lower.endsWith('.txt')){
+    return await f.text();
   }
 
-  if(f.name.toLowerCase().endsWith('.pdf')){
+  if(lower.endsWith('.docx')){
+    const ab=await f.arrayBuffer();
+    const r=await mammoth.extractRawText({arrayBuffer:ab});
+    const text=r.value||'';
+    if(!text.trim())throw new Error('لم أجد نصاً داخل ملف Word');
+    return text;
+  }
+
+  if(lower.endsWith('.pdf')){
     if(window.pdfjsLib){
       pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
+
     const ab=await f.arrayBuffer();
     const pdf=await pdfjsLib.getDocument({data:ab}).promise;
     const pages=[];
+
     for(let n=1;n<=pdf.numPages;n++){
       const page=await pdf.getPage(n);
       const tc=await page.getTextContent();
-      // نحافظ قدر الإمكان على فواصل الأسطر/الفقرات من PDF.
-      let lines=[], line='';
+      const lines=[];
+      let line='';
+
       for(const item of tc.items){
-        line += (line?' ':'') + (item.str||'');
-        if(item.hasEOL){ if(line.trim())lines.push(line.trim()); line=''; }
+        const value=String(item.str||'');
+        if(value){
+          line += (line?' ':'') + value;
+        }
+        if(item.hasEOL){
+          if(line.trim())lines.push(line.trim());
+          line='';
+        }
       }
       if(line.trim())lines.push(line.trim());
-      pages.push(lines.join('\n'));
+
+      if(lines.length){
+        pages.push(lines.join('\n'));
+      }else{
+        // لا ننشئ ملف ناقص إذا كانت صفحة PDF صورة/مسح ضوئي بدون نص.
+        pages.push('');
+      }
     }
+
+    if(!pages.some(x=>x.trim())){
+      throw new Error('هذا الـPDF لا يحتوي نصاً قابلاً للقراءة. الملف الممسوح كصورة يحتاج OCR أولاً.');
+    }
+
+    const blankPages=pages.filter(x=>!x.trim()).length;
+    if(blankPages){
+      throw new Error('بعض صفحات الـPDF لا تحتوي نصاً قابلاً للاستخراج. أوقفت الترجمة حتى لا ينحذف أي محتوى من الملف.');
+    }
+
     return pages.join('\n\n');
   }
 
   throw new Error('نوع الملف غير مدعوم');
 }
 
-function makeTranslationPair(original, i){
-  const d=document.createElement('div');
-  d.className='translationPair pending';
-  d.innerHTML='<div class="partNo">الفقرة '+(i+1)+'</div><div class="original"></div><div class="translated">جاري الترجمة...</div>';
-  d.querySelector('.original').textContent=original;
-  return d;
+function translatedOutputName(target){
+  const base=(currentFileName||'translated-file')
+    .replace(/\.[^.]+$/,'')
+    .replace(/[\\/:*?"<>|]+/g,'-')
+    .trim() || 'translated-file';
+
+  return `${base}-مترجم-${target}.pdf`;
+}
+
+function setFileStatus(text,type=''){
+  const el=document.getElementById('fileProgress');
+  el.className='file-translate-status'+(type?' '+type:'');
+  el.textContent=text;
+}
+
+function showFileDone(name,count,target){
+  const box=document.getElementById('fileDoneBox');
+  document.getElementById('fileDoneTitle').textContent='اكتملت ترجمة الملف';
+  document.getElementById('fileDoneMeta').textContent=
+    `تمت ترجمة ${count} فقرة/جزء إلى ${target}. الملف جاهز للتحميل والفتح.`;
+  box.classList.remove('hidden');
+  lastTranslatedName=name;
+}
+
+async function translateFilePartExact(part,target,index,total){
+  const prompt=
+`ترجم النص التالي بالكامل إلى ${target}.
+شروط إلزامية:
+- لا تحذف أي كلمة أو رقم أو اسم أو رابط أو رمز موجود في النص.
+- لا تختصر ولا تلخص ولا تعيد صياغة المحتوى.
+- لا تضف شرحاً أو مقدمة أو ملاحظات.
+- حافظ على ترتيب الجمل والأسطر قدر الإمكان.
+- إذا كان هناك رقم أو كود أو رابط لا يحتاج ترجمة فأبقِه كما هو.
+- أرجع الترجمة فقط.
+
+النص:
+${part}`;
+
+  let answer=await callAI(prompt);
+  answer=String(answer||'').trim();
+
+  if(!answer){
+    throw new Error(`الفقرة ${index+1} رجعت فارغة`);
+  }
+
+  // فحص احتياطي بسيط ضد نتيجة ناقصة جداً، مع محاولة ثانية.
+  const sourceLen=part.replace(/\s/g,'').length;
+  const resultLen=answer.replace(/\s/g,'').length;
+
+  if(sourceLen>350 && resultLen<Math.max(40,sourceLen*.12)){
+    answer=String(await callAI(
+`أعد ترجمة النص التالي كاملاً إلى ${target} من دون حذف أي جزء إطلاقاً.
+لا تلخص ولا تختصر ولا تضف شرحاً. حافظ على كل الأرقام والأسماء والروابط والرموز والأسطر.
+أرجع الترجمة فقط.
+
+النص:
+${part}`
+    )||'').trim();
+
+    if(!answer){
+      throw new Error(`تعذر إكمال الفقرة ${index+1}`);
+    }
+  }
+
+  return answer;
 }
 
 async function openAndTranslateFile(){
@@ -261,56 +461,65 @@ async function openAndTranslateFile(){
   const f=input.files && input.files[0];
   if(!f || fileTranslateBusy)return;
 
-  const progress=document.getElementById('fileProgress');
-  const host=document.getElementById('paragraphTranslation');
-  host.innerHTML='';
-  translatedFileParts=[];
   fileTranslateBusy=true;
   currentFileName=f.name;
+  translatedFileParts=[];
+  lastTranslatedBlob=null;
+  lastTranslatedName='';
+  document.getElementById('fileDoneBox').classList.add('hidden');
+
+  const target=document.getElementById('fileTargetLang').value || 'العربية';
 
   try{
-    progress.textContent='جاري قراءة الملف...';
+    setFileStatus('جاري قراءة الملف وفحص محتواه...','busy');
+
     const text=await extractTranslationFile(f);
     const parts=paragraphParts(text);
-    if(!parts.length)throw new Error('لم أجد نصاً قابلاً للترجمة داخل الملف');
 
-    const cards=parts.map((p,i)=>{
-      const c=makeTranslationPair(p,i);
-      host.appendChild(c);
-      return c;
-    });
+    if(!parts.length){
+      throw new Error('لم أجد نصاً قابلاً للترجمة داخل الملف');
+    }
 
-    let failedParts=0;
     for(let i=0;i<parts.length;i++){
-      progress.textContent=`جاري ترجمة الفقرة ${i+1} من ${parts.length} إلى العربية...`;
-      try{
-        const translated=await callAI(
-          `ترجم النص التالي إلى العربية ترجمة واضحة ودقيقة. أرجع الترجمة العربية فقط دون شرح أو عناوين إضافية، وحافظ على الأرقام والمعنى:\n${parts[i]}`
-        );
-        cards[i].querySelector('.translated').textContent=translated;
-        translatedFileParts[i]={original:parts[i],translated:translated};
-        cards[i].classList.remove('pending');
-      }catch(err){
-        failedParts++;
-        const failText='تعذر ترجمة هذه الفقرة: '+(err.message||'خطأ');
-        cards[i].querySelector('.translated').textContent=failText;
-        translatedFileParts[i]={original:parts[i],translated:failText};
-      }
+      setFileStatus(`جاري ترجمة الملف: ${i+1} من ${parts.length}...`,'busy');
+
+      const translated=await translateFilePartExact(parts[i],target,i,parts.length);
+
+      translatedFileParts.push({
+        original:parts[i],
+        translated
+      });
     }
-    if(failedParts===0){
-      progress.textContent=`اكتملت ترجمة الملف بالكامل إلى العربية — ${parts.length} فقرة/جزء. جاري تنزيل PDF تلقائياً...`;
-      await downloadTranslatedPdf();
-      progress.textContent=`اكتملت ترجمة الملف بالكامل وتم بدء تنزيل PDF تلقائياً — ${parts.length} فقرة/جزء.`;
-    }else{
-      progress.textContent=`اكتملت المحاولة، لكن تعذر ترجمة ${failedParts} فقرة/جزء. لن يتم تنزيل PDF حتى تكتمل الترجمة بالكامل.`;
+
+    if(translatedFileParts.length!==parts.length){
+      throw new Error('لم تكتمل كل أجزاء الملف. لم يتم إنشاء ملف ناقص.');
     }
+
+    setFileStatus('اكتملت الترجمة. جاري إنشاء الملف القابل للتحميل...','busy');
+
+    const result=await buildTranslatedPdf(target);
+    lastTranslatedBlob=result.blob;
+    lastTranslatedName=result.name;
+
+    setFileStatus('✅ اكتملت ترجمة الملف بالكامل، والملف المترجم جاهز للتحميل.','ok');
+    showFileDone(result.name,translatedFileParts.length,target);
+
+    // تنزيل تلقائي بمجرد انتهاء الترجمة.
+    await saveTranslatedBlob(lastTranslatedBlob,lastTranslatedName);
+
   }catch(e){
-    progress.textContent='تعذر ترجمة الملف: '+(e.message||'خطأ غير معروف');
+    console.error(e);
+    translatedFileParts=[];
+    lastTranslatedBlob=null;
+    lastTranslatedName='';
+    document.getElementById('fileDoneBox').classList.add('hidden');
+    setFileStatus('تعذر إنشاء الملف المترجم: '+(e.message||'خطأ غير معروف'),'err');
   }finally{
     fileTranslateBusy=false;
+    // يسمح بإعادة اختيار نفس الملف مرة ثانية.
+    input.value='';
   }
 }
-
 
 function escapeHtmlDownload(s){
   return String(s||'').replace(/[&<>"']/g,function(ch){
@@ -319,37 +528,29 @@ function escapeHtmlDownload(s){
 }
 
 async function saveTranslatedBlob(blob,name){
-  if(!blob || !blob.size){
-    alert('الملف الناتج فارغ.');
-    return false;
-  }
+  if(!blob || !blob.size)throw new Error('الملف الناتج فارغ.');
 
-  // داخل تطبيق HA Marketing: إرسال الملف مباشرة إلى Android
+  // داخل تطبيق HA Marketing
   if(window.HAAndroid && typeof window.HAAndroid.saveBase64File === 'function'){
-    try{
-      const reader = new FileReader();
-      return await new Promise((resolve,reject)=>{
-        reader.onloadend=function(){
-          try{
-            window.HAAndroid.saveBase64File(
-              reader.result,
-              name,
-              blob.type || 'application/pdf'
-            );
-            resolve(true);
-          }catch(e){
-            reject(e);
-          }
-        };
-        reader.onerror=reject;
-        reader.readAsDataURL(blob);
-      });
-    }catch(e){
-      console.log('Android download error:',e);
-    }
+    const reader=new FileReader();
+    await new Promise((resolve,reject)=>{
+      reader.onloadend=function(){
+        try{
+          window.HAAndroid.saveBase64File(
+            reader.result,
+            name,
+            blob.type||'application/pdf'
+          );
+          resolve();
+        }catch(e){reject(e)}
+      };
+      reader.onerror=reject;
+      reader.readAsDataURL(blob);
+    });
+    return true;
   }
 
-  // المتصفح العادي: تنزيل تلقائي
+  // المتصفح
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;
@@ -357,51 +558,80 @@ async function saveTranslatedBlob(blob,name){
   a.style.display='none';
   document.body.appendChild(a);
   a.click();
+
   setTimeout(()=>{
     a.remove();
     URL.revokeObjectURL(url);
-  },2000);
+  },3000);
+
   return true;
 }
 
-async function downloadTranslatedPdf(){
+async function buildTranslatedPdf(target){
   if(!translatedFileParts.length){
-    alert('لا توجد ترجمة جاهزة للتحميل.');
+    throw new Error('لا توجد ترجمة مكتملة لإنشاء الملف');
+  }
+
+  const {jsPDF}=window.jspdf||{};
+  if(!jsPDF)throw new Error('مكتبة إنشاء PDF غير جاهزة');
+
+  const temp=document.createElement('div');
+  const rtlTargets=['العربية','الفارسية','الكردية','الأردية'];
+  const isRtl=rtlTargets.includes(target);
+
+  temp.dir=isRtl?'rtl':'ltr';
+  temp.style.cssText=
+    'position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#111;'+
+    'padding:34px 36px;font-family:Arial,Tahoma,sans-serif;line-height:1.9;'+
+    (isRtl?'text-align:right;':'text-align:left;');
+
+  // الملف الناتج يحتوي الترجمة فقط، من دون عرض النص الأصلي أو أرقام فقرات.
+  temp.innerHTML=translatedFileParts.map(p=>
+    `<div style="margin:0 0 15px;white-space:pre-wrap;page-break-inside:auto">${escapeHtmlDownload(p.translated)}</div>`
+  ).join('');
+
+  document.body.appendChild(temp);
+
+  try{
+    const pdf=new jsPDF({orientation:'p',unit:'pt',format:'a4'});
+    const blob=await new Promise((resolve,reject)=>{
+      try{
+        pdf.html(temp,{
+          margin:[32,32,32,32],
+          autoPaging:'text',
+          width:531,
+          windowWidth:760,
+          callback:function(doc){
+            try{resolve(doc.output('blob'))}
+            catch(e){reject(e)}
+          }
+        });
+      }catch(e){reject(e)}
+    });
+
+    if(!blob || !blob.size){
+      throw new Error('تعذر إنشاء PDF النهائي');
+    }
+
+    return {
+      blob,
+      name:translatedOutputName(target)
+    };
+  }finally{
+    temp.remove();
+  }
+}
+
+async function downloadLastTranslatedFile(){
+  if(!lastTranslatedBlob || !lastTranslatedName){
+    alert('لا يوجد ملف مترجم جاهز حالياً.');
     return;
   }
+
   try{
-    const {jsPDF}=window.jspdf||{};
-    if(!jsPDF)throw new Error('مكتبة PDF غير جاهزة');
-
-    // Render the same paragraph-by-paragraph result to a temporary HTML area,
-    // then use jsPDF.html so Arabic text is preserved by the browser renderer.
-    const temp=document.createElement('div');
-    temp.dir='rtl';
-    temp.style.cssText='position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#111;padding:28px;font-family:Arial,sans-serif;line-height:1.8;';
-    temp.innerHTML='<h2 style="text-align:right">ترجمة الملف إلى العربية</h2>'+
-      translatedFileParts.map((p,i)=>`
-        <div style="margin:0 0 22px;page-break-inside:avoid">
-          <div style="font-size:12px;color:#777;text-align:right">الفقرة ${i+1}</div>
-          <div dir="auto" style="text-align:start;margin:7px 0 10px;white-space:pre-wrap">${escapeHtmlDownload(p.original)}</div>
-          <div dir="rtl" style="text-align:right;font-weight:600;border-top:1px solid #ccc;padding-top:9px;white-space:pre-wrap">${escapeHtmlDownload(p.translated)}</div>
-        </div>`).join('');
-    document.body.appendChild(temp);
-
-    const base=(currentFileName||'translated-file').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'-');
-    const pdf=new jsPDF({orientation:'p',unit:'pt',format:'a4'});
-    pdf.html(temp,{
-      margin:[28,28,28,28],
-      autoPaging:'text',
-      width:539,
-      windowWidth:760,
-      callback:async function(doc){
-        const blob=doc.output('blob');
-        await saveTranslatedBlob(blob,base+'-مترجم-للعربية.pdf');
-        temp.remove();
-      }
-    });
+    await saveTranslatedBlob(lastTranslatedBlob,lastTranslatedName);
   }catch(e){
-    alert('تعذر إنشاء PDF: '+(e.message||'خطأ غير معروف'));
+    alert('تعذر تحميل الملف: '+(e.message||'خطأ غير معروف'));
   }
 }
 
