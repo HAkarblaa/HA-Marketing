@@ -29,8 +29,17 @@ let me=null;function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&a
       <span class="badge">${esc(roleLabel(x))} — ${x.status==='pending'?'قيد المراجعة':x.status==='approved'?'مقبول':x.status==='rejected'?'مرفوض':'موقوف'}</span>
     </div>
     <div>${esc(x.phone||'بدون هاتف')} — ${esc(x.governorate||'')}</div>
-    <div class="muted">${esc(x.address||'')}</div>
-    <div class="muted">${esc(x.details||'')}</div>
+    ${x.role_type==='service_provider'?`
+      <div class="muted"><b>اليوزر:</b> ${esc(x.original_username||'')}</div>
+      <div class="muted"><b>الأرقام:</b> ${esc(Array.isArray(x.phone_numbers)?x.phone_numbers.join(' / '):(x.phone||''))}</div>
+      <div class="muted"><b>المنطقة:</b> ${esc(x.area||'')}</div>
+      <div class="muted"><b>المهنة:</b> ${esc(x.service_type_name||x.custom_profession||'')}</div>
+      <div class="muted"><b>الموقع:</b> ${esc(x.location_text||x.address||'')}</div>
+      ${x.lat!=null&&x.lng!=null?`<div class="muted"><b>الإحداثيات:</b> ${esc(x.lat)}, ${esc(x.lng)}</div>`:''}
+    `:`
+      <div class="muted">${esc(x.address||'')}</div>
+    `}
+    <div class="muted"><b>التفاصيل:</b> ${esc(x.details||'')}</div>
     <div class="row" style="margin-top:8px">
       <button class="ok" onclick="review('${x.id}','approved')">موافقة وتفعيل الصلاحية</button>
       <button class="danger" onclick="review('${x.id}','rejected')">رفض</button>
