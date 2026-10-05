@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>الأسئلة الوزارية وحلولها - HA Marketing</title>
+<title>إعدادي - HA Marketing</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:#eef3f7;color:#15304b}a{text-decoration:none}
 .wrap{width:min(94%,980px);margin:18px auto 100px}
@@ -30,15 +30,20 @@
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3"><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1">
 </head>
 <body class="ha-ui-final ha-family-study">
-<div class="ha-family-strip"><a href="study.html">← الدراسة</a><div><b>الأسئلة الوزارية وحلولها</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
+<div class="ha-family-strip"><a href="study.html">← الدراسة</a><div><b>إعدادي</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
 <div class="wrap"><div class="top"><a class="back" href="study.html">← رجوع</a><a class="home" href="index.html">العودة للرئيسية</a></div>
-<div class="hero"><h1>الأسئلة الوزارية وحلولها</h1><p>اختر المرحلة حتى تظهر لك الأسئلة الوزارية والحلول النموذجية.</p></div>
-<div class="grid">
-<a class="box c1" href="ministerial-primary.html"><div class="ico">🧒</div><b>ابتدائي</b><small>أسئلة وزارية مع الحلول</small></a>
-<a class="box c2" href="ministerial-middle.html"><div class="ico">📘</div><b>متوسط</b><small>أسئلة وزارية مع الحلول</small></a>
-<a class="box c3" href="ministerial-preparatory.html"><div class="ico">📗</div><b>إعدادي</b><small>علمي وأدبي ومهني</small></a>
-<a class="box c4" href="ministerial-vocational.html"><div class="ico">🛠️</div><b>مهني</b><small>أسئلة وزارية مع الحلول</small></a>
-<a class="box c5" href="ministerial-distinguished.html"><div class="ico">⭐</div><b>متميزين</b><small>أسئلة وزارية مع الحلول</small></a>
+<div class="hero"><h1>إعدادي</h1><p>اختر الفرع أولاً، وبعدها تظهر لك الصفوف الرابع والخامس والسادس الإعدادي.</p></div>
+<div class="note">اختر أحد الفروع التالية: <b>علمي</b> أو <b>أدبي</b> أو <b>مهني</b>.</div>
+<div class="branch-wrap">
+<button class="branch" type="button" data-branch="علمي">🔬 علمي</button>
+<button class="branch" type="button" data-branch="أدبي">📘 أدبي</button>
+<button class="branch" type="button" data-branch="مهني">🛠️ مهني</button>
+</div>
+<div id="gradeNote" class="note">اضغط على الفرع حتى تظهر الصفوف.</div>
+<div id="grades" class="grid hidden">
+<a class="box c3 grade-link" data-grade="4" href="#"><div class="ico">4️⃣</div><b>الرابع الإعدادي</b><small class="branch-label">اختر الفرع أولاً</small></a>
+<a class="box c2 grade-link" data-grade="5" href="#"><div class="ico">5️⃣</div><b>الخامس الإعدادي</b><small class="branch-label">اختر الفرع أولاً</small></a>
+<a class="box c5 grade-link" data-grade="6" href="#"><div class="ico">6️⃣</div><b>السادس الإعدادي</b><small class="branch-label">اختر الفرع أولاً</small></a>
 </div></div>
 <nav class="ha-bottom"><div class="ha-bottom-inner">
 <a class="ha-nav active" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>
@@ -48,5 +53,20 @@
 <a class="ha-nav" href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>
 </div></nav>
 <script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
-
+<script>
+const branches=document.querySelectorAll('.branch');
+const gradeBox=document.getElementById('grades');
+const gradeNote=document.getElementById('gradeNote');
+const labels=document.querySelectorAll('.branch-label');
+const links=document.querySelectorAll('.grade-link');
+branches.forEach(btn=>btn.addEventListener('click',()=>{
+  branches.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const branch=btn.dataset.branch;
+  gradeBox.classList.remove('hidden');
+  gradeNote.innerHTML='الفرع المختار: <b>'+branch+'</b> — الآن اختر الصف.';
+  labels.forEach(el=>el.textContent=branch+' • ملازم ومواد واختبارات');
+  links.forEach(link=>{link.href='study-library.html?stage=preparatory&branch='+encodeURIComponent(branch)+'&grade='+link.dataset.grade;});
+}));
+</script>
 </body></html>
