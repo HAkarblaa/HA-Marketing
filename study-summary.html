@@ -171,15 +171,89 @@ function splitText(text,size){
   return chunks;
 }
 
-async function askAI(session,prompt){
+function waitSummary(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+function isTemporarySummaryError(e){
+  const msg=String(e?.message||e||'').toLowerCase();
+  return (
+    msg.includes('high demand') ||
+    msg.includes('overloaded') ||
+    msg.includes('rate limit') ||
+    msg.includes('too many requests') ||
+    msg.includes('temporarily') ||
+    msg.includes('try again later') ||
+    msg.includes('service unavailable') ||
+    msg.includes('429') ||
+    msg.includes('502') ||
+    msg.includes('503') ||
+    msg.includes('504')
+  );
+}
+
+async function askAIOnce(session,prompt){
+  // الـ Edge Function عندك يستقبل message وليس messages.
   const r=await fetch(SUPABASE_URL+'/functions/v1/ai-assistant',{
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
-    body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer '+session.access_token,
+      'apikey':SUPABASE_KEY
+    },
+    body:JSON.stringify({message:prompt}),
+    cache:'no-store'
   });
+
   const data=await r.json().catch(()=>({}));
-  if(!r.ok||!data.ok)throw new Error(data.error||'تعذر الاتصال بالمساعد الذكي');
-  return String(data.answer||'').trim();
+
+  if(!r.ok){
+    throw new Error(data?.error||data?.message||('خطأ من الخادم ('+r.status+')'));
+  }
+
+  if(data?.error){
+    throw new Error(data.error);
+  }
+
+  const answer=String(data?.answer||'').trim();
+
+  if(!answer){
+    throw new Error('لم يصل ملخص من المساعد');
+  }
+
+  return answer;
+}
+
+async function askAI(session,prompt){
+  const delays=[0,2200,4500,8000];
+  let lastError=null;
+
+  for(let i=0;i<delays.length;i++){
+    if(delays[i]){
+      setProgress(
+        'الخادم مشغول، إعادة المحاولة تلقائياً '+(i+1)+' من '+delays.length+'...',
+        45
+      );
+      await waitSummary(delays[i]);
+    }
+
+    try{
+      return await askAIOnce(session,prompt);
+    }catch(e){
+      lastError=e;
+      console.warn('summary AI attempt failed',i+1,e);
+
+      if(!isTemporarySummaryError(e)){
+        throw e;
+      }
+    }
+  }
+
+  throw new Error(
+    isTemporarySummaryError(lastError)
+      ? 'خدمة التلخيص مزدحمة حالياً. حاول مرة أخرى بعد قليل.'
+      : (lastError?.message||'تعذر تشغيل خدمة التلخيص')
+  );
 }
 
 function styleInstruction(){
@@ -221,7 +295,12 @@ async function summarizeFile(){
     setProgress('✅ اكتمل التلخيص',100);
     document.getElementById('resultBox').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){
-    console.error(e);setProgress('تعذر التلخيص: '+(e.message||'خطأ غير معروف'),0);alert(e.message||'تعذر تلخيص الملف');
+    console.error(e);
+    const raw=String(e?.message||'تعذر تلخيص الملف');
+    const friendly=raw.includes('الرسالة فارغة')
+      ? 'تعذر إرسال النص إلى خدمة التلخيص. تم إصلاح طريقة الإرسال؛ أعد المحاولة.'
+      : raw;
+    setProgress('تعذر التلخيص: '+friendly,0);
   }finally{btn.disabled=false}
 }
 
