@@ -1,5 +1,6 @@
 <!doctype html><html lang="ar" dir="rtl"><head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الإنجليزية والترجمة - HA Marketing</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -118,7 +119,7 @@ body.file-fullscreen #pages{padding-bottom:40px}
 </section>
 <section id="files" class="lesson"><div class="box">
 <h2>📄 ترجمة ملف</h2>
-<p class="hint">ارفع ملف PDF أو Word أو TXT. تتم الترجمة داخلياً فقرةً فقرةً مع الحفاظ على ترتيب النص والأرقام والأسماء، ولا يتم عرض محتوى الملف أو الفقرات على الشاشة.</p>
+<p class="hint">ارفع ملف PDF أو Word أو TXT. إذا كان الـPDF مصوراً أو سكانر يتم تشغيل OCR تلقائياً، ثم تتم الترجمة داخلياً فقرةً فقرةً من دون عرض محتوى الملف على الشاشة.</p>
 
 <div class="file-download-only">
   <div class="file-target-row">
@@ -149,7 +150,7 @@ body.file-fullscreen #pages{padding-bottom:40px}
   <button class="file-upload-big" type="button" onclick="document.getElementById('fileInput').click()">
     <span class="file-upload-icon">⬆️</span>
     <b>رفع ملف للترجمة</b>
-    <small>PDF / Word / TXT</small>
+    <small>PDF / Word / TXT • يدعم OCR</small>
   </button>
 
   <div id="fileProgress" class="file-translate-status">جاهز لرفع الملف.</div>
@@ -324,6 +325,83 @@ function paragraphParts(text,max=2200){
   return out;
 }
 
+async function renderPdfPageForOcr(page){
+  const viewport=page.getViewport({scale:2.15});
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  canvas.width=Math.max(1,Math.floor(viewport.width));
+  canvas.height=Math.max(1,Math.floor(viewport.height));
+  await page.render({canvasContext:ctx,viewport}).promise;
+  return canvas;
+}
+
+function cleanOcrText(text){
+  return String(text||'')
+    .replace(/\u0000/g,'')
+    .replace(/[ \t]+\n/g,'\n')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
+}
+
+async function ocrPdfPage(page,pageNo,totalPages){
+  if(!window.Tesseract){
+    throw new Error('مكتبة OCR غير جاهزة. تأكد من اتصال الإنترنت ثم أعد المحاولة.');
+  }
+
+  setFileStatus(`الصفحة ${pageNo} من ${totalPages}: الصفحة مصورة، جاري قراءة النص OCR...`,'busy');
+
+  const canvas=await renderPdfPageForOcr(page);
+
+  // العربية + الإنجليزية تغطي الملفات العربية/الإنجليزية المختلطة الشائعة.
+  const result=await Tesseract.recognize(canvas,'ara+eng',{
+    logger:function(m){
+      if(m && m.status==='recognizing text' && typeof m.progress==='number'){
+        const pct=Math.max(0,Math.min(100,Math.round(m.progress*100)));
+        setFileStatus(`الصفحة ${pageNo} من ${totalPages}: OCR ${pct}%...`,'busy');
+      }
+    }
+  });
+
+  return cleanOcrText(result?.data?.text||'');
+}
+
+async function extractPdfPageText(page,pageNo,totalPages){
+  const tc=await page.getTextContent();
+  const lines=[];
+  let line='';
+
+  for(const item of tc.items){
+    const value=String(item.str||'').trim();
+    if(value){
+      line += (line?' ':'') + value;
+    }
+    if(item.hasEOL){
+      if(line.trim())lines.push(line.trim());
+      line='';
+    }
+  }
+  if(line.trim())lines.push(line.trim());
+
+  const direct=cleanOcrText(lines.join('\n'));
+
+  // إذا الصفحة تحتوي نصاً كافياً نستخدمه مباشرة حتى نحافظ على الدقة.
+  if(direct.replace(/\s/g,'').length>=80){
+    return direct;
+  }
+
+  // الصفحة الفارغة أو قليلة النص غالباً سكانر/صورة، نقرأها OCR.
+  const ocr=await ocrPdfPage(page,pageNo,totalPages);
+
+  if(!ocr){
+    // إذا كان عندنا نص قليل فعلاً نحافظ عليه بدل حذفه.
+    if(direct)return direct;
+    throw new Error(`تعذر قراءة الصفحة ${pageNo}. أوقفت الترجمة حتى لا يتم إنشاء ملف ناقص.`);
+  }
+
+  // نختار النص الأغنى لتقليل فقد المحتوى.
+  return ocr.replace(/\s/g,'').length > direct.replace(/\s/g,'').length ? ocr : direct;
+}
+
 async function extractTranslationFile(f){
   const lower=f.name.toLowerCase();
 
@@ -349,38 +427,20 @@ async function extractTranslationFile(f){
     const pages=[];
 
     for(let n=1;n<=pdf.numPages;n++){
+      setFileStatus(`جاري قراءة الصفحة ${n} من ${pdf.numPages}...`,'busy');
       const page=await pdf.getPage(n);
-      const tc=await page.getTextContent();
-      const lines=[];
-      let line='';
 
-      for(const item of tc.items){
-        const value=String(item.str||'');
-        if(value){
-          line += (line?' ':'') + value;
-        }
-        if(item.hasEOL){
-          if(line.trim())lines.push(line.trim());
-          line='';
-        }
-      }
-      if(line.trim())lines.push(line.trim());
+      const pageText=await extractPdfPageText(page,n,pdf.numPages);
 
-      if(lines.length){
-        pages.push(lines.join('\n'));
-      }else{
-        // لا ننشئ ملف ناقص إذا كانت صفحة PDF صورة/مسح ضوئي بدون نص.
-        pages.push('');
+      if(!pageText.trim()){
+        throw new Error(`الصفحة ${n} لم يتم استخراج نص منها. أوقفت الترجمة حتى لا ينحذف محتوى من الملف.`);
       }
+
+      pages.push(pageText);
     }
 
-    if(!pages.some(x=>x.trim())){
-      throw new Error('هذا الـPDF لا يحتوي نصاً قابلاً للقراءة. الملف الممسوح كصورة يحتاج OCR أولاً.');
-    }
-
-    const blankPages=pages.filter(x=>!x.trim()).length;
-    if(blankPages){
-      throw new Error('بعض صفحات الـPDF لا تحتوي نصاً قابلاً للاستخراج. أوقفت الترجمة حتى لا ينحذف أي محتوى من الملف.');
+    if(pages.length!==pdf.numPages){
+      throw new Error('لم يتم فحص جميع صفحات PDF. لم يتم إنشاء ملف ناقص.');
     }
 
     return pages.join('\n\n');
