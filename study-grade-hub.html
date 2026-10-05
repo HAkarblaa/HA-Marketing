@@ -1,89 +1,42 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>محتوى الصف - HA Marketing</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-study-subjects.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:#eef4f8;color:#15304b}
-.wrap{width:min(980px,94%);margin:22px auto 100px}
-.top{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px}.top a{background:#fff;color:#087f61;text-decoration:none;padding:10px 14px;border-radius:13px}
-.hero{background:linear-gradient(135deg,#238de4,#13b67c);color:#fff;border-radius:25px;padding:22px;margin-bottom:18px;box-shadow:0 15px 35px #15304b1a}
-.hero h1{margin:0 0 6px}.hero p{margin:0;line-height:1.8}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.box{min-height:145px;border-radius:22px;padding:16px;color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;box-shadow:0 14px 30px #15304b18}
-.box .ico{font-size:40px}.box b{font-size:20px}.box small{font-size:12px;color:#f7fbff}
-.c1{background:linear-gradient(135deg,#2f9fe9,#147cd5)}.c2{background:linear-gradient(135deg,#8e5bea,#6630c8)}.c3{background:linear-gradient(135deg,#f0b72e,#d88a00)}
-.c4{background:linear-gradient(135deg,#2fc66c,#12964b)}.c5{background:linear-gradient(135deg,#ec5a92,#bf386d)}.c6{background:linear-gradient(135deg,#20a9b6,#147e88)}
-.status{background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:15px;color:#657784}
-@media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:430px){.grid{gap:9px}.box{min-height:120px}.box b{font-size:17px}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="top"><a href="study.html">← الدراسة</a><a href="index.html">الرئيسية</a></div>
-  <section class="hero"><h1 id="title">محتوى الصف</h1><p id="sub"></p></section>
-  <div id="profileStatus" class="status">جاري التحقق من التسجيل...</div>
-  <div id="contentGrid" class="grid" hidden>
-    <a id="booksLink" class="box c1"><span class="ico">📚</span><b>الكتب</b><small>كتب المنهج والمصادر</small></a>
-    <a id="notesLink" class="box c2"><span class="ico">📒</span><b>الملازم</b><small>ملازم وملخصات مرتبة</small></a>
-    <a id="ministerialLink" class="box c3"><span class="ico">🧾</span><b>الأسئلة الوزارية وحلولها</b><small>وزاريات وحلول نموذجية</small></a>
-    <a id="examLink" class="box c4" href="study-exam.html"><span class="ico">🧠</span><b>امتحان</b><small>إنشاء امتحان من ملفاتك</small></a>
-    <a id="classesLink" class="box c5" href="student-my-classes.html"><span class="ico">🏫</span><b>الصفوف والدروس</b><small>الدروس والصفوف التعليمية</small></a>
-    <a id="profileLink" class="box c6" href="study-profile.html"><span class="ico">👤</span><b>ملفي الدراسي</b><small>بياناتي وتبليغاتي</small></a>
-  </div>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:#eef4f8;color:#15304b}.wrap{width:min(980px,94%);margin:22px auto 100px}.top{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px}.top a{background:#fff;color:#087f61;text-decoration:none;padding:10px 14px;border-radius:13px}
+.hero{background:linear-gradient(135deg,#238de4,#13b67c);color:#fff;border-radius:25px;padding:22px;margin-bottom:18px}.hero h1{margin:0 0 6px}.hero p{margin:0;line-height:1.8}
+.section-title{font-size:20px;margin:22px 0 12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.box{min-height:140px;border-radius:22px;padding:16px;color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;box-shadow:0 14px 30px #15304b18}.box .ico{font-size:39px}.box b{font-size:19px}.box small{font-size:12px;color:#f7fbff}.c1{background:linear-gradient(135deg,#2f9fe9,#147cd5)}.c2{background:linear-gradient(135deg,#8e5bea,#6630c8)}.c3{background:linear-gradient(135deg,#f0b72e,#d88a00)}.c4{background:linear-gradient(135deg,#2fc66c,#12964b)}.c5{background:linear-gradient(135deg,#ec5a92,#bf386d)}.c6{background:linear-gradient(135deg,#20a9b6,#147e88)}
+.subjects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.subject{background:#fff;border-radius:18px;padding:16px 10px;text-align:center;color:#18334c;text-decoration:none;box-shadow:0 8px 22px #15304b10;font-weight:900}.subject span{display:block;font-size:30px;margin-bottom:7px}.status{background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:15px;color:#657784}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.subjects{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body>
+<div class="wrap"><div class="top"><a href="study.html">← الدراسة</a><a href="index.html">الرئيسية</a></div>
+<section class="hero"><h1 id="title">محتوى الصف</h1><p>الكتب والملازم والوزاريات والمناهج الخاصة بهذا الصف.</p></section>
+<div id="status" class="status">جاري التحقق من موافقة الأدمن الرئيسي...</div>
+<div id="main" hidden>
+<h2 class="section-title">📚 المحتوى</h2><div class="grid">
+<a id="booksLink" class="box c1"><span class="ico">📚</span><b>الكتب</b><small>تحميل الكتب مباشرة</small></a>
+<a id="notesLink" class="box c2"><span class="ico">📒</span><b>الملازم</b><small>ملازم وملخصات</small></a>
+<a id="ministerialLink" class="box c3"><span class="ico">🧾</span><b>الأسئلة الوزارية وحلولها</b><small>حسب الصف والفرع</small></a>
+<a class="box c4" href="study-exam.html"><span class="ico">🧠</span><b>امتحان</b><small>إنشاء امتحان من ملفاتك</small></a>
+<a id="suggestLink" class="box c5"><span class="ico">💡</span><b>اقتراح للأدمن</b><small>كتابة أو ملف أو صورة أو صوت</small></a>
+<a class="box c6" href="study-profile.html"><span class="ico">👤</span><b>ملفي الدراسي</b><small>بياناتي وتبليغاتي</small></a>
 </div>
+<h2 class="section-title">📖 المناهج والمواد</h2><div id="subjects" class="subjects"></div>
+</div></div>
 <script>
-const db=supabase.createClient(
-  'https://ubayrhtshgtgggxprrek.supabase.co',
-  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-);
-const qs=new URLSearchParams(location.search);
-const stage=qs.get('stage')||'',grade=qs.get('grade')||'',branch=qs.get('branch')||'',target=qs.get('target')||'hub';
-
-function libraryUrl(type){
-  const q=new URLSearchParams({type,stage_name:stage,grade_name:grade});
-  if(branch)q.set('branch_name',branch);
-  return 'study-library.html?'+q.toString();
-}
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const q=new URLSearchParams(location.search),stage=q.get('stage')||'',grade=q.get('grade')||'',branch=q.get('branch')||'',target=q.get('target')||'hub';
+const $=id=>document.getElementById(id);$('title').textContent=grade+(branch?' — '+branch:'');
+function lib(type,subject=''){const p=new URLSearchParams({type,stage_name:stage,grade_name:grade});if(branch)p.set('branch_name',branch);if(subject)p.set('subject',subject);return 'study-library.html?'+p.toString()}
 (async()=>{
-  document.getElementById('title').textContent=grade+(branch?' — '+branch:'');
-  document.getElementById('sub').textContent='الكتب والملازم والوزاريات وباقي المحتوى الخاص بهذا الصف.';
-
-  const {data:{session}}=await db.auth.getSession();
-  if(!session){location.href='login.html?next='+encodeURIComponent(location.pathname.replace(/^\//,'')+location.search);return}
-
-  const {data:p}=await db.from('study_access_profiles')
-    .select('*').eq('user_id',session.user.id)
-    .eq('stage_name',stage).eq('grade_name',grade)
-    .eq('branch_name',branch||'').maybeSingle();
-
-  if(!p){
-    const q=new URLSearchParams({stage,grade,target});
-    if(branch)q.set('branch',branch);
-    location.href='study-grade-entry.html?'+q.toString();
-    return;
-  }
-
-  document.getElementById('profileStatus').textContent=
-    (p.role_type==='teacher'?'👨‍🏫 مدرس':'🎒 طالب')+' — '+(p.school_name||'')+' — '+grade+(branch?' / '+branch:'');
-  document.getElementById('contentGrid').hidden=false;
-
-  document.getElementById('booksLink').href=libraryUrl('books');
-  document.getElementById('notesLink').href=libraryUrl('notes');
-  document.getElementById('ministerialLink').href=libraryUrl('ministerial');
-
-  if(p.role_type==='teacher'){
-    document.getElementById('classesLink').href='teacher-my-classes.html';
-    document.getElementById('classesLink').querySelector('b').textContent='صفوفي كمدرس';
-  }
-
-  if(target==='ministerial'){
-    setTimeout(()=>location.href=libraryUrl('ministerial'),250);
-  }
+ const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html?next='+encodeURIComponent(location.pathname.slice(1)+location.search);return}
+ const {data:p}=await db.from('study_access_profiles').select('*').eq('user_id',session.user.id).eq('stage_name',stage).eq('grade_name',grade).eq('branch_name',branch||'').maybeSingle();
+ if(!p||p.status!=='approved'){const x=new URLSearchParams({stage,grade,target});if(branch)x.set('branch',branch);location.href='study-grade-entry.html?'+x.toString();return}
+ $('status').textContent=(p.role_type==='teacher'?'👨‍🏫 مدرس':'🎒 طالب')+' — تمت الموافقة من الأدمن الرئيسي ✅';$('main').hidden=false;
+ $('booksLink').href=lib('book');$('notesLink').href=lib('notes');$('ministerialLink').href=lib('questions');
+ const sp=new URLSearchParams({stage,grade});if(branch)sp.set('branch',branch);$('suggestLink').href='study-suggestion.html?'+sp.toString();
+ const subjects=haSubjectsFor(grade,branch);$('subjects').innerHTML=subjects.map((s,i)=>`<a class="subject" href="${lib('',s)}"><span>${['📘','📗','📕','📙','📐','🔬','🧪','🌍'][i%8]}</span>${s}</a>`).join('')||'<div class="status">لا توجد مواد معرفة لهذا الصف بعد.</div>';
+ if(target==='ministerial')setTimeout(()=>location.href=lib('questions'),250);
 })();
-</script>
-</body>
-</html>
+</script></body></html>
