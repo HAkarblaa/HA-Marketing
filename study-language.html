@@ -406,4 +406,31 @@ async function downloadTranslatedPdf(){
 }
 
 </script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<script id="ha-open-language-tab-from-hash">
+(function(){
+  function openHashTab(){
+    const id=(location.hash||'').replace('#','').trim();
+    if(!['learn','translate','files'].includes(id)) return;
+    const section=document.getElementById(id);
+    if(!section) return;
+
+    document.querySelectorAll('.lesson').forEach(x=>x.classList.remove('show'));
+    section.classList.add('show');
+
+    const buttons=[...document.querySelectorAll('.tabs button')];
+    buttons.forEach(b=>b.classList.remove('on'));
+
+    const index=id==='learn'?0:id==='translate'?1:2;
+    if(buttons[index]) buttons[index].classList.add('on');
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',openHashTab,{once:true});
+  }else{
+    openHashTab();
+  }
+
+  window.addEventListener('hashchange',openHashTab);
+})();
+</script>
 </body></html>
