@@ -5,56 +5,75 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>مقترحاتكم - HA Marketing</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial;background:#070a0d;color:#fff}
-.wrap{width:94%;max-width:760px;margin:20px auto 90px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.btn,button{border:0;border-radius:13px;padding:11px 14px;background:#151a1e;color:#fff;text-decoration:none;cursor:pointer;font:inherit}
-.card{margin:14px 0;padding:18px;border:1px solid #39434b;border-radius:20px;background:#0d1216;box-shadow:0 10px 30px #0005}
-.hero{text-align:center;border-color:#8b6727}
-.hero .ico{font-size:52px}
-.hero h1{margin:8px 0;color:#f0c86d}
-.hero p{color:#aeb6bc;line-height:1.8}
-textarea{width:100%;min-height:160px;resize:vertical;padding:14px;border-radius:14px;border:1px solid #4b555d;background:#080c0f;color:#fff;font:inherit}
-.send{width:100%;margin-top:10px;background:linear-gradient(135deg,#efc96d,#cf9225);color:#17191b;font-weight:900}
-.status{margin-top:10px;color:#b7bec3}
-.item{padding:12px 0;border-bottom:1px solid #293037}
-.item:last-child{border-bottom:0}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2329;color:#ddd;font-size:11px}
-small{color:#8f989f}
-</style>
-<script src="ha-theme.js"></script>
-<link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-all-sections-premium.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-</head>
-<body class="ha-all-sections-layout ha-suggestions-page ha-ui-final ha-family-suggestions">
-<div class="wrap">
-  <div class="top">
-    <a class="btn" href="index.html">← الرئيسية</a>
-    <b>HA Marketing</b>
-    <span></span>
-  </div>
 
-  <div class="card hero">
-    <div class="ico">💡</div>
+
+
+<link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-all-sections-premium.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
+<link rel="stylesheet" href="ha-modern-green.css?v=20261001-compact3">
+<style id="ha-suggestions-main-layout-final">
+body.ha-suggestions-page .ha-main{padding-bottom:118px!important}
+body.ha-suggestions-page .suggestion-card{
+  margin:0 0 14px!important;padding:18px!important;border:1px solid #e3ebef!important;
+  border-radius:20px!important;background:#fff!important;box-shadow:0 8px 22px rgba(30,65,90,.07)!important
+}
+body.ha-suggestions-page textarea{
+  width:100%!important;min-height:165px!important;resize:vertical!important;padding:14px!important;
+  border-radius:14px!important;border:1px solid #dbe5ea!important;background:#f9fbfc!important;
+  color:#17334f!important;font:inherit!important;outline:0!important
+}
+body.ha-suggestions-page textarea:focus{border-color:#0aa978!important;box-shadow:0 0 0 3px rgba(10,169,120,.08)!important}
+body.ha-suggestions-page .send{
+  width:100%!important;min-height:48px!important;margin-top:10px!important;border:0!important;border-radius:13px!important;
+  background:linear-gradient(135deg,#07885f,#0aa978)!important;color:#fff!important;font-weight:900!important
+}
+body.ha-suggestions-page .status{margin-top:10px!important;color:#65778b!important}
+body.ha-suggestions-page .item{padding:12px 0!important;border-bottom:1px solid #edf1f4!important;color:#1c3651!important;line-height:1.7!important}
+body.ha-suggestions-page .item:last-child{border-bottom:0!important}
+body.ha-suggestions-page .badge{
+  display:inline-block!important;padding:5px 8px!important;border-radius:999px!important;background:#edf6f2!important;
+  color:#087b59!important;font-size:10px!important;font-weight:900!important
+}
+body.ha-suggestions-page small{color:#7b8998!important}
+</style>
+</head>
+<body class="ha-premium-section-page ha-all-sections-layout ha-suggestions-page ha-ui-final ha-family-suggestions"><div class="ha-app"><header class="ha-header">
+  <div class="ha-topline">
+    <div class="ha-brand">
+      <div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div>
+      <div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div>
+    </div>
+    <div class="ha-location" id="haLocation"><span class="pin">📍</span><div><b>موقعك الحالي</b><small>اضغط لتحديد موقعك</small></div></div>
+    <div class="ha-bell">🔔</div>
+    <a class="ha-page-menu" href="index.html" aria-label="الرئيسية">☰</a>
+  </div>
+</header><div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ابحث في مقترحاتك..."><span class="mic" aria-label="خيارات البحث">☷</span></div></div><main class="ha-main"><div class="ha-section-head">
+  <div class="ha-section-titlebox"><h1>💡 مقترحاتكم</h1><p>شاركنا فكرتك أو اقتراحك لتطوير HA Marketing</p></div>
+  <a class="ha-more" href="index.html">العودة للرئيسية ←</a>
+</div>
+  
+
+  
     <h1>مقترحاتكم</h1>
     <p>اكتب أي فكرة أو اقتراح يساعدنا نطوّر التطبيق. المقترح يوصل مباشرة إلى الأدمن الرئيسي.</p>
   </div>
 
-  <div class="card">
+  <div class="suggestion-card">
     <textarea id="message" maxlength="3000" placeholder="اكتب مقترحك هنا..."></textarea>
     <button id="sendBtn" class="send" type="button">إرسال المقترح</button>
     <div id="status" class="status"></div>
   </div>
 
-  <div class="card">
+  <div class="suggestion-card">
     <h3>مقترحاتي السابقة</h3>
     <div id="mine">جاري التحميل...</div>
   </div>
-</div>
-
-<script>
+</main></div><nav class="ha-bottom"><div class="ha-bottom-inner">
+<a class="ha-nav active" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>
+<a class="ha-nav" href="orders-center.html"><span class="nicon">🛍️</span><span>طلباتي</span></a>
+<a class="ha-nav" href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>
+<a class="ha-nav" href="study.html"><span class="nicon">🎓</span><span>الدراسة</span></a>
+<a class="ha-nav" href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>
+</div></nav><script>
 const db=supabase.createClient(
   'https://ubayrhtshgtgggxprrek.supabase.co',
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
@@ -120,5 +139,6 @@ async function loadMine(){
 init();
 </script>
 <script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<script src="ha-modern-green.js?v=20260926-clickfix3"></script>
 </body>
 </html>
