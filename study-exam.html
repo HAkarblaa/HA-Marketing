@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07885f">
+<title>مولد الامتحان - HA Marketing</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f8f7;color:#12253e;font-family:Arial,Tahoma,sans-serif}
+.wrap{width:min(920px,94%);margin:24px auto 110px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
+.top a{padding:10px 14px;border-radius:13px;text-decoration:none;background:#fff;color:#087c5c;border:1px solid #dce7e4;font-weight:900}
+.hero{background:linear-gradient(135deg,#139acb,#6d4ce8);color:#fff;border-radius:25px;padding:25px 22px;box-shadow:0 15px 38px #234b7020}
+.hero h1{margin:0 0 8px;font-size:28px}.hero p{margin:0;line-height:1.8;font-size:14px}
+.card{margin-top:16px;background:#fff;border:1px solid #dfe9e6;border-radius:21px;padding:19px;box-shadow:0 10px 30px #17352b0b}
+.card h2{font-size:18px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label{display:block;font-size:12px;font-weight:900;margin:2px 0 7px;color:#536779}
+input,select,textarea{width:100%;border:1px solid #d6e2df;border-radius:13px;padding:12px 13px;font:inherit;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#4295d4;box-shadow:0 0 0 3px #4295d418}
+textarea{min-height:100px;resize:vertical}
+.drop{border:2px dashed #a9c4ce;border-radius:17px;padding:18px;text-align:center;background:#f9fcfc}
+.drop input{border:0;padding:8px;background:transparent}
+.hint{margin-top:6px;font-size:11px;color:#748287;line-height:1.7}
+.filebox{margin-top:10px;padding:10px;border-radius:12px;background:#f4f7f8;color:#5c6b72;font-size:12px}
+.pages{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+button{border:0;border-radius:14px;padding:13px 15px;font:inherit;font-weight:900;cursor:pointer}
+.primary{background:#087f61;color:#fff}.secondary{background:#edf5f3;color:#087f61}
+button:disabled{opacity:.55;cursor:not-allowed}
+.status{margin-top:12px;padding:11px 12px;border-radius:12px;background:#f3f6f5;color:#687778;font-size:12px;line-height:1.7}
+.status.ok{background:#e9f8ef;color:#08774f}.status.err{background:#fff0f2;color:#a52a42}
+.result{display:none}
+.result.show{display:block}
+.exam-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.exam-list{display:grid;gap:12px}
+.q{border:1px solid #e0e7e5;border-radius:15px;padding:14px;background:#fbfdfd}
+.q strong{display:block;margin-bottom:9px;line-height:1.8}
+.q .ans{margin-top:8px;padding:9px 10px;border-radius:10px;background:#eef8f3;color:#116c4f;font-size:13px;display:none;line-height:1.7}
+.q.show-answer .ans{display:block}
+.opts{display:grid;gap:7px;color:#354b5a;font-size:13px}
+.opt{padding:7px 9px;border-radius:9px;background:#f3f6f7}
+.copybox{white-space:pre-wrap;line-height:1.9;background:#f7faf9;border-radius:13px;padding:13px;font-size:13px}
+@media(max-width:650px){.grid,.actions,.pages{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="study.html">← الدراسة</a>
+    <a href="index.html">الرئيسية</a>
+  </div>
+
+  <section class="hero">
+    <h1>🧠 مولد الامتحان</h1>
+    <p>ارفع صور أو PDF أو Word، حدد الصفحات ونوع الأسئلة وعددها، وخلي النظام يستخرج لك امتحان من نفس المحتوى.</p>
+  </section>
+
+  <section class="card">
+    <h2>1. الملف أو الصور</h2>
+    <div class="drop">
+      <input id="sourceFiles" type="file" multiple accept="image/*,.pdf,.docx,.txt">
+      <div class="hint">تگدر ترفع عدة صور، أو ملف PDF / Word / TXT. للـ PDF تگدر تحدد الصفحات المطلوبة.</div>
+    </div>
+    <div id="fileInfo" class="filebox">ما تم اختيار ملف بعد.</div>
+  </section>
+
+  <section class="card">
+    <h2>2. إعداد الامتحان</h2>
+    <div class="grid">
+      <div>
+        <label>من صفحة</label>
+        <input id="pageFrom" type="number" min="1" value="1">
+      </div>
+      <div>
+        <label>إلى صفحة</label>
+        <input id="pageTo" type="number" min="1" placeholder="آخر صفحة">
+      </div>
+
+      <div>
+        <label>نوع الأسئلة</label>
+        <select id="questionType">
+          <option value="auto">اختيار تلقائي مناسب للمحتوى</option>
+          <option value="mcq">اختيارات - جواب واحد</option>
+          <option value="multi">اختيارات متعددة - أكثر من جواب</option>
+          <option value="tf">صح أو خطأ</option>
+          <option value="short">أسئلة قصيرة / جواب قصير</option>
+          <option value="essay">أسئلة شرح / مقالية</option>
+          <option value="mixed">مزيج من عدة أنواع</option>
+        </select>
+      </div>
+
+      <div>
+        <label>عدد الأسئلة</label>
+        <select id="questionCount">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="auto">اختيار العدد تلقائياً</option>
+        </select>
+      </div>
+
+      <div class="full">
+        <label>ملاحظات إضافية (اختياري)</label>
+        <textarea id="extraInstructions" placeholder="مثال: خلي الأسئلة بمستوى متوسط، ركز على التعاريف، أو لا تكرر نفس الفكرة."></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="generateBtn" class="primary" type="button">إنشاء الامتحان</button>
+      <button id="clearBtn" class="secondary" type="button">مسح وإعادة</button>
+    </div>
+    <div id="status" class="status">اختر الملف وحدد إعداداتك، أو خلي نوع وعدد الأسئلة تلقائي.</div>
+  </section>
+
+  <section id="resultCard" class="card result">
+    <div class="exam-head">
+      <h2 style="margin:0">الامتحان الناتج</h2>
+      <div>
+        <button id="answersBtn" class="secondary" type="button">إظهار الأجوبة</button>
+        <button id="copyBtn" class="secondary" type="button">نسخ الامتحان</button>
+      </div>
+    </div>
+    <div id="examList" class="exam-list"></div>
+  </section>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const SUPA_URL='https://ubayrhtshgtgggxprrek.supabase.co';
+const SUPA_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+const AI_URL=SUPA_URL+'/functions/v1/ai-assistant';
+
+const sourceFiles=document.getElementById('sourceFiles');
+const fileInfo=document.getElementById('fileInfo');
+const pageFrom=document.getElementById('pageFrom');
+const pageTo=document.getElementById('pageTo');
+const questionType=document.getElementById('questionType');
+const questionCount=document.getElementById('questionCount');
+const extraInstructions=document.getElementById('extraInstructions');
+const generateBtn=document.getElementById('generateBtn');
+const clearBtn=document.getElementById('clearBtn');
+const statusBox=document.getElementById('status');
+const resultCard=document.getElementById('resultCard');
+const examList=document.getElementById('examList');
+const answersBtn=document.getElementById('answersBtn');
+const copyBtn=document.getElementById('copyBtn');
+
+let lastExam=[];
+let answersVisible=false;
+
+function setStatus(text,type=''){
+  statusBox.textContent=text;
+  statusBox.className='status'+(type?' '+type:'');
+}
+
+sourceFiles.addEventListener('change',async()=>{
+  const files=[...sourceFiles.files];
+  if(!files.length){
+    fileInfo.textContent='ما تم اختيار ملف بعد.';
+    return;
+  }
+  fileInfo.textContent=files.map(f=>f.name).join(' • ');
+
+  if(files.length===1 && files[0].type==='application/pdf'){
+    try{
+      const ab=await files[0].arrayBuffer();
+      const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+      pageTo.value=pdf.numPages;
+      fileInfo.textContent=`${files[0].name} — ${pdf.numPages} صفحة`;
+    }catch(_e){}
+  }else{
+    pageFrom.value=1;
+    pageTo.value='';
+  }
+});
+
+async function extractPDF(file){
+  const ab=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+  const from=Math.max(1,Number(pageFrom.value)||1);
+  const to=Math.min(pdf.numPages,Number(pageTo.value)||pdf.numPages);
+  if(from>to)throw new Error('رقم صفحة البداية أكبر من النهاية');
+
+  const chunks=[];
+  for(let p=from;p<=to;p++){
+    setStatus(`جاري قراءة صفحة ${p} من ${to}...`);
+    const page=await pdf.getPage(p);
+    const content=await page.getTextContent();
+    let text=content.items.map(x=>x.str).join(' ').trim();
+
+    // إذا الصفحة صورة أو النص قليل جداً، نحاول OCR.
+    if(text.length<80){
+      const viewport=page.getViewport({scale:1.8});
+      const canvas=document.createElement('canvas');
+      const ctx=canvas.getContext('2d');
+      canvas.width=Math.ceil(viewport.width);
+      canvas.height=Math.ceil(viewport.height);
+      await page.render({canvasContext:ctx,viewport}).promise;
+      const {data}=await Tesseract.recognize(canvas,'ara+eng');
+      text=(data?.text||'').trim();
+    }
+    if(text)chunks.push(`\n[صفحة ${p}]\n${text}`);
+  }
+  return chunks.join('\n');
+}
+
+async function extractImage(file,index,total){
+  setStatus(`جاري قراءة الصورة ${index} من ${total}...`);
+  const {data}=await Tesseract.recognize(file,'ara+eng');
+  return (data?.text||'').trim();
+}
+
+async function extractWord(file){
+  setStatus('جاري قراءة ملف Word...');
+  const ab=await file.arrayBuffer();
+  const out=await mammoth.extractRawText({arrayBuffer:ab});
+  return (out.value||'').trim();
+}
+
+async function extractTXT(file){
+  setStatus('جاري قراءة الملف النصي...');
+  return (await file.text()).trim();
+}
+
+async function extractAll(){
+  const files=[...sourceFiles.files];
+  if(!files.length)throw new Error('اختر ملف أو صور أولاً');
+
+  const all=[];
+  let imageNo=0;
+  const imageTotal=files.filter(f=>f.type.startsWith('image/')).length;
+
+  for(const f of files){
+    if(f.type==='application/pdf' || f.name.toLowerCase().endsWith('.pdf')){
+      all.push(await extractPDF(f));
+    }else if(f.type.startsWith('image/')){
+      imageNo++;
+      all.push(await extractImage(f,imageNo,imageTotal));
+    }else if(f.name.toLowerCase().endsWith('.docx')){
+      all.push(await extractWord(f));
+    }else if(f.type.startsWith('text/') || f.name.toLowerCase().endsWith('.txt')){
+      all.push(await extractTXT(f));
+    }else{
+      throw new Error('نوع الملف غير مدعوم: '+f.name);
+    }
+  }
+  const text=all.filter(Boolean).join('\n\n').trim();
+  if(text.length<50)throw new Error('ما كدرت أستخرج نص كافي من الملف/الصور');
+  return text;
+}
+
+function typeInstruction(){
+  const v=questionType.value;
+  const map={
+    auto:'اختر أنت نوع الأسئلة الأنسب للمحتوى ويمكنك المزج بين الأنواع.',
+    mcq:'كل الأسئلة اختيار من متعدد بجواب واحد صحيح، 4 خيارات لكل سؤال.',
+    multi:'كل الأسئلة اختيارات متعددة وقد يكون أكثر من جواب صحيح، 4 إلى 5 خيارات.',
+    tf:'كل الأسئلة صح أو خطأ.',
+    short:'كل الأسئلة جواب قصير ومباشر.',
+    essay:'كل الأسئلة شرح أو مقالية.',
+    mixed:'استخدم مزيجاً متوازناً من اختيار من متعدد، صح وخطأ، جواب قصير، وأسئلة شرح.'
+  };
+  return map[v]||map.auto;
+}
+
+function countInstruction(){
+  return questionCount.value==='auto'
+    ? 'اختر أنت عدداً مناسباً من الأسئلة حسب كمية المحتوى، بحد أدنى 5 وبحد أقصى 30.'
+    : `أنشئ بالضبط ${questionCount.value} سؤالاً.`;
+}
+
+async function callAI(prompt){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),90000);
+  try{
+    const res=await fetch(AI_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+SUPA_KEY
+      },
+      body:JSON.stringify({message:prompt}),
+      signal:controller.signal
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data?.error||data?.message||('خطأ من الخادم '+res.status));
+    return String(data?.reply||data?.response||data?.text||data?.message||'').trim();
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+function stripFence(s){
+  return String(s||'').replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+}
+
+function normalizeExam(raw){
+  const clean=stripFence(raw);
+  let data;
+  try{data=JSON.parse(clean)}catch(_e){
+    const a=clean.indexOf('['),b=clean.lastIndexOf(']');
+    if(a>=0&&b>a)data=JSON.parse(clean.slice(a,b+1));
+    else throw new Error('الذكاء الاصطناعي رجع نتيجة غير قابلة للقراءة');
+  }
+  if(!Array.isArray(data))data=data.questions||[];
+  if(!Array.isArray(data)||!data.length)throw new Error('ما تم إنشاء أسئلة');
+  return data.map((q,i)=>({
+    number:i+1,
+    type:String(q.type||'short'),
+    question:String(q.question||'').trim(),
+    options:Array.isArray(q.options)?q.options.map(x=>String(x)) : [],
+    answer:Array.isArray(q.answer)?q.answer.map(x=>String(x)).join('، '):String(q.answer??'').trim(),
+    explanation:String(q.explanation||'').trim()
+  })).filter(q=>q.question);
+}
+
+function renderExam(){
+  examList.innerHTML='';
+  lastExam.forEach(q=>{
+    const box=document.createElement('div');
+    box.className='q'+(answersVisible?' show-answer':'');
+    let options='';
+    if(q.options.length){
+      options='<div class="opts">'+q.options.map((x,i)=>`<div class="opt">${String.fromCharCode(65+i)}) ${escapeHtml(x)}</div>`).join('')+'</div>';
+    }
+    box.innerHTML=`
+      <strong>${q.number}. ${escapeHtml(q.question)}</strong>
+      ${options}
+      <div class="ans"><b>الجواب:</b> ${escapeHtml(q.answer||'—')}${q.explanation?`<br><b>التوضيح:</b> ${escapeHtml(q.explanation)}`:''}</div>
+    `;
+    examList.appendChild(box);
+  });
+  resultCard.classList.add('show');
+}
+
+function escapeHtml(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function examAsText(){
+  return lastExam.map(q=>{
+    let t=`${q.number}. ${q.question}`;
+    if(q.options.length)t+='\n'+q.options.map((x,i)=>`${String.fromCharCode(65+i)}) ${x}`).join('\n');
+    t+=`\nالجواب: ${q.answer||'—'}`;
+    if(q.explanation)t+=`\nالتوضيح: ${q.explanation}`;
+    return t;
+  }).join('\n\n');
+}
+
+generateBtn.onclick=async()=>{
+  generateBtn.disabled=true;
+  resultCard.classList.remove('show');
+  lastExam=[];
+  try{
+    const text=await extractAll();
+
+    const maxChars=24000;
+    const source=text.length>maxChars
+      ? text.slice(0,maxChars)+'\n[تم تقليص النص لطول مناسب مع الحفاظ على البداية والصفحات المحددة قدر الإمكان]'
+      : text;
+
+    setStatus('جاري إنشاء أسئلة الامتحان...');
+    const prompt=`أنت مدرس وخبير في إنشاء الاختبارات باللغة العربية.
+اعتمد حصراً على المحتوى الذي سأرسله ولا تخترع معلومات من خارج النص.
+
+المطلوب:
+- ${typeInstruction()}
+- ${countInstruction()}
+- اجعل الأسئلة واضحة وغير مكررة وغطِّ أهم الأفكار.
+- إذا كان السؤال اختيارياً ضع خيارات منطقية.
+- أرجع النتيجة JSON فقط بدون Markdown وبدون أي كلام إضافي.
+- الشكل المطلوب مصفوفة JSON، وكل عنصر:
+{"type":"mcq|multi|tf|short|essay","question":"نص السؤال","options":["خيار 1","خيار 2"],"answer":"الجواب الصحيح","explanation":"توضيح قصير اختياري"}
+- في صح/خطأ يمكن أن تكون options فارغة.
+- في الأسئلة القصيرة أو المقالية اجعل options فارغة.
+- في الاختيارات المتعددة اكتب في answer كل الأجوبة الصحيحة.
+
+ملاحظات المستخدم:
+${extraInstructions.value.trim()||'لا توجد ملاحظات إضافية.'}
+
+المحتوى:
+${source}`;
+
+    const raw=await callAI(prompt);
+    lastExam=normalizeExam(raw);
+    answersVisible=false;
+    answersBtn.textContent='إظهار الأجوبة';
+    renderExam();
+    setStatus(`✅ تم إنشاء ${lastExam.length} سؤالاً بنجاح.`,'ok');
+    resultCard.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    setStatus('تعذر إنشاء الامتحان: '+(e?.message||e),'err');
+  }finally{
+    generateBtn.disabled=false;
+    generateBtn.textContent='إنشاء الامتحان';
+  }
+};
+
+answersBtn.onclick=()=>{
+  answersVisible=!answersVisible;
+  answersBtn.textContent=answersVisible?'إخفاء الأجوبة':'إظهار الأجوبة';
+  renderExam();
+};
+
+copyBtn.onclick=async()=>{
+  if(!lastExam.length)return;
+  try{
+    await navigator.clipboard.writeText(examAsText());
+    const old=copyBtn.textContent;
+    copyBtn.textContent='تم النسخ ✓';
+    setTimeout(()=>copyBtn.textContent=old,1500);
+  }catch(_e){
+    alert('تعذر النسخ التلقائي');
+  }
+};
+
+clearBtn.onclick=()=>{
+  sourceFiles.value='';
+  fileInfo.textContent='ما تم اختيار ملف بعد.';
+  pageFrom.value=1;
+  pageTo.value='';
+  questionType.value='auto';
+  questionCount.value='10';
+  extraInstructions.value='';
+  lastExam=[];
+  examList.innerHTML='';
+  resultCard.classList.remove('show');
+  setStatus('اختر الملف وحدد إعداداتك، أو خلي نوع وعدد الأسئلة تلقائي.');
+};
+</script>
+</body>
+</html>
