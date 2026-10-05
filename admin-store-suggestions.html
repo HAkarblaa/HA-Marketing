@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اقتراحات المتاجر - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:#f4f6f8;color:#132b43}
+.wrap{width:min(1050px,95%);margin:22px auto}.top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.top a,button{border:0;border-radius:11px;padding:10px 13px;background:#087f61;color:#fff;text-decoration:none;font:inherit;font-weight:900;cursor:pointer}
+.card{background:#fff;border-radius:18px;padding:16px;margin:13px 0;box-shadow:0 8px 24px #15304b0c}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.muted{color:#627483;line-height:1.8}
+.badge{padding:5px 9px;border-radius:999px;background:#eef2f4;font-size:12px}.danger{background:#b72d45}.light{background:#edf4f2;color:#087f61}
+.media{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.media img,.media video{width:100%;height:180px;object-fit:cover;border-radius:13px;background:#eee}
+@media(max-width:700px){.media{grid-template-columns:1fr 1fr}.media img,.media video{height:140px}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a href="admin-shop.html">← إدارة التسوق</a><h1>💡 اقتراحات المتاجر</h1><a href="admin-panel.html">لوحة الإدارة</a></div>
+<div class="card"><button onclick="load()">تحديث الاقتراحات</button></div>
+<div id="list"><div class="card">جاري التحميل...</div></div>
+</div>
+<script>
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}const {data:ok}=await db.rpc('is_super_admin');if(!ok){list.innerHTML='<div class="card">هذه الصفحة للأدمن الرئيسي فقط.</div>';return}load()}
+async function mediaHtml(arr){let h='';for(const f of (Array.isArray(arr)?arr:[])){const {data}=await db.storage.from('shop-store-suggestions').createSignedUrl(f.path,3600);if(!data?.signedUrl)continue;h+=f.type?.startsWith('video/')?`<a href="${data.signedUrl}" target="_blank"><video src="${data.signedUrl}" controls></video></a>`:`<a href="${data.signedUrl}" target="_blank"><img src="${data.signedUrl}"></a>`}return h}
+async function load(){
+ list.innerHTML='<div class="card">جاري التحميل...</div>';
+ const {data,error}=await db.from('shop_store_suggestions').select('*').order('created_at',{ascending:false});
+ if(error){list.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}
+ list.innerHTML='';
+ for(const x of (data||[])){
+   const media=await mediaHtml(x.media_files);
+   const status=x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':'⏳ قيد المراجعة';
+   list.innerHTML+=`<div class="card"><div class="row"><h3>${esc(x.store_name)}</h3><span class="badge">${status}</span></div><div class="muted"><b>التفاصيل:</b> ${esc(x.details)}</div><div class="muted"><b>التواصل:</b> ${esc(x.phone||'—')}</div>${x.store_link?`<div><a href="${esc(x.store_link)}" target="_blank">فتح رابط المتجر</a></div>`:''}${media?`<div class="media">${media}</div>`:''}${x.admin_note?`<div class="muted"><b>ملاحظة الأدمن:</b> ${esc(x.admin_note)}</div>`:''}${x.status==='pending'?`<div class="row" style="margin-top:12px"><button onclick="review(${x.id},'approved')">موافقة</button><button class="danger" onclick="review(${x.id},'rejected')">رفض</button></div>`:''}</div>`;
+ }
+ if(!list.innerHTML)list.innerHTML='<div class="card">لا توجد اقتراحات متاجر حالياً.</div>';
+}
+async function review(id,s){const note=prompt('ملاحظة الأدمن (اختياري):')||null;const {error}=await db.rpc('review_shop_store_suggestion',{p_id:id,p_status:s,p_note:note});if(error)return alert(error.message);load()}
+init();
+</script></body></html>

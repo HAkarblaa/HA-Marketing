@@ -9,74 +9,63 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Tahoma,Arial;background:#f4faf8;color:#10233f}
-.wrap{width:92%;max-width:720px;margin:22px auto 90px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
-.btn,button{border:0;border-radius:14px;padding:12px 15px;background:#087d5b;color:#fff;text-decoration:none;cursor:pointer;font:inherit;font-weight:800}
+.wrap{width:92%;max-width:760px;margin:22px auto 90px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top a{background:#fff;color:#087d5b;text-decoration:none;padding:10px 14px;border-radius:13px}
 .card{background:#fff;border:1px solid #dcebe6;border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 10px 30px rgba(18,81,62,.08)}
 .hero{text-align:center;background:linear-gradient(135deg,#effcf7,#eef8ff)}
 .hero .ico{font-size:52px}.hero h1{margin:8px 0;color:#0b7455}.hero p{margin:0;color:#66768a;line-height:1.8}
 label{display:block;font-weight:800;margin:12px 0 6px}
 input,textarea{width:100%;border:1px solid #cfded9;border-radius:13px;padding:13px 14px;font:inherit;background:#fbfefd;color:#10233f;outline:none}
-input:focus,textarea:focus{border-color:#0c9d72;box-shadow:0 0 0 3px rgba(12,157,114,.1)}
-textarea{min-height:120px;resize:vertical}
+textarea{min-height:140px;resize:vertical}
+button{border:0;border-radius:14px;padding:12px 15px;background:#087d5b;color:#fff;cursor:pointer;font:inherit;font-weight:800}
 .send{width:100%;margin-top:14px;background:linear-gradient(135deg,#0b9a70,#087a5a)}
-.status{margin-top:10px;color:#5e6c7d;line-height:1.7}
-.item{padding:12px 0;border-bottom:1px solid #edf2f0}
-.item:last-child{border-bottom:0}
+.send:disabled{opacity:.6}
+.hint{font-size:11px;color:#748394;line-height:1.7;margin-top:6px}
+.files{display:grid;gap:8px;margin-top:10px}
+.file{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f4f8f7;border-radius:11px;padding:9px 10px;font-size:12px}
+.file button{background:#ffe9ed;color:#ab2844;padding:6px 9px}
+.status{margin-top:10px;color:#5e6c7d;line-height:1.7;padding:10px;border-radius:11px;background:#f3f6f5}
+.status.ok{background:#e8f8ef;color:#08774f}.status.err{background:#fff0f2;color:#a82c42}
+.item{padding:12px 0;border-bottom:1px solid #edf2f0}.item:last-child{border-bottom:0}
 .badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eaf7f2;color:#087a5a;font-size:12px;font-weight:800}
-small{color:#7d8997}
+.media-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.media-links a{background:#edf6f3;color:#087d5b;padding:7px 9px;border-radius:9px;text-decoration:none;font-size:12px}
 </style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="ha-location-picker.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="ha-location-picker.js"></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
 </head>
-<body class="ha-ui-final ha-family-shop"><div class="ha-family-strip"><a href="shop.html">← التسوق</a><div><b>اقتراح متجر</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
+<body>
 <div class="wrap">
-  <div class="top">
-    <a class="btn" href="shop.html">← التسوق</a>
-    <b>HA Marketing</b>
-    <span></span>
-  </div>
+  <div class="top"><a href="shop.html">← التسوق</a><a href="index.html">الرئيسية</a></div>
 
   <div class="card hero">
     <div class="ico">💡🏪</div>
-    <h1>اقتراح متجر</h1>
-    <p>اقترح متجراً تريد إضافته إلى قسم التسوق، وسيصل المقترح مباشرة إلى الأدمن الرئيسي.</p>
+    <h1>اقترح متجر</h1>
+    <p>اكتب تفاصيل المتجر، وتگدر تدز صور أو فيديوهات وياه. كلشي يوصل مباشرة للأدمن الرئيسي حتى يراجعه.</p>
   </div>
 
   <div class="card">
-    <label for="storeName">اسم المتجر</label>
-    <input id="storeName" maxlength="120" placeholder="مثال: متجر HA للأجهزة">
+    <label>اسم المتجر *</label>
+    <input id="storeName" maxlength="120" placeholder="اسم المتجر المقترح">
 
-    <label>موقع المتجر</label>
-    <div class="ha-location-box">
-      <div class="ha-location-grid">
-        <select id="suggestGovernorate"><option value="">اختر المحافظة</option></select>
-        <input id="suggestArea" maxlength="160" placeholder="القضاء / الناحية / الحي">
-        <input id="storeLocation" class="full" maxlength="240" placeholder="العنوان التفصيلي">
-      </div>
-      <input id="suggestLat" type="hidden"><input id="suggestLng" type="hidden">
-      <div class="ha-location-actions">
-        <button id="suggestMapBtn" class="light" type="button">🗺️ اختيار العنوان من الخريطة</button>
-        <button id="suggestGpsBtn" class="light" type="button">📍 استخدام دبوس الموقع الحالي</button>
-      </div>
-      <div id="suggestLocationStatus" class="ha-location-status">حدد الموقع من الخريطة أو استخدم دبوس الموقع الحالي.</div>
-      <div id="suggestMap" class="ha-location-map"></div>
-    </div>
+    <label>تفاصيل المتجر *</label>
+    <textarea id="storeDetails" maxlength="3000" placeholder="اكتب نوع المتجر، شنو يبيع، موقعه، شنو يميزه، وأي تفاصيل تساعد الأدمن..."></textarea>
 
-    <label for="storeLink">رابط المتجر أو صفحته (اختياري)</label>
+    <label>رقم الهاتف أو وسيلة التواصل (اختياري)</label>
+    <input id="phone" maxlength="80" placeholder="رقم هاتف / واتساب / غيره">
+
+    <label>رابط المتجر أو صفحته (اختياري)</label>
     <input id="storeLink" maxlength="500" placeholder="https://...">
 
-    <label for="storeDetails">تفاصيل إضافية (اختياري)</label>
-    <textarea id="storeDetails" maxlength="1800" placeholder="نوع المنتجات أو أي معلومات تساعد الأدمن..."></textarea>
+    <label>صور أو فيديوهات المتجر (اختياري)</label>
+    <input id="mediaInput" type="file" multiple accept="image/*,video/*">
+    <div class="hint">تگدر تختار أكثر من صورة أو فيديو. الحد الأعلى لكل ملف 30MB.</div>
+    <div id="fileList" class="files"></div>
 
-    <button id="sendBtn" class="send" type="button">إرسال اقتراح المتجر</button>
-    <div id="status" class="status"></div>
+    <button id="sendBtn" class="send" type="button">إرسال الاقتراح للأدمن الرئيسي</button>
+    <div id="status" class="status">الاقتراح يبقى قيد المراجعة عند الأدمن الرئيسي.</div>
   </div>
 
   <div class="card">
-    <h3>اقتراحات المتاجر السابقة</h3>
+    <h3>اقتراحاتي السابقة</h3>
     <div id="mine">جاري التحميل...</div>
   </div>
 </div>
@@ -87,96 +76,116 @@ const db=supabase.createClient(
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
   {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
 );
-
-const suggestionPicker=HA_LocationPicker.attach({
-  governorate:'#suggestGovernorate',area:'#suggestArea',address:'#storeLocation',
-  lat:'#suggestLat',lng:'#suggestLng',map:'#suggestMap',
-  mapButton:'#suggestMapBtn',gpsButton:'#suggestGpsBtn',status:'#suggestLocationStatus'
-});
-
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
-
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let me=null;
+let files=[];
+
+function renderFiles(){
+  $('fileList').innerHTML='';
+  files.forEach((f,i)=>{
+    const row=document.createElement('div');
+    row.className='file';
+    row.innerHTML=`<span>${f.type.startsWith('video/')?'🎥':'🖼️'} ${esc(f.name)} — ${(f.size/1024/1024).toFixed(1)}MB</span><button type="button">حذف</button>`;
+    row.querySelector('button').onclick=()=>{files.splice(i,1);renderFiles()};
+    $('fileList').appendChild(row);
+  });
+}
+$('mediaInput').onchange=()=>{
+  for(const f of [...$('mediaInput').files]){
+    if(f.size>30*1024*1024){alert('الملف '+f.name+' أكبر من 30MB وتم تجاهله');continue}
+    if(!(f.type.startsWith('image/')||f.type.startsWith('video/'))){continue}
+    files.push(f);
+  }
+  $('mediaInput').value='';
+  renderFiles();
+};
 
 async function init(){
   const {data:{session}}=await db.auth.getSession();
-  if(!session){
-    location.href='login.html?next=shop-store-suggestion.html';
-    return;
-  }
+  if(!session){location.href='login.html?next='+encodeURIComponent('shop-store-suggestion.html');return}
   me=session.user;
+  const {data:p}=await db.from('profiles').select('phone').eq('id',me.id).maybeSingle();
+  if(p?.phone)$('phone').value=p.phone;
   loadMine();
 }
 
-sendBtn.onclick=async()=>{
-  const name=storeName.value.trim();
-  const loc=suggestionPicker.getValue();
-  const link=storeLink.value.trim();
-  const details=storeDetails.value.trim();
+async function uploadMedia(){
+  const result=[];
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    $('status').textContent=`جاري رفع المرفق ${i+1} من ${files.length}...`;
+    const ext=(f.name.split('.').pop()||'bin').toLowerCase();
+    const path=me.id+'/'+Date.now()+'-'+i+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
+    const {error}=await db.storage.from('shop-store-suggestions').upload(path,f,{upsert:false,contentType:f.type||undefined});
+    if(error)throw error;
+    result.push({path,name:f.name,type:f.type,size:f.size});
+  }
+  return result;
+}
+
+$('sendBtn').onclick=async()=>{
+  const name=$('storeName').value.trim();
+  const details=$('storeDetails').value.trim();
+  const ph=$('phone').value.trim();
+  const link=$('storeLink').value.trim();
 
   if(name.length<2)return alert('اكتب اسم المتجر');
-  if(!loc.governorate||!loc.area||!loc.address)return alert('اختر المحافظة واكتب القضاء/الناحية/الحي والعنوان');
-  if(loc.lat==null||loc.lng==null)return alert('حدد موقع المتجر من الخريطة أو استخدم دبوس الموقع الحالي');
+  if(details.length<5)return alert('اكتب تفاصيل المتجر');
 
-  const message=[
-    '[اقتراح متجر]',
-    'اسم المتجر: '+name,
-    'المحافظة: '+loc.governorate,
-    'القضاء / الناحية / الحي: '+loc.area,
-    'العنوان: '+loc.address,
-    'الإحداثيات: '+loc.lat+','+loc.lng,
-    link?'الرابط: '+link:'',
-    details?'التفاصيل: '+details:''
-  ].filter(Boolean).join('\n');
+  $('sendBtn').disabled=true;
+  $('status').className='status';
+  $('status').textContent='جاري إرسال الاقتراح...';
 
-  sendBtn.disabled=true;
-  status.textContent='جاري إرسال الاقتراح...';
+  try{
+    const media=await uploadMedia();
+    const {error}=await db.from('shop_store_suggestions').insert({
+      user_id:me.id,
+      store_name:name,
+      details,
+      phone:ph||null,
+      store_link:link||null,
+      media_files:media,
+      status:'pending'
+    });
+    if(error)throw error;
 
-  const {error}=await db.rpc('submit_user_suggestion',{p_message:message});
-  sendBtn.disabled=false;
-
-  if(error){
-    status.textContent='تعذر الإرسال: '+error.message;
-    return;
+    $('storeName').value='';
+    $('storeDetails').value='';
+    $('storeLink').value='';
+    files=[];
+    renderFiles();
+    $('status').className='status ok';
+    $('status').textContent='✅ تم إرسال اقتراح المتجر للأدمن الرئيسي.';
+    await loadMine();
+  }catch(e){
+    $('status').className='status err';
+    $('status').textContent='تعذر الإرسال: '+(e?.message||e);
+  }finally{
+    $('sendBtn').disabled=false;
   }
-
-  storeName.value='';
-  suggestionPicker.reset();
-  storeLink.value='';
-  storeDetails.value='';
-  status.textContent='✅ تم إرسال اقتراح المتجر إلى الأدمن الرئيسي.';
-  loadMine();
 };
 
-async function loadMine(){
-  const {data,error}=await db.from('user_suggestions')
-    .select('*')
-    .eq('user_id',me.id)
-    .order('created_at',{ascending:false})
-    .limit(100);
-
-  if(error){
-    mine.textContent='تعذر تحميل المقترحات: '+error.message;
-    return;
+async function signedLinks(media){
+  const links=[];
+  for(const f of (Array.isArray(media)?media:[])){
+    const {data}=await db.storage.from('shop-store-suggestions').createSignedUrl(f.path,3600);
+    if(data?.signedUrl)links.push({url:data.signedUrl,type:f.type||'',name:f.name||'مرفق'});
   }
-
-  const rows=(data||[]).filter(x=>String(x.message||'').startsWith('[اقتراح متجر]'));
-  const names={new:'⏳ جديد',reviewed:'✅ تمت المراجعة',closed:'✔️ مغلق'};
-
-  mine.innerHTML=rows.map(x=>`
-    <div class="item">
-      <span class="badge">${names[x.status]||esc(x.status)}</span>
-      <div style="margin:8px 0;line-height:1.8;white-space:pre-line">${esc(x.message).replace('[اقتراح متجر]\\n','')}</div>
-      ${x.admin_note?`<small>رد الإدارة: ${esc(x.admin_note)}</small><br>`:''}
-      <small>${new Date(x.created_at).toLocaleString('ar-IQ')}</small>
-    </div>
-  `).join('')||'ما عندك اقتراحات متاجر سابقة.';
+  return links;
 }
-
+async function loadMine(){
+  const {data,error}=await db.from('shop_store_suggestions').select('*').eq('user_id',me.id).order('created_at',{ascending:false}).limit(50);
+  if(error){$('mine').textContent='تعذر تحميل المقترحات: '+error.message;return}
+  $('mine').innerHTML='';
+  for(const x of (data||[])){
+    const links=await signedLinks(x.media_files);
+    const label=x.status==='approved'?'✅ مقبول':x.status==='rejected'?'❌ مرفوض':'⏳ قيد المراجعة';
+    $('mine').innerHTML+=`<div class="item"><span class="badge">${label}</span><h4>${esc(x.store_name)}</h4><div style="white-space:pre-line;line-height:1.8">${esc(x.details)}</div>${links.length?`<div class="media-links">${links.map((m,i)=>`<a href="${m.url}" target="_blank">${m.type.startsWith('video/')?'🎥':'🖼️'} مرفق ${i+1}</a>`).join('')}</div>`:''}${x.admin_note?`<small>رد الأدمن: ${esc(x.admin_note)}</small>`:''}</div>`;
+  }
+  if(!$('mine').innerHTML)$('mine').textContent='ما عندك اقتراحات سابقة.';
+}
 init();
 </script>
-<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
 </body>
 </html>
