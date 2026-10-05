@@ -65,7 +65,107 @@ input[type=number],input[type=text],select{width:100%;padding:12px;border:1px so
 </style>
 <script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><style id="ha-file-tools-order-fix">
+/* ترتيب صفحة تحويل الملفات: البحث ثم الأقسام مباشرة */
+.search{
+  width:min(1000px,94%)!important;
+  margin:12px auto 10px!important;
+  position:relative!important;
+  z-index:2!important;
+}
+
+#tools.grid{
+  width:min(1000px,94%)!important;
+  margin:8px auto 18px!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+  position:relative!important;
+  z-index:1!important;
+}
+
+#tools .tool{
+  width:100%!important;
+  min-width:0!important;
+  min-height:145px!important;
+  margin:0!important;
+  padding:16px 10px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+}
+
+#tools .tool .ico{
+  margin:0 0 7px!important;
+  font-size:36px!important;
+}
+
+#tools .tool h3{
+  margin:4px 0!important;
+  font-size:16px!important;
+  line-height:1.35!important;
+  text-align:center!important;
+}
+
+#tools .tool p{
+  margin:0!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  text-align:center!important;
+  color:#66788a!important;
+}
+
+#tools .tool .badge{
+  margin-top:8px!important;
+}
+
+.notice{
+  width:min(1000px,94%)!important;
+  margin:0 auto 110px!important;
+  position:relative!important;
+  clear:both!important;
+}
+
+/* لا نخلي شريط الأسفل يغطي آخر الأقسام */
+body{
+  padding-bottom:95px!important;
+}
+
+@media(max-width:800px){
+  #tools.grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  #tools .tool{
+    min-height:130px!important;
+    padding:13px 8px!important;
+  }
+}
+
+@media(max-width:430px){
+  #tools.grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  #tools .tool{
+    min-height:118px!important;
+    border-radius:14px!important;
+    padding:11px 6px!important;
+  }
+  #tools .tool .ico{font-size:30px!important}
+  #tools .tool h3{font-size:13px!important}
+  #tools .tool p{font-size:9.5px!important}
+  #tools .tool .badge{font-size:9px!important}
+}
+</style>
+</head>
 <body>
 <div class="top"><a href="study.html">→</a><h1>📁 تحويل وتعديل الملفات</h1><a href="index.html">🏠</a></div>
 
@@ -76,10 +176,6 @@ input[type=number],input[type=text],select{width:100%;padding:12px;border:1px so
 </section>
 
 <div class="search"><input id="q" placeholder="ابحث عن خدمة... مثل دمج PDF أو صور إلى PDF" oninput="filterTools()"></div>
-
-<div class="notice">
-<strong>مهم:</strong> المعالجة تتم داخل صفحة التطبيق. عند اختيار ملف قد يظهر منتقي الملفات الخاص بنظام Android، ثم ترجع مباشرة للتطبيق. بعض المكتبات تحتاج إنترنت عند أول تحميل، وتحويلات Office الأساسية قد لا تحفظ كل التنسيقات المعقدة.
-</div>
 
 <main class="grid" id="tools">
   <button class="tool" data-name="دمج pdf ملفات" onclick="openTool('merge')"><div class="ico">🧩</div><h3>دمج ملفات PDF</h3><p>جمع عدة ملفات PDF بملف واحد</p><span class="badge">يعمل محلياً</span></button>
@@ -96,6 +192,11 @@ input[type=number],input[type=text],select{width:100%;padding:12px;border:1px so
   <button class="tool" data-name="pdf الى word وورد" onclick="openTool('pdfword')"><div class="ico">📄</div><h3>PDF إلى Word</h3><p>استخراج النص إلى ملف Word قابل للتحرير</p><span class="badge">يعمل داخل التطبيق</span></button>
   
 </main>
+<div class="notice">
+<strong>مهم:</strong> المعالجة تتم داخل صفحة التطبيق. عند اختيار ملف قد يظهر منتقي الملفات الخاص بنظام Android، ثم ترجع مباشرة للتطبيق. بعض المكتبات تحتاج إنترنت عند أول تحميل، وتحويلات Office الأساسية قد لا تحفظ كل التنسيقات المعقدة.
+</div>
+
+
 
 <div class="modal" id="modal"><div class="box">
   <div class="boxhead"><h2 id="mtitle">الأداة</h2><button class="x" onclick="closeModal()">×</button></div>
