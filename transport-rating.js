@@ -31,8 +31,8 @@
     const old=document.getElementById('haRatingOverlay');if(old)old.remove();
     const ov=document.createElement('div');ov.id='haRatingOverlay';ov.className='ha-rating-overlay show';
     ov.innerHTML=`<div class="ha-rating-card">
-      <div class="ha-rating-title">قيّم الخدمة</div>
-      <div class="ha-rating-sub">شلون كانت تجربتك ويا ${targetName}؟</div>
+      <div class="ha-rating-title">تقييم من خمس نجوم</div>
+      <div class="ha-rating-sub">شلون كانت تجربتك ويا ${targetName}؟ قيّم التعامل والخدمة والالتزام.</div>
       <div class="ha-rating-stars">${starsHtml()}</div>
       <textarea class="ha-rating-note" maxlength="300" placeholder="اكتب تعليقك عن التجربة (اختياري)..."></textarea>
       <div class="ha-rating-comment-hint">التعليق اختياري ويُحفظ مع التقييم.</div>
