@@ -972,6 +972,136 @@ body.ha-ui-final.ha-family-shop #superAdminAddStoreBox{background-image:url("dat
   }
 }
 </style>
+
+<style id="ha-add-store-card-visible-final">
+body.ha-all-sections-layout .ha-shop-premium-cats .ha-add-store-card{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  overflow:hidden!important;
+  padding:0!important;
+  background:
+    radial-gradient(circle at 22% 12%,rgba(255,255,255,.48),transparent 25%),
+    linear-gradient(145deg,#c98cff,#7a42df)!important;
+  color:#fff!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+body.ha-all-sections-layout .ha-shop-premium-cats .ha-add-store-card::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  background:
+    radial-gradient(circle at 18% 18%,rgba(255,255,255,.25),transparent 20%),
+    radial-gradient(circle at 82% 72%,rgba(65,24,148,.22),transparent 27%)!important;
+  pointer-events:none!important;
+}
+body.ha-all-sections-layout .ha-shop-premium-cats .ha-add-store-card::after{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;right:0!important;bottom:0!important;
+  height:42%!important;
+  z-index:1!important;
+  background:linear-gradient(to top,rgba(47,16,101,.48),transparent)!important;
+  pointer-events:none!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-add-store-visual{
+  position:absolute!important;
+  top:17%!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:132px!important;
+  height:118px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  z-index:5!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-store-building{
+  display:block!important;
+  font-size:84px!important;
+  line-height:1!important;
+  filter:drop-shadow(0 10px 12px rgba(49,18,105,.2))!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-store-plus{
+  position:absolute!important;
+  right:1px!important;
+  top:-3px!important;
+  width:49px!important;
+  height:49px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:15px!important;
+  background:rgba(255,255,255,.95)!important;
+  color:#7041d8!important;
+  font-size:37px!important;
+  font-weight:900!important;
+  box-shadow:0 8px 18px rgba(54,21,112,.2)!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-add-store-copy{
+  position:relative!important;
+  z-index:6!important;
+  width:100%!important;
+  display:block!important;
+  padding:0 13px 17px!important;
+  text-align:center!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-add-store-copy strong{
+  position:static!important;
+  display:block!important;
+  margin:0!important;
+  padding:0 0 5px!important;
+  color:#fff!important;
+  font-size:19px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+  text-align:center!important;
+  text-shadow:0 2px 5px rgba(30,6,73,.3)!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-add-store-copy strong::after{
+  display:none!important;
+  content:none!important;
+}
+body.ha-all-sections-layout .ha-add-store-card .ha-add-store-copy small{
+  position:static!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:rgba(255,255,255,.96)!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+  font-weight:700!important;
+  text-align:center!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+body.ha-all-sections-layout .ha-add-store-card > .ico{
+  display:none!important;
+}
+@media(max-width:700px){
+  body.ha-all-sections-layout .ha-add-store-card .ha-add-store-visual{
+    top:15%!important;
+    width:112px!important;
+    height:102px!important;
+  }
+  body.ha-all-sections-layout .ha-add-store-card .ha-store-building{font-size:72px!important}
+  body.ha-all-sections-layout .ha-add-store-card .ha-store-plus{
+    width:43px!important;height:43px!important;font-size:32px!important
+  }
+  body.ha-all-sections-layout .ha-add-store-card .ha-add-store-copy strong{font-size:17px!important}
+  body.ha-all-sections-layout .ha-add-store-card .ha-add-store-copy small{font-size:10px!important}
+}
+</style>
+
 </head><body class="ha-premium-section-page ha-all-sections-layout ha-ui-final ha-family-shop"><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
@@ -1002,8 +1132,15 @@ body.ha-ui-final.ha-family-shop #superAdminAddStoreBox{background-image:url("dat
 <a class="ha-cat yellow ha-shop-extra-card" data-search="مطبعة طباعة" href="shop-section.html?section=printers">
   <span class="ico">🖨️</span><strong>مطبعة</strong><small>طباعة وخدمات مطابع</small>
 </a>
-<a class="ha-cat purple ha-shop-extra-card" data-search="إضافة متجر أضف متجرك انضم كبائع" href="seller-registration.html">
-  <span class="ico">➕</span><strong>أضف متجرك</strong><small>انضم كبائع وابدأ بعرض منتجاتك</small>
+<a class="ha-cat purple ha-shop-extra-card ha-add-store-card" data-search="إضافة متجر أضف متجرك انضم كبائع" href="seller-registration.html" aria-label="أضف متجرك">
+  <div class="ha-add-store-visual" aria-hidden="true">
+    <span class="ha-store-building">🏪</span>
+    <span class="ha-store-plus">＋</span>
+  </div>
+  <div class="ha-add-store-copy">
+    <strong>أضف متجرك</strong>
+    <small>انضم كبائع وابدأ بعرض منتجاتك</small>
+  </div>
 </a>
 <a class="ha-cat blue ha-shop-extra-card" data-search="اقتراح متجر" href="shop-store-suggestion.html">
   <span class="ico">🏪</span><strong>اقترح متجر</strong><small>ساعدنا في إضافة متجر جديد</small>
