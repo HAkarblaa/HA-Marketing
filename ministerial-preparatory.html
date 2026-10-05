@@ -66,7 +66,12 @@ branches.forEach(btn=>btn.addEventListener('click',()=>{
   gradeBox.classList.remove('hidden');
   gradeNote.innerHTML='الفرع المختار: <b>'+branch+'</b> — الآن اختر الصف.';
   labels.forEach(el=>el.textContent=branch+' • وزاريات وحلول');
-  links.forEach(link=>{link.href='study-library.html?type=ministerial&stage=preparatory&branch='+encodeURIComponent(branch)+'&grade='+link.dataset.grade;});
+  links.forEach(link=>{
+    const gradeMap={'4':'الرابع الإعدادي','5':'الخامس الإعدادي','6':'السادس الإعدادي'};
+    link.href='study-grade-entry.html?stage='+encodeURIComponent('إعدادي')+
+      '&grade='+encodeURIComponent(gradeMap[link.dataset.grade]||link.dataset.grade)+
+      '&branch='+encodeURIComponent(branch)+'&target=ministerial';
+  });
 }));
 </script>
 </body></html>

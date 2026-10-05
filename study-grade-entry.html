@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07885f">
+<title>الدخول إلى الصف - HA Marketing</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#eef4f8;color:#15304b}
+.wrap{width:min(760px,94%);margin:24px auto 100px}
+.top{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px}
+.top a{background:#fff;color:#0b7d61;text-decoration:none;padding:10px 14px;border-radius:13px;box-shadow:0 6px 20px #15304b10;font-weight:800}
+.hero{background:linear-gradient(135deg,#238de4,#13b67c);color:#fff;border-radius:24px;padding:22px;margin-bottom:16px;box-shadow:0 15px 35px #15304b1c}
+.hero h1{margin:0 0 7px;font-size:27px}.hero p{margin:0;line-height:1.8}
+.card{background:#fff;border-radius:21px;padding:18px;box-shadow:0 10px 28px #15304b0d;margin-bottom:14px}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.role{border:2px solid transparent;border-radius:18px;padding:18px 12px;background:#f5f8fa;cursor:pointer;text-align:center;color:#15304b;font:inherit}
+.role .ico{font-size:38px;display:block;margin-bottom:7px}.role b{font-size:18px}.role.active{border-color:#159b74;background:#eaf8f3}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label{display:block;font-size:12px;font-weight:900;margin:0 0 6px;color:#536879}
+input,select,textarea{width:100%;border:1px solid #d5e1e5;border-radius:12px;padding:12px 13px;font:inherit;background:#fff}
+input[readonly]{background:#f1f4f6;color:#667788}
+textarea{min-height:95px;resize:vertical}
+.submit{width:100%;border:0;border-radius:14px;padding:14px;background:#087f61;color:#fff;font:inherit;font-weight:900;margin-top:14px;cursor:pointer}
+.status{margin-top:12px;padding:11px 12px;border-radius:12px;background:#f2f5f6;color:#62727c;font-size:12px;line-height:1.7}
+.status.ok{background:#e9f8f0;color:#08774f}.status.err{background:#fff0f2;color:#a52a42}
+@media(max-width:620px){.grid,.role-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="study.html">← الدراسة</a><a href="index.html">الرئيسية</a></div>
+  <section class="hero">
+    <h1 id="gradeTitle">الدخول إلى الصف</h1>
+    <p id="gradeSub">سجل مرة واحدة كطالب أو مدرس حتى تظهر لك الكتب والملازم وباقي محتوى الصف.</p>
+  </section>
+
+  <section id="roleCard" class="card">
+    <h2>اختر نوع الحساب الدراسي</h2>
+    <div class="role-grid">
+      <button type="button" class="role" data-role="student"><span class="ico">🎒</span><b>طالب</b><div>أدخل كمستخدم طالب</div></button>
+      <button type="button" class="role" data-role="teacher"><span class="ico">👨‍🏫</span><b>مدرس</b><div>أدخل كمقدم محتوى / مدرس</div></button>
+    </div>
+  </section>
+
+  <section id="formCard" class="card" hidden>
+    <h2 id="formTitle">بيانات التسجيل</h2>
+    <div class="grid">
+      <div>
+        <label>الاسم الكامل *</label>
+        <input id="fullName" placeholder="الاسم الكامل">
+      </div>
+      <div>
+        <label>رقم الموبايل *</label>
+        <input id="phone" inputmode="tel" placeholder="07XXXXXXXXX">
+      </div>
+      <div>
+        <label>المحافظة *</label>
+        <select id="governorate">
+          <option value="">اختر المحافظة</option>
+          <option>بغداد</option><option>البصرة</option><option>نينوى</option><option>أربيل</option>
+          <option>النجف</option><option>كربلاء</option><option>ذي قار</option><option>الأنبار</option>
+          <option>ديالى</option><option>كركوك</option><option>صلاح الدين</option><option>واسط</option>
+          <option>ميسان</option><option>المثنى</option><option>القادسية</option><option>بابل</option>
+          <option>دهوك</option><option>السليمانية</option><option>حلبجة</option>
+        </select>
+      </div>
+      <div>
+        <label>المنطقة *</label>
+        <input id="area" placeholder="الحي / المنطقة / الناحية">
+      </div>
+      <div class="full">
+        <label>اسم المدرسة *</label>
+        <input id="school" placeholder="اكتب اسم المدرسة">
+      </div>
+      <div>
+        <label>المرحلة</label>
+        <input id="stage" readonly>
+      </div>
+      <div>
+        <label>الصف</label>
+        <input id="grade" readonly>
+      </div>
+      <div id="branchBox" class="full" hidden>
+        <label>الفرع</label>
+        <input id="branch" readonly>
+      </div>
+      <div id="teacherSubjectBox" class="full" hidden>
+        <label>المادة التي تدرسها *</label>
+        <input id="subject" placeholder="مثال: رياضيات، عربي، إنكليزي">
+      </div>
+      <div class="full">
+        <label>معلومات إضافية (اختياري)</label>
+        <textarea id="details" placeholder="أي معلومات إضافية تحب تضيفها"></textarea>
+      </div>
+    </div>
+    <button id="submitBtn" class="submit" type="button">حفظ والدخول إلى الصف</button>
+    <div id="status" class="status">بعد التسجيل تظهر لك الكتب والملازم والوزاريات وباقي محتوى الصف.</div>
+  </section>
+</div>
+
+<script>
+const db=supabase.createClient(
+  'https://ubayrhtshgtgggxprrek.supabase.co',
+  'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
+);
+
+const qs=new URLSearchParams(location.search);
+const stageName=qs.get('stage')||'';
+const gradeName=qs.get('grade')||'';
+const branchName=qs.get('branch')||'';
+const target=qs.get('target')||'hub';
+
+let me=null, selectedRole='';
+
+const gradeTitle=document.getElementById('gradeTitle');
+const gradeSub=document.getElementById('gradeSub');
+const formCard=document.getElementById('formCard');
+const formTitle=document.getElementById('formTitle');
+const fullName=document.getElementById('fullName');
+const phone=document.getElementById('phone');
+const governorate=document.getElementById('governorate');
+const area=document.getElementById('area');
+const school=document.getElementById('school');
+const stage=document.getElementById('stage');
+const grade=document.getElementById('grade');
+const branch=document.getElementById('branch');
+const branchBox=document.getElementById('branchBox');
+const subject=document.getElementById('subject');
+const teacherSubjectBox=document.getElementById('teacherSubjectBox');
+const details=document.getElementById('details');
+const submitBtn=document.getElementById('submitBtn');
+const statusBox=document.getElementById('status');
+
+function nextUrl(){
+  const q=new URLSearchParams({stage:stageName,grade:gradeName,target});
+  if(branchName)q.set('branch',branchName);
+  return 'study-grade-hub.html?'+q.toString();
+}
+function showStatus(t,type=''){statusBox.textContent=t;statusBox.className='status'+(type?' '+type:'')}
+
+async function init(){
+  gradeTitle.textContent=gradeName+(branchName?' — '+branchName:'');
+  gradeSub.textContent='سجل كطالب أو مدرس حتى تدخل إلى محتوى هذا الصف.';
+  stage.value=stageName; grade.value=gradeName;
+  if(branchName){branch.value=branchName;branchBox.hidden=false}
+
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+    location.href='login.html?next='+encodeURIComponent(location.pathname.replace(/^\//,'')+location.search);
+    return;
+  }
+  me=session.user;
+
+  const {data:existing}=await db.from('study_access_profiles')
+    .select('*').eq('user_id',me.id)
+    .eq('stage_name',stageName).eq('grade_name',gradeName)
+    .eq('branch_name',branchName||'').maybeSingle();
+
+  if(existing){
+    location.href=nextUrl();
+    return;
+  }
+
+  const {data:p}=await db.from('profiles')
+    .select('full_name,phone,governorate')
+    .eq('id',me.id).maybeSingle();
+
+  if(p){
+    fullName.value=p.full_name||'';
+    phone.value=p.phone||'';
+    governorate.value=p.governorate||'';
+  }
+}
+
+document.querySelectorAll('.role').forEach(btn=>{
+  btn.onclick=()=>{
+    selectedRole=btn.dataset.role;
+    document.querySelectorAll('.role').forEach(x=>x.classList.toggle('active',x===btn));
+    formCard.hidden=false;
+    formTitle.textContent=selectedRole==='student'?'تسجيل طالب':'تسجيل مدرس';
+    teacherSubjectBox.hidden=selectedRole!=='teacher';
+    formCard.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+});
+
+submitBtn.onclick=async()=>{
+  if(!selectedRole)return alert('اختر طالب أو مدرس');
+  const name=fullName.value.trim(), ph=phone.value.trim(), gov=governorate.value;
+  const ar=area.value.trim(), sch=school.value.trim(), subj=subject.value.trim(), det=details.value.trim();
+
+  if(!name||!ph||!gov||!ar||!sch)return alert('أكمل الاسم ورقم الهاتف والمحافظة والمنطقة والمدرسة');
+  if(!/^07\d{9}$/.test(ph))return alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
+  if(selectedRole==='teacher'&&!subj)return alert('اكتب المادة التي تدرسها');
+
+  submitBtn.disabled=true;
+  showStatus('جاري حفظ بياناتك...');
+
+  const {error}=await db.rpc('register_study_access_profile',{
+    p_role:selectedRole,
+    p_full_name:name,
+    p_phone:ph,
+    p_governorate:gov,
+    p_area:ar,
+    p_school_name:sch,
+    p_stage_name:stageName,
+    p_grade_name:gradeName,
+    p_branch_name:branchName||'',
+    p_subject:selectedRole==='teacher'?subj:null,
+    p_details:det||null
+  });
+
+  submitBtn.disabled=false;
+  if(error){showStatus('تعذر الحفظ: '+error.message,'err');return}
+  showStatus('✅ تم التسجيل. جاري فتح محتوى الصف...','ok');
+  setTimeout(()=>location.href=nextUrl(),500);
+};
+
+init();
+</script>
+</body>
+</html>
