@@ -465,6 +465,30 @@ body.ha-hide-top-map-entry [data-hide-on-map='true']{
 }
 body.ha-hide-top-map-entry .app{margin-top:0!important}
 
+
+.pick-extra-address-map{
+  width:100%!important;
+  min-height:43px!important;
+  margin-top:7px!important;
+  padding:9px 11px!important;
+  border:1px solid #d8e6ff!important;
+  border-radius:11px!important;
+  background:#edf4ff!important;
+  color:#176cda!important;
+  font-size:11px!important;
+  font-weight:900!important;
+}
+.extra-address-map-status{
+  display:block!important;
+  margin-top:6px!important;
+  color:#7d8b99!important;
+  font-size:9.5px!important;
+  line-height:1.5!important;
+}
+body.ha-extra-address-mode #stepSelectBtn{
+  background:linear-gradient(135deg,#1fa26f,#0b8d5d)!important;
+}
+
 </style>
 </head>
 
@@ -490,7 +514,6 @@ body.ha-hide-top-map-entry .app{margin-top:0!important}
   <button id="locateBtn" class="locate-btn" title="تحديد موقعي" aria-label="تحديد موقعي">📍</button>
 
   <div id="centerPin" class="center-pin"><span class="moving-pin"></span></div>
-  <button id="extraAddressConfirmBtn" class="extra-address-confirm" type="button">📍 تثبيت العنوان الثاني</button>
 </div>
 
 
@@ -569,6 +592,8 @@ body.ha-hide-top-map-entry .app{margin-top:0!important}
     </label>
     <div id="extraDestinationFields" class="extra-fields">
       <input id="extraDestinationText" placeholder="اكتب اسم نقطة الوصول الإضافية">
+      <button id="pickExtraAddressMapBtn" class="pick-extra-address-map" type="button">📍 تحديد العنوان الثاني من الخريطة</button>
+      <small id="extraAddressMapStatus" class="extra-address-map-status">تقدر تكتبه أو تحدده من الخريطة.</small>
     </div>
 
     <label class="extra-option">
@@ -850,7 +875,12 @@ function haBeginExtraAddressPick(){
   results.innerHTML='';
 
   centerPin.classList.add('show','extra-address');
-  document.getElementById('extraAddressConfirmBtn').classList.add('show');
+  const stepBtn=document.getElementById('stepSelectBtn');
+  if(stepBtn){
+    stepBtn.textContent='📍 تثبيت العنوان الثاني';
+    stepBtn.classList.add('destination');
+    stepBtn.disabled=false;
+  }
 
   notice.textContent='حرّك المؤشر وحدد العنوان الثاني، أو ابحث عن المكان ثم اضغط تثبيت العنوان الثاني.';
 
@@ -876,6 +906,8 @@ async function haConfirmExtraAddress(){
   extraSheet.classList.add('show');
   extraSheet.setAttribute('aria-hidden','false');
   notice.textContent='تم تثبيت العنوان الثاني من الخريطة.';
+  const st=document.getElementById('extraAddressMapStatus');
+  if(st)st.textContent='✅ تم تحديد العنوان الثاني من الخريطة.';
 }
 
 function haEndExtraAddressPick(){
@@ -883,7 +915,11 @@ function haEndExtraAddressPick(){
   document.body.classList.remove('ha-extra-address-mode');
 
   centerPin.classList.remove('show','extra-address');
-  document.getElementById('extraAddressConfirmBtn').classList.remove('show');
+  const stepBtn=document.getElementById('stepSelectBtn');
+  if(stepBtn){
+    stepBtn.textContent=(mode==='start'?'📍 تثبيت الانطلاق':'🏁 تثبيت الوصول');
+    stepBtn.classList.toggle('destination',mode!=='start');
+  }
   document.getElementById('placeResults').style.display='none';
 
   const search=document.getElementById('placeSearch');
@@ -906,12 +942,9 @@ function haEndExtraAddressPick(){
   setTimeout(()=>map.invalidateSize(),80);
 }
 
-document.getElementById('extraAddressConfirmBtn').onclick=haConfirmExtraAddress;
 
 extraDestinationCheck.addEventListener('change',()=>{
-  if(extraDestinationCheck.checked){
-    setTimeout(haBeginExtraAddressPick,120);
-  }else{
+  if(!extraDestinationCheck.checked){
     haExtraAddressPoint=null;
     haExtraAddressLabel='';
     if(extraDestinationText){
@@ -919,9 +952,25 @@ extraDestinationCheck.addEventListener('change',()=>{
       delete extraDestinationText.dataset.lat;
       delete extraDestinationText.dataset.lng;
     }
+    const st=document.getElementById('extraAddressMapStatus');
+    if(st)st.textContent='تقدر تكتبه أو تحدده من الخريطة.';
     if(haExtraAddressMode)haEndExtraAddressPick();
   }
 });
+
+document.getElementById('pickExtraAddressMapBtn').onclick=()=>{
+  if(!extraDestinationCheck.checked) extraDestinationCheck.checked=true;
+  toggleExtraFields();
+  haBeginExtraAddressPick();
+};
+
+
+document.getElementById('stepSelectBtn').addEventListener('click',async function(e){
+  if(!haExtraAddressMode)return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  await haConfirmExtraAddress();
+},true);
 
 </script>
 <script>
