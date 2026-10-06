@@ -27,7 +27,6 @@ let me=null,currentStatus='pending',allApplications=[];function esc(s){return St
     if(x.role_type==='games_manager')return 'إدارة الألعاب';
     if(x.role_type==='delivery_driver')return 'مندوب توصيل';
     if(x.role_type==='stoota_driver')return 'سائق ستوتة';
-    if(x.role_type==='cargo_driver')return 'سائق سيارة حمل';
     if(x.role_type==='taxi_driver'&&String(x.details||'').includes('سائق تكتك'))return 'سائق تكتك';
     if(x.role_type==='taxi_driver')return 'سائق تكسي';
     return x.role_type;
