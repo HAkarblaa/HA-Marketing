@@ -15,7 +15,7 @@ a,button{border:0;border-radius:11px;padding:10px 13px;text-decoration:none;font
 .badge{padding:5px 8px;border-radius:999px;background:#fff3d8;color:#9c6600;font-size:10px;font-weight:900}
 .badge.approved{background:#e6f8ee;color:#087b52}.badge.rejected{background:#fff0f2;color:#bd2942}
 img{width:115px;height:90px;object-fit:contain;background:#f4f7f9;border-radius:12px;margin-top:8px}
-select{padding:9px;border:1px solid #d5e0e5;border-radius:10px;background:#fff}
+select{padding:9px;border:1px solid #d5e0e5;border-radius:10px;background:#fff}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.tab{background:#edf3f6;color:#354a60}.tab.active{background:#07865f;color:#fff}
 </style>
 </head>
 <body>
@@ -23,21 +23,21 @@ select{padding:9px;border:1px solid #d5e0e5;border-radius:10px;background:#fff}
   <div class="top">
     <a class="back" href="admin-panel.html">← لوحة الإدارة</a>
     <h1>🏪 طلبات المتاجر</h1>
-    <select id="filter">
-      <option value="pending">قيد الموافقة</option>
-      <option value="approved">المعتمدة</option>
-      <option value="rejected">المرفوضة</option>
-      <option value="all">الكل</option>
-    </select>
+<span></span>
   </div>
   <div id="gate" class="card">جاري التحقق...</div>
+  <div class="tabs">
+    <button class="tab active" onclick="setStoreRequestStatus('pending',this)">قيد الموافقة</button>
+    <button class="tab" onclick="setStoreRequestStatus('approved',this)">المعتمدة</button>
+    <button class="tab" onclick="setStoreRequestStatus('rejected',this)">المرفوضة</button>
+  </div>
   <div id="list"></div>
 </div>
 <script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 const $=id=>document.getElementById(id);
 const SEC={markets:'الأسواق',library:'مكتبة',printers:'مطبعة',devices:'موبايلات',home_appliances:'الأجهزة الإلكترونية',device_accessories:'إكسسوارات',clothes:'ملابس',shoes:'أحذية',restaurants:'مطاعم',flowers:'ورد وهدايا',building_materials:'مواد البناء',cards_credit:'بطاقات وأرصدة',yugioh:'أوراق يوغي'};
-let me=null;
+let me=null,storeRequestStatus='pending';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 async function init(){
@@ -47,7 +47,6 @@ async function init(){
   const {data:ok,error}=await db.rpc('is_super_admin');
   if(error||!ok){$('gate').textContent='هذه الصفحة للأدمن الرئيسي فقط.';return}
   $('gate').textContent='✅ صلاحية الأدمن الرئيسي فعالة';
-  $('filter').onchange=load;
   await load();
 }
 
@@ -56,7 +55,7 @@ async function load(){
     .select('id,name,section_key,location_text,description,image_url,approval_status,approval_note,owner_user_id,application_id,requested_at,created_at')
     .order('requested_at',{ascending:false,nullsFirst:false})
     .order('created_at',{ascending:false});
-  if($('filter').value!=='all')q=q.eq('approval_status',$('filter').value);
+  q=q.eq('approval_status',storeRequestStatus);
   const {data,error}=await q;
   if(error){$('list').innerHTML='<div class="card">'+esc(error.message)+'</div>';return}
   const arr=data||[];
@@ -96,6 +95,12 @@ async function load(){
   }).join('')||'<div class="card">لا توجد طلبات بهذه الحالة.</div>';
 }
 
+function setStoreRequestStatus(s,btn){
+  storeRequestStatus=s;
+  document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  load();
+}
 async function reviewStore(id,status,initial){
   if(initial && status==='approved'){
     if(!confirm('هذا المتجر الأول مرتبط بطلب البائع. إذا كان طلب البائع غير معتمد سيطلب منك النظام الموافقة عليه أولاً. متابعة؟'))return;
