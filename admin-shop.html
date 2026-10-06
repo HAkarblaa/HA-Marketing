@@ -103,6 +103,22 @@ async function editBusiness(id){
   scrollTo({top:0,behavior:'smooth'});
 }
 async function toggleBusiness(id,v){const {error}=await db.from('shop_businesses').update({is_active:v,updated_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);else loadBusinesses()}
+
+function haShopStoragePath(url,bucket='shop-images'){
+  try{
+    if(!url || typeof url!=='string' || url.startsWith('data:'))return null;
+    const marker='/storage/v1/object/public/'+bucket+'/';
+    const i=url.indexOf(marker);
+    if(i<0)return null;
+    return decodeURIComponent(url.slice(i+marker.length).split('?')[0]);
+  }catch(_e){return null}
+}
+async function haCleanupShopImages(urls){
+  const paths=[...new Set((urls||[]).map(u=>haShopStoragePath(u)).filter(Boolean))];
+  if(!paths.length)return;
+  try{await db.storage.from('shop-images').remove(paths)}catch(_e){}
+}
+
 async function deleteBusiness(id,businessName=''){
   if(!(isSuper||canManageShop)){
     alert('لا تملك صلاحية حذف المتاجر');
@@ -111,21 +127,31 @@ async function deleteBusiness(id,businessName=''){
 
   const label=businessName?` "${businessName}"`:'';
   if(!confirm(`⚠️ حذف المتجر${label} نهائياً؟
-سيتم حذف المنتجات التابعة له أيضاً.`))return;
+سيتم حذف صورة المتجر وجميع المنتجات وصورها والتقييمات والمفضلة التابعة لها.
+سجل الطلبات القديمة يبقى محفوظاً للمحاسبة.`))return;
 
   const typed=prompt('للتأكيد اكتب كلمة: حذف');
   if(typed!=='حذف')return;
 
-  const {error}=await db.rpc('delete_shop_business',{p_business_id:id});
+  let imageUrls=[];
+  try{
+    const {data:b}=await db.from('shop_businesses').select('image_url').eq('id',id).maybeSingle();
+    if(b?.image_url)imageUrls.push(b.image_url);
+    const {data:pp}=await db.from('products').select('image_url').eq('business_id',id);
+    imageUrls.push(...(pp||[]).map(x=>x.image_url).filter(Boolean));
+  }catch(_e){}
 
+  const {error}=await db.rpc('delete_shop_business',{p_business_id:id});
   if(error){
     alert('تعذر حذف المتجر: '+error.message);
     return;
   }
 
+  await haCleanupShopImages(imageUrls);
+  alert(`✅ تم حذف المتجر${label} وكل المنتجات والصور التابعة له.`);
   await loadBusinesses();
   if(isSuper||canManageShop)await loadProducts();
-}=await db.rpc('delete_shop_business',{p_business_id:id});if(error)alert('تعذر الحذف: '+error.message);else loadBusinesses()}
+}
 async function addProduct(){if(!(isSuper||canManageShop))return;const n=name.value.trim(),pr=Number(price.value),stck=Number(stock.value),dp=discountPrice.value===''?null:Number(discountPrice.value),mq=Math.max(1,Number(minQty.value||1));if(!n||!Number.isFinite(pr)||pr<0||!Number.isInteger(stck)||stck<0||!Number.isInteger(mq)){alert('تحقق من الاسم والسعر والمخزون');return}const opts=options.value.split(',').map(x=>x.trim()).filter(Boolean);const {error}=await db.from('products').insert({category_id:Number(cat.value),name:n,description:desc.value.trim()||null,specifications:specifications.value.trim()||null,price:pr,discount_price:dp,stock:stck,min_order_qty:mq,options_json:opts,image_url:image.value.trim()||null,sku:sku.value.trim()||null});if(error)alert(error.message);else{name.value=desc.value=specifications.value=price.value=discountPrice.value=stock.value=image.value=sku.value=options.value='';minQty.value='1';loadProducts()}}
 async function loadProducts(){if(!(isSuper||canManageShop))return;const {data,error}=await db.from('products').select('id,name,price,discount_price,stock,min_order_qty,is_active,category_id,product_categories(name)').order('created_at',{ascending:false});if(error){products.textContent=error.message;return}products.innerHTML=(data||[]).map(p=>`<div class="card"><div class="row"><strong>${esc(p.name)}</strong><span>${Number(p.discount_price??p.price).toLocaleString('ar-IQ')} د.ع</span></div><div class="muted">${esc(p.product_categories?.name||'بدون قسم')} — مخزون: ${p.stock} — الحد الأدنى: ${p.min_order_qty||1}</div><div class="row" style="margin-top:8px"><button class="light" onclick="editProduct(${p.id})">تعديل</button><button class="${p.is_active?'danger':'btn'}" onclick="toggleProduct(${p.id},${!p.is_active})">${p.is_active?'إيقاف':'تفعيل'}</button>${(isSuper||canManageShop)?`<button class="danger" onclick="deleteProduct(${p.id},'${esc(p.name).replace(/'/g,"&#39;")}')">🗑 حذف المنتج</button>`:''}</div></div>`).join('')||'<div class="card">لا توجد منتجات.</div>'}
 async function editProduct(id){const {data:p,error}=await db.from('products').select('*').eq('id',id).maybeSingle();if(error||!p)return alert('تعذر فتح المنتج');const n=prompt('اسم المنتج:',p.name);if(n===null||!n.trim())return;const pr=prompt('السعر الأصلي:',p.price);if(pr===null)return;const dp=prompt('سعر العرض (اتركه فارغاً بدون خصم):',p.discount_price??'');if(dp===null)return;const stck=prompt('المخزون:',p.stock);if(stck===null)return;const {error:e}=await db.from('products').update({name:n.trim(),price:Number(pr),discount_price:dp===''?null:Number(dp),stock:Number(stck),updated_at:new Date().toISOString()}).eq('id',id);if(e)alert(e.message);else loadProducts()}
@@ -137,17 +163,24 @@ async function deleteProduct(id,productName=''){
   }
 
   const label=productName?` "${productName}"`:'';
-  if(!confirm(`حذف المنتج${label} نهائياً؟`))return;
+  if(!confirm(`حذف المنتج${label} نهائياً؟
+سيتم حذف صورته وتقييماته والمفضلة المرتبطة به.`))return;
+
+  let imageUrl=null;
+  try{
+    const {data:p}=await db.from('products').select('image_url').eq('id',id).maybeSingle();
+    imageUrl=p?.image_url||null;
+  }catch(_e){}
 
   const {error}=await db.rpc('delete_shop_product',{p_product_id:id});
-
   if(error){
     alert('تعذر حذف المنتج: '+error.message);
     return;
   }
 
+  await haCleanupShopImages([imageUrl]);
   await loadProducts();
-}=await db.rpc('delete_shop_product',{p_product_id:id});if(error)alert('تعذر الحذف: '+error.message);else loadProducts()}
+}
 async function loadOrders(){if(!isSuper)return;const {data,error}=await db.from('shop_orders').select('id,status,total,subtotal,delivery_fee,discount_amount,phone,address,governorate,customer_name,payment_method,payment_status,cancel_reason,created_at').order('created_at',{ascending:false}).limit(200);if(error){orders.textContent=error.message;return}const arr=data||[];const totalSales=arr.filter(x=>x.status==='completed').reduce((s,x)=>s+Number(x.total||0),0),newCount=arr.filter(x=>x.status==='new').length;dashboard.innerHTML=`<div class="card"><h3>الطلبات الجديدة</h3><strong style="font-size:28px">${newCount}</strong></div><div class="card"><h3>إجمالي الطلبات</h3><strong style="font-size:28px">${arr.length}</strong></div><div class="card"><h3>المبيعات المكتملة</h3><strong style="font-size:24px">${totalSales.toLocaleString('ar-IQ')} د.ع</strong></div><div class="card"><h3>قيد التوصيل</h3><strong style="font-size:28px">${arr.filter(x=>x.status==='out_for_delivery').length}</strong></div>`;orders.innerHTML=arr.map(o=>`<div class="card"><div class="row"><strong>#${o.id} — ${esc(o.customer_name)}</strong><span class="badge">${esc(st[o.status]||o.status)}</span></div><div>${esc(o.phone)} — ${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="muted">الدفع: ${o.payment_method==='electronic'?'إلكتروني / بطاقة':'عند الاستلام'}${o.payment_method==='electronic'?' — '+(o.payment_status==='paid'?'مدفوع':'بانتظار الدفع'):''}</div><div class="muted">فرعي: ${Number(o.subtotal||0).toLocaleString('ar-IQ')} — توصيل: ${Number(o.delivery_fee||0).toLocaleString('ar-IQ')} — خصم: ${Number(o.discount_amount||0).toLocaleString('ar-IQ')}</div>${o.cancel_reason?`<div class="muted">سبب الإلغاء: ${esc(o.cancel_reason)}</div>`:''}<strong>${Number(o.total).toLocaleString('ar-IQ')} د.ع</strong><select onchange="statusSet(${o.id},this.value)"><option value="">تغيير الحالة...</option><option value="confirmed">مؤكد</option><option value="preparing">قيد التجهيز</option><option value="out_for_delivery">خرج للتوصيل</option><option value="completed">مكتمل</option><option value="cancelled">ملغي</option></select></div>`).join('')||'<div class="card">لا توجد طلبات شراء.</div>'}
 async function addCoupon(){if(!isSuper)return;const c=couponCode.value.trim().toUpperCase(),v=Number(couponValue.value),m=Number(couponMin.value||0);if(!c||!Number.isFinite(v)||v<0)return alert('تحقق من بيانات الكوبون');const {error}=await db.from('shop_coupons').insert({code:c,discount_type:couponType.value,discount_value:v,min_total:m});if(error)alert(error.message);else{couponCode.value=couponValue.value='';couponMin.value='0';loadCoupons()}}
 async function loadCoupons(){if(!isSuper)return;const {data,error}=await db.from('shop_coupons').select('*').order('created_at',{ascending:false});if(error){coupons.textContent=error.message;return}coupons.innerHTML=(data||[]).map(c=>`<div class="card"><div class="row"><strong>${esc(c.code)}</strong><span>${c.discount_type==='percent'?c.discount_value+'%':Number(c.discount_value).toLocaleString('ar-IQ')+' د.ع'}</span></div><div class="row"><span class="muted">أقل طلب: ${Number(c.min_total||0).toLocaleString('ar-IQ')} د.ع</span><button class="danger" onclick="deleteCoupon(${c.id})">حذف</button></div></div>`).join('')||'<div class="card">لا توجد كوبونات.</div>'}
