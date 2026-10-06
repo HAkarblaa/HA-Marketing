@@ -1,73 +1,183 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ألعاب HA Marketing</title>
-<link rel="stylesheet" href="assets/ha-games-style.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1">
-<script src="ha-modern-blue.js?v=20260926-1" defer></script>
-<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
+  <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ألعاب HA Marketing</title>
+  <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1">
+  <script src="ha-modern-blue.js?v=20260926-1" defer></script>
+  <link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1">
+  <link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1">
+  <style>
+    :root{
+      --bg:#eef5f6;
+      --text:#16324f;
+      --muted:#64819a;
+      --line:#d9e7ea;
+      --card:#ffffff;
+      --grad1:#1986ea;
+      --grad2:#10b981;
+      --shadow:0 14px 32px rgba(18,55,87,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{text-decoration:none;color:inherit}
+    .ha-games-page{max-width:1180px;margin:0 auto;padding:20px 16px 120px}
+
+    .top-strip{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 16px;margin:8px 0 18px;box-shadow:var(--shadow)}
+    .top-strip .back,.top-strip .home{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:16px;font-weight:700;background:#f3f8f9;color:#117d6a;border:1px solid #dcefee}
+    .title-wrap{text-align:center;flex:1}
+    .title-wrap h1{margin:0;font-size:clamp(24px,4vw,40px)}
+    .title-wrap p{margin:6px 0 0;color:var(--muted);font-size:14px}
+
+    .hero{background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;border-radius:28px;padding:24px 24px 20px;box-shadow:var(--shadow);margin-bottom:18px}
+    .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+    .hero-top h2{margin:0 0 8px;font-size:clamp(26px,4vw,44px)}
+    .hero-top p{margin:0;color:rgba(255,255,255,.92)}
+    .hero .rank-btn{display:inline-flex;align-items:center;gap:8px;background:#ffffff1c;color:#fff;border:1px solid #ffffff52;border-radius:16px;padding:12px 16px;font-weight:700;backdrop-filter:blur(6px)}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+    .stat-box{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:16px;text-align:center}
+    .stat-box b{display:block;font-size:26px;margin-bottom:6px}
+    .stat-box span{font-size:14px;color:#eefbff}
+
+    .section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0 14px}
+    .section-title h3{margin:0;font-size:30px}
+    .section-title small{color:var(--muted);font-size:14px}
+
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .game-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:260px;transition:transform .18s ease, box-shadow .18s ease}
+    .game-card:hover{transform:translateY(-3px);box-shadow:0 18px 34px rgba(18,55,87,.12)}
+    .game-top{min-height:132px;display:flex;align-items:center;justify-content:center;position:relative;padding:18px}
+    .game-top::after{content:'';position:absolute;left:16px;top:16px;width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.35)}
+    .game-emoji{font-size:54px;line-height:1;position:relative;z-index:1}
+    .c1{background:linear-gradient(135deg,#b9e4ff,#5cc8ff 60%,#2896e8)}
+    .c2{background:linear-gradient(135deg,#ffe0a8,#ffd05a 60%,#f0a900)}
+    .c3{background:linear-gradient(135deg,#d7c3ff,#a65dff 60%,#7d3aed)}
+    .c4{background:linear-gradient(135deg,#bff5cf,#52d283 60%,#1eaa64)}
+    .c5{background:linear-gradient(135deg,#ffd0df,#ff7fb0 60%,#ef4a86)}
+    .c6{background:linear-gradient(135deg,#d7f0ff,#9fd0ff 60%,#5b98f5)}
+
+    .game-body{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+    .game-body h4{margin:0;font-size:28px;line-height:1.25;color:#113150}
+    .game-body p{margin:0;color:var(--muted);line-height:1.8;font-size:15px;min-height:48px}
+    .game-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto}
+    .rating{font-weight:700;color:#11885f}
+    .play-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:14px 16px;border-radius:16px;background:#e5f3eb;color:#0d8f61;font-weight:800}
+
+    .info-note{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 18px;color:#48657c;box-shadow:var(--shadow)}
+    .info-note b{color:#153552}
+
+    @media (max-width:768px){
+      .top-strip{padding:12px;flex-wrap:wrap}
+      .title-wrap{order:-1;width:100%}
+      .hero{padding:20px 16px}
+      .stats{grid-template-columns:1fr}
+      .game-card{min-height:unset}
+      .game-body h4{font-size:24px}
+      .section-title h3{font-size:26px}
+    }
+  </style>
 </head>
-<body class="ha-ui-final ha-family-entertainment"><div class="ha-family-strip"><a href="entertainment.html">← الترفيه</a><div><b>ألعاب HA Marketing</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
-<div class="page">
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo">HA</div>
-      <div>
+<body class="ha-ui-final">
+  <div class="ha-games-page">
+    <div class="top-strip">
+      <a class="back" href="entertainment.html">← الترفيه</a>
+      <div class="title-wrap">
         <h1>ألعاب HA Marketing</h1>
-        <p>ألعابك المضافة مع النقاط والتصنيف</p>
+        <p>واجهة مرتبة على شكل مربعات لعرض الألعاب بشكل واضح وسهل</p>
+      </div>
+      <a class="home" href="index.html">الرئيسية</a>
+    </div>
+
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h2>مركز الألعاب</h2>
+          <p>اختر اللعبة التي تريدها وابدأ اللعب مباشرة من الواجهة.</p>
+        </div>
+        <a class="rank-btn" href="games-ranking.html">🏆 التصنيف العام</a>
+      </div>
+      <div class="stats">
+        <div class="stat-box"><b>13</b><span>عدد الألعاب</span></div>
+        <div class="stat-box"><b id="sumPlayers">0</b><span>لاعبين محلياً</span></div>
+        <div class="stat-box"><b id="sumRecords">0</b><span>عدد النتائج</span></div>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <div>
+        <h3>الألعاب المتوفرة</h3>
+        <small>جميع الألعاب معروضة داخل مربعات منظمة</small>
       </div>
     </div>
-    <div class="row">
-      <a class="btn secondary" href="games-ranking.html">🏆 التصنيف العام</a>
-    </div>
+
+    <section class="games-grid">
+      <a class="game-card" href="car-dodge.html">
+        <div class="game-top c1"><div class="game-emoji">🚗</div></div>
+        <div class="game-body"><h4>تفادي العوائق</h4><p>تحرك يمين ويسار وتجنب السيارات والعوائق لأطول وقت ممكن.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="bird-game.html">
+        <div class="game-top c2"><div class="game-emoji">🐦</div></div>
+        <div class="game-body"><h4>لعبة الطائر</h4><p>حلّق بين الأنابيب وحاول تحقيق أفضل نتيجة بدون اصطدام.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="brick-breaker.html">
+        <div class="game-top c3"><div class="game-emoji">🧱</div></div>
+        <div class="game-body"><h4>تكسير الطابوق</h4><p>اكسر الطابوق بالكرة واجمع نقاط أكثر في كل مرحلة.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="jumper.html">
+        <div class="game-top c4"><div class="game-emoji">🏃</div></div>
+        <div class="game-body"><h4>لعبة القفز</h4><p>اقفز فوق الصناديق والعوائق بشكل سريع ومتتابع.</p><div class="game-meta"><span class="rating">4.7 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="coin-runner.html">
+        <div class="game-top c5"><div class="game-emoji">🪙</div></div>
+        <div class="game-body"><h4>جمع العملات</h4><p>اجمع العملات وتجنب الاصطدام لرفع النقاط بسرعة.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="snake.html">
+        <div class="game-top c6"><div class="game-emoji">🐍</div></div>
+        <div class="game-body"><h4>لعبة الحية</h4><p>كبر الحية واجمع النقاط بدون اصطدام بالحركة الذكية.</p><div class="game-meta"><span class="rating">4.9 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="penalties.html">
+        <div class="game-top c2"><div class="game-emoji">⚽</div></div>
+        <div class="game-body"><h4>ركلات الجزاء 3D</h4><p>سدد ركلات الجزاء وارفع رصيدك من الأهداف والفوز.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="domino.html">
+        <div class="game-top c1"><div class="game-emoji">🁫</div></div>
+        <div class="game-body"><h4>لعبة الدومينو</h4><p>العب الدومينو بطريقة ممتعة وسجل أفضل النتائج.</p><div class="game-meta"><span class="rating">4.7 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="chess.html">
+        <div class="game-top c3"><div class="game-emoji">♟️</div></div>
+        <div class="game-body"><h4>لعبة الشطرنج</h4><p>تحديات شطرنج ذكية مع تسجيل النقاط والترتيب.</p><div class="game-meta"><span class="rating">4.9 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="backgammon.html">
+        <div class="game-top c4"><div class="game-emoji">🎲</div></div>
+        <div class="game-body"><h4>لعبة الطاولة</h4><p>العب الطاولة وسجل أفضل نتائجك مع كل جولة.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="ludo.html">
+        <div class="game-top c5"><div class="game-emoji">🎯</div></div>
+        <div class="game-body"><h4>لعبة لودو</h4><p>تقدم حتى خط النهاية وتغلب على المنافسين.</p><div class="game-meta"><span class="rating">4.8 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="level-devil.html">
+        <div class="game-top c6"><div class="game-emoji">👹</div></div>
+        <div class="game-body"><h4>لعبة ليفل ديفل</h4><p>مراحل متعددة وفخاخ وتحديات متزايدة بالصعوبة.</p><div class="game-meta"><span class="rating">4.9 ★</span></div><span class="play-btn">فتح اللعبة</span></div>
+      </a>
+      <a class="game-card" href="games-ranking.html">
+        <div class="game-top c3"><div class="game-emoji">🏆</div></div>
+        <div class="game-body"><h4>التصنيف العام</h4><p>شاهد ترتيب جميع الألعاب وأفضل اللاعبين بكل لعبة.</p><div class="game-meta"><span class="rating">مباشر</span></div><span class="play-btn">فتح التصنيف</span></div>
+      </a>
+    </section>
+
+    <div class="info-note"><b>ملاحظة:</b> لعبة القناصات مخفية من قائمة الألعاب كما طلبت، والواجهة الآن معروضة بشكل مربعات مرتبة وواضحة.</div>
   </div>
 
-  <div class="hero">
-    <div class="card">
-      <h2>مرحباً بك في مركز الألعاب</h2>
-      <p>اختر اللعبة التي تريدها وابدأ اللعب مباشرة.</p>
-      <div class="notice">لعبة القناصات مخفية من قائمة الألعاب.</div>
-    </div>
-    <div class="card">
-      <h3>إحصائيات سريعة</h3>
-      <div class="stat-grid">
-        <div class="stat"><b>13</b><span>ألعاب</span></div>
-        <div class="stat"><b id="sumPlayers">0</b><span>لاعبين محلياً</span></div>
-        <div class="stat"><b id="sumRecords">0</b><span>نتائج</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="grid" style="margin-top:16px">
-<a class="card game-card" href="car-dodge.html"><h3>🚗 تفادي العوائق</h3><p>تحرك يمين ويسار وتجنب السيارات.</p></a>
-<a class="card game-card" href="bird-game.html"><h3>🐦 لعبة الطائر</h3><p>حلّق بين الأنابيب وتجاوز الحواجز.</p></a>
-<a class="card game-card" href="brick-breaker.html"><h3>🧱 تكسير الطابوق</h3><p>اكسر الطابوق واجمع أعلى نقاط.</p></a>
-<a class="card game-card" href="jumper.html"><h3>🏃 لعبة القفز</h3><p>اقفز فوق الصناديق والعوائق.</p></a>
-<a class="card game-card" href="coin-runner.html"><h3>🪙 جمع العملات</h3><p>اجمع العملات وتجنب العوائق.</p></a>
-<a class="card game-card" href="snake.html"><h3>🐍 لعبة الحية</h3><p>اجمع النقاط وكبّر الحية بدون اصطدام.</p></a>
-<a class="card game-card" href="penalties.html"><h3>⚽ ركلات الجزاء 3D</h3><p>سدد ركلات الجزاء وارفع نتيجتك.</p></a>
-<a class="card game-card" href="domino.html"><h3>🁫 لعبة الدومينو</h3><p>العب الدومينو وسجل نقاطك.</p></a>
-<a class="card game-card" href="chess.html"><h3>♟️ لعبة الشطرنج</h3><p>تحديات شطرنج وحساب للنقاط.</p></a>
-<a class="card game-card" href="backgammon.html"><h3>🎲 لعبة الطاولة</h3><p>العب الطاولة وسجل أفضل نتائجك.</p></a>
-<a class="card game-card" href="ludo.html"><h3>🎯 لعبة لودو</h3><p>العب لودو وتقدم حتى خط النهاية.</p></a>
-<a class="card game-card" href="level-devil.html"><h3>👹 لعبة ليفل ديفل</h3><p>مراحل متعددة وفخاخ وتحديات.</p></a>
-<a class="card game-card" href="games-ranking.html"><h3>🏆 التصنيف</h3><p>شاهد ترتيب جميع الألعاب وترتيب كل لعبة بشكل منفصل.</p></a>
-  </div>
-
-  <footer>HA Marketing Games Pack</footer>
-</div>
-
-<script src="assets/ha-games-common.js"></script>
-<script>
-const d=JSON.parse(localStorage.getItem('ha_games_records_v1')||'{"games":{},"history":[]}');
-document.getElementById('sumRecords').textContent=(d.history||[]).length;
-const players=new Set();
-Object.values(d.games||{}).forEach(g=>Object.values(g.players||{}).forEach(p=>players.add(p.userId)));
-document.getElementById('sumPlayers').textContent=players.size;
-</script>
-<script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+  <script>
+    const d=JSON.parse(localStorage.getItem('ha_games_records_v1')||'{"games":{},"history":[]}');
+    document.getElementById('sumRecords').textContent=(d.history||[]).length;
+    const players=new Set();
+    Object.values(d.games||{}).forEach(g=>Object.values(g.players||{}).forEach(p=>players.add(p.userId)));
+    document.getElementById('sumPlayers').textContent=players.size;
+  </script>
+  <script src="ha-role-bottom-nav.js?v=20260930-1" defer></script>
+  <script src="ha-lux-icons.js?v=20260930-1" defer></script>
 </body>
 </html>
