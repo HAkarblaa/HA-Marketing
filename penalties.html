@@ -9,7 +9,7 @@
 #game{position:fixed;inset:0}canvas{display:block}
 .hud{position:fixed;inset:0;pointer-events:none;color:#fff;text-shadow:0 2px 4px #000}
 .score{position:absolute;top:10px;left:50%;transform:translateX(-50%);min-width:300px;text-align:center;background:#08111cdd;border:1px solid #ffffff45;border-radius:12px;padding:8px 14px;font-weight:900}
-.score small{display:block;font-size:10px;color:#ccd5df}
+.score small{display:block;font-size:10px;color:#ccd5df}.shotDots{display:flex;justify-content:center;gap:5px;margin-top:5px;direction:ltr}.shotDots i{width:10px;height:10px;border-radius:50%;display:block;background:#ffffff28;border:1px solid #ffffff55}.shotDots i.goal{background:#29d17f}.shotDots i.miss{background:#ef5350}.shotDots i.current{box-shadow:0 0 0 2px #ffd85c}
 .power{position:absolute;left:14px;top:35%;width:42px;height:180px;border-radius:24px;background:#07111edb;border:2px solid #ffffff70;padding:6px}
 .track{position:relative;width:100%;height:100%;border-radius:18px;overflow:hidden;background:linear-gradient(to top,#2dd36f 0 38%,#f3d65b 38% 70%,#ef4d4d 70%)}
 #mask{position:absolute;left:0;right:0;top:0;height:45%;background:#07111ee8}
@@ -121,7 +121,7 @@
 
 <!-- حُذف دور التحكم بحارس المرمى: اللعب الآن تسديد فقط -->
 <div class="hud">
- <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small></div>
+ <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small><div id="homeDots" class="shotDots"></div><div id="awayDots" class="shotDots"></div></div>
  <div class="power"><div class="track"><div id="mask"></div></div></div>
  <div class="joy" id="joy"><div class="joyKnob" id="joyKnob"></div></div>
  <div class="tools">
@@ -283,7 +283,7 @@ const teams={
  national:['العراق','إيران','السعودية','الكويت','قطر','الأرجنتين','البرازيل','فرنسا','إسبانيا','ألمانيا','البرتغال','إنجلترا'],
  club:['ريال مدريد','برشلونة','مانشستر سيتي','ليفربول','بايرن ميونخ','ميلان','إنتر','باريس سان جيرمان']
 };
-let gameMode='cpu',maxKicks=5,homeKicks=0,awayKicks=0,homeScore=0,awayScore=0,suddenDeath=false,matchEnded=false;
+let gameMode='cpu',maxKicks=5,homeKicks=0,awayKicks=0,homeScore=0,awayScore=0,suddenDeath=false,matchEnded=false;let homeResults=[],awayResults=[];
 let points=Number(localStorage.getItem('ha_pen_points')||0),gems=Number(localStorage.getItem('ha_pen_gems')||0);
 let tournament=JSON.parse(localStorage.getItem('ha_pen_tournament')||'null');
 
@@ -443,6 +443,7 @@ by('shopOpen').onclick=()=>{
  }
 };
 
+function updateShotDots(){const render=(id,arr,kicks)=>{const el=by(id);if(!el)return;const count=suddenDeath?Math.max(maxKicks+1,kicks+1):maxKicks;let h='';for(let i=0;i<count;i++){let c='';if(i<arr.length)c=arr[i]?'goal':'miss';else if(i===kicks)c='current';h+='<i class="'+c+'"></i>'}el.innerHTML=h};render('homeDots',homeResults,homeKicks);render('awayDots',awayResults,awayKicks)}
 function updateMatchHud(){
  by('homeScoreText').textContent=homeScore;
  by('awayScoreText').textContent=awayScore;
@@ -456,7 +457,7 @@ function setTurn(label,canShoot,side='home'){
  if(shoot){shoot.disabled=!canShoot;shoot.style.opacity=canShoot?'1':'.45'}
 }
 function resetScore(){
- homeKicks=0;awayKicks=0;homeScore=0;awayScore=0;suddenDeath=false;matchEnded=false;
+ homeKicks=0;awayKicks=0;homeScore=0;awayScore=0;suddenDeath=false;matchEnded=false;homeResults=[];awayResults=[];
  updateMatchHud();
  setTurn('أنت تسدد',true,'home');
 }
@@ -483,7 +484,7 @@ function beginGame(){
  resetScore();
  by('homeTeamText').textContent=by('teamMenu').value;
  by('awayTeamText').textContent=currentOpponent();
- by('hudMode').textContent=gameMode==='cpu'?'ضد الجهاز':gameMode==='local'?'لاعبان محلياً':gameMode==='tournament'?'بطولة — '+roundName(currentRound().fixtures.length*2):'أونلاين';
+ by('hudMode').textContent=gameMode==='cpu'?'ضد الجهاز':gameMode==='local'?'لاعبان محلياً':gameMode==='tournament'?'بطولة — '+roundName(currentRound().fixtures.length*2):'أونلاين';updateShotDots();
  by('menuScreen').style.display='none';
 }
 by('startGameFull').onclick=beginGame;
@@ -565,7 +566,7 @@ function award(goal){
 window.haPenaltyShotResult=({side,goal})=>{
  if(matchEnded)return;
  if(side==='home'){
-   homeKicks++;if(goal)homeScore++;award(goal);updateMatchHud();
+   homeKicks++;homeResults.push(!!goal);if(goal)homeScore++;award(goal);updateMatchHud();
    if(gameMode==='cpu'||gameMode==='tournament'){
      startCpuShot();
    }else if(gameMode==='local'){
@@ -575,7 +576,7 @@ window.haPenaltyShotResult=({side,goal})=>{
      startCpuShot();
    }
  }else{
-   awayKicks++;if(goal)awayScore++;updateMatchHud();
+   awayKicks++;awayResults.push(!!goal);if(goal)awayScore++;updateMatchHud();
    afterPair();
  }
 };

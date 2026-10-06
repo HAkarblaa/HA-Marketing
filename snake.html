@@ -81,7 +81,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     </div>
   </section>
 
-  <div class="note">تشتغل باللمس أو أسهم الكيبورد. كل ما تاكل النقطة يزيد طول الحية والسكور.</div>
+  <div class="note">تشتغل باللمس أو أسهم الكيبورد. الحواف مفتوحة وترجع من الجهة المقابلة، وكل نقطة تزيد طول الحية والسكور.</div>
 </div>
 
 <script>
@@ -168,11 +168,8 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
     dir=nextDir;
     const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
 
-    const hitWall=head.x<0||head.y<0||head.x>=CELLS||head.y>=CELLS;
-    if(hitWall){
-      finishAndRestart('اصطدمت بالجدار — نبدأ من جديد');
-      return;
-    }
+    head.x=(head.x+CELLS)%CELLS;
+    head.y=(head.y+CELLS)%CELLS;
     if(snake.some(s=>s.x===head.x&&s.y===head.y)){
       finishAndRestart('اصطدمت الحية بنفسها — نبدأ من جديد');
       return;
@@ -202,11 +199,12 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
       ctx.beginPath();ctx.moveTo(0,i*SIZE);ctx.lineTo(canvas.width,i*SIZE);ctx.stroke();
     }
 
-    ctx.fillStyle='#243019';
-    snake.forEach((s,i)=>{
-      const pad=i===0?2:3;
-      ctx.fillRect(s.x*SIZE+pad,s.y*SIZE+pad,SIZE-pad*2,SIZE-pad*2);
-    });
+    if(snake.length){
+      ctx.strokeStyle='#243019';ctx.lineWidth=SIZE*.62;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+      const h0=snake[0];ctx.moveTo(h0.x*SIZE+SIZE/2,h0.y*SIZE+SIZE/2);
+      for(let i=1;i<snake.length;i++){const a=snake[i-1],b=snake[i];if(Math.abs(a.x-b.x)>1||Math.abs(a.y-b.y)>1){ctx.stroke();ctx.beginPath();ctx.moveTo(b.x*SIZE+SIZE/2,b.y*SIZE+SIZE/2);}else ctx.lineTo(b.x*SIZE+SIZE/2,b.y*SIZE+SIZE/2)}
+      ctx.stroke();ctx.fillStyle='#17210f';ctx.beginPath();ctx.arc(h0.x*SIZE+SIZE/2,h0.y*SIZE+SIZE/2,SIZE*.36,0,Math.PI*2);ctx.fill();
+    }
 
     ctx.fillStyle='#1c2615';
     ctx.beginPath();

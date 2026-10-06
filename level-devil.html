@@ -34,7 +34,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 .list{display:flex;flex-direction:column;gap:10px}.list div{background:rgba(255,255,255,.04);border-radius:16px;padding:11px 12px;color:#d6deea;line-height:1.7;font-size:14px}
 .actions{display:flex;flex-wrap:wrap;gap:10px}.actions button,.actions a{flex:1 1 120px;text-align:center}
 .levels{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-height:270px;overflow:auto;padding-left:2px}.lvl{padding:9px 5px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center;border:1px solid rgba(255,255,255,.08);font-weight:800;color:#8995a3;cursor:default}.lvl.done{background:rgba(22,200,91,.14);color:#9cffbd;border-color:rgba(22,200,91,.35)}.lvl.active{background:linear-gradient(135deg,#ffd400,#ffb703);color:#111;border-color:#fff06a;box-shadow:0 0 0 2px rgba(255,212,0,.18)}.lvl.locked::after{content:' 🔒';font-size:10px}
-.note{color:var(--muted);font-size:13px;line-height:1.8}
+.note{color:var(--muted);font-size:13px;line-height:1.8}.hintbox{display:none;margin-top:10px;padding:11px 12px;border-radius:14px;background:rgba(255,212,0,.10);border:1px solid rgba(255,212,0,.28);color:#fff4a6;line-height:1.7;font-size:13px}.hintbox.show{display:block}.view-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.view-tools button{flex:1;border:1px solid rgba(255,255,255,.12);background:#132131;color:#fff;border-radius:12px;padding:9px;font-weight:800}.canvas-wrap.portrait canvas{aspect-ratio:10/16}.canvas-wrap.landscape canvas{aspect-ratio:16/10}
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
 @media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
 </style>
@@ -85,6 +85,12 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
         <h3>المراحل - تفتح بالتسلسل</h3>
         <div class="levels" id="levels"></div>
         <p class="note">🔒 ما تگدر تختار مرحلة أعلى بنفسك. لازم تكمل المرحلة الحالية حتى تنفتح اللي بعدها. اللعبة تحتوي 50 مرحلة وتزداد صعوبتها تدريجياً.</p>
+      </div>
+      <div class="card">
+        <h3>💡 المساعدة والعرض</h3>
+        <div class="actions"><button class="btn" id="hintBtn">💡 تلميح المرحلة</button></div>
+        <div id="hintBox" class="hintbox"></div>
+        <div class="view-tools"><button id="portraitBtn">📱 عمودي</button><button id="landscapeBtn">🖥️ أفقي</button></div>
       </div>
       <div class="card">
         <h3>طريقة اللعب</h3>
@@ -447,6 +453,9 @@ function beep(freq=440,duration=0.08,type='square'){
   }catch(e){}
 }
 
+const LEVEL_HINTS=['تحرك بهدوء بالبداية، وراقب الأرض قبل أول قفزة.','بعض البلوكات تنهار بعد ما توقف عليها، لا تتأخر.','لا تقفز مباشرة عند رؤية الباب؛ راقب المسامير المخفية.','استخدم قفزة قصيرة وتوقف لحظة قبل المنصة المتحركة.','إذا تكرر سقوطك، جرّب الاقتراب من الفخ ثم الرجوع حتى يتفعل بعيداً عنك.'];
+function showHint(){const box=document.getElementById('hintBox');const tier=Math.min(LEVEL_HINTS.length-1,Math.floor(currentLevelIndex/10));box.textContent='المرحلة '+(currentLevelIndex+1)+': '+LEVEL_HINTS[tier];box.classList.add('show')}
+function setView(mode){const w=document.getElementById('wrap');w.classList.remove('portrait','landscape');w.classList.add(mode);try{localStorage.setItem('ha_level_devil_view',mode)}catch(e){}}
 // UI bindings
 loadProgress();
 buildLevelButtons();
@@ -455,6 +464,10 @@ updateStageUI();
 draw();
 document.getElementById('startBtn').onclick = startGame;
 document.getElementById('restartBtn').onclick = restartCurrent;
+document.getElementById('hintBtn').onclick = showHint;
+document.getElementById('portraitBtn').onclick = ()=>setView('portrait');
+document.getElementById('landscapeBtn').onclick = ()=>setView('landscape');
+setView(localStorage.getItem('ha_level_devil_view')||'landscape');
 document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
 </script>
 <script src="ha-lux-icons.js?v=20260930-1" defer></script></body>
