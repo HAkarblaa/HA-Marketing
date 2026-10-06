@@ -2111,7 +2111,7 @@ html[data-ha-theme="light"] .shop-courier-link b{
 <link rel="stylesheet" href="ha-location-ux.css">
 <script src="ha-location-ux.js"></script>
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-</head>
+<script src="ha-role-balance-gate.js?v=20261006-1"></script></head>
 <body class="ha-ui-final ha-family-transport">
 
 <div class="app">
@@ -2565,7 +2565,20 @@ function renderPendingRide(index){
   animateRequestCard();
 }
 
-function watchPendingRides(){
+async function watchPendingRides(){
+  const hasBalance=await HA_BalanceGate.hasPositive('driver',{force:true});
+  if(!hasBalance){
+    if(driverWatch)driverWatch.off();
+    nearbyCount.textContent='0';
+    pendingEntries=[];
+    requestCard.style.display='none';
+    const emptyState=document.getElementById('requestEmptyState');
+    if(emptyState){
+      emptyState.style.display='flex';
+      emptyState.innerHTML='<div>💳 الرصيد صفر</div><small>لن تصلك طلبات النقل أو إشعاراتها حتى تعبئة الرصيد.</small>';
+    }
+    return;
+  }
   // SECURITY: do not subscribe to open ride requests unless this session has
   // already been verified as an approved transport worker through Supabase.
   if(!driverReady || !driverProfile || !Array.isArray(driverDispatchTypes) || !driverDispatchTypes.length){
@@ -3406,6 +3419,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('haDriverBalanceValue').textContent=
       amount.toLocaleString('ar-IQ',{maximumFractionDigits:2})+' د.ع';
     document.getElementById('haDriverBalance').classList.add('show');
+    await HA_BalanceGate.mount('driver');
   }catch(e){
     console.warn('driver balance',e);
   }

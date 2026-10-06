@@ -141,6 +141,16 @@
 
   async function loadNearbyNotifications(){
     if(!user)return;
+    if(window.HA_BalanceGate){
+      const ok=await window.HA_BalanceGate.hasPositive('driver',{force:true});
+      if(!ok){
+        const banner=document.getElementById('haDriverOrderAlert');
+        if(banner)banner.style.display='none';
+        const badge=document.getElementById('haTransportOrderBadge');
+        if(badge)badge.style.display='none';
+        return;
+      }
+    }
     try{
       const since=new Date(Date.now()-2*60*60*1000).toISOString();
       const {data,error}=await client().from('notifications')
