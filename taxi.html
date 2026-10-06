@@ -432,6 +432,39 @@ body.trip-sheet-open,body.trip-ready{overflow:auto!important;height:auto!importa
   min-height:42px!important;padding:8px 11px!important;border:0!important;border-radius:12px!important;
   background:#fff!important;color:#176cda!important;box-shadow:0 5px 15px rgba(25,55,75,.14)!important;font-size:10px!important;font-weight:900!important
 }
+
+/* ===== إخفاء القائمة/البحث العلوي عند الدخول إلى الخريطة ===== */
+body.ha-hide-top-map-entry .ha-search-wrap,
+body.ha-hide-top-map-entry .ha-search,
+body.ha-hide-top-map-entry .ha-hero,
+body.ha-hide-top-map-entry .hero,
+body.ha-hide-top-map-entry .hero-card,
+body.ha-hide-top-map-entry .ha-section-hero,
+body.ha-hide-top-map-entry .ha-page-hero,
+body.ha-hide-top-map-entry .ha-top-hero,
+body.ha-hide-top-map-entry .transport-hero,
+body.ha-hide-top-map-entry .transport-top-hero,
+body.ha-hide-top-map-entry .transport-header-search,
+body.ha-hide-top-map-entry .request-top-banner,
+body.ha-hide-top-map-entry .ha-smart-top,
+body.ha-hide-top-map-entry .ha-intro,
+body.ha-hide-top-map-entry .page-intro,
+body.ha-hide-top-map-entry .top-intro,
+body.ha-hide-top-map-entry .section-intro,
+body.ha-hide-top-map-entry .top-banner,
+body.ha-hide-top-map-entry .header-banner,
+body.ha-hide-top-map-entry .cover-shell,
+body.ha-hide-top-map-entry .ha-top-search,
+body.ha-hide-top-map-entry .ha-search-shell,
+body.ha-hide-top-map-entry .ha-top-shell,
+body.ha-hide-top-map-entry .ha-request-toolbar,
+body.ha-hide-top-map-entry .ha-toolbar-search,
+body.ha-hide-top-map-entry .ha-above-map-hide,
+body.ha-hide-top-map-entry [data-hide-on-map='true']{
+  display:none !important;
+}
+body.ha-hide-top-map-entry .app{margin-top:0!important}
+
 </style>
 </head>
 
@@ -1991,5 +2024,73 @@ document.getElementById('confirmCancelReason').onclick=async()=>{
   setTimeout(function(){observer.disconnect();},15000);
 })();
 </script>
+
+<script id="ha-hide-top-list-on-map">
+(function(){
+  function shouldSkip(el){
+    if(!el) return true;
+    if(el.classList && (el.classList.contains('app') || el.classList.contains('map-wrap') || el.classList.contains('head') || el.classList.contains('single-search-wrap') || el.classList.contains('province-bar') || el.classList.contains('locate-btn') || el.classList.contains('center-pin'))) return true;
+    if(el.id && ['map','selectionPanel','locationStep','tripSheet','tripSheetContent','orderArea','postOrderScreen','deliveryPostOrderScreen'].includes(el.id)) return true;
+    return false;
+  }
+  function hideTopForMap(){
+    document.body.classList.add('ha-hide-top-map-entry');
+
+    // أخفِ أي عناصر مضافة قبل التطبيق بالكامل
+    var app=document.querySelector('.app');
+    if(app){
+      var prev=app.previousElementSibling;
+      while(prev){
+        if(!shouldSkip(prev)){ prev.style.display='none'; prev.setAttribute('data-hidden-for-map','true'); }
+        prev=prev.previousElementSibling;
+      }
+    }
+
+    // أخفِ أي بانر/بحث علوي شائع داخل الصفحة فوق الخريطة
+    var topSelectors=[
+      '.ha-search-wrap','.ha-search','.ha-hero','.hero','.hero-card','.ha-section-hero','.ha-page-hero','.ha-top-hero',
+      '.transport-hero','.transport-top-hero','.transport-header-search','.request-top-banner','.ha-smart-top',
+      '.ha-intro','.page-intro','.top-intro','.section-intro','.top-banner','.header-banner','.cover-shell',
+      '.ha-top-search','.ha-search-shell','.ha-top-shell','.ha-request-toolbar','.ha-toolbar-search'
+    ];
+    topSelectors.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){
+        if(shouldSkip(el)) return;
+        var rect=el.getBoundingClientRect();
+        if(rect.top < (window.innerHeight || 900) * 0.65){
+          el.style.display='none';
+          el.setAttribute('data-hidden-for-map','true');
+        }
+      });
+    });
+
+    // لوكوّنات غير معروفة: أي عنصر كبير ظاهر فوق الخريطة داخل التطبيق نخفيه
+    var mapWrap=document.querySelector('.map-wrap');
+    if(mapWrap && mapWrap.parentElement){
+      var current=mapWrap.previousElementSibling;
+      while(current){
+        if(!shouldSkip(current)){
+          current.style.display='none';
+          current.setAttribute('data-hidden-for-map','true');
+        }
+        current=current.previousElementSibling;
+      }
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', hideTopForMap);
+  else hideTopForMap();
+  window.addEventListener('load', hideTopForMap);
+  setTimeout(hideTopForMap, 250);
+  setTimeout(hideTopForMap, 1000);
+  try{
+    var obs = new MutationObserver(function(){ hideTopForMap(); });
+    document.addEventListener('DOMContentLoaded', function(){
+      obs.observe(document.body, {childList:true, subtree:true});
+      setTimeout(function(){ try{obs.disconnect();}catch(e){} }, 6000);
+    });
+  }catch(e){}
+})();
+</script>
+
 </body>
 </html>
