@@ -786,7 +786,7 @@ extraSheet.addEventListener('click',e=>{
 
 </script>
 <script>
-const map=L.map('map',{zoomControl:false}).setView([33.3152,44.3661],12);
+const map=L.map('map',{zoomControl:false}).setView([33.2232,43.6793],6);
 
 // خريطة فاتحة وأقل تفاصيل
 // خريطة OpenStreetMap الفاتحة - مجانية وبدون API Key
@@ -947,6 +947,46 @@ locateBtn.onclick=()=>{
    timeout:10000
  });
 };
+
+
+// ===== الخريطة تعمل بكل العراق وتنتقل لموقع المستخدم تلقائياً =====
+let haAutoLocationCentered=false;
+function haAutoCenterOnCurrentLocation(){
+  if(haAutoLocationCentered || !navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const point=L.latLng(pos.coords.latitude,pos.coords.longitude);
+
+    // حدود تقريبية للعراق فقط، بدون تثبيت مدينة أو محافظة.
+    const insideIraq =
+      point.lat >= 29.0 && point.lat <= 37.5 &&
+      point.lng >= 38.5 && point.lng <= 49.5;
+
+    if(!insideIraq){
+      notice.textContent='الخريطة جاهزة لكل العراق. موقعك الحالي خارج حدود العراق.';
+      haAutoLocationCentered=true;
+      return;
+    }
+
+    setMode('start');
+    map.setView(point,16);
+    startMapPick();
+    window.pendingStartLabel='موقعك الحالي';
+    haAutoLocationCentered=true;
+
+    try{ detectProvinceFromPoint(point); }catch(e){}
+
+    notice.textContent='تم الانتقال إلى موقعك الحالي. حرّك الدبوس إذا تريد ثم ثبّت نقطة الانطلاق.';
+  },()=>{
+    notice.textContent='الخريطة جاهزة لكل العراق. فعّل الموقع أو ابحث عن أي مكان داخل العراق.';
+  },{
+    enableHighAccuracy:true,
+    timeout:10000,
+    maximumAge:30000
+  });
+}
+setTimeout(haAutoCenterOnCurrentLocation,250);
+window.addEventListener('load',()=>setTimeout(haAutoCenterOnCurrentLocation,150));
 
 async function searchCurrentPlace(){
  const q=document.getElementById('placeSearch').value.trim();
@@ -1417,7 +1457,7 @@ function openPostOrder(){
   setTimeout(()=>{
     if(!trackingMap){
       trackingMap=L.map('postMap',{zoomControl:false}).setView(
-        start ? [start.lat,start.lng] : [33.3152,44.3661],14
+        start ? [start.lat,start.lng] : [33.2232,43.6793],6
       );
       // خريطة OpenStreetMap الفاتحة - مجانية وبدون API Key
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
@@ -1614,7 +1654,7 @@ document.getElementById('finishHomeBtn').onclick=()=>{
 
   setMode('start');
   startMapPick();
-  map.setView([33.3152,44.3661],12);
+  map.setView([33.2232,43.6793],6);
 };
 
 document.getElementById('finishRateBtn').onclick=()=>{
