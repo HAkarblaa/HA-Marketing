@@ -43,6 +43,7 @@ button,.btn{border:1px solid #866124;background:#15191d;color:#efc46b;border-rad
           <label>الكود مخصص لمن؟</label>
           <select id="role">
             <option value="">جميع الأنواع</option>
+            <option value="seller">صاحب المتجر</option>
             <option value="employee">الموظف</option>
             <option value="driver">السائق / المندوب</option>
             <option value="service_provider">مقدم الخدمة</option>
@@ -68,6 +69,7 @@ const db=supabase.createClient(
 );
 
 const roleName=x=>({
+  seller:'صاحب متجر',
   employee:'موظف',
   driver:'سائق / مندوب',
   service_provider:'مقدم خدمة'
