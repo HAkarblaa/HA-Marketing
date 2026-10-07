@@ -157,7 +157,7 @@ input,select,textarea{padding:9px!important}
   position:fixed;
   inset:0;
   background:rgba(7,23,38,.52);
-  z-index:999999;
+  z-index:2147483000;
   display:none;
   align-items:center;
   justify-content:center;
@@ -169,11 +169,11 @@ input,select,textarea{padding:9px!important}
   max-height:calc(100dvh - 20px);
   overflow:auto;
   overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
   background:#fff;
   border-radius:22px;
   box-shadow:0 24px 70px rgba(0,0,0,.25);
-  padding:17px 17px 8px;
-  position:relative;
+  padding:17px;
 }
 .ha-edit-head{
   display:flex;
@@ -221,22 +221,26 @@ input,select,textarea{padding:9px!important}
   margin:5px 0 10px;
 }
 .ha-edit-actions{
+  position:sticky;
+  bottom:-17px;
+  z-index:8;
   display:flex;
   gap:8px;
-  margin-top:12px;
-  position:sticky;
-  bottom:0;
-  z-index:20;
-  background:#fff;
-  padding:12px 0 max(12px,env(safe-area-inset-bottom));
-  border-top:1px solid #e7edf2;
-  box-shadow:0 -10px 24px rgba(20,54,90,.10);
+  margin:14px -17px -17px;
+  padding:12px 17px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.98);
+  border-top:1px solid #e1e8ec;
+  box-shadow:0 -8px 22px rgba(20,45,70,.08);
+  backdrop-filter:blur(10px);
 }
 .ha-edit-actions button{
   flex:1;
-  min-height:50px;
-  font-size:15px;
-  font-weight:900;
+  min-height:46px;
+  margin:0!important;
+  padding:11px 10px!important;
+  border-radius:12px!important;
+  font-size:14px!important;
+  font-weight:900!important;
 }
 .ha-save-edit{background:#087d5b}
 .ha-cancel-edit{background:#eef2f5;color:#26384e}
@@ -250,39 +254,64 @@ input,select,textarea{padding:9px!important}
   .ha-edit-grid{grid-template-columns:1fr}
   .ha-edit-field.full{grid-column:auto}
 }
+body.ha-editing-product #haRoleBottomNav,
+body.ha-editing-product .ha-bottom,
+body.ha-editing-product .bottom-nav{
+  display:none!important;
+}
+@media(max-width:520px){
+  .ha-edit-overlay{padding:6px!important}
+  .ha-edit-modal{
+    width:100%!important;
+    max-height:calc(100dvh - 12px)!important;
+    border-radius:18px!important;
+    padding:14px!important;
+  }
+  .ha-edit-actions{
+    bottom:-14px!important;
+    margin:14px -14px -14px!important;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
+  }
+}
 </style>
-</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card"><h2>متجري</h2>
-<label style="display:block;font-weight:700;margin:0 0 6px">اختر المتجر الذي تريد تعديله</label>
-<select id="editStoreSelect"><option value="">جاري تحميل متاجرك...</option></select>
-<div class="muted" style="margin:0 0 8px">تقدر تغيّر اسم المتجر والقسم والعنوان والصورة والوصف، وبعدها اضغط حفظ التعديلات.</div>
-<select id="section">
-<option value="markets">أسواق</option>
-<option value="restaurants">مطاعم</option>
-<option value="flowers">ورد</option>
-<option value="home_appliances">أجهزة منزلية</option>
-<option value="printers">طابعات</option>
-<option value="devices">أجهزة</option>
-<option value="device_accessories">ملحقات الأجهزة</option>
-<option value="clothes">ملابس</option>
-<option value="shoes">أحذية</option>
-<option value="library">مكتبة</option>
-<option value="building_materials">مواد البناء</option>
-<option value="cards_credit">بطاقات وأرصدة</option>
-<option value="yugioh">أوراق يوغي</option>
-</select><input id="storeName" placeholder="اسم المتجر"><input id="location" placeholder="العنوان / موقع استلام المندوب">
-<div class="row" style="margin:0 0 10px">
-  <button id="storeLocateBtn" type="button" class="blue">📍 تحديد موقع المتجر</button>
-  <div id="storeLocStatus" class="muted">لم يتم تحديد الموقع بعد.</div>
+<style id="ha-multi-store-workflow">
+.ha-my-stores-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ha-add-store-btn{background:#07865f;color:#fff;text-decoration:none;border-radius:12px;padding:10px 13px;font-weight:900}
+.ha-store-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.ha-store-status-card{border:1px solid #e2e9ed;border-radius:16px;padding:12px;background:#fbfdfe}
+.ha-store-status-card b{display:block;color:#102946;margin-bottom:5px}
+.ha-store-status-card small{color:#718196;line-height:1.6}
+.ha-store-state{display:inline-block;margin-top:7px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900}
+.ha-store-state.approved{background:#e5f8ee;color:#078054}
+.ha-store-state.pending{background:#fff4da;color:#9a6500}
+.ha-store-state.rejected{background:#fff0f2;color:#bf2841}
+#legacyStoreEditor{display:none!important}
+@media(max-width:650px){.ha-store-list{grid-template-columns:1fr}}
+</style>
+</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
+<div class="card" id="stores-overview">
+  <div class="ha-my-stores-head">
+    <div>
+      <h2 style="margin:0">🏪 متاجري</h2>
+      <div class="muted">المعتمد يظهر للزبائن. المتجر الجديد يبقى قيد موافقة الأدمن الرئيسي.</div>
+    </div>
+    <a class="ha-add-store-btn" href="seller-store-request.html">➕ إضافة متجر جديد</a>
+  </div>
+  <div id="sellerStoresList" class="ha-store-list">جاري تحميل المتاجر...</div>
 </div>
-<div class="image-picker">
-<label>صورة المتجر</label>
-<div class="image-actions">
-  <input id="storeImageFile" type="file" accept="image/*" capture="environment">
+
+<div id="legacyStoreEditor">
+  <select id="section"><option value="markets">أسواق</option></select>
+  <input id="storeName"><input id="location">
+  <button id="storeLocateBtn" type="button"></button><div id="storeLocStatus"></div>
+  <input id="storeImageFile" type="file"><img id="storeImagePreview">
+  <textarea id="desc"></textarea><button id="saveStoreBtn" type="button"></button>
+  <div id="storeSaveStatus"></div>
 </div>
-<img id="storeImagePreview" class="image-preview" alt="معاينة صورة المتجر">
-<div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
-</div>
-<textarea id="desc" placeholder="وصف المتجر"></textarea><div class="row"><button id="saveStoreBtn" type="button">💾 حفظ تعديلات المتجر</button><button id="newStoreBtn" type="button" class="light">➕ متجر جديد</button></div><div id="storeSaveStatus" class="status" style="display:none"></div></div><div class="card"><h2>إضافة منتج</h2><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
+
+<div class="card"><h2>إضافة منتج</h2>
+<div class="muted">اختر المتجر المعتمد الذي تريد إضافة المنتج داخله.</div>
+<select id="addProductStoreSelect"><option value="">جاري تحميل متاجرك...</option></select><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
 <label>صورة المنتج</label>
 <div class="image-actions">
   <input id="productImageFile" type="file" accept="image/*" capture="environment">
@@ -314,8 +343,6 @@ const pdescEl=document.getElementById('pdesc');
 const productsEl=document.getElementById('products');
 const storeSaveStatus=document.getElementById('storeSaveStatus');
 const saveStoreBtn=document.getElementById('saveStoreBtn');
-const editStoreSelect=document.getElementById('editStoreSelect');
-let sellerStores=[];
 let productCategoriesCache=[];
 let autoCategoryId=null;
 
@@ -399,82 +426,7 @@ if(productImageFile){
     }
   });
 }
-
-function fillStoreForm(s){
-  store=s||null;
-  if(!s){
-    if(sectionEl)sectionEl.value='markets';
-    if(storeNameEl)storeNameEl.value='';
-    if(locationEl)locationEl.value='';
-    if(descEl)descEl.value='';
-    storeLat=null; storeLng=null; storeImageData=null;
-    showPreview(storeImagePreview,null);
-    if(storeLocStatus)storeLocStatus.textContent='لم يتم تحديد الموقع بعد.';
-    syncAutoCategory();
-    return;
-  }
-
-  if(sectionEl)sectionEl.value=s.section_key||'markets';
-  if(storeNameEl)storeNameEl.value=s.name||'';
-  if(locationEl)locationEl.value=s.location_text||'';
-  if(descEl)descEl.value=s.description||'';
-  storeLat=s.lat??null;
-  storeLng=s.lng??null;
-  storeImageData=s.image_url||null;
-  showPreview(storeImagePreview,storeImageData);
-  if(storeLocStatus){
-    storeLocStatus.textContent=(storeLat!=null&&storeLng!=null)
-      ? '✅ موقع المتجر محفوظ'
-      : 'لم يتم تحديد الموقع بعد.';
-  }
-  syncAutoCategory();
-}
-
-async function loadEditableStores(preferredId=null){
-  if(!me)return;
-  const {data,error}=await db.from('shop_businesses')
-    .select('*')
-    .eq('owner_user_id',me.id)
-    .order('created_at',{ascending:false});
-
-  if(error){
-    if(editStoreSelect)editStoreSelect.innerHTML='<option value="">تعذر تحميل المتاجر</option>';
-    return;
-  }
-
-  sellerStores=data||[];
-
-  if(editStoreSelect){
-    editStoreSelect.innerHTML=sellerStores.length
-      ? sellerStores.map(x=>`<option value="${x.id}">${esc(x.name)}${x.approval_status&&x.approval_status!=='approved'?' — '+esc(x.approval_status):''}</option>`).join('')
-      : '<option value="">لا يوجد متجر بعد</option>';
-  }
-
-  let chosen=null;
-  if(preferredId) chosen=sellerStores.find(x=>String(x.id)===String(preferredId))||null;
-  if(!chosen && store?.id) chosen=sellerStores.find(x=>String(x.id)===String(store.id))||null;
-  if(!chosen) chosen=sellerStores[0]||null;
-
-  if(chosen && editStoreSelect) editStoreSelect.value=String(chosen.id);
-  fillStoreForm(chosen);
-}
-
-if(editStoreSelect){
-  editStoreSelect.addEventListener('change',()=>{
-    const chosen=sellerStores.find(x=>String(x.id)===String(editStoreSelect.value))||null;
-    fillStoreForm(chosen);
-  });
-}
-
-const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="marketplace-onboarding.html">فتح بوابة الصلاحيات</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="marketplace-onboarding.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';
-panel.style.display='block';
-await loadEditableStores();
-const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');
-productCategoriesCache=c||[];
-syncAutoCategory();
-await loadManageStores();
-loadOrders()
-}let saveStoreBusy=false;
+const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="seller-registration.html">فتح تسجيل البائع</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="seller-registration.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();await loadManageStores();await loadSellerStoreCards();loadOrders()}let saveStoreBusy=false;
 
 function withTimeout(promise,ms=15000){
   return Promise.race([
@@ -521,7 +473,7 @@ async function saveStore(){
       lat:storeLat,
       lng:storeLng,
       description:(descEl?.value||'').trim()||null,
-      is_active:store?.is_active===false?false:true
+      is_active:true
     };
 
     let r;
@@ -575,12 +527,10 @@ async function saveStore(){
     }
 
     if(storeSaveStatus){
-      storeSaveStatus.textContent='✅ تم حفظ تعديلات المتجر بنجاح';
+      storeSaveStatus.textContent='✅ تم حفظ المتجر بنجاح';
     }
 
-    await loadEditableStores(store.id);
-    await loadManageStores();
-    alert('✅ تم حفظ تعديلات المتجر بنجاح');
+    alert('✅ تم حفظ المتجر بنجاح');
 
   }catch(e){
     console.error('saveStore error:',e);
@@ -598,7 +548,7 @@ async function saveStore(){
 
     if(saveStoreBtn){
       saveStoreBtn.disabled=false;
-      saveStoreBtn.textContent='💾 حفظ تعديلات المتجر';
+      saveStoreBtn.textContent='حفظ المتجر';
     }
   }
 }
@@ -624,15 +574,6 @@ function bindSaveStoreButton(){
   });
 }
 bindSaveStoreButton();
-
-document.getElementById('newStoreBtn')?.addEventListener('click',()=>{
-  if(editStoreSelect)editStoreSelect.value='';
-  fillStoreForm(null);
-  if(storeSaveStatus){
-    storeSaveStatus.style.display='block';
-    storeSaveStatus.textContent='اكتب بيانات المتجر الجديد ثم اضغط حفظ تعديلات المتجر.';
-  }
-});
 
 if(storeLocateBtn){storeLocateBtn.onclick=async()=>{
   storeLocStatus.textContent='جاري تحديد الموقع...';
@@ -688,8 +629,48 @@ let haManageStores=[];
 let haManageStoreId=null;
 let haEditImageData=null;
 
+
+async function loadSellerStoreCards(){
+  const box=document.getElementById('sellerStoresList');
+  if(!box||!me)return;
+
+  const {data,error}=await db.from('shop_businesses')
+    .select('id,name,section_key,location_text,approval_status,approval_note,is_active,created_at')
+    .eq('owner_user_id',me.id)
+    .order('created_at',{ascending:false});
+
+  if(error){box.innerHTML='<div class="muted">'+esc(error.message)+'</div>';return}
+
+  const arr=data||[];
+  if(!arr.length){
+    box.innerHTML='<div class="muted">ما عندك متجر بعد. اضغط «إضافة متجر جديد».</div>';
+    return;
+  }
+
+  const sectionNames={
+    markets:'الأسواق',library:'مكتبة',printers:'مطبعة',devices:'موبايلات',
+    home_appliances:'الأجهزة الإلكترونية',device_accessories:'إكسسوارات',
+    clothes:'ملابس',shoes:'أحذية',restaurants:'مطاعم',flowers:'ورد وهدايا',
+    building_materials:'مواد البناء'
+  };
+
+  box.innerHTML=arr.map(x=>{
+    const st=x.approval_status||'approved';
+    const cls=st==='approved'?'approved':st==='rejected'?'rejected':'pending';
+    const label=st==='approved'?'✅ معتمد':st==='rejected'?'❌ مرفوض':'⏳ قيد الموافقة';
+    return `<div class="ha-store-status-card">
+      <b>${esc(x.name)}</b>
+      <small>${esc(sectionNames[x.section_key]||x.section_key)}<br>${esc(x.location_text||'')}</small>
+      <br><span class="ha-store-state ${cls}">${label}</span>
+      ${x.approval_note?`<div class="muted" style="margin-top:6px">${esc(x.approval_note)}</div>`:''}
+      ${st==='approved'?`<div style="margin-top:8px"><a class="btn light" href="shop-business.html?id=${x.id}">عرض المتجر</a></div>`:''}
+    </div>`;
+  }).join('');
+}
+
 async function loadManageStores(){
   const select=document.getElementById('manageStoreSelect');
+  const addSelect=document.getElementById('addProductStoreSelect');
   const hint=document.getElementById('manageStoreHint');
   if(!select||!me)return;
 
@@ -713,21 +694,22 @@ async function loadManageStores(){
 
   if(!haManageStores.length){
     select.innerHTML='<option value="">لا يوجد متجر معتمد</option>';
+    if(addSelect)addSelect.innerHTML=select.innerHTML;
     if(hint)hint.innerHTML='أضف متجر أولاً من أقسام التسوق ثم ارجع إلى متجري.';
     haManageStoreId=null;
     loadProducts();
     return;
   }
 
-  select.innerHTML=haManageStores
-    .map(x=>`<option value="${x.id}">${esc(x.name)}</option>`)
-    .join('');
+  select.innerHTML=haManageStores.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+  if(addSelect)addSelect.innerHTML=select.innerHTML;
 
   const currentStillExists=haManageStores.some(x=>String(x.id)===String(haManageStoreId));
   if(!currentStillExists){
     haManageStoreId=haManageStores[0].id;
   }
   select.value=String(haManageStoreId);
+  if(addSelect)addSelect.value=String(haManageStoreId);
 
   if(hint){
     const s=haManageStores.find(x=>String(x.id)===String(haManageStoreId));
@@ -736,10 +718,22 @@ async function loadManageStores(){
 
   select.onchange=()=>{
     haManageStoreId=Number(select.value)||null;
+    if(addSelect)addSelect.value=select.value;
     const s=haManageStores.find(x=>String(x.id)===String(haManageStoreId));
     if(hint)hint.textContent=s?'إدارة منتجات: '+s.name:'كل متجر يعرض منتجاته فقط.';
     loadProducts();
   };
+
+  if(addSelect){
+    addSelect.onchange=()=>{
+      haManageStoreId=Number(addSelect.value)||null;
+      select.value=addSelect.value;
+      const s=haManageStores.find(x=>String(x.id)===String(haManageStoreId));
+      if(hint)hint.textContent=s?'إدارة منتجات: '+s.name:'كل متجر يعرض منتجاته فقط.';
+      syncAutoCategory();
+      loadProducts();
+    };
+  }
 
   // إذا عنده أكثر من متجر، إضافة المنتج تروح للمتجر المختار بسهولة.
   if(store?.id && !haManageStoreId)haManageStoreId=store.id;
@@ -851,8 +845,7 @@ async function haOpenEditProduct(id){
 
   document.getElementById('haEditStatus').textContent='';
   const overlay=document.getElementById('haEditProductOverlay');
-  const modal=overlay?.querySelector('.ha-edit-modal');
-  if(modal) modal.scrollTop=0;
+  document.body.classList.add('ha-editing-product');
   overlay.classList.add('show');
   overlay.setAttribute('aria-hidden','false');
 }
@@ -861,6 +854,7 @@ function haCloseEditProduct(){
   const overlay=document.getElementById('haEditProductOverlay');
   overlay.classList.remove('show');
   overlay.setAttribute('aria-hidden','true');
+  document.body.classList.remove('ha-editing-product');
 }
 
 document.getElementById('haEditClose')?.addEventListener('click',haCloseEditProduct);
