@@ -61,3 +61,55 @@ html.ha-lang-ltr .ha-lang-option{text-align:left!important}
   .ha-lang-grid{grid-template-columns:1fr}
   .ha-lang-option{min-height:67px}
 }
+/* Clean artwork and real, translatable text for the home cards. */
+.ha-main .ha-cat[data-ha-i18n-card]{container-type:inline-size;isolation:isolate}
+.ha-main .ha-cat[data-ha-i18n-card="shop"]::before{background-image:url("images/ha-language-cards/shop.png")!important;background-size:100% 100%!important;background-position:center!important}
+.ha-main .ha-cat[data-ha-i18n-card="services"]::before{background-image:url("images/ha-language-cards/services.png")!important;background-size:100% 100%!important;background-position:center!important}
+.ha-main .ha-cat[data-ha-i18n-card="study"]::before{background-image:url("images/ha-language-cards/study.png")!important;background-size:100% 100%!important;background-position:center!important}
+.ha-main .ha-cat[data-ha-i18n-card="transport"]::before{background-image:url("images/ha-language-cards/transport.png")!important;background-size:100% 100%!important;background-position:center!important}
+.ha-main .ha-cat[data-ha-i18n-card="entertainment"]::before{background-image:url("images/ha-language-cards/entertainment.png")!important;background-size:100% 100%!important;background-position:center!important}
+
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] > .ha-home-card-caption{
+  position:absolute!important;inset:auto 0 0!important;z-index:2!important;
+  min-height:36%;width:100%;box-sizing:border-box;display:flex!important;
+  flex-direction:column;justify-content:center;gap:2px;
+  padding:7px 14px;padding-inline-end:58px;pointer-events:none;
+  background:linear-gradient(0deg,rgba(0,0,0,.26),rgba(0,0,0,.05));
+  text-align:start;direction:inherit;
+}
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-caption > .ha-home-card-title,
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-caption > .ha-home-card-subtitle{
+  position:static!important;inset:auto!important;display:block!important;
+  opacity:1!important;visibility:visible!important;transform:none!important;
+  width:auto!important;height:auto!important;min-height:0!important;
+  margin:0!important;padding:0!important;color:#fff;
+  font-family:Tahoma,Arial,sans-serif!important;text-shadow:0 1px 4px rgba(0,0,0,.28);
+}
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-caption > .ha-home-card-title{
+  font-size:clamp(9px,7cqi,28px)!important;font-weight:900!important;
+  line-height:1.15!important;white-space:nowrap;
+}
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-caption > .ha-home-card-subtitle{
+  font-size:clamp(8px,3.8cqi,14px)!important;font-weight:400!important;
+  line-height:1.3!important;white-space:normal;overflow-wrap:normal;
+}
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-arrow{
+  position:absolute!important;inset-inline-end:10px;top:50%;transform:translateY(-50%);
+  width:clamp(25px,12cqi,48px);aspect-ratio:1;border-radius:50%;
+  display:grid;place-items:center;color:#fff;background:rgba(0,0,0,.24);
+}
+.ha-home-card-arrow svg{width:46%;height:46%;display:block}
+html[dir="rtl"] .ha-home-card-arrow svg{transform:rotate(180deg)}
+@media(max-width:700px){
+  .ha-main .ha-cats .ha-cat[data-ha-i18n-card] > .ha-home-card-caption{
+    padding:4px 8px;padding-inline-end:36px;gap:1px;min-height:36%;
+  }
+  .ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-arrow{inset-inline-end:6px}
+}
+/* Older card styles draw an arrow on the title itself. Use only the live arrow. */
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-title::before,
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-title::after,
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-subtitle::before,
+.ha-main .ha-cats .ha-cat[data-ha-i18n-card] .ha-home-card-subtitle::after{
+  content:none!important;display:none!important;
+}

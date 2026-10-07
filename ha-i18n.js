@@ -204,6 +204,29 @@ const IQ={
 'الأقسام':'الأقسام','الكل':'الكل'
 };
 
+// Live text for the five illustrated home cards.
+Object.assign(EN,{
+ 'منتجات متنوعة وخدمات مميزة':'Products & quality services',
+ 'خدمات منزلية واحترافية':'Home & professional services',
+ 'دورات وكتب ومستلزمات تعليمية':'Courses, books & study supplies',
+ 'حجوزات وتنقل آمن وسريع':'Safe, quick rides & bookings',
+ 'ألعاب وفيديو وموسيقى':'Games, videos & music'
+});
+Object.assign(FA,{
+ 'منتجات متنوعة وخدمات مميزة':'محصولات متنوع و خدمات ویژه',
+ 'خدمات منزلية واحترافية':'خدمات خانگی و حرفه‌ای',
+ 'دورات وكتب ومستلزمات تعليمية':'دوره‌ها، کتاب‌ها و لوازم آموزشی',
+ 'حجوزات وتنقل آمن وسريع':'رزرو و سفر امن و سریع',
+ 'ألعاب وفيديو وموسيقى':'بازی، ویدیو و موسیقی'
+});
+Object.assign(IQ,{
+ 'منتجات متنوعة وخدمات مميزة':'منتجات متنوعة وخدمات مميزة',
+ 'خدمات منزلية واحترافية':'خدمات للبيت وشغل احترافي',
+ 'دورات وكتب ومستلزمات تعليمية':'دورات وكتب وكل اللي تحتاجه للدراسة',
+ 'حجوزات وتنقل آمن وسريع':'احجز وتنقّل بأمان وبسرعة',
+ 'ألعاب وفيديو وموسيقى':'ألعاب وفيديو وموسيقى'
+});
+
 const MAPS={en:EN,fa:FA,iq:IQ};
 const originalText=new WeakMap();
 const originalAttrs=new WeakMap();
@@ -320,6 +343,38 @@ function closePicker(){
   document.getElementById('haLanguageOverlay')?.classList.remove('show');
 }
 
+function mountHomeCardCaptions(){
+  const cards={
+    'shop.html':{key:'shop',title:'التسوق',subtitle:'منتجات متنوعة وخدمات مميزة',old:'منتجات وخدمات'},
+    'services.html':{key:'services',title:'طلب خدمة',subtitle:'خدمات منزلية واحترافية',old:'خدمات احترافية'},
+    'study.html':{key:'study',title:'الدراسة',subtitle:'دورات وكتب ومستلزمات تعليمية',old:'دورات وكتب'},
+    'taxi-delivery.html':{key:'transport',title:'النقل والتكسي',subtitle:'حجوزات وتنقل آمن وسريع',old:'حجوزات وتنقل'},
+    'entertainment.html':{key:'entertainment',title:'الترفيه',subtitle:'ألعاب وفيديو وموسيقى',old:'ألعاب وفعاليات'}
+  };
+  document.querySelectorAll('.ha-main .ha-cats a.ha-cat').forEach(card=>{
+    const href=(card.getAttribute('href')||'').split('?')[0].split('/').pop();
+    const config=cards[href];
+    if(!config || card.querySelector('.ha-home-card-caption'))return;
+    const title=card.querySelector(':scope > strong')||document.createElement('strong');
+    const subtitle=card.querySelector(':scope > small')||document.createElement('small');
+    // Keep any custom administrator labels already applied to the card.
+    if(!norm(title.textContent) || norm(title.textContent)==='طلب النقل والتكسي')title.textContent=config.title;
+    if(!norm(subtitle.textContent) || norm(subtitle.textContent)===config.old)subtitle.textContent=config.subtitle;
+    title.classList.add('ha-home-card-title');
+    subtitle.classList.add('ha-home-card-subtitle');
+    const caption=document.createElement('span');
+    caption.className='ha-home-card-caption';
+    caption.append(title,subtitle);
+    const arrow=document.createElement('span');
+    arrow.className='ha-home-card-arrow';
+    arrow.setAttribute('aria-hidden','true');
+    arrow.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>';
+    caption.appendChild(arrow);
+    card.dataset.haI18nCard=config.key;
+    card.appendChild(caption);
+  });
+}
+
 function mountLanguageShortcuts(){
   document.querySelectorAll('.ha-shortcuts-list,#shortcuts,.ha-settings-list,[data-ha-language-settings]').forEach(container=>{
     if(container.querySelector('.ha-language-shortcut'))return;
@@ -378,6 +433,7 @@ function startObserver(){
   observer=new MutationObserver(ms=>{
     observer.disconnect();
     try{
+      mountHomeCardCaptions();
       for(const m of ms)for(const n of m.addedNodes)walk(n,current);
       mountLanguageShortcuts();
     }finally{
@@ -391,7 +447,7 @@ function loadCss(){
   if(document.querySelector('link[data-ha-i18n-css]'))return;
   const l=document.createElement('link');
   l.rel='stylesheet';
-  l.href='ha-i18n.css?v=20261007-shortcuts2';
+  l.href='ha-i18n.css?v=20261007-livecards3';
   l.dataset.haI18nCss='1';
   document.head.appendChild(l);
 }
@@ -399,6 +455,7 @@ function loadCss(){
 function init(){
   loadCss();
   makeUI();
+  mountHomeCardCaptions();
   mountLanguageShortcuts();
   apply(current,false);
   startObserver();
