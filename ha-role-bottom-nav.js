@@ -10,7 +10,7 @@
   const params=new URLSearchParams(location.search);
 
   const GROUPS={
-    shop:new Set(['shop.html','shop-section.html','shop-business.html','cart.html','shop-orders.html','seller-dashboard.html','shop-store-suggestion.html']),
+    shop:new Set(['shop.html','shop-section.html','shop-business.html','cart.html','shop-orders.html','order-receipt.html','seller-dashboard.html','shop-store-suggestion.html']),
     services:new Set(['services.html','add-service.html','service-orders.html','track-service.html','provider-dashboard.html','service-provider.html','employee-orders.html']),
     transport:new Set(['taxi-delivery.html','taxi.html','delivery.html','tuktuk.html','cargo.html','driver.html','transport-registration.html','transport-my-rides.html','transport-directory.html','student-transport.html','employee-student-transport.html','shop-courier.html']),
     sports:new Set(['sports.html','sports-owner.html','gym.html','football.html','football-news.html']),
@@ -19,6 +19,11 @@
     religious:new Set(['religious.html']),
     chat:new Set(['chat.html'])
   };
+
+  const SHOP_CUSTOMER_VIEWS=new Set([
+    'shop-section.html','shop-business.html','cart.html',
+    'shop-orders.html','order-receipt.html','shop-store-suggestion.html'
+  ]);
 
   function sectionOf(){
     if(file.startsWith('study-')||file.startsWith('teacher-')||file.startsWith('student-my-')||file==='study.html'||file==='courses.html') return 'study';
@@ -91,6 +96,16 @@
 
   function it(key,icon,label,href){return {key,icon,label,href}}
 
+  function customerShopNav(){
+    return {role:'الزبون',items:[
+      it('home','🏠','الرئيسية','index.html'),
+      it('shop','🛍️','التسوق','shop.html'),
+      it('cart','🛒','السلة','cart.html'),
+      it('orders','📦','طلباتي','shop-orders.html'),
+      it('join','🏪','انضم كبائع','seller-registration.html')
+    ]};
+  }
+
   function adminNav(section){
     const sectionData={
       shop:['🛍️','التسوق','shop.html','admin-shop.html'],
@@ -133,6 +148,8 @@
       transportRole=a?.role_type||'';
     }
 
+    // Browsing stores and checking out uses the customer navigation for all buyers.
+    if(section==='shop' && SHOP_CUSTOMER_VIEWS.has(file))return customerShopNav();
     if(c.isAdmin)return adminNav(section);
 
     if(section==='shop'){
@@ -145,13 +162,7 @@
           it('courier','🛵','طلب مندوب','seller-dashboard.html#orders')
         ]};
       }
-      return {role:'الزبون',items:[
-        it('home','🏠','الرئيسية','index.html'),
-        it('shop','🛍️','التسوق','shop.html'),
-        it('cart','🛒','السلة','cart.html'),
-        it('orders','📦','طلباتي','shop-orders.html'),
-        it('join','🏪','انضم كبائع','seller-registration.html')
-      ]};
+      return customerShopNav();
     }
 
     if(section==='services'){
@@ -325,6 +336,7 @@
     if(file==='study-library.html')return 'library';
     if(file==='driver.html')return hash.includes('requests')?'requests':'driver';
     if(file==='shop-courier.html')return 'requests';
+    if(file==='order-receipt.html')return 'orders';
     if(file==='transport-my-rides.html')return 'rides';
     if(file==='sports-owner.html')return hash.includes('bookings')?'bookings':'manage';
     if(file==='games-ranking.html')return 'rank';
@@ -416,6 +428,7 @@
   async function start(){
     try{
       const sec=sectionOf();
+      if(sec==='shop' && SHOP_CUSTOMER_VIEWS.has(file))render(customerShopNav(),sec);
       const c=await context();
       render(choose(sec,c),sec);
     }catch(_e){
