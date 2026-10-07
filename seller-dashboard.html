@@ -857,6 +857,7 @@ function haCloseEditProduct(){
   document.body.classList.remove('ha-editing-product');
 }
 
+function haBindProductEditor(){
 document.getElementById('haEditClose')?.addEventListener('click',haCloseEditProduct);
 document.getElementById('haCancelEditProduct')?.addEventListener('click',haCloseEditProduct);
 document.getElementById('haEditProductOverlay')?.addEventListener('click',e=>{
@@ -922,6 +923,13 @@ document.getElementById('haSaveEditProduct')?.addEventListener('click',async()=>
   await loadProducts();
   setTimeout(haCloseEditProduct,350);
 });
+
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',haBindProductEditor,{once:true});
+}else{
+  haBindProductEditor();
+}
 
 async function haDeleteProduct(id){
   const {data:x,error}=await db.from('products')
