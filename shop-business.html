@@ -8,8 +8,83 @@
 @media(max-width:560px){.product-item{grid-template-columns:84px 1fr}.product-image-wrap{width:84px;height:84px}.product-item .btn{grid-column:1/-1;text-align:center}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"></head><body><div class="wrap"><div id="box" class="card"><div class="body">جاري التحميل...</div></div><div id="sellerProducts" class="card"><div class="body"><h2>منتجات المتجر</h2><div id="spList">جاري التحميل...</div></div></div></div><script>
-const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const id=Number(new URLSearchParams(location.search).get('id'));function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function safeUrl(u){try{const x=new URL(u,location.href);return ['http:','https:'].includes(x.protocol)?x.href:''}catch{return ''}}
-async function init(){if(!Number.isInteger(id)||id<1){box.innerHTML='<div class="body">العنصر غير موجود.</div>';return}const {data:x,error}=await db.from('shop_businesses').select('*').eq('id',id).eq('is_active',true).maybeSingle();if(error||!x){box.innerHTML='<div class="body">العنصر غير متوفر حالياً.</div>';return}document.title=x.name+' - HA Marketing';const map=safeUrl(x.map_url),page=safeUrl(x.page_url);box.innerHTML=`${x.image_url?`<img class="hero" src="${esc(x.image_url)}" alt="">`:''}<div class="body"><h1>${esc(x.name)}</h1><div class="location">📍 ${esc(x.location_text||'الموقع غير محدد')}</div>${x.description?`<div class="desc">${esc(x.description)}</div>`:''}<div class="row">${map?`<a class="btn" href="${esc(map)}" target="_blank" rel="noopener">فتح الموقع على الخريطة</a>`:''}${page?`<a class="btn" href="${esc(page)}">فتح المتجر</a>`:''}<a class="btn light" href="shop-section.html?section=${encodeURIComponent(x.section_key)}">← رجوع</a></div></div>`}async function loadSellerProducts(){
+const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const id=Number(new URLSearchParams(location.search).get('id'));
+
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function safeUrl(u){
+  try{
+    if(!u) return '';
+    const raw=String(u).trim();
+    // لا نحوّل النصوص العادية إلى روابط داخل GitHub Pages حتى لا تظهر 404.
+    if(!/^https?:\/\//i.test(raw)) return '';
+    const x=new URL(raw);
+    return ['http:','https:'].includes(x.protocol)?x.href:'';
+  }catch{return ''}
+}
+
+function buildMapUrl(x){
+  const raw=String(x.map_url||'').trim();
+
+  // إذا خزّن رابط خرائط صحيح نستخدمه مباشرة.
+  if(/^https?:\/\//i.test(raw)){
+    try{
+      const u=new URL(raw);
+      if(['http:','https:'].includes(u.protocol)) return u.href;
+    }catch(_e){}
+  }
+
+  // إذا خزّن إحداثيات أو عنوان كنص، نحوله إلى بحث Google Maps.
+  let q='';
+  if(raw && !/^https?:\/\//i.test(raw)) q=raw;
+  else if(x.latitude!=null && x.longitude!=null) q=`${x.latitude},${x.longitude}`;
+  else if(x.lat!=null && x.lng!=null) q=`${x.lat},${x.lng}`;
+  else q=String(x.location_text||'').trim();
+
+  return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : '';
+}
+
+function openStoreProducts(){
+  const el=document.getElementById('sellerProducts');
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function init(){
+  if(!Number.isInteger(id)||id<1){
+    box.innerHTML='<div class="body">العنصر غير موجود.</div>';
+    return;
+  }
+
+  const {data:x,error}=await db.from('shop_businesses')
+    .select('*')
+    .eq('id',id)
+    .eq('is_active',true)
+    .maybeSingle();
+
+  if(error||!x){
+    box.innerHTML='<div class="body">العنصر غير متوفر حالياً.</div>';
+    return;
+  }
+
+  document.title=x.name+' - HA Marketing';
+  const map=buildMapUrl(x);
+
+  box.innerHTML=`${x.image_url?`<img class="hero" src="${esc(x.image_url)}" alt="">`:''}
+  <div class="body">
+    <h1>${esc(x.name)}</h1>
+    <div class="location">📍 ${esc(x.location_text||'الموقع غير محدد')}</div>
+    ${x.description?`<div class="desc">${esc(x.description)}</div>`:''}
+    <div class="row">
+      ${map?`<a class="btn" href="${esc(map)}" target="_blank" rel="noopener noreferrer">فتح الموقع على الخريطة</a>`:''}
+      <button class="btn" type="button" onclick="openStoreProducts()" style="border:0;cursor:pointer">فتح المتجر</button>
+      <a class="btn light" href="shop-section.html?section=${encodeURIComponent(x.section_key)}">← رجوع</a>
+    </div>
+  </div>`;
+}
+
+async function loadSellerProducts(){
 const {data,error}=await db.from('products')
 .select('id,name,price,discount_price,stock,image_url')
 .eq('business_id',id)
