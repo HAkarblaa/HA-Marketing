@@ -1,0 +1,54 @@
+/* HA Marketing - Multilanguage UI */
+:root{--ha-i18n-accent:#07865f;--ha-i18n-blue:#178ee5}
+#haLanguageButton{
+  position:fixed;left:12px;bottom:98px;z-index:2147482500;
+  width:44px;height:44px;border:1px solid #dce7ec;border-radius:14px;
+  display:grid;place-items:center;background:rgba(255,255,255,.97);color:#123451;
+  box-shadow:0 8px 22px rgba(28,60,84,.14);font-size:21px;cursor:pointer;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+#haLanguageOverlay{
+  position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;
+  padding:16px;background:rgba(8,25,38,.56);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)
+}
+#haLanguageOverlay.show{display:flex}
+.ha-lang-card{
+  width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;
+  box-shadow:0 24px 80px rgba(0,0,0,.28);direction:rtl
+}
+.ha-lang-head{text-align:center;margin-bottom:15px}
+.ha-lang-head .ico{font-size:35px}
+.ha-lang-head h2{margin:5px 0;color:#102946;font-size:23px}
+.ha-lang-head p{margin:0;color:#748397;font-size:12px;line-height:1.6}
+.ha-lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ha-lang-option{
+  min-height:82px;border:1px solid #dfe8ed;border-radius:17px;background:#f9fcfd;
+  padding:11px;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:right;
+  font-family:Tahoma,Arial,sans-serif;color:#17324b
+}
+.ha-lang-option:hover,.ha-lang-option.active{border-color:#8fd4bc;background:#eaf8f2}
+.ha-lang-option .flag{
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  background:#fff;font-size:24px;box-shadow:0 4px 12px rgba(20,55,80,.08)
+}
+.ha-lang-option b{display:block;font-size:15px}
+.ha-lang-option small{display:block;margin-top:3px;color:#8190a0;font-size:10px}
+.ha-lang-close{
+  width:100%;margin-top:12px;padding:11px;border:0;border-radius:13px;
+  background:#eef3f6;color:#41556b;font:900 13px Tahoma;cursor:pointer
+}
+html.ha-lang-ltr body{direction:ltr!important}
+html.ha-lang-ltr input,html.ha-lang-ltr textarea,html.ha-lang-ltr select{
+  direction:ltr!important;text-align:left!important
+}
+html.ha-lang-ltr #haRoleBottomNav,
+html.ha-lang-ltr .ha-bottom,
+html.ha-lang-ltr .bottom-nav{direction:ltr!important}
+html.ha-lang-ltr .ha-lang-card{direction:ltr!important}
+html.ha-lang-ltr .ha-lang-option{text-align:left!important}
+@media(max-width:600px){
+  #haLanguageButton{left:8px;bottom:91px;width:40px;height:40px;border-radius:13px}
+  .ha-lang-card{padding:15px;border-radius:21px}
+  .ha-lang-grid{grid-template-columns:1fr}
+  .ha-lang-option{min-height:67px}
+}
