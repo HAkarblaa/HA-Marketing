@@ -5,11 +5,60 @@
 .product-image-placeholder{font-size:34px;color:#9aa8b3}
 .product-info b{display:block;font-size:16px;margin-bottom:6px}
 .product-info .muted{color:#75869a;font-size:13px}
-@media(max-width:560px){.product-item{grid-template-columns:84px 1fr}.product-image-wrap{width:84px;height:84px}.product-item .btn{grid-column:1/-1;text-align:center}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+.product-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.product-actions .btn,.product-actions button{border:0;cursor:pointer;font:inherit}
+.cart-btn{background:#0a9a70!important;color:#fff!important}
+.cart-btn:disabled{opacity:.55;cursor:not-allowed}
+.cart-toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#10233f;color:#fff;padding:11px 16px;border-radius:999px;box-shadow:0 8px 24px #0002;z-index:9999;display:none;font-weight:700}
+@media(max-width:560px){.product-item{grid-template-columns:84px 1fr}.product-image-wrap{width:84px;height:84px}.product-actions{grid-column:1/-1;width:100%}.product-actions .btn,.product-actions button{flex:1;text-align:center}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"></head><body><div class="wrap"><div id="box" class="card"><div class="body">جاري التحميل...</div></div><div id="sellerProducts" class="card"><div class="body"><h2>منتجات المتجر</h2><div id="spList">جاري التحميل...</div></div></div></div><script>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"></head><body><div id="cartToast" class="cart-toast">تمت الإضافة للسلة ✅</div><div class="wrap"><div id="box" class="card"><div class="body">جاري التحميل...</div></div><div id="sellerProducts" class="card"><div class="body"><h2>منتجات المتجر</h2><div id="spList">جاري التحميل...</div></div></div></div><script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 const id=Number(new URLSearchParams(location.search).get('id'));
+let sellerProducts=[];
+let cart=JSON.parse(localStorage.getItem('ha_cart')||'[]');
+
+function showCartToast(msg='تمت الإضافة للسلة ✅'){
+  const el=document.getElementById('cartToast');
+  if(!el)return;
+  el.textContent=msg;
+  el.style.display='block';
+  clearTimeout(showCartToast._t);
+  showCartToast._t=setTimeout(()=>el.style.display='none',1800);
+}
+
+function addProductToCart(productId){
+  const p=sellerProducts.find(x=>Number(x.id)===Number(productId));
+  if(!p)return;
+
+  const stock=Number(p.stock||0);
+  const min=Math.max(1,Number(p.min_order_qty||1));
+
+  if(stock<min){
+    showCartToast('المنتج غير متوفر حالياً');
+    return;
+  }
+
+  const existing=cart.find(x=>Number(x.product_id)===Number(productId) && !x.option_text);
+
+  if(existing){
+    const next=Number(existing.qty||0)+min;
+    if(next>stock){
+      showCartToast('لا يمكن تجاوز الكمية المتوفرة');
+      return;
+    }
+    existing.qty=next;
+  }else{
+    cart.push({
+      product_id:Number(p.id),
+      name:p.name,
+      qty:min
+    });
+  }
+
+  localStorage.setItem('ha_cart',JSON.stringify(cart));
+  showCartToast('تمت إضافة '+p.name+' للسلة ✅');
+}
 
 function esc(s){
   return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -86,14 +135,16 @@ async function init(){
 
 async function loadSellerProducts(){
 const {data,error}=await db.from('products')
-.select('id,name,price,discount_price,stock,image_url')
+.select('id,name,price,discount_price,stock,image_url,min_order_qty')
 .eq('business_id',id)
 .eq('is_active',true)
 .order('created_at',{ascending:false});
 
 if(error){spList.textContent='';return}
 
-spList.innerHTML=(data||[]).map(p=>{
+sellerProducts=data||[];
+
+spList.innerHTML=sellerProducts.map(p=>{
   const img=safeUrl(p.image_url);
   return `<div class="product-item">
     <div class="product-image-wrap">
@@ -105,7 +156,12 @@ spList.innerHTML=(data||[]).map(p=>{
       <b>${esc(p.name)}</b>
       <div class="muted">${Number(p.discount_price??p.price).toLocaleString('ar-IQ')} د.ع — متوفر ${p.stock}</div>
     </div>
-    <a class="btn" href="product-details.html?id=${p.id}">عرض المنتج</a>
+    <div class="product-actions">
+      <button class="btn cart-btn" type="button" onclick="addProductToCart(${p.id})" ${Number(p.stock||0)<Math.max(1,Number(p.min_order_qty||1))?'disabled':''}>
+        ${Number(p.stock||0)>=Math.max(1,Number(p.min_order_qty||1))?'🛒 إضافة إلى السلة':'نفد المخزون'}
+      </button>
+      <a class="btn" href="product-details.html?id=${p.id}">عرض المنتج</a>
+    </div>
   </div>`;
 }).join('')||'لا توجد منتجات مضافة لهذا المتجر بعد.';
 }init();loadSellerProducts();
