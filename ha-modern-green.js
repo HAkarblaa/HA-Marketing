@@ -204,7 +204,7 @@
   if(window.__haI18nRequested||window.__haI18nLoaded)return;
   window.__haI18nRequested=true;
   var s=document.createElement('script');
-  s.src='ha-i18n.js?v=20261007-1';
+  s.src='ha-i18n.js?v=20261007-shortcuts2';
   s.defer=true;
   document.head.appendChild(s);
 })();

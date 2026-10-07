@@ -294,8 +294,17 @@ function updatePicker(){
   document.querySelectorAll('.ha-lang-option').forEach(
     b=>b.classList.toggle('active',b.dataset.lang===current)
   );
-  const btn=document.getElementById('haLanguageButton');
-  if(btn)btn.title=LANGS[current]?.name||'Language';
+  const labels={ar:'تغيير اللغة',iq:'تغيير اللغة',en:'Change language',fa:'تغییر زبان'};
+  document.querySelectorAll('.ha-language-shortcut').forEach(btn=>{
+    const label=labels[current]||labels.ar;
+    const name=LANGS[current]?.name||LANGS.ar.name;
+    btn.title=label+' — '+name;
+    btn.setAttribute('aria-label',btn.title);
+    const text=btn.querySelector('.ha-language-label');
+    const value=btn.querySelector('.ha-language-value');
+    if(text && text.textContent!==label)text.textContent=label;
+    if(value && value.textContent!==name)value.textContent=name;
+  });
 }
 
 function openPicker(force=false){
@@ -311,25 +320,36 @@ function closePicker(){
   document.getElementById('haLanguageOverlay')?.classList.remove('show');
 }
 
-function makeUI(){
-  if(document.getElementById('haLanguageButton'))return;
+function mountLanguageShortcuts(){
+  document.querySelectorAll('.ha-shortcuts-list,#shortcuts,.ha-settings-list,[data-ha-language-settings]').forEach(container=>{
+    if(container.querySelector('.ha-language-shortcut'))return;
+    const btn=document.createElement('button');
+    if(!document.getElementById('haLanguageButton'))btn.id='haLanguageButton';
+    btn.className='ha-language-shortcut';
+    btn.type='button';
+    btn.dataset.noI18n='1';
+    btn.setAttribute('aria-haspopup','dialog');
+    btn.setAttribute('aria-controls','haLanguageOverlay');
+    btn.innerHTML='<span class="ico short-ico ha-language-icon" aria-hidden="true">🌐</span><span class="ha-language-label"></span><small class="ha-language-value"></small>';
+    btn.onclick=()=>openPicker(false);
+    const account=container.querySelector('a[href="account.html"]');
+    if(account)account.insertAdjacentElement('afterend',btn);
+    else container.appendChild(btn);
+  });
+  updatePicker();
+}
 
-  const btn=document.createElement('button');
-  btn.id='haLanguageButton';
-  btn.type='button';
-  btn.textContent='🌐';
-  btn.setAttribute('aria-label','Language');
-  btn.onclick=()=>openPicker(false);
-  document.body.appendChild(btn);
+function makeUI(){
+  if(document.getElementById('haLanguageOverlay'))return;
 
   const ov=document.createElement('div');
   ov.id='haLanguageOverlay';
   ov.innerHTML=
-    `<div class="ha-lang-card">
+    `<div class="ha-lang-card" role="dialog" aria-modal="true" aria-labelledby="haLanguageTitle">
       <div class="ha-lang-head">
         <div class="ico">🌐</div>
-        <h2>اختر اللغة / Choose language</h2>
-        <p>يمكنك تغيير اللغة لاحقاً من زر 🌐</p>
+        <h2 id="haLanguageTitle">اختر اللغة / Choose language</h2>
+        <p>يمكنك تغيير اللغة لاحقاً من قائمة الاختصارات</p>
       </div>
       <div class="ha-lang-grid">
         ${Object.entries(LANGS).map(([k,v])=>
@@ -359,6 +379,7 @@ function startObserver(){
     observer.disconnect();
     try{
       for(const m of ms)for(const n of m.addedNodes)walk(n,current);
+      mountLanguageShortcuts();
     }finally{
       observer.observe(document.body,{childList:true,subtree:true});
     }
@@ -370,7 +391,7 @@ function loadCss(){
   if(document.querySelector('link[data-ha-i18n-css]'))return;
   const l=document.createElement('link');
   l.rel='stylesheet';
-  l.href='ha-i18n.css?v=20261007-1';
+  l.href='ha-i18n.css?v=20261007-shortcuts2';
   l.dataset.haI18nCss='1';
   document.head.appendChild(l);
 }
@@ -378,6 +399,7 @@ function loadCss(){
 function init(){
   loadCss();
   makeUI();
+  mountLanguageShortcuts();
   apply(current,false);
   startObserver();
   if(!localStorage.getItem(KEY))openPicker(true);
