@@ -434,7 +434,7 @@
   if(window.__haI18nRequested||window.__haI18nLoaded)return;
   window.__haI18nRequested=true;
   var s=document.createElement('script');
-  s.src='ha-i18n.js?v=20261007-livecards3';
+  s.src='ha-i18n.js?v=20261008-all-sections1';
   s.defer=true;
   document.head.appendChild(s);
 })();

@@ -227,6 +227,11 @@ Object.assign(IQ,{
  'ألعاب وفيديو وموسيقى':'ألعاب وفيديو وموسيقى'
 });
 
+const sectionTranslations=window.HASectionArtwork?.i18n;
+if(sectionTranslations){
+  Object.assign(EN,sectionTranslations.en||{});
+  Object.assign(FA,sectionTranslations.fa||{});
+}
 const MAPS={en:EN,fa:FA,iq:IQ};
 const originalText=new WeakMap();
 const originalAttrs=new WeakMap();
@@ -269,7 +274,7 @@ function translateAttrs(el,lang){
   let data=originalAttrs.get(el);
   if(!data){data={};originalAttrs.set(el,data)}
 
-  for(const attr of ['placeholder','title','aria-label']){
+  for(const attr of ['placeholder','title','aria-label','alt']){
     if(el.hasAttribute(attr)){
       if(!(attr in data))data[attr]=el.getAttribute(attr);
       el.setAttribute(attr,translateCore(data[attr],lang));
@@ -344,6 +349,7 @@ function closePicker(){
 }
 
 function mountHomeCardCaptions(){
+  if((location.pathname.split('/').pop()||'index.html').toLowerCase()!=='index.html')return;
   const cards={
     'shop.html':{key:'shop',title:'التسوق',subtitle:'منتجات متنوعة وخدمات مميزة',old:'منتجات وخدمات'},
     'services.html':{key:'services',title:'طلب خدمة',subtitle:'خدمات منزلية واحترافية',old:'خدمات احترافية'},
@@ -371,6 +377,47 @@ function mountHomeCardCaptions(){
     arrow.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>';
     caption.appendChild(arrow);
     card.dataset.haI18nCard=config.key;
+    card.appendChild(caption);
+  });
+}
+
+function mountSectionCardCaptions(){
+  const artwork=window.HASectionArtwork;
+  if(!artwork)return;
+  artwork.mount(document);
+  const page=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  const config=artwork.pages[page];
+  if(config){
+    document.querySelectorAll('.ha-section-cover,.ha-shop-premium-hero').forEach(cover=>{
+      if(cover.querySelector('.ha-section-cover-caption'))return;
+      const caption=document.createElement('div');
+      caption.className='ha-section-cover-caption';
+      const title=document.createElement('strong');
+      title.className='ha-section-cover-title';
+      title.textContent=config.title;
+      const subtitle=document.createElement('small');
+      subtitle.className='ha-section-cover-subtitle';
+      subtitle.textContent=config.subtitle;
+      caption.append(title,subtitle);
+      cover.dataset.haLiveCover='1';
+      cover.appendChild(caption);
+    });
+  }
+  document.querySelectorAll('.ha-shop-premium-cats > a[data-ha-clean-shop]').forEach(card=>{
+    if(card.querySelector('.ha-section-card-caption'))return;
+    const title=card.querySelector('strong');
+    const subtitle=card.querySelector('small');
+    if(!title)return;
+    const labels=artwork.shopCaptions[card.dataset.haCleanShop];
+    if(labels){
+      if(norm(title.textContent)===labels.oldTitle)title.textContent=labels.title;
+      if(subtitle && norm(subtitle.textContent)===labels.oldSubtitle)subtitle.textContent=labels.subtitle;
+    }
+    const caption=document.createElement('span');
+    caption.className='ha-section-card-caption';
+    title.classList.add('ha-section-card-title');
+    caption.appendChild(title);
+    if(subtitle){subtitle.classList.add('ha-section-card-subtitle');caption.appendChild(subtitle);}
     card.appendChild(caption);
   });
 }
@@ -434,6 +481,7 @@ function startObserver(){
     observer.disconnect();
     try{
       mountHomeCardCaptions();
+      mountSectionCardCaptions();
       for(const m of ms)for(const n of m.addedNodes)walk(n,current);
       mountLanguageShortcuts();
     }finally{
@@ -447,7 +495,7 @@ function loadCss(){
   if(document.querySelector('link[data-ha-i18n-css]'))return;
   const l=document.createElement('link');
   l.rel='stylesheet';
-  l.href='ha-i18n.css?v=20261007-livecards3';
+  l.href='ha-i18n.css?v=20261008-all-sections1';
   l.dataset.haI18nCss='1';
   document.head.appendChild(l);
 }
@@ -456,6 +504,7 @@ function init(){
   loadCss();
   makeUI();
   mountHomeCardCaptions();
+  mountSectionCardCaptions();
   mountLanguageShortcuts();
   apply(current,false);
   startObserver();

@@ -23,6 +23,8 @@ function clean(s){return String(s||'').replace(/\s+/g,' ').trim()}
 function ensureSectionCover(){
   const def=SECTION_COVERS[PAGE];
   if(!def)return null;
+  const family=window.HASectionArtwork?.pages[PAGE]?.key;
+  const fallback=window.HASectionArtwork?.covers[family]||def.fallback;
   let cover=null;
   if(def.selector)cover=document.querySelector(def.selector);
   if(!cover)cover=document.querySelector('.ha-section-cover,[data-ha-section-cover]');
@@ -32,7 +34,7 @@ function ensureSectionCover(){
     cover=document.createElement('section');
     cover.className='ha-section-cover ha-generated-section-cover';
     const img=document.createElement('img');
-    img.src=def.fallback;
+    img.src=fallback;
     img.alt=def.label;
     cover.appendChild(img);
     const firstHead=host.querySelector('.ha-section-head,.card.hero');
@@ -44,9 +46,10 @@ function ensureSectionCover(){
   cover.classList.add('ha-section-cover-standard');
   let img=cover.querySelector('img');
   if(!img){
-    img=document.createElement('img');img.src=def.fallback;img.alt=def.label;cover.appendChild(img);
+    img=document.createElement('img');img.src=fallback;img.alt=def.label;cover.appendChild(img);
   }
   if(!img.getAttribute('alt'))img.alt=def.label;
+  window.HASectionArtwork?.mount(document);
   return cover;
 }
 function cardLabel(el){let x=el.getAttribute('data-ha-card-label')||el.getAttribute('aria-label')||'';if(!x){let q=el.querySelector('strong,h5,h4,h3,b,.title,.name');if(q)x=q.textContent}if(!x)x=el.textContent;return clean(x).slice(0,90)||'مربع'}

@@ -32,14 +32,19 @@ async function remote(section){
   }
 }
 
+function cleanSource(src){
+  const name=String(src||'').split(/[?#]/)[0].split('/').pop();
+  return window.HASectionArtwork?.slides[name]||src;
+}
+
 function merge(section,rows){
-  const base=(DEFAULTS[section]||[]).map(x=>({...x}));
+  const base=(DEFAULTS[section]||[]).map(x=>({...x,image_url:cleanSource(x.image_url)}));
   if(!Array.isArray(rows)||!rows.length)return base;
   return base.map(d=>{
     const r=rows.find(x=>Number(x.slot)===d.slot);
     return r?{
       ...d,...r,
-      image_url:r.image_url||d.image_url,
+      image_url:cleanSource(r.image_url||d.image_url),
       title:r.title||d.title,
       subtitle:r.subtitle||d.subtitle,
       details_url:r.details_url||d.details_url
@@ -48,9 +53,17 @@ function merge(section,rows){
 }
 
 function setBackgrounds(root){
-  root.querySelectorAll('.ha-home-slide-bg').forEach(bg=>{
+  const defaults=DEFAULTS[root.dataset.haSlider]||[];
+  root.querySelectorAll('.ha-home-slide-bg').forEach((bg,index)=>{
     const src=bg.getAttribute('data-src')||'';
-    if(src) bg.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
+    const fallback=cleanSource(defaults[index]?.image_url||'');
+    const set=url=>{if(url)bg.style.backgroundImage='url("'+url.replace(/"/g,'%22')+'")';};
+    set(fallback);
+    if(!src||src===fallback)return;
+    const img=new Image();
+    img.onload=()=>set(src);
+    img.onerror=()=>set(fallback);
+    img.src=src;
   });
 }
 
