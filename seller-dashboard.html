@@ -1,734 +1,401 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0)}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
+<!doctype html><html lang="ar" dir="rtl"><head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0)}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
 .image-picker{border:1px dashed #bbb;border-radius:12px;padding:10px;margin:5px 0 10px;background:#fafafa}
 .image-picker label{display:block;font-weight:700;margin-bottom:7px}
 .image-preview{display:none;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:8px;border:1px solid #ddd}
 .image-actions{display:flex;gap:8px;flex-wrap:wrap}
 .image-actions input{margin:0;flex:1;min-width:210px}
 .note{font-size:12px;color:#777;margin-top:6px}@media(max-width:720px){.card{padding:11px;font-size:13px}}
-/* ===== لوحة بائع مختصرة ===== */
-.wrap{max-width:900px!important}
-.top h1{font-size:22px!important}
-.card{padding:12px!important;margin:10px 0!important;border-radius:14px!important}
-.card h2{font-size:18px!important;margin:5px 0 12px!important}
-.muted{font-size:13px!important}
-.image-picker,.note,.image-preview{ }
-.row{gap:8px!important}
-input,select,textarea{padding:9px!important}
-
-#panel>.card:nth-of-type(1),
-#panel>.card:nth-of-type(2),
-#panel>.card:nth-of-type(3),
-#panel>.card:nth-of-type(4){
- box-shadow:0 3px 12px #0001!important;
-}
-
-@media(max-width:720px){
- .top{justify-content:center!important;text-align:center}
- .top .btn{font-size:12px!important;padding:9px!important}
- .card{font-size:13px!important}
-}
-
+.products-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+.products-toolbar .products-title{margin:0}
+.products-toolbar .products-count{background:#eef6ff;color:#1769e0;border-radius:999px;padding:7px 11px;font-weight:700;font-size:13px}
+.products-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.seller-product-card{background:#fff;border:1px solid #e8edf3;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(20,54,90,.08);transition:.2s ease;min-width:0}
+.seller-product-card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,54,90,.12)}
+.seller-product-image{position:relative;height:175px;background:linear-gradient(135deg,#eef6ff,#f8fbff);overflow:hidden}
+.seller-product-image img{width:100%;height:100%;object-fit:cover;display:block}
+.seller-product-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px}
+.seller-status{position:absolute;top:10px;right:10px;background:#12a864;color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800}
+.seller-status.off{background:#8b95a7}
+.seller-stock{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.94);color:#24344d;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;box-shadow:0 2px 10px #0001}
+.seller-product-body{padding:13px}
+.seller-product-name{font-size:16px;font-weight:800;color:#10233f;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seller-product-desc{font-size:12px;color:#7b8798;margin-top:5px;line-height:1.6;height:38px;overflow:hidden}
+.seller-product-price{font-size:18px;font-weight:900;color:#087d4b;margin-top:9px}
+.seller-product-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.seller-product-actions button{padding:9px 7px;border-radius:11px;font-size:12px;font-weight:800}
+.seller-product-actions .edit-product{background:#eaf3ff;color:#1769e0}
+.seller-product-actions .toggle-product{background:#eaf9f1;color:#087d4b}
+.seller-product-actions .toggle-product.off{background:#f0f2f5;color:#657084}
+.seller-product-actions .image-product{background:#f3ecff;color:#6a2bd9;padding:9px}
+.seller-product-actions .delete-product{background:#fff0f2;color:#cf193c;padding:9px}
+@media(max-width:900px){.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.products-grid{grid-template-columns:1fr}.seller-product-image{height:210px}}
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-role-bottom-nav.css?v=20261002-seller1">
-<style id="ha-seller-easy-products-style">
-.ha-store-switcher{
-  background:linear-gradient(135deg,#f8fbff,#f2fbf7);
-  border:1px solid #dceae5;
-  border-radius:18px;
-  padding:13px;
-  margin:12px 0;
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="ha-location-picker.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="ha-location-picker.js"></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><style id="ha-seller-simple-flow-style">
+.ha-simple-product-card{
+  background:#fff;border:1px solid #e3ece8;border-radius:20px;
+  padding:16px;box-shadow:0 10px 28px rgba(22,70,56,.08)
 }
-.ha-store-switcher label{
-  display:block;
-  font-size:12px;
-  font-weight:900;
-  color:#42556d;
-  margin-bottom:6px;
+.ha-simple-product-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ha-simple-product-head h2{margin:0}
+.ha-step-badge{background:#eaf8f2;color:#087d5b;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}
+.ha-simple-form{display:grid;gap:10px}
+.ha-simple-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ha-simple-form label{display:block;font-size:12px;font-weight:800;color:#42556d;margin-bottom:5px}
+.ha-simple-form input,.ha-simple-form select,.ha-simple-form textarea{
+  width:100%;border:1px solid #d7e3df;border-radius:13px;padding:12px 13px;
+  background:#fbfefd;font:inherit;outline:none
 }
-.ha-store-switcher select{
-  margin:0;
-  border-radius:13px;
-  border:1px solid #d5e3df;
-  background:#fff;
+.ha-simple-form textarea{min-height:86px;resize:vertical}
+.ha-simple-form input:focus,.ha-simple-form select:focus,.ha-simple-form textarea:focus{
+  border-color:#0a9a70;box-shadow:0 0 0 3px rgba(10,154,112,.09)
 }
-.ha-store-switcher .ha-store-hint{
-  margin-top:7px;
-  font-size:11px;
-  color:#718196;
+.ha-simple-note{font-size:12px;color:#708093;line-height:1.7}
+.ha-simple-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.ha-simple-actions button{flex:1;min-width:150px}
+.ha-store-chip{
+  display:inline-flex;align-items:center;gap:5px;background:#eef6ff;color:#1769e0;
+  border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800
 }
-.ha-product-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-  margin-top:12px;
+.ha-quick-price{display:flex;gap:7px;flex-wrap:wrap}
+.ha-quick-price button{
+  border:1px solid #dbe8e4;background:#fff;color:#42556d;border-radius:10px;
+  padding:7px 10px;font-size:11px;cursor:pointer
 }
-.ha-product-card{
-  background:#fff;
-  border:1px solid #e4ece9;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 9px 22px rgba(20,55,80,.08);
+.ha-image-preview{
+  width:100%;height:160px;border:1px dashed #cddbd6;border-radius:14px;
+  display:none;object-fit:cover;background:#f4f8f6
 }
-.ha-product-card-img{
-  position:relative;
-  height:160px;
-  background:linear-gradient(135deg,#eef7ff,#f3fbf7);
-  overflow:hidden;
-}
-.ha-product-card-img img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.ha-product-card-placeholder{
-  width:100%;
-  height:100%;
-  display:grid;
-  place-items:center;
-  font-size:48px;
-}
-.ha-product-status{
-  position:absolute;
-  top:8px;
-  right:8px;
-  padding:5px 8px;
-  border-radius:999px;
-  background:#0da66c;
-  color:#fff;
-  font-size:10px;
-  font-weight:900;
-}
-.ha-product-status.off{background:#7e8996}
-.ha-product-stock{
-  position:absolute;
-  top:8px;
-  left:8px;
-  padding:5px 8px;
-  border-radius:999px;
-  background:rgba(255,255,255,.94);
-  color:#293a50;
-  font-size:9px;
-  font-weight:900;
-}
-.ha-product-card-body{padding:11px}
-.ha-product-card-title{
-  font-size:14px;
-  font-weight:900;
-  color:#102946;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.ha-product-card-desc{
-  color:#768497;
-  font-size:10px;
-  line-height:1.5;
-  height:31px;
-  overflow:hidden;
-  margin-top:4px;
-}
-.ha-product-card-price{
-  margin-top:7px;
-  color:#087b55;
-  font-size:15px;
-  font-weight:950;
-}
-.ha-product-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:6px;
-  margin-top:10px;
-}
-.ha-product-actions button{
-  padding:8px 5px;
-  border-radius:10px;
-  font-size:10px;
-  font-weight:900;
-}
-.ha-product-actions .ha-edit-product{background:#eaf3ff;color:#1769e0}
-.ha-product-actions .ha-toggle-product{background:#eaf9f1;color:#087d4b}
-.ha-product-actions .ha-toggle-product.off{background:#f0f2f5;color:#657084}
-.ha-product-actions .ha-delete-product{background:#fff0f2;color:#cf193c}
-
-/* تعديل المنتج */
-.ha-edit-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(7,23,38,.52);
-  z-index:10020;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:14px;
-}
-.ha-edit-overlay.show{display:flex}
-.ha-edit-modal{
-  width:min(560px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:#fff;
-  border-radius:22px;
-  box-shadow:0 24px 70px rgba(0,0,0,.25);
-  padding:17px;
-}
-.ha-edit-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:10px;
-}
-.ha-edit-head h3{
-  margin:0;
-  color:#102946;
-}
-.ha-edit-close{
-  width:34px;
-  height:34px;
-  min-width:34px;
-  padding:0;
-  display:grid;
-  place-items:center;
-  background:#eef2f5;
-  color:#27384e;
-  border-radius:10px;
-}
-.ha-edit-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-}
-.ha-edit-field label{
-  display:block;
-  margin-bottom:4px;
-  color:#42556d;
-  font-size:11px;
-  font-weight:900;
-}
-.ha-edit-field.full{grid-column:1/-1}
-.ha-edit-preview{
-  display:none;
-  width:100%;
-  height:190px;
-  object-fit:contain;
-  background:#f5f8fa;
-  border:1px solid #dde6eb;
-  border-radius:14px;
-  margin:5px 0 10px;
-}
-.ha-edit-actions{
-  display:flex;
-  gap:8px;
-  margin-top:12px;
-}
-.ha-edit-actions button{flex:1}
-.ha-save-edit{background:#087d5b}
-.ha-cancel-edit{background:#eef2f5;color:#26384e}
-
-@media(max-width:800px){
-  .ha-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:520px){
-  .ha-product-grid{grid-template-columns:1fr}
-  .ha-product-card-img{height:190px}
-  .ha-edit-grid{grid-template-columns:1fr}
-  .ha-edit-field.full{grid-column:auto}
-}
-</style>
-<style id="ha-multi-store-workflow">
-.ha-my-stores-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.ha-add-store-btn{background:#07865f;color:#fff;text-decoration:none;border-radius:12px;padding:10px 13px;font-weight:900}
-.ha-store-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
-.ha-store-status-card{border:1px solid #e2e9ed;border-radius:16px;padding:12px;background:#fbfdfe}
-.ha-store-status-card b{display:block;color:#102946;margin-bottom:5px}
-.ha-store-status-card small{color:#718196;line-height:1.6}
-.ha-store-state{display:inline-block;margin-top:7px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900}
-.ha-store-state.approved{background:#e5f8ee;color:#078054}
-.ha-store-state.pending{background:#fff4da;color:#9a6500}
-.ha-store-state.rejected{background:#fff0f2;color:#bf2841}
-#legacyStoreEditor{display:none!important}
-@media(max-width:650px){.ha-store-list{grid-template-columns:1fr}}
-</style>
-</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
-<div class="card" id="stores-overview">
-  <div class="ha-my-stores-head">
-    <div>
-      <h2 style="margin:0">🏪 متاجري</h2>
-      <div class="muted">المعتمد يظهر للزبائن. المتجر الجديد يبقى قيد موافقة الأدمن الرئيسي.</div>
-    </div>
-    <a class="ha-add-store-btn" href="seller-store-request.html">➕ إضافة متجر جديد</a>
+@media(max-width:650px){.ha-simple-row{grid-template-columns:1fr}}
+</style><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="marketplace-onboarding.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="card" id="store" style="scroll-margin-top:20px"><h2>متجري</h2><select id="section">
+<option value="markets">أسواق</option>
+<option value="restaurants">مطاعم</option>
+<option value="flowers">ورد</option>
+<option value="home_appliances">أجهزة منزلية</option>
+<option value="printers">طابعات</option>
+<option value="devices">أجهزة</option>
+<option value="device_accessories">ملحقات الأجهزة</option>
+<option value="clothes">ملابس</option>
+<option value="shoes">أحذية</option>
+<option value="library">مكتبة</option>
+<option value="building_materials">مواد البناء</option>
+<option value="cards_credit">بطاقات وأرصدة</option>
+<option value="yugioh">أوراق يوغي</option>
+</select><input id="storeName" placeholder="اسم المتجر">
+<input id="location" type="hidden">
+<div class="ha-location-box">
+  <div class="ha-location-grid">
+    <select id="storeGovernorate"><option value="">اختر المحافظة</option></select>
+    <input id="storeArea" placeholder="القضاء / الناحية / الحي">
+    <input id="storeAddress" class="full" placeholder="العنوان التفصيلي للمتجر">
   </div>
-  <div id="sellerStoresList" class="ha-store-list">جاري تحميل المتاجر...</div>
+  <input id="storeLatInput" type="hidden"><input id="storeLngInput" type="hidden">
+  <div class="ha-location-actions">
+    <button id="storeMapBtn" type="button" class="light">🗺️ اختيار المتجر من الخريطة</button>
+    <button id="storeLocateBtn" type="button" class="blue">📍 دبوس موقعي الحالي</button>
+  </div>
+  <div id="storeLocStatus" class="ha-location-status">حدد موقع المتجر من الخريطة أو استخدم دبوس موقعك الحالي.</div>
+  <div id="storeMap" class="ha-location-map"></div>
 </div>
-
-<div id="legacyStoreEditor">
-  <select id="section"><option value="markets">أسواق</option></select>
-  <input id="storeName"><input id="location">
-  <button id="storeLocateBtn" type="button"></button><div id="storeLocStatus"></div>
-  <input id="storeImageFile" type="file"><img id="storeImagePreview">
-  <textarea id="desc"></textarea><button id="saveStoreBtn" type="button"></button>
-  <div id="storeSaveStatus"></div>
-</div>
-
-<div class="card"><h2>إضافة منتج</h2>
-<div class="muted">اختر المتجر المعتمد الذي تريد إضافة المنتج داخله.</div>
-<select id="addProductStoreSelect"><option value="">جاري تحميل متاجرك...</option></select><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
-<label>صورة المنتج</label>
+<div class="image-picker">
+<label>صورة المتجر</label>
 <div class="image-actions">
-  <input id="productImageFile" type="file" accept="image/*" capture="environment">
+  <input id="storeImageFile" type="file" accept="image/*" capture="environment">
 </div>
-<img id="productImagePreview" class="image-preview" alt="معاينة صورة المنتج">
+<img id="storeImagePreview" class="image-preview" alt="معاينة صورة المتجر">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card" id="my-products">
-  <div class="row">
-    <h2>🛍️ منتجات متجري</h2>
-    <span id="productsCount" class="badge">0 منتج</span>
+<textarea id="desc" placeholder="وصف المتجر"></textarea><div class="row" style="margin-top:8px"><button id="saveStoreBtn" type="button">حفظ المتجر</button><button id="deleteStoreBtn" type="button" class="danger" style="display:none">🗑️ حذف المتجر</button></div><div id="storeSaveStatus" class="status" style="display:none"></div></div>
+<div class="ha-simple-product-card" id="add-product" style="scroll-margin-top:20px">
+  <div class="ha-simple-product-head">
+    <h2>➕ إضافة منتج</h2>
+    <span class="ha-step-badge">3 خطوات فقط</span>
   </div>
-  <div class="ha-store-switcher">
-    <label>اختر المتجر الذي تريد إدارة منتجاته</label>
-    <select id="manageStoreSelect"><option value="">جاري تحميل متاجرك...</option></select>
-    <div id="manageStoreHint" class="ha-store-hint">كل متجر يعرض منتجاته فقط.</div>
-  </div>
-  <div id="products" class="ha-product-grid">جاري التحميل...</div>
-</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
-let storeImageData=null,productImageData=null;
-const sectionEl=document.getElementById('section');
-const storeNameEl=document.getElementById('storeName');
-const locationEl=document.getElementById('location');
-const descEl=document.getElementById('desc');
-const pnameEl=document.getElementById('pname');
-const priceEl=document.getElementById('price');
-const stockEl=document.getElementById('stock');
-const pdescEl=document.getElementById('pdesc');
-const productsEl=document.getElementById('products');
-const storeSaveStatus=document.getElementById('storeSaveStatus');
-const saveStoreBtn=document.getElementById('saveStoreBtn');
-let productCategoriesCache=[];
-let autoCategoryId=null;
 
-const SECTION_AR={
-  markets:'أسواق',
-  restaurants:'مطاعم',
-  flowers:'ورد',
-  home_appliances:'أجهزة منزلية',
-  printers:'طابعات',
-  devices:'أجهزة',
-  device_accessories:'ملحقات الأجهزة',
-  clothes:'ملابس',
-  shoes:'أحذية',
-  library:'مكتبة',
-  building_materials:'مواد البناء',
-  cards_credit:'بطاقات وأرصدة',
-  yugioh:'أوراق يوغي'
-};
+  <div class="ha-simple-form">
+    <div>
+      <label>1) اختر متجرك</label>
+      <select id="productBusiness">
+        <option value="">اختر متجر</option>
+      </select>
+      <div id="selectedStoreInfo" class="ha-simple-note">تظهر هنا متاجرك الموافق عليها فقط.</div>
+    </div>
 
-function syncAutoCategory(){
-  const key=(store?.section_key || sectionEl?.value || '').trim();
-  const wanted=SECTION_AR[key]||'';
-  const exact=productCategoriesCache.find(x=>String(x.name||'').trim()===wanted);
-  autoCategoryId=exact?.id ?? productCategoriesCache[0]?.id ?? null;
-}
-const storeLocateBtn=document.getElementById('storeLocateBtn');
-const storeImageFile=document.getElementById('storeImageFile');
-const storeImagePreview=document.getElementById('storeImagePreview');
-const productImageFile=document.getElementById('productImageFile');
-const productImagePreview=document.getElementById('productImagePreview');
-const storeLocStatus=document.getElementById('storeLocStatus');
-async function fileToCompressedDataUrl(file,maxSide=1200,quality=.78){
-  if(!file)return null;
-  if(!file.type.startsWith('image/'))throw new Error('الملف المختار ليس صورة.');
-  if(file.size>12*1024*1024)throw new Error('حجم الصورة كبير جداً. اختر صورة أصغر من 12MB.');
-  const raw=await new Promise((resolve,reject)=>{
-    const r=new FileReader();
-    r.onload=()=>resolve(r.result);
-    r.onerror=()=>reject(new Error('تعذر قراءة الصورة.'));
-    r.readAsDataURL(file);
-  });
-  const img=await new Promise((resolve,reject)=>{
-    const im=new Image();
-    im.onload=()=>resolve(im);
-    im.onerror=()=>reject(new Error('تعذر فتح الصورة.'));
-    im.src=raw;
-  });
-  let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
-  const scale=Math.min(1,maxSide/Math.max(w,h));
-  w=Math.max(1,Math.round(w*scale)); h=Math.max(1,Math.round(h*scale));
-  const canvas=document.createElement('canvas');
-  canvas.width=w; canvas.height=h;
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(img,0,0,w,h);
-  return canvas.toDataURL('image/jpeg',quality);
-}
-function showPreview(el,data){
-  if(!el)return;
-  if(data){el.src=data;el.style.display='block'}
-  else{el.removeAttribute('src');el.style.display='none'}
-}
-if(storeImageFile){
-  storeImageFile.addEventListener('change',async()=>{
-    try{
-      storeImageData=await fileToCompressedDataUrl(storeImageFile.files?.[0]);
-      showPreview(storeImagePreview,storeImageData);
-    }catch(e){
-      alert(e.message||String(e));
-      storeImageFile.value='';
-    }
-  });
-}
-if(productImageFile){
-  productImageFile.addEventListener('change',async()=>{
-    try{
-      productImageData=await fileToCompressedDataUrl(productImageFile.files?.[0]);
-      showPreview(productImagePreview,productImageData);
-    }catch(e){
-      alert(e.message||String(e));
-      productImageFile.value='';
-    }
-  });
-}
-const DS={ready:'بانتظار مندوب',accepted:'قبله المندوب',picked_up:'تم الاستلام من المتجر',on_the_way:'بالطريق للزبون',delivered:'تم التسليم',cancelled:'ملغي'};function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function init(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}me=session.user;const {data:ok,error:permError}=await db.rpc('has_approved_role',{p_role:'seller'});if(permError){gate.innerHTML='تعذر التحقق من صلاحية البائع: '+esc(permError.message)+'<br><a href="seller-registration.html">فتح تسجيل البائع</a>';return}if(!ok){gate.innerHTML='حسابك غير معتمد كبائع بعد. <a href="seller-registration.html">إرسال/متابعة الطلب</a>';return}gate.innerHTML='✅ حساب بائع معتمد — صلاحيات العمل فعالة بكل أقسام التسوق';panel.style.display='block';const {data:s}=await db.from('shop_businesses').select('*').eq('owner_user_id',me.id).maybeSingle();if(s){store=s;sectionEl.value=s.section_key;storeNameEl.value=s.name;locationEl.value=s.location_text||'';storeImageData=s.image_url||null;showPreview(storeImagePreview,storeImageData);descEl.value=s.description||'';storeLat=s.lat??null;storeLng=s.lng??null;if(storeLat!=null&&storeLng!=null)storeLocStatus.textContent='✅ موقع المتجر محفوظ';}const {data:c}=await db.from('product_categories').select('id,name').eq('is_active',true).order('sort_order');productCategoriesCache=c||[];syncAutoCategory();await loadManageStores();await loadSellerStoreCards();loadOrders()}let saveStoreBusy=false;
+    <div class="ha-simple-row">
+      <div>
+        <label>2) اسم المنتج</label>
+        <input id="productName" maxlength="120" placeholder="مثال: سماعات بلوتوث">
+      </div>
+      <div>
+        <label>القسم</label>
+        <select id="productCategory">
+          <option value="">اختر القسم</option>
+          <option value="library">📚 مكتبة</option>
+          <option value="printers">🖨️ مطبعة</option>
+          <option value="devices">📱 موبايلات</option>
+          <option value="home_appliances">💻 أجهزة إلكترونية</option>
+          <option value="clothes">👕 ملابس</option>
+          <option value="shoes">👟 أحذية</option>
+          <option value="device_accessories">🎧 إكسسوارات</option>
+          <option value="markets">🛒 أسواق</option>
+          <option value="restaurants">🍽️ مطاعم</option>
+          <option value="flowers">💐 ورد وهدايا</option>
+        </select>
+      </div>
+    </div>
 
-function withTimeout(promise,ms=15000){
-  return Promise.race([
-    promise,
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error('انتهت مهلة الاتصال بقاعدة البيانات. تحقق من الإنترنت وحاول مرة ثانية.')),ms))
-  ]);
-}
+    <div class="ha-simple-row">
+      <div>
+        <label>السعر</label>
+        <input id="productPrice" type="number" min="0" step="250" inputmode="numeric" placeholder="مثال: 25000">
+        <div class="ha-quick-price">
+          <button type="button" data-price="5000">5,000</button>
+          <button type="button" data-price="10000">10,000</button>
+          <button type="button" data-price="25000">25,000</button>
+          <button type="button" data-price="50000">50,000</button>
+        </div>
+      </div>
+      <div>
+        <label>الكمية</label>
+        <input id="productStock" type="number" min="0" step="1" inputmode="numeric" value="1">
+      </div>
+    </div>
 
-async function saveStore(){
-  if(saveStoreBusy)return;
+    <div class="ha-simple-row">
+      <div>
+        <label>صورة المنتج</label>
+        <input id="productImage" type="file" accept="image/*">
+      </div>
+      <div>
+        <label>حالة المنتج</label>
+        <select id="productActive">
+          <option value="true">متوفر</option>
+          <option value="false">غير متوفر مؤقتاً</option>
+        </select>
+      </div>
+    </div>
 
-  if(!me){
-    alert('جلسة الدخول غير جاهزة. اغلق الصفحة وافتحها من جديد.');
-    return;
-  }
+    <img id="productImagePreview" class="ha-image-preview" alt="معاينة المنتج">
 
-  const storeNameValue=(storeNameEl?.value||'').trim();
+    <div>
+      <label>وصف مختصر (اختياري)</label>
+      <textarea id="productDescription" maxlength="500" placeholder="تفاصيل بسيطة عن المنتج..."></textarea>
+    </div>
 
-  if(!storeNameValue){
-    alert('اكتب اسم المتجر');
-    storeNameEl?.focus();
-    return;
-  }
+    <div class="ha-simple-note">
+      المنتج ينضاف فقط للمتجر الذي تختاره من قائمة متاجرك، وما يقدر صاحب متجر يضيف منتج لمتجر شخص ثاني.
+    </div>
 
-  saveStoreBusy=true;
+    <div class="ha-simple-actions">
+      <button id="
+let mySellerStores=[];
+let productImageData=null;
 
-  try{
-    if(saveStoreBtn){
-      saveStoreBtn.disabled=true;
-      saveStoreBtn.textContent='جاري الحفظ...';
-    }
-
-    if(storeSaveStatus){
-      storeSaveStatus.style.display='block';
-      storeSaveStatus.textContent='⏳ جاري حفظ المتجر...';
-    }
-
-    // نحفظ بيانات المتجر أولاً بدون الصورة حتى لا توقف الصورة عملية الحفظ.
-    const basePayload={
-      owner_user_id:me.id,
-      section_key:sectionEl?.value||'markets',
-      name:storeNameValue,
-      location_text:(locationEl?.value||'').trim()||null,
-      lat:storeLat,
-      lng:storeLng,
-      description:(descEl?.value||'').trim()||null,
-      is_active:true
-    };
-
-    let r;
-
-    if(store?.id){
-      r=await withTimeout(
-        db.from('shop_businesses')
-          .update(basePayload)
-          .eq('id',store.id)
-          .eq('owner_user_id',me.id)
-          .select('*')
-          .single()
-      );
-    }else{
-      r=await withTimeout(
-        db.from('shop_businesses')
-          .insert(basePayload)
-          .select('*')
-          .single()
-      );
-    }
-
-    if(r?.error)throw r.error;
-    if(!r?.data)throw new Error('قاعدة البيانات لم ترجع بيانات المتجر بعد الحفظ.');
-
-    store=r.data;
-    syncAutoCategory();
-
-    // بعد نجاح حفظ المتجر نحاول حفظ الصورة بشكل منفصل.
-    if(storeImageData){
-      if(storeSaveStatus)storeSaveStatus.textContent='✅ تم حفظ المتجر — جاري حفظ الصورة...';
-
-      const imgResult=await withTimeout(
-        db.from('shop_businesses')
-          .update({image_url:storeImageData})
-          .eq('id',store.id)
-          .eq('owner_user_id',me.id),
-        15000
-      );
-
-      if(imgResult?.error){
-        console.warn('store image save failed',imgResult.error);
-        if(storeSaveStatus){
-          storeSaveStatus.textContent='✅ تم حفظ المتجر، لكن تعذر حفظ الصورة: '+imgResult.error.message;
-        }
-        alert('✅ تم حفظ المتجر.\n⚠️ تعذر حفظ الصورة فقط: '+imgResult.error.message);
-        return;
-      }
-
-      store.image_url=storeImageData;
-    }
-
-    if(storeSaveStatus){
-      storeSaveStatus.textContent='✅ تم حفظ المتجر بنجاح';
-    }
-
-    alert('✅ تم حفظ المتجر بنجاح');
-
-  }catch(e){
-    console.error('saveStore error:',e);
-    const msg=e?.message||String(e);
-
-    if(storeSaveStatus){
-      storeSaveStatus.style.display='block';
-      storeSaveStatus.textContent='❌ تعذر حفظ المتجر: '+msg;
-    }
-
-    alert('❌ تعذر حفظ المتجر:\n'+msg);
-
-  }finally{
-    saveStoreBusy=false;
-
-    if(saveStoreBtn){
-      saveStoreBtn.disabled=false;
-      saveStoreBtn.textContent='حفظ المتجر';
-    }
-  }
-}
-
-function bindSaveStoreButton(){
-  if(!saveStoreBtn)return;
-
-  let lastTouch=0;
-
-  saveStoreBtn.addEventListener('touchend',function(e){
-    lastTouch=Date.now();
-    e.preventDefault();
-    e.stopPropagation();
-    saveStore();
-  },{passive:false});
-
-  saveStoreBtn.addEventListener('click',function(e){
-    // Android يطلق click بعد touchend؛ نتجنب الحفظ مرتين.
-    if(Date.now()-lastTouch<700)return;
-    e.preventDefault();
-    e.stopPropagation();
-    saveStore();
-  });
-}
-bindSaveStoreButton();
-
-if(storeLocateBtn){storeLocateBtn.onclick=async()=>{
-  storeLocStatus.textContent='جاري تحديد الموقع...';
-  try{
-    const pos=await HA_Nearby.getCurrent({allowCache:false});
-    storeLat=pos.lat;storeLng=pos.lng;
-    storeLocStatus.textContent='✅ تم تحديد موقع المتجر بدقة';
-  }catch(e){
-    storeLocStatus.textContent='تعذر تحديد الموقع. فعّل GPS والسماح بالموقع.';
-  }
-};}
-async function addProduct(){
-  const selectedStore=haManageStores.find(x=>String(x.id)===String(haManageStoreId))||store;
-  if(!selectedStore)return alert('اختر متجر أولاً');
-
-  const payload={
-    category_id:autoCategoryId,
-    name:(pnameEl?.value||'').trim(),
-    description:(pdescEl?.value||'').trim()||null,
-    price:Number(priceEl?.value),
-    stock:Number(stockEl?.value||0),
-    image_url:productImageData||null,
-    seller_user_id:me.id,
-    business_id:selectedStore.id,
-    is_active:true
-  };
-
-  if(!payload.name||!Number.isFinite(payload.price))
-    return alert('أكمل اسم المنتج والسعر');
-
-  if(payload.category_id==null)
-    return alert('تعذر تحديد تصنيف المتجر تلقائياً. احفظ المتجر أولاً ثم حاول مرة ثانية.');
-
-  const {error}=await db.from('products').insert(payload);
-
-  if(error){
-    console.error(error);
-    return alert('❌ تعذر إضافة المنتج: '+error.message);
-  }
-
-  if(pnameEl)pnameEl.value='';
-  if(priceEl)priceEl.value='';
-  if(stockEl)stockEl.value='';
-  if(pdescEl)pdescEl.value='';
-  productImageData=null;
-  if(productImageFile)productImageFile.value='';
-  showPreview(productImagePreview,null);
-
-  alert('✅ تمت إضافة المنتج');
-  loadProducts();
-}
-let haManageStores=[];
-let haManageStoreId=null;
-let haEditImageData=null;
-
-
-async function loadSellerStoreCards(){
-  const box=document.getElementById('sellerStoresList');
-  if(!box||!me)return;
-
-  const {data,error}=await db.from('shop_businesses')
-    .select('id,name,section_key,location_text,approval_status,approval_note,is_active,created_at')
-    .eq('owner_user_id',me.id)
-    .order('created_at',{ascending:false});
-
-  if(error){box.innerHTML='<div class="muted">'+esc(error.message)+'</div>';return}
-
-  const arr=data||[];
-  if(!arr.length){
-    box.innerHTML='<div class="muted">ما عندك متجر بعد. اضغط «إضافة متجر جديد».</div>';
-    return;
-  }
-
-  const sectionNames={
-    markets:'الأسواق',library:'مكتبة',printers:'مطبعة',devices:'موبايلات',
-    home_appliances:'الأجهزة الإلكترونية',device_accessories:'إكسسوارات',
-    clothes:'ملابس',shoes:'أحذية',restaurants:'مطاعم',flowers:'ورد وهدايا',
-    building_materials:'مواد البناء'
-  };
-
-  box.innerHTML=arr.map(x=>{
-    const st=x.approval_status||'approved';
-    const cls=st==='approved'?'approved':st==='rejected'?'rejected':'pending';
-    const label=st==='approved'?'✅ معتمد':st==='rejected'?'❌ مرفوض':'⏳ قيد الموافقة';
-    return `<div class="ha-store-status-card">
-      <b>${esc(x.name)}</b>
-      <small>${esc(sectionNames[x.section_key]||x.section_key)}<br>${esc(x.location_text||'')}</small>
-      <br><span class="ha-store-state ${cls}">${label}</span>
-      ${x.approval_note?`<div class="muted" style="margin-top:6px">${esc(x.approval_note)}</div>`:''}
-      ${st==='approved'?`<div style="margin-top:8px"><a class="btn light" href="shop-business.html?id=${x.id}">عرض المتجر</a></div>`:''}
-    </div>`;
-  }).join('');
-}
-
-async function loadManageStores(){
-  const select=document.getElementById('manageStoreSelect');
-  const addSelect=document.getElementById('addProductStoreSelect');
-  const hint=document.getElementById('manageStoreHint');
-  if(!select||!me)return;
+async function loadMySellerStores(){
+  const select=document.getElementById('productBusiness');
+  const info=document.getElementById('selectedStoreInfo');
+  if(!select)return;
 
   select.innerHTML='<option value="">جاري تحميل متاجرك...</option>';
 
   const {data,error}=await db.from('shop_businesses')
-    .select('id,name,section_key,is_active,approval_status')
+    .select('id,name,section_key,is_active,approval_status,location_text')
     .eq('owner_user_id',me.id)
     .order('created_at',{ascending:false});
 
   if(error){
     select.innerHTML='<option value="">تعذر تحميل المتاجر</option>';
-    if(hint)hint.textContent=error.message;
+    if(info)info.textContent=error.message;
     return;
   }
 
-  haManageStores=(data||[]).filter(x =>
+  mySellerStores=(data||[]).filter(x =>
     x.is_active!==false &&
     (!x.approval_status || x.approval_status==='approved')
   );
 
-  if(!haManageStores.length){
-    select.innerHTML='<option value="">لا يوجد متجر معتمد</option>';
-    if(addSelect)addSelect.innerHTML=select.innerHTML;
-    if(hint)hint.innerHTML='أضف متجر أولاً من أقسام التسوق ثم ارجع إلى متجري.';
-    haManageStoreId=null;
-    loadProducts();
-    return;
-  }
+  select.innerHTML='<option value="">اختر متجر</option>'+
+    mySellerStores.map(x=>`<option value="${x.id}" data-section="${esc(x.section_key||'')}">${esc(x.name)}</option>`).join('');
 
-  select.innerHTML=haManageStores.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
-  if(addSelect)addSelect.innerHTML=select.innerHTML;
-
-  const currentStillExists=haManageStores.some(x=>String(x.id)===String(haManageStoreId));
-  if(!currentStillExists){
-    haManageStoreId=haManageStores[0].id;
-  }
-  select.value=String(haManageStoreId);
-  if(addSelect)addSelect.value=String(haManageStoreId);
-
-  if(hint){
-    const s=haManageStores.find(x=>String(x.id)===String(haManageStoreId));
-    hint.textContent=s?'إدارة منتجات: '+s.name:'كل متجر يعرض منتجاته فقط.';
+  if(!mySellerStores.length && info){
+    info.innerHTML='ما عندك متجر موافق عليه بعد. <a href="marketplace-onboarding.html">أضف متجر أولاً</a>';
   }
 
   select.onchange=()=>{
-    haManageStoreId=Number(select.value)||null;
-    if(addSelect)addSelect.value=select.value;
-    const s=haManageStores.find(x=>String(x.id)===String(haManageStoreId));
-    if(hint)hint.textContent=s?'إدارة منتجات: '+s.name:'كل متجر يعرض منتجاته فقط.';
-    loadProducts();
+    const s=mySellerStores.find(x=>String(x.id)===String(select.value));
+    if(!s){
+      if(info)info.textContent='تظهر هنا متاجرك الموافق عليها فقط.';
+      return;
+    }
+    if(info)info.innerHTML=`<span class="ha-store-chip">🏪 ${esc(s.name)}</span> ${esc(s.location_text||'')}`;
+    const category=document.getElementById('productCategory');
+    if(category && s.section_key && [...category.options].some(o=>o.value===s.section_key)){
+      category.value=s.section_key;
+    }
   };
-
-  if(addSelect){
-    addSelect.onchange=()=>{
-      haManageStoreId=Number(addSelect.value)||null;
-      select.value=addSelect.value;
-      const s=haManageStores.find(x=>String(x.id)===String(haManageStoreId));
-      if(hint)hint.textContent=s?'إدارة منتجات: '+s.name:'كل متجر يعرض منتجاته فقط.';
-      syncAutoCategory();
-      loadProducts();
-    };
-  }
-
-  // إذا عنده أكثر من متجر، إضافة المنتج تروح للمتجر المختار بسهولة.
-  if(store?.id && !haManageStoreId)haManageStoreId=store.id;
-
-  loadProducts();
 }
 
+document.getElementById('productImage')?.addEventListener('change',e=>{
+  const f=e.target.files?.[0];
+  productImageData=null;
+  const prev=document.getElementById('productImagePreview');
+  if(!f){
+    if(prev)prev.style.display='none';
+    return;
+  }
+  const r=new FileReader();
+  r.onload=()=>{
+    productImageData=r.result;
+    if(prev){
+      prev.src=productImageData;
+      prev.style.display='block';
+    }
+  };
+  r.readAsDataURL(f);
+});
+
+document.querySelectorAll('.ha-quick-price button').forEach(b=>{
+  b.onclick=()=>{
+    const price=document.getElementById('productPrice');
+    if(price)price.value=b.dataset.price||'';
+  };
+});
+
+document.getElementById('clearProductForm')?.addEventListener('click',()=>{
+  const ids=['productName','productPrice','productDescription'];
+  ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+  const stock=document.getElementById('productStock'); if(stock)stock.value='1';
+  const active=document.getElementById('productActive'); if(active)active.value='true';
+  const image=document.getElementById('productImage'); if(image)image.value='';
+  const prev=document.getElementById('productImagePreview'); if(prev)prev.style.display='none';
+  productImageData=null;
+  const status=document.getElementById('productStatus'); if(status)status.textContent='';
+});
+
+document.getElementById('saveProduct')?.addEventListener('click',async()=>{
+  const status=document.getElementById('productStatus');
+  const btn=document.getElementById('saveProduct');
+  const businessId=Number(document.getElementById('productBusiness')?.value||0);
+  const store=mySellerStores.find(x=>Number(x.id)===businessId);
+
+  if(!store){
+    alert('اختر واحد من متاجرك');
+    return;
+  }
+
+  const name=(document.getElementById('productName')?.value||'').trim();
+  const category=(document.getElementById('productCategory')?.value||'').trim();
+  const price=Number(document.getElementById('productPrice')?.value||0);
+  const stock=Number(document.getElementById('productStock')?.value||0);
+  const description=(document.getElementById('productDescription')?.value||'').trim();
+  const isActive=document.getElementById('productActive')?.value!=='false';
+
+  if(name.length<2)return alert('اكتب اسم المنتج');
+  if(!category)return alert('اختر القسم');
+  if(!Number.isFinite(price)||price<=0)return alert('اكتب سعر صحيح');
+  if(!Number.isFinite(stock)||stock<0)return alert('اكتب كمية صحيحة');
+
+  btn.disabled=true;
+  if(status)status.textContent='جاري حفظ المنتج...';
+
+  let imageUrl=null;
+  try{
+    const file=document.getElementById('productImage')?.files?.[0]||null;
+    if(file){
+      const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+      const path=`products/${me.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const up=await db.storage.from('shop-images').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
+      if(up.error)throw up.error;
+      const pub=db.storage.from('shop-images').getPublicUrl(path);
+      imageUrl=pub.data?.publicUrl||null;
+    }
+
+    const payload={
+      seller_user_id:me.id,
+      business_id:store.id,
+      name,
+      description:description||null,
+      price:Math.round(price),
+      stock:Math.round(stock),
+      is_active:isActive,
+      section_key:category
+    };
+    if(imageUrl)payload.image_url=imageUrl;
+
+    let result=await db.from('products').insert(payload).select('id').single();
+
+    if(result.error && /section_key|column/i.test(result.error.message||'')){
+      delete payload.section_key;
+      result=await db.from('products').insert(payload).select('id').single();
+    }
+
+    if(result.error)throw result.error;
+
+    if(status)status.textContent='✅ تم إضافة المنتج إلى متجر '+store.name;
+    document.getElementById('productName').value='';
+    document.getElementById('productPrice').value='';
+    document.getElementById('productStock').value='1';
+    document.getElementById('productDescription').value='';
+    document.getElementById('productImage').value='';
+    const prev=document.getElementById('productImagePreview');
+    if(prev)prev.style.display='none';
+    productImageData=null;
+    await loadMySellerStores();loadProducts();
+  }catch(e){
+    if(status)status.textContent='تعذر حفظ المنتج: '+(e.message||e);
+  }finally{
+    btn.disabled=false;
+  }
+});
+
+
+async function pickAndUploadProductImage(currentUrl=''){
+  return new Promise((resolve)=>{
+    const input=document.createElement('input');
+    input.type='file';
+    input.accept='image/*';
+    input.style.display='none';
+    document.body.appendChild(input);
+
+    const cleanup=()=>{ try{ input.remove(); }catch(_e){} };
+
+    input.onchange=async()=>{
+      const file=input.files?.[0]||null;
+      if(!file){ cleanup(); resolve(currentUrl||null); return; }
+      try{
+        const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+        const path=`products/${me.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const up=await db.storage.from('shop-images').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
+        if(up.error) throw up.error;
+        const pub=db.storage.from('shop-images').getPublicUrl(path);
+        cleanup();
+        resolve(pub.data?.publicUrl||currentUrl||null);
+      }catch(e){
+        cleanup();
+        alert('تعذر رفع الصورة: '+(e?.message||e));
+        resolve('__upload_error__');
+      }
+    };
+
+    input.click();
+  });
+}
+
+
 async function loadProducts(){
-  const countEl=document.getElementById('productsCount');
-
-  if(!me){
-    productsEl.innerHTML='<div class="muted">جلسة الدخول غير جاهزة.</div>';
-    if(countEl)countEl.textContent='0 منتج';
-    return;
-  }
-
-  if(!haManageStoreId){
-    productsEl.innerHTML='<div class="muted" style="grid-column:1/-1;text-align:center;padding:24px">اختر متجر أولاً.</div>';
-    if(countEl)countEl.textContent='0 منتج';
-    return;
-  }
-
-  productsEl.innerHTML='<div class="muted" style="grid-column:1/-1">جاري تحميل المنتجات...</div>';
-
+  productsEl.innerHTML='<div class="muted">جاري التحميل...</div>';
   const {data,error}=await db.from('products')
-    .select('id,name,description,price,stock,is_active,image_url,business_id')
+    .select('id,name,price,stock,is_active,image_url,description')
     .eq('seller_user_id',me.id)
-    .eq('business_id',haManageStoreId)
     .order('created_at',{ascending:false});
 
+  const countEl=document.getElementById('productsCount');
   if(error){
-    productsEl.innerHTML='<div class="muted" style="grid-column:1/-1">'+esc(error.message)+'</div>';
+    productsEl.innerHTML='<div class="muted">'+esc(error.message)+'</div>';
     if(countEl)countEl.textContent='0 منتج';
     return;
   }
@@ -737,164 +404,129 @@ async function loadProducts(){
   if(countEl)countEl.textContent=arr.length+' منتج';
 
   if(!arr.length){
-    productsEl.innerHTML='<div class="muted" style="grid-column:1/-1;text-align:center;padding:26px">ماكو منتجات بهذا المتجر بعد. استخدم «إضافة منتج» بالأعلى.</div>';
+    productsEl.innerHTML='<div class="muted" style="grid-column:1/-1;text-align:center;padding:28px">لا توجد منتجات بعد.</div>';
     return;
   }
 
   productsEl.innerHTML=arr.map(x=>{
     const active=x.is_active!==false;
-    const image=x.image_url
+    const img=x.image_url
       ? `<img src="${esc(x.image_url)}" alt="${esc(x.name)}">`
-      : `<div class="ha-product-card-placeholder">🛍️</div>`;
+      : `<div class="seller-product-placeholder">🛍️</div>`;
 
-    return `<article class="ha-product-card">
-      <div class="ha-product-card-img">
-        ${image}
-        <span class="ha-product-status ${active?'':'off'}">${active?'متوفر':'موقوف'}</span>
-        <span class="ha-product-stock">المخزون: ${Number(x.stock||0).toLocaleString('ar-IQ')}</span>
+    return `<article class="seller-product-card">
+      <div class="seller-product-image">
+        ${img}
+        <span class="seller-status ${active?'':'off'}">${active?'متوفر':'موقوف'}</span>
+        <span class="seller-stock">المخزون: ${Number(x.stock||0).toLocaleString('ar-IQ')}</span>
       </div>
-      <div class="ha-product-card-body">
-        <div class="ha-product-card-title">${esc(x.name)}</div>
-        <div class="ha-product-card-desc">${esc(x.description||'بدون وصف')}</div>
-        <div class="ha-product-card-price">${Number(x.price||0).toLocaleString('ar-IQ')} د.ع</div>
-        <div class="ha-product-actions">
-          <button type="button" class="ha-toggle-product ${active?'':'off'}" onclick="haToggleProduct(${x.id},${active})">${active?'إيقاف':'تفعيل'}</button>
-          <button type="button" class="ha-edit-product" onclick="haOpenEditProduct(${x.id})">✏️ تعديل</button>
-          <button type="button" class="ha-delete-product" onclick="haDeleteProduct(${x.id})">🗑️ حذف</button>
+      <div class="seller-product-body">
+        <div class="seller-product-name">${esc(x.name)}</div>
+        <div class="seller-product-desc">${esc(x.description||'بدون وصف')}</div>
+        <div class="seller-product-price">${Number(x.price||0).toLocaleString('ar-IQ')} د.ع</div>
+        <div class="seller-product-actions">
+          <button class="toggle-product ${active?'':'off'}" onclick="toggleP(${x.id},${active})">${active?'إيقاف':'تفعيل'}</button>
+          <button class="edit-product" onclick="editP(${x.id})">✏️ تعديل</button>
+          <button class="image-product" onclick="changeProductImage(${x.id})">🖼️ الصورة</button>
+          <button class="delete-product" onclick="deleteMyProduct(${x.id})">🗑️ حذف</button>
         </div>
       </div>
     </article>`;
   }).join('');
 }
 
-async function haToggleProduct(id,current){
+async function toggleP(id,current){
   const {error}=await db.from('products')
     .update({is_active:!current})
     .eq('id',id)
-    .eq('seller_user_id',me.id)
-    .eq('business_id',haManageStoreId);
-
-  if(error)return alert('تعذر تغيير حالة المنتج: '+error.message);
+    .eq('seller_user_id',me.id);
+  if(error)return alert('تعذر تحديث حالة المنتج: '+error.message);
   loadProducts();
 }
 
-async function haOpenEditProduct(id){
+async function editP(id){
   const {data:x,error}=await db.from('products')
-    .select('id,name,description,price,stock,is_active,image_url,business_id')
+    .select('id,name,price,stock,description,image_url')
     .eq('id',id)
     .eq('seller_user_id',me.id)
-    .eq('business_id',haManageStoreId)
     .maybeSingle();
 
   if(error||!x)return alert('تعذر فتح المنتج للتعديل.');
 
-  document.getElementById('haEditId').value=x.id;
-  document.getElementById('haEditName').value=x.name||'';
-  document.getElementById('haEditPrice').value=x.price??0;
-  document.getElementById('haEditStock').value=x.stock??0;
-  document.getElementById('haEditActive').value=x.is_active===false?'false':'true';
-  document.getElementById('haEditDescription').value=x.description||'';
-  document.getElementById('haEditImage').value='';
-  haEditImageData=null;
+  const name=prompt('اسم المنتج',x.name||'');
+  if(name===null)return;
 
-  const preview=document.getElementById('haEditPreview');
-  if(x.image_url){
-    preview.src=x.image_url;
-    preview.style.display='block';
-  }else{
-    preview.removeAttribute('src');
-    preview.style.display='none';
+  const price=prompt('السعر',x.price??0);
+  if(price===null)return;
+
+  const stock=prompt('المخزون',x.stock??0);
+  if(stock===null)return;
+
+  const description=prompt('الوصف',x.description||'');
+  if(description===null)return;
+
+  let imageUrl=x.image_url||null;
+  if(confirm('إذا تريد تغيّر صورة المنتج اضغط موافق، وإذا تريد تبقيها نفسها اضغط إلغاء.')){
+    const uploaded=await pickAndUploadProductImage(imageUrl||'');
+    if(uploaded==='__upload_error__')return;
+    imageUrl=uploaded||imageUrl||null;
   }
 
-  document.getElementById('haEditStatus').textContent='';
-  const overlay=document.getElementById('haEditProductOverlay');
-  overlay.classList.add('show');
-  overlay.setAttribute('aria-hidden','false');
+  const {error:updateError}=await db.from('products')
+    .update({
+      name:name.trim(),
+      price:Number(price||0),
+      stock:Number(stock||0),
+      description:description.trim(),
+      image_url:imageUrl
+    })
+    .eq('id',id)
+    .eq('seller_user_id',me.id);
+
+  if(updateError)return alert('تعذر تعديل المنتج: '+updateError.message);
+  loadProducts();
 }
 
-function haCloseEditProduct(){
-  const overlay=document.getElementById('haEditProductOverlay');
-  overlay.classList.remove('show');
-  overlay.setAttribute('aria-hidden','true');
-}
-
-document.getElementById('haEditClose')?.addEventListener('click',haCloseEditProduct);
-document.getElementById('haCancelEditProduct')?.addEventListener('click',haCloseEditProduct);
-document.getElementById('haEditProductOverlay')?.addEventListener('click',e=>{
-  if(e.target===e.currentTarget)haCloseEditProduct();
-});
-
-document.getElementById('haEditImage')?.addEventListener('change',async e=>{
-  try{
-    const f=e.target.files?.[0];
-    if(!f){haEditImageData=null;return}
-    haEditImageData=await fileToCompressedDataUrl(f);
-    const preview=document.getElementById('haEditPreview');
-    preview.src=haEditImageData;
-    preview.style.display='block';
-  }catch(err){
-    alert(err.message||String(err));
-    e.target.value='';
-    haEditImageData=null;
-  }
-});
-
-document.getElementById('haSaveEditProduct')?.addEventListener('click',async()=>{
-  const id=Number(document.getElementById('haEditId')?.value||0);
-  const name=(document.getElementById('haEditName')?.value||'').trim();
-  const price=Number(document.getElementById('haEditPrice')?.value||0);
-  const stock=Number(document.getElementById('haEditStock')?.value||0);
-  const description=(document.getElementById('haEditDescription')?.value||'').trim();
-  const active=document.getElementById('haEditActive')?.value!=='false';
-  const status=document.getElementById('haEditStatus');
-  const btn=document.getElementById('haSaveEditProduct');
-
-  if(!id)return;
-  if(name.length<2)return alert('اكتب اسم المنتج');
-  if(!Number.isFinite(price)||price<=0)return alert('اكتب سعر صحيح');
-  if(!Number.isFinite(stock)||stock<0)return alert('اكتب مخزون صحيح');
-
-  const payload={
-    name,
-    price:Math.round(price),
-    stock:Math.round(stock),
-    description:description||null,
-    is_active:active
-  };
-  if(haEditImageData)payload.image_url=haEditImageData;
-
-  btn.disabled=true;
-  if(status)status.textContent='جاري حفظ التعديلات...';
-
-  const {error}=await db.from('products')
-    .update(payload)
+async function changeProductImage(id){
+  const {data:x,error}=await db.from('products')
+    .select('id,image_url,name')
     .eq('id',id)
     .eq('seller_user_id',me.id)
-    .eq('business_id',haManageStoreId);
+    .maybeSingle();
 
-  btn.disabled=false;
+  if(error||!x)return alert('تعذر فتح صورة المنتج.');
 
-  if(error){
-    if(status)status.textContent='تعذر الحفظ: '+error.message;
+  const uploaded=await pickAndUploadProductImage(x.image_url||'');
+  if(uploaded==='__upload_error__')return;
+  if(!uploaded)return;
+
+  const {error:updateError}=await db.from('products')
+    .update({image_url:uploaded})
+    .eq('id',id)
+    .eq('seller_user_id',me.id);
+
+  if(updateError)return alert('تعذر تغيير الصورة: '+updateError.message);
+  alert('✅ تم تحديث صورة المنتج');
+  loadProducts();
+}
+
+async function deleteMyProduct(id){
+  const {data:product,error:readError}=await db.from('products')
+    .select('id,name,seller_user_id')
+    .eq('id',id)
+    .maybeSingle();
+
+  if(readError || !product){
+    alert('تعذر العثور على المنتج');
     return;
   }
 
-  if(status)status.textContent='✅ تم حفظ التعديلات';
-  await loadProducts();
-  setTimeout(haCloseEditProduct,350);
-});
+  if(product.seller_user_id!==me.id){
+    alert('لا يمكنك حذف منتج لا يخص متجرك');
+    return;
+  }
 
-async function haDeleteProduct(id){
-  const {data:x,error}=await db.from('products')
-    .select('id,name')
-    .eq('id',id)
-    .eq('seller_user_id',me.id)
-    .eq('business_id',haManageStoreId)
-    .maybeSingle();
-
-  if(error||!x)return alert('تعذر العثور على المنتج.');
-
-  if(!confirm('حذف المنتج "'+x.name+'" نهائياً؟'))return;
+  if(!confirm('حذف المنتج "'+product.name+'" نهائياً؟'))return;
 
   let result=await db.rpc('delete_shop_product',{p_product_id:id});
 
@@ -902,74 +534,36 @@ async function haDeleteProduct(id){
     result=await db.from('products')
       .delete()
       .eq('id',id)
-      .eq('seller_user_id',me.id)
-      .eq('business_id',haManageStoreId);
+      .eq('seller_user_id',me.id);
   }
 
-  if(result.error)return alert('تعذر حذف المنتج: '+result.error.message);
+  if(result.error){
+    alert('تعذر حذف المنتج: '+result.error.message);
+    return;
+  }
 
   await loadProducts();
 }
 
-async function loadOrders(){const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';const {data,error}=await db.rpc('get_seller_shop_orders');if(error){el.innerHTML='<div class="card">شغّل SHOP-COURIER-INTEGRATION.sql أولاً.<br>'+esc(error.message)+'</div>';return}const arr=Array.isArray(data)?data:[];el.innerHTML=arr.map(o=>{const d=o.delivery;const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');let delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:`<div class="delivery">لم يُطلب مندوب بعد.</div>`;let action='';if(o.order_status!=='cancelled'&&(!d||['cancelled','ready'].includes(d.status))){action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button class="blue" onclick="requestCourier(${o.order_id})">✅ الطلب جاهز — اطلب مندوب</button>`}return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: ${esc(o.customer_name)} — ${esc(o.phone)}<br>${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="row" style="margin-top:8px"><b>${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${delivery}</div>`}).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>'}async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}init().catch(e=>{
+async function loadOrders(){const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';const {data,error}=await db.rpc('get_seller_shop_orders');if(error){el.innerHTML='<div class="card">شغّل SHOP-COURIER-INTEGRATION.sql أولاً.<br>'+esc(error.message)+'</div>';return}const arr=Array.isArray(data)?data:[];el.innerHTML=arr.map(o=>{const d=o.delivery;const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');let delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:`<div class="delivery">لم يُطلب مندوب بعد.</div>`;let action='';if(o.order_status!=='cancelled'&&(!d||['cancelled','ready'].includes(d.status))){action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button class="blue" onclick="requestCourier(${o.order_id})">✅ الطلب جاهز — اطلب مندوب</button>`}return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: ${esc(o.customer_name)} — ${esc(o.phone)}<br>${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="row" style="margin-top:8px"><b>${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${delivery}</div>`}).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>'}async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}
+if(deleteStoreBtn){deleteStoreBtn.onclick=async()=>{
+  if(!store?.id)return;
+  const ok=confirm('⚠️ حذف المتجر نهائياً؟ سيتم حذف منتجات هذا المتجر أيضاً. لا يمكن التراجع عن العملية.');
+  if(!ok)return;
+  const typed=prompt('للتأكيد اكتب كلمة: حذف');
+  if(typed!=='حذف')return alert('تم إلغاء الحذف.');
+  deleteStoreBtn.disabled=true;
+  const {error}=await db.rpc('delete_shop_business',{p_business_id:store.id});
+  deleteStoreBtn.disabled=false;
+  if(error)return alert('تعذر حذف المتجر: '+error.message);
+  alert('✅ تم حذف المتجر ومنتجاته.');
+  store=null;storeImageData=null;productImageData=null;storeLat=null;storeLng=null;
+  if(deleteStoreBtn)deleteStoreBtn.style.display='none';
+  if(storeNameEl)storeNameEl.value=''; if(locationEl)locationEl.value=''; storePicker.reset(); if(descEl)descEl.value='';
+  showPreview(storeImagePreview,null); loadProducts();
+};}
+init().catch(e=>{
   console.error(e);
   const g=document.getElementById('gate');
   if(g) g.innerHTML='❌ تعذر فتح لوحة البائع: '+esc(e?.message||String(e));
-});</script><div id="haEditProductOverlay" class="ha-edit-overlay" aria-hidden="true">
-  <div class="ha-edit-modal">
-    <div class="ha-edit-head">
-      <h3>✏️ تعديل المنتج</h3>
-      <button id="haEditClose" type="button" class="ha-edit-close">✕</button>
-    </div>
-
-    <input id="haEditId" type="hidden">
-
-    <div class="ha-edit-grid">
-      <div class="ha-edit-field full">
-        <label>اسم المنتج</label>
-        <input id="haEditName" maxlength="120">
-      </div>
-
-      <div class="ha-edit-field">
-        <label>السعر</label>
-        <input id="haEditPrice" type="number" min="0" step="250" inputmode="numeric">
-      </div>
-
-      <div class="ha-edit-field">
-        <label>المخزون</label>
-        <input id="haEditStock" type="number" min="0" step="1" inputmode="numeric">
-      </div>
-
-      <div class="ha-edit-field">
-        <label>حالة المنتج</label>
-        <select id="haEditActive">
-          <option value="true">متوفر</option>
-          <option value="false">موقوف مؤقتاً</option>
-        </select>
-      </div>
-
-      <div class="ha-edit-field">
-        <label>تغيير الصورة (اختياري)</label>
-        <input id="haEditImage" type="file" accept="image/*">
-      </div>
-
-      <div class="ha-edit-field full">
-        <img id="haEditPreview" class="ha-edit-preview" alt="معاينة صورة المنتج">
-      </div>
-
-      <div class="ha-edit-field full">
-        <label>وصف المنتج</label>
-        <textarea id="haEditDescription" maxlength="500"></textarea>
-      </div>
-    </div>
-
-    <div id="haEditStatus" class="muted"></div>
-
-    <div class="ha-edit-actions">
-      <button id="haSaveEditProduct" type="button" class="ha-save-edit">حفظ التعديلات</button>
-      <button id="haCancelEditProduct" type="button" class="ha-cancel-edit">إلغاء</button>
-    </div>
-  </div>
-</div>
-<script src="ha-role-bottom-nav.js?v=20261002-seller1" defer></script>
-</body></html>
+});</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
