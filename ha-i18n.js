@@ -461,6 +461,12 @@ Object.assign(IQ,{
  "حدّث صفحة السلة واختر منطقة التوصيل لكل متجر ثم أكد الطلب": "حدث صفحة السلة واختار منطقة التوصيل لكل متجر وبعدين أكد الطلب"
 });
 
+
+// Transport driver dashboard entry.
+Object.assign(EN,{"واجهة السائق": "Driver Dashboard", "طلباتك وحالة العمل": "Your requests and availability", "للسائقين": "For drivers", "فتح واجهة السائق": "Open driver dashboard"});
+Object.assign(FA,{"واجهة السائق": "پنل راننده", "طلباتك وحالة العمل": "درخواست‌های شما و وضعیت فعالیت", "للسائقين": "برای رانندگان", "فتح واجهة السائق": "باز کردن پنل راننده"});
+Object.assign(IQ,{"واجهة السائق": "واجهة السائق", "طلباتك وحالة العمل": "طلباتك وحالة الشغل", "للسائقين": "للسائقين", "فتح واجهة السائق": "افتح واجهة السائق"});
+
 const sectionTranslations=window.HASectionArtwork?.i18n;
 if(sectionTranslations){
   Object.assign(EN,sectionTranslations.en||{});
