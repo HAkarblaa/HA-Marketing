@@ -1,6 +1,6 @@
 /* HA Marketing - lightweight service worker (speed fix 2026-09-27)
    Keeps navigation responsive and avoids downloading the whole app during install. */
-const CACHE='ha-marketing-account-v2026-10-08-1';
+const CACHE='ha-marketing-account-entry-v2026-10-09-1';
 const CORE=[
   './index.html',
   './ha-account-gate.js?v=20261008-required1',
@@ -32,7 +32,7 @@ self.addEventListener('activate',event=>{
 
 function networkWithTimeout(request,ms){
   return Promise.race([
-    fetch(request),
+    fetch(request,{cache:'no-cache'}),
     new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms))
   ]);
 }

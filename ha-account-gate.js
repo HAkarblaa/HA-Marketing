@@ -1,4 +1,4 @@
-/* HA Marketing - require an existing signed-in account on every app page.
+/* HA Marketing - open immediately for a saved signed-in account; guests must sign in.
    UI gate only: database RLS and existing role checks remain authoritative. */
 (function(){
   'use strict';
@@ -7,10 +7,11 @@
   const base=new URL('./',document.currentScript.src);
   const STORAGE='ha-marketing-auth';
   const NEXT='ha_account_return_to';
+  const VERIFIED='ha_account_verified_session';
   const publicPages=['login.html','register.html','forgot-password.html','privacy-policy.html','delete-account.html'];
   const relative=location.pathname.slice(base.pathname.length);
   const isPublic=location.origin===base.origin && publicPages.includes(relative);
-  let client=null,sdkPromise=null,run=0,expiryTimer=null,subscription=null;
+  let client=null,sdkPromise=null,run=0,expiryTimer=null,subscription=null,inFlight=null,lastAllowedUser=null;
   let state=isPublic?'public':'checking';
 
   function store(storage,key,value){try{storage.setItem(key,value);}catch(_){}}
@@ -60,14 +61,14 @@
   }
   function redirect(){
     state='redirecting';run++;lock();rememberPage();clearTimeout(expiryTimer);
-    remove(localStorage,'ha_logged_in');
+    remove(localStorage,'ha_logged_in');remove(sessionStorage,VERIFIED);
     location.replace(loginURL());
   }
   function validSession(session){
     return !!(session?.access_token && session?.user?.id &&
       session.user.is_anonymous!==true && Number(session.expires_at)>Date.now()/1000);
   }
-  function offlineSession(){
+  function savedSession(){
     // A login flag alone never opens the app. Require the saved account and its unexpired token.
     try{
       const session=JSON.parse(read(localStorage,STORAGE)||'null');
@@ -80,14 +81,15 @@
     }catch(_){return null;}
   }
   function allow(session){
-    state='allowed';clearTimeout(expiryTimer);
+    const changed=state!=='allowed'||lastAllowedUser!==session.user.id;
+    state='allowed';lastAllowedUser=session.user.id;clearTimeout(expiryTimer);
     store(localStorage,'ha_logged_in','1');
     root.removeAttribute('data-ha-account-lock');
     document.getElementById('haAccountGate')?.remove();
     document.getElementById('haSplash')?.classList.add('hide');
-    // Lock again when the saved access token expires; online Supabase refresh may renew it first.
-    expiryTimer=setTimeout(()=>{lock();check();},Math.min(2147483647,Math.max(1000,Number(session.expires_at)*1000-Date.now())));
-    window.dispatchEvent(new CustomEvent('ha:account-ready',{detail:{user:session.user}}));
+    // Refresh expired sessions without an inter-page verification overlay.
+    expiryTimer=setTimeout(()=>{check();},Math.min(2147483647,Math.max(1000,Number(session.expires_at)*1000-Date.now())));
+    if(changed)window.dispatchEvent(new CustomEvent('ha:account-ready',{detail:{user:session.user}}));
   }
   function timeout(promise,ms){
     let timer;
@@ -115,22 +117,35 @@
           redirect();return;
         }
         // Run Supabase calls outside the auth callback to avoid holding its session lock.
-        if(['SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event))setTimeout(()=>{lock();check();},0);
+        if(['SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){
+          if(session?.user?.id&&session.user.id!==lastAllowedUser){run++;inFlight=null;remove(sessionStorage,VERIFIED);}
+          // Never call Supabase while its auth callback holds the session lock.
+          setTimeout(()=>check(),0);
+        }
       }).data.subscription;
     }
     return client;
   }
-  async function check(){
-    if(isPublic || state==='redirecting')return;
-    const current=++run;state='checking';lock();panel('جاري التحقق من حسابك...');
-    if(!navigator.onLine){
-      const cached=offlineSession();
-      if(cached)allow(cached);else redirect();
-      return;
-    }
-    if(!read(localStorage,STORAGE) && !new URL(location.href).searchParams.has('code') && !/access_token=/.test(location.hash)){redirect();return;}
+  function hasCallback(){return new URL(location.href).searchParams.has('code') || /access_token=/.test(location.hash);}
+  function wasVerified(session){
+    try{const v=JSON.parse(read(sessionStorage,VERIFIED)||'null');return v?.user_id===session.user.id&&v.expires_at===session.expires_at;}catch(_){return false;}
+  }
+  function check(){
+    if(isPublic || state==='redirecting')return Promise.resolve();
+    const cached=savedSession();
+    if(cached)allow(cached);
+    else if(!navigator.onLine || (!read(localStorage,STORAGE)&&!hasCallback())){redirect();return Promise.resolve();}
+    else{state='checking';lock();}
+    if(!navigator.onLine)return Promise.resolve();
+    if(inFlight)return inFlight;
+    const current=++run;
+    const pending=reconcile(current).finally(()=>{if(inFlight===pending)inFlight=null;});
+    inFlight=pending;return pending;
+  }
+  async function reconcile(current){
     try{
       const db=await getClient();
+      if(current!==run)return;
       const {data,error}=await timeout(db.auth.getSession(),12000);
       if(current!==run)return;
       if(error){
@@ -138,19 +153,25 @@
         throw error;
       }
       const session=data?.session;
-      if(!session?.access_token || !session.user?.id || session.user.is_anonymous===true){redirect();return;}
+      if(!validSession(session)){redirect();return;}
+      // Open first; verify identity once for this token in this tab, in the background.
+      allow(session);
+      if(wasVerified(session))return;
       const verified=await timeout(db.auth.getUser(),12000);
       if(current!==run)return;
       if(verified.error){
         if([400,401,403].includes(verified.error.status) || verified.error.name==='AuthSessionMissingError'){redirect();return;}
         throw verified.error;
       }
-      if(!verified.data?.user || verified.data.user.is_anonymous===true || verified.data.user.id!==session.user.id || !validSession(session)){redirect();return;}
+      if(!verified.data?.user || verified.data.user.is_anonymous===true || verified.data.user.id!==session.user.id){redirect();return;}
+      if(!validSession(session)){setTimeout(()=>check(),0);return;}
+      store(sessionStorage,VERIFIED,JSON.stringify({user_id:session.user.id,expires_at:session.expires_at}));
       allow({...session,user:verified.data.user});
     }catch(e){
       if(current!==run)return;
-      if(!navigator.onLine){const cached=offlineSession();if(cached){allow(cached);return;}}
-      state='error';lock();panel('تعذر التحقق من حسابك. تأكد من اتصال الإنترنت وحاول مجدداً.',true);
+      const cached=savedSession();
+      if(cached){allow(cached);return;}
+      state='error';lock();panel('تعذر تجديد تسجيل الدخول. اتصل بالإنترنت وحاول مجدداً أو سجّل الدخول.',true);
     }
   }
   function publicLinks(){
@@ -167,16 +188,22 @@
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',publicLinks,{once:true});else publicLinks();
     return;
   }
-  rememberPage();lock();
-  if(!read(localStorage,STORAGE) && !new URL(location.href).searchParams.has('code') && !/access_token=/.test(location.hash)){redirect();return;}
+  rememberPage();
+  // Synchronous local session check removes the boot lock before the page is painted.
+  const initial=savedSession();
+  if(initial)allow(initial);
+  else if(!read(localStorage,STORAGE)&&!hasCallback()){redirect();return;}
+  else lock();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',check,{once:true});else check();
-  window.addEventListener('pageshow',event=>{if(event.persisted){lock();check();}});
-  window.addEventListener('online',()=>{lock();check();});
-  window.addEventListener('offline',()=>{lock();check();});
+  window.addEventListener('pageshow',event=>{if(event.persisted)check();});
+  window.addEventListener('online',check);
+  window.addEventListener('offline',check);
   window.addEventListener('storage',event=>{
-    if(event.key===STORAGE || event.key===null){lock();if(!read(localStorage,STORAGE))redirect();else check();}
+    if(event.key===STORAGE || event.key===null){
+      if(!read(localStorage,STORAGE)){redirect();return;}
+      // Discard an in-flight response for a previous account/token.
+      run++;inFlight=null;check();
+    }
   });
-  document.addEventListener('visibilitychange',()=>{
-    if(document.hidden)lock();else check();
-  });
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
 })();
