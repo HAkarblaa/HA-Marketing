@@ -1,8 +1,12 @@
 /* HA Marketing - lightweight service worker (speed fix 2026-09-27)
    Keeps navigation responsive and avoids downloading the whole app during install. */
-const CACHE='ha-marketing-speed-v2026-09-27-1';
+const CACHE='ha-marketing-account-v2026-10-08-1';
 const CORE=[
   './index.html',
+  './ha-account-gate.js?v=20261008-required1',
+  './login.html',
+  './register.html',
+  './forgot-password.html',
   './ha-modern-green.css',
   './ha-modern-green.js',
   './ha-logo-transparent.png'
@@ -45,7 +49,8 @@ self.addEventListener('fetch',event=>{
 
   if(isNavigation || isCode){
     event.respondWith((async()=>{
-      const cached=await caches.match(request);
+      const cache=await caches.open(CACHE);
+      const cached=await cache.match(request,{ignoreSearch:isNavigation});
       try{
         /* Short timeout prevents a tap from looking frozen on slow/unstable internet. */
         const fresh=await networkWithTimeout(request,1800);
@@ -57,7 +62,7 @@ self.addEventListener('fetch',event=>{
       }catch(_err){
         if(cached)return cached;
         if(isNavigation){
-          return (await caches.match('./index.html')) || Response.error();
+          return Response.redirect(new URL('./login.html',self.location.href).href,302);
         }
         return Response.error();
       }

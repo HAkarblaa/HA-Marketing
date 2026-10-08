@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head><script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
+<head>
 <meta charset="utf-8">
+<!-- HA: account required for app pages -->
+<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>إنشاء حساب - HA Marketing</title>
 <!-- HA fixed registration: resilient duplicate check + 6-char password -->
@@ -82,7 +86,6 @@
 
       <button id="continueBtn" class="primary" type="button" onclick="createAccount()">إنشاء الحساب</button>
       <a class="btn" href="login.html">عندي حساب - تسجيل الدخول</a>
-      <a class="btn" href="index.html">الرجوع للرئيسية</a>
     </div>
   </div>
 </div>
@@ -216,7 +219,7 @@ async function createAccount(){
     await saveProfile(user,data);
     localStorage.setItem('ha_logged_in','1');
     haLoadText.textContent='تم إنشاء الحساب بنجاح...';
-    location.replace('index.html');
+    location.replace(window.HA_AccountGate ? HA_AccountGate.nextURL() : 'index.html');
   }catch(e){
     console.error(e);
     const m=e?.message||String(e);
