@@ -288,7 +288,8 @@ body.ha-editing-product .bottom-nav{
 #legacyStoreEditor{display:none!important}
 @media(max-width:650px){.ha-store-list{grid-template-columns:1fr}}
 </style>
-<script src="ha-role-balance-gate.js?v=20261008-pause1"></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-store-fees1" defer></script>
+</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
 <div class="card" id="stores-overview">
   <div class="ha-my-stores-head">
     <div>
@@ -635,7 +636,7 @@ async function loadSellerStoreCards(){
   if(!box||!me)return;
 
   const {data,error}=await db.from('shop_businesses')
-    .select('id,name,section_key,location_text,approval_status,approval_note,is_active,created_at')
+    .select('id,name,section_key,location_text,approval_status,approval_note,is_active,created_at,delivery_fee')
     .eq('owner_user_id',me.id)
     .order('created_at',{ascending:false});
 
@@ -662,11 +663,40 @@ async function loadSellerStoreCards(){
       <b>${esc(x.name)}</b>
       <small>${esc(sectionNames[x.section_key]||x.section_key)}<br>${esc(x.location_text||'')}</small>
       <br><span class="ha-store-state ${cls}">${label}</span>
+      ${st==='approved'&&x.is_active!==false?`<div class="ha-delivery-fee-editor" style="margin-top:12px">
+        <label for="storeDeliveryFee${x.id}">أجرة التوصيل بالدينار</label>
+        <div class="muted">تحتسب مرة واحدة لكل طلب من هذا المتجر.</div>
+        <input id="storeDeliveryFee${x.id}" data-store-delivery-fee="${x.id}" type="number" min="1" step="1" inputmode="numeric" placeholder="حدد أجرة التوصيل" value="${Number(x.delivery_fee)>0?Number(x.delivery_fee):''}">
+        <button type="button" data-save-store-delivery="${x.id}">حفظ أجرة التوصيل</button>
+        <div class="muted" data-store-fee-current="${x.id}">${Number(x.delivery_fee)>0?'الأجرة الحالية: '+Number(x.delivery_fee).toLocaleString('ar-IQ')+' د.ع':'أجرة التوصيل غير محددة'}</div>
+        <div data-store-fee-status="${x.id}" role="status" aria-live="polite"></div>
+      </div>`:''}
       ${x.approval_note?`<div class="muted" style="margin-top:6px">${esc(x.approval_note)}</div>`:''}
       ${st==='approved'?`<div style="margin-top:8px"><a class="btn light" href="shop-business.html?id=${x.id}">عرض المتجر</a></div>`:''}
     </div>`;
   }).join('');
 }
+
+document.getElementById('sellerStoresList').addEventListener('click',async function(e){
+  const button=e.target.closest('[data-save-store-delivery]');
+  if(!button||button.disabled)return;
+  const id=Number(button.dataset.saveStoreDelivery);
+  const input=document.querySelector(`[data-store-delivery-fee="${id}"]`);
+  const status=document.querySelector(`[data-store-fee-status="${id}"]`);
+  const fee=Number(input.value);
+  if(!Number.isSafeInteger(fee)||fee<=0){status.textContent='اكتب أجرة توصيل صحيحة أكبر من صفر بالدينار';input.focus();return;}
+  button.disabled=true;input.disabled=true;status.textContent='جاري حفظ أجرة التوصيل...';
+  try{
+    const {data,error}=await db.rpc('set_shop_store_delivery_fee',{p_business_id:id,p_fee:fee});
+    if(error)throw error;
+    const saved=Number(data);
+    if(!Number.isSafeInteger(saved)||saved<=0)throw new Error('تعذر تحديد أجور التوصيل');
+    input.value=saved;
+    document.querySelector(`[data-store-fee-current="${id}"]`).textContent='الأجرة الحالية: '+saved.toLocaleString('ar-IQ')+' د.ع';
+    status.textContent='تم حفظ أجرة التوصيل';
+  }catch(err){status.textContent='تعذر حفظ أجرة التوصيل: '+(err.message||'تعذر الاتصال');}
+  finally{button.disabled=false;input.disabled=false;}
+});
 
 async function loadManageStores(){
   const select=document.getElementById('manageStoreSelect');
