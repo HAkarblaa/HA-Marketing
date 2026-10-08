@@ -682,6 +682,7 @@ body.ha-hide-top-map-entry .app{margin-top:0!important}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="transport-push-dispatch.js?v=20261008-all-iraq2"></script>
 
 <script>
 /* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
@@ -1294,6 +1295,7 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
+    if(window.HA_TransportPush){HA_TransportPush.dispatch(activeRideId,rideData).catch(()=>{});}
     await db.ref('userRides/'+fbUser.uid+'/'+activeRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_ride',activeRideId);
     openPostOrder();

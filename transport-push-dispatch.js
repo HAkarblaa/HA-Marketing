@@ -1,14 +1,9 @@
-// HA Marketing - transport dispatch limited to Qalat Sukkar service area + 1km push radius
+// HA Marketing - nationwide transport; nearby driver selection is handled by the server.
 (function(){
   if(window.HA_TransportPush)return;
 
   const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
   const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-
-  // Qalat Sukkar service geofence.
-  // Center: Qalat Sukkar. Radius chosen to represent the current district service area.
-  const QALAT_SUKKAR_CENTER={lat:31.863196,lng:46.073213};
-  const QALAT_SUKKAR_SERVICE_RADIUS_KM=15.05;
 
   let db=null;
 
@@ -21,42 +16,26 @@
     return db;
   }
 
-  function distanceKm(a,b){
-    if(!a||!b)return Infinity;
-    const lat1=Number(a.lat),lon1=Number(a.lng),lat2=Number(b.lat),lon2=Number(b.lng);
-    if(!Number.isFinite(lat1)||!Number.isFinite(lon1)||!Number.isFinite(lat2)||!Number.isFinite(lon2))return Infinity;
-    const R=6371,r=x=>x*Math.PI/180;
-    const dLat=r(lat2-lat1),dLon=r(lon2-lon1);
-    const q=Math.sin(dLat/2)**2+
-      Math.cos(r(lat1))*Math.cos(r(lat2))*Math.sin(dLon/2)**2;
-    return 2*R*Math.atan2(Math.sqrt(q),Math.sqrt(1-q));
-  }
-
+  // Validate coordinates without restricting trips to a particular town.
   function isInServiceArea(point){
-    return distanceKm(QALAT_SUKKAR_CENTER,point)<=QALAT_SUKKAR_SERVICE_RADIUS_KM;
+    if(!point || point.lat==null || point.lng==null ||
+       String(point.lat).trim()==='' || String(point.lng).trim()==='')return false;
+    const lat=Number(point.lat),lng=Number(point.lng);
+    return Number.isFinite(lat) && Number.isFinite(lng) &&
+      lat>=-90 && lat<=90 && lng>=-180 && lng<=180;
   }
 
   function validateRouteArea(pickup,destination){
-    if(!isInServiceArea(pickup)){
-      return {ok:false,reason:'pickup_outside_qalat_sukkar'};
-    }
-    if(!isInServiceArea(destination)){
-      return {ok:false,reason:'destination_outside_qalat_sukkar'};
-    }
+    if(!isInServiceArea(pickup))return {ok:false,reason:'invalid_pickup'};
+    if(!isInServiceArea(destination))return {ok:false,reason:'invalid_destination'};
     return {ok:true};
   }
 
   function showAreaMessage(result){
-    if(result?.reason==='pickup_outside_qalat_sukkar'){
-      alert('نقطة الانطلاق خارج نطاق قضاء قلعة سكر. خدمة النقل متاحة حالياً داخل قلعة سكر فقط.');
-      return;
-    }
-    if(result?.reason==='destination_outside_qalat_sukkar'){
-      alert('نقطة الوصول خارج نطاق قضاء قلعة سكر. يجب أن تكون نقطة الانطلاق والوصول داخل النطاق.');
-      return;
-    }
-    if(result?.reason==='outside_qalat_sukkar'){
-      alert('خدمة النقل والإشعارات متاحة حالياً داخل نطاق قضاء قلعة سكر فقط.');
+    if(result?.reason==='invalid_pickup')alert('حدد نقطة الانطلاق على الخريطة.');
+    else if(result?.reason==='invalid_destination')alert('حدد نقطة الوصول على الخريطة.');
+    else if(/qalat_sukkar/.test(result?.reason||'')){
+      alert('تحتاج تحديث إعدادات النقل في قاعدة البيانات لتفعيل الخدمة بكل العراق.');
     }
   }
 
@@ -127,11 +106,6 @@
     isInServiceArea,
     validateRouteArea,
     showAreaMessage,
-    serviceArea:{
-      name:'Qalat Sukkar',
-      center:QALAT_SUKKAR_CENTER,
-      radiusKm:QALAT_SUKKAR_SERVICE_RADIUS_KM,
-      notificationRadiusKm:1
-    }
+    serviceArea:{name:'Iraq',countryCode:'IQ',nationwide:true,notificationRadiusKm:1}
   };
 })();

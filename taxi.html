@@ -711,7 +711,7 @@ body.ha-extra-address-mode #stepSelectBtn{
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-push-dispatch.js?v=iraq-all-1"></script>
+<script src="transport-push-dispatch.js?v=20261008-all-iraq2"></script>
 
 <script>
 /* ===== HA Marketing: جسر إشعارات الرحلات إلى Supabase ===== */
@@ -1432,7 +1432,7 @@ order.onclick=async()=>{
   }
 
 
-  // HA: النقل يعمل داخل نطاق  فقط.
+  // Validate route coordinates for nationwide service.
   if(window.HA_TransportPush && typeof window.HA_TransportPush.validateRouteArea==='function'){
     const areaCheck=window.HA_TransportPush.validateRouteArea(
       {lat:start.lat,lng:start.lng},
@@ -1440,6 +1440,8 @@ order.onclick=async()=>{
     );
     if(!areaCheck.ok){
       window.HA_TransportPush.showAreaMessage(areaCheck);
+      order.disabled=false;
+      order.textContent=oldText;
       return;
     }
   }

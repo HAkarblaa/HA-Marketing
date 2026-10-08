@@ -1251,7 +1251,7 @@ body:not(.trip-ready) #orderArea{display:none !important;}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="transport-push-dispatch.js?v=qalat-sukkar-1km-1"></script>
+<script src="transport-push-dispatch.js?v=20261008-all-iraq2"></script>
 <script src="transport-profile.js"></script>
 
 <script>
@@ -2041,7 +2041,7 @@ order.onclick=async()=>{
   }
 
 
-  // HA: النقل يعمل داخل نطاق قلعة سكر فقط.
+  // Validate route coordinates for nationwide service.
   if(window.HA_TransportPush && typeof window.HA_TransportPush.validateRouteArea==='function'){
     const areaCheck=window.HA_TransportPush.validateRouteArea(
       {lat:start.lat,lng:start.lng},
@@ -2049,6 +2049,8 @@ order.onclick=async()=>{
     );
     if(!areaCheck.ok){
       window.HA_TransportPush.showAreaMessage(areaCheck);
+      order.disabled=false;
+      order.textContent=oldText;
       return;
     }
   }
@@ -2095,7 +2097,7 @@ order.onclick=async()=>{
 
   try{
     await rideRef.set(rideData);
-    if(window.HA_TransportPush){HA_TransportPush.dispatch(activeRideId,rideData).catch(()=>{});}
+    if(window.HA_TransportPush){HA_TransportPush.dispatch(activeDeliveryRideId,rideData).catch(()=>{});}
     await db.ref('userRides/'+fbUser.uid+'/'+activeDeliveryRideId).set(true).catch(()=>{});
     localStorage.setItem('ha_active_stoota',activeDeliveryRideId);
     openDeliveryPostOrder();
@@ -2780,7 +2782,7 @@ window.addEventListener('load',()=>{
   }catch(e){console.error(e)}
 });
 </script>
-<script src="ha-offline-qalat-map.js"></script>
+<script src="ha-offline-qalat-map.js?v=20261008-all-iraq2"></script>
 <script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
 </body>
 </html>
