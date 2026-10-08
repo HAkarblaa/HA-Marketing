@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="ha-location-picker.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="ha-location-picker.js"></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-<script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-store-fees1" defer></script>
+<script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-store-zones1" defer></script>
 </head><body class="ha-ui-final ha-family-shop"><div class="ha-family-strip"><a href="shop.html">← التسوق</a><div><b>سلة الشراء</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><a class="btn light" href="shop.html">← متابعة التسوق</a><h1>🛒 سلة الشراء</h1><div id="items"></div><div class="card"><h2>بيانات التسليم</h2><div id="savedBox"></div><input id="customerName" placeholder="الاسم الكامل"><input id="phone" placeholder="رقم الهاتف">
 <div class="ha-location-box">
   <div class="ha-location-grid">
@@ -19,16 +19,17 @@
   </div>
   <div id="customerLocationStatus" class="ha-location-status">حدد الموقع من الخريطة أو استخدم دبوس موقعك الحالي.</div>
   <div id="customerMap" class="ha-location-map"></div>
-</div><label><input id="saveAddress" type="checkbox" style="width:auto"> حفظ هذا العنوان لاستخدامه لاحقاً</label><textarea id="notes" placeholder="ملاحظات (اختياري)"></textarea><h3>كوبون الخصم</h3><div class="coupon"><input id="coupon" placeholder="اكتب رمز الكوبون"><button class="light" onclick="previewTotals()">تطبيق</button></div><div id="couponMsg" class="muted"></div><h3>طريقة الدفع</h3><label class="payopt"><input type="radio" name="paymentMethod" value="cash_on_delivery" checked> <strong>الدفع عند الاستلام</strong><br><span class="muted">تدفع قيمة الطلب عند وصوله إليك.</span></label><label class="payopt" style="display:none" aria-hidden="true"><input type="radio" name="paymentMethod" value="electronic" disabled> <strong>الدفع الإلكتروني / بالبطاقة</strong><br><span class="muted">مخفي حالياً.</span></label><div id="payNotice" class="muted" style="margin:10px 0"></div><div id="summary" class="summary"></div><button id="checkout" disabled style="width:100%;margin-top:10px">إتمام الشراء</button></div></div><script>
-let cart=JSON.parse(localStorage.getItem('ha_cart')||'[]'),products=[],me=null,deliveryFee=0,discountAmount=0,deliveryQuote=null,previewEpoch=0,checkoutBusy=false;
+</div><label><input id="saveAddress" type="checkbox" style="width:auto"> حفظ هذا العنوان لاستخدامه لاحقاً</label><textarea id="notes" placeholder="ملاحظات (اختياري)"></textarea><div id="deliveryChoices" style="margin:14px 0" aria-live="polite"></div><h3>كوبون الخصم</h3><div class="coupon"><input id="coupon" placeholder="اكتب رمز الكوبون"><button class="light" onclick="previewTotals()">تطبيق</button></div><div id="couponMsg" class="muted"></div><h3>طريقة الدفع</h3><label class="payopt"><input type="radio" name="paymentMethod" value="cash_on_delivery" checked> <strong>الدفع عند الاستلام</strong><br><span class="muted">تدفع قيمة الطلب عند وصوله إليك.</span></label><label class="payopt" style="display:none" aria-hidden="true"><input type="radio" name="paymentMethod" value="electronic" disabled> <strong>الدفع الإلكتروني / بالبطاقة</strong><br><span class="muted">مخفي حالياً.</span></label><div id="payNotice" class="muted" style="margin:10px 0"></div><div id="summary" class="summary"></div><button id="checkout" disabled style="width:100%;margin-top:10px">إتمام الشراء</button></div></div><script>
+let cart=JSON.parse(localStorage.getItem('ha_cart')||'[]'),products=[],productsReady=false,me=null,deliveryFee=0,discountAmount=0,deliveryQuote=null,previewEpoch=0,checkoutBusy=false,deliverySelections={},zonesGovernorate=null;
+try{const saved=JSON.parse(localStorage.getItem('ha_cart_delivery_zones')||'null');if(saved&&typeof saved.governorate==='string'&&saved.selections&&typeof saved.selections==='object'){deliverySelections=saved.selections;zonesGovernorate=saved.governorate}}catch(e){deliverySelections={}}
 const deliveryPicker=HA_LocationPicker.attach({
   governorate:'#governorate',area:'#area',address:'#address',
   lat:'#customerLat',lng:'#customerLng',map:'#customerMap',
   mapButton:'#customerMapBtn',gpsButton:'#customerGpsBtn',status:'#customerLocationStatus',
-  onChange:()=>{ if(typeof previewTotals==='function') previewTotals(); }
+  onChange:()=>{queueMicrotask(()=>{if(typeof previewTotals==='function')previewTotals()})}
 });const items=document.getElementById('items'),checkout=document.getElementById('checkout');function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function eff(p){return p.discount_price!=null&&Number(p.discount_price)<Number(p.price)?Number(p.discount_price):Number(p.price)}function subtotal(){return cart.reduce((s,x)=>{const p=products.find(p=>p.id===x.product_id);return s+(p?eff(p)*x.qty:0)},0)}
 async function prefill(){const {data:u}=await db.auth.getUser();me=u?.user||null;if(!me)return;const {data:p}=await db.from('profiles').select('full_name,phone,governorate').eq('id',me.id).maybeSingle();if(p){customerName.value=p.full_name||'';phone.value=p.phone||'';deliveryPicker.setValue({governorate:p.governorate||''})}const {data:a}=await db.from('shop_saved_addresses').select('*').eq('user_id',me.id).order('is_default',{ascending:false}).order('created_at',{ascending:false});if(a?.length){savedBox.innerHTML='<h3>العناوين المحفوظة</h3>'+a.map(x=>`<button class="light" style="margin:3px" onclick="useAddress(${x.id})">${esc(x.label)} — ${esc(x.governorate||'')}</button>`).join('');window.savedAddresses=a}await previewTotals()}
-async function render(){checkout.disabled=true;if(!cart.length){items.innerHTML='<div class="card">السلة فارغة.</div>';summary.innerHTML='';deliveryQuote=null;previewEpoch++;return}const ids=[...new Set(cart.map(x=>x.product_id))];const {data,error}=await db.from('products').select('id,name,price,discount_price,stock,is_active,min_order_qty').in('id',ids);if(error){items.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}products=data||[];cart=cart.filter(x=>products.some(p=>p.id===x.product_id));localStorage.setItem('ha_cart',JSON.stringify(cart));items.innerHTML=cart.map((x,i)=>{const p=products.find(p=>p.id===x.product_id);if(!p)return '';const min=Math.max(1,Number(p.min_order_qty||1));if(x.qty>p.stock)x.qty=Math.max(min,p.stock);return `<div class="card"><div class="row"><strong>${esc(p.name)} ${x.option_text?`<span class="tag">${esc(x.option_text)}</span>`:''}</strong><span>${eff(p).toLocaleString('ar-IQ')} د.ع</span></div><div class="row" style="margin-top:10px"><button class="light" onclick="q(${i},-${min})">−</button><span>الكمية: ${x.qty}</span><button class="light" onclick="q(${i},${min})">+</button><button class="danger" onclick="delItem(${i})">حذف</button></div></div>`}).join('');localStorage.setItem('ha_cart',JSON.stringify(cart));await previewTotals()}
+async function render(){productsReady=false;checkout.disabled=true;if(!cart.length){items.innerHTML='<div class="card">السلة فارغة.</div>';summary.innerHTML='';deliveryChoices.innerHTML='';deliveryQuote=null;previewEpoch++;return}const ids=[...new Set(cart.map(x=>x.product_id))];const {data,error}=await db.from('products').select('id,name,price,discount_price,stock,is_active,min_order_qty').in('id',ids);if(error){items.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}products=data||[];productsReady=true;cart=cart.filter(x=>products.some(p=>p.id===x.product_id));localStorage.setItem('ha_cart',JSON.stringify(cart));items.innerHTML=cart.map((x,i)=>{const p=products.find(p=>p.id===x.product_id);if(!p)return '';const min=Math.max(1,Number(p.min_order_qty||1));if(x.qty>p.stock)x.qty=Math.max(min,p.stock);return `<div class="card"><div class="row"><strong>${esc(p.name)} ${x.option_text?`<span class="tag">${esc(x.option_text)}</span>`:''}</strong><span>${eff(p).toLocaleString('ar-IQ')} د.ع</span></div><div class="row" style="margin-top:10px"><button class="light" onclick="q(${i},-${min})">−</button><span>الكمية: ${x.qty}</span><button class="light" onclick="q(${i},${min})">+</button><button class="danger" onclick="delItem(${i})">حذف</button></div></div>`}).join('');localStorage.setItem('ha_cart',JSON.stringify(cart));await previewTotals()}
 function q(i,d){if(checkoutBusy)return;const p=products.find(p=>p.id===cart[i].product_id);if(!p)return;const min=Math.max(1,Number(p.min_order_qty||1)),next=cart[i].qty+d;if(next<min)return;if(next>p.stock){alert('الكمية المطلوبة أكبر من المخزون المتوفر');return}cart[i].qty=next;save()}function delItem(i){if(checkoutBusy)return;cart.splice(i,1);save()}function save(){localStorage.setItem('ha_cart',JSON.stringify(cart));render()}
 function useAddress(id){
   if(checkoutBusy)return;
@@ -44,27 +45,33 @@ function useAddress(id){
   previewTotals();
 }
 function orderItems(){return cart.map(x=>({product_id:x.product_id,quantity:x.qty,option_text:x.option_text||null}))}
-function confirmedFees(quote){return (quote?.stores||[]).map(s=>({business_id:Number(s.business_id),fee:Number(s.fee)})).sort((a,b)=>a.business_id-b.business_id)}
+function confirmedFees(quote){return (quote?.stores||[]).map(s=>({business_id:Number(s.business_id),zone_id:Number(s.zone_id),fee:Number(s.fee),zone_type:s.zone_type,governorate:s.governorate,area_name:s.area_name})).sort((a,b)=>a.business_id-b.business_id)}
 function feeKey(quote){return JSON.stringify(confirmedFees(quote))}
-function updateCheckout(){checkout.disabled=checkoutBusy||!cart.length||!deliveryQuote?.ready}
+function updateCheckout(){checkout.disabled=checkoutBusy||!productsReady||!cart.length||!deliveryQuote?.ready;document.querySelectorAll('[data-delivery-zone-select]').forEach(x=>x.disabled=checkoutBusy||x.dataset.empty==='1')}
+const DELIVERY_ZONE_TYPES={nearby:'المناطق القريبة',district:'الأقضية والنواحي',governorate:'المحافظات',other:'مناطق أخرى'};
+function renderDeliveryChoices(options,gov){
+ if(!gov){deliveryChoices.innerHTML='<h3>منطقة التوصيل</h3><p class="muted">اختر المحافظة أولاً لعرض خيارات التوصيل.</p>';return}
+ deliveryChoices.innerHTML='<h3>منطقة التوصيل</h3><p class="muted">اختر المكان المطابق لعنوانك لكل متجر. تحتسب أجرة كل متجر مرة واحدة.</p>'+options.stores.map(store=>{
+  const groups=Object.entries(DELIVERY_ZONE_TYPES).map(([key,label])=>{const zones=store.zones.filter(z=>z.zone_type===key);return zones.length?`<optgroup label="${label}">${zones.map(z=>`<option data-no-i18n value="${Number(z.id)}" ${Number(deliverySelections[store.business_id])===Number(z.id)?'selected':''}>${esc(z.area_name)} — ${Number(z.fee).toLocaleString('ar-IQ')} د.ع</option>`).join('')}</optgroup>`:''}).join('');
+  return `<div style="margin:10px 0;padding:10px;border:1px solid #dbe5f1;border-radius:10px"><label for="deliveryZone${store.business_id}" data-no-i18n><b>${esc(store.name)}</b></label><select id="deliveryZone${store.business_id}" data-delivery-zone-select="${store.business_id}" data-empty="${store.zones.length?'0':'1'}" ${checkoutBusy||!store.zones.length?'disabled':''}><option value="">اختر منطقة التوصيل</option>${groups}</select>${!store.zones.length?'<p class="muted">المتجر لم يضف توصيلاً لهذه المحافظة.</p>':''}</div>`;
+ }).join('');
+}
+deliveryChoices.addEventListener('change',e=>{const select=e.target.closest('[data-delivery-zone-select]');if(!select||checkoutBusy)return;deliverySelections[select.dataset.deliveryZoneSelect]=Number(select.value)||null;localStorage.setItem('ha_cart_delivery_zones',JSON.stringify({governorate:zonesGovernorate,selections:deliverySelections}));previewTotals()});
 async function previewTotals(){
-  const epoch=++previewEpoch,sub=subtotal(),code=coupon.value.trim();
-  deliveryQuote=null;checkout.disabled=true;
-  if(!cart.length){summary.innerHTML='';return false}
-  let quote=null,feeError='',discount=0,couponMessage='';
-  try{
-    const result=await db.rpc('get_shop_cart_delivery_quote',{p_items:orderItems()});
-    if(result.error)throw new Error(result.error.message);
-    quote=result.data;
-    if(!quote||!Array.isArray(quote.stores)||!quote.stores.length||typeof quote.ready!=='boolean')throw new Error('تعذر تحديد أجور التوصيل');
-    const ids=new Set();let sum=0;
-    for(const store of quote.stores){
-      const id=Number(store.business_id),fee=store.fee==null?null:Number(store.fee);
-      if(!Number.isSafeInteger(id)||id<=0||ids.has(id)||fee!==null&&(!Number.isSafeInteger(fee)||fee<=0))throw new Error('تعذر تحديد أجور التوصيل');
-      ids.add(id);if(fee!==null)sum+=fee;
-    }
-    if(quote.ready&&(!Number.isSafeInteger(sum)||sum<=0||quote.stores.some(s=>s.fee==null)||Number(quote.total)!==sum))throw new Error('تعذر تحديد أجور التوصيل');
-  }catch(e){quote=null;feeError=e.message||'تعذر تحميل أجور التوصيل. حاول مجدداً.'}
+ const epoch=++previewEpoch,sub=subtotal(),code=coupon.value.trim(),gov=deliveryPicker.getValue().governorate?.trim()||'';
+ deliveryQuote=null;checkout.disabled=true;
+ if(!cart.length){summary.innerHTML='';deliveryChoices.innerHTML='';return false}
+ let quote=null,feeError='',discount=0,couponMessage='',options=null;
+ try{
+  const result=await db.rpc('get_shop_cart_delivery_options',{p_items:orderItems(),p_governorate:gov});if(result.error)throw new Error(result.error.message);
+  options=result.data;
+  if(!options||!Array.isArray(options.stores)||!options.stores.length||options.governorate!==gov)throw new Error('تعذر تحميل قائمة التوصيل');
+  const stores=new Set();
+  for(const store of options.stores){
+   const id=Number(store.business_id);if(!Number.isSafeInteger(id)||id<=0||stores.has(id)||!Array.isArray(store.zones))throw new Error('تعذر تحميل قائمة التوصيل');stores.add(id);
+   const zoneIds=new Set();for(const z of store.zones){if(!Number.isSafeInteger(Number(z.id))||Number(z.id)<=0||zoneIds.has(Number(z.id))||Number(z.business_id)!==id||z.governorate!==gov||!DELIVERY_ZONE_TYPES[z.zone_type]||!z.area_name||!Number.isSafeInteger(Number(z.fee))||Number(z.fee)<=0)throw new Error('تعذر تحميل قائمة التوصيل');zoneIds.add(Number(z.id))}
+  }
+ }catch(e){options=null;feeError=e.message||'تعذر تحميل قائمة التوصيل. حاول مجدداً.'}
   if(code){
     try{
       const now=new Date().toISOString();
@@ -77,15 +84,26 @@ async function previewTotals(){
       }else couponMessage='الكوبون غير صالح أو لا ينطبق على هذا الطلب.';
     }catch(e){couponMessage='تعذر التحقق من الكوبون. حاول مجدداً.'}
   }
-  if(epoch!==previewEpoch)return false;
-  deliveryQuote=quote;deliveryFee=quote?.ready?Number(quote.total):null;discountAmount=discount;couponMsg.textContent=couponMessage;
-  const amount=n=>Number(n).toLocaleString('ar-IQ')+' د.ع';
-  const stores=quote?.stores.map(s=>`<div class="row"><span><span>أجرة توصيل</span> — <span data-no-i18n>${esc(s.name)}</span></span><strong>${s.fee==null?'غير محددة':amount(s.fee)}</strong></div>`).join('')||'';
-  summary.innerHTML=`<div class="row"><span>المجموع الفرعي</span><strong>${amount(sub)}</strong></div>${stores}<div class="row"><span>مجموع أجور التوصيل</span><strong>${deliveryFee==null?'—':amount(deliveryFee)}</strong></div><div class="row"><span>الخصم</span><strong>- ${amount(discount)}</strong></div><div class="row"><span>المجموع النهائي</span><strong class="price">${deliveryFee==null?'—':amount(Math.max(0,sub+deliveryFee-discount))}</strong></div>${!quote?.ready?`<p role="status" style="color:#a90020">${esc(feeError||'صاحب أحد المتاجر لم يحدد أجرة التوصيل بعد. لا يمكن تأكيد الطلب حتى يحددها.')}</p>`:''}`;
-  updateCheckout();return !!quote?.ready;
+ if(epoch!==previewEpoch)return false;
+ if(gov&&zonesGovernorate!==gov){deliverySelections={};zonesGovernorate=gov}
+ if(options){
+  const selected={};const storeQuotes=options.stores.map(store=>{
+   const zone=store.zones.find(z=>Number(z.id)===Number(deliverySelections[store.business_id]));
+   if(zone)selected[store.business_id]=Number(zone.id);
+   return {...store,zone_id:zone?Number(zone.id):null,fee:zone?Number(zone.fee):null,zone_type:zone?.zone_type,governorate:zone?.governorate,area_name:zone?.area_name};
+  });
+  if(gov){deliverySelections=selected;localStorage.setItem('ha_cart_delivery_zones',JSON.stringify({governorate:gov,selections:selected}))}renderDeliveryChoices(options,gov);
+  const total=storeQuotes.reduce((sum,s)=>sum+(s.fee||0),0),ready=!!gov&&storeQuotes.every(s=>s.zone_id&&s.fee>0)&&Number.isSafeInteger(total);
+  quote={ready,total:ready?total:null,stores:storeQuotes};
+ }else deliveryChoices.innerHTML='<h3>منطقة التوصيل</h3><p role="status" style="color:#a90020">'+esc(feeError)+'</p>';
+ deliveryQuote=quote;deliveryFee=quote?.ready?Number(quote.total):null;discountAmount=discount;couponMsg.textContent=couponMessage;
+ const amount=n=>Number(n).toLocaleString('ar-IQ')+' د.ع';
+ const stores=quote?.stores.map(s=>`<div class="row"><span><span>أجرة توصيل</span> — <span data-no-i18n>${esc(s.name)}</span>${s.area_name?`<br><small data-no-i18n>${esc(s.area_name)}${s.area_name!==s.governorate?'، '+esc(s.governorate):''}</small>`:''}</span><strong>${s.fee==null?'اختر المنطقة':amount(s.fee)}</strong></div>`).join('')||'';
+ summary.innerHTML=`<div class="row"><span>المجموع الفرعي</span><strong>${amount(sub)}</strong></div>${stores}<div class="row"><span>مجموع أجور التوصيل</span><strong>${deliveryFee==null?'—':amount(deliveryFee)}</strong></div><div class="row"><span>الخصم</span><strong>- ${amount(discount)}</strong></div><div class="row"><span>المجموع النهائي</span><strong class="price">${deliveryFee==null?'—':amount(Math.max(0,sub+deliveryFee-discount))}</strong></div>${!quote?.ready?`<p role="status" style="color:#a90020">${esc(feeError||(!gov?'اختر المحافظة أولاً لعرض خيارات التوصيل.':'اختر منطقة التوصيل لكل متجر. إذا لم توجد خيارات، فالمتجر لا يوصل لهذه المحافظة حالياً.'))}</p>`:''}`;
+ updateCheckout();return !!quote?.ready;
 }
 checkout.onclick=async()=>{
-  if(checkoutBusy||!cart.length||!deliveryQuote?.ready)return;
+  if(checkoutBusy||!productsReady||!cart.length||!deliveryQuote?.ready)return;
   checkoutBusy=true;updateCheckout();
   const displayedFees=feeKey(deliveryQuote);
   const controls=[...document.querySelectorAll('.wrap input,.wrap select,.wrap textarea,.wrap button')].filter(x=>x!==checkout).map(x=>[x,x.disabled]);
@@ -98,17 +116,17 @@ checkout.onclick=async()=>{
     if(!customerName.value.trim()||!phone.value.trim()||!loc.governorate||!loc.area||!loc.address){alert('أكمل الاسم ورقم الهاتف والمحافظة والقضاء/الناحية/الحي والعنوان');return}
     if(loc.lat==null||loc.lng==null){alert('حدد العنوان من الخريطة أو استخدم دبوس موقعك الحالي');return}
     if(!await previewTotals())return;
-    if(displayedFees!==feeKey(deliveryQuote)){alert('تغيرت أجور التوصيل؛ راجع السلة ثم أكد الطلب مجدداً');return}
-    const result=await db.rpc('create_shop_order_v5',{
+    if(displayedFees!==feeKey(deliveryQuote)){alert('تغيرت قائمة التوصيل أو أجورها؛ راجع السلة ثم أكد الطلب مجدداً');return}
+    const result=await db.rpc('create_shop_order_v6',{
       p_customer_name:customerName.value.trim(),p_phone:phone.value.trim(),
       p_governorate:loc.governorate,p_area:loc.area,p_address:loc.address,
       p_customer_lat:loc.lat,p_customer_lng:loc.lng,p_notes:notes.value.trim()||null,
-      p_items:orderItems(),p_expected_delivery_fees:confirmedFees(deliveryQuote),
+      p_items:orderItems(),p_expected_delivery_zones:confirmedFees(deliveryQuote),
       p_payment_method:'cash_on_delivery',p_coupon_code:coupon.value.trim()||null
     });
     if(result.error){alert('تعذر إنشاء الطلب: '+result.error.message);await previewTotals();return}
     orderCreated=true;
-    localStorage.removeItem('ha_cart');
+    localStorage.removeItem('ha_cart');localStorage.removeItem('ha_cart_delivery_zones');
     if(saveAddress.checked){
       try{
         const label='عنوان '+new Date().toLocaleDateString('ar-IQ');
