@@ -467,6 +467,11 @@ Object.assign(EN,{"واجهة السائق": "Driver Dashboard", "طلباتك �
 Object.assign(FA,{"واجهة السائق": "پنل راننده", "طلباتك وحالة العمل": "درخواست‌های شما و وضعیت فعالیت", "للسائقين": "برای رانندگان", "فتح واجهة السائق": "باز کردن پنل راننده"});
 Object.assign(IQ,{"واجهة السائق": "واجهة السائق", "طلباتك وحالة العمل": "طلباتك وحالة الشغل", "للسائقين": "للسائقين", "فتح واجهة السائق": "افتح واجهة السائق"});
 
+// Visible transport registration entry.
+Object.assign(EN,{"تسجيل سائق أو مندوب": "Register as a driver or courier", "قدّم بياناتك حتى تنضم إلى خدمات النقل": "Submit your details to join our transport services", "فتح استمارة التسجيل": "Open registration form"});
+Object.assign(FA,{"تسجيل سائق أو مندوب": "ثبت‌نام راننده یا پیک", "قدّم بياناتك حتى تنضم إلى خدمات النقل": "برای پیوستن به خدمات حمل‌ونقل اطلاعات خود را ارسال کنید", "فتح استمارة التسجيل": "باز کردن فرم ثبت‌نام"});
+Object.assign(IQ,{"تسجيل سائق أو مندوب": "تسجيل سائق أو مندوب", "قدّم بياناتك حتى تنضم إلى خدمات النقل": "قدّم بياناتك حتى تنضم لخدمات النقل", "فتح استمارة التسجيل": "افتح استمارة التسجيل"});
+
 const sectionTranslations=window.HASectionArtwork?.i18n;
 if(sectionTranslations){
   Object.assign(EN,sectionTranslations.en||{});
