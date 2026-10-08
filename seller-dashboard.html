@@ -35,7 +35,6 @@ input,select,textarea{padding:9px!important}
  .card{font-size:13px!important}
 }
 
-.ha-delivery-zone-editor{margin-top:14px;border-top:1px solid #e2e8f0;padding-top:10px;min-width:0}.ha-delivery-zone-editor details{margin:9px 0;border:1px solid #dbe5f1;border-radius:10px;padding:10px}.ha-delivery-zone-editor summary{cursor:pointer;font-weight:bold}.ha-delivery-zone-editor summary span{font-size:12px;background:#eaf1fa;border-radius:20px;padding:2px 8px}.ha-zone-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}.ha-zone-fields label{font-size:13px;min-width:0}.ha-zone-fields input,.ha-zone-fields select{font-size:14px;min-width:0}.ha-zone-row{padding:12px 0;border-bottom:1px solid #e2e8f0}.ha-zone-row:last-child{border:0}.ha-zone-new{border:1px dashed #b9ccdf;border-radius:10px;padding:10px;margin-top:12px}.ha-zone-fields [hidden]{display:none}@media(max-width:420px){.ha-zone-fields{grid-template-columns:1fr}}
 </style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-role-bottom-nav.css?v=20261002-seller1">
@@ -296,7 +295,7 @@ body.ha-editing-product .bottom-nav{
 #legacyStoreEditor{display:none!important}
 @media(max-width:650px){.ha-store-list{grid-template-columns:1fr}}
 </style>
-<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-store-zones1" defer></script>
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-seller-quote1" defer></script>
 </head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
 <div class="card" id="stores-overview">
   <div class="ha-my-stores-head">
@@ -339,7 +338,7 @@ body.ha-editing-product .bottom-nav{
     <div id="manageStoreHint" class="ha-store-hint">كل متجر يعرض منتجاته فقط.</div>
   </div>
   <div id="products" class="ha-product-grid">جاري التحميل...</div>
-</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد تجهيز الطلب اضغط «الطلب جاهز — اطلب مندوب». يظهر الطلب للمندوبين المعتمدين، وبعد الاستلام يتابع الزبون الحالة ويؤكد التسليم برمز OTP.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد استلام الطلب حدّد أجرة التوصيل واحفظها لتبليغ الزبون قبل إيصال الطلب. يمكنك توصيله بنفسك أو بمندوب خارجي؛ طلب مندوب من التطبيق اختياري.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
@@ -671,69 +670,12 @@ async function loadSellerStoreCards(){
       <b>${esc(x.name)}</b>
       <small>${esc(sectionNames[x.section_key]||x.section_key)}<br>${esc(x.location_text||'')}</small>
       <br><span class="ha-store-state ${cls}">${label}</span>
-      ${st==='approved'&&x.is_active!==false?deliveryZoneEditor(x.id):''}
+      <p class="muted">تحدد أجرة توصيل كل طلب من قائمة طلبات المتجر.</p>
       ${x.approval_note?`<div class="muted" style="margin-top:6px">${esc(x.approval_note)}</div>`:''}
       ${st==='approved'?`<div style="margin-top:8px"><a class="btn light" href="shop-business.html?id=${x.id}">عرض المتجر</a></div>`:''}
     </div>`;
   }).join('');
-  await Promise.allSettled(arr.filter(x=>(x.approval_status||'approved')==='approved'&&x.is_active!==false).map(x=>loadDeliveryZones(x.id)));
 }
-
-const DELIVERY_ZONE_TYPES={nearby:'المناطق القريبة',district:'الأقضية والنواحي',governorate:'المحافظات',other:'مناطق أخرى'};
-function zoneTypeOptions(value='nearby'){return Object.entries(DELIVERY_ZONE_TYPES).map(([key,label])=>`<option value="${key}" ${key===value?'selected':''}>${label}</option>`).join('')}
-function zoneGovOptions(value=''){return '<option value="">اختر المحافظة</option>'+HA_LocationPicker.GOVS.map(g=>`<option value="${esc(g.name)}" ${g.name===value?'selected':''}>${esc(g.name)}</option>`).join('')}
-function zoneFields(z={}){return `<div class="ha-zone-fields">
- <label><span>نوع منطقة التوصيل</span><select data-zone-field="zone_type">${zoneTypeOptions(z.zone_type)}</select></label>
- <label><span>المحافظة</span><select data-zone-field="governorate">${zoneGovOptions(z.governorate)}</select></label>
- <label data-zone-area-label ${z.zone_type==='governorate'?'hidden':''}><span>اسم المنطقة أو القضاء</span><input data-zone-field="area_name" maxlength="120" placeholder="اكتب اسم المنطقة أو القضاء" value="${esc(z.area_name||'')}"></label>
- <label><span>الأجرة بالدينار</span><input data-zone-field="fee" type="number" min="1" step="1" inputmode="numeric" placeholder="اكتب الأجرة" value="${z.fee?Number(z.fee):''}"></label>
- </div>`}
-function zoneRow(z){return `<div class="ha-zone-row" data-zone-row="${Number(z.id)}">${zoneFields(z)}<div class="row"><button type="button" data-zone-save="${Number(z.id)}">حفظ التعديلات</button><button type="button" class="danger" data-zone-remove="${Number(z.id)}">حذف المنطقة</button></div><div class="muted" data-zone-status role="status" aria-live="polite"></div></div>`}
-function deliveryZoneEditor(id){return `<div class="ha-delivery-zone-editor" data-delivery-zone-editor="${id}">
- <h3>قوائم أجور التوصيل</h3><p class="muted">أضف المناطق القريبة والأقضية والمحافظات التي توصل لها، وحدد أجرة كل مكان. يختار الزبون من القائمة حسب عنوانه.</p>
- <div data-zone-groups>${Object.entries(DELIVERY_ZONE_TYPES).map(([key,label])=>`<details data-zone-details="${key}"><summary>${label} <span data-zone-count="${key}" data-no-i18n>0</span></summary><div data-zone-group="${key}"></div><p class="muted" data-zone-empty="${key}">لا توجد مناطق مضافة.</p></details>`).join('')}</div>
- <div class="ha-zone-new" data-zone-new><h4>إضافة مكان توصيل</h4>${zoneFields()}<button type="button" data-zone-save="new">إضافة للقائمة</button><div class="muted" data-zone-status role="status" aria-live="polite"></div></div>
- <div class="muted" data-zone-load-status role="status" aria-live="polite"></div></div>`}
-function updateZoneCounts(editor){for(const key of Object.keys(DELIVERY_ZONE_TYPES)){const count=editor.querySelector(`[data-zone-group="${key}"]`).children.length;editor.querySelector(`[data-zone-count="${key}"]`).textContent=count;editor.querySelector(`[data-zone-empty="${key}"]`).hidden=!!count}}
-async function loadDeliveryZones(id){
- const editor=document.querySelector(`[data-delivery-zone-editor="${id}"]`);if(!editor)return;
- const status=editor.querySelector('[data-zone-load-status]');status.textContent='جاري تحميل قائمة التوصيل...';
- try{
-  const {data,error}=await db.rpc('get_shop_store_delivery_zones',{p_business_id:Number(id)});if(error)throw error;if(!Array.isArray(data))throw new Error('تعذر تحميل قائمة التوصيل');
-  for(const key of Object.keys(DELIVERY_ZONE_TYPES)){const rows=data.filter(z=>z.zone_type===key);editor.querySelector(`[data-zone-group="${key}"]`).innerHTML=rows.map(zoneRow).join('');editor.querySelector(`[data-zone-details="${key}"]`).open=!!rows.length}
-  updateZoneCounts(editor);status.textContent='';
- }catch(e){status.textContent='تعذر تحميل قائمة التوصيل: '+(e.message||e)}
-}
-const sellerZoneList=document.getElementById('sellerStoresList');
-sellerZoneList.addEventListener('change',e=>{if(!e.target.matches('[data-zone-field="zone_type"]'))return;const row=e.target.closest('[data-zone-row],[data-zone-new]');row.querySelector('[data-zone-area-label]').hidden=e.target.value==='governorate'});
-sellerZoneList.addEventListener('click',async e=>{
- const button=e.target.closest('[data-zone-save],[data-zone-remove]');if(!button||button.disabled)return;
- const editor=button.closest('[data-delivery-zone-editor]'),row=button.closest('[data-zone-row],[data-zone-new]'),status=row.querySelector('[data-zone-status]');
- const businessId=Number(editor.dataset.deliveryZoneEditor),zoneId=row.hasAttribute('data-zone-row')?Number(row.dataset.zoneRow):null;
- const remove=button.hasAttribute('data-zone-remove');
- if(remove&&!confirm('حذف هذه المنطقة من قائمة التوصيل؟'))return;
- const read=key=>row.querySelector(`[data-zone-field="${key}"]`).value.trim();
- const type=read('zone_type'),gov=read('governorate'),area=read('area_name'),fee=Number(read('fee'));
- if(!remove){
-  if(!gov){status.textContent='اختر المحافظة';return}
-  if(type!=='governorate'&&!area){status.textContent='اكتب اسم المنطقة أو القضاء';return}
-  if(!Number.isSafeInteger(fee)||fee<=0){status.textContent='اكتب أجرة توصيل صحيحة أكبر من صفر بالدينار';return}
- }
- const controls=[...row.querySelectorAll('input,select,button')].map(x=>[x,x.disabled]);controls.forEach(([x])=>x.disabled=true);status.textContent=remove?'جاري حذف المنطقة...':'جاري حفظ قائمة التوصيل...';
- try{
-  const {data,error}=await db.rpc(remove?'remove_shop_delivery_zone':'save_shop_delivery_zone',remove?{p_business_id:businessId,p_zone_id:zoneId}:{p_business_id:businessId,p_zone_id:zoneId,p_zone_type:type,p_governorate:gov,p_area_name:area,p_fee:fee});if(error)throw error;
-  if(remove){if(data!==true)throw new Error('تعذر حذف المنطقة');row.remove()}
-  else{
-   if(!data||!Number.isSafeInteger(Number(data.id))||!Number.isSafeInteger(Number(data.fee))||Number(data.fee)<=0||!DELIVERY_ZONE_TYPES[data.zone_type])throw new Error('تعذر حفظ قائمة التوصيل');
-   if(zoneId!==null)row.remove();
-   editor.querySelector(`[data-zone-group="${data.zone_type}"]`).insertAdjacentHTML('beforeend',zoneRow(data));editor.querySelector(`[data-zone-details="${data.zone_type}"]`).open=true;
-   if(zoneId===null){row.querySelector('[data-zone-field="area_name"]').value='';row.querySelector('[data-zone-field="fee"]').value='';status.textContent='تمت إضافة المكان للقائمة'}
-   else editor.querySelector(`[data-zone-row="${Number(data.id)}"] [data-zone-status]`).textContent='تم حفظ التعديلات';
-  }
-  updateZoneCounts(editor);
- }catch(e){status.textContent=(remove?'تعذر حذف المنطقة: ':'تعذر حفظ قائمة التوصيل: ')+(e.message||e)}
- finally{controls.forEach(([x,disabled])=>x.disabled=disabled)}
-});
 
 async function loadManageStores(){
   const select=document.getElementById('manageStoreSelect');
@@ -1025,7 +967,56 @@ async function haDeleteProduct(id){
   await loadProducts();
 }
 
-async function loadOrders(){const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';const {data,error}=await db.rpc('get_seller_shop_orders');if(error){el.innerHTML='<div class="card">شغّل SHOP-COURIER-INTEGRATION.sql أولاً.<br>'+esc(error.message)+'</div>';return}const arr=Array.isArray(data)?data:[];let deliveryZones=[];if(arr.length){const result=await db.from('shop_order_store_delivery_fees').select('order_id,business_name,delivery_fee,zone_type,delivery_governorate,delivery_area').eq('seller_user_id',me.id).in('order_id',arr.map(o=>o.order_id));if(!result.error)deliveryZones=result.data||[]}el.innerHTML=arr.map(o=>{const d=o.delivery;const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');let delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:`<div class="delivery">لم يُطلب مندوب بعد.</div>`;let action='';if(o.order_status!=='cancelled'&&(!d||['cancelled','ready'].includes(d.status))){action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button class="blue" onclick="requestCourier(${o.order_id})">✅ الطلب جاهز — اطلب مندوب</button>`}return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: ${esc(o.customer_name)} — ${esc(o.phone)}<br>${esc(o.governorate||'')} — ${esc(o.address)}</div><div class="row" style="margin-top:8px"><b>${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${deliveryZones.filter(z=>Number(z.order_id)===Number(o.order_id)).map(z=>`<div class="delivery"><b>أجرة التوصيل:</b> ${Number(z.delivery_fee).toLocaleString('ar-IQ')} د.ع<br><span data-no-i18n>${esc(z.business_name)}${z.delivery_area?' — '+esc(z.delivery_area)+(z.delivery_governorate!==z.delivery_area?'، '+esc(z.delivery_governorate):''):''}</span></div>`).join('')}${delivery}</div>`}).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>'}async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}init().catch(e=>{
+let deliveryQuoteBusy=false,deliveryOrdersBusy=false;
+function quoteFeeRow(q){
+ const id=Number(q.order_id),biz=Number(q.business_id),key=`${id}_${biz}`,pending=q.delivery_fee==null;
+ const current=pending?'بانتظار تحديد الأجرة':Number(q.delivery_fee).toLocaleString('ar-IQ')+' د.ع';
+ return `<div class="delivery"><b data-no-i18n>${esc(q.business_name)}</b><div class="row"><span>أجرة التوصيل</span><strong>${current}</strong></div>${q.pricing_mode==='seller_quote'&&q.quoted_at?'<small class="muted">تم تبليغ الزبون بالأجرة.</small>':''}${q.pricing_mode==='seller_quote'?(q.can_quote?`<div class="row" style="margin-top:8px"><label style="flex:1;min-width:120px" for="quoteFee${key}">أجرة التوصيل بالدينار<input id="quoteFee${key}" type="number" min="1" step="1" inputmode="numeric" value="${pending?'':Number(q.delivery_fee)}" placeholder="اكتب أجرة التوصيل" style="width:100%"></label><button type="button" onclick="saveDeliveryQuote(${id},${biz})">حفظ الأجرة وتبليغ الزبون</button></div><div id="quoteMsg${key}" class="muted" role="status"></div>`:'<p class="muted">لا يمكن تعديل الأجرة بعد بدء توصيل هذا المتجر أو إغلاق الطلب.</p>'):(q.delivery_area?`<small data-no-i18n>${esc(q.delivery_area)}${q.delivery_governorate!==q.delivery_area?'، '+esc(q.delivery_governorate):''}</small>`:'')}</div>`;
+}
+async function loadOrders(){
+ if(deliveryQuoteBusy||deliveryOrdersBusy)return;
+ deliveryOrdersBusy=true;
+ const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';
+ try{
+ const {data,error}=await db.rpc('get_seller_shop_orders');
+ if(error){el.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}
+ const arr=Array.isArray(data)?data:[];let quotes=[];
+ if(arr.length){
+  const result=await db.rpc('get_seller_shop_delivery_quotes',{p_order_ids:arr.map(o=>o.order_id)});
+  if(result.error||!Array.isArray(result.data)){el.innerHTML='<div class="card">تعذر تحميل أجور الطلبات. اضغط تحديث للمحاولة مجدداً.<br>'+esc(result.error?.message||'')+'</div>';return}
+  quotes=result.data;
+ }
+ el.innerHTML=arr.map(o=>{
+  const d=o.delivery,own=quotes.filter(q=>Number(q.order_id)===Number(o.order_id));
+  const pending=own.some(q=>q.pricing_mode==='seller_quote'&&q.delivery_fee==null);
+  const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');
+  const delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:'<div class="delivery">يمكنك توصيل الطلب بنفسك أو بمندوب خارجي.</div>';
+  let action='';
+  if(!['cancelled','completed'].includes(o.order_status)&&(!d||['cancelled','ready'].includes(d.status))){
+   action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button type="button" class="blue" onclick="requestCourier(${o.order_id})" ${pending?'disabled':''}>طلب مندوب من التطبيق (اختياري)</button>`;
+  }
+  return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: <span data-no-i18n>${esc(o.customer_name)} — ${esc(o.phone)}</span><br><span data-no-i18n>${esc(o.governorate||'')} — ${esc(o.address)}</span></div><div class="row" style="margin-top:8px"><b><span>مجموع المنتجات</span>: ${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${own.map(quoteFeeRow).join('')}${delivery}</div>`;
+ }).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>';
+ }catch(e){el.innerHTML='<div class="card">'+esc(e.message||'تعذر تحميل الطلبات')+'</div>'}finally{deliveryOrdersBusy=false}
+}
+async function saveDeliveryQuote(id,biz){
+ if(deliveryQuoteBusy)return;
+ const input=document.getElementById(`quoteFee${id}_${biz}`),msg=document.getElementById(`quoteMsg${id}_${biz}`);
+ const drafts=[...document.querySelectorAll('#orders input')].filter(x=>x!==input).map(x=>[x.id,x.value]);
+ const fee=Number(input?.value);
+ if(!Number.isSafeInteger(fee)||fee<=0){msg.textContent='اكتب أجرة توصيل صحيحة أكبر من صفر بالدينار';input?.focus();return}
+ deliveryQuoteBusy=true;
+ const controls=[...document.querySelectorAll('#orders input,#orders button')].map(x=>[x,x.disabled]);controls.forEach(([x])=>x.disabled=true);
+ msg.textContent='جاري حفظ الأجرة وتبليغ الزبون...';let saved=false;
+ try{
+  const {data,error}=await db.rpc('set_shop_order_delivery_quote',{p_order_id:id,p_business_id:biz,p_fee:fee});
+  if(error||!data?.ok)throw new Error(error?.message||'تعذر حفظ أجرة التوصيل');
+  saved=true;msg.textContent=data.already_saved?'الأجرة محفوظة وتم تبليغ الزبون بها مسبقاً.':'تم حفظ الأجرة وتبليغ الزبون.';
+ }catch(e){msg.textContent=e.message||'تعذر حفظ أجرة التوصيل'}
+ finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
+ if(saved){await loadOrders();for(const [key,value] of drafts){const field=document.getElementById(key);if(field)field.value=value}}
+}
+async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}init().catch(e=>{
   console.error(e);
   const g=document.getElementById('gate');
   if(g) g.innerHTML='❌ تعذر فتح لوحة البائع: '+esc(e?.message||String(e));

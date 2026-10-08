@@ -19,7 +19,7 @@
 .cart-toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#10233f;color:#fff;padding:11px 16px;border-radius:999px;box-shadow:0 8px 24px #0002;z-index:9999;display:none;font-weight:700}
 @media(max-width:560px){.product-item{grid-template-columns:84px 1fr}.product-image-wrap{width:84px;height:84px}.product-actions{grid-column:1/-1;width:100%}.product-actions .btn,.product-actions button{flex:1;text-align:center}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-store-zones1" defer></script>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-seller-quote1" defer></script>
 </head><body><div id="cartToast" class="cart-toast">تمت الإضافة للسلة ✅</div><div class="wrap"><div id="box" class="card"><div class="body">جاري التحميل...</div></div><div id="sellerProducts" class="card"><div class="body"><h2>منتجات المتجر</h2><div id="spList">جاري التحميل...</div></div></div></div><script>
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
 const id=Number(new URLSearchParams(location.search).get('id'));
@@ -132,7 +132,7 @@ async function init(){
   <div class="body">
     <h1>${esc(x.name)}</h1>
     <div class="location">📍 ${esc(x.location_text||'الموقع غير محدد')}</div>
-    <div class="location" id="storeDeliveryZones"><h3>قوائم أجور التوصيل</h3><div class="muted">جاري تحميل قائمة التوصيل...</div></div>
+    <div class="location"><h3>أجرة التوصيل</h3><p class="muted">سيحدد صاحب المتجر أجرة التوصيل وسيتم تبليغكم بها قبل إيصال الطلب.</p></div>
     ${x.description?`<div class="desc">${esc(x.description)}</div>`:''}
     <div class="row">
       ${map?`<a class="btn" href="${esc(map)}" target="_blank" rel="noopener noreferrer">فتح الموقع على الخريطة</a>`:''}
@@ -140,10 +140,7 @@ async function init(){
       <a class="btn light" href="shop-section.html?section=${encodeURIComponent(x.section_key)}">← رجوع</a>
     </div>
   </div>`;
-  const {data:zones,error:zoneError}=await db.rpc('get_shop_store_delivery_zones',{p_business_id:id});
-  const target=document.getElementById('storeDeliveryZones');
-  const types={nearby:'المناطق القريبة',district:'الأقضية والنواحي',governorate:'المحافظات',other:'مناطق أخرى'};
-  target.innerHTML='<h3>قوائم أجور التوصيل</h3>'+(zoneError?'<p class="muted">تعذر تحميل قائمة التوصيل. حاول مجدداً.</p>':!Array.isArray(zones)||!zones.length?'<p class="muted">المتجر لم يضف مناطق توصيل بعد.</p>':Object.entries(types).map(([key,label])=>{const rows=zones.filter(z=>z.zone_type===key);return rows.length?`<h4>${label}</h4>${rows.map(z=>`<div class="row" style="padding:6px 0"><span data-no-i18n>${esc(z.area_name)}${z.area_name!==z.governorate?'، '+esc(z.governorate):''}</span><b>${Number(z.fee).toLocaleString('ar-IQ')} د.ع</b></div>`).join('')}`:''}).join('')+'<p class="muted">تحتسب أجرة كل متجر مرة واحدة حسب المنطقة المختارة في السلة.</p>');
+
 
 }
 
