@@ -6,6 +6,8 @@ const SUPA_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
 let _db=null;
 let cache={};
 let mounts={};
+// Temporary pause; balances stay unchanged. Employee rules are unchanged.
+const PAUSED_ROLES=new Set(['seller','driver','service_provider']);
 const PAGE_ROLES={
   'seller-dashboard.html':'seller','shop.html':'seller',
   'provider-dashboard.html':'service_provider','services.html':'service_provider',
@@ -77,6 +79,11 @@ function ensureStyles(){
   body.ha-work-balance-active #haDriverBalance{display:none!important}
   body section.ha-role-balance-bar [data-balance-status]{flex-basis:100%;font-size:12px;line-height:1.6;color:#fff!important}
   body section.ha-role-balance-bar [data-balance-status]:empty{display:none}
+  body section.ha-role-balance-bar[data-role="seller"],
+  body section.ha-role-balance-bar[data-role="driver"],
+  body section.ha-role-balance-bar[data-role="service_provider"],
+  html body #providerBalanceCard.balance-card,
+  html body #haDriverBalance.ha-driver-balance{display:none!important}
   @media(max-width:560px){
     body section.ha-role-balance-bar{padding:9px 10px;border-radius:14px;gap:8px}
     .ha-role-balance-icon{width:37px;height:37px;font-size:19px}
@@ -104,6 +111,7 @@ async function balance(role,{force=false}={}){
   return amount;
 }
 async function hasPositive(role,opts){
+  if(PAUSED_ROLES.has(role))return true;
   return (await balance(role,opts))>0;
 }
 
@@ -155,6 +163,7 @@ async function refreshMounted(role){
 }
 
 async function mount(role,opts={}){
+  if(PAUSED_ROLES.has(role)){ensureStyles();return;}
   if(mounts[role])return mounts[role];
   mounts[role]=mountOnce(role,opts).finally(()=>{delete mounts[role];});
   return mounts[role];
@@ -207,11 +216,12 @@ async function mountOnce(role,opts={}){
 }
 
 window.HA_BalanceGate={balance,hasPositive,mount,redeem,refresh:refreshMounted};
+ensureStyles();
 
 async function autoMount(){
   const page=location.pathname.split('/').pop().toLowerCase();
   const role=PAGE_ROLES[page];
-  if(!role)return;
+  if(!role||PAUSED_ROLES.has(role))return;
   try{
     const c=await readyDb();
     const {data:{session}}=await c.auth.getSession();

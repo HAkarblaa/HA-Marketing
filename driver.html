@@ -2111,7 +2111,7 @@ html[data-ha-theme="light"] .shop-courier-link b{
 <link rel="stylesheet" href="ha-location-ux.css">
 <script src="ha-location-ux.js"></script>
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-<script src="ha-role-balance-gate.js?v=20261008-bars1"></script></head>
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script></head>
 <body class="ha-ui-final ha-family-transport">
 
 <div class="app">
@@ -2566,19 +2566,6 @@ function renderPendingRide(index){
 }
 
 async function watchPendingRides(){
-  const hasBalance=await HA_BalanceGate.hasPositive('driver',{force:true});
-  if(!hasBalance){
-    if(driverWatch)driverWatch.off();
-    nearbyCount.textContent='0';
-    pendingEntries=[];
-    requestCard.style.display='none';
-    const emptyState=document.getElementById('requestEmptyState');
-    if(emptyState){
-      emptyState.style.display='flex';
-      emptyState.innerHTML='<div>💳 الرصيد صفر</div><small>لن تصلك طلبات النقل أو إشعاراتها حتى تعبئة الرصيد.</small>';
-    }
-    return;
-  }
   // SECURITY: do not subscribe to open ride requests unless this session has
   // already been verified as an approved transport worker through Supabase.
   if(!driverReady || !driverProfile || !Array.isArray(driverDispatchTypes) || !driverDispatchTypes.length){
@@ -3204,7 +3191,7 @@ window.addEventListener('load',()=>{
 <script src="transport-notifications.js"></script>
 <script src="push-config.js"></script>
 <script src="notifications.js"></script>
-<script src="transport-driver-push.js"></script>
+<script src="transport-driver-push.js?v=20261008-pause1"></script>
 
 <script>
 window.addEventListener('load',()=>{
@@ -3393,37 +3380,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 });
 
-(async function(){
-  try{
-    if(!window.supabase)return;
-    const sdb=window.supabase.createClient(
-      'https://ubayrhtshgtgggxprrek.supabase.co',
-      'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
-      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
-    );
-    window.haDriverBalanceDb=sdb;
-    const {data:{session}}=await sdb.auth.getSession();
-    const user=session?.user;
-    if(!user)return;
-
-    const {data:tp}=await sdb.from('transport_profiles')
-      .select('status').eq('user_id',user.id).maybeSingle();
-
-    if(!tp || tp.status!=='approved')return;
-
-    let amount=0;
-    const {data:b}=await sdb.from('role_balances')
-      .select('balance').eq('user_id',user.id).eq('role_type','driver').maybeSingle();
-    amount=Number(b?.balance||0);
-
-    document.getElementById('haDriverBalanceValue').textContent=
-      amount.toLocaleString('ar-IQ',{maximumFractionDigits:2})+' د.ع';
-    document.getElementById('haDriverBalance').classList.add('show');
-    await HA_BalanceGate.mount('driver');
-  }catch(e){
-    console.warn('driver balance',e);
-  }
-})();
+// Balance bar initialization is temporarily paused.
 </script>
 
 <script src="ha-offline-qalat-map.js"></script>
