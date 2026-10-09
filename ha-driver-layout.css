@@ -1,0 +1,95 @@
+/* Driver portal: one scoped layout over the older section/theme rules. */
+body.ha-driver-layout{--driver-ink:#143649;--driver-muted:#607b89;--driver-line:#dbeae7;--driver-green:#07885f;background:#f5faf9!important;color:var(--driver-ink)!important;line-height:1.5!important;padding-bottom:100px!important}
+body.ha-driver-layout .app{width:min(860px,calc(100% - 24px))!important;max-width:860px!important;margin:0 auto!important;padding:0 0 24px!important;overflow:visible!important}
+body.ha-driver-layout .app :is(button,a,input){-webkit-tap-highlight-color:transparent}
+body.ha-driver-layout .head{grid-template-columns:44px minmax(0,1fr) 44px!important;gap:10px!important;min-height:72px!important;padding:12px!important;border-radius:0 0 22px 22px!important;background:linear-gradient(115deg,#0878e6,#0aa978)!important;color:#fff!important;border:0!important;box-shadow:0 7px 22px #1454691a!important;top:0!important;z-index:3000!important}
+body.ha-driver-layout .head .head-brand h1{font-size:20px!important;font-weight:900!important;line-height:1.3!important;margin:0!important;color:#fff!important}
+body.ha-driver-layout .head .head-brand small{font-size:12px!important;color:#e5fffa!important;opacity:1!important;margin-top:3px!important}
+body.ha-driver-layout .head :is(.head-home,.head-back){width:44px!important;height:44px!important;min-height:44px!important;display:grid!important;place-items:center!important;border-radius:14px!important;background:#ffffff21!important;color:#fff!important;border:1px solid #ffffff47!important;box-shadow:none!important;padding:0!important}
+body.ha-driver-layout .head svg{width:23px;height:23px;display:block}
+body.ha-driver-layout :is(.driver-simple-hero,.map-shell,.summary,.request-deck,.accepted-panel){margin:14px 0 0!important;max-width:100%!important}
+body.ha-driver-layout .driver-simple-hero{padding:14px!important;border:1px solid var(--driver-line)!important;border-radius:20px!important;background:#fff!important;color:var(--driver-ink)!important;box-shadow:0 6px 20px #1c66500b!important}
+body.ha-driver-layout .driver-simple-hero{animation:none!important}
+body.ha-driver-layout .driver-simple-hero::before,body.ha-driver-layout .driver-simple-hero::after{content:none!important}
+body.ha-driver-layout .driver-simple-hero .driver-simple-top{display:flex!important;align-items:center!important;gap:12px!important}
+body.ha-driver-layout .driver-simple-hero .driver-profile-box{min-width:0!important;flex:1!important;min-height:48px!important;padding:0!important;gap:10px!important;border:0!important;background:transparent!important;box-shadow:none!important}
+body.ha-driver-layout .driver-profile-box>div:last-child{min-width:0;flex:1}
+body.ha-driver-layout .driver-simple-hero .driver-avatar{flex:0 0 44px!important;width:44px!important;height:44px!important;min-width:44px!important;display:grid!important;place-items:center!important;border-radius:15px!important;background:#e5f6ee!important;border:1px solid #ceecdc!important;box-shadow:none!important;color:#07885f!important}
+body.ha-driver-layout .driver-avatar svg{width:27px;height:27px}
+body.ha-driver-layout .driver-simple-hero .driver-profile-box strong{font-size:15px!important;line-height:1.5!important;overflow-wrap:anywhere;color:var(--driver-ink)!important}
+body.ha-driver-layout .driver-simple-hero .driver-profile-box span{font-size:11px!important;line-height:1.5!important;color:#5b7c6e!important;margin-top:3px!important}
+body.ha-driver-layout .driver-simple-hero .status-toggle{flex:0 0 auto!important;min-width:0!important}
+body.ha-driver-layout .driver-simple-hero .status-toggle button{min-width:90px!important;min-height:44px!important;width:auto!important;padding:10px!important;border-radius:13px!important;font-size:12px!important;line-height:1.4!important;white-space:normal!important;background:#e9f8ee!important;color:#0a794e!important;border:1px solid #ccebd9!important;box-shadow:none!important}
+body.ha-driver-layout .driver-simple-hero .status-toggle button.off{background:#f0f4f6!important;color:#627584!important;border-color:#e0e8ec!important}
+body.ha-driver-layout #haDriverPushControls{width:100%!important;max-width:none!important;margin:12px 0 0!important;gap:8px!important;display:grid!important;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)!important;padding:0!important}
+body.ha-driver-layout #haDriverPushControls button{min-width:0!important;width:100%!important;min-height:44px!important;padding:10px 8px!important;border-radius:13px!important;font-size:12px!important;font-weight:800!important;line-height:1.5!important;white-space:normal!important;background:#eaf4ff!important;color:#126394!important;border:1px solid #d3e7f6!important;box-shadow:none!important}
+body.ha-driver-layout #haDriverPushLocationStatus{grid-column:1/-1!important;width:100%!important;margin:0!important;padding:10px 12px!important;border-radius:13px!important;background:#eef8f3!important;color:#347253!important;font-size:12px!important;line-height:1.7!important}
+body.ha-driver-layout #haDriverOrderAlert{width:100%!important;max-width:none!important;margin:12px 0 0!important;padding:12px!important;background:#fff8e5!important;color:#715716!important;border:1px solid #f1e6c5!important;line-height:1.7!important;font-size:13px!important}
+body.ha-driver-layout .map-shell{padding:0!important;border:1px solid var(--driver-line)!important;border-radius:20px!important;background:#edf5f2!important;box-shadow:0 6px 20px #1c66500b!important}
+body.ha-driver-layout #map{height:250px!important;min-height:250px!important;max-height:none!important;border-radius:19px!important;background:#edf4f1!important}
+body.ha-driver-layout .driver-external-map-btn{width:44px!important;height:44px!important;min-height:44px!important;left:12px!important;bottom:12px!important;padding:0!important;font-size:23px!important;display:grid!important;place-items:center!important;background:#fff!important;color:#14586c!important;border:1px solid #d6e8e4!important;box-shadow:0 4px 15px #164c4021!important;border-radius:13px!important}
+body.ha-driver-layout .driver-external-map-menu{left:12px!important;bottom:64px!important;width:min(230px,calc(100% - 24px))!important;max-width:calc(100% - 24px)!important;padding:8px!important;box-shadow:0 10px 30px #164c4033!important;border-color:var(--driver-line)!important}
+body.ha-driver-layout .driver-external-map-menu button{min-height:44px!important;font-size:12px!important;line-height:1.5!important;background:#f4faf8!important;color:#14586c!important;box-shadow:none!important;text-align:start!important}
+body.ha-driver-layout .summary{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}
+body.ha-driver-layout .summary .box{min-height:72px!important;padding:10px 6px!important;border-radius:16px!important;background:#fff!important;border:1px solid var(--driver-line)!important;box-shadow:none!important;gap:4px!important}
+body.ha-driver-layout .summary .box::before{content:none!important}
+body.ha-driver-layout .summary .box small{font-size:12px!important;margin:0!important;color:var(--driver-muted)!important}
+body.ha-driver-layout .summary .box b{font-size:16px!important;line-height:1.5!important;color:var(--driver-ink)!important;white-space:normal!important;overflow-wrap:anywhere}
+body.ha-driver-layout .shop-courier-link{position:relative!important;inset:auto!important;z-index:auto!important;width:100%!important;height:auto!important;min-width:0!important;min-height:56px!important;margin:14px 0 0!important;padding:10px 14px!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;justify-content:flex-start!important;text-align:start!important;border:1px solid var(--driver-line)!important;border-radius:16px!important;background:#fff!important;color:var(--driver-ink)!important;box-shadow:none!important;line-height:1.5!important}
+body.ha-driver-layout .shop-courier-link b{flex:1;min-width:0;font-size:13px!important;line-height:1.5!important;color:var(--driver-ink)!important}
+body.ha-driver-layout .shop-courier-link .ha-courier-symbol{width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:10px;background:#fff2d8;color:#b1720b}
+body.ha-driver-layout .shop-courier-link svg{width:22px;height:22px;display:block}
+body.ha-driver-layout .shop-courier-link .ha-courier-arrow{color:#07885f}
+html[dir="ltr"] body.ha-driver-layout .ha-courier-arrow{transform:rotate(180deg)}
+body.ha-driver-layout :is(.request-deck,.accepted-panel){padding:14px!important;border:1px solid var(--driver-line)!important;border-radius:20px!important;background:#fff!important;color:var(--driver-ink)!important;box-shadow:0 6px 20px #1c66500b!important}
+body.ha-driver-layout .request-section-head{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;min-height:30px!important;margin:0 0 12px!important;border:0!important}
+body.ha-driver-layout :is(.request-section-head h2,.accepted-panel h2){font-size:17px!important;line-height:1.5!important;color:var(--driver-ink)!important;margin:0!important;padding:0!important;border:0!important}
+body.ha-driver-layout .request-pager{flex-shrink:0;min-width:48px!important;font-size:12px!important;padding:5px 9px!important;color:#087b56!important;background:#edf8f1!important;border:1px solid #d8eedd!important;border-radius:10px!important;line-height:1.4!important;direction:ltr}
+body.ha-driver-layout .request-empty{min-height:140px!important;padding:20px 12px!important;gap:8px!important;border-radius:16px!important;background:#f6fbf8!important;border:1px dashed #cfe6d9!important;color:#487662!important}
+body.ha-driver-layout .request-empty b{font-size:14px!important;color:#275c43!important;line-height:1.6!important}
+body.ha-driver-layout .request-empty small{font-size:12px!important;color:#6a8575!important;line-height:1.6!important}
+body.ha-driver-layout .search-radar{transform:none!important;margin:0 auto 6px!important;color:#12a774!important}
+body.ha-driver-layout :is(.request-live-card,.accepted-panel .request-card){margin:0!important;padding:12px!important;background:#fff!important;border:1px solid #e0ece7!important;border-radius:16px!important;box-shadow:none!important;overflow:visible!important}
+body.ha-driver-layout .request-live-card::after{content:none!important}
+body.ha-driver-layout .request-new-chip{position:static!important;display:table!important;font-size:11px!important;font-weight:800!important;line-height:1.4!important;margin:0 0 10px!important;padding:5px 9px!important;background:#e8f8ee!important;color:#07885f!important;border:1px solid #cfeedd!important;border-radius:9px!important}
+body.ha-driver-layout :is(.request-live-card,.accepted-panel) .customer{display:grid!important;grid-template-columns:36px minmax(0,1fr)!important;align-items:center!important;gap:9px!important;padding:0 0 12px!important;margin:0!important;border-bottom:1px solid #e6efeb!important}
+body.ha-driver-layout :is(.request-live-card,.accepted-panel) .avatar{width:36px!important;height:36px!important;min-width:36px!important;display:grid!important;place-items:center!important;border-radius:12px!important;font-size:20px!important;background:#eaf4ff!important;color:#1a6d9b!important;border:0!important}
+body.ha-driver-layout .avatar svg{width:22px;height:22px}
+body.ha-driver-layout :is(.request-live-card,.accepted-panel) .customer-info{min-width:0!important}
+body.ha-driver-layout :is(.request-live-card,.accepted-panel) .customer-info b{font-size:14px!important;line-height:1.6!important;color:var(--driver-ink)!important;white-space:normal!important;overflow-wrap:anywhere}
+body.ha-driver-layout .accepted-panel .customer-info span{font-size:12px!important;line-height:1.5!important;color:var(--driver-muted)!important;direction:ltr;display:block}
+body.ha-driver-layout #requestVehicle,body.ha-driver-layout #currentFare{grid-column:2!important;display:block!important;position:static!important;max-width:100%!important;width:auto!important;justify-self:start!important;min-width:0!important;font-size:12px!important;line-height:1.5!important;white-space:normal!important;overflow-wrap:anywhere;padding:5px 8px!important;border:0!important;border-radius:9px!important;background:#fff6e5!important;color:#8c661a!important}
+body.ha-driver-layout .request-live-card .route-info{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:12px 0 0!important}
+body.ha-driver-layout .request-live-card .route-info .item{min-height:74px!important;min-width:0!important;padding:10px!important;border:1px solid #dfece6!important;border-radius:12px!important;background:#f3faf6!important;color:var(--driver-ink)!important;box-shadow:none!important}
+body.ha-driver-layout .request-live-card .route-info small{font-size:12px!important;line-height:1.5!important;color:#577567!important;margin-bottom:5px!important}
+body.ha-driver-layout .request-live-card .route-info b{font-size:12px!important;line-height:1.7!important;color:#215946!important;direction:ltr;display:block!important;text-align:start!important;white-space:normal!important;overflow-wrap:anywhere}
+body.ha-driver-layout .request-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin-top:12px!important}
+body.ha-driver-layout :is(.request-actions,.trip-actions,.contact) button{min-height:46px!important;min-width:0!important;padding:10px 8px!important;font-size:13px!important;font-weight:800!important;line-height:1.5!important;border-radius:12px!important;white-space:normal!important;box-shadow:none!important}
+body.ha-driver-layout #acceptBtn,body.ha-driver-layout #startTripBtn{background:#07885f!important;color:#fff!important}
+body.ha-driver-layout #changeRequestBtn{background:#edf4f8!important;color:#285b75!important;border:1px solid #dbe8ef!important;min-height:46px!important;padding:10px 8px!important;font-size:13px!important;border-radius:12px!important;line-height:1.5!important}
+body.ha-driver-layout .request-pop-in{animation:haDriverRequestFade .18s ease-out!important;transform:none!important}
+body.ha-driver-layout .accepted-panel.panel-enter{animation:haDriverRequestFade .18s ease-out!important}
+@keyframes haDriverRequestFade{from{opacity:.4}to{opacity:1}}
+body.ha-driver-layout .accepted-panel .state{margin:12px 0!important;padding:11px!important;font-size:13px!important;line-height:1.6!important;background:#ecf8f1!important;color:#16764e!important;border:1px solid #d7eedd!important;border-radius:12px!important}
+body.ha-driver-layout .accepted-panel .contact{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:12px 0 0!important}
+body.ha-driver-layout .accepted-panel .contact button{background:#edf5fc!important;color:#195e87!important}
+body.ha-driver-layout .accepted-panel #driverChatBtn{grid-column:1/-1!important}
+body.ha-driver-layout .ride-status-box{padding:12px!important;margin:12px 0!important;border:1px solid #deece5!important;border-radius:13px!important;background:#f5faf7!important;color:var(--driver-ink)!important}
+body.ha-driver-layout .ride-status-live{font-size:13px!important;line-height:1.6!important;color:#2c6b4a!important}
+body.ha-driver-layout .ride-status-steps{gap:5px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+body.ha-driver-layout .ride-status-step{padding:8px 3px!important;font-size:11px!important;line-height:1.5!important;border-radius:9px!important;background:#e9f3ed!important;color:#597363!important;white-space:normal!important}
+body.ha-driver-layout .trip-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+body.ha-driver-layout #finishTripBtn{grid-column:1/-1!important;background:#146fb0!important;color:#fff!important}
+body.ha-driver-layout #driverCancelCurrentBtn{grid-column:1/-1!important;background:#fff1f0!important;color:#b74040!important;border:1px solid #f4d9d6!important}
+body.ha-driver-layout .app button:disabled{opacity:.45!important;cursor:default!important}
+body.ha-driver-layout .app :is(a,button,input):focus-visible{outline:3px solid #25ab86!important;outline-offset:3px}
+body.ha-driver-layout :is(.cancel-reason-sheet,.driver-chat-sheet,.ha-balance-modal,.ha-location-modal){z-index:2147483000!important;padding:16px!important}
+body.ha-driver-layout :is(.cancel-reason-card,.driver-chat-box,.ha-balance-modal-card,.ha-location-modal-card){width:min(480px,100%)!important;max-height:calc(100dvh - 32px)!important;overflow-y:auto!important;background:#fff!important;color:var(--driver-ink)!important;border:1px solid var(--driver-line)!important;border-radius:20px!important}
+body.ha-driver-layout .cancel-reason-head h3{font-size:16px!important;line-height:1.6!important;color:var(--driver-ink)!important;padding-inline-end:8px}
+body.ha-driver-layout .cancel-reason-option{color:var(--driver-ink)!important;min-height:44px!important;background:#f5faf7!important;border-color:#dfeae4!important}
+body.ha-driver-layout .cancel-reason-option input{min-height:0!important;width:18px!important;height:18px!important;flex:0 0 18px!important;margin:0!important}
+body.ha-driver-layout [data-close-cancel],body.ha-driver-layout #driverCloseChatBtn{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;background:#eef5f3!important;color:#3e6c5c!important;box-shadow:none!important}
+body.ha-driver-layout .ha-location-status-chip{top:auto!important;bottom:calc(94px + env(safe-area-inset-bottom))!important;max-width:calc(100% - 32px)!important;font-size:12px!important;border-color:#cee6db!important;background:#fff!important;color:#2b6652!important}
+body.ha-driver-layout #haRoleBottomNav{bottom:max(6px,env(safe-area-inset-bottom))!important}
+@media(min-width:700px){body.ha-driver-layout .driver-simple-hero{padding:18px!important}body.ha-driver-layout #map{height:330px!important;min-height:330px!important}body.ha-driver-layout :is(.request-deck,.accepted-panel){padding:20px!important}}
+@media(max-width:360px){body.ha-driver-layout .app{width:calc(100% - 20px)!important}body.ha-driver-layout .driver-simple-hero{padding:12px!important}body.ha-driver-layout .driver-simple-hero .driver-simple-top{gap:8px!important;flex-wrap:wrap!important}body.ha-driver-layout .driver-simple-hero .driver-profile-box{flex-basis:100%!important}body.ha-driver-layout .driver-simple-hero .status-toggle{width:100%!important}body.ha-driver-layout .driver-simple-hero .status-toggle button{width:100%!important}body.ha-driver-layout #map{height:220px!important;min-height:220px!important}body.ha-driver-layout .summary .box b{font-size:14px!important}body.ha-driver-layout .request-deck,body.ha-driver-layout .accepted-panel{padding:12px!important}}
