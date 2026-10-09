@@ -1,209 +1,59 @@
-// HA Marketing - approved driver location + push helper
 (function(){
-  if(window.HA_TransportDriverPush)return;
-
-  const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
-  const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-  let db=null,user=null,profile=null,lastPos=null,lastSentAt=0,lastSentPos=null,watchId=null,available=true;
-  let notificationTimer=null;
-
-  function client(){
-    if(db)return db;
-    if(!window.supabase?.createClient)return null;
-    db=window.supabase.createClient(SB_URL,SB_KEY,{
-      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}
-    });
-    return db;
-  }
-
-  function distM(a,b){
-    if(!a||!b)return Infinity;
-    const R=6371000,r=x=>x*Math.PI/180;
-    const dLat=r(b.lat-a.lat),dLng=r(b.lng-a.lng);
-    const q=Math.sin(dLat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLng/2)**2;
-    return 2*R*Math.atan2(Math.sqrt(q),Math.sqrt(1-q));
-  }
-
-  async function loadProfile(){
-    const c=client();
-    if(!c)return null;
-    const {data:{session}}=await c.auth.getSession();
-    user=session?.user||null;
-    if(!user||user.is_anonymous)return null;
-
-    const {data,error}=await c.from('transport_profiles')
-      .select('user_id,role_type,vehicle_type,status')
-      .eq('user_id',user.id)
-      .eq('status','approved')
-      .maybeSingle();
-
-    if(error||!data)return null;
-    profile=data;
-    return data;
-  }
-
-  async function savePosition(p,force=false){
-    if(!profile||!user||!p)return;
-    const now=Date.now();
-    if(!force && now-lastSentAt<20000 && distM(lastSentPos,p)<70)return;
-
-    const c=client();
-    const {error}=await c.rpc('transport_driver_update_location',{
-      p_lat:Number(p.lat),
-      p_lng:Number(p.lng),
-      p_accuracy:Number(p.accuracy||0),
-      p_available:!!available
-    });
-    if(!error){
-      lastSentAt=now;
-      lastSentPos={lat:p.lat,lng:p.lng};
-    }else{
-      console.warn('driver location save',error);
-    }
-  }
-
-  function startLocation(){
-    if(!navigator.geolocation||watchId!==null)return;
-
-    navigator.geolocation.getCurrentPosition(pos=>{
-      lastPos={
-        lat:pos.coords.latitude,
-        lng:pos.coords.longitude,
-        accuracy:Math.round(pos.coords.accuracy||0)
-      };
-      savePosition(lastPos,true);
-    },()=>{},{
-      enableHighAccuracy:true,timeout:12000,maximumAge:30000
-    });
-
-    watchId=navigator.geolocation.watchPosition(pos=>{
-      lastPos={
-        lat:pos.coords.latitude,
-        lng:pos.coords.longitude,
-        accuracy:Math.round(pos.coords.accuracy||0)
-      };
-      savePosition(lastPos,false);
-    },()=>{},{
-      enableHighAccuracy:true,maximumAge:20000,timeout:20000
-    });
-  }
-
-  async function setAvailable(v){
-    available=!!v;
-    try{
-      const c=client();
-      if(user){
-        await c.rpc('transport_driver_set_available',{p_available:available});
-      }
-      if(lastPos)await savePosition(lastPos,true);
-    }catch(e){console.warn(e)}
-  }
-
-  function pushEnabled(){
-    return typeof Notification!=='undefined' &&
-      Notification.permission==='granted' &&
-      localStorage.getItem('ha_notifications_enabled')==='1';
-  }
-
-  function addPushPrompt(){
-    if(pushEnabled()||document.getElementById('haDriverPushPrompt'))return;
-
-    const box=document.createElement('div');
-    box.id='haDriverPushPrompt';
-    box.style.cssText='position:fixed;left:12px;right:12px;bottom:14px;z-index:99990;max-width:720px;margin:auto;background:#0b1013;color:#fff;border:1px solid #f2b544;border-radius:17px;padding:12px;box-shadow:0 8px 30px #0007;display:flex;align-items:center;gap:10px;direction:rtl';
-    box.innerHTML='<div style="font-size:26px">🔔</div><div style="flex:1"><b style="display:block;color:#ffd46a;font-size:14px">شغّل إشعارات طلبات النقل</b><small style="display:block;color:#ddd;margin-top:4px;line-height:1.5">حتى توصلك طلبات الزبائن القريبة منك وأنت خارج الموقع.</small></div><button id="haDriverPushEnableBtn" style="border:0;border-radius:11px;background:#f2b544;color:#111;padding:10px 12px;font-weight:800;cursor:pointer">تشغيل</button>';
-    document.body.appendChild(box);
-
-    box.querySelector('#haDriverPushEnableBtn').onclick=async()=>{
-      if(typeof window.HA_EnableNotifications!=='function'){
-        alert('افتح الإشعارات من القائمة الرئيسية ثم اضغط تشغيل إشعارات الموبايل.');
-        return;
-      }
-      try{
-        await window.HA_EnableNotifications();
-        if(pushEnabled())box.remove();
-      }catch(e){console.warn(e)}
-    };
-  }
-
-  function ensureHomeBanner(){
-    let a=document.getElementById('haDriverOrderAlert');
-    if(a)return a;
-
-    a=document.createElement('a');
-    a.id='haDriverOrderAlert';
-    a.href='driver.html';
-    a.style.cssText='display:none;width:min(930px,94%);margin:12px auto 4px;background:linear-gradient(135deg,#17120a,#0b1013);border:1px solid rgba(242,181,68,.68);border-radius:18px;padding:12px 14px;color:#fff;text-decoration:none;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(0,0,0,.25)';
-    a.innerHTML='<span style="width:48px;height:48px;border-radius:15px;background:#f2b544;color:#111;display:grid;place-items:center;font-size:25px">🔔</span><span style="flex:1"><b id="haDriverOrderTitle" style="display:block;color:#ffd46a">عندك طلب نقل جديد</b><small id="haDriverOrderText" style="display:block;margin-top:4px;color:#ddd">اضغط حتى تشوف الطلب.</small></span><span id="haDriverOrderCount" style="min-width:34px;height:34px;padding:0 8px;border-radius:999px;background:#e53935;color:#fff;display:grid;place-items:center;font-weight:900">1</span>';
-    document.body.insertBefore(a,document.body.firstChild);
-    return a;
-  }
-
-  async function loadNearbyNotifications(){
-    if(!user)return;
-    try{
-      const since=new Date(Date.now()-2*60*60*1000).toISOString();
-      const {data,error}=await client().from('notifications')
-        .select('id,title,message,link,created_at,is_read')
-        .eq('kind','transport_ride_new')
-        .eq('is_read',false)
-        .gte('created_at',since)
-        .order('created_at',{ascending:false})
-        .limit(20);
-      if(error)return;
-
-      const rows=data||[];
-      const banner=ensureHomeBanner();
-      const badge=document.getElementById('haTransportOrderBadge');
-
-      if(!rows.length){
-        banner.style.display='none';
-        if(badge)badge.style.display='none';
-        return;
-      }
-
-      const latest=rows[0];
-      banner.style.display='flex';
-      banner.href=latest.link||'driver.html';
-      const t=document.getElementById('haDriverOrderTitle');
-      const x=document.getElementById('haDriverOrderText');
-      const c=document.getElementById('haDriverOrderCount');
-      if(t)t.textContent=rows.length===1?(latest.title||'🔔 طلب نقل قريب منك'):'🔔 عندك '+rows.length+' طلبات نقل قريبة';
-      if(x)x.textContent=latest.message||'اضغط حتى تشوف الطلب.';
-      if(c)c.textContent=rows.length>99?'99+':String(rows.length);
-      if(badge){
-        badge.textContent=rows.length>99?'99+':String(rows.length);
-        badge.style.display='block';
-      }
-
-      banner.onclick=async()=>{
-        try{
-          await client().from('notifications')
-            .update({is_read:true})
-            .in('id',rows.map(r=>r.id));
-        }catch(e){}
-      };
-    }catch(e){console.warn('transport notifications banner',e)}
-  }
-
-  async function init(){
-    const p=await loadProfile();
-    if(!p)return;
-
-    startLocation();
-
-    // تم إخفاء شريط "شغّل إشعارات طلبات النقل" من الواجهة.
-    // نظام الإشعارات نفسه يبقى شغال، ويمكن تشغيله من زر الإشعارات بالموقع.
+ if(window.HA_TransportDriverPush)return;
+ const URL='https://ubayrhtshgtgggxprrek.supabase.co',KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+ let db,user,profile,lastPos,watchId=null,available=true,initializing=null,saving=false;let availableRevision=0;
+ const client=()=>db||(db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}));
+ function bounded(p){let t;return Promise.race([p,new Promise((_,bad)=>t=setTimeout(()=>bad(new Error('timeout')),20000))]).finally(()=>clearTimeout(t));}
+ function report(message){let el=document.getElementById('haDriverPushLocationStatus');if(!el){el=document.createElement('div');el.id='haDriverPushLocationStatus';el.setAttribute('role','status');el.style.cssText='margin:8px auto;padding:10px;max-width:900px;width:94%;color:#173654;background:#edf6ff;border-radius:12px';const target=document.getElementById('haDriverPushControls')||document.body;target.appendChild(el);}el.textContent=message;}
+ async function savePosition(p){
+  if(!profile||!user||!p||saving)return {ok:false};saving=true;
+  try{
+   const {data,error}=await bounded(client().rpc('transport_driver_update_location',{p_lat:Number(p.lat),p_lng:Number(p.lng),p_accuracy:Number(p.accuracy||0),p_available:available}));
+   if(error||data?.ok!==true){report('تعذر حفظ موقع السائق لاستلام الطلبات. اضغط تحديث الموقع.');return {ok:false,error};}
+   report(available?'موقع السائق محفوظ لاستلام الطلبات القريبة.':'السائق غير متصل.');return data;
+  }catch(e){report('تعذر حفظ موقع السائق لاستلام الطلبات. اضغط تحديث الموقع.');return {ok:false};}finally{saving=false;}
+ }
+ function locate(){
+  if(!navigator.geolocation){report('فعّل GPS والسماح بالموقع لاستلام الطلبات القريبة.');return;}
+  const good=pos=>{lastPos={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy};savePosition(lastPos);};
+  const bad=()=>report('فعّل GPS والسماح بالموقع لاستلام الطلبات القريبة.');
+  navigator.geolocation.getCurrentPosition(good,bad,{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+  if(watchId===null)watchId=navigator.geolocation.watchPosition(good,bad,{enableHighAccuracy:true,timeout:20000,maximumAge:20000});
+ }
+ async function setAvailable(value){
+  available=!!value;availableRevision++;
+  try{const {error,data}=await bounded(client().rpc('transport_driver_set_available',{p_available:available}));if(error||data?.ok!==true)report('تعذر تحديث اتصال السائق. حاول مجدداً.');else if(lastPos)await savePosition(lastPos);else locate();}catch(e){report('تعذر تحديث اتصال السائق. حاول مجدداً.');}
+ }
+ function controls(){
+  if(document.getElementById('haDriverPushControls'))return;
+  const box=document.createElement('div');box.id='haDriverPushControls';box.style.cssText='display:flex;gap:8px;flex-wrap:wrap;width:94%;max-width:900px;margin:10px auto';
+  const push=document.createElement('button');push.type='button';push.dataset.haPushButton='';push.textContent='تشغيل إشعارات الموبايل';push.style.cssText='padding:10px;border:0;border-radius:11px;background:#1769e0;color:#fff';push.onclick=()=>window.HA_ToggleNotifications?.();
+  const gps=document.createElement('button');gps.type='button';gps.textContent='تحديث الموقع';gps.style.cssText=push.style.cssText;gps.onclick=locate;box.append(push,gps);
+  const header=document.querySelector('.driver-hero,.driver-header,.wrap .top')||document.querySelector('main')||document.body;if(header===document.body)document.body.prepend(box);else header.insertAdjacentElement('afterend',box);
+ }
+ async function init(){
+  if(initializing)return initializing;
+  initializing=(async()=>{
+   try{
+    const {data:{session}}=await bounded(client().auth.getSession());user=session?.user;if(!user||user.is_anonymous)return;controls();
+    const revision=availableRevision;const {data,error}=await bounded(client().rpc('get_transport_driver_push_state'));if(error||!data?.ok){report('تعذر التحقق من إعدادات إشعارات السائق. راجع اعتماد حساب السائق.');return;}
+    profile=data;if(revision===availableRevision)available=data.available!==false;
+    window.dispatchEvent(new CustomEvent('ha-driver-push-ready',{detail:{available}}));controls();locate();
+    client().channel('ha-driver-incoming-'+user.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+user.id},()=>loadNearbyNotifications()).subscribe();
     await loadNearbyNotifications();
-    notificationTimer=setInterval(loadNearbyNotifications,9000);
-  }
-
-  window.HA_TransportDriverPush={
-    init,
-    setAvailable,
-    saveNow:()=>lastPos?savePosition(lastPos,true):Promise.resolve()
-  };
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
-  else init();
+   }catch(e){report('تعذر التحقق من إعدادات إشعارات السائق. راجع اعتماد حساب السائق.');}
+  })().finally(()=>initializing=null);return initializing;
+ }
+ async function loadNearbyNotifications(){
+  if(!user)return;try{
+   const {data,error}=await client().from('notifications').select('id,title,message,link,kind').eq('user_id',user.id).in('kind',['transport_ride_new','shop_courier_new']).eq('is_read',false).gte('created_at',new Date(Date.now()-2*3600000).toISOString()).order('created_at',{ascending:false}).limit(20);
+   if(error)return;let banner=document.getElementById('haDriverOrderAlert');if(!banner){banner=document.createElement('a');banner.id='haDriverOrderAlert';banner.style.cssText='display:none;margin:10px auto;padding:12px;width:94%;max-width:900px;border-radius:12px;background:#fff3cf;color:#15283b;text-decoration:none';document.getElementById('haDriverPushControls')?.after(banner);}
+   banner.style.display=data?.length?'block':'none';if(!data?.length)return;const n=data[0];banner.textContent=n.title+' — '+n.message;const link=String(n.link||'driver.html');banner.href=/^(driver|shop-courier)\.html(?:[?#].*)?$/.test(link)?link:'notifications-center.html';
+   const badge=document.getElementById('haTransportOrderBadge');if(badge){badge.textContent=String(data.length);badge.style.display='block';}
+  }catch(e){}
+ }
+ window.HA_TransportDriverPush={init,setAvailable,saveNow:()=>{locate();},savePosition};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+ setInterval(()=>{if(document.visibilityState==='visible'&&profile){locate();loadNearbyNotifications();}},60000);
+ window.addEventListener('online',()=>{if(profile)locate();else init();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(profile){locate();loadNearbyNotifications();}else init();}});
 })();
