@@ -295,8 +295,10 @@ body.ha-editing-product .bottom-nav{
 #legacyStoreEditor{display:none!important}
 @media(max-width:650px){.ha-store-list{grid-template-columns:1fr}}
 </style>
-<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-merchant-simple1" defer></script>
-</head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-order-filters1" defer></script>
+<style id="ha-seller-order-filters-style">
+#sellerOrderTools{margin:14px 0}#sellerOrderTools .ha-order-filters{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}#sellerOrderTools button[data-order-filter]{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;padding:9px 11px!important;border:1px solid #cbd5e1!important;background:#fff!important;color:#263e54!important;font-size:13px!important;border-radius:12px!important;white-space:normal;min-width:0;flex:0 1 auto}#sellerOrderTools button[aria-pressed="true"]{background:#075b46!important;color:#fff!important;border-color:#075b46!important;box-shadow:0 0 0 2px #b9e6d5!important}#sellerOrderTools .ha-order-filter-count{display:inline-flex;justify-content:center;min-width:20px;padding:2px 5px;border-radius:7px;background:#eaf0f5;color:#23435d;font-size:12px}#sellerOrderTools button[aria-pressed="true"] .ha-order-filter-count{background:#ffffff26;color:#fff}#sellerOrderTools .ha-order-view-fields{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:9px}#sellerOrderTools label{display:block;min-width:0;font-size:13px;font-weight:700}#sellerOrderTools input,#sellerOrderTools select{min-width:0;margin:5px 0 0;font-size:14px}#sellerOrdersNotice{padding:9px 11px;border-radius:10px;background:#e7f8f0;color:#0b5a3e;margin:10px 0;line-height:1.8}#sellerOrderTools button[data-order-filter][hidden],#sellerOrderTools [hidden],#sellerOrdersNotice[hidden],#orders [hidden]{display:none!important}#orders .ha-order-status-badge{font-weight:800!important;font-size:13px!important;padding:6px 10px!important;white-space:normal;text-align:center}#orders .ha-status-new{background:#eaf2ff!important;color:#124e9d!important}#orders .ha-status-preparing{background:#fff4d8!important;color:#805300!important}#orders .ha-status-waiting{background:#f0e9ff!important;color:#653399!important}#orders .ha-status-delivering{background:#dff5fa!important;color:#075b6c!important}#orders .ha-status-delivered{background:#e4f6e9!important;color:#14652c!important}#orders .ha-status-cancelled{background:#ffeded!important;color:#a51d35!important}#orders .ha-status-other{background:#edf0f4!important;color:#475569!important}#orders .order[data-order-state="new"]{border-inline-start:5px solid #2878cf!important}#orders .order[data-order-state="preparing"]{border-inline-start:5px solid #c48a14!important}#orders .order[data-order-state="waiting"]{border-inline-start:5px solid #8550bb!important}#orders .order[data-order-state="delivering"]{border-inline-start:5px solid #1692a4!important}#orders .order[data-order-state="delivered"]{border-inline-start:5px solid #269549!important}#orders .order[data-order-state="cancelled"]{border-inline-start:5px solid #ce3851!important}#orders .ha-order-group-heading{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px 11px;border-radius:10px;margin:19px 0 7px;font-size:16px}#orders .ha-order-details{overflow-wrap:anywhere}#orders time{font-size:12px}#sellerOrdersEmpty{padding:18px;text-align:center;border:1px dashed #cbd5e1;border-radius:12px;margin:12px 0;line-height:1.8}@media(max-width:500px){#sellerOrderTools .ha-order-view-fields{grid-template-columns:1fr}#sellerOrderTools button[data-order-filter]{flex:1 1 calc(33.333% - 7px);padding:9px 6px!important;font-size:12px!important}}
+</style></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
 <div class="card" id="stores-overview">
   <div class="ha-my-stores-head">
     <div>
@@ -338,7 +340,15 @@ body.ha-editing-product .bottom-nav{
     <div id="manageStoreHint" class="ha-store-hint">كل متجر يعرض منتجاته فقط.</div>
   </div>
   <div id="products" class="ha-product-grid">جاري التحميل...</div>
-</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">احفظ أجرة التوصيل لتبليغ الزبون، ثم اختر «التوصيل من عندي». بعد وصول الطلب اضغط «تم تسليم الطلب». مندوب التطبيق اختياري.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">احفظ أجرة التوصيل لتبليغ الزبون، ثم اختر «التوصيل من عندي». بعد وصول الطلب اضغط «تم تسليم الطلب». مندوب التطبيق اختياري.</div><div id="sellerOrderTools">
+ <div class="ha-order-filters" role="group" aria-label="فرز الطلبات حسب الحالة">
+<button type="button" data-order-filter="all" aria-pressed="true" onclick="setSellerOrderFilter('all')"><span>الكل</span><span class="ha-order-filter-count" data-order-count="all" data-no-i18n>—</span></button><button type="button" data-order-filter="new" aria-pressed="false" onclick="setSellerOrderFilter('new')"><span>جديدة</span><span class="ha-order-filter-count" data-order-count="new" data-no-i18n>—</span></button><button type="button" data-order-filter="preparing" aria-pressed="false" onclick="setSellerOrderFilter('preparing')"><span>قيد التجهيز</span><span class="ha-order-filter-count" data-order-count="preparing" data-no-i18n>—</span></button><button type="button" data-order-filter="waiting" aria-pressed="false" onclick="setSellerOrderFilter('waiting')"><span>بانتظار مندوب</span><span class="ha-order-filter-count" data-order-count="waiting" data-no-i18n>—</span></button><button type="button" data-order-filter="delivering" aria-pressed="false" onclick="setSellerOrderFilter('delivering')"><span>قيد التوصيل</span><span class="ha-order-filter-count" data-order-count="delivering" data-no-i18n>—</span></button><button type="button" data-order-filter="delivered" aria-pressed="false" onclick="setSellerOrderFilter('delivered')"><span>تم التسليم</span><span class="ha-order-filter-count" data-order-count="delivered" data-no-i18n>—</span></button><button type="button" data-order-filter="cancelled" aria-pressed="false" onclick="setSellerOrderFilter('cancelled')"><span>ملغاة</span><span class="ha-order-filter-count" data-order-count="cancelled" data-no-i18n>—</span></button><button type="button" data-order-filter="other" aria-pressed="false" hidden onclick="setSellerOrderFilter('other')"><span>أخرى</span><span class="ha-order-filter-count" data-order-count="other" data-no-i18n>—</span></button>
+ </div>
+ <div class="ha-order-view-fields">
+  <label for="sellerOrderSearch">البحث في الطلبات<input id="sellerOrderSearch" type="search" maxlength="160" placeholder="رقم الطلب، اسم الزبون أو رقم الهاتف" oninput="applySellerOrderView()"></label>
+  <label for="sellerOrderSort">ترتيب الطلبات<select id="sellerOrderSort" onchange="applySellerOrderView()"><option value="active">حسب الحالة — النشطة أولاً</option><option value="newest">الأحدث أولاً</option><option value="oldest">الأقدم أولاً</option></select></label>
+ </div>
+</div><div id="sellerOrdersNotice" hidden role="status" aria-live="polite"></div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
@@ -981,8 +991,8 @@ function orderDeliveryActions(o,own){
  const done=(own.length&&own.every(q=>!!q.fulfilled_at))||d?.status==='delivered';
  const merchant=own.length&&own.every(q=>q.fulfillment_method==='merchant');
  const activeDriver=d&&['accepted','picked_up','on_the_way'].includes(d.status);
- if(done)return '<div class="delivery"><b>تم تسليم طلب متجرك.</b></div>';
  if(o.order_status==='cancelled')return '<div class="delivery">الطلب ملغي.</div>';
+ if(done)return '<div class="delivery"><b>تم تسليم طلب متجرك.</b></div>';
  if(merchant)return `<div class="delivery"><b>التوصيل من عندك — جاري التوصيل</b>${!closed?`<button type="button" data-merchant-delivered="${o.order_id}" onclick="merchantDelivery(${o.order_id},'delivered',false)" style="display:block;width:100%;margin-top:10px">تم تسليم الطلب</button>`:''}</div>`;
  if(closed)return d?`<div class="delivery">${esc(DS[d.status]||d.status)}</div>`:'';
  if(activeDriver)return `<div class="delivery"><b>مندوب التطبيق: ${esc(DS[d.status]||d.status)}</b></div>`;
@@ -991,9 +1001,71 @@ function orderDeliveryActions(o,own){
  const courier=d?.status==='ready'?'<p class="muted">بانتظار مندوب من التطبيق. يمكنك اختيار التوصيل من عندك بدلاً منه.</p>':`<button type="button" class="light" data-app-courier="${o.order_id}" onclick="requestCourier(${o.order_id})">طلب مندوب من التطبيق (اختياري)</button>`;
  return `<div class="delivery">${ownAction}${courier}</div>`;
 }
+const SELLER_ORDER_STATES={
+ new:{label:'طلب جديد',group:'طلبات جديدة'},preparing:{label:'قيد التجهيز',group:'طلبات قيد التجهيز'},
+ waiting:{label:'بانتظار مندوب',group:'طلبات بانتظار مندوب'},delivering:{label:'قيد التوصيل',group:'طلبات قيد التوصيل'},
+ delivered:{label:'تم التسليم',group:'طلبات تم تسليمها'},cancelled:{label:'ملغى',group:'طلبات ملغاة'},other:{label:'حالة أخرى',group:'طلبات بحالة أخرى'}
+};
+let sellerOrderFilter='all',sellerOrderViewRestored=false;
+function sellerOrderState(o,own){
+ if(o.order_status==='cancelled')return 'cancelled';
+ if(o.order_status==='completed'||(own.length&&own.every(q=>!!q.fulfilled_at))||o.delivery?.status==='delivered')return 'delivered';
+ if(own.some(q=>q.fulfillment_method==='merchant')||['picked_up','on_the_way'].includes(o.delivery?.status))return 'delivering';
+ if(o.delivery?.status==='ready')return 'waiting';
+ if(o.delivery?.status==='accepted')return 'preparing';
+ // A multi-store order may be out for another store while this seller's share is still new.
+ if(own.length&&own.every(q=>q.pricing_mode==='seller_quote'))return own.every(q=>q.delivery_fee!=null&&Number(q.delivery_fee)>0)?'preparing':'new';
+ return ({new:'new',confirmed:'preparing',preparing:'preparing',out_for_delivery:'delivering'})[o.order_status]||'other';
+}
+function sellerOrderViewKey(){return 'ha_seller_order_view:'+String(me?.id||'')}
+function restoreSellerOrderView(){
+ if(sellerOrderViewRestored)return;sellerOrderViewRestored=true;
+ try{const v=JSON.parse(sessionStorage.getItem(sellerOrderViewKey())||'null');if(!v)return;
+  if(v.filter==='all'||SELLER_ORDER_STATES[v.filter])sellerOrderFilter=v.filter;
+  if(['active','newest','oldest'].includes(v.sort))document.getElementById('sellerOrderSort').value=v.sort;
+  if(typeof v.search==='string')document.getElementById('sellerOrderSearch').value=v.search.slice(0,160);
+ }catch(_e){}
+}
+function setSellerOrderFilter(key){if(key!=='all'&&!SELLER_ORDER_STATES[key])return;sellerOrderFilter=key;applySellerOrderView()}
+function orderSearchText(value){return String(value||'').toLowerCase().replace(/[٠-٩۰-۹]/g,c=>c.charCodeAt(0)>1775?String(c.charCodeAt(0)-1776):String(c.charCodeAt(0)-1632)).replace(/[أإآ]/g,'ا').replace(/[\u064b-\u065f\u0670]/g,'').trim()}
+function applySellerOrderView(){
+ const box=document.getElementById('orders'),sort=document.getElementById('sellerOrderSort').value,search=document.getElementById('sellerOrderSearch').value;
+ const terms=orderSearchText(search).replace(/^#/,'').split(/\s+/).filter(Boolean);
+ const cards=[...box.querySelectorAll(':scope > [data-seller-order]')],counts={all:0};
+ const matches=new Map(cards.map(card=>[card,terms.every(t=>orderSearchText(card.dataset.orderSearch).includes(t))]));
+ for(const card of cards)if(matches.get(card)){counts.all++;counts[card.dataset.orderState]=(counts[card.dataset.orderState]||0)+1}
+ document.querySelectorAll('[data-order-filter]').forEach(button=>{
+  const key=button.dataset.orderFilter;button.setAttribute('aria-pressed',String(key===sellerOrderFilter));
+  button.querySelector('[data-order-count]').textContent=String(counts[key]||0);button.hidden=key==='other'&&!counts.other;
+ });
+ box.querySelectorAll('[data-order-group-heading],#sellerOrdersEmpty').forEach(x=>x.remove());
+ const keys=Object.keys(SELLER_ORDER_STATES);
+ const compareDate=(a,b)=>{const delta=Number(b.dataset.orderTime)-Number(a.dataset.orderTime);return delta||Number(b.dataset.sellerOrder)-Number(a.dataset.sellerOrder)};
+ cards.sort((a,b)=>sort==='active'?(keys.indexOf(a.dataset.orderState)-keys.indexOf(b.dataset.orderState)||compareDate(a,b)):sort==='oldest'?-compareDate(a,b):compareDate(a,b));
+ let lastState=null,shown=0;
+ for(const card of cards){
+  card.hidden=!matches.get(card)||(sellerOrderFilter!=='all'&&card.dataset.orderState!==sellerOrderFilter);
+  if(!card.hidden){
+   shown++;if(sort==='active'&&lastState!==card.dataset.orderState){
+    lastState=card.dataset.orderState;const heading=document.createElement('h3');heading.dataset.orderGroupHeading=lastState;heading.className='ha-order-group-heading ha-status-'+lastState;
+    const label=document.createElement('span');label.textContent=SELLER_ORDER_STATES[lastState].group;
+    const number=document.createElement('span');number.dataset.noI18n='';number.textContent=String(counts[lastState]||0);heading.append(label,number);box.append(heading);
+   }
+  }
+  box.append(card);
+ }
+ if(cards.length&&!shown){const empty=document.createElement('div');empty.id='sellerOrdersEmpty';empty.className='muted';empty.textContent='لا توجد طلبات تطابق هذا الفرز أو البحث.';box.append(empty)}
+ try{sessionStorage.setItem(sellerOrderViewKey(),JSON.stringify({filter:sellerOrderFilter,sort,search}))}catch(_e){}
+}
+function formatSellerOrderDates(){
+ const lang=window.HAI18N?.getLanguage()||'ar',locale=({ar:'ar-IQ',iq:'ar-IQ',en:'en-GB',fa:'fa-IR'})[lang]||'ar-IQ';
+ document.querySelectorAll('#orders time[data-order-created]').forEach(x=>{const d=new Date(x.dateTime);if(Number.isFinite(d.getTime()))x.textContent=d.toLocaleString(locale,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})});
+}
+function showSellerOrdersNotice(message){const el=document.getElementById('sellerOrdersNotice');el.textContent=message;el.hidden=!message}
+window.addEventListener('ha:languagechange',formatSellerOrderDates);
 async function loadOrders(){
  if(deliveryQuoteBusy||deliveryOrdersBusy)return;
- deliveryOrdersBusy=true;
+ deliveryOrdersBusy=true;restoreSellerOrderView();
  const el=document.getElementById('orders');el.innerHTML='جاري التحميل...';
  try{
  const {data,error}=await db.rpc('get_seller_shop_orders');
@@ -1005,10 +1077,13 @@ async function loadOrders(){
   quotes=result.data;
  }
  el.innerHTML=arr.map(o=>{
-  const d=o.delivery,own=quotes.filter(q=>Number(q.order_id)===Number(o.order_id));
+  const d=o.delivery,own=quotes.filter(q=>Number(q.order_id)===Number(o.order_id)),state=sellerOrderState(o,own);
+  const created=Date.parse(o.created_at),time=Number.isFinite(created)?created:0;
+  const searchable=[o.order_id,o.customer_name,o.phone,o.governorate,o.address,...(o.items||[]).map(i=>i.name)].join(' ');
   const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');
-  return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: <span data-no-i18n>${esc(o.customer_name)} — <a href="tel:${esc(String(o.phone||'').replace(/[^\d+]/g,''))}">${esc(o.phone)}</a></span><br><span data-no-i18n>${esc(o.governorate||'')} — ${esc(o.address)}</span></div><div class="row" style="margin-top:8px"><b><span>مجموع المنتجات</span>: ${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b></div>${own.map(quoteFeeRow).join('')}${orderDeliveryActions(o,own)}<div id="fulfillmentMsg${o.order_id}" class="muted" role="status"></div></div>`;
+  return `<div class="card order" data-seller-order="${Number(o.order_id)}" data-order-state="${state}" data-order-time="${time}" data-order-search="${esc(searchable)}"><div class="row"><b>طلب #${o.order_id}</b><span class="badge ha-order-status-badge ha-status-${state}">${SELLER_ORDER_STATES[state].label}</span></div><div class="items">${items||'لا توجد مواد'}</div>${time?`<div class="muted"><span>تاريخ الطلب</span>: <time data-order-created data-no-i18n datetime="${new Date(time).toISOString()}"></time></div>`:''}<div class="muted ha-order-details">الزبون: <span data-no-i18n>${esc(o.customer_name)} — <a href="tel:${esc(String(o.phone||'').replace(/[^\d+]/g,''))}">${esc(o.phone)}</a></span><br><span data-no-i18n>${esc(o.governorate||'')} — ${esc(o.address)}</span>${o.notes?`<br><span>ملاحظات الزبون</span>: <span data-no-i18n>${esc(o.notes).replace(/\n/g,'<br>')}</span>`:''}</div><div class="row" style="margin-top:8px"><b><span>مجموع المنتجات</span>: ${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b></div>${own.map(quoteFeeRow).join('')}${orderDeliveryActions(o,own)}<div id="fulfillmentMsg${o.order_id}" class="muted" role="status"></div></div>`;
  }).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>';
+ applySellerOrderView();formatSellerOrderDates();
  }catch(e){el.innerHTML='<div class="card">'+esc(e.message||'تعذر تحميل الطلبات')+'</div>'}finally{deliveryOrdersBusy=false}
 }
 async function saveDeliveryQuote(id,biz){
@@ -1026,7 +1101,7 @@ async function saveDeliveryQuote(id,biz){
   saved=true;msg.textContent=data.already_saved?'الأجرة محفوظة وتم تبليغ الزبون بها مسبقاً.':'تم حفظ الأجرة وتبليغ الزبون.';
  }catch(e){msg.textContent=e.message||'تعذر حفظ أجرة التوصيل'}
  finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
- if(saved){await loadOrders();for(const [key,value,open] of drafts){const field=document.getElementById(key);if(field){field.value=value;const editor=field.closest('[id^=quoteEditor]');if(editor&&open)editor.hidden=false}}}
+ if(saved){showSellerOrdersNotice('تم حفظ الأجرة وتبليغ الزبون.');await loadOrders();for(const [key,value,open] of drafts){const field=document.getElementById(key);if(field){field.value=value;const editor=field.closest('[id^=quoteEditor]');if(editor&&open)editor.hidden=false}}}
 }
 async function merchantDelivery(id,action,waiting){
  if(deliveryQuoteBusy||deliveryOrdersBusy)return;
@@ -1040,7 +1115,7 @@ async function merchantDelivery(id,action,waiting){
   if(error||!data?.ok)throw new Error(error?.message||'تعذر حفظ حالة الطلب');saved=true;
  }catch(e){msg.textContent=e.message||'تعذر حفظ حالة الطلب'}
  finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
- if(saved)await loadOrders();
+ if(saved){showSellerOrdersNotice(action==='delivered'?'تم حفظ التسليم. تجد الطلب في قسم تم التسليم.':'تم حفظ التوصيل. تجد الطلب في قسم قيد التوصيل.');await loadOrders()}
 }
 async function requestCourier(id){
  if(deliveryQuoteBusy||deliveryOrdersBusy)return;
@@ -1051,7 +1126,7 @@ async function requestCourier(id){
  try{const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)throw error;saved=true}
  catch(e){msg.textContent=e.message||'تعذر حفظ حالة الطلب'}
  finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
- if(saved)await loadOrders();
+ if(saved){showSellerOrdersNotice('تم طلب مندوب. تجد الطلب في قسم بانتظار مندوب.');await loadOrders()}
 }
 init().catch(e=>{
   console.error(e);
