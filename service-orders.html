@@ -8,13 +8,14 @@
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>طلبات الخدمات</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>body{margin:0;font-family:Arial;background:#f5f5f5}.wrap{width:94%;max-width:900px;margin:22px auto}.card{background:#fff;border-radius:15px;padding:15px;margin:12px 0}.btn,button{border:0;background:#111;color:#fff;padding:10px 13px;border-radius:9px;text-decoration:none}.danger{background:#9b1733}.muted{color:#666;line-height:1.8}.badge{background:#eee;padding:5px 8px;border-radius:999px}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-</head><body class="ha-ui-final ha-family-services"><div class="ha-family-strip"><a href="services.html">← طلب خدمة</a><div><b>طلبات الخدمات</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><a class="btn" href="services.html">← طلب خدمة</a><h1>📋 طلباتي</h1><div id="box">جاري التحميل...</div></div><script>
+<script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-service-upload1" defer></script><style>#box .ha-service-attachments{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}#box .ha-service-attachments .btn{display:inline-flex;width:auto;max-width:100%;overflow-wrap:anywhere}#haServiceOrderSources{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}#haServiceOrderSources .btn{flex:1 1 180px;white-space:normal;text-align:center}#box .badge{position:static!important;display:inline-flex!important}#box .card{overflow-wrap:anywhere}</style></head><body class="ha-ui-final ha-family-services"><div class="ha-family-strip"><a href="services.html">← طلب خدمة</a><div><b>طلبات الخدمات</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><a class="btn" href="services.html">← طلب خدمة</a><h1>📋 طلباتي</h1><div id="haServiceOrderSources"><a class="btn" href="service-orders.html?source=orders">طلبات الخدمات العامة</a><a class="btn" href="service-orders.html">طلبات مقدم خدمة</a></div><div id="box">جاري التحميل...</div></div><script>
 const db=supabase.createClient(
   'https://ubayrhtshgtgggxprrek.supabase.co',
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
   {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}
 );
 
+const contactOrders=new URLSearchParams(location.search).get('source')==='orders';
 const S={
   new:'جديد',
   pending:'جديد',
@@ -29,14 +30,18 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[c]));
 
+function serviceAttachmentLinks(o){
+ const list=Array.isArray(o.attachment_urls)?o.attachment_urls:o.attachment_url?[o.attachment_url]:[];
+ const urls=[...new Set(list.concat(o.attachment_url||[]))].filter(u=>{try{const x=new URL(String(u));return ['https:','http:'].includes(x.protocol)}catch(_e){return false}});
+ return urls.length?'<div class="ha-service-attachments">'+urls.map((url,i)=>`<a class="btn" href="${esc(url)}"><span>فتح المرفق</span> <span data-no-i18n>${i+1}</span></a>`).join('')+'</div>':'';
+}
 async function load(){
   const u=(await db.auth.getUser()).data.user;
   if(!u){location.href='login.html';return}
 
-  const {data:orders,error}=await db.from('service_requests')
-    .select('*')
-    .eq('customer_id',u.id)
-    .order('created_at',{ascending:false});
+  let query=db.from(contactOrders?'orders':'service_requests').select('*').eq('customer_id',u.id);
+  if(contactOrders)query=query.eq('department','services');
+  const {data:orders,error}=await query.order('created_at',{ascending:false});
 
   if(error){
     box.textContent='تعذر تحميل الطلبات: '+error.message;
@@ -73,16 +78,17 @@ async function load(){
     return `<div class="card">
       <b>طلب #${o.id}</b>
       <span class="badge">${esc(S[o.status]||o.status)}</span>
-      <h3>${esc(category?.name||o.service_type||'خدمة')}</h3>
+      <h3>${esc(category?.name||o.order_type||o.service_type||'خدمة')}</h3>
       <div class="muted">
-        ${esc(o.details||'')}<br>
-        📍 ${esc(o.address||'')}<br>
+        ${esc(o.details||o.description||'')}<br>
+        📍 ${esc(o.address||o.area||'')}<br>
         📞 ${esc(o.phone||'')}<br>
         ${o.preferred_date?'📅 '+esc(o.preferred_date)+'<br>':''}
         ${o.preferred_time?'🕒 '+esc(o.preferred_time)+'<br>':''}
         🕒 ${new Date(o.created_at).toLocaleString('ar-IQ')}
       </div>
 
+      ${contactOrders?serviceAttachmentLinks(o):''}
       ${provider?`<div class="card" style="background:#f7faf7;margin-top:10px">
         <b>✅ مقدم الخدمة: ${esc(providerName)}</b><br>
         ${provider.phone?`<a class="btn" href="tel:${esc(provider.phone)}">📞 اتصال</a>`:''}
@@ -99,10 +105,7 @@ async function cancelOrder(id){
   const reason=prompt('سبب الإلغاء:');
   if(reason===null)return;
 
-  const {error}=await db.rpc('cancel_my_service_request',{
-    p_request_id:id,
-    p_reason:reason||'إلغاء من العميل'
-  });
+  const {error}=contactOrders?await db.rpc('customer_cancel_order',{p_order_id:id,p_reason:reason||'إلغاء من العميل'}):await db.rpc('cancel_my_service_request',{p_request_id:id,p_reason:reason||'إلغاء من العميل'});
 
   if(error)return alert(error.message);
   await load();

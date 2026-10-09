@@ -18,7 +18,8 @@
 .hint{font-size:12px;color:#68727c;line-height:1.6;margin-top:6px}
 @media(max-width:650px){.req-grid{grid-template-columns:1fr}}
 </style>
-</head><body><div class="wrap"><div class="card"><h1>🛠️ تقديم طلب خدمة</h1><div id="pageStatus" class="status">جاري التحقق من الحساب...</div>
+<script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-service-upload1" defer></script><script src="ha-service-upload.js?v=20261009-1"></script>
+<style id="ha-service-upload-retry-style">#requestStatus{margin:12px 0;line-height:1.9;overflow-wrap:anywhere}#requestStatus.error{background:#fff0f0!important;color:#962d37!important;border:1px solid #efbec6!important;border-radius:12px!important}#requestStatus[hidden],#skipAttachmentsBtn[hidden]{display:none!important}#skipAttachmentsBtn{background:#fff!important;border:1px solid #bd8d36!important;color:#765019!important;white-space:normal}#fileList .file-item span{min-width:0;overflow-wrap:anywhere}#fileList .file-item button{flex-shrink:0}#submitBtn{white-space:normal}#formBox button:disabled{opacity:.6;cursor:not-allowed}</style></head><body><div class="wrap"><div class="card"><h1>🛠️ تقديم طلب خدمة</h1><div id="pageStatus" class="status">جاري التحقق من الحساب...</div>
 <div id="serviceChooser" class="hidden"><div style="text-align:center;line-height:1.8;color:#555">اختر نوع الخدمة المطلوبة</div><div class="service-grid"><button class="service-card" type="button" data-service="صيانة طابعات"><span class="ico">🖨️</span><span class="name">صيانة طابعات</span></button><button class="service-card" type="button" data-service="صيانة موبايلات"><span class="ico">📱</span><span class="name">صيانة موبايلات</span></button><button class="service-card" type="button" data-service="حلاق"><span class="ico">💈</span><span class="name">حلاق</span></button>
 <button class="service-card" type="button" data-service="حداد"><span class="ico">🔩</span><span class="name">حداد</span></button>
 <button class="service-card" type="button" data-service="بناء"><span class="ico">🧱</span><span class="name">بناء</span></button>
@@ -80,8 +81,9 @@
   </div>
 </div>
 
+<div id="requestStatus" hidden class="status" role="status" aria-live="polite"></div><button id="skipAttachmentsBtn" hidden class="light" type="button">إرسال الطلب بدون مرفقات</button>
 <button id="submitBtn" class="primary" type="button">إرسال الطلب</button>
-</div><a class="btn light" href="account.html">طلباتي</a><a class="btn light" href="index.html">← الرئيسية</a></div></div><script>
+</div><a class="btn light" href="service-orders.html?source=orders">طلباتي</a><a class="btn light" href="index.html">← الرئيسية</a></div></div><script>
 const db=supabase.createClient(
   'https://ubayrhtshgtgggxprrek.supabase.co',
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
@@ -89,7 +91,18 @@ const db=supabase.createClient(
 );
 
 let me=null,lat=null,lng=null;
-let selectedFiles=[];
+let selectedFiles=[],requestBusy=false,pendingPayload=null;
+const uploadConfig={url:'https://ubayrhtshgtgggxprrek.supabase.co',key:'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll'};
+let requestKey=HAServiceUpload.uuid();
+const requestStatus=document.getElementById('requestStatus'),skipAttachmentsBtn=document.getElementById('skipAttachmentsBtn');
+function requestDialogText(message){return window.HAI18N?.translateText?.(message)||message}
+function showRequestStatus(message,isError=false){requestStatus.textContent=message;requestStatus.className='status '+(isError?'error':'');requestStatus.hidden=!message}
+function requestProgress(index,count,percent){submitBtn.innerHTML='<span>جاري رفع المرفق</span> <span data-no-i18n>'+index+' / '+count+(Number.isFinite(percent)?' — '+percent+'%':'')+'</span>'}
+function pendingKey(){return 'ha-service-request-send:'+String(me?.id||'')}
+function savePending(){if(!me)return;try{sessionStorage.setItem(pendingKey(),JSON.stringify({key:requestKey,payload:pendingPayload}))}catch(_e){}}
+function lockPendingFields(){if(pendingPayload){formBox.querySelectorAll('input,select,textarea,#changeServiceBtn,.file-item button').forEach(x=>x.disabled=true)}}
+function restorePending(){try{const p=JSON.parse(sessionStorage.getItem(pendingKey())||'null');if(p&&/^[0-9a-f-]{36}$/i.test(p.key)){requestKey=p.key;pendingPayload=p.payload||null;if(pendingPayload){showRequestStatus('قد يكون الطلب أُرسل قبل انقطاع الرد. اضغط إعادة المحاولة للتحقق؛ لن يتكرر الطلب.');submitBtn.textContent='إعادة المحاولة';lockPendingFields()}}}catch(_e){}}
+
 
 const pageStatus=document.getElementById('pageStatus');
 const serviceChooser=document.getElementById('serviceChooser');
@@ -155,27 +168,17 @@ function renderFiles(){
     const row=document.createElement('div');
     row.className='file-item';
     const size=(f.size/1024/1024).toFixed(1);
-    row.innerHTML=`<span>${f.type.startsWith('video/')?'🎥':'🖼️'} ${f.name} — ${size}MB</span><button type="button">حذف</button>`;
-    row.querySelector('button').onclick=()=>{
-      selectedFiles.splice(i,1);
-      renderFiles();
-    };
+    const label=document.createElement('span');label.dataset.noI18n='';label.textContent=`${HAServiceUpload.mime(f).startsWith('video/')?'🎥':'🖼️'} ${f.name} — ${size}MB`;
+    const remove=document.createElement('button');remove.type='button';remove.textContent='حذف';remove.onclick=()=>{if(requestBusy||pendingPayload)return;selectedFiles.splice(i,1);renderFiles()};row.append(label,remove);
     fileList.appendChild(row);
   });
 }
 
 attachments.addEventListener('change',()=>{
+  if(requestBusy||pendingPayload){attachments.value='';return}
   const incoming=[...attachments.files];
   for(const f of incoming){
-    if(f.size>20*1024*1024){
-      alert('الملف '+f.name+' أكبر من 20MB وتم تجاهله');
-      continue;
-    }
-    if(!(f.type.startsWith('image/')||f.type.startsWith('video/'))){
-      alert('الملف '+f.name+' ليس صورة أو فيديو وتم تجاهله');
-      continue;
-    }
-    selectedFiles.push(f);
+    try{HAServiceUpload.validate(f);if(!selectedFiles.some(x=>x.name===f.name&&x.size===f.size&&x.lastModified===f.lastModified))selectedFiles.push(f)}catch(e){showRequestStatus(e.message,true)}
   }
   attachments.value='';
   renderFiles();
@@ -240,6 +243,7 @@ async function init(){
   if(p?.phone&&!phone.value)phone.value=p.phone;
   if(p?.governorate&&!governorate.value)governorate.value=p.governorate;
 
+  restorePending();
   pageStatus.textContent='الحساب جاهز لإرسال الطلب.';
   pageStatus.className='status ok';
 }
@@ -260,86 +264,41 @@ changeServiceBtn.onclick=()=>{
 };
 
 async function uploadFiles(){
-  const urls=[];
-  for(let i=0;i<selectedFiles.length;i++){
-    const f=selectedFiles[i];
-    submitBtn.textContent=`جاري رفع المرفق ${i+1} من ${selectedFiles.length}...`;
-    const ext=(f.name.split('.').pop()||'bin').toLowerCase();
-    const path=`${me.id}/${Date.now()}-${i}-${Math.random().toString(36).slice(2,8)}.${ext}`;
-    const {error}=await db.storage.from('service-attachments').upload(path,f,{
-      upsert:false,
-      contentType:f.type||undefined
-    });
-    if(error)throw error;
-    const {data}=db.storage.from('service-attachments').getPublicUrl(path);
-    if(data?.publicUrl)urls.push(data.publicUrl);
-  }
-  return urls;
+ const urls=[];
+ for(let i=0;i<selectedFiles.length;i++){
+  const f=selectedFiles[i];requestProgress(i+1,selectedFiles.length);
+  const url=await HAServiceUpload.upload(db,uploadConfig,me.id,requestKey,f,i,percent=>requestProgress(i+1,selectedFiles.length,percent),()=>showRequestStatus('انقطع اتصال الرفع. جاري إعادة المحاولة...'));
+  urls.push(url);
+ }
+ return urls;
 }
+function setRequestBusy(busy){requestBusy=busy;formBox.querySelectorAll('input,select,textarea,button').forEach(x=>x.disabled=busy)}
 
-submitBtn.onclick=async()=>{
-  const st=serviceType.value.trim();
-  const ph=phone.value.trim();
-  const gov=governorate.value.trim();
-  const addr=address.value.trim();
-  const desc=description.value.trim();
-
-  if(!st||!ph||!gov||!addr||!desc){
-    alert('أكمل رقم الموبايل والمحافظة والعنوان وشرح الخدمة');
-    return;
+async function sendRequest(withoutAttachments=false){
+ if(requestBusy)return;
+ const st=serviceType.value.trim(),ph=phone.value.trim().replace(/[٠-٩۰-۹]/g,c=>String(c.charCodeAt(0)>1775?c.charCodeAt(0)-1776:c.charCodeAt(0)-1632)),gov=governorate.value.trim(),addr=address.value.trim(),desc=description.value.trim();
+ if(!pendingPayload&&(!st||!ph||!gov||!addr||!desc)){showRequestStatus('أكمل رقم الموبايل والمحافظة والعنوان وشرح الخدمة',true);return}
+ if(!pendingPayload&&!/^07\d{9}$/.test(ph)){showRequestStatus('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم',true);return}
+ if(!me||me.is_anonymous){saveDraft();location.href='login.html?next='+encodeURIComponent('contact.html?service='+st);return}
+ saveDraft();setRequestBusy(true);skipAttachmentsBtn.hidden=true;showRequestStatus('جاري تجهيز الطلب...');submitBtn.textContent='جاري إرسال الطلب...';let stage=pendingPayload?'submit':'upload',success=false;
+ try{
+  if(!pendingPayload){
+   const urls=withoutAttachments?[]:await uploadFiles();
+   pendingPayload={customer_id:me.id,order_type:st,description:desc,phone:ph,governorate:gov,address:addr,customer_lat:lat,customer_lng:lng,attachment_urls:urls};
+   savePending();
   }
-
-  if(!/^07\d{9}$/.test(ph)){
-    alert('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقم');
-    return;
-  }
-
-  if(!me||me.is_anonymous){
-    saveDraft();
-    alert('راح تنتقل لتسجيل الدخول، وبعدها ترجع لنفس الطلب. إذا اخترت صور أو فيديوهات أعد اختيارها بعد الرجوع.');
-    const next='contact.html?service='+encodeURIComponent(st);
-    location.href='login.html?next='+encodeURIComponent(next);
-    return;
-  }
-
-  submitBtn.disabled=true;
-  submitBtn.textContent='جاري إرسال الطلب...';
-
-  try{
-    const urls=await uploadFiles();
-
-    const payload={
-      customer_id:me.id,
-      department:'services',
-      order_type:st,
-      description:desc,
-      phone:ph,
-      governorate:gov,
-      address:addr,
-      area:addr,
-      customer_lat:lat,
-      customer_lng:lng,
-      attachment_url:urls[0]||null,
-      attachment_urls:urls,
-      status:'new'
-    };
-
-    const {data:o,error}=await db.from('orders')
-      .insert(payload)
-      .select('id')
-      .single();
-
-    if(error)throw error;
-
-    sessionStorage.removeItem(draftKey);
-    alert('تم إرسال الطلب رقم #'+o.id+' بنجاح');
-    location.href='service-orders.html';
-  }catch(error){
-    alert('تعذر إرسال الطلب: '+(error?.message||error));
-    submitBtn.disabled=false;
-    submitBtn.textContent='إرسال الطلب';
-  }
-};
+  stage='submit';submitBtn.textContent='جاري إرسال الطلب...';showRequestStatus('جاري إرسال الطلب...');
+  const result=await HAServiceUpload.submit(db,uploadConfig,me.id,requestKey,pendingPayload,()=>showRequestStatus('جاري إعادة الاتصال والتحقق من إرسال الطلب...'));
+  success=true;sessionStorage.removeItem(draftKey);sessionStorage.removeItem(pendingKey());showRequestStatus('تم إرسال الطلب بنجاح.');submitBtn.textContent='تم إرسال الطلب';
+  alert(requestDialogText('تم إرسال الطلب بنجاح.')+' #'+result.id);location.href='service-orders.html?source=orders';
+ }catch(e){
+  if(stage==='submit'&&e.status>=400&&e.status<500&&![408,429].includes(e.status)){pendingPayload=null;savePending()}
+  showRequestStatus(HAServiceUpload.message(e,stage),true);skipAttachmentsBtn.hidden=stage!=='upload'||selectedFiles.length===0||e.status===401;submitBtn.textContent='إعادة المحاولة';saveDraft();
+ }finally{setRequestBusy(false);if(!success)lockPendingFields();if(success)submitBtn.disabled=true}
+}
+submitBtn.onclick=()=>sendRequest(false);
+skipAttachmentsBtn.onclick=()=>{if(requestBusy||pendingPayload)return;if(confirm(requestDialogText('الصور والفيديوهات لن تُرسل مع الطلب. هل تريد إرسال الطلب بدون مرفقات؟')))sendRequest(true)};
+[phone,governorate,address,description].forEach(el=>el.addEventListener('input',saveDraft));
 
 init();
 </script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
