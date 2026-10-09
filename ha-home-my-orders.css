@@ -1,0 +1,22 @@
+#haHomeMyOrders[hidden],#haHomeOrdersChooser[hidden]{display:none!important}
+.ha-main #haHomeMyOrders.ha-cat{background:radial-gradient(circle at 15% 15%,#36b99055,transparent 55%),linear-gradient(145deg,#116d54,#064b3b)!important;flex-direction:row!important;justify-content:center!important;align-items:center!important;padding:12px!important;text-align:center!important;gap:10px!important}
+#haHomeMyOrders::before,#haHomeMyOrders::after{content:none!important}
+#haHomeMyOrders .ico::before,#haHomeMyOrders .ico::after,#haHomeMyOrders strong::before,#haHomeMyOrders strong::after{content:none!important}
+#haHomeMyOrders>.ico{position:relative!important;inset:auto!important;flex-shrink:0!important;display:grid!important;place-items:center!important;opacity:1!important;visibility:visible!important;width:40px!important;height:40px!important;margin:0!important;border-radius:12px!important;background:#ffffff18!important;border:1px solid #ffffff38!important;box-shadow:0 8px 22px #00372c36!important}
+#haHomeMyOrders>.ico{transform:none!important;padding:0!important}
+#haHomeMyOrders .ico svg{width:28px!important;height:28px!important;display:block;color:#fff;filter:none!important}
+#haHomeMyOrders .ha-my-orders-copy{position:relative;z-index:2;display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;max-width:100%}
+#haHomeMyOrders .ha-my-orders-copy strong,#haHomeMyOrders .ha-my-orders-copy small{display:block!important;opacity:1!important;visibility:visible!important;position:static!important;margin:0!important;padding:0!important;min-height:0!important;background:transparent!important;color:#fff!important;text-shadow:none!important;white-space:normal!important;overflow-wrap:anywhere}
+#haHomeMyOrders .ha-my-orders-copy strong{font-size:18px!important;font-weight:900!important;line-height:1.25!important}
+#haHomeMyOrders .ha-my-orders-copy small{font-size:10px!important;font-weight:600!important;line-height:1.4!important;color:#e2fff2!important;display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+#haHomeMyOrders:focus-visible{outline:3px solid #27bb89;outline-offset:4px}
+#haHomeMyOrders[aria-busy="true"] .ico{opacity:.7!important}
+#haHomeOrdersChooser{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;padding:20px;background:#0b2b2380;backdrop-filter:blur(5px)}
+#haHomeOrdersChooser .ha-orders-dialog{position:relative;box-sizing:border-box;max-width:460px;width:100%;padding:24px;border-radius:24px;background:#fff;color:#123c30;box-shadow:0 24px 80px #0004;font-family:Tahoma,Arial,sans-serif}
+#haHomeOrdersChooser h2{font-size:21px;margin:0 0 18px;padding-inline-end:40px}
+#haHomeOrdersChooser .ha-orders-close{position:absolute;inset-inline-end:16px;top:16px;width:36px;height:36px;border:0;border-radius:12px;background:#eef6f2;color:#174738;font-size:24px;cursor:pointer}
+#haHomeOrdersChooser .ha-orders-links{display:grid;gap:10px}
+#haHomeOrdersChooser .ha-orders-links a{display:block;text-decoration:none;border:1px solid #d7ece1;border-radius:14px;padding:16px;background:#f0faf5;color:#13563e;font-size:15px;font-weight:800}
+#haHomeOrdersChooser .ha-orders-links a:hover,#haHomeOrdersChooser .ha-orders-links a:focus-visible{background:#dbf5e7;outline:2px solid #21a575;outline-offset:1px}
+@media(max-width:420px){.ha-main #haHomeMyOrders.ha-cat{padding:8px!important;gap:8px!important}#haHomeMyOrders>.ico{width:32px!important;height:36px!important;border-radius:10px!important}#haHomeMyOrders .ico svg{width:24px!important;height:24px!important}#haHomeMyOrders .ha-my-orders-copy strong{font-size:16px!important}#haHomeOrdersChooser{padding:14px}}
+@media(max-width:360px){#haHomeMyOrders>.ico{display:none!important}.ha-main #haHomeMyOrders.ha-cat{padding:6px!important}#haHomeMyOrders .ha-my-orders-copy{gap:3px}#haHomeMyOrders .ha-my-orders-copy strong{font-size:16px!important;line-height:1.2!important}#haHomeMyOrders .ha-my-orders-copy small{font-size:9px!important;line-height:1.2!important}}
