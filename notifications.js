@@ -7,8 +7,11 @@
   const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
   const STORAGE_KEY='ha_notifications_enabled';
   const TOKEN_KEY='ha_web_push_token';
+  const OWNER_KEY='ha_web_push_user';
   let pushDb=null;
   let messagingRef=null;
+  let currentOwner=null;
+  let pushBusy=false;
 
   function getDb(){
     if(pushDb)return pushDb;
@@ -53,7 +56,8 @@
     return localStorage.getItem(STORAGE_KEY)==='1' &&
       typeof Notification!=='undefined' &&
       Notification.permission==='granted' &&
-      !!localStorage.getItem(TOKEN_KEY);
+      !!localStorage.getItem(TOKEN_KEY) &&
+      !!currentOwner && localStorage.getItem(OWNER_KEY)===currentOwner;
   }
 
   function updateBell(){
@@ -139,6 +143,13 @@
     );
 
     const messaging=await ensureFirebase();
+    // A shared phone may have switched accounts. Obtain a fresh token instead
+    // of falsely showing "enabled" for the device token registered to someone else.
+    if(localStorage.getItem(TOKEN_KEY)&&localStorage.getItem(OWNER_KEY)!==user.id){
+      await messaging.deleteToken();
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.setItem(STORAGE_KEY,'0');
+    }
     const token=await messaging.getToken({
       vapidKey:cfg.vapidKey,
       serviceWorkerRegistration:reg
@@ -149,29 +160,45 @@
     await saveToken(token);
 
     localStorage.setItem(TOKEN_KEY,token);
+    currentOwner=user.id;
+    localStorage.setItem(OWNER_KEY,user.id);
     localStorage.setItem(STORAGE_KEY,'1');
     updateBell();
 
-    // إشعارات أثناء فتح الصفحة.
+    bindForeground(messaging,reg);
+
+    alert('✅ تم تشغيل إشعارات الموبايل وربط هذا الجهاز بحسابك.');
+  }
+
+  function bindForeground(messaging,reg){
+    // Restore the foreground listener on every page visit, not only after pressing Enable.
     if(!window.__haForegroundPushBound){
       window.__haForegroundPushBound=true;
-      messaging.onMessage(payload=>{
+      messaging.onMessage(async payload=>{
         const title=payload?.notification?.title||payload?.data?.title||'HA Marketing';
         const body=payload?.notification?.body||payload?.data?.body||'وصلك إشعار جديد';
         try{
-          if(Notification.permission==='granted'){
-            new Notification(title,{
+          if(isEnabled()){
+            const options={
               body,
               icon:'./ha-logo-transparent.png',
               badge:'./notification-icon.png',
-              data:{url:payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html'}
-            });
+              tag:'ha-notification-'+(payload?.data?.notification_id||payload?.messageId||Date.now()),
+              data:{url:new URL(payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html',location.href).href}
+            };
+            // Mobile browsers require the registered messaging worker to display notifications.
+            if(reg?.showNotification){await reg.showNotification(title,options);return;}
+            const notice=new Notification(title,options);
+            notice.onclick=()=>{
+              const url=payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html';
+              try{const target=new URL(url,location.href);if(['https:','http:'].includes(target.protocol)){window.focus();location.href=target.href;}}catch(e){}
+              notice.close();
+            };
           }
         }catch(e){console.warn(e)}
       });
     }
 
-    alert('✅ تم تشغيل إشعارات الموبايل وربط هذا الجهاز بحسابك.');
   }
 
   async function disableNotifications(){
@@ -188,12 +215,16 @@
     }
 
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(OWNER_KEY);
     localStorage.setItem(STORAGE_KEY,'0');
     updateBell();
     alert('تم إيقاف الإشعارات على هذا الجهاز.');
   }
 
   async function toggleNotifications(){
+    if(pushBusy)return;
+    pushBusy=true;
+    document.querySelectorAll('[data-ha-push-button],#haPushButton').forEach(b=>b.disabled=true);
     try{
       if(isEnabled()){
         if(confirm('الإشعارات مفعّلة على هذا الجهاز. تريد إيقافها؟')){
@@ -205,7 +236,30 @@
     }catch(e){
       console.error(e);
       alert('تعذر تشغيل الإشعارات: '+(e?.message||'خطأ غير معروف'));
+    }finally{
+      pushBusy=false;
+      document.querySelectorAll('[data-ha-push-button],#haPushButton').forEach(b=>b.disabled=false);
+      updateBell();
     }
+  }
+
+  async function restoreNotifications(){
+    try{
+      const {user}=await sessionUser();
+      currentOwner=user?.id||null;
+      if(!user||user.is_anonymous)return;
+      if(!isEnabled())return;
+      const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js',{scope:'./fcm/'});
+      const messaging=await ensureFirebase();
+      const token=await messaging.getToken({vapidKey:cfg.vapidKey,serviceWorkerRegistration:reg});
+      if(!token)throw new Error('No device token');
+      await saveToken(token);
+      localStorage.setItem(TOKEN_KEY,token);
+      bindForeground(messaging,reg);
+    }catch(e){
+      localStorage.setItem(STORAGE_KEY,'0');
+      console.warn('push registration needs renewal',e);
+    }finally{updateBell();}
   }
 
   function bind(){
@@ -213,6 +267,7 @@
       b.onclick=toggleNotifications;
     });
     updateBell();
+    restoreNotifications();
   }
 
   window.HA_EnableNotifications=enableNotifications;

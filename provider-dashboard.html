@@ -5,14 +5,14 @@
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
 <script src="ha-account-gate.js?v=20261008-required1"></script>
-<script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة مقدم الخدمة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><script src="push-config.js"></script><script src="notifications.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.status{padding:10px;border-radius:10px;background:#f1f1f1;white-space:pre-wrap}.balance-card{background:linear-gradient(135deg,#111,#252525);color:#fff;border:1px solid #b88b32;cursor:pointer}.balance-card small{color:#bbb}.balance-card strong{display:block;color:#f0c45e;font-size:28px;margin-top:6px}@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{padding:10px}.grid .card{font-size:12px}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
+<script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة مقدم الخدمة</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><script src="push-config.js"></script><script src="notifications.js?v=20261009-service-notifications1"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.muted{color:#666;line-height:1.7}.badge{position:static!important;display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.status{padding:10px;border-radius:10px;background:#f1f1f1;white-space:pre-wrap}.balance-card{background:linear-gradient(135deg,#111,#252525);color:#fff;border:1px solid #b88b32;cursor:pointer}.balance-card small{color:#bbb}.balance-card strong{display:block;color:#f0c45e;font-size:28px;margin-top:6px}@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{padding:10px}.grid .card{font-size:12px}}</style><link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
 <script src="ha-role-balance-gate.js?v=20261008-pause1"></script></head><body class="ha-ui-final ha-family-services"><div class="ha-family-strip"><a href="services.html">← طلب خدمة</a><div><b>لوحة مقدم الخدمة</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><div class="top"><a class="btn light" href="services.html">← الخدمات</a><h1>🛠️ لوحة مقدم الخدمة</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="add-service.html">➕ إضافة خدمة</a><button id="haPushButton" data-ha-push-button type="button" class="light">🔕 تشغيل إشعارات الموبايل</button></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div id="providerBalanceCard" class="card balance-card" onclick="redeemProviderBalance()"><small>💳 الرصيد الحالي</small><strong id="providerBalanceValue">0 د.ع</strong><div class="muted">رصيد مقدم الخدمة</div></div><div class="card"><h2>ملفي المهني</h2><select id="cat"></select>
 <div id="otherCatBox" style="display:none">
 <input id="otherCat" placeholder="اكتب اسم المهنة الأخرى">
 </div>
-<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card" id="incomingRequestsCard"><h2>📥 طلبات الخدمة الواردة</h2><div id="requests">جاري التحميل...</div></div></div></div><script>
+<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card" id="incomingRequestsCard"><h2>📥 طلبات الخدمة الواردة</h2><button type="button" class="light" onclick="loadReq()">↻ تحديث الطلبات</button><div id="requests">جاري التحميل...</div></div></div></div><script>
 const db=supabase.createClient(
   'https://ubayrhtshgtgggxprrek.supabase.co',
   'sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',
@@ -125,6 +125,10 @@ async function init(){
   }
 
   await loadReq();
+  db.channel('ha-provider-notifications-'+me.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+me.id},()=>loadReq()).subscribe();
+  setInterval(()=>{if(document.visibilityState==='visible')loadReq();},30000);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')loadReq();});
 
   if(new URLSearchParams(location.search).get('view')==='requests'){
     setTimeout(()=>{
@@ -272,98 +276,59 @@ providerLocateBtn.onclick=async()=>{
   }
 };
 
+let reqLoading=false;
+function providerAttachmentLinks(o){
+  const urls=[...new Set([...(Array.isArray(o.attachment_urls)?o.attachment_urls:[]),o.attachment_url].filter(Boolean))]
+    .filter(u=>{try{return ['https:','http:'].includes(new URL(u).protocol)}catch(e){return false}});
+  return urls.map((url,i)=>`<a class="btn light" href="${esc(url)}">فتح المرفق <span data-no-i18n>${i+1}</span></a>`).join('');
+}
 async function loadReq(){
-  if(!p?.id){
-    requests.textContent='احفظ ملفك المهني أولاً.';
-    return;
-  }
-  if(!p.category_id){
-    requests.textContent='اختر مهنتك واحفظ الملف أولاً.';
-    return;
-  }
-
-  const declinesPromise=db.from('service_request_declines')
-    .select('request_id')
-    .eq('provider_id',p.id);
-
-  const requestsPromise=db.from('service_requests')
-    .select('*')
-    .eq('category_id',p.category_id)
-    .order('created_at',{ascending:false})
-    .limit(100);
-
-  const [{data,error},{data:declines,error:declineError}]=await Promise.all([
-    requestsPromise,declinesPromise
-  ]);
-
-  if(error){
-    requests.textContent='تعذر تحميل الطلبات: '+error.message;
-    return;
-  }
-
-  const skipped=new Set((declines||[]).map(x=>Number(x.request_id)));
-  const rawRequested=new URLSearchParams(location.search).get('request');
-  const requested=(rawRequested&&/^\d+$/.test(rawRequested))?Number(rawRequested):null;
-
-  let arr=(data||[]).filter(x=>{
-    if(x.provider_id!=null && Number(x.provider_id)!==Number(p.id))return false;
-    if(x.provider_id==null && skipped.has(Number(x.id)))return false;
-    return true;
-  });
-
-  if(requested){
-    arr.sort((a,b)=>Number(b.id===requested)-Number(a.id===requested));
-  }
-
-  requests.innerHTML=arr.length?arr.map(x=>{
-    const mine=Number(x.provider_id)===Number(p.id);
-    const open=(x.status==='new'||x.status==='pending');
-    const direct=x.provider_id!=null;
-
-    return `<div class="card" ${requested===Number(x.id)?'style="outline:2px solid #d3a331"':''}>
-      <div class="row">
-        <b>طلب #${x.id}</b>
-        <span class="badge">${esc(statusLabel(x.status))}</span>
-      </div>
-      <div><b>${esc(x.customer_name||'زبون')}</b> — ${esc(x.phone||'')}</div>
-      <div class="muted">
-        🛠️ ${esc(x.service_type||'خدمة')}<br>
-        📍 ${esc(x.address||'')}<br>
-        ${x.preferred_date?'📅 '+esc(x.preferred_date)+'<br>':''}
-        ${x.preferred_time?'🕒 '+esc(x.preferred_time)+'<br>':''}
-        ${esc(x.details||'')}
-      </div>
-      <div class="row" style="margin-top:8px">
-        ${open?`<button onclick="acceptReq(${x.id})">✅ قبول الطلب</button><button class="danger" onclick="declineReq(${x.id})">${direct?'❌ رفض':'⏭️ تخطي'}</button>`:''}
-        ${mine&&x.status==='accepted'?`<button onclick="setReqStatus(${x.id},'on_the_way')">🚗 بالطريق</button>`:''}
-        ${mine&&x.status==='on_the_way'?`<button onclick="setReqStatus(${x.id},'in_progress')">🛠️ بدأت الخدمة</button>`:''}
-        ${mine&&x.status==='in_progress'?`<button class="ok" onclick="setReqStatus(${x.id},'completed')">✅ إكمال</button>`:''}
-        ${mine&&x.phone?`<a class="btn light" href="tel:${esc(x.phone)}">📞 اتصال</a>`:''}
-      </div>
-    </div>`;
-  }).join(''):'لا توجد طلبات متاحة في مهنتك حالياً.';
+  if(!me||reqLoading)return;
+  reqLoading=true;
+  try{
+    const {data,error}=await db.rpc('get_provider_service_inbox');
+    if(error){requests.textContent='تعذر تحميل الطلبات: '+error.message;return;}
+    const params=new URLSearchParams(location.search),raw=params.get('request');
+    const requested=raw&&/^\d+$/.test(raw)?Number(raw):null;
+    const source=params.get('source')||'requests';
+    const isRequested=x=>Number(x.id)===requested&&x.source===source;
+    const arr=(Array.isArray(data)?data:[]).sort((a,b)=>Number(isRequested(b))-Number(isRequested(a)));
+    requests.innerHTML=arr.length?arr.map(x=>{
+      const general=x.source==='orders',mine=x.mine===true,open=['new','pending'].includes(x.status);
+      const args=Number(x.id)+",'"+(general?'orders':'requests')+"'";
+      return `<div class="card" ${isRequested(x)?'style="outline:2px solid #d3a331"':''}>
+        <div class="row"><b>طلب #<span data-no-i18n>${Number(x.id)}</span></b><span class="badge">${esc(statusLabel(x.status))}</span></div>
+        <div data-no-i18n><b>${esc(x.customer_name||'')}</b> ${esc(x.phone||'')}</div>
+        <div class="muted" data-no-i18n>🛠️ ${esc(x.service_type||x.order_type||'')}<br>📍 ${esc(x.address||x.area||'')}<br>
+          ${x.preferred_date?'📅 '+esc(x.preferred_date)+'<br>':''}${x.preferred_time?'🕒 '+esc(x.preferred_time)+'<br>':''}${esc(x.details||x.description||'')}</div>
+        <div class="row" style="margin-top:8px">
+          ${providerAttachmentLinks(x)}
+          ${open?`<button onclick="acceptReq(${args})">✅ قبول الطلب</button>${general?'':`<button class="danger" onclick="declineReq(${Number(x.id)})">${x.provider_id!=null?'❌ رفض':'⏭️ تخطي'}</button>`}`:''}
+          ${mine&&x.status==='accepted'?`<button onclick="setReqStatus(${args},'on_the_way')">🚗 بالطريق</button>`:''}
+          ${mine&&x.status==='on_the_way'?`<button onclick="setReqStatus(${args},'in_progress')">🛠️ بدأت الخدمة</button>`:''}
+          ${mine&&x.status==='in_progress'?`<button class="ok" onclick="setReqStatus(${args},'completed')">✅ إكمال</button>`:''}
+          ${mine&&x.phone?`<a class="btn light" href="tel:${esc(x.phone)}">📞 اتصال</a>`:''}
+        </div></div>`;
+    }).join(''):'لا توجد طلبات متاحة في مهنتك حالياً.';
+    window.HAI18N?.apply?.();
+  }catch(e){requests.textContent='تعذر تحميل الطلبات. حاول مجدداً.';}finally{reqLoading=false;}
 }
-
-async function acceptReq(id){
-  const {error}=await db.rpc('accept_service_request',{p_request_id:id});
-  if(error)return alert(error.message);
-  alert('✅ تم قبول الطلب وربطه بحسابك.');
-  await loadReq();
+let reqBusy=false;
+async function requestAction(rpc,args){
+  if(reqBusy)return;reqBusy=true;
+  const buttons=[...requests.querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);
+  try{
+    const {error}=await db.rpc(rpc,args);
+    if(error){alert(error.message);return;}
+    await loadReq();
+  }catch(e){alert('تعذر تحديث الطلب. تحقق من الاتصال وحاول مجدداً.');}finally{reqBusy=false;buttons.forEach(b=>b.disabled=false);}
 }
-
-async function declineReq(id){
-  const {error}=await db.rpc('decline_service_request',{p_request_id:id});
-  if(error)return alert(error.message);
-  await loadReq();
+async function acceptReq(id,source='requests'){
+  return requestAction(source==='orders'?'provider_update_general_service_order':'accept_service_request',source==='orders'?{p_order_id:id,p_status:'accepted'}:{p_request_id:id});
 }
-
-async function setReqStatus(id,status){
-  const {error}=await db.rpc('service_provider_update_request_status',{
-    p_request_id:id,
-    p_status:status
-  });
-  if(error)return alert(error.message);
-  await loadReq();
+async function declineReq(id){return requestAction('decline_service_request',{p_request_id:id});}
+async function setReqStatus(id,source,status){
+  return requestAction(source==='orders'?'provider_update_general_service_order':'service_provider_update_request_status',source==='orders'?{p_order_id:id,p_status:status}:{p_request_id:id,p_status:status});
 }
 
 init();
