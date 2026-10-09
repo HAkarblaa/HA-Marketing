@@ -2118,7 +2118,7 @@ html[data-ha-theme="light"] .shop-courier-link b{
 <link rel="stylesheet" href="ha-location-ux.css">
 <script src="ha-location-ux.js"></script>
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-driver-push1" defer></script><script src="ha-orders-section-focus.js?v=20261010-myorders1" defer></script><link rel="stylesheet" href="ha-driver-layout.css?v=20261010-layout1">
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-driver-push1" defer></script><script src="ha-orders-section-focus.js?v=20261010-request-open1" defer></script><link rel="stylesheet" href="ha-driver-layout.css?v=20261010-layout1">
 </head>
 <body class="ha-ui-final ha-family-transport ha-driver-layout">
 
@@ -2444,8 +2444,9 @@ function startDriverNearbyWatch(){
     }
     if(!currentRide || currentRide.status==='searching'){
       sortPendingByNearest();
-      currentPendingIndex=0;
-      if(pendingEntries.length)renderPendingRide(0);
+      const selectedIndex=pendingEntries.findIndex(([id])=>id===currentRideId);
+      currentPendingIndex=selectedIndex>=0?selectedIndex:0;
+      if(pendingEntries.length)renderPendingRide(currentPendingIndex);
     }
   },()=>{});
 }
@@ -2640,8 +2641,8 @@ async function watchPendingRides(){
     }
 
     // نبقي نفس الطلب المحدد إذا ما زال متاحاً، وإلا نعرض أقرب طلب في القائمة.
-    let idx=haRequestedRideId ? pendingEntries.findIndex(([id])=>id===haRequestedRideId) : -1;
-    if(idx<0) idx=oldSelectedId ? pendingEntries.findIndex(([id])=>id===oldSelectedId) : -1;
+    let idx=oldSelectedId ? pendingEntries.findIndex(([id])=>id===oldSelectedId) : -1;
+    if(idx<0) idx=haRequestedRideId ? pendingEntries.findIndex(([id])=>id===haRequestedRideId) : -1;
     if(idx<0) idx=Math.min(currentPendingIndex,pendingEntries.length-1);
     renderPendingRide(idx);
   });
@@ -3202,7 +3203,7 @@ window.addEventListener('load',()=>{
 </script>
 <script src="transport-notifications.js"></script>
 <script src="push-config.js"></script>
-<script src="notifications.js?v=20261009-driver-click1"></script>
+<script src="notifications.js?v=20261010-request-open1"></script>
 <script src="transport-driver-push.js?v=20261009-driver-push1"></script>
 
 <script>

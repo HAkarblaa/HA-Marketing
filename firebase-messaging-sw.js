@@ -1,4 +1,4 @@
-importScripts('./ha-notification-route.js?v=20261009-driver-click1');
+importScripts('./ha-notification-route.js?v=20261010-request-open1');
 
 self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate',event=>event.waitUntil(clients.claim()));

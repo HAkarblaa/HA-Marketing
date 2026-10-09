@@ -38,7 +38,7 @@
 
   async function ensureFirebase(){
     if(!window.HA_NotificationRoute){
-      await load(new URL('./ha-notification-route.js?v=20261009-driver-click1',location.href).href);
+      await load(new URL('./ha-notification-route.js?v=20261010-request-open1',location.href).href);
     }
     if(!(window.firebase&&firebase.messaging)){
       await load('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
@@ -141,8 +141,8 @@
 
     // نطاق مستقل حتى لا يستبدل Service Worker الخاص بالأوفلاين.
     const reg=await navigator.serviceWorker.register(
-      './firebase-messaging-sw.js?v=20261009-driver-click1',
-      {scope:'./fcm/'}
+      './firebase-messaging-sw.js?v=20261010-request-open1',
+      {scope:'./fcm/',updateViaCache:'none'}
     );
 
     const messaging=await ensureFirebase();
@@ -252,7 +252,7 @@
       currentOwner=user?.id||null;
       if(!user||user.is_anonymous)return;
       if(!isEnabled())return;
-      const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js?v=20261009-driver-click1',{scope:'./fcm/'});
+      const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js?v=20261010-request-open1',{scope:'./fcm/',updateViaCache:'none'});
       const messaging=await ensureFirebase();
       const token=await messaging.getToken({vapidKey:cfg.vapidKey,serviceWorkerRegistration:reg});
       if(!token)throw new Error('No device token');
