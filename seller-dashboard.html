@@ -5,7 +5,7 @@
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
 <script src="ha-account-gate.js?v=20261008-required1"></script>
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><script src="ha-location-picker.js"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0)}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><script src="ha-location-picker.js"></script><style>#orders [hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0)}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
 .image-picker{border:1px dashed #bbb;border-radius:12px;padding:10px;margin:5px 0 10px;background:#fafafa}
 .image-picker label{display:block;font-weight:700;margin-bottom:7px}
 .image-preview{display:none;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:8px;border:1px solid #ddd}
@@ -295,7 +295,7 @@ body.ha-editing-product .bottom-nav{
 #legacyStoreEditor{display:none!important}
 @media(max-width:650px){.ha-store-list{grid-template-columns:1fr}}
 </style>
-<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261008-seller-quote1" defer></script>
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-merchant-simple1" defer></script>
 </head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
 <div class="card" id="stores-overview">
   <div class="ha-my-stores-head">
@@ -338,7 +338,7 @@ body.ha-editing-product .bottom-nav{
     <div id="manageStoreHint" class="ha-store-hint">كل متجر يعرض منتجاته فقط.</div>
   </div>
   <div id="products" class="ha-product-grid">جاري التحميل...</div>
-</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">بعد استلام الطلب حدّد أجرة التوصيل واحفظها لتبليغ الزبون قبل إيصال الطلب. يمكنك توصيله بنفسك أو بمندوب خارجي؛ طلب مندوب من التطبيق اختياري.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">احفظ أجرة التوصيل لتبليغ الزبون، ثم اختر «التوصيل من عندي». بعد وصول الطلب اضغط «تم تسليم الطلب». مندوب التطبيق اختياري.</div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
@@ -971,7 +971,25 @@ let deliveryQuoteBusy=false,deliveryOrdersBusy=false;
 function quoteFeeRow(q){
  const id=Number(q.order_id),biz=Number(q.business_id),key=`${id}_${biz}`,pending=q.delivery_fee==null;
  const current=pending?'بانتظار تحديد الأجرة':Number(q.delivery_fee).toLocaleString('ar-IQ')+' د.ع';
- return `<div class="delivery"><b data-no-i18n>${esc(q.business_name)}</b><div class="row"><span>أجرة التوصيل</span><strong>${current}</strong></div>${q.pricing_mode==='seller_quote'&&q.quoted_at?'<small class="muted">تم تبليغ الزبون بالأجرة.</small>':''}${q.pricing_mode==='seller_quote'?(q.can_quote?`<div class="row" style="margin-top:8px"><label style="flex:1;min-width:120px" for="quoteFee${key}">أجرة التوصيل بالدينار<input id="quoteFee${key}" type="number" min="1" step="1" inputmode="numeric" value="${pending?'':Number(q.delivery_fee)}" placeholder="اكتب أجرة التوصيل" style="width:100%"></label><button type="button" onclick="saveDeliveryQuote(${id},${biz})">حفظ الأجرة وتبليغ الزبون</button></div><div id="quoteMsg${key}" class="muted" role="status"></div>`:'<p class="muted">لا يمكن تعديل الأجرة بعد بدء توصيل هذا المتجر أو إغلاق الطلب.</p>'):(q.delivery_area?`<small data-no-i18n>${esc(q.delivery_area)}${q.delivery_governorate!==q.delivery_area?'، '+esc(q.delivery_governorate):''}</small>`:'')}</div>`;
+ return `<div class="delivery"><b data-no-i18n>${esc(q.business_name)}</b><div class="row"><span>أجرة التوصيل</span><strong>${current}</strong></div>${!pending&&q.pricing_mode==='seller_quote'?'<small class="muted">تم تبليغ الزبون بالأجرة.</small>':''}${q.pricing_mode==='seller_quote'&&q.can_quote?`${!pending?`<button type="button" class="light" onclick="toggleQuoteEditor('${key}')" style="margin-top:8px">تعديل الأجرة</button>`:''}<div id="quoteEditor${key}" ${pending?'':'hidden'}><div class="row" style="margin-top:8px"><label style="flex:1;min-width:120px" for="quoteFee${key}">أجرة التوصيل بالدينار<input id="quoteFee${key}" type="number" min="1" step="1" inputmode="numeric" value="${pending?'':Number(q.delivery_fee)}" placeholder="اكتب أجرة التوصيل" style="width:100%"></label><button type="button" onclick="saveDeliveryQuote(${id},${biz})">حفظ الأجرة وتبليغ الزبون</button></div><div id="quoteMsg${key}" class="muted" role="status"></div></div>`:q.pricing_mode!=='seller_quote'&&q.delivery_area?`<small data-no-i18n>${esc(q.delivery_area)}${q.delivery_governorate!==q.delivery_area?'، '+esc(q.delivery_governorate):''}</small>`:''}</div>`;
+}
+function toggleQuoteEditor(key){if(deliveryQuoteBusy||deliveryOrdersBusy)return;const editor=document.getElementById('quoteEditor'+key);if(editor){editor.hidden=!editor.hidden;if(!editor.hidden)editor.querySelector('input')?.focus()}}
+function orderDeliveryActions(o,own){
+ const d=o.delivery,closed=['cancelled','completed'].includes(o.order_status);
+ const quoted=own.length&&own.every(q=>q.delivery_fee!=null&&Number(q.delivery_fee)>0);
+ const newMode=own.length&&own.every(q=>q.pricing_mode==='seller_quote');
+ const done=(own.length&&own.every(q=>!!q.fulfilled_at))||d?.status==='delivered';
+ const merchant=own.length&&own.every(q=>q.fulfillment_method==='merchant');
+ const activeDriver=d&&['accepted','picked_up','on_the_way'].includes(d.status);
+ if(done)return '<div class="delivery"><b>تم تسليم طلب متجرك.</b></div>';
+ if(o.order_status==='cancelled')return '<div class="delivery">الطلب ملغي.</div>';
+ if(merchant)return `<div class="delivery"><b>التوصيل من عندك — جاري التوصيل</b>${!closed?`<button type="button" data-merchant-delivered="${o.order_id}" onclick="merchantDelivery(${o.order_id},'delivered',false)" style="display:block;width:100%;margin-top:10px">تم تسليم الطلب</button>`:''}</div>`;
+ if(closed)return d?`<div class="delivery">${esc(DS[d.status]||d.status)}</div>`:'';
+ if(activeDriver)return `<div class="delivery"><b>مندوب التطبيق: ${esc(DS[d.status]||d.status)}</b></div>`;
+ if(newMode&&!quoted)return '<p class="muted">احفظ أجرة التوصيل أولاً، ثم اختر طريقة التوصيل.</p>';
+ const ownAction=newMode?`<button type="button" data-merchant-start="${o.order_id}" onclick="merchantDelivery(${o.order_id},'start',${d?.status==='ready'})" style="width:100%;margin-top:8px">التوصيل من عندي</button><small class="muted" style="display:block;margin:8px 0">بنفسك أو بمندوب خارجي تختاره.</small>`:'';
+ const courier=d?.status==='ready'?'<p class="muted">بانتظار مندوب من التطبيق. يمكنك اختيار التوصيل من عندك بدلاً منه.</p>':`<button type="button" class="light" data-app-courier="${o.order_id}" onclick="requestCourier(${o.order_id})">طلب مندوب من التطبيق (اختياري)</button>`;
+ return `<div class="delivery">${ownAction}${courier}</div>`;
 }
 async function loadOrders(){
  if(deliveryQuoteBusy||deliveryOrdersBusy)return;
@@ -988,21 +1006,15 @@ async function loadOrders(){
  }
  el.innerHTML=arr.map(o=>{
   const d=o.delivery,own=quotes.filter(q=>Number(q.order_id)===Number(o.order_id));
-  const pending=own.some(q=>q.pricing_mode==='seller_quote'&&q.delivery_fee==null);
   const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.quantity}${i.option_text?' — '+esc(i.option_text):''}`).join('<br>');
-  const delivery=d?`<div class="delivery"><b>التوصيل: ${esc(DS[d.status]||d.status)}</b></div>`:'<div class="delivery">يمكنك توصيل الطلب بنفسك أو بمندوب خارجي.</div>';
-  let action='';
-  if(!['cancelled','completed'].includes(o.order_status)&&(!d||['cancelled','ready'].includes(d.status))){
-   action=d?.status==='ready'?'<button class="light" disabled>بانتظار مندوب...</button>':`<button type="button" class="blue" onclick="requestCourier(${o.order_id})" ${pending?'disabled':''}>طلب مندوب من التطبيق (اختياري)</button>`;
-  }
-  return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: <span data-no-i18n>${esc(o.customer_name)} — ${esc(o.phone)}</span><br><span data-no-i18n>${esc(o.governorate||'')} — ${esc(o.address)}</span></div><div class="row" style="margin-top:8px"><b><span>مجموع المنتجات</span>: ${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b>${action}</div>${own.map(quoteFeeRow).join('')}${delivery}</div>`;
+  return `<div class="card order"><div class="row"><b>طلب #${o.order_id}</b><span class="badge">${esc(o.order_status)}</span></div><div class="items">${items||'لا توجد مواد'}</div><div class="muted">الزبون: <span data-no-i18n>${esc(o.customer_name)} — <a href="tel:${esc(String(o.phone||'').replace(/[^\d+]/g,''))}">${esc(o.phone)}</a></span><br><span data-no-i18n>${esc(o.governorate||'')} — ${esc(o.address)}</span></div><div class="row" style="margin-top:8px"><b><span>مجموع المنتجات</span>: ${Number(o.seller_total||0).toLocaleString('ar-IQ')} د.ع</b></div>${own.map(quoteFeeRow).join('')}${orderDeliveryActions(o,own)}<div id="fulfillmentMsg${o.order_id}" class="muted" role="status"></div></div>`;
  }).join('')||'<div class="muted">لا توجد طلبات لمتجرك حالياً.</div>';
  }catch(e){el.innerHTML='<div class="card">'+esc(e.message||'تعذر تحميل الطلبات')+'</div>'}finally{deliveryOrdersBusy=false}
 }
 async function saveDeliveryQuote(id,biz){
  if(deliveryQuoteBusy)return;
  const input=document.getElementById(`quoteFee${id}_${biz}`),msg=document.getElementById(`quoteMsg${id}_${biz}`);
- const drafts=[...document.querySelectorAll('#orders input')].filter(x=>x!==input).map(x=>[x.id,x.value]);
+ const drafts=[...document.querySelectorAll('#orders input')].filter(x=>x!==input).map(x=>[x.id,x.value,!x.closest('[id^=quoteEditor]')?.hidden]);
  const fee=Number(input?.value);
  if(!Number.isSafeInteger(fee)||fee<=0){msg.textContent='اكتب أجرة توصيل صحيحة أكبر من صفر بالدينار';input?.focus();return}
  deliveryQuoteBusy=true;
@@ -1014,9 +1026,34 @@ async function saveDeliveryQuote(id,biz){
   saved=true;msg.textContent=data.already_saved?'الأجرة محفوظة وتم تبليغ الزبون بها مسبقاً.':'تم حفظ الأجرة وتبليغ الزبون.';
  }catch(e){msg.textContent=e.message||'تعذر حفظ أجرة التوصيل'}
  finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
- if(saved){await loadOrders();for(const [key,value] of drafts){const field=document.getElementById(key);if(field)field.value=value}}
+ if(saved){await loadOrders();for(const [key,value,open] of drafts){const field=document.getElementById(key);if(field){field.value=value;const editor=field.closest('[id^=quoteEditor]');if(editor&&open)editor.hidden=false}}}
 }
-async function requestCourier(id){if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)return alert(error.message);alert('تم إرسال طلب التوصيل للمندوبين المعتمدين.');loadOrders()}init().catch(e=>{
+async function merchantDelivery(id,action,waiting){
+ if(deliveryQuoteBusy||deliveryOrdersBusy)return;
+ const question=action==='delivered'?'هل تم تسليم الطلب فعلاً للزبون؟':waiting?'سيتم إلغاء انتظار مندوب التطبيق والتوصيل من عندك. هل الطلب جاهز للخروج للتوصيل؟':'هل الطلب جاهز للخروج للتوصيل من عندك؟';
+ if(!confirm(question))return;
+ deliveryQuoteBusy=true;const msg=document.getElementById('fulfillmentMsg'+id);
+ const controls=[...document.querySelectorAll('#orders input,#orders button')].map(x=>[x,x.disabled]);controls.forEach(([x])=>x.disabled=true);
+ msg.textContent='جاري حفظ حالة الطلب...';let saved=false;
+ try{
+  const {data,error}=await db.rpc('set_shop_order_merchant_delivery',{p_order_id:id,p_action:action});
+  if(error||!data?.ok)throw new Error(error?.message||'تعذر حفظ حالة الطلب');saved=true;
+ }catch(e){msg.textContent=e.message||'تعذر حفظ حالة الطلب'}
+ finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
+ if(saved)await loadOrders();
+}
+async function requestCourier(id){
+ if(deliveryQuoteBusy||deliveryOrdersBusy)return;
+ if(!store||!store.location_text)return alert('حدد عنوان المتجر أولاً حتى يعرف المندوب مكان الاستلام.');
+ if(!confirm('تأكيد أن الطلب جاهز للاستلام وطلب مندوب؟'))return;
+ deliveryQuoteBusy=true;const msg=document.getElementById('fulfillmentMsg'+id);
+ const controls=[...document.querySelectorAll('#orders input,#orders button')].map(x=>[x,x.disabled]);controls.forEach(([x])=>x.disabled=true);let saved=false;
+ try{const {error}=await db.rpc('request_shop_courier',{p_order_id:id});if(error)throw error;saved=true}
+ catch(e){msg.textContent=e.message||'تعذر حفظ حالة الطلب'}
+ finally{deliveryQuoteBusy=false;controls.forEach(([x,disabled])=>x.disabled=disabled)}
+ if(saved)await loadOrders();
+}
+init().catch(e=>{
   console.error(e);
   const g=document.getElementById('gate');
   if(g) g.innerHTML='❌ تعذر فتح لوحة البائع: '+esc(e?.message||String(e));
