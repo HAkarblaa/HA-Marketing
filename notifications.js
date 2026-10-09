@@ -37,6 +37,9 @@
   }
 
   async function ensureFirebase(){
+    if(!window.HA_NotificationRoute){
+      await load(new URL('./ha-notification-route.js?v=20261009-driver-click1',location.href).href);
+    }
     if(!(window.firebase&&firebase.messaging)){
       await load('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
       await load('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
@@ -138,7 +141,7 @@
 
     // نطاق مستقل حتى لا يستبدل Service Worker الخاص بالأوفلاين.
     const reg=await navigator.serviceWorker.register(
-      './firebase-messaging-sw.js',
+      './firebase-messaging-sw.js?v=20261009-driver-click1',
       {scope:'./fcm/'}
     );
 
@@ -184,13 +187,13 @@
               icon:'./ha-logo-transparent.png',
               badge:'./notification-icon.png',
               tag:'ha-notification-'+(payload?.data?.notification_id||payload?.messageId||Date.now()),
-              data:{url:new URL(payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html',location.href).href}
+              data:{...(payload?.data||{}),url:window.HA_NotificationRoute.resolve(payload,location.href)}
             };
             // Mobile browsers require the registered messaging worker to display notifications.
             if(reg?.showNotification){await reg.showNotification(title,options);return;}
             const notice=new Notification(title,options);
             notice.onclick=()=>{
-              const url=payload?.data?.link||payload?.fcmOptions?.link||'./notifications-center.html';
+              const url=window.HA_NotificationRoute.resolve(payload,location.href);
               try{const target=new URL(url,location.href);if(['https:','http:'].includes(target.protocol)){window.focus();location.href=target.href;}}catch(e){}
               notice.close();
             };
@@ -249,7 +252,7 @@
       currentOwner=user?.id||null;
       if(!user||user.is_anonymous)return;
       if(!isEnabled())return;
-      const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js',{scope:'./fcm/'});
+      const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js?v=20261009-driver-click1',{scope:'./fcm/'});
       const messaging=await ensureFirebase();
       const token=await messaging.getToken({vapidKey:cfg.vapidKey,serviceWorkerRegistration:reg});
       if(!token)throw new Error('No device token');

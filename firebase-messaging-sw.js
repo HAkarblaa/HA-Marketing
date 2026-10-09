@@ -1,22 +1,25 @@
+importScripts('./ha-notification-route.js?v=20261009-driver-click1');
+
+self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));
+self.addEventListener('activate',event=>event.waitUntil(clients.claim()));
+
 self.addEventListener('notificationclick',(event)=>{
   event.notification.close();
-  const target=new URL(
-    event.notification?.data?.url || event.notification?.data?.FCM_MSG?.data?.link || event.notification?.data?.FCM_MSG?.fcmOptions?.link || './notifications-center.html',
-    self.location.origin + self.location.pathname
-  ).href;
+  const base=self.location.origin+self.location.pathname;
+  const target=self.HA_NotificationRoute.resolve(event.notification?.data,base);
 
   if(!/^https?:\/\//i.test(target))return;
   event.stopImmediatePropagation();
   event.waitUntil(
-    clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{
+    clients.matchAll({type:'window',includeUncontrolled:true}).then(async list=>{
+      const t=new URL(target),appBase=new URL('./',base);
       for(const c of list){
         if('focus' in c){
           try{
             const u=new URL(c.url);
-            const t=new URL(target);
-            if(u.origin===t.origin){
-              c.navigate(target);
-              return c.focus();
+            if(u.origin===t.origin&&u.pathname.startsWith(appBase.pathname)){
+              const navigated=await c.navigate(target);
+              if(navigated)return await navigated.focus();
             }
           }catch(_e){}
         }
@@ -52,7 +55,8 @@ messaging.onBackgroundMessage((payload)=>{
     tag:payload?.data?.tag || ('ha-notification-'+(payload?.data?.notification_id || payload?.messageId || Date.now())),
     renotify:true,
     data:{
-      url:payload?.data?.link || './notifications-center.html'
+      ...(payload?.data||{}),
+      url:self.HA_NotificationRoute.resolve(payload,self.location.origin+self.location.pathname)
     }
   };
   return self.registration.showNotification(title,options);

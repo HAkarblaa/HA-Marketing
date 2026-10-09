@@ -17,6 +17,7 @@ document.documentElement.style.colorScheme='light';
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <title>الإشعارات - HA Marketing</title>
+<script src="ha-notification-route.js?v=20261009-driver-click1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -505,6 +506,12 @@ async function markRead(id){
 }
 
 async function openNotification(n){
+  const driverTarget=window.HA_NotificationRoute.driverTarget(n,location.href);
+  if(driverTarget){
+    if(!n.is_read){markRead(n.id).catch(console.warn);n.is_read=true;}
+    location.href=driverTarget;
+    return;
+  }
   if(!n.is_read){
     await markRead(n.id);
     n.is_read=true;
@@ -660,6 +667,6 @@ init();
 </script>
 
 <script src="push-config.js"></script>
-<script src="notifications.js"></script>
+<script src="notifications.js?v=20261009-driver-click1"></script>
 <script src="ha-lux-icons.js?v=20260930-1" defer></script></body>
 </html>
