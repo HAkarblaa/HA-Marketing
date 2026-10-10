@@ -5,10 +5,10 @@
   const base=new URL('./',document.currentScript.src);
   const roleTargets={driver:'driver.html#requestsSection',seller:'seller-dashboard.html#sellerOrderTools',provider:'provider-dashboard.html#incomingRequestsCard'};
   const text={
-    ar:{title:'طلباتي',customer:'متابعة طلباتك',driver:'طلبات السائق الواردة',seller:'طلبات متاجرك',provider:'طلبات الخدمات الواردة',multiple:'اختر طلبات دورك',choose:'اختر الطلبات',close:'إغلاق',loading:'جاري التحميل...',error:'تعذر التحقق، اضغط للمحاولة'},
-    iq:{title:'طلباتي',customer:'تابع طلباتك',driver:'الطلبات اللي تجيك كسائق',seller:'طلبات متاجرك',provider:'طلبات الخدمات اللي تجيك',multiple:'اختار طلبات دورك',choose:'اختار الطلبات',close:'إغلاق',loading:'جاري التحميل...',error:'تعذر التحقق، اضغط وحاول مرة ثانية'},
-    en:{title:'My Orders',customer:'Track your orders',driver:'Incoming driver requests',seller:'Your store orders',provider:'Incoming service requests',multiple:'Choose your work orders',choose:'Choose orders',close:'Close',loading:'Loading...',error:'Could not verify. Tap to retry.'},
-    fa:{title:'سفارش‌های من',customer:'پیگیری سفارش‌های شما',driver:'درخواست‌های دریافتی راننده',seller:'سفارش‌های فروشگاه شما',provider:'درخواست‌های خدمات دریافتی',multiple:'سفارش‌های نقش خود را انتخاب کنید',choose:'انتخاب سفارش‌ها',close:'بستن',loading:'در حال بارگذاری...',error:'تأیید ممکن نشد؛ برای تلاش دوباره بزنید'}
+    ar:{title:'مركز الطلبات',customer:'متابعة طلباتك',driver:'طلبات السائق الواردة',seller:'طلبات متاجرك',provider:'طلبات الخدمات الواردة',multiple:'اختر طلبات دورك',choose:'اختر الطلبات',close:'إغلاق',loading:'جاري التحميل...',error:'تعذر التحقق، اضغط للمحاولة'},
+    iq:{title:'مركز الطلبات',customer:'تابع طلباتك',driver:'الطلبات اللي تجيك كسائق',seller:'طلبات متاجرك',provider:'طلبات الخدمات اللي تجيك',multiple:'اختار طلبات دورك',choose:'اختار الطلبات',close:'إغلاق',loading:'جاري التحميل...',error:'تعذر التحقق، اضغط وحاول مرة ثانية'},
+    en:{title:'Order Center',customer:'Track your orders',driver:'Incoming driver requests',seller:'Your store orders',provider:'Incoming service requests',multiple:'Choose your work orders',choose:'Choose orders',close:'Close',loading:'Loading...',error:'Could not verify. Tap to retry.'},
+    fa:{title:'مرکز سفارش‌ها',customer:'پیگیری سفارش‌های شما',driver:'درخواست‌های دریافتی راننده',seller:'سفارش‌های فروشگاه شما',provider:'درخواست‌های خدمات دریافتی',multiple:'سفارش‌های نقش خود را انتخاب کنید',choose:'انتخاب سفارش‌ها',close:'بستن',loading:'در حال بارگذاری...',error:'تأیید ممکن نشد؛ برای تلاش دوباره بزنید'}
   };
   let db=null,state=null,pending=null,epoch=0,opening=false,chooser=null,previousOverflow='';
   function words(){let lang='ar';try{lang=window.HAI18N?.getLanguage()||localStorage.getItem('ha_language_v1')||'ar';}catch(_e){}return text[lang]||text.ar;}
