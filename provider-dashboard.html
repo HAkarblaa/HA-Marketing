@@ -12,11 +12,15 @@
 <style id="ha-provider-workspace-style">
 body .ha-family-strip{display:none!important}body .wrap{max-width:960px;margin:16px auto 100px;width:94%}body .top{display:flex;align-items:center;gap:10px;margin-bottom:14px}body .top h1{font-size:22px;margin:0;flex:1}body .top .btn{font-size:14px;padding:10px 12px}body #gate{font-size:13px;padding:10px 13px;line-height:1.6}body #haProviderTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;background:#e8f1ed;border-radius:15px;margin:14px 0}body #haProviderTabs button{background:transparent;color:#496359;padding:12px 4px;font-size:14px;font-weight:bold;border-radius:11px}body #haProviderTabs button[aria-selected="true"]{background:#087a56;color:white;box-shadow:0 3px 9px #087a5625}body [data-provider-panel][hidden]{display:none!important}body #incomingRequestsCard{margin-top:0;padding:16px;scroll-margin-top:16px}body .ha-provider-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}body .ha-provider-section-head h2{font-size:19px;margin:0}body .ha-provider-section-head button{font-size:13px;padding:9px 12px}body #requests>.card{border:1px solid #dfebe4;box-shadow:none;padding:14px;margin:12px 0}body #requests>.card>.muted{margin:10px 0}body #requests>.card>.row:last-child{justify-content:flex-start}body #providerProfileCard h2,body #haProviderView-settings h2{font-size:19px;margin:0 0 8px}body .ha-provider-description{font-size:13px;color:#61746b;line-height:1.7;margin:0 0 16px}body .ha-provider-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}body .ha-provider-field{display:flex;flex-direction:column;gap:5px;min-width:0}body .ha-provider-field label{font-weight:bold;font-size:13px}body .ha-provider-field input,body .ha-provider-field select,body .ha-provider-field textarea{margin:0;background:#fafcfb!important;min-height:45px}body .ha-provider-wide{grid-column:1/-1}body #otherCatBox{margin:0}body .ha-provider-save{width:100%;margin-top:18px;background:#087a56}body #haProviderView-settings .card{padding:18px}body #haProviderView-settings .btn,body #haProviderView-settings button{display:block;width:100%;margin-top:10px;text-align:center}body #providerBalanceCard .muted{color:#ddd}body #haProviderTabs button:focus-visible{outline:3px solid #80c8ad;outline-offset:2px}@media(max-width:540px){body .top h1{font-size:19px}body .ha-provider-fields{grid-template-columns:1fr}body .ha-provider-section-head h2{font-size:17px}body #incomingRequestsCard{padding:13px}body #haProviderTabs button{font-size:13px}}
 </style>
+
+<style id="ha-provider-filter-style">
+body #haProviderRequestTools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 8px}body #haProviderRequestTools label{display:block;font-size:13px;font-weight:bold;margin-bottom:5px}body #haProviderRequestTools select{margin:0;font-size:14px;min-height:44px;background:#f7faf9!important}body #haProviderRequestCount{margin:0 0 8px;font-size:13px;color:#61746b}body #requests [data-provider-request][hidden]{display:none!important}body #haProviderFilterEmpty{padding:18px 12px;background:#f5f9f7;border-radius:12px;color:#61746b;line-height:1.7}body #haProviderTabs button[aria-selected="true"]{background:#087a56!important;color:#fff!important}body #haProviderTabs button[aria-selected="false"]{background:transparent!important;color:#496359!important;box-shadow:none!important}
+</style>
 </head><body class="ha-ui-final ha-family-services"><div class="ha-family-strip"><a href="services.html">← طلب خدمة</a><div><b>لوحة مقدم الخدمة</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><div class="top"><h1>لوحة مقدم الخدمة</h1><a class="btn" href="add-service.html">+ إضافة خدمة</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div id="providerBalanceCard" class="card balance-card" onclick="redeemProviderBalance()"><small>💳 الرصيد الحالي</small><strong id="providerBalanceValue">0 د.ع</strong><div class="muted">رصيد مقدم الخدمة</div></div><div class="card" id="providerProfileCard"><h2>ملفي المهني</h2><p class="ha-provider-description">حدّث بيانات نشاطك وموقعك وأوقات عملك.</p><select id="cat"></select>
 <div id="otherCatBox" style="display:none">
 <input id="otherCat" placeholder="اكتب اسم المهنة الأخرى">
 </div>
-<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card" id="incomingRequestsCard"><div class="ha-provider-section-head"><h2>طلبات الخدمة الواردة</h2><button type="button" class="light" onclick="loadReq()">تحديث</button></div><div id="requests">جاري التحميل...</div></div></div></div>
+<input id="name" placeholder="الاسم / اسم النشاط"><input id="phone" placeholder="الهاتف"><input id="whatsapp" placeholder="واتساب"><input id="gov" placeholder="المحافظة"><input id="address" placeholder="العنوان"><button type="button" id="providerLocateBtn" class="light">📍 تحديد موقع الخدمة من GPS</button><div id="providerLocStatus" class="muted"></div><input id="price" type="number" placeholder="السعر يبدأ من"><textarea id="skills" placeholder="الخدمات والمهارات"></textarea><textarea id="hours" placeholder="أوقات العمل"></textarea><button onclick="saveProfile()">حفظ الملف</button></div><div class="card" id="incomingRequestsCard"><div class="ha-provider-section-head"><h2>طلبات الخدمة الواردة</h2><button type="button" class="light" onclick="loadReq()">تحديث</button></div><div id="haProviderRequestTools"><div><label for="haProviderRequestStatus">حالة الطلب</label><select id="haProviderRequestStatus"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="accepted">مقبول</option><option value="on_the_way">بالطريق</option><option value="in_progress">قيد التنفيذ</option><option value="completed">مكتمل</option><option value="cancelled">ملغي</option></select></div><div><label for="haProviderRequestSort">ترتيب الطلبات</label><select id="haProviderRequestSort"><option value="newest">الأحدث أولاً</option><option value="oldest">الأقدم أولاً</option></select></div></div><p id="haProviderRequestCount" role="status" aria-live="polite"></p><div id="requests">جاري التحميل...</div></div></div></div>
 <script id="ha-provider-workspace">
 (function(){
  'use strict';
@@ -39,6 +43,22 @@ body .ha-family-strip{display:none!important}body .wrap{max-width:960px;margin:1
  document.addEventListener('click',e=>{const a=e.target.closest('#haRoleBottomNav a');if(!a)return;const u=new URL(a.href,location.href);if(u.pathname.split('/').pop()==='provider-dashboard.html'){e.preventDefault();show(u.searchParams.get('view')==='requests'?'requests':'profile',true);tabs.scrollIntoView({behavior:'smooth',block:'start'});}});
  window.addEventListener('hashchange',fromLocation);window.addEventListener('popstate',fromLocation);
  const navWatch=new MutationObserver(()=>{if(document.getElementById('haRoleBottomNav')){syncNav();navWatch.disconnect();}});navWatch.observe(document.body,{childList:true});fromLocation();window.HA_ProviderWorkspace={show:key=>show(key,true)};
+})();
+</script>
+
+<script id="ha-provider-request-filter">
+(function(){
+ 'use strict';
+ const status=document.getElementById('haProviderRequestStatus'),sort=document.getElementById('haProviderRequestSort'),box=document.getElementById('requests'),count=document.getElementById('haProviderRequestCount');
+ function apply(){
+  const cards=Array.from(box.querySelectorAll('[data-provider-request]'));
+  box.querySelector('#haProviderFilterEmpty')?.remove();
+  cards.sort((a,b)=>{const pinned=Number(b.dataset.providerLinked==='true')-Number(a.dataset.providerLinked==='true');if(pinned)return pinned;const at=Number(a.dataset.providerCreated||0),bt=Number(b.dataset.providerCreated||0);if(!at||!bt)return at? -1:bt?1:0;return sort.value==='oldest'?at-bt:bt-at;}).forEach(card=>box.appendChild(card));
+  let visible=0;cards.forEach(card=>{const state=card.dataset.providerStatus;const matches=status.value==='all'||(status.value==='new'?['new','pending'].includes(state):state===status.value);card.hidden=!matches;if(matches)visible++;});
+  count.textContent=cards.length?'عرض '+visible+' من '+cards.length+' طلب':'';
+  if(cards.length&&!visible){const note=document.createElement('p');note.id='haProviderFilterEmpty';note.textContent='لا توجد طلبات بهذه الحالة.';box.appendChild(note);}
+ }
+ status.addEventListener('change',apply);sort.addEventListener('change',apply);window.HA_ProviderRequestFilter={apply};
 })();
 </script>
 <script>
@@ -316,7 +336,7 @@ async function loadReq(){
   reqLoading=true;
   try{
     const {data,error}=await db.rpc('get_provider_service_inbox');
-    if(error){requests.textContent='تعذر تحميل الطلبات: '+error.message;return;}
+    if(error){requests.textContent='تعذر تحميل الطلبات: '+error.message;window.HA_ProviderRequestFilter?.apply();return;}
     const params=new URLSearchParams(location.search),raw=params.get('request');
     const requested=raw&&/^\d+$/.test(raw)?Number(raw):null;
     const source=params.get('source')||'requests';
@@ -325,7 +345,7 @@ async function loadReq(){
     requests.innerHTML=arr.length?arr.map(x=>{
       const general=x.source==='orders',mine=x.mine===true,open=['new','pending'].includes(x.status);
       const args=Number(x.id)+",'"+(general?'orders':'requests')+"'";
-      return `<div class="card" data-provider-request="${Number(x.id)}" data-provider-source="${general?'orders':'requests'}" ${isRequested(x)?'style="outline:2px solid #d3a331"':''}>
+      return `<div class="card" data-provider-request="${Number(x.id)}" data-provider-source="${general?'orders':'requests'}" data-provider-status="${esc(x.status)}" data-provider-created="${Number.isFinite(Date.parse(x.created_at))?Date.parse(x.created_at):0}" data-provider-linked="${isRequested(x)}" ${isRequested(x)?'style="outline:2px solid #d3a331"':''}>
         <div class="row"><b>طلب #<span data-no-i18n>${Number(x.id)}</span></b><span class="badge">${esc(statusLabel(x.status))}</span></div>
         <div data-no-i18n><b>${esc(x.customer_name||'')}</b> ${esc(x.phone||'')}</div>
         <div class="muted" data-no-i18n>🛠️ ${esc(x.service_type||x.order_type||'')}<br>📍 ${esc(x.address||x.area||'')}<br>
@@ -339,8 +359,9 @@ async function loadReq(){
           ${mine&&x.phone?`<a class="btn light" href="tel:${esc(x.phone)}">📞 اتصال</a>`:''}
         </div></div>`;
     }).join(''):'لا توجد طلبات متاحة في مهنتك حالياً.';
+    window.HA_ProviderRequestFilter?.apply();
     window.HAI18N?.apply?.();
-  }catch(e){requests.textContent='تعذر تحميل الطلبات. حاول مجدداً.';}finally{reqLoading=false;}
+  }catch(e){requests.textContent='تعذر تحميل الطلبات. حاول مجدداً.';window.HA_ProviderRequestFilter?.apply();}finally{reqLoading=false;}
 }
 let reqBusy=false;
 async function requestAction(rpc,args){
