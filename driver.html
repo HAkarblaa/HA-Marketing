@@ -6,7 +6,7 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script src="ha-account-gate.js?v=20261010-speed1"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -2118,7 +2118,7 @@ html[data-ha-theme="light"] .shop-courier-link b{
 <link rel="stylesheet" href="ha-location-ux.css">
 <script src="ha-location-ux.js"></script>
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-driver-push1" defer></script><script src="ha-orders-section-focus.js?v=20261010-request-open1" defer></script><link rel="stylesheet" href="ha-driver-layout.css?v=20261010-layout1">
+<script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-driver-push1" defer></script><script src="ha-orders-section-focus.js?v=20261010-request-open1" defer></script><link rel="stylesheet" href="ha-driver-layout.css?v=20261010-request-first2">
 </head>
 <body class="ha-ui-final ha-family-transport ha-driver-layout">
 
@@ -2287,6 +2287,77 @@ html[data-ha-theme="light"] .shop-courier-link b{
   </div>
 </div>
 
+<script>(function(){
+  'use strict';
+  const app=document.querySelector('.app'),hero=app.querySelector('.driver-simple-hero');
+  const requests=document.getElementById('requestsSection'),accepted=document.getElementById('acceptedPanel');
+  const mapShell=app.querySelector('.map-shell'),summary=app.querySelector('.summary');
+  const workspace=document.createElement('div');workspace.id='haDriverWorkspace';
+  workspace.innerHTML='<div class="ha-driver-tabs" role="tablist" aria-label="أقسام السائق">'+
+    '<button id="haDriverTab-requests" type="button" role="tab" data-driver-tab="requests" aria-controls="haDriverRequestsView" aria-selected="true">الطلبات</button>'+
+    '<button id="haDriverTab-map" type="button" role="tab" data-driver-tab="map" aria-controls="haDriverMapView" aria-selected="false" tabindex="-1">الخريطة</button>'+
+    '<button id="haDriverTab-settings" type="button" role="tab" data-driver-tab="settings" aria-controls="haDriverSettingsView" aria-selected="false" tabindex="-1">حسابي والإعدادات</button></div>'+
+    '<section id="haDriverRequestsView" role="tabpanel" aria-labelledby="haDriverTab-requests" data-driver-view="requests"></section>'+
+    '<section id="haDriverMapView" role="tabpanel" aria-labelledby="haDriverTab-map" data-driver-view="map" hidden></section>'+
+    '<section id="haDriverSettingsView" role="tabpanel" aria-labelledby="haDriverTab-settings" data-driver-view="settings" hidden><div class="ha-driver-settings-card"><h2>بيانات المركبة</h2><div id="haDriverVehicleDetails"></div><a class="ha-driver-settings-link" href="transport-registration.html">بيانات التسجيل والاعتماد</a></div><div id="haDriverExtraControls" class="ha-driver-settings-card"><h2>الموقع والإشعارات</h2></div></section>';
+  hero.after(workspace);
+  const incoming=document.getElementById('haDriverRequestsView'),settings=document.getElementById('haDriverSettingsView');
+  incoming.append(requests,accepted);
+  // Distance and fare stay with the incoming request; the map no longer pushes it down.
+  requests.querySelector('.request-section-head').after(summary);
+  document.getElementById('haDriverMapView').append(mapShell);
+  const vehicle=hero.querySelector('.driver-hidden-data');if(vehicle){vehicle.removeAttribute('aria-hidden');document.getElementById('haDriverVehicleDetails').append(vehicle);}
+  const courier=app.querySelector('.shop-courier-link');if(courier)settings.append(courier);
+  let active='requests',lastShown=null,pendingScroll=null;
+  const tabs=[...workspace.querySelectorAll('[data-driver-tab]')],views=[...workspace.querySelectorAll('[data-driver-view]')];
+  function hashView(){return location.hash==='#driverMap'?'map':location.hash==='#driverSettings'?'settings':'requests';}
+  function show(name){
+    if(!['requests','map','settings'].includes(name))return;
+    active=name;views.forEach(v=>v.hidden=v.dataset.driverView!==name);
+    tabs.forEach(t=>{const selected=t.dataset.driverTab===name;t.setAttribute('aria-selected',String(selected));t.tabIndex=selected?0:-1;});
+    if(name==='map')requestAnimationFrame(()=>{try{if(typeof map!=='undefined')map.invalidateSize(false);}catch(_e){}});
+  }
+  function select(name){
+    const hash={requests:'#requestsSection',map:'#driverMap',settings:'#driverSettings'}[name];
+    if(location.hash!==hash)history.pushState(null,'',hash);show(name);
+  }
+  tabs.forEach((tab,index)=>{
+    tab.onclick=()=>select(tab.dataset.driverTab);
+    tab.addEventListener('keydown',event=>{
+      let next;if(event.key==='ArrowLeft')next=(index+1)%tabs.length;else if(event.key==='ArrowRight')next=(index-1+tabs.length)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;
+      event.preventDefault();select(tabs[next].dataset.driverTab);tabs[next].focus({preventScroll:true});
+    });
+  });
+  function focusRequest(rideId,isAccepted){
+    const key=String(rideId||'')+':'+(isAccepted?'active':'new');
+    if(!rideId||lastShown===key)return;lastShown=key;
+    if(location.hash!=='#requestsSection')history.replaceState(null,'','#requestsSection');
+    show('requests');
+    // Auto-focus each newly selected request once; live location updates do not scroll.
+    pendingScroll=isAccepted?accepted:requests;
+    scrollPending();
+  }
+  function scrollPending(){
+    if(document.visibilityState==='hidden'||!pendingScroll)return;
+    requestAnimationFrame(()=>{const el=pendingScroll;pendingScroll=null;if(el?.getClientRects().length)el.scrollIntoView({block:'start',behavior:'auto'});});
+  }
+  document.addEventListener('visibilitychange',scrollPending);
+  window.HA_DriverWorkspace={show,focusRequest};
+  window.addEventListener('hashchange',()=>show(hashView()));window.addEventListener('popstate',()=>show(hashView()));
+  document.addEventListener('click',event=>{
+    const a=event.target.closest('a[href]');if(!a||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+    const u=new URL(a.href,location.href);if(u.origin!==location.origin||u.pathname!==location.pathname||u.hash!=='#requestsSection')return;
+    event.preventDefault();select('requests');
+  });
+  function moveExtras(){
+    const host=document.getElementById('haDriverExtraControls');
+    for(const id of ['haDriverPushControls','haDriverOrderAlert','haDriverPushLocationStatus']){
+      const el=document.getElementById(id);if(el&&!host.contains(el))host.append(el);
+    }
+  }
+  const observer=new MutationObserver(moveExtras);observer.observe(app,{childList:true});observer.observe(document.body,{childList:true});moveExtras();show(hashView());
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="transport-profile.js"></script><script src="ha-nearby.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -2574,6 +2645,7 @@ function renderPendingRide(index){
   }
 
   animateRequestCard();
+  window.HA_DriverWorkspace?.focusRequest(id,false);
 }
 
 async function watchPendingRides(){
@@ -2777,6 +2849,7 @@ acceptBtn.onclick=async()=>{
   acceptBtn.disabled=false;
   acceptBtn.textContent=oldAcceptText;
   acceptedPanel.classList.add('show','panel-enter');
+  window.HA_DriverWorkspace?.focusRequest(currentRideId,true);
   setTimeout(()=>acceptedPanel.classList.remove('panel-enter'),520);
   tripState.textContent='بالطريق إلى الزبون';
   currentFare.textContent=currentRide.price ? Number(currentRide.price).toLocaleString('ar-IQ')+' د.ع' : '—';
@@ -2899,6 +2972,7 @@ async function restoreDriverRide(){
   watchCurrentRideStatus(currentRideId);
   requestsSection.style.display='none';
   acceptedPanel.classList.add('show');
+  window.HA_DriverWorkspace?.focusRequest(currentRideId,true);
   currentFare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 
   refreshRideEntityIcons(ride);

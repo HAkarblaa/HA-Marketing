@@ -93,3 +93,43 @@ body.ha-driver-layout .ha-location-status-chip{top:auto!important;bottom:calc(94
 body.ha-driver-layout #haRoleBottomNav{bottom:max(6px,env(safe-area-inset-bottom))!important}
 @media(min-width:700px){body.ha-driver-layout .driver-simple-hero{padding:18px!important}body.ha-driver-layout #map{height:330px!important;min-height:330px!important}body.ha-driver-layout :is(.request-deck,.accepted-panel){padding:20px!important}}
 @media(max-width:360px){body.ha-driver-layout .app{width:calc(100% - 20px)!important}body.ha-driver-layout .driver-simple-hero{padding:12px!important}body.ha-driver-layout .driver-simple-hero .driver-simple-top{gap:8px!important;flex-wrap:wrap!important}body.ha-driver-layout .driver-simple-hero .driver-profile-box{flex-basis:100%!important}body.ha-driver-layout .driver-simple-hero .status-toggle{width:100%!important}body.ha-driver-layout .driver-simple-hero .status-toggle button{width:100%!important}body.ha-driver-layout #map{height:220px!important;min-height:220px!important}body.ha-driver-layout .summary .box b{font-size:14px!important}body.ha-driver-layout .request-deck,body.ha-driver-layout .accepted-panel{padding:12px!important}}
+
+/* Request-first workspace: secondary controls never push the acceptance card down. */
+body.ha-driver-layout #haDriverWorkspace [data-driver-view][hidden]{display:none!important}
+body.ha-driver-layout .head{min-height:58px!important;padding:8px 10px!important}
+body.ha-driver-layout .driver-simple-hero{padding:9px 12px!important;margin-top:10px!important;border-radius:16px!important}
+body.ha-driver-layout .driver-simple-hero .driver-profile-box{min-height:34px!important}
+body.ha-driver-layout .driver-avatar{width:34px!important;height:34px!important}
+body.ha-driver-layout .driver-profile-box span{font-size:11px!important}
+body.ha-driver-layout .driver-simple-hero .status-toggle button{min-height:36px!important;padding:7px 10px!important}
+.ha-driver-tabs{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:7px;margin:10px 0 0}
+body.ha-driver-layout .ha-driver-tabs button{min-width:0;min-height:43px;padding:9px 5px!important;border:1px solid #d7e9df!important;border-radius:12px!important;background:#fff!important;color:#42665c!important;font-size:12px!important;font-weight:800!important;line-height:1.5!important;box-shadow:none!important}
+body.ha-driver-layout .ha-driver-tabs button[aria-selected="true"]{background:#087d61!important;color:#fff!important;border-color:#087d61!important}
+body.ha-driver-layout #haDriverRequestsView :is(.request-deck,.accepted-panel){margin-top:10px!important;scroll-margin-top:72px}
+body.ha-driver-layout #haDriverRequestsView .request-section-head{margin-bottom:8px!important;min-height:24px!important}
+body.ha-driver-layout #haDriverRequestsView .summary{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:0 0 10px!important}
+body.ha-driver-layout #haDriverRequestsView .summary .box:first-child{display:none!important}
+body.ha-driver-layout #haDriverRequestsView .summary .box{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;padding:8px 10px!important;min-height:38px!important;border-radius:11px!important}
+body.ha-driver-layout #haDriverRequestsView .summary .box b{font-size:13px!important}
+body.ha-driver-layout #haDriverRequestsView .summary .box small{font-size:11px!important}
+body.ha-driver-layout #haDriverRequestsView .request-new-chip{padding:4px 8px!important;margin-bottom:7px!important}
+body.ha-driver-layout #haDriverRequestsView .request-live-card .customer{padding-bottom:8px!important}
+body.ha-driver-layout #haDriverRequestsView .request-live-card .route-info{margin-top:8px!important;gap:7px!important}
+body.ha-driver-layout #haDriverRequestsView .route-info .item{min-height:58px!important;padding:8px!important}
+body.ha-driver-layout #haDriverRequestsView .route-info .item:nth-child(n+3){min-height:38px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:6px!important}
+body.ha-driver-layout #haDriverRequestsView .route-info .item:nth-child(n+3) small{font-size:10px!important;margin:0!important}
+body.ha-driver-layout #haDriverRequestsView .route-info .item:nth-child(n+3) b{font-size:11px!important;white-space:nowrap!important}
+body.ha-driver-layout #haDriverRequestsView .request-actions{margin-top:8px!important}
+body.ha-driver-layout #haDriverRequestsView .request-empty{min-height:150px!important}
+body.ha-driver-layout #haDriverSettingsView .ha-driver-settings-card{margin-top:12px;padding:15px;background:#fff;border:1px solid #dbeae7;border-radius:18px}
+body.ha-driver-layout .ha-driver-settings-card h2{margin:0 0 10px;font-size:16px;color:#235244}
+body.ha-driver-layout #haDriverVehicleDetails .driver-hidden-data{display:grid!important;gap:8px!important;color:#335e4d;line-height:1.7}
+body.ha-driver-layout .ha-driver-settings-link{display:block;margin-top:12px;padding:10px 12px;border-radius:11px;background:#edf8f1;color:#127351;text-decoration:none;font-size:13px}
+body.ha-driver-layout #haDriverExtraControls #haDriverPushControls{margin:0!important}
+body.ha-driver-layout #haDriverSettingsView .shop-courier-link{margin-top:12px!important}
+body.ha-driver-layout #haDriverMapView #map{height:calc(100dvh - 310px)!important;min-height:260px!important}
+@media(max-width:360px){body.ha-driver-layout .driver-simple-hero .driver-profile-box{flex-basis:auto!important}body.ha-driver-layout .driver-simple-hero .status-toggle{width:auto!important}.ha-driver-tabs{gap:5px}body.ha-driver-layout .ha-driver-tabs button{font-size:11px!important}}
+/* Keep the acceptance action within short mobile screens. */
+body.ha-driver-layout #haDriverRequestsView .request-new-chip{display:none!important}
+body.ha-driver-layout #haDriverRequestsView .request-live-card .customer{grid-template-columns:36px minmax(0,1fr) auto!important;gap:7px!important}
+body.ha-driver-layout #haDriverRequestsView #requestVehicle{grid-column:auto!important;padding:4px 7px!important;font-size:11px!important;margin:0!important}
