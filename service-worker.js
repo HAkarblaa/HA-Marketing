@@ -1,6 +1,6 @@
 /* HA Marketing - lightweight service worker (speed fix 2026-09-27)
    Keeps navigation responsive and avoids downloading the whole app during install. */
-const CACHE='ha-marketing-account-entry-v2026-10-09-1';
+const CACHE='ha-marketing-account-entry-v2026-10-10-android-resume1';
 const CORE=[
   './index.html',
   './ha-account-gate.js?v=20261008-required1',
