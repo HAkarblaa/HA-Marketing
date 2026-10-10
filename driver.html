@@ -2482,10 +2482,58 @@ let driverRealPos=null;
 let driverLocationWatchId=null;
 const haRequestedRideId=new URLSearchParams(location.search).get('ride')||'';
 
-function coordText(p){
-  if(!p)return '—';
-  return Number(p.lat).toFixed(5)+', '+Number(p.lng).toFixed(5);
+// Display saved addresses first; resolve legacy map points without changing ride coordinates.
+const haRideAddressCache=new Map();
+const haRideAddressPending=new Map();
+let haRideAddressQueue=Promise.resolve(),haRideAddressNextAt=0,haRideAddressRender=0;
+function haRideAddressText(value){
+  const text=typeof value==='string'?value.trim():'';
+  if(!text || /^تم تحديد|^موقعك الحالي|^الموقع الحالي|^نقطة (الانطلاق|الوصول|الاستلام|التسليم)$/.test(text))return '';
+  return /^[-+\d.\s,،]+$/.test(text)?'':text;
 }
+function haRideAddressKey(p){
+  if(!p||p.lat==null||p.lng==null||!Number.isFinite(Number(p.lat))||!Number.isFinite(Number(p.lng))||Math.abs(Number(p.lat))>90||Math.abs(Number(p.lng))>180)return '';
+  return Number(p.lat).toFixed(5)+','+Number(p.lng).toFixed(5);
+}
+function haRideSavedAddress(ride,kind){
+  const p=ride?.[kind];
+  return [p?.address,p?.label,p?.name,p?.display_name,ride?.[kind+'Address'],ride?.[kind+'Label']].map(haRideAddressText).find(Boolean)||'';
+}
+function haRideResolveAddress(p){
+  const key=haRideAddressKey(p);if(!key)return Promise.resolve('');
+  if(haRideAddressCache.has(key))return Promise.resolve(haRideAddressCache.get(key));
+  try{const saved=haRideAddressText(sessionStorage.getItem('ha-ride-address:'+key));if(saved){haRideAddressCache.set(key,saved);return Promise.resolve(saved);}}catch(e){}
+  if(haRideAddressPending.has(key))return haRideAddressPending.get(key);
+  const task=haRideAddressQueue.catch(()=>{}).then(async()=>{
+    const wait=Math.max(0,haRideAddressNextAt-Date.now());if(wait)await new Promise(r=>setTimeout(r,wait));
+    haRideAddressNextAt=Date.now()+1100;
+    const control=new AbortController(),timeout=setTimeout(()=>control.abort(),6000);
+    try{
+      const response=await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=ar&zoom=18&lat='+encodeURIComponent(p.lat)+'&lon='+encodeURIComponent(p.lng),{signal:control.signal});
+      if(!response.ok)return '';
+      const data=await response.json(),a=data.address||{};
+      const address=[a.road||a.pedestrian||a.residential,a.neighbourhood||a.suburb||a.quarter,a.city||a.town||a.village||a.county,a.state||a.province].filter(Boolean);
+      const text=haRideAddressText([...new Set(address)].join('، ')||data.display_name);
+      if(text){try{sessionStorage.setItem('ha-ride-address:'+key,text);}catch(e){}}
+      haRideAddressCache.set(key,text);if(haRideAddressCache.size>200)haRideAddressCache.delete(haRideAddressCache.keys().next().value);
+      return text;
+    }catch(e){haRideAddressCache.set(key,'');return '';}finally{clearTimeout(timeout);}
+  });
+  haRideAddressQueue=task;haRideAddressPending.set(key,task);
+  task.finally(()=>haRideAddressPending.delete(key));return task;
+}
+function haRenderRideAddresses(ride){
+  const token=++haRideAddressRender;
+  for(const [kind,id] of [['pickup','requestPickup'],['destination','requestDestination']]){
+    const el=document.getElementById(id);if(!el)continue;
+    const point=ride?.[kind],saved=haRideSavedAddress(ride,kind),key=haRideAddressKey(point);
+    const fallback=kind==='pickup'?'موقع الانطلاق محدد على الخريطة':'موقع الوصول محدد على الخريطة';
+    el.textContent=saved||(key?'جاري تحديد اسم العنوان…':'لم يُحدد الموقع');
+    if(saved||!key)continue;
+    haRideResolveAddress({...point}).then(text=>{if(token===haRideAddressRender)el.textContent=text||fallback;});
+  }
+}
+
 
 
 
@@ -2588,6 +2636,7 @@ function renderPendingRide(index){
   const pager=document.getElementById('requestPager');
 
   if(!pendingEntries.length){
+    ++haRideAddressRender;
     currentRideId=null;
     currentRide=null;
     if(map.hasLayer(customer)) map.removeLayer(customer);
@@ -2610,8 +2659,7 @@ function renderPendingRide(index){
   requestCustomerName.textContent=ride.customer?.name||'الزبون';
   if(window.requestCustomerPhone) requestCustomerPhone.textContent=ride.customer?.phone||'—';
   requestVehicle.textContent=rideDisplayLabel(ride);
-  requestPickup.textContent=coordText(ride.pickup);
-  requestDestination.textContent=coordText(ride.destination);
+  haRenderRideAddresses(ride);
   requestTripTime.textContent=ride.tripMinutes ? Math.round(ride.tripMinutes)+' دقيقة' : '—';
   fare.textContent=ride.price ? Number(ride.price).toLocaleString('ar-IQ')+' د.ع' : '—';
 

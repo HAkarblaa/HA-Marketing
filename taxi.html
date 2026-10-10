@@ -1076,6 +1076,8 @@ function endIcon(){
 }
 
 function setPoint(kind,p,label){
+ const chosenLabel=typeof label==='string'?label.trim():'';
+ p.haAddressLabel=chosenLabel&&!/^تم تحديد|^موقعك الحالي|^الموقع الحالي/.test(chosenLabel)?chosenLabel:'';
  if(kind==='start'){
    start=p;
    if(sm)map.removeLayer(sm);
@@ -1465,8 +1467,8 @@ order.onclick=async()=>{
       name:'زبون',
       phone:''
     },
-    pickup:{lat:start.lat,lng:start.lng},
-    destination:{lat:end.lat,lng:end.lng},
+    pickup:{lat:start.lat,lng:start.lng,address:start.haAddressLabel||''},
+    destination:{lat:end.lat,lng:end.lng,address:end.haAddressLabel||''},
     vehicleType:selected.dataset.name,
     serviceType:'taxi',
     dispatchType:'taxi',
