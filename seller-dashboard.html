@@ -4,7 +4,7 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script src="ha-account-gate.js?v=20261010-speed1"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة البائع</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="ha-nearby.js"></script><script src="ha-location-picker.js"></script><style>#orders [hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma;background:#f5f5f5;color:#111}.wrap{width:94%;max-width:1050px;margin:22px auto}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.btn,button{border:0;border-radius:11px;padding:11px 14px;background:#111;color:#fff;text-decoration:none;cursor:pointer;font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0)}.light{background:#eee;color:#111}.danger{background:#9b1028}.ok{background:#0c6b2a}.blue{background:#1769e0}.card{background:#fff;border-radius:16px;padding:15px;margin:12px 0;box-shadow:0 4px 16px #0001}.muted{color:#666;line-height:1.7}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee;font-size:12px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font:inherit;margin:5px 0 10px}textarea{min-height:90px}.order{border:1px solid #e6e6e6}.items{background:#fafafa;border-radius:10px;padding:9px;margin:8px 0}.delivery{background:#eef5ff;border-radius:11px;padding:10px;margin-top:9px}
 .image-picker{border:1px dashed #bbb;border-radius:12px;padding:10px;margin:5px 0 10px;background:#fafafa}
 .image-picker label{display:block;font-weight:700;margin-bottom:7px}
@@ -298,8 +298,48 @@ body.ha-editing-product .bottom-nav{
 <script src="ha-role-balance-gate.js?v=20261008-pause1"></script><script>window.__haI18nRequested=true;</script><script src="ha-i18n.js?v=20261009-order-control1" defer></script>
 <style id="ha-seller-order-filters-style">
 #sellerOrderTools{margin:14px 0}#sellerOrderTools .ha-order-filters{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}#sellerOrderTools button[data-order-filter]{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;padding:9px 11px!important;border:1px solid #cbd5e1!important;background:#fff!important;color:#263e54!important;font-size:13px!important;border-radius:12px!important;white-space:normal;min-width:0;flex:0 1 auto}#sellerOrderTools button[aria-pressed="true"]{background:#075b46!important;color:#fff!important;border-color:#075b46!important;box-shadow:0 0 0 2px #b9e6d5!important}#sellerOrderTools .ha-order-filter-count{display:inline-flex;justify-content:center;min-width:20px;padding:2px 5px;border-radius:7px;background:#eaf0f5;color:#23435d;font-size:12px}#sellerOrderTools button[aria-pressed="true"] .ha-order-filter-count{background:#ffffff26;color:#fff}#sellerOrderTools .ha-order-view-fields{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:9px}#sellerOrderTools label{display:block;min-width:0;font-size:13px;font-weight:700}#sellerOrderTools input,#sellerOrderTools select{min-width:0;margin:5px 0 0;font-size:14px}#sellerOrdersNotice{padding:9px 11px;border-radius:10px;background:#e7f8f0;color:#0b5a3e;margin:10px 0;line-height:1.8}#sellerOrderTools button[data-order-filter][hidden],#sellerOrderTools [hidden],#sellerOrdersNotice[hidden],#orders [hidden]{display:none!important}#orders .ha-order-status-badge{position:static!important;display:inline-flex!important;align-items:center;top:auto!important;right:auto!important;left:auto!important;z-index:auto!important;font-weight:800!important;font-size:13px!important;padding:6px 10px!important;white-space:normal;text-align:center}#orders .ha-status-new{background:#eaf2ff!important;color:#124e9d!important}#orders .ha-status-preparing{background:#fff4d8!important;color:#805300!important}#orders .ha-status-waiting{background:#f0e9ff!important;color:#653399!important}#orders .ha-status-delivering{background:#dff5fa!important;color:#075b6c!important}#orders .ha-status-delivered{background:#e4f6e9!important;color:#14652c!important}#orders .ha-status-cancelled{background:#ffeded!important;color:#a51d35!important}#orders .ha-status-other{background:#edf0f4!important;color:#475569!important}#orders .order[data-order-state="new"]{border-inline-start:5px solid #2878cf!important}#orders .order[data-order-state="preparing"]{border-inline-start:5px solid #c48a14!important}#orders .order[data-order-state="waiting"]{border-inline-start:5px solid #8550bb!important}#orders .order[data-order-state="delivering"]{border-inline-start:5px solid #1692a4!important}#orders .order[data-order-state="delivered"]{border-inline-start:5px solid #269549!important}#orders .order[data-order-state="cancelled"]{border-inline-start:5px solid #ce3851!important}#orders .ha-order-group-heading{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px 11px;border-radius:10px;margin:19px 0 7px;font-size:16px}#orders .ha-order-details{overflow-wrap:anywhere}#orders time{font-size:12px}#sellerOrdersEmpty{padding:18px;text-align:center;border:1px dashed #cbd5e1;border-radius:12px;margin:12px 0;line-height:1.8}@media(max-width:500px){#sellerOrderTools .ha-order-view-fields{grid-template-columns:1fr}#sellerOrderTools button[data-order-filter]{flex:1 1 calc(33.333% - 7px);padding:9px 6px!important;font-size:12px!important}}
-</style><script src="ha-shop-order-control.js?v=20261009-1"></script><script src="ha-orders-section-focus.js?v=20261010-request-open1" defer></script></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>🏪 لوحة البائع</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none">
-<div class="card" id="stores-overview">
+</style><script src="ha-shop-order-control.js?v=20261009-1"></script><script src="ha-orders-section-focus.js?v=20261010-request-open1" defer></script><style id="ha-seller-tabs-style">/* Separate work areas without changing their forms or permissions. */
+body{background:#f3f8f7!important;color:#173b42!important}
+body>.wrap{max-width:1000px!important;margin:16px auto 28px!important}
+.wrap>.top{background:linear-gradient(120deg,#087a64,#064c45);border-radius:20px;padding:16px!important;color:#fff;gap:10px!important}
+.wrap>.top h1{margin:0;font-size:21px!important;flex:1 1 200px}
+.wrap>.top .btn{background:#ffffff20!important;color:#fff!important;border:1px solid #ffffff30;font-size:12px;padding:9px 12px!important;min-height:38px}
+#gate{padding:10px 14px!important;color:#226150;font-size:12px!important;line-height:1.7;box-shadow:none!important;border:1px solid #dcebe5;background:#f5fcf8!important}
+#panel .ha-seller-navigation{background:#fff;border:1px solid #dcebe5;border-radius:20px;padding:12px;margin:14px 0}
+.ha-seller-nav-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ha-seller-nav-head strong{font-size:15px;color:#154f43}
+.ha-seller-nav-head small{display:block;margin-top:4px;color:#708b84;font-size:12px}
+#panel .ha-seller-add-store{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#eaf8f0;color:#13734f;text-decoration:none;padding:10px 13px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap}
+.ha-seller-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#panel .ha-seller-tabs button{display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #deebe6;border-radius:13px;background:#f7faf9;color:#3f5e55;padding:12px 8px;min-height:50px;font-size:14px;font-weight:700;width:100%;box-shadow:none}
+#panel .ha-seller-tabs button[aria-selected="true"]{background:#087d61;color:#fff;border-color:#087d61;box-shadow:0 5px 12px #087d6120}
+.ha-seller-tabs svg{width:21px;height:21px;flex-shrink:0}
+#panel [data-seller-view][hidden]{display:none!important}
+#panel>[data-seller-view]{border:1px solid #dfeae5;border-radius:20px!important;background:#fff!important;padding:18px!important;box-shadow:0 5px 20px #164c3d08!important;scroll-margin-top:16px}
+#panel>[data-seller-view] h2{font-size:19px!important;color:#154f43;margin:0 0 10px!important}
+#panel .ha-seller-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}
+#panel .ha-seller-field-grid label{font-size:13px;font-weight:700;color:#375a4e;min-width:0}
+#panel .ha-seller-field-grid .full{grid-column:1/-1}
+#panel .ha-seller-field-grid input,#panel .ha-seller-field-grid select,#panel .ha-seller-field-grid textarea{background:#fbfdfc;border-color:#dae8e1;margin:6px 0 5px;min-width:0}
+#panel .ha-seller-primary{background:#087d61;color:#fff;min-height:45px;min-width:140px;margin-top:12px}
+#panel .ha-my-stores-head .ha-add-store-btn{display:none}
+#sellerOrdersPanel>.muted{background:#f2f9f5;padding:10px 12px;border-radius:12px;font-size:12px!important}
+#panel .ha-seller-product-add{background:#eaf8f0;color:#13734f;font-size:12px;white-space:nowrap}
+@media(max-width:600px){
+ body>.wrap{width:94%;margin-top:10px!important}
+ .wrap>.top{padding:13px!important}
+ .wrap>.top h1{order:-1;flex-basis:100%;font-size:20px!important;text-align:right}
+ .wrap>.top .btn{flex:1;white-space:nowrap;font-size:11px!important;text-align:center;padding:9px 6px!important}
+ .ha-seller-tabs{gap:6px}
+ #panel .ha-seller-tabs button{flex-direction:column;gap:6px;font-size:11px;padding:10px 4px;min-height:68px}
+ #panel>[data-seller-view]{padding:13px!important}
+ #panel .ha-seller-field-grid{gap:8px}
+ .ha-seller-nav-head strong{font-size:14px}
+ .ha-seller-nav-head small{font-size:11px}
+ #panel .ha-seller-add-store{font-size:11px;padding:9px 10px}
+}
+</style></head><body><div class="wrap"><div class="top"><a class="btn light" href="shop.html">← التسوق</a><h1>لوحة صاحب المتجر</h1><a class="btn light" href="work-center.html">مركز العمل</a><a class="btn light" href="seller-registration.html">حالة الاعتماد</a></div><div id="gate" class="card">جاري التحقق...</div><div id="panel" style="display:none"><div class="ha-seller-navigation"><div class="ha-seller-nav-head"><div><strong>إدارة متجرك</strong><small>كل مهمة في قسم مستقل</small></div><a class="ha-seller-add-store" href="seller-store-request.html">＋ إضافة متجر</a></div><div class="ha-seller-tabs" role="tablist" aria-label="أقسام صاحب المتجر"><button type="button" role="tab" id="haSellerTab-orders" data-seller-tab="orders" aria-controls="sellerOrdersPanel" aria-selected="true" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v3H8zM6 6H4v15h16V6h-2M8 12h8M8 16h6"/></svg><span>الطلبات</span></button><button type="button" role="tab" id="haSellerTab-stores" data-seller-tab="stores" aria-controls="stores-overview" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18l-2-6H5zM5 9v12h14V9M9 21v-7h6v7"/></svg><span>متاجري</span></button><button type="button" role="tab" id="haSellerTab-products" data-seller-tab="products" aria-controls="my-products" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9"/></svg><span>المنتجات</span></button><button type="button" role="tab" id="haSellerTab-add-product" data-seller-tab="add-product" aria-controls="add-product" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg><span>إضافة منتج</span></button></div></div>
+<div class="card" id="stores-overview" role="tabpanel" aria-labelledby="haSellerTab-stores" data-seller-view="stores" hidden>
   <div class="ha-my-stores-head">
     <div>
       <h2 style="margin:0">🏪 متاجري</h2>
@@ -319,9 +359,9 @@ body.ha-editing-product .bottom-nav{
   <div id="storeSaveStatus"></div>
 </div>
 
-<div class="card"><h2>إضافة منتج</h2>
+<div class="card" id="add-product" role="tabpanel" aria-labelledby="haSellerTab-add-product" data-seller-view="add-product" hidden><h2>إضافة منتج</h2>
 <div class="muted">اختر المتجر المعتمد الذي تريد إضافة المنتج داخله.</div>
-<select id="addProductStoreSelect"><option value="">جاري تحميل متاجرك...</option></select><input id="pname" placeholder="اسم المنتج"><input id="price" type="number" placeholder="السعر"><input id="stock" type="number" placeholder="المخزون"><div class="image-picker">
+<div class="ha-seller-field-grid"><label class="full">المتجر<select id="addProductStoreSelect"><option value="">جاري تحميل متاجرك...</option></select></label><label class="full">اسم المنتج<input id="pname" placeholder="اسم المنتج"></label><label>السعر (د.ع)<input id="price" type="number" placeholder="السعر" min="0" inputmode="decimal"></label><label>المخزون<input id="stock" type="number" placeholder="المخزون" min="0" inputmode="numeric"></label><div class="image-picker full">
 <label>صورة المنتج</label>
 <div class="image-actions">
   <input id="productImageFile" type="file" accept="image/*" capture="environment">
@@ -329,10 +369,10 @@ body.ha-editing-product .bottom-nav{
 <img id="productImagePreview" class="image-preview" alt="معاينة صورة المنتج">
 <div class="note">تقدر تلتقط صورة بالكاميرا أو تختار صورة من الجهاز.</div>
 </div>
-<textarea id="pdesc" placeholder="الوصف"></textarea><button onclick="addProduct()">إضافة المنتج</button></div><div class="card" id="my-products">
+<label class="full">وصف المنتج<textarea id="pdesc" placeholder="الوصف"></textarea></label></div><button class="ha-seller-primary" onclick="addProduct()">إضافة المنتج</button></div><div class="card" id="my-products" role="tabpanel" aria-labelledby="haSellerTab-products" data-seller-view="products" hidden>
   <div class="row">
     <h2>🛍️ منتجات متجري</h2>
-    <span id="productsCount" class="badge">0 منتج</span>
+    <span id="productsCount" class="badge">0 منتج</span><a href="#add-product" class="btn ha-seller-product-add">＋ إضافة منتج</a>
   </div>
   <div class="ha-store-switcher">
     <label>اختر المتجر الذي تريد إدارة منتجاته</label>
@@ -340,7 +380,7 @@ body.ha-editing-product .bottom-nav{
     <div id="manageStoreHint" class="ha-store-hint">كل متجر يعرض منتجاته فقط.</div>
   </div>
   <div id="products" class="ha-product-grid">جاري التحميل...</div>
-</div><div class="card"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">احفظ أجرة التوصيل لتبليغ الزبون، ثم اختر «التوصيل من عندي». بعد وصول الطلب اضغط «تم تسليم الطلب». مندوب التطبيق اختياري.</div><div id="sellerOrderTools">
+</div><div class="card" id="sellerOrdersPanel" role="tabpanel" aria-labelledby="haSellerTab-orders" data-seller-view="orders"><div class="row"><h2>📦 طلبات المتجر والتوصيل</h2><button class="light" onclick="loadOrders()">تحديث</button></div><div class="muted">احفظ أجرة التوصيل لتبليغ الزبون، ثم اختر «التوصيل من عندي». بعد وصول الطلب اضغط «تم تسليم الطلب». مندوب التطبيق اختياري.</div><div id="sellerOrderTools">
  <div class="ha-order-filters" role="group" aria-label="فرز الطلبات حسب الحالة">
 <button type="button" data-order-filter="all" aria-pressed="true" onclick="setSellerOrderFilter('all')"><span>الكل</span><span class="ha-order-filter-count" data-order-count="all" data-no-i18n>—</span></button><button type="button" data-order-filter="cancellation" aria-pressed="false" onclick="setSellerOrderFilter('cancellation')"><span>طلبات إلغاء</span><span class="ha-order-filter-count" data-order-count="cancellation" data-no-i18n>—</span></button><button type="button" data-order-filter="new" aria-pressed="false" onclick="setSellerOrderFilter('new')"><span>جديدة</span><span class="ha-order-filter-count" data-order-count="new" data-no-i18n>—</span></button><button type="button" data-order-filter="preparing" aria-pressed="false" onclick="setSellerOrderFilter('preparing')"><span>قيد التجهيز</span><span class="ha-order-filter-count" data-order-count="preparing" data-no-i18n>—</span></button><button type="button" data-order-filter="waiting" aria-pressed="false" onclick="setSellerOrderFilter('waiting')"><span>بانتظار مندوب</span><span class="ha-order-filter-count" data-order-count="waiting" data-no-i18n>—</span></button><button type="button" data-order-filter="delivering" aria-pressed="false" onclick="setSellerOrderFilter('delivering')"><span>قيد التوصيل</span><span class="ha-order-filter-count" data-order-count="delivering" data-no-i18n>—</span></button><button type="button" data-order-filter="delivered" aria-pressed="false" onclick="setSellerOrderFilter('delivered')"><span>تم التسليم</span><span class="ha-order-filter-count" data-order-count="delivered" data-no-i18n>—</span></button><button type="button" data-order-filter="cancelled" aria-pressed="false" onclick="setSellerOrderFilter('cancelled')"><span>ملغاة</span><span class="ha-order-filter-count" data-order-count="cancelled" data-no-i18n>—</span></button><button type="button" data-order-filter="other" aria-pressed="false" hidden onclick="setSellerOrderFilter('other')"><span>أخرى</span><span class="ha-order-filter-count" data-order-count="other" data-no-i18n>—</span></button>
  </div>
@@ -348,7 +388,69 @@ body.ha-editing-product .bottom-nav{
   <label for="sellerOrderSearch">البحث في الطلبات<input id="sellerOrderSearch" type="search" maxlength="160" placeholder="رقم الطلب، اسم الزبون أو رقم الهاتف" oninput="applySellerOrderView()"></label>
   <label for="sellerOrderSort">ترتيب الطلبات<select id="sellerOrderSort" onchange="applySellerOrderView()"><option value="active">حسب الحالة — النشطة أولاً</option><option value="newest">الأحدث أولاً</option><option value="oldest">الأقدم أولاً</option></select></label>
  </div>
-</div><div id="sellerOrdersNotice" hidden role="status" aria-live="polite"></div><div id="orders">جاري التحميل...</div></div></div></div><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
+</div><div id="sellerOrdersNotice" hidden role="status" aria-live="polite"></div><div id="orders">جاري التحميل...</div></div></div></div><script>(function(){
+  'use strict';
+  const tabs=[...document.querySelectorAll('[data-seller-tab]')];
+  const views=[...document.querySelectorAll('[data-seller-view]')];
+  const hashes={orders:'orders',sellerOrderTools:'orders',sellerOrdersPanel:'orders',store:'stores','stores-overview':'stores',stores:'stores','my-products':'products',products:'products','add-product':'add-product'};
+  let active='orders';
+  function requested(){
+    let hash;try{hash=decodeURIComponent(location.hash.slice(1));}catch(_e){return 'orders';}
+    return hashes[hash]||'orders';
+  }
+  function syncBottom(){
+    const nav=document.getElementById('haRoleBottomNav');if(!nav)return;
+    // The courier action is already inside each order; use that slot for products.
+    const courier=nav.querySelector('[data-key="courier"]');
+    if(courier){
+      const link=courier.closest('a');link.href='seller-dashboard.html#my-products';
+      link.querySelector('.ha-rbn-label').textContent='المنتجات';courier.dataset.key='products';
+      courier.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9"/></svg>';
+    }
+    nav.querySelectorAll('a').forEach(a=>{
+      const u=new URL(a.href,location.href);
+      const selected=u.pathname===location.pathname&&hashes[u.hash.slice(1)]===active;
+      a.classList.toggle('active',selected);
+      if(selected)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+    });
+  }
+  function render(name,focus=false){
+    active=name;
+    views.forEach(view=>view.hidden=view.dataset.sellerView!==name);
+    tabs.forEach(tab=>{const selected=tab.dataset.sellerTab===name;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;});
+    syncBottom();
+    if(focus)document.querySelector('[data-seller-tab="'+name+'"]')?.focus({preventScroll:true});
+  }
+  function select(name,focus=false){
+    const canonical={orders:'orders',stores:'store',products:'my-products','add-product':'add-product'}[name];if(!canonical)return;
+    if(location.hash!=='#'+canonical)history.pushState(null,'','#'+canonical);
+    render(name,focus);
+  }
+  tabs.forEach((tab,index)=>{
+    tab.addEventListener('click',()=>select(tab.dataset.sellerTab));
+    tab.addEventListener('keydown',event=>{
+      let next;
+      if(event.key==='ArrowLeft')next=(index+1)%tabs.length;
+      else if(event.key==='ArrowRight')next=(index-1+tabs.length)%tabs.length;
+      else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;
+      event.preventDefault();select(tabs[next].dataset.sellerTab,true);
+    });
+  });
+  document.addEventListener('click',event=>{
+    const link=event.target.closest('a[href]');if(!link||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;
+    const u=new URL(link.href,location.href),name=hashes[u.hash.slice(1)];
+    if(u.origin!==location.origin||u.pathname!==location.pathname||!name)return;
+    event.preventDefault();select(name);
+  });
+  window.addEventListener('hashchange',()=>render(requested()));
+  window.addEventListener('popstate',()=>render(requested()));
+  // The existing authorized request loader and notification focus code keep their IDs.
+  render(requested());
+  const observer=new MutationObserver(records=>{
+    if(records.some(record=>[...record.addedNodes].some(node=>node.nodeType===1&&node.id==='haRoleBottomNav')))syncBottom();
+  });observer.observe(document.body,{childList:true});
+})();
+</script><script>const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let me=null,store=null,storeLat=null,storeLng=null;
 let storeImageData=null,productImageData=null;
 const sectionEl=document.getElementById('section');
 const storeNameEl=document.getElementById('storeName');
