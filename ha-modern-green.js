@@ -100,11 +100,11 @@
   function classifyStates(){
     qa('.status,.message,.msg,.notice,.empty,.loading,.error,.alert').forEach(function(el){
       var t=(el.textContent||'').trim();
-      el.classList.remove('ha-state-loading','ha-state-empty','ha-state-error','ha-state-success');
-      if(/جاري|تحميل|انتظر/.test(t))el.classList.add('ha-state-loading');
-      else if(/لا توجد|لا يوجد|فارغ|لم يتم العثور/.test(t))el.classList.add('ha-state-empty');
-      else if(/خطأ|تعذر|فشل|غير متاح|❌/.test(t))el.classList.add('ha-state-error');
-      else if(/نجاح|تم |جاهز|✅/.test(t))el.classList.add('ha-state-success');
+      var next=/جاري|تحميل|انتظر/.test(t)?'ha-state-loading':
+        /لا توجد|لا يوجد|فارغ|لم يتم العثور/.test(t)?'ha-state-empty':
+        /خطأ|تعذر|فشل|غير متاح|❌/.test(t)?'ha-state-error':
+        /نجاح|تم |جاهز|✅/.test(t)?'ha-state-success':'';
+      ['ha-state-loading','ha-state-empty','ha-state-error','ha-state-success'].forEach(function(c){if(el.classList.contains(c)!==(c===next))el.classList.toggle(c,c===next)});
     });
   }
 
@@ -169,7 +169,8 @@
     // بعض الصفحات تغيّر النصوص بشكل متكرر. تشغيل المعالجة مباشرة داخل
     // MutationObserver كان يسبب سلسلة متواصلة من التغييرات ويجمّد الصفحة.
     var pending=false;
-    var mo=new MutationObserver(function(){
+    var mo=new MutationObserver(function(records){
+      if(!records.some(function(m){return Array.from(m.addedNodes).concat(Array.from(m.removedNodes)).some(function(n){return n.nodeType===1 || m.target.closest?.('.status,.message,.msg,.notice,.empty,.loading,.error,.alert,.notification-badge,.badge-notification,[data-notification-count]')})}))return;
       if(pending)return;
       pending=true;
       requestAnimationFrame(function(){

@@ -78,7 +78,7 @@
       if(auth.error||!user||user.is_anonymous)return;
       const [inbox,state]=await Promise.all([
         bounded(db.from('notifications').select('*').eq('user_id',user.id).eq('is_read',false).gte('created_at',new Date(Date.now()-2*3600000).toISOString()).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(50)),
-        bounded(window.HA_HomeMyOrders.refresh(true))
+        bounded(window.HA_HomeMyOrders.refresh(false))
       ]);
       if(inbox.error||!Array.isArray(inbox.data)||state?.userId!==user.id||state.loading)return;
       const mark=checkpoint(user.id);let chosen=null,target=null;

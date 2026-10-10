@@ -207,3 +207,20 @@
   });
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
 })();
+
+// Install static caching after the first paint; leave specialized map workers alone.
+(function(){
+  if(!('serviceWorker' in navigator)||window.__haStaticCacheRequested)return;
+  window.__haStaticCacheRequested=true;
+  const base=new URL('./',document.currentScript.src);
+  async function install(){
+    try{
+      const reg=await navigator.serviceWorker.getRegistration(base.href);
+      const worker=reg?.active||reg?.waiting||reg?.installing;
+      if(worker&&new URL(worker.scriptURL).pathname!==new URL('service-worker.js',base).pathname)return;
+      await navigator.serviceWorker.register(new URL('service-worker.js',base).href,{scope:base.pathname,updateViaCache:'none'});
+    }catch(_e){}
+  }
+  function schedule(){if(window.requestIdleCallback)requestIdleCallback(install,{timeout:2000});else setTimeout(install,500);}
+  if(document.readyState==='complete')schedule();else window.addEventListener('load',schedule,{once:true});
+})();

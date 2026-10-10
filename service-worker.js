@@ -1,17 +1,6 @@
-/* HA Marketing - lightweight service worker (speed fix 2026-09-27)
-   Keeps navigation responsive and avoids downloading the whole app during install. */
-const CACHE='ha-marketing-account-entry-v2026-10-10-android-resume1';
-const CORE=[
-  './index.html',
-  './ha-account-gate.js?v=20261008-required1',
-  './login.html',
-  './register.html',
-  './forgot-password.html',
-  './ha-modern-green.css',
-  './ha-modern-green.js',
-  './ha-logo-transparent.png'
-];
-
+/* Static site files load from cache immediately; account/order API calls stay live. */
+const CACHE='ha-marketing-speed-v2026-10-10-1';
+const CORE=['./index.html','./ha-account-gate.js?v=20261010-speed1','./ha-section-artwork.js?v=20261010-speed1','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
@@ -19,69 +8,44 @@ self.addEventListener('install',event=>{
     await self.skipWaiting();
   })());
 });
-
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
     const keys=await caches.keys();
-    await Promise.all(keys
-      .filter(key=>key.startsWith('ha-marketing-') && key!==CACHE)
-      .map(key=>caches.delete(key)));
+    await Promise.all(keys.filter(key=>key.startsWith('ha-marketing-')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
   })());
 });
-
-function networkWithTimeout(request,ms){
-  return Promise.race([
-    fetch(request,{cache:'no-cache'}),
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms))
-  ]);
+function cacheable(url,request){
+  if(request.method!=='GET'||request.cache==='no-store'||url.origin!==self.location.origin)return false;
+  if(request.headers.has('Authorization'))return false;
+  if(url.searchParams.has('code')||url.searchParams.has('access_token')||url.searchParams.has('refresh_token'))return false;
+  return request.mode==='navigate'||/\.(?:html|css|js|png|jpg|jpeg|webp|svg|woff2?|ico)$/i.test(url.pathname);
 }
-
-self.addEventListener('fetch',event=>{
-  const request=event.request;
-  if(request.method!=='GET')return;
-
-  const url=new URL(request.url);
-  if(url.origin!==self.location.origin)return;
-
-  const isNavigation=request.mode==='navigate';
-  const isCode=/\.(?:html|css|js)(?:$|\?)/i.test(url.pathname+url.search);
-
-  if(isNavigation || isCode){
-    event.respondWith((async()=>{
-      const cache=await caches.open(CACHE);
-      const cached=await cache.match(request,{ignoreSearch:isNavigation});
-      try{
-        /* Short timeout prevents a tap from looking frozen on slow/unstable internet. */
-        const fresh=await networkWithTimeout(request,1800);
-        if(fresh && fresh.ok){
-          const cache=await caches.open(CACHE);
-          cache.put(request,fresh.clone()).catch(()=>{});
-        }
-        return fresh;
-      }catch(_err){
-        if(cached)return cached;
-        if(isNavigation){
-          return Response.redirect(new URL('./login.html',self.location.href).href,302);
-        }
-        return Response.error();
-      }
-    })());
-    return;
+async function refresh(request,cache){
+  const response=await fetch(request);
+  if(response.ok&&response.type!=='opaque'&&!response.redirected){
+    try{await cache.put(request,response.clone());}catch(_e){}
   }
-
-  /* Images/fonts/media: return cache immediately, refresh only when missing. */
+  return response;
+}
+self.addEventListener('fetch',event=>{
+  const request=event.request,url=new URL(request.url);
+  if(!cacheable(url,request))return;
   event.respondWith((async()=>{
-    const cached=await caches.match(request);
-    if(cached)return cached;
-    try{
-      const fresh=await fetch(request);
-      if(fresh && fresh.ok){
-        const cache=await caches.open(CACHE);
-        cache.put(request,fresh.clone()).catch(()=>{});
+    const cache=await caches.open(CACHE),cached=await cache.match(request);
+    const force=request.cache==='reload'||request.cache==='no-store';
+    if(cached&&!force){
+      // Hashed artwork never changes at the same URL. Other static files refresh
+      // in the background, so taps do not wait for a network timeout.
+      if(!/\/images\/ha-fast\/[a-f0-9]{20}\./.test(url.pathname))event.waitUntil(refresh(request,cache).catch(()=>{}));
+      return cached;
+    }
+    try{return await refresh(request,cache);}catch(_e){
+      if(cached)return cached;
+      if(request.mode==='navigate'){
+        const fallback=await cache.match(new URL('./index.html',self.location.href).href);
+        if(fallback)return Response.redirect(new URL('./index.html',self.location.href).href,302);
       }
-      return fresh;
-    }catch(_err){
       return Response.error();
     }
   })());
