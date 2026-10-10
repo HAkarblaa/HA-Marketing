@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="bg_13" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#126bd4"/>
+    <stop offset="1" stop-color="#093c8f"/>
+  </linearGradient>
+  <linearGradient id="gold_13" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff0a8"/>
+    <stop offset=".45" stop-color="#f7c84b"/>
+    <stop offset="1" stop-color="#cf8e08"/>
+  </linearGradient>
+  <filter id="shadow_13" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#10233f" flood-opacity=".24"/>
+  </filter>
+</defs>
+<rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg_13)" filter="url(#shadow_13)"/>
+<path d="M24 29C41 14 83 10 106 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+<circle cx="95" cy="31" r="8" fill="#fff" opacity=".13"/>
+
+<circle cx="64" cy="49" r="18" fill="#fff"/>
+<path d="M32 99c4-20 17-30 32-30s28 10 32 30" fill="#fff"/>
+<path d="M38 99h52" stroke="url(#gold_13)" stroke-width="6" stroke-linecap="round"/>
+
+</svg>

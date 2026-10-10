@@ -1,6 +1,6 @@
 /* Static site files load from cache immediately; account/order API calls stay live. */
-const CACHE='ha-marketing-speed-v2026-10-10-1';
-const CORE=['./index.html','./ha-account-gate.js?v=20261010-speed1','./ha-section-artwork.js?v=20261010-speed1','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
+const CACHE='ha-marketing-speed-images-v2026-10-10-2';
+const CORE=['./index.html','./ha-account-gate.js?v=20261010-speed1','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
@@ -37,7 +37,7 @@ self.addEventListener('fetch',event=>{
     if(cached&&!force){
       // Hashed artwork never changes at the same URL. Other static files refresh
       // in the background, so taps do not wait for a network timeout.
-      if(!/\/images\/ha-fast\/[a-f0-9]{20}\./.test(url.pathname))event.waitUntil(refresh(request,cache).catch(()=>{}));
+      if(!/\/ha-fast-[a-f0-9]{20}\./.test(url.pathname))event.waitUntil(refresh(request,cache).catch(()=>{}));
       return cached;
     }
     try{return await refresh(request,cache);}catch(_e){
