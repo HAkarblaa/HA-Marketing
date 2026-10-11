@@ -47,19 +47,14 @@
     <div class="ha-grid">
       <div>
         <label>قسم المتجر</label>
-        <select id="storeSection">
-          <option value="markets">🛒 الأسواق</option>
-          <option value="library">📚 مكتبة</option>
-          <option value="printers">🖨️ مطبعة</option>
-          <option value="devices">📱 موبايلات</option>
-          <option value="home_appliances">💻 الأجهزة الإلكترونية</option>
-          <option value="device_accessories">🎧 إكسسوارات</option>
-          <option value="clothes">👕 ملابس</option>
-          <option value="shoes">👟 أحذية</option>
-          <option value="restaurants">🍽️ مطاعم</option>
-          <option value="flowers">💐 ورد وهدايا</option>
-          <option value="building_materials">🏗️ مواد البناء</option>
-        </select>
+        <select id="storeSection"><optgroup label="المطاعم والمشروبات"><option value="restaurants">🍽️ مطاعم</option><option value="cafes">☕ كافيهات</option><option value="refreshments">🥤 مرطبات</option><option value="juices">🧃 عصائر</option><option value="ice_cream">🍦 آيس كريم</option><option value="fast_food">🍔 وجبات سريعة</option><option value="grills">🍢 مشويات</option><option value="sweets">🍰 حلويات</option><option value="bakeries">🥖 مخابز ومعجنات</option></optgroup>
+<optgroup label="المواد الغذائية"><option value="markets" selected>🛒 الأسواق والبقالة</option><option value="fruits_vegetables">🥬 خضروات وفواكه</option><option value="meat">🥩 لحوم وقصابة</option><option value="poultry">🍗 دواجن</option><option value="fish">🐟 أسماك</option><option value="dairy">🥛 ألبان وأجبان</option><option value="spices">🧂 بهارات وعطارة</option><option value="nuts">🥜 مكسرات</option><option value="dates">🌴 تمور</option></optgroup>
+<optgroup label="التقنية والمكتبات"><option value="library">📚 المكتبات</option><option value="printers">🖨️ المطابع</option><option value="devices">📱 الموبايلات</option><option value="home_appliances">💻 الأجهزة الإلكترونية</option><option value="device_accessories">🎧 إكسسوارات الأجهزة</option><option value="computers">💻 حواسيب ولابتوبات</option><option value="gaming">🎮 أجهزة ومستلزمات الألعاب</option><option value="cameras">📷 كاميرات ومستلزمات التصوير</option><option value="cards_credit">💳 بطاقات وأرصدة</option><option value="yugioh">🃏 أوراق يوغي</option></optgroup>
+<optgroup label="الملابس والجمال"><option value="clothes">👕 ملابس</option><option value="mens_clothes">👔 ملابس رجالية</option><option value="womens_clothes">👗 ملابس نسائية</option><option value="childrens_clothes">🧒 ملابس أطفال</option><option value="shoes">👟 أحذية</option><option value="bags">👜 حقائب</option><option value="perfumes">🌸 عطور</option><option value="cosmetics">💄 مستحضرات تجميل</option><option value="watches">⌚ ساعات</option><option value="jewelry">💍 مجوهرات وإكسسوارات</option><option value="sewing">🧵 أقمشة وخياطة</option></optgroup>
+<optgroup label="المنزل والبناء"><option value="furniture">🛋️ أثاث</option><option value="appliances">🏠 أجهزة منزلية</option><option value="homeware">🍽️ أواني ومستلزمات منزلية</option><option value="carpets">🧶 سجاد وموكيت</option><option value="curtains">🪟 ستائر</option><option value="lighting">💡 إنارة</option><option value="electrical_supplies">🔌 مواد كهربائية</option><option value="plumbing">🚿 مواد صحية</option><option value="building_materials">🏗️ مواد البناء</option><option value="hardware_tools">🛠️ عدد وأدوات</option><option value="paint">🎨 أصباغ وديكور</option><option value="cleaning_products">🧼 مواد تنظيف</option></optgroup>
+<optgroup label="السيارات والدراجات"><option value="auto_parts">⚙️ قطع غيار السيارات</option><option value="car_accessories">🚘 إكسسوارات السيارات</option><option value="tires_batteries">🛞 إطارات وبطاريات</option><option value="motorcycles">🏍️ دراجات نارية</option><option value="bicycles">🚲 دراجات هوائية</option></optgroup>
+<optgroup label="الأطفال والهدايا والرياضة"><option value="baby_supplies">🍼 مستلزمات الأطفال</option><option value="toys">🧸 ألعاب أطفال</option><option value="flowers">💐 ورد وهدايا</option><option value="sports">⚽ مستلزمات رياضية</option><option value="party_supplies">🎉 مستلزمات حفلات</option></optgroup>
+<optgroup label="الصحة والزراعة وغيرها"><option value="pharmacies">💊 صيدليات</option><option value="medical_supplies">🩺 مستلزمات طبية</option><option value="optics">👓 نظارات وبصريات</option><option value="pets">🐾 مستلزمات الحيوانات</option><option value="agricultural_supplies">🌱 مستلزمات زراعية</option><option value="other">🏪 متاجر أخرى</option></optgroup></select>
       </div>
       <div><label>اسم المتجر</label><input id="storeName" placeholder="اسم المتجر"></div>
       <div><label>المحافظة</label><select id="storeGovernorate"></select></div>

@@ -351,7 +351,14 @@ body>.wrap{max-width:1000px!important;margin:16px auto 28px!important}
 </div>
 
 <div id="legacyStoreEditor">
-  <select id="section"><option value="markets">أسواق</option></select>
+  <select id="section"><optgroup label="المطاعم والمشروبات"><option value="restaurants">🍽️ مطاعم</option><option value="cafes">☕ كافيهات</option><option value="refreshments">🥤 مرطبات</option><option value="juices">🧃 عصائر</option><option value="ice_cream">🍦 آيس كريم</option><option value="fast_food">🍔 وجبات سريعة</option><option value="grills">🍢 مشويات</option><option value="sweets">🍰 حلويات</option><option value="bakeries">🥖 مخابز ومعجنات</option></optgroup>
+<optgroup label="المواد الغذائية"><option value="markets" selected>🛒 الأسواق والبقالة</option><option value="fruits_vegetables">🥬 خضروات وفواكه</option><option value="meat">🥩 لحوم وقصابة</option><option value="poultry">🍗 دواجن</option><option value="fish">🐟 أسماك</option><option value="dairy">🥛 ألبان وأجبان</option><option value="spices">🧂 بهارات وعطارة</option><option value="nuts">🥜 مكسرات</option><option value="dates">🌴 تمور</option></optgroup>
+<optgroup label="التقنية والمكتبات"><option value="library">📚 المكتبات</option><option value="printers">🖨️ المطابع</option><option value="devices">📱 الموبايلات</option><option value="home_appliances">💻 الأجهزة الإلكترونية</option><option value="device_accessories">🎧 إكسسوارات الأجهزة</option><option value="computers">💻 حواسيب ولابتوبات</option><option value="gaming">🎮 أجهزة ومستلزمات الألعاب</option><option value="cameras">📷 كاميرات ومستلزمات التصوير</option><option value="cards_credit">💳 بطاقات وأرصدة</option><option value="yugioh">🃏 أوراق يوغي</option></optgroup>
+<optgroup label="الملابس والجمال"><option value="clothes">👕 ملابس</option><option value="mens_clothes">👔 ملابس رجالية</option><option value="womens_clothes">👗 ملابس نسائية</option><option value="childrens_clothes">🧒 ملابس أطفال</option><option value="shoes">👟 أحذية</option><option value="bags">👜 حقائب</option><option value="perfumes">🌸 عطور</option><option value="cosmetics">💄 مستحضرات تجميل</option><option value="watches">⌚ ساعات</option><option value="jewelry">💍 مجوهرات وإكسسوارات</option><option value="sewing">🧵 أقمشة وخياطة</option></optgroup>
+<optgroup label="المنزل والبناء"><option value="furniture">🛋️ أثاث</option><option value="appliances">🏠 أجهزة منزلية</option><option value="homeware">🍽️ أواني ومستلزمات منزلية</option><option value="carpets">🧶 سجاد وموكيت</option><option value="curtains">🪟 ستائر</option><option value="lighting">💡 إنارة</option><option value="electrical_supplies">🔌 مواد كهربائية</option><option value="plumbing">🚿 مواد صحية</option><option value="building_materials">🏗️ مواد البناء</option><option value="hardware_tools">🛠️ عدد وأدوات</option><option value="paint">🎨 أصباغ وديكور</option><option value="cleaning_products">🧼 مواد تنظيف</option></optgroup>
+<optgroup label="السيارات والدراجات"><option value="auto_parts">⚙️ قطع غيار السيارات</option><option value="car_accessories">🚘 إكسسوارات السيارات</option><option value="tires_batteries">🛞 إطارات وبطاريات</option><option value="motorcycles">🏍️ دراجات نارية</option><option value="bicycles">🚲 دراجات هوائية</option></optgroup>
+<optgroup label="الأطفال والهدايا والرياضة"><option value="baby_supplies">🍼 مستلزمات الأطفال</option><option value="toys">🧸 ألعاب أطفال</option><option value="flowers">💐 ورد وهدايا</option><option value="sports">⚽ مستلزمات رياضية</option><option value="party_supplies">🎉 مستلزمات حفلات</option></optgroup>
+<optgroup label="الصحة والزراعة وغيرها"><option value="pharmacies">💊 صيدليات</option><option value="medical_supplies">🩺 مستلزمات طبية</option><option value="optics">👓 نظارات وبصريات</option><option value="pets">🐾 مستلزمات الحيوانات</option><option value="agricultural_supplies">🌱 مستلزمات زراعية</option><option value="other">🏪 متاجر أخرى</option></optgroup></select>
   <input id="storeName"><input id="location">
   <button id="storeLocateBtn" type="button"></button><div id="storeLocStatus"></div>
   <input id="storeImageFile" type="file"><img id="storeImagePreview">
@@ -466,21 +473,7 @@ const saveStoreBtn=document.getElementById('saveStoreBtn');
 let productCategoriesCache=[];
 let autoCategoryId=null;
 
-const SECTION_AR={
-  markets:'أسواق',
-  restaurants:'مطاعم',
-  flowers:'ورد',
-  home_appliances:'أجهزة منزلية',
-  printers:'طابعات',
-  devices:'أجهزة',
-  device_accessories:'ملحقات الأجهزة',
-  clothes:'ملابس',
-  shoes:'أحذية',
-  library:'مكتبة',
-  building_materials:'مواد البناء',
-  cards_credit:'بطاقات وأرصدة',
-  yugioh:'أوراق يوغي'
-};
+const SECTION_AR={"restaurants":"مطاعم","cafes":"كافيهات","refreshments":"مرطبات","juices":"عصائر","ice_cream":"آيس كريم","fast_food":"وجبات سريعة","grills":"مشويات","sweets":"حلويات","bakeries":"مخابز ومعجنات","markets":"أسواق","fruits_vegetables":"خضروات وفواكه","meat":"لحوم وقصابة","poultry":"دواجن","fish":"أسماك","dairy":"ألبان وأجبان","spices":"بهارات وعطارة","nuts":"مكسرات","dates":"تمور","library":"مكتبة","printers":"طابعات","devices":"أجهزة","home_appliances":"أجهزة منزلية","device_accessories":"ملحقات الأجهزة","computers":"حواسيب ولابتوبات","gaming":"أجهزة ومستلزمات الألعاب","cameras":"كاميرات ومستلزمات التصوير","cards_credit":"بطاقات وأرصدة","yugioh":"أوراق يوغي","clothes":"ملابس","mens_clothes":"ملابس رجالية","womens_clothes":"ملابس نسائية","childrens_clothes":"ملابس أطفال","shoes":"أحذية","bags":"حقائب","perfumes":"عطور","cosmetics":"مستحضرات تجميل","watches":"ساعات","jewelry":"مجوهرات وإكسسوارات","sewing":"أقمشة وخياطة","furniture":"أثاث","appliances":"أجهزة منزلية","homeware":"أواني ومستلزمات منزلية","carpets":"سجاد وموكيت","curtains":"ستائر","lighting":"إنارة","electrical_supplies":"مواد كهربائية","plumbing":"مواد صحية","building_materials":"مواد البناء","hardware_tools":"عدد وأدوات","paint":"أصباغ وديكور","cleaning_products":"مواد تنظيف","auto_parts":"قطع غيار السيارات","car_accessories":"إكسسوارات السيارات","tires_batteries":"إطارات وبطاريات","motorcycles":"دراجات نارية","bicycles":"دراجات هوائية","baby_supplies":"مستلزمات الأطفال","toys":"ألعاب أطفال","flowers":"ورد","sports":"مستلزمات رياضية","party_supplies":"مستلزمات حفلات","pharmacies":"صيدليات","medical_supplies":"مستلزمات طبية","optics":"نظارات وبصريات","pets":"مستلزمات الحيوانات","agricultural_supplies":"مستلزمات زراعية","other":"متاجر أخرى"};
 
 function syncAutoCategory(){
   const key=(store?.section_key || sectionEl?.value || '').trim();
@@ -767,12 +760,7 @@ async function loadSellerStoreCards(){
     return;
   }
 
-  const sectionNames={
-    markets:'الأسواق',library:'مكتبة',printers:'مطبعة',devices:'موبايلات',
-    home_appliances:'الأجهزة الإلكترونية',device_accessories:'إكسسوارات',
-    clothes:'ملابس',shoes:'أحذية',restaurants:'مطاعم',flowers:'ورد وهدايا',
-    building_materials:'مواد البناء'
-  };
+  const sectionNames={"restaurants":"مطاعم","cafes":"كافيهات","refreshments":"مرطبات","juices":"عصائر","ice_cream":"آيس كريم","fast_food":"وجبات سريعة","grills":"مشويات","sweets":"حلويات","bakeries":"مخابز ومعجنات","markets":"الأسواق والبقالة","fruits_vegetables":"خضروات وفواكه","meat":"لحوم وقصابة","poultry":"دواجن","fish":"أسماك","dairy":"ألبان وأجبان","spices":"بهارات وعطارة","nuts":"مكسرات","dates":"تمور","library":"المكتبات","printers":"المطابع","devices":"الموبايلات","home_appliances":"الأجهزة الإلكترونية","device_accessories":"إكسسوارات الأجهزة","computers":"حواسيب ولابتوبات","gaming":"أجهزة ومستلزمات الألعاب","cameras":"كاميرات ومستلزمات التصوير","cards_credit":"بطاقات وأرصدة","yugioh":"أوراق يوغي","clothes":"ملابس","mens_clothes":"ملابس رجالية","womens_clothes":"ملابس نسائية","childrens_clothes":"ملابس أطفال","shoes":"أحذية","bags":"حقائب","perfumes":"عطور","cosmetics":"مستحضرات تجميل","watches":"ساعات","jewelry":"مجوهرات وإكسسوارات","sewing":"أقمشة وخياطة","furniture":"أثاث","appliances":"أجهزة منزلية","homeware":"أواني ومستلزمات منزلية","carpets":"سجاد وموكيت","curtains":"ستائر","lighting":"إنارة","electrical_supplies":"مواد كهربائية","plumbing":"مواد صحية","building_materials":"مواد البناء","hardware_tools":"عدد وأدوات","paint":"أصباغ وديكور","cleaning_products":"مواد تنظيف","auto_parts":"قطع غيار السيارات","car_accessories":"إكسسوارات السيارات","tires_batteries":"إطارات وبطاريات","motorcycles":"دراجات نارية","bicycles":"دراجات هوائية","baby_supplies":"مستلزمات الأطفال","toys":"ألعاب أطفال","flowers":"ورد وهدايا","sports":"مستلزمات رياضية","party_supplies":"مستلزمات حفلات","pharmacies":"صيدليات","medical_supplies":"مستلزمات طبية","optics":"نظارات وبصريات","pets":"مستلزمات الحيوانات","agricultural_supplies":"مستلزمات زراعية","other":"متاجر أخرى"};
 
   box.innerHTML=arr.map(x=>{
     const st=x.approval_status||'approved';
