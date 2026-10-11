@@ -1434,6 +1434,12 @@ body.ha-family-shop .ha-direct-store-card{display:block!important;min-width:0!im
 .ha-direct-store-media{aspect-ratio:1.5/1;background:#eff8f4;display:grid;place-items:center;overflow:hidden}.ha-direct-store-media img{width:100%;height:100%;object-fit:cover;display:block}.ha-direct-store-placeholder{font-size:38px;color:#07865f}.ha-direct-store-body{padding:13px}.ha-direct-store-body h3{margin:0 0 6px!important;font-size:16px!important;line-height:1.4!important;overflow-wrap:anywhere;color:#102b4c!important}.ha-direct-store-body small{display:block;color:#58726a;font-size:11px;line-height:1.6;overflow-wrap:anywhere}.ha-direct-store-action{display:block;text-align:center;margin-top:10px;padding:8px;border-radius:9px;background:#e9f8ef;color:#087c60;font-size:12px;font-weight:700}
 #haShopStoreCount{font-size:12px;color:#58726a}#haShopStoreStatus{padding:18px;text-align:center;border-radius:15px;background:#fff;color:#58726a}#haShopStoreStatus[hidden]{display:none!important}.ha-store-suggestion-link{display:block;text-align:center;margin:18px 0 24px;color:#087c60;font-size:13px}
 @media(max-width:640px){body.ha-family-shop .ha-shop-add-store-entry{padding:16px!important;gap:12px!important;flex-wrap:wrap;min-height:120px!important}.ha-shop-add-store-symbol{flex-basis:50px;height:50px;font-size:34px}#haShopAddStore strong{font-size:21px}#haShopAddStore small{font-size:11px}.ha-shop-add-store-cta{font-size:11px;padding:9px 12px;margin-inline-start:62px}body.ha-family-shop .ha-direct-stores-grid{gap:8px!important}.ha-direct-store-body{padding:8px}.ha-direct-store-body h3{font-size:12px!important}.ha-direct-store-body small{font-size:9px}.ha-direct-store-action{font-size:10px;padding:7px 2px}.ha-direct-store-placeholder{font-size:28px}.ha-store-filter{font-size:11px!important;padding:7px 10px!important}}
+
+.ha-store-category{margin:22px 0!important}.ha-store-category-title{font-size:22px!important;color:#102b4c!important;margin:0 0 12px!important;display:flex;align-items:center;gap:10px}.ha-store-category-title:before{content:"";width:22px;height:5px;border-radius:5px;background:#0a996e}
+body.ha-family-shop #haShopStoreGroups .ha-category-divider{margin:24px 0!important;min-height:0!important;height:210px!important;border-radius:20px!important;overflow:hidden!important}
+body.ha-family-shop #haShopStoreGroups .ha-category-divider .ha-slider-track,body.ha-family-shop #haShopStoreGroups .ha-category-divider .ha-slide{height:100%!important;min-height:0!important}
+body.ha-family-shop #haShopStoreGroups .ha-category-divider .ha-slide-content{padding:20px 48px 38px!important;height:100%!important;min-height:0!important}.ha-category-divider .ha-slide-badge,.ha-category-divider .ha-slide-content p{display:none!important}
+@media(max-width:640px){.ha-store-category-title{font-size:19px!important}body.ha-family-shop #haShopStoreGroups .ha-category-divider{height:170px!important}body.ha-family-shop #haShopStoreGroups .ha-category-divider .ha-slide-content{padding:14px 40px 38px!important}.ha-category-divider .ha-slide-content h3{font-size:21px!important;line-height:1.3!important}body.ha-family-shop #haShopStoreGroups .ha-category-divider .ha-slide-details{font-size:10px!important;padding:6px 10px!important;margin-top:6px!important}.ha-category-divider .ha-slider-count{display:none!important}.ha-category-divider .ha-slider-arrow{width:30px!important;height:30px!important}}
 </style></head><body class="ha-premium-section-page ha-all-sections-layout ha-ui-final ha-family-shop"><div class="ha-app"><header class="ha-header">
   <div class="ha-topline">
     <div class="ha-brand"><div class="ha-logo"><img src="ha-logo-transparent.png" alt="HA"></div><div class="ha-brand-text"><strong>HA Marketing</strong><small>منصة واحدة لكل احتياجاتك</small></div></div>
@@ -1444,8 +1450,8 @@ body.ha-family-shop .ha-direct-store-card{display:block!important;min-width:0!im
 <div class="ha-search-wrap"><div class="ha-search"><span class="glass">⌕</span><input id="haSearch" type="search" placeholder="ماذا تريد أن تبحث عن منتج؟"><span class="mic" aria-label="خيارات البحث">☷</span></div></div><main class="ha-main">
 
 <div class="ha-section-head"><div class="ha-section-titlebox"><h1>🛒 التسوق</h1><p>كل ما تحتاجه في مكان واحد</p></div></div><a id="haShopAddStore" class="ha-shop-add-store-entry" href="seller-registration.html"><span class="ha-shop-add-store-symbol" aria-hidden="true">+</span><div><strong>إضافة متجر</strong><small>انضم كبائع واعرض متجرك ومنتجاتك</small></div><span class="ha-shop-add-store-cta">ابدأ الآن ←</span></a>
-<section id="haShopStores" aria-labelledby="haShopStoresTitle"><div class="ha-section-head"><h2 id="haShopStoresTitle">المتاجر</h2><span id="haShopStoreCount" aria-live="polite"></span></div><div id="haShopStoreFilters" class="ha-store-filters" aria-label="فرز المتاجر حسب القسم"></div><div id="haShopStoreStatus" role="status">جاري تحميل المتاجر…</div><div id="haShopStoresFirst" class="ha-direct-stores-grid"></div></section>
-<section class="ha-smart-slider" data-ha-slider="shop" aria-label="صور متحركة"><div class="ha-slider-loading">جاري تحميل الصور...</div></section><div id="haShopStoresRest" class="ha-direct-stores-grid" aria-label="باقي المتاجر"></div><a class="ha-store-suggestion-link" href="shop-store-suggestion.html">اقترح متجراً جديداً ←</a>
+<section id="haShopStores" aria-labelledby="haShopStoresTitle"><div class="ha-section-head"><h2 id="haShopStoresTitle">المتاجر</h2><span id="haShopStoreCount" aria-live="polite"></span></div><div id="haShopStoreFilters" class="ha-store-filters" aria-label="فرز المتاجر حسب القسم"></div><div id="haShopStoreStatus" role="status">جاري تحميل المتاجر…</div><div id="haShopStoreGroups"></div></section>
+<a class="ha-store-suggestion-link" href="shop-store-suggestion.html">اقترح متجراً جديداً ←</a>
 <div id="haEmpty" class="ha-empty">ماكو نتائج مطابقة للبحث.</div></main></div><nav class="ha-bottom"><div class="ha-bottom-inner" id="shopRoleNav">
 <a class="ha-nav" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>
 <a class="ha-nav active" href="shop.html"><span class="nicon">🛍️</span><span>التسوق</span></a>
@@ -1678,29 +1684,21 @@ function initSlider(root,slides){
   root._haSliderCleanup=()=>{
     clearInterval(timer);
     document.removeEventListener('visibilitychange',onVisibility);
+    root.removeEventListener('mouseenter',onEnter);root.removeEventListener('mouseleave',onLeave);root.removeEventListener('touchstart',onTouchStart);root.removeEventListener('touchend',onTouchEnd);
   };
 
   play();
 }
 
-function boot(){
-  document.querySelectorAll('[data-ha-slider]').forEach(root=>{
-    const section=root.dataset.haSlider;
-
-    // امسح الشكل القديم كلياً وابنه من جديد بنفس قالب الرئيسية.
-    root.innerHTML='';
-    root.removeAttribute('style');
-    root.classList.add('ha-home-pattern-slider');
-
-    initSlider(root,merge(section,null));
-
-    remote(section).then(rows=>{
-      if(Array.isArray(rows)&&rows.length){
-        initSlider(root,merge(section,rows));
-      }
-    }).catch(()=>{});
-  });
-}
+let sharedSlides=null,sharedRequest=null;
+window.haInitShopDivider=function(root){
+  if(!root||root._haDividerStarted)return;
+  root._haDividerStarted=true;
+  initSlider(root,sharedSlides||merge('shop',null));
+  if(!sharedRequest)sharedRequest=remote('shop').then(rows=>{sharedSlides=merge('shop',Array.isArray(rows)&&rows.length?rows:null);return sharedSlides;}).catch(()=>{sharedSlides=merge('shop',null);return sharedSlides;});
+  sharedRequest.then(slides=>{if(root.isConnected)initSlider(root,slides);});
+};
+function boot(){document.querySelectorAll('[data-ha-slider="shop"]').forEach(window.haInitShopDivider);}
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
 else boot();
@@ -1708,17 +1706,29 @@ else boot();
 })();
 </script><script src="ha-role-bottom-nav.js?v=20261008-customer-cart1" defer></script><script src="ha-card-customizer.js?v=20261008-all-sections1" defer></script>
 <script id="ha-shop-direct-stores-script">(function(){
- const first=document.getElementById('haShopStoresFirst'),rest=document.getElementById('haShopStoresRest'),status=document.getElementById('haShopStoreStatus'),filters=document.getElementById('haShopStoreFilters'),count=document.getElementById('haShopStoreCount'),search=document.getElementById('haSearch');
- if(!first||!rest)return;
- const names={library:'مكتبة',devices:'موبايلات',home_appliances:'الأجهزة الإلكترونية',printers:'مطبعة',device_accessories:'إكسسوارات',markets:'متاجر متنوعة',restaurants:'مطاعم',flowers:'ورد وهدايا',building_materials:'مواد البناء',cards_credit:'بطاقات وأرصدة',yugioh:'أوراق يوغي',clothes:'ملابس',shoes:'أحذية',pharmacies:'صيدليات'};
+ const groups=document.getElementById('haShopStoreGroups'),status=document.getElementById('haShopStoreStatus'),filters=document.getElementById('haShopStoreFilters'),count=document.getElementById('haShopStoreCount'),search=document.getElementById('haSearch');
+ if(!groups)return;
+ const names={library:'المكتبات',devices:'موبايلات',home_appliances:'الأجهزة الإلكترونية',printers:'المطابع',device_accessories:'إكسسوارات',markets:'متاجر متنوعة',restaurants:'مطاعم',flowers:'ورد وهدايا',building_materials:'مواد البناء',cards_credit:'بطاقات وأرصدة',yugioh:'أوراق يوغي',clothes:'ملابس',shoes:'أحذية',pharmacies:'صيدليات'};
  let stores=[],selected=new URLSearchParams(location.search).get('section')||'';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function picture(url){try{const x=new URL(String(url||''),location.href);return ['http:','https:'].includes(x.protocol)||/^data:image\/(png|jpeg|webp|gif);base64,/.test(String(url))?String(url):'';}catch(e){return '';}}
- function card(x){const src=picture(x.image_url),section=names[x.section_key]||'متجر',label=[x.name,section,x.location_text].filter(Boolean).join(' ');return '<a class="ha-direct-store-card" href="shop-business.html?id='+encodeURIComponent(x.id)+'" data-search="'+esc(label)+'"><div class="ha-direct-store-media">'+(src?'<img src="'+esc(src)+'" alt="'+esc(x.name)+'" loading="lazy" decoding="async">':'<span class="ha-direct-store-placeholder" aria-hidden="true">🏪</span>')+'</div><div class="ha-direct-store-body"><h3>'+esc(x.name||'متجر')+'</h3><small>'+esc(section)+'</small>'+(x.location_text?'<small>'+esc(x.location_text)+'</small>':'')+'<span class="ha-direct-store-action">عرض المتجر</span></div></a>';}
- function render(){const q=(search?.value||'').trim().toLocaleLowerCase();const visible=stores.filter(x=>(!selected||x.section_key===selected)&&(!q||[x.name,names[x.section_key],x.location_text,x.description].join(' ').toLocaleLowerCase().includes(q)));first.innerHTML=visible.slice(0,3).map(card).join('');rest.innerHTML=visible.slice(3).map(card).join('');count.textContent=visible.length+' متجر';status.hidden=visible.length>0;status.textContent=stores.length?'لا توجد متاجر مطابقة للبحث.':'لا توجد متاجر متاحة حالياً.';for(const b of filters.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b.dataset.section===selected));for(const img of document.querySelectorAll('.ha-direct-store-media img'))img.addEventListener('error',()=>{const span=document.createElement('span');span.className='ha-direct-store-placeholder';span.textContent='🏪';span.setAttribute('aria-hidden','true');img.replaceWith(span);},{once:true});}
+ function card(x){const src=picture(x.image_url);return '<a class="ha-direct-store-card" href="shop-business.html?id='+encodeURIComponent(x.id)+'"><div class="ha-direct-store-media">'+(src?'<img src="'+esc(src)+'" alt="'+esc(x.name)+'" loading="lazy" decoding="async">':'<span class="ha-direct-store-placeholder" aria-hidden="true">🏪</span>')+'</div><div class="ha-direct-store-body"><h3>'+esc(x.name||'متجر')+'</h3><span class="ha-direct-store-action">فتح المتجر</span></div></a>';}
+ function render(){
+  const q=(search?.value||'').trim().toLocaleLowerCase();
+  const visible=stores.filter(x=>(!selected||x.section_key===selected)&&(!q||[x.name,names[x.section_key],x.location_text,x.description].join(' ').toLocaleLowerCase().includes(q)));
+  const bySection=new Map();for(const x of visible){const key=x.section_key||'other';if(!bySection.has(key))bySection.set(key,[]);bySection.get(key).push(x);}
+  const order=['library','devices','home_appliances','printers'];
+  const keys=[...bySection.keys()].sort((a,b)=>{const ai=order.indexOf(a),bi=order.indexOf(b);return (ai<0?99:ai)-(bi<0?99:bi);});
+  for(const root of groups.querySelectorAll('[data-ha-slider]'))root._haSliderCleanup?.();
+  groups.innerHTML=keys.map((key,i)=>'<section class="ha-store-category" data-store-section="'+esc(key)+'"><h2 class="ha-store-category-title">'+esc(names[key]||'متاجر أخرى')+'</h2><div class="ha-direct-stores-grid">'+bySection.get(key).map(card).join('')+'</div></section>'+(i<keys.length-1?'<section class="ha-smart-slider ha-category-divider" data-ha-slider="shop" aria-label="شريط من خمس صور متحركة بين الأقسام"></section>':'')).join('');
+  for(const root of groups.querySelectorAll('[data-ha-slider]'))window.haInitShopDivider?.(root);
+  count.textContent=visible.length+' متجر';status.hidden=visible.length>0;status.textContent=stores.length?'لا توجد متاجر مطابقة للبحث.':'لا توجد متاجر متاحة حالياً.';
+  for(const b of filters.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b.dataset.section===selected));
+  for(const img of groups.querySelectorAll('.ha-direct-store-media img'))img.addEventListener('error',()=>{const span=document.createElement('span');span.className='ha-direct-store-placeholder';span.textContent='🏪';span.setAttribute('aria-hidden','true');img.replaceWith(span);},{once:true});
+ }
  function createFilters(){const keys=[...new Set(stores.map(x=>x.section_key).filter(Boolean))];if(selected&&!keys.includes(selected))selected='';filters.innerHTML='<button type="button" class="ha-store-filter" data-section="" aria-pressed="true">الكل</button>'+keys.map(k=>'<button type="button" class="ha-store-filter" data-section="'+esc(k)+'" aria-pressed="false">'+esc(names[k]||'متاجر أخرى')+'</button>').join('');}
  filters.addEventListener('click',e=>{const b=e.target.closest('[data-section]');if(!b)return;selected=b.dataset.section;render();});search?.addEventListener('input',render);
- document.querySelector('[data-ha-slider="shop"]')?.addEventListener('click',e=>{const a=e.target.closest('.ha-slide-details');if(!a)return;try{const u=new URL(a.getAttribute('href'),location.href);if(u.origin===location.origin&&u.pathname.endsWith('/shop-section.html')&&u.searchParams.get('section')){e.preventDefault();selected=u.searchParams.get('section');render();document.getElementById('haShopStores').scrollIntoView({behavior:'smooth',block:'start'});}}catch(err){}});
+ groups.addEventListener('click',e=>{const a=e.target.closest('.ha-slide-details');if(!a)return;try{const u=new URL(a.getAttribute('href'),location.href);if(u.origin===location.origin&&u.pathname.endsWith('/shop-section.html')&&u.searchParams.get('section')){e.preventDefault();selected=u.searchParams.get('section');render();document.getElementById('haShopStores').scrollIntoView({behavior:'smooth',block:'start'});}}catch(err){}});
  async function load(){try{if(!window.supabase)throw Error('SDK unavailable');const db=window.supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let rows=[],offset=0;for(;;){const {data,error}=await db.from('shop_businesses').select('id,name,section_key,location_text,description,image_url,is_active,approval_status,sort_order,created_at').eq('is_active',true).order('sort_order').order('created_at').order('id').range(offset,offset+99);if(error)throw error;const batch=data||[];rows.push(...batch);if(batch.length<100)break;offset+=100;}stores=rows.filter(x=>x.is_active!==false&&(!x.approval_status||x.approval_status==='approved'));createFilters();render();}catch(e){status.hidden=false;status.textContent='تعذر تحميل المتاجر. ';const retry=document.createElement('button');retry.type='button';retry.className='ha-store-filter';retry.textContent='إعادة المحاولة';retry.onclick=()=>{status.textContent='جاري تحميل المتاجر…';load();};status.appendChild(retry);}}
  load();
 })();</script></body></html>
