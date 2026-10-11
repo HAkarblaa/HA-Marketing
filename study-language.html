@@ -127,7 +127,7 @@ body.file-fullscreen #pages{padding-bottom:40px}
 </section>
 <section id="files" class="lesson"><div class="box">
 <h2>📄 ترجمة ملف</h2>
-<p class="hint">ارفع ملف PDF أو Word أو TXT. إذا كان الـPDF مصوراً أو سكانر يتم تشغيل OCR تلقائياً، ثم تتم الترجمة داخلياً فقرةً فقرةً من دون عرض محتوى الملف على الشاشة.</p>
+<p class="hint">ارفع ملف PDF أو Word أو TXT. إذا كان الـPDF مصوراً أو سكانر يتم تشغيل OCR تلقائياً، ثم تتم الترجمة داخلياً من دون عرض محتوى الملف على الشاشة. الملف الناتج يحتوي النص الأصلي وتحته ترجمة كل جزء، بنفس ترتيب القراءة. يبقى الملف الأصلي محفوظاً كما هو؛ الصور وتصميم الصفحات والجداول لا تُنقل إلى النسخة النصية الجديدة.</p>
 
 <div class="file-download-only">
   <div class="file-target-row">
@@ -525,7 +525,11 @@ function translatedOutputName(target){
     .replace(/[\\/:*?"<>|]+/g,'-')
     .trim() || 'translated-file';
 
-  return `${base}-مترجم-${target}.pdf`;
+  return `${base}-الأصل-والترجمة-${target}.pdf`;
+}
+
+function bilingualFileText(){
+  return translatedFileParts.map(p=>'النص الأصلي:\n'+p.original+'\n\nالترجمة:\n'+p.translated).join('\n\n────────────\n\n');
 }
 
 function setFileStatus(text,type=''){
@@ -538,11 +542,11 @@ function showFileDone(name,count,target){
   const box=document.getElementById('fileDoneBox');
   document.getElementById('fileDoneTitle').textContent='اكتملت ترجمة الملف';
   document.getElementById('fileDoneMeta').textContent=
-    `تمت ترجمة ${count} فقرة/جزء إلى ${target}. الملف جاهز للتحميل والفتح.`;
+    `تمت ترجمة ${count} فقرة/جزء إلى ${target}. النص الأصلي وترجمته جاهزان للتحميل والفتح.`;
   box.classList.remove('hidden');
   lastTranslatedName=name;
   const output=document.getElementById('fileOutputActions');output.replaceChildren();
-  HAStudyFiles.present(output,HAStudyFiles.fromText(translatedFileParts.map(p=>p.translated).join('\n\n'),name,{rtl:['العربية','الفارسية','الكردية','الأردية'].includes(target)}));
+  HAStudyFiles.present(output,HAStudyFiles.fromText(bilingualFileText(),name,{rtl:['العربية','الفارسية','الكردية','الأردية'].includes(target)}));
 }
 
 async function translateFilePartExact(part,target,index,total){
@@ -720,9 +724,9 @@ async function buildTranslatedPdf(target){
     'padding:34px 36px;font-family:Arial,Tahoma,sans-serif;line-height:1.9;'+
     (isRtl?'text-align:right;':'text-align:left;');
 
-  // الملف الناتج يحتوي الترجمة فقط، من دون عرض النص الأصلي أو أرقام فقرات.
+  // Keep each extracted original part followed by its translation.
   temp.innerHTML=translatedFileParts.map(p=>
-    `<div style="margin:0 0 15px;white-space:pre-wrap;page-break-inside:auto">${escapeHtmlDownload(p.translated)}</div>`
+    `<section style="margin:0 0 24px;page-break-inside:auto"><b>النص الأصلي:</b><div dir="auto" style="white-space:pre-wrap;unicode-bidi:plaintext">${escapeHtmlDownload(p.original)}</div><b>الترجمة:</b><div dir="auto" style="white-space:pre-wrap;unicode-bidi:plaintext">${escapeHtmlDownload(p.translated)}</div></section>`
   ).join('');
 
   document.body.appendChild(temp);
@@ -757,7 +761,7 @@ async function buildTranslatedPdf(target){
   }
 }
 
-function downloadLastTranslatedFile(){if(!translatedFileParts.length)return alert('لا يوجد ملف مترجم جاهز حالياً.');HAStudyFiles.download(HAStudyFiles.fromText(translatedFileParts.map(p=>p.translated).join('\n\n'),lastTranslatedName));}
+function downloadLastTranslatedFile(){if(!translatedFileParts.length)return alert('لا يوجد ملف مترجم جاهز حالياً.');HAStudyFiles.download(HAStudyFiles.fromText(bilingualFileText(),lastTranslatedName));}
 
 </script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
 <script id="ha-open-language-tab-from-hash">
@@ -797,16 +801,7 @@ function button(text,fn){const b=document.createElement('button');b.type='button
 function dialog(title){const d=document.createElement('dialog');d.className='ha-study-output-dialog';const head=document.createElement('div');head.className='ha-study-output-head';const h=document.createElement('h3');h.textContent=title;head.append(h,button('إغلاق',()=>d.close()));d.append(head);document.body.append(d);let clean=[];d.onclose=()=>{clean.forEach(f=>f());d.remove();};d.cleanup=f=>clean.push(f);d.showModal();return d;}
 function notice(container,message){let p=container.querySelector('.ha-study-output-message');if(!p){p=document.createElement('p');p.className='ha-study-output-message';p.setAttribute('role','status');container.append(p);}p.textContent=message;}
 async function getText(o){const t=typeof o.text==='function'?await o.text():o.text;if(typeof t!=='string'||!t.trim())throw new Error('لا يوجد نص قابل للتحويل في هذا الملف.');return t;}
-function textHtml(text,rtl){return '<!doctype html><html lang="ar" dir="'+(rtl?'rtl':'ltr')+'"><meta charset="utf-8"><title>الملف الناتج</title><body style="font:18px/1.9 Arial,Tahoma;white-space:pre-wrap;padding:28px">'+esc(text)+'<style id="ha-hide-messages-ui">
-/* Hide messaging entry points, including links added after page load. */
-html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
-a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
-#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
-[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
-html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
-html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
-</style>
-</body></html>';}
+function textHtml(text,rtl){return '<!doctype html><html lang="ar" dir="'+(rtl?'rtl':'ltr')+'"><meta charset="utf-8"><title>الملف الناتج</title><body style="font:18px/1.9 Arial,Tahoma;white-space:pre-wrap;padding:28px">'+esc(text)+'</body></html>';}
 async function word(text,rtl){if(!window.JSZip)throw new Error('تعذر تحميل مكتبة Word. أعد المحاولة عند توفر الإنترنت.');const z=new JSZip();z.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');z.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');const paragraphs=text.split(/\r?\n/).map(line=>'<w:p><w:pPr>'+(rtl?'<w:bidi/><w:jc w:val="right"/>':'')+'</w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>'+(rtl?'<w:rtl/>':'')+'</w:rPr><w:t xml:space="preserve">'+esc(line)+'</w:t></w:r></w:p>').join('');z.file('word/document.xml','<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+paragraphs+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr></w:body></w:document>');return z.generateAsync({type:'blob',mimeType:mime.docx,compression:'DEFLATE'});}
 async function pdf(text,rtl){if(!window.jspdf?.jsPDF||!window.html2canvas)throw new Error('تعذر تحميل مكتبة PDF. أعد المحاولة عند توفر الإنترنت.');const paper=document.createElement('div'),content=document.createElement('div');paper.style.cssText='position:absolute;left:0;top:0;z-index:-1;width:760px;height:1080px;overflow:hidden;background:#fff;color:#111;';content.dir=rtl?'rtl':'ltr';content.style.cssText='font:20px/36px Arial,Tahoma;white-space:pre-wrap;overflow-wrap:anywhere;';content.textContent=text;paper.append(content);document.body.append(paper);try{await document.fonts?.ready;const total=content.scrollHeight,doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});for(let offset=0,page=0;offset<total;offset+=1080,page++){paper.style.height=Math.min(1080,total-offset)+'px';content.style.transform='translateY(-'+offset+'px)';const canvas=await html2canvas(paper,{scale:1.5,backgroundColor:'#fff',useCORS:true,scrollX:0,scrollY:0});if(!canvas.width||!canvas.height)throw new Error('تعذر إنشاء صفحة PDF.');if(page)doc.addPage();doc.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',32,32,531,canvas.height*531/canvas.width);canvas.width=canvas.height=0;}return doc.output('blob');}finally{paper.remove();}}
 async function imageAs(blob,format){const url=URL.createObjectURL(blob);try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('تعذر قراءة الصورة.'));img.src=url;});const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');if(format==='jpg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);}ctx.drawImage(img,0,0);return await new Promise((resolve,reject)=>c.toBlob(b=>{if(!b||b.type!==mime[format])reject(new Error('هذه الصيغة غير مدعومة على الجهاز.'));else resolve(b);},mime[format],.92));}finally{URL.revokeObjectURL(url);}}
@@ -825,4 +820,13 @@ else if(blob.type==='application/pdf'){o.formats=['pdf','docx','txt'];o.extracte
 else if(['txt','html','doc'].includes(ext)){o.formats=[...new Set([ext,'pdf','docx','txt','html'])];o.text=async()=>{const raw=await blob.text();if(ext==='txt')return raw;const doc=new DOMParser().parseFromString(raw,'text/html');doc.querySelectorAll('script,style,link').forEach(x=>x.remove());return doc.body.textContent||'';};}return o;}
 window.HAStudyFiles={present,fromText,fromBlob,open,download,build,save};
 })();
-</script></body></html>
+</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>
