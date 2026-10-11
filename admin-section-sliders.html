@@ -20,4 +20,13 @@ async function upload(slot,file){if(!file)return null;if(!String(file.type||'').
 async function saveSlot(slot,btn){try{btn.disabled=true;msg.textContent='جاري الحفظ...';let image=$('u'+slot).value.trim();const file=$('f'+slot).files?.[0];if(file)image=await upload(slot,file);if(!image)throw new Error('حدد صورة أو رابط صورة.');const row={section_key:current,slot,image_url:image,title:$('t'+slot).value.trim(),subtitle:$('s'+slot).value.trim(),details_url:$('d'+slot).value.trim()||'index.html',is_active:$('a'+slot).checked,updated_by:user.id,updated_at:new Date().toISOString()};const {error}=await db.from('section_sliders').upsert(row,{onConflict:'section_key,slot'});if(error)throw error;msg.textContent='✅ تم الحفظ. التغيير سيظهر مباشرة في قسم '+sectionSelect.options[sectionSelect.selectedIndex].text+'.';await loadSection()}catch(e){msg.textContent='❌ '+(e?.message||e)}finally{btn.disabled=false}}
 async function restoreDefault(slot){const d=DEFAULTS[current].find(x=>x.slot===slot);if(!d)return;if(!confirm('إرجاع الصورة '+slot+' للوضع الافتراضي؟'))return;const {error}=await db.from('section_sliders').upsert({section_key:current,...d,updated_by:user.id,updated_at:new Date().toISOString()},{onConflict:'section_key,slot'});msg.textContent=error?'❌ '+error.message:'✅ تمت استعادة الصورة الافتراضية.';await loadSection()}
 loadBtn.onclick=loadSection;sectionSelect.onchange=loadSection;init();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

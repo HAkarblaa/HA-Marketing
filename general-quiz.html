@@ -29,4 +29,13 @@ function disable(){document.querySelectorAll('.ans').forEach(b=>b.disabled=true)
 function choose(n,b){if(locked)return;locked=true;clearInterval(t);disable();let x=qs[i];if(n===x.c){ok++;b.classList.add('correct');mark.textContent='✅'}else{bad++;b.classList.add('wrong');answers.children[x.c].classList.add('correct');mark.textContent='❌'}setTimeout(next,3000)}
 function timeout(){if(locked)return;locked=true;skip++;bad++;disable();answers.children[qs[i].c].classList.add('correct');mark.textContent='⏱️❌';setTimeout(next,3000)}
 function next(){i++;i>=TOTAL?finish():render()}function finish(){clearInterval(t);quiz.style.display='none';result.classList.add('show');pct.textContent=Math.round(ok/TOTAL*100)+'%';document.getElementById('ok').textContent=ok;document.getElementById('bad').textContent=bad;document.getElementById('skip').textContent=skip;fill.style.height='100%';arr.style.bottom='100%';ball.textContent='20'}
-restart.onclick=newGame;newGame();</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+restart.onclick=newGame;newGame();</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

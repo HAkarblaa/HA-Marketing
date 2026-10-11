@@ -10,4 +10,13 @@ const M=window.HA_CARD_MANIFEST||[];let ready=false;
 function render(){if(!ready)return;const pv=page.value,qq=q.value.trim().toLowerCase();let a=M.filter(x=>(!pv||x.page_key===pv)&&(!qq||(x.label+' '+x.page_key+' '+x.kind).toLowerCase().includes(qq)));count.textContent='عدد المربعات: '+a.length;grid.innerHTML=a.length?a.map(x=>`<div class="item"><h3>${esc(x.label)}<span class="badge">${esc(x.kind)}</span></h3><div class="meta">${esc(x.page_key)} ${esc(x.href||'')}</div><button data-key="${esc(x.card_key)}">تعديل الشكل والصورة</button></div>`).join(''):'<div class="empty">لا توجد نتائج</div>';grid.querySelectorAll('button[data-key]').forEach(b=>b.onclick=()=>{const d=M.find(x=>x.card_key===b.dataset.key);window.HACardCustomizer.openDefinition(d)})}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 document.addEventListener('ha-card-customizer-ready',e=>{if(!e.detail.isSuper){gate.textContent='هذه الصفحة للأدمن الرئيسي فقط.';return}ready=true;gate.style.display='none';tools.style.display='grid';[...new Set(M.map(x=>x.page_key))].sort().forEach(p=>{let o=document.createElement('option');o.value=p;o.textContent=p;page.appendChild(o)});render()});page.onchange=render;q.oninput=render;
-</script></body></html>
+</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

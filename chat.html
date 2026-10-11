@@ -241,7 +241,7 @@
   </div>
 </section>
 <div id="chatHub class="section-title"><b>المحادثات</b></div>
-<div id="app" class="app"><aside class="side"><div class="head"><div class="headrow"><button class="back" onclick="location.href='index.html'">⌂</button><b style="flex:1">💬 الدردشة</b><button class="new" onclick="openNew()">＋ جديد</button></div><input id="q" class="search" placeholder="ابحث بالاسم أو اليوزر أو رقم الهاتف..." oninput="searchAll()"><div class="tabs"><button id="tChats" class="on" onclick="setTab('chats')">المحادثات</button><button id="tPeople" onclick="setTab('people')">الأشخاص</button></div></div><div id="list" class="list"></div></aside><main class="main"><div id="chatHead" class="chathead">اختر محادثة</div><div id="msgs" class="msgs"><div class="empty">اختر شخصاً أو كروباً لبدء الدردشة</div></div><div class="quick-replies" id="quickReplies">
+<div id="app" class="app"><aside class="side"><div class="head"><div class="headrow"><button class="back" onclick="location.href='index.html'">⌂</button><b style="flex:1">💬 الدردشة</b><button class="new" onclick="openNew()">＋ جديد</button></div><input id="q" class="search" placeholder="ابحث بالاسم أو اليوزر أو رقم الهاتف..." oninput="searchAll()"><div class="tabs"><button data-ha-messaging-hidden id="tChats" class="on" onclick="setTab('chats')">المحادثات</button><button id="tPeople" onclick="setTab('people')">الأشخاص</button></div></div><div id="list" class="list"></div></aside><main class="main"><div id="chatHead" class="chathead">اختر محادثة</div><div id="msgs" class="msgs"><div class="empty">اختر شخصاً أو كروباً لبدء الدردشة</div></div><div class="quick-replies" id="quickReplies">
       <button type="button" onclick="quickReply('السلام عليكم')">السلام عليكم</button>
       <button type="button" onclick="quickReply('تمام، شكراً')">تمام، شكراً</button>
       <button type="button" onclick="quickReply('وين موقعك؟')">وين موقعك؟</button>
@@ -606,4 +606,13 @@ window.addEventListener('offline',updateConnection);
 updateConnection();
 
 init();
-</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

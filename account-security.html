@@ -24,4 +24,13 @@ async function verifyCode(ch){try{const code=ch==='whatsapp'?waCode.value:emailC
 async function saveEmail(){if(!email.validity.valid||!email.value.trim()){alert('اكتب بريد صحيح');return}try{await sendCode('email')}catch(e){alert(e.message)}}
 async function enrollMfa(){try{const {data,error}=await db.auth.mfa.enroll({factorType:'totp',friendlyName:'HA Marketing'});if(error)throw error;mfaBox.innerHTML='<p class="note">امسح QR بتطبيق Authenticator ثم أدخل الرمز:</p><img style="max-width:220px;width:100%" src="'+data.totp.qr_code+'"><input id="totp" inputmode="numeric" maxlength="6"><button onclick="confirmMfa(\''+data.id+'\')">تأكيد 2FA</button>'}catch(e){alert('تعذر بدء 2FA: '+e.message)}}
 async function confirmMfa(id){const {data:c,error:e1}=await db.auth.mfa.challenge({factorId:id});if(e1){alert(e1.message);return}const {error}=await db.auth.mfa.verify({factorId:id,challengeId:c.id,code:totp.value});alert(error?'تعذر التأكيد: '+error.message:'تم تفعيل التأكيد الثنائي بنجاح')}
-init();</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+init();</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

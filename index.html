@@ -2935,4 +2935,13 @@ else boot();
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh(true);});
   refresh();
 })();
-</script><script id="ha-home-sections-search">(function(){const input=document.getElementById('haSearch'),empty=document.getElementById('haEmpty');if(!input)return;input.addEventListener('input',e=>{e.stopImmediatePropagation();const q=input.value.trim().toLocaleLowerCase();let visible=0;for(const card of document.querySelectorAll('.ha-restored-main-cards .ha-cat')){const match=!q||((card.dataset.search||'')+' '+card.textContent).toLocaleLowerCase().includes(q);card.style.setProperty('display',match?'':'none',match?'':'important');if(match&&!card.hidden)visible++;}if(empty)empty.style.display=q&&!visible?'block':'none';},{capture:true});})();</script></body></html>
+</script><script id="ha-home-sections-search">(function(){const input=document.getElementById('haSearch'),empty=document.getElementById('haEmpty');if(!input)return;input.addEventListener('input',e=>{e.stopImmediatePropagation();const q=input.value.trim().toLocaleLowerCase();let visible=0;for(const card of document.querySelectorAll('.ha-restored-main-cards .ha-cat')){const match=!q||((card.dataset.search||'')+' '+card.textContent).toLocaleLowerCase().includes(q);card.style.setProperty('display',match?'':'none',match?'':'important');if(match&&!card.hidden)visible++;}if(empty)empty.style.display=q&&!visible?'block':'none';},{capture:true});})();</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

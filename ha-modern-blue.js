@@ -52,7 +52,6 @@
       ['index.html','🏠','الرئيسية','home'],
       ['orders-center.html','📦','طلباتي','orders'],
       ['notifications-center.html','🔔','الإشعارات','notifications'],
-      ['chat.html','💬','المحادثات','chat'],
       ['account.html','👤','حسابي','account']
     ];
     nav.innerHTML='<div class="ha-modern-bottominner">'+navItems.map(function(n){return '<a class="ha-modern-navitem '+(cfg.key===n[3]?'active':'')+'" href="'+n[0]+'"><span class="ni">'+n[1]+'</span><span>'+n[2]+'</span></a>'}).join('')+'</div>';

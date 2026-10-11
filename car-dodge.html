@@ -42,4 +42,13 @@ function finish(){if(!running)return;running=false;cancelAnimationFrame(raf);HAG
 function loop(){if(!running)return;t++;score=Math.floor(t/5);if(t%42===0)spawn();if(keys.left)P.x=Math.max(60,P.x-7);if(keys.right)P.x=Math.min(360,P.x+7);cars.forEach(o=>o.y+=6+Math.min(8,score/40));cars=cars.filter(o=>o.y<760);if(cars.some(o=>hit(P,o)))return finish();scoreEl.textContent=score;draw();raf=requestAnimationFrame(loop)}
 function draw(){X.fillStyle='#263441';X.fillRect(0,0,420,680);X.fillStyle='#111923';X.fillRect(28,0,364,680);X.fillStyle='#d8dde3';for(let y=(t*7)%70-70;y<680;y+=70)X.fillRect(206,y,8,38);for(const o of cars){X.fillStyle=o.c;X.fillRect(o.x-o.w/2,o.y-o.h/2,o.w,o.h);X.fillStyle='#dbeafe88';X.fillRect(o.x-14,o.y-25,28,14)}X.fillStyle='#f7bd3b';X.fillRect(P.x-P.w/2,P.y-P.h/2,P.w,P.h);X.fillStyle='#dbeafeaa';X.fillRect(P.x-14,P.y-25,28,14);X.fillStyle='#fff';X.font='bold 24px Tahoma';X.fillText('النقاط '+score,18,34);if(!running){X.fillStyle='#0008';X.fillRect(0,0,420,680);X.fillStyle='#fff';X.font='bold 30px Tahoma';X.textAlign='center';X.fillText(score?'انتهت الجولة':'اضغط ابدأ',210,330);X.textAlign='start'}}
 function setDir(d,v){keys[d]=v}leftBtn.onpointerdown=()=>setDir('left',1);leftBtn.onpointerup=leftBtn.onpointerleave=()=>setDir('left',0);rightBtn.onpointerdown=()=>setDir('right',1);rightBtn.onpointerup=rightBtn.onpointerleave=()=>setDir('right',0);addEventListener('keydown',e=>{if(e.key==='ArrowLeft')keys.left=1;if(e.key==='ArrowRight')keys.right=1});addEventListener('keyup',e=>{if(e.key==='ArrowLeft')keys.left=0;if(e.key==='ArrowRight')keys.right=0});startBtn.onclick=()=>{reset();running=true;document.getElementById('status').textContent='اللعبة شغالة';HAGame.beep();loop()};restartBtn.onclick=reset;reset();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

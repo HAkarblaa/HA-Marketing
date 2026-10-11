@@ -11,4 +11,13 @@
 </head><body class="ha-ui-final ha-family-shop"><div class="ha-family-strip"><a href="shop.html">← التسوق</a><div><b>المفضلة</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div><div class="wrap"><div class="row"><a class="btn light" href="shop.html">← تسوق الآن</a><a class="btn" href="cart.html">🛒 السلة</a></div><h1>❤️ المفضلة</h1><div id="box" class="grid"><div class="card">جاري التحميل...</div></div></div><script>
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}async function load(){const {data:u}=await db.auth.getUser();if(!u?.user){box.innerHTML='<div class="card">سجل الدخول حتى تشاهد المفضلة.</div>';return}const {data:f,error}=await db.from('shop_favorites').select('product_id,products(id,name,price,discount_price,image_url,stock,is_active,product_categories(slug))').eq('user_id',u.user.id);if(error){box.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}const arr=(f||[]).map(x=>x.products).filter(Boolean).filter(x=>x.is_active);box.innerHTML=arr.map(p=>`<div class="card">${p.image_url?`<img class="img" src="${esc(p.image_url)}">`:''}<h2>${esc(p.name)}</h2><div class="row"><span class="price">${Number(p.discount_price??p.price).toLocaleString('ar-IQ')} د.ع</span><a class="btn light" href="product-details.html?id=${p.id}&category=${encodeURIComponent(p.product_categories?.slug||'')}">التفاصيل</a></div><button style="width:100%;margin-top:8px" onclick="removeFav(${p.id})">إزالة من المفضلة</button></div>`).join('')||'<div class="card">ما عندك منتجات مفضلة حالياً.</div>'}async function removeFav(id){const {data:u}=await db.auth.getUser();await db.from('shop_favorites').delete().eq('user_id',u.user.id).eq('product_id',id);load()}load();
 </script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
 </body></html>

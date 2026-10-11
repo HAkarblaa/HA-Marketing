@@ -24,4 +24,13 @@ function moveYou(n){let candidates=you.map((p,i)=>[p,i]).filter(x=>x[0]>=0).sort
 function moveCpu(n){let candidates=cpu.map((p,i)=>[p,i]).filter(x=>x[0]<N).sort((a,b)=>b[0]-a[0]);if(!candidates.length)return;let [p,i]=candidates[0];cpu[i]=p+n>=N?N:p+n}
 function check(){if(you.every(x=>x<0)){over=true;status.textContent='أنت فزت! 🎉';finishRank(true);return true}if(cpu.every(x=>x>=N)){over=true;status.textContent='الجهاز فاز.';finishRank(false);return true}return false}
 roll.onclick=()=>{if(over||turn!=='you')return;let n=d();dice.textContent='🎲 '+n;moveYou(n);render();if(check())return;turn='cpu';status.textContent='الجهاز يرمي...';setTimeout(()=>{let c=d();dice.textContent='🎲 '+c;moveCpu(c);render();if(check())return;turn='you';status.textContent='دورك — اضغط رمي النرد.'},700)};reset.onclick=init;init();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

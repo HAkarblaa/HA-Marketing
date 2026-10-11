@@ -39,7 +39,6 @@
       '<a class="ha-nav '+(key==='home'?'active':'')+'" href="index.html"><span class="nicon">🏠</span><span>الرئيسية</span></a>'+
       '<a class="ha-nav '+(key==='orders'?'active':'')+'" href="orders-center.html"><span class="nicon">🛍️</span><span>طلباتي</span></a>'+
       '<a class="ha-nav '+(key==='notifications'?'active':'')+'" href="notifications-center.html"><span class="nicon ha-nav-badge">🔔</span><span>الإشعارات</span></a>'+
-      '<a class="ha-nav '+(key==='chat'?'active':'')+'" href="chat.html"><span class="nicon">💬</span><span>المحادثات</span></a>'+
       '<a class="ha-nav '+(key==='account'?'active':'')+'" href="account.html"><span class="nicon">👤</span><span>حسابي</span></a>'+
     '</div>';
     document.body.appendChild(nav);

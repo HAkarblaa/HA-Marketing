@@ -14,4 +14,13 @@ let row={owner_user_id:me.id,facility_type:'gym',name:n.value.trim(),address:a.v
 list.innerHTML=arr.map(x=>`<article class=c><h3>🏋️ ${esc(x.name)}</h3><div>${esc(x.governorate||'')} — ${esc(x.address||'')}</div>${userPos&&Number.isFinite(x._distance)?`<div class=muted>🧭 يبعد عنك ${HA_Nearby.distanceText(x._distance)}</div>`:''}<div class=muted>الدوام: ${esc(x.working_hours||'—')}<br>الاشتراك: ${Number(x.price||0).toLocaleString('ar-IQ')} د.ع<br>${esc(x.details||'')}</div><button onclick="join(${x.id})">طلب اشتراك</button></article>`).join('')||'<div class=c>لا توجد مراكز مضافة بعد.</div>'}gymLocate.onclick=async()=>{try{let z=await HA_Nearby.getCurrent({allowCache:false});facilityLat=z.lat;facilityLng=z.lng;gymLocStatus.textContent='✅ تم تحديد الموقع'}catch(e){gymLocStatus.textContent='تعذر تحديد الموقع'}};
 async function loadUserPos(){try{userPos=await HA_Nearby.getCurrent({allowCache:false});load()}catch(e){}}
 setTimeout(loadUserPos,250);
-async function join(id){if(!me)return location.href='login.html?next=gym.html';let note=prompt('ملاحظة للطلب (اختياري)')||'';let {error}=await db.from('sports_bookings').insert({user_id:me.id,facility_id:id,status:'pending',notes:note});alert(error?error.message:'✅ تم إرسال طلب الاشتراك')}init();</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+async function join(id){if(!me)return location.href='login.html?next=gym.html';let note=prompt('ملاحظة للطلب (اختياري)')||'';let {error}=await db.from('sports_bookings').insert({user_id:me.id,facility_id:id,status:'pending',notes:note});alert(error?error.message:'✅ تم إرسال طلب الاشتراك')}init();</script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

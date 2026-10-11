@@ -83,4 +83,13 @@ async function review(id,s){
 
   await load();
 }
-async function addMaterial(){const payload={stage:stage.value.trim(),grade:grade.value.trim()||null,subject:subject.value.trim(),title:title.value.trim(),material_type:type.value,description:desc.value.trim()||null,external_url:url.value.trim()||null,created_by:me.id,is_active:true};if(!payload.stage||!payload.subject||!payload.title)return alert('أكمل المرحلة والمادة والعنوان');const {error}=await db.from('study_materials').insert(payload);mstatus.textContent=error?error.message:'تمت إضافة المادة.'}init();</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+async function addMaterial(){const payload={stage:stage.value.trim(),grade:grade.value.trim()||null,subject:subject.value.trim(),title:title.value.trim(),material_type:type.value,description:desc.value.trim()||null,external_url:url.value.trim()||null,created_by:me.id,is_active:true};if(!payload.stage||!payload.subject||!payload.title)return alert('أكمل المرحلة والمادة والعنوان');const {error}=await db.from('study_materials').insert(payload);mstatus.textContent=error?error.message:'تمت إضافة المادة.'}init();</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

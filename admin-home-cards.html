@@ -53,4 +53,13 @@ async function restoreCard(key,btn){
  if(!isSuper)return;if(!confirm('ترجع صورة هذا القسم إلى الصورة الافتراضية؟'))return;try{btn.disabled=true;const {error}=await db.from('home_category_cards').delete().eq('section_key',key);if(error)throw error;showMsg('✅ رجعت الصورة الافتراضية.');await load()}catch(e){showMsg('❌ '+(e?.message||e),false)}finally{btn.disabled=false}
 }
 init();
-</script></body></html>
+</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

@@ -23,4 +23,13 @@ async function upload(n,file){if(!file)return null;if(!String(file.type||'').sta
 async function save(n,btn){if(!isSuper)return;try{btn.disabled=true;msg.textContent='جاري حفظ الصورة '+n+'...';const file=document.getElementById('f'+n).files?.[0];let url=document.getElementById('u'+n).value.trim();if(file)url=await upload(n,file);if(!url)throw new Error('اختر صورة من الجهاز أو ضع رابط صورة.');const {error}=await db.from('home_slider_images').upsert({slot:n,image_url:url,is_active:true,updated_by:user.id,updated_at:new Date().toISOString()},{onConflict:'slot'});if(error)throw error;msg.textContent='✅ تم حفظ الصورة '+n+' وستظهر في الواجهة الرئيسية.';await load()}catch(e){msg.textContent='❌ '+(e?.message||e)}finally{btn.disabled=false}}
 async function hideSlide(n){if(!isSuper||!confirm('إخفاء الصورة '+n+' من الواجهة الرئيسية؟'))return;const {error}=await db.from('home_slider_images').update({is_active:false,updated_by:user.id,updated_at:new Date().toISOString()}).eq('slot',n);msg.textContent=error?'❌ '+error.message:'✅ تم إخفاء الصورة '+n;await load()}
 init();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

@@ -16,4 +16,13 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 (async()=>{const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}const {data:ok}=await db.rpc('is_super_admin');if(!ok){gate.textContent='هذه الصفحة للأدمن الرئيسي فقط.';return}gate.textContent='✅ صلاحية الأدمن الرئيسي فعالة';load()})();
 async function load(){const {data,error}=await db.from('app_ratings').select('*').order('created_at',{ascending:false}).limit(300);if(error){list.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}list.innerHTML=(data||[]).map(x=>`<div class="card"><div class="row"><b>${esc(x.target_type)} — ${esc(x.target_key)}</b><span class="stars">${'★'.repeat(x.rating)}${'☆'.repeat(5-x.rating)}</span></div><div>${esc(x.comment||'بدون تعليق')}</div><div class="row"><small class="muted">${new Date(x.created_at).toLocaleString('ar-IQ')}</small><button class="danger" onclick="del(${x.id})">حذف التقييم</button></div></div>`).join('')||'<div class="card">لا توجد تقييمات بعد.</div>'}
 async function del(id){if(!confirm('حذف هذا التقييم؟'))return;const {error}=await db.from('app_ratings').delete().eq('id',id);if(error)return alert(error.message);load()}
-</script></body></html>
+</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

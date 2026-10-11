@@ -58,4 +58,13 @@ const {error}=await db.from('study_materials').insert({stage:mStage.value,grade:
 async function loadMaterials(){materials.innerHTML='جاري التحميل...';const {data,error}=await db.from('study_materials').select('*').order('created_at',{ascending:false}).limit(100);if(error){materials.textContent=error.message;return}materials.innerHTML=(data||[]).map(x=>`<div class="item"><div class="row"><b>${esc(x.title)}</b><span class="badge">${esc(x.material_type)}</span></div><div>${esc(x.stage)} — ${esc(x.grade||'')} ${esc(x.branch_name||'')} — ${esc(x.subject)}</div><div class="row">${x.file_url?`<a href="${esc(x.file_url)}" target="_blank">فتح</a>`:''}<button class="danger" onclick="deleteMat(${x.id})">حذف</button></div></div>`).join('')||'لا توجد ملفات'}
 async function deleteMat(id){if(!confirm('حذف هذا الملف من القائمة؟'))return;const {error}=await db.from('study_materials').delete().eq('id',id);if(error)return alert(error.message);loadMaterials()}
 init();
-</script></body></html>
+</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>
