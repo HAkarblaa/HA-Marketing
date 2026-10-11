@@ -10,4 +10,13 @@ const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_pu
 async function init(){const {data:{session}}=await db.auth.getSession();if(!session)return location.href='login.html';me=session.user;const {data:c}=await db.from('study_classes').select('teacher_user_id').eq('id',classId).maybeSingle();isTeacher=c?.teacher_user_id===me.id;if(isTeacher){document.body.classList.add('teacher');const {data}=await db.rpc('get_study_class_students',{p_class_id:Number(classId)});student.innerHTML=(data||[]).map(x=>`<option value="${x.student_user_id}">${x.email}</option>`).join('')||'<option value="">لا يوجد طلاب</option>'}day.value=new Date().toISOString().slice(0,10);load()}
 async function load(){let q=db.from('study_class_attendance').select('*').eq('class_id',classId).order('attendance_date',{ascending:false});if(!isTeacher)q=q.eq('student_user_id',me.id);const {data,error}=await q;list.innerHTML=error?`<div class="card">${error.message}</div>`:(data||[]).map(x=>`<div class="card"><b>${x.attendance_date}</b> — ${A[x.status]||x.status}<div class="muted">${x.note||''}</div></div>`).join('')||'<div class="card muted">لا توجد سجلات حضور.</div>'}
 async function saveAttendance(){if(!student.value)return alert('لا يوجد طالب محدد');const {error}=await db.from('study_class_attendance').upsert({class_id:Number(classId),student_user_id:student.value,teacher_user_id:me.id,attendance_date:day.value,status:status.value,note:note.value.trim()||null},{onConflict:'class_id,student_user_id,attendance_date'});if(error)return alert(error.message);load()}init();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

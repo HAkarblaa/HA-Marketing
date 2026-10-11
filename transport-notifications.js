@@ -54,21 +54,7 @@
     clear();
     const db=firebase.database();
 
-    // New chat messages for the opposite side.
-    const msgRef=db.ref('rideChats/'+rideId+'/messages');
-    let messagesReady=false;
-    msgRef.limitToLast(1).once('value').finally(()=>{messagesReady=true;});
-    add(msgRef.limitToLast(50),'child_added',snap=>{
-      if(!messagesReady)return;
-      const m=snap.val()||{};
-      if(!m.text || m.senderRole===role)return;
-      notify(
-        role==='driver'?'💬 رسالة جديدة من الزبون':'💬 رسالة جديدة من السائق/المندوب',
-        m.text,
-        location.href,
-        'ha-msg-'+rideId
-      );
-    });
+    // Messaging is hidden: do not subscribe to message alerts.
 
     // Incoming calls for the opposite side.
     const callRef=db.ref('rideCalls/'+rideId);

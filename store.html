@@ -16,4 +16,13 @@ function add(id,min,stock){const p=all.find(x=>x.id===id),x=cart.find(i=>i.produ
 async function fav(id){if(!me){alert('سجل الدخول أولاً لحفظ المفضلة');return}if(favIds.has(id)){const {error}=await db.from('shop_favorites').delete().eq('user_id',me.id).eq('product_id',id);if(!error)favIds.delete(id)}else{const {error}=await db.from('shop_favorites').insert({user_id:me.id,product_id:id});if(!error)favIds.add(id)}render()}
 [search,minPrice,maxPrice,stockFilter,sort].forEach(x=>x.addEventListener('input',render));load();
 </script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
 </body></html>

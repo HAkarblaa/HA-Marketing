@@ -11,4 +11,13 @@ async function init(){const {data:{session}}=await db.auth.getSession();if(!sess
 function otherId(){return isTeacher?studentSelect.value:teacherId}
 async function loadMessages(){const other=otherId();if(!other){chat.innerHTML='<div class="muted">لا يوجد طالب محدد.</div>';return}const {data,error}=await db.from('study_class_messages').select('*').eq('class_id',classId).or(`and(sender_user_id.eq.${me.id},recipient_user_id.eq.${other}),and(sender_user_id.eq.${other},recipient_user_id.eq.${me.id})`).order('created_at');if(error){chat.innerHTML='<div class="muted">'+esc(error.message)+'</div>';return}chat.innerHTML=(data||[]).map(x=>`<div class="msg ${x.sender_user_id===me.id?'mine':'theirs'}">${esc(x.message)}<span class="time">${new Date(x.created_at).toLocaleString('ar-IQ')}</span></div>`).join('')||'<div class="muted">ابدأ المحادثة.</div>';chat.scrollTop=chat.scrollHeight}
 async function sendMessage(){const other=otherId(),msg=messageInput.value.trim();if(!other)return alert('لا يوجد مستلم');if(!msg)return;const {error}=await db.from('study_class_messages').insert({class_id:Number(classId),sender_user_id:me.id,recipient_user_id:other,message:msg});if(error)return alert(error.message);messageInput.value='';loadMessages()}messageInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});init();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

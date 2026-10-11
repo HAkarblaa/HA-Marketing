@@ -11,4 +11,13 @@ async function init(){const {data:{session}}=await db.auth.getSession();if(!sess
 async function load(){const {data,error}=await db.from('study_class_content').select('*').eq('class_id',classId).eq('content_type',type).order('event_date',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false});const el=document.getElementById('list');if(error){el.innerHTML='<div class="card">'+esc(error.message)+'</div>';return}el.innerHTML=(data||[]).map(x=>`<div class="card item"><h3>${esc(x.title)}</h3>${x.event_date?`<div class="muted">📅 ${new Date(x.event_date).toLocaleString('ar-IQ')}</div>`:''}<div>${esc(x.body||'').replace(/\n/g,'<br>')}</div>${x.url?`<div class="actions"><a class="btn gold" href="${esc(x.url)}" target="_blank" rel="noopener">فتح الرابط</a></div>`:''}${isTeacher?`<div class="actions"><button onclick="delItem(${x.id})">حذف</button></div>`:''}</div>`).join('')||'<div class="card muted">لا يوجد محتوى بعد.</div>'}
 async function addItem(){if(!isTeacher)return;const title=itemTitle.value.trim();if(!title)return alert('اكتب العنوان');const {error}=await db.from('study_class_content').insert({class_id:Number(classId),teacher_user_id:me.id,content_type:type,title,body:itemBody.value.trim()||null,url:itemUrl.value.trim()||null,event_date:itemDate.value?new Date(itemDate.value).toISOString():null});if(error)return alert(error.message);itemTitle.value='';itemBody.value='';itemUrl.value='';itemDate.value='';load()}
 async function delItem(id){if(!confirm('حذف؟'))return;const {error}=await db.from('study_class_content').delete().eq('id',id);if(error)alert(error.message);else load()}init();
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

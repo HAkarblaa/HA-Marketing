@@ -13,4 +13,13 @@
 const db=supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 (async()=>{const {data:{session}}=await db.auth.getSession();if(!session)return location.href='login.html';const {data:t}=await db.from('study_teachers').select('*').eq('user_id',session.user.id).maybeSingle();if(!t)return location.href='teacher-classes.html';const {data,error}=await db.from('study_classes').select('*').eq('teacher_user_id',session.user.id).order('created_at',{ascending:false});const el=document.getElementById('classes');if(error){el.innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}el.innerHTML=(data||[]).map(c=>`<div class="class-card"><h2>${esc(c.class_name)}</h2><div class="meta">${esc(c.grade_name)}${c.branch?' — '+esc(c.branch):''}<br>${esc(c.subject||'بدون مادة')} • ${c.mode==='online'?'أونلاين':c.mode==='inperson'?'حضوري':'أونلاين وحضوري'}</div><a class="open" href="study-class.html?class=${c.id}">فتح الصف ←</a></div>`).join('')||'<div class="empty">ما عندك صفوف بعد. اضغط إنشاء صف.</div>'})();
 </script><script src="ha-role-bottom-nav.js?v=20260930-1" defer></script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
 </body></html>

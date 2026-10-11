@@ -18,4 +18,13 @@ const q=new URLSearchParams(location.search),stage=q.get('stage')||'',grade=q.ge
 send.onclick=async()=>{const t=title.value.trim(),d=details.value.trim(),f=file.files[0];if(!t||!d)return alert('اكتب العنوان والتفاصيل');send.disabled=true;status.textContent='جاري الإرسال...';let path=null;
 try{if(f){if(f.size>30*1024*1024)throw new Error('الملف أكبر من 30MB');const ext=(f.name.split('.').pop()||'bin').toLowerCase();path=me.id+'/'+Date.now()+'.'+ext;const {error}=await db.storage.from('study-suggestions').upload(path,f,{upsert:false,contentType:f.type||undefined});if(error)throw error}
 const {error}=await db.from('study_suggestions').insert({user_id:me.id,title:t,details:d,stage_name:stage,grade_name:grade,branch_name:branch||'',attachment_path:path,status:'pending'});if(error)throw error;status.textContent='✅ تم إرسال الاقتراح للأدمن الرئيسي.';title.value='';details.value='';file.value=''}catch(e){status.textContent='تعذر الإرسال: '+e.message}finally{send.disabled=false}};
-</script></body></html>
+</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>
