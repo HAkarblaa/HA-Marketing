@@ -15,4 +15,13 @@ function add(){const qty=Math.max(Number(product.min_order_qty||1),Number(docume
 async function loadReviews(){const {data,error}=await db.from('shop_product_reviews').select('rating,comment,created_at,user_id').eq('product_id',id).eq('is_visible',true).order('created_at',{ascending:false});if(error){reviews.textContent='تعذر تحميل التقييمات';return}const arr=data||[],avg=arr.length?(arr.reduce((s,x)=>s+Number(x.rating),0)/arr.length).toFixed(1):'—';reviews.innerHTML=`<div class="row"><strong>متوسط التقييم: ${avg} / 5</strong><span>${arr.length} تقييم</span></div>`+arr.map(r=>`<div class="review"><div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div><div>${esc(r.comment||'')}</div><div class="muted">${new Date(r.created_at).toLocaleDateString('ar-IQ')}</div></div>`).join('')||'<div class="muted">لا توجد تقييمات بعد.</div>';reviewForm.innerHTML=me?`<h3>أضف تقييمك</h3><select id="rating"><option value="5">5 نجوم</option><option value="4">4 نجوم</option><option value="3">3 نجوم</option><option value="2">نجمتان</option><option value="1">نجمة</option></select><textarea id="comment" placeholder="تعليقك (اختياري)"></textarea><button onclick="saveReview()">حفظ التقييم</button>`:'<div class="muted">سجل الدخول حتى تضيف تقييمك.</div>'}
 async function saveReview(){if(!me)return;const payload={user_id:me.id,product_id:id,rating:Number(rating.value),comment:comment.value.trim()||null,updated_at:new Date().toISOString()};const {error}=await db.from('shop_product_reviews').upsert(payload,{onConflict:'user_id,product_id'});if(error)alert(error.message);else loadReviews()}load();
 </script><script src="ha-lux-icons.js?v=20260930-1" defer></script><script src="ha-card-customizer.js?v=20261001-1" defer></script>
+<style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
 </body></html>

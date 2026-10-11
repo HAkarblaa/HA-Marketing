@@ -15,4 +15,13 @@
 function showPane(id,b){document.querySelectorAll('.pane').forEach(x=>x.classList.remove('show'));document.getElementById(id).classList.add('show');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
 function key(v){document.getElementById('expr').value+=v}function clearCalc(){document.getElementById('expr').value='';document.getElementById('result').textContent='النتيجة تظهر هنا.'}function backCalc(){let x=document.getElementById('expr');x.value=x.value.slice(0,-1)}function calculate(){let x=document.getElementById('expr');try{let v=math.evaluate(x.value||'0');document.getElementById('result').textContent='النتيجة: '+v;x.value=String(v)}catch(e){document.getElementById('result').textContent='تأكد من العملية ثم حاول مرة ثانية.'}}
 function addAdv(v){let x=document.getElementById('adv');x.value+=v;x.focus()}function solveAdv(){let s=document.getElementById('adv').value.trim(),o=document.getElementById('advResult');if(!s){o.textContent='اكتب المعادلة أولاً.';return}try{if(s.includes('=')){let p=s.split('=');o.textContent='الحل: '+nerdamer.solveEquations(p[0]+'=('+p.slice(1).join('=')+')','x').toString()}else{o.textContent='النتيجة: '+nerdamer(s).evaluate().toString()}}catch(e){o.textContent='تعذر حل المعادلة. استخدم * للضرب مثل 2*x.'}}
-</script><script src="ha-lux-icons.js?v=20260930-1" defer></script></body></html>
+</script><script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

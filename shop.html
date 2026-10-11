@@ -1775,4 +1775,13 @@ else boot();
  groups.addEventListener('click',e=>{const a=e.target.closest('.ha-slide-details');if(!a)return;try{const u=new URL(a.getAttribute('href'),location.href);if(u.origin===location.origin&&u.pathname.endsWith('/shop-section.html')&&u.searchParams.get('section')){e.preventDefault();selected=u.searchParams.get('section');render();document.getElementById('haShopStores').scrollIntoView({behavior:'smooth',block:'start'});}}catch(err){}});
  async function load(){try{if(!window.supabase)throw Error('SDK unavailable');const db=window.supabase.createClient('https://ubayrhtshgtgggxprrek.supabase.co','sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});let rows=[],offset=0;for(;;){const {data,error}=await db.from('shop_businesses').select('id,name,section_key,location_text,description,image_url,is_active,approval_status,sort_order,created_at,lat,lng').eq('is_active',true).order('sort_order').order('created_at').order('id').range(offset,offset+99);if(error)throw error;const batch=data||[];rows.push(...batch);if(batch.length<100)break;offset+=100;}stores=rows.filter(x=>x.is_active!==false&&(!x.approval_status||x.approval_status==='approved'));createFilters();render();}catch(e){status.hidden=false;status.textContent='تعذر تحميل المتاجر. ';const retry=document.createElement('button');retry.type='button';retry.className='ha-store-filter';retry.textContent='إعادة المحاولة';retry.onclick=()=>{status.textContent='جاري تحميل المتاجر…';load();};status.appendChild(retry);}}
  load();refreshNearby();
-})();</script></body></html>
+})();</script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body></html>

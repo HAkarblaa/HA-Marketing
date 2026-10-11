@@ -248,7 +248,7 @@ body{padding-bottom:100px}
   <section class="summary">
     <div class="summary-copy">
       <h2>مركز الإشعارات</h2>
-      <p>طلباتك، الرسائل، الموافقات، والتحديثات المهمة بمكان واحد.</p>
+      <p>طلباتك، الموافقات، والتحديثات المهمة بمكان واحد.</p>
     </div>
     <div class="stat"><b id="unreadCount">0</b><small>غير مقروء</small></div>
     <div class="stat"><b id="totalCount">0</b><small>الإجمالي</small></div>
@@ -264,7 +264,7 @@ body{padding-bottom:100px}
     <button class="filter active" data-filter="all">الكل</button>
     <button class="filter" data-filter="unread">غير المقروء</button>
     <button class="filter" data-filter="order">الطلبات</button>
-    <button class="filter" data-filter="chat">المحادثات</button>
+    <button data-ha-messaging-hidden class="filter" data-filter="chat">المحادثات</button>
     <button class="filter" data-filter="admin">الإدارة والتحديثات</button>
   </div>
 
@@ -496,7 +496,7 @@ async function load(){
     return;
   }
 
-  rows=data||[];
+  rows=(data||[]).filter(x=>!['chat','message','messages'].includes(notifType(x))&&notifSection(x)!=='chat'&&!/(?:chat|study-class-messages)\.html(?:[?#]|$)/i.test(notifLink(x)));
   render();
 }
 
@@ -668,5 +668,14 @@ init();
 
 <script src="push-config.js"></script>
 <script src="notifications.js?v=20261010-request-open1"></script>
-<script src="ha-lux-icons.js?v=20260930-1" defer></script></body>
+<script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body>
 </html>

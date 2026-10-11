@@ -31,7 +31,7 @@ button,select{padding:12px;border-radius:12px;border:0;margin:5px;background:#f5
 <button onclick="start()">ابدأ المعركة</button>
 <h3>اللاعبين: <span id="num">0</span> | النقاط: <span id="score">0</span></h3>
 <div id="map"></div>
-<button>🎤 مايك</button><button>💬 دردشة</button><button onclick="shoot()">🎯 إطلاق</button>
+<button>🎤 مايك</button><button data-ha-messaging-hidden>💬 دردشة</button><button onclick="shoot()">🎯 إطلاق</button>
 </div>
 <script>
 let score=0;
@@ -50,5 +50,14 @@ function start(){
 }
 function shoot(){}
 </script>
-<script src="ha-lux-icons.js?v=20260930-1" defer></script></body>
+<script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
+/* Hide messaging entry points, including links added after page load. */
+html body :is(#haMessagingHiddenOverride#haMessagingHiddenOverride,
+a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-premium,
+#driverChatBtn,#deliveryChatBtn,#chatDriverBtn,#driverChatSheet,#deliveryChatSheet,#chatSheet,
+[data-ha-messaging-hidden],[data-filter="chat"],.item[data-type="chat"]){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
+html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
+</style>
+</body>
 </html>
