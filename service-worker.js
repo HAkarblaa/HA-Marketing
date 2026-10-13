@@ -1,5 +1,5 @@
 /* Static site files load from cache immediately; account/order API calls stay live. */
-const CACHE='ha-marketing-hide-messages-v2026-10-11-1';
+const CACHE='ha-marketing-daily-activity-v2026-10-12-1';
 const CORE=['./index.html','./ha-account-gate.js?v=20261010-speed1','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{

@@ -451,3 +451,6 @@
   s.defer=true;
   document.head.appendChild(s);
 })();
+
+/* Daily activity reporting */
+(function(){if(document.querySelector('script[data-ha-daily-activity]'))return;var s=document.createElement('script');s.src='ha-daily-activity.js?v=20261012-daily1';s.defer=true;s.dataset.haDailyActivity='1';document.head.appendChild(s);})();

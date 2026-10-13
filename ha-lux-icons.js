@@ -131,7 +131,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   if(window.__haPresenceScriptRequested||window.__haRealtimePresenceLoaded)return;
   window.__haPresenceScriptRequested=true;
   var s=document.createElement('script');
-  s.src='ha-presence.js?v=20261002-realtime2';
+  s.src='ha-presence.js?v=20261012-daily1';
   s.defer=true;
   document.head.appendChild(s);
 })();
