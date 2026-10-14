@@ -1,5 +1,8 @@
 // HA Marketing - Web Push / FCM
 (function(){
+  if(/HAAndroid\//.test(navigator.userAgent)){
+    const nativeScript=document.createElement('script');nativeScript.src=new URL('./ha-native-notifications.js?v=20261013-native1',location.href).href;document.head.appendChild(nativeScript);return;
+  }
   const cfg=window.HA_PUSH_CONFIG;
   if(!cfg)return;
 
