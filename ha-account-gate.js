@@ -258,3 +258,42 @@
   function schedule(){if(window.requestIdleCallback)requestIdleCallback(install,{timeout:2000});else setTimeout(install,500);}
   if(document.readyState==='complete')schedule();else window.addEventListener('load',schedule,{once:true});
 })();
+
+/* Website-controlled update gate for native HAAndroid versioned clients. */
+(function(){
+'use strict';if(window.__haUpdateGate)return;window.__haUpdateGate=true;
+const base=new URL('./',document.currentScript.src);
+const match=navigator.userAgent.match(/\bHAAndroid\/(\d+(?:\.\d+){0,3})(?=\s|$)/);
+if(!match)return; // Browsers and legacy clients without a version marker are not identifiable.
+const installed=match[1],store='https://play.google.com/store/apps/details?id=com.hamarketing.ap';
+let running=false,last=0;
+function compare(a,b){const x=a.split('.').map(Number),y=b.split('.').map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return Math.sign(d);}return 0;}
+function unblock(){document.getElementById('haRequiredUpdate')?.remove();}
+function show(c){
+ const render=()=>{
+  let box=document.getElementById('haRequiredUpdate');if(box)return;
+  const style=document.createElement('style');style.textContent='#haRequiredUpdate::backdrop{background:rgba(12,32,55,.82)}';document.head.append(style);
+  box=document.createElement('dialog');box.id='haRequiredUpdate';box.dir='rtl';box.setAttribute('aria-labelledby','haRequiredUpdateTitle');
+  box.style.cssText='border:0;border-radius:24px;padding:28px 22px;width:min(88vw,390px);background:white;color:#16324f;text-align:center;font-family:Tahoma,Arial;box-shadow:0 20px 70px #0005';
+  const title=document.createElement('h2');title.id='haRequiredUpdateTitle';title.textContent='تحديث التطبيق مطلوب';
+  const message=document.createElement('p');message.textContent=c.message||'حتى تستمر باستخدام التطبيق، حدّثه إلى النسخة الجديدة من سوق بلي.';message.style.lineHeight='1.8';
+  const version=document.createElement('p');version.textContent='نسختك '+installed+' — الحد الأدنى '+c.minimum_version;version.style.cssText='font-size:12px;color:#64748b';
+  const link=document.createElement('a');link.href=store;link.textContent='حدّث من سوق بلي';link.style.cssText='display:block;padding:15px;border-radius:14px;background:#087de1;color:white;text-decoration:none;font-weight:bold;margin-top:18px';
+  const retry=document.createElement('button');retry.type='button';retry.textContent='إعادة التحقق';retry.style.cssText='margin-top:12px;padding:10px;border:0;background:transparent;color:#087de1;font:inherit';retry.onclick=()=>check(true);
+  box.append(title,message,version,link,retry);box.addEventListener('cancel',e=>e.preventDefault());document.body.append(box);box.showModal();
+ };
+ if(document.body)render();else document.addEventListener('DOMContentLoaded',render,{once:true});
+}
+async function check(force=false){
+ if(running||(!force&&Date.now()-last<30000))return;running=true;last=Date.now();
+ const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),7000);
+ try{
+  const url=new URL('ha-update-config.json',base);url.searchParams.set('t',Date.now());
+  const response=await fetch(url,{cache:'no-store',credentials:'omit',signal:controller.signal});if(!response.ok)return;
+  const c=await response.json();if(typeof c.enabled!=='boolean'||!/^\d+(?:\.\d+){0,3}$/.test(c.minimum_version||''))return;
+  if(c.enabled&&compare(installed,c.minimum_version)<0)show(c);else unblock();
+ }catch(_){/* Network/config failures must not lock out everyone. */}
+ finally{clearTimeout(timer);running=false;}
+}
+check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidden)check(true)});window.addEventListener('online',()=>check(true));setInterval(()=>{if(!document.hidden)check()},60000);
+})();
