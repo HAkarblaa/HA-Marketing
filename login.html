@@ -30,7 +30,7 @@
 
   <button id="loginBtn" type="button" onclick="login()">تسجيل الدخول</button>
   <a href="forgot-password.html" style="background:#fff;color:#111;border:1px solid #ddd">هل نسيت كلمة المرور؟</a>
-  <a href="register.html">إنشاء حساب جديد</a>
+  <a href="register.html">إنشاء حساب جديد</a><a id="haGuestEntry" href="index.html" style="background:#fff;color:#087de1;border:2px solid #087de1">الدخول كضيف</a><p style="text-align:center;color:#667788;font-size:12px">الدراسة والترفيه بدون حساب</p>
 </div>
 <div id="haLoading" class="ha-loading"><div class="ha-spinner"></div><div id="haLoadText" class="ha-load-text">جاري تسجيل الدخول...</div></div>
 <script>
@@ -90,5 +90,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-</body>
+<script>document.getElementById('haGuestEntry').addEventListener('click',function(){try{localStorage.setItem('ha_guest_mode','1')}catch(e){}});</script></body>
 </html>

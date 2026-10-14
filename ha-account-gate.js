@@ -6,6 +6,9 @@
   const root=document.documentElement;
   const base=new URL('./',document.currentScript.src);
   const STORAGE='ha-marketing-auth';
+  const GUEST='ha_guest_mode';
+  const guestPages=['index.html','', 'study.html','study-summary.html','study-summary[1].html','study-exam.html','study-library.html','study-language.html','study-primary.html','study-middle.html','study-preparatory.html','study-grade-hub.html','study-directory.html','education-news.html','higher-education-news.html','entertainment.html','games.html','games-hub.html','games-ranking.html','snake.html','level-devil.html','bird-game.html','penalties.html','movies.html','series.html'];
+  const guestPage=guestPages.includes(location.pathname.slice(base.pathname.length));
   const NEXT='ha_account_return_to';
   const VERIFIED='ha_account_verified_session';
   const publicPages=['login.html','register.html','forgot-password.html','privacy-policy.html','delete-account.html'];
@@ -60,6 +63,7 @@
     box.querySelector('a').hidden=!error;
   }
   function redirect(){
+    if(guestPage && read(localStorage,GUEST)==='1'){allowGuest();return;}
     state='redirecting';run++;lock();rememberPage();clearTimeout(expiryTimer);
     remove(localStorage,'ha_logged_in');remove(sessionStorage,VERIFIED);
     location.replace(loginURL());
@@ -132,6 +136,7 @@
   }
   function check(){
     if(isPublic || state==='redirecting')return Promise.resolve();
+    if(guestPage && read(localStorage,GUEST)==='1' && !savedSession()){allowGuest();return Promise.resolve();}
     const cached=savedSession();
     if(cached)allow(cached);
     else if(!navigator.onLine || (!read(localStorage,STORAGE)&&!hasCallback())){redirect();return Promise.resolve();}
@@ -174,6 +179,34 @@
       state='error';lock();panel('تعذر تجديد تسجيل الدخول. اتصل بالإنترنت وحاول مجدداً أو سجّل الدخول.',true);
     }
   }
+  function allowGuest(){
+    state='guest';clearTimeout(expiryTimer);root.removeAttribute('data-ha-account-lock');
+    document.getElementById('haAccountGate')?.remove();
+    document.getElementById('haSplash')?.classList.add('hide');
+    const ready=()=>{document.getElementById('haSplash')?.classList.add('hide');};
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
+  }
+  function guestPrompt(target){
+    let dialog=document.getElementById('haGuestDialog');if(dialog){dialog.showModal();return;}
+    dialog=document.createElement('dialog');dialog.id='haGuestDialog';dialog.dir='rtl';
+    dialog.style.cssText='border:0;border-radius:24px;padding:24px;width:min(88vw,380px);text-align:center;color:#16324f;font-family:Tahoma,Arial;background:white;box-shadow:0 20px 80px #0004';
+    const title=document.createElement('h2');title.textContent='يجب إنشاء حساب';
+    const text=document.createElement('p');text.textContent='لاستخدام التسوق أو النقل أو طلب خدمة، أنشئ حساباً أو سجّل الدخول. الدراسة والترفيه متاحان للضيف.';text.style.lineHeight='1.8';
+    dialog.append(title,text);
+    for(const [label,page,color] of [['إنشاء حساب','register.html','#07996f'],['تسجيل الدخول','login.html','#087de1']]){
+      const a=document.createElement('a');const url=new URL(page,base);url.searchParams.set('next',target);a.href=url.href;a.textContent=label;a.style.cssText='display:block;margin:10px 0;padding:13px;border-radius:13px;color:white;text-decoration:none;background:'+color;dialog.append(a);
+    }
+    const close=document.createElement('button');close.type='button';close.textContent='متابعة كضيف';close.style.cssText='border:0;background:transparent;color:#087de1;padding:12px;font:inherit';close.onclick=()=>{dialog.close();dialog.remove();};dialog.append(close);document.body.append(dialog);dialog.showModal();
+    dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  }
+  document.addEventListener('click',event=>{
+    if(read(localStorage,GUEST)!=='1'||savedSession())return;
+    const a=event.target.closest?.('a[href]');if(!a||a.closest('#haGuestDialog'))return;
+    const url=new URL(a.href,location.href);if(url.origin!==base.origin||!url.pathname.startsWith(base.pathname))return;
+    const page=url.pathname.slice(base.pathname.length);
+    if(!page.endsWith('.html')||guestPages.includes(page)||publicPages.includes(page))return;
+    event.preventDefault();event.stopImmediatePropagation();guestPrompt(page+url.search+url.hash);
+  },true);
   function publicLinks(){
     const next=nextURL();
     document.querySelectorAll('a[href]').forEach(a=>{
@@ -191,6 +224,7 @@
   rememberPage();
   // Synchronous local session check removes the boot lock before the page is painted.
   const initial=savedSession();
+  if(!initial && guestPage && read(localStorage,GUEST)==='1'){allowGuest();return;}
   if(initial)allow(initial);
   else if(!read(localStorage,STORAGE)&&!hasCallback()){redirect();return;}
   else lock();
