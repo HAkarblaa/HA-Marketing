@@ -59,7 +59,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:650px){.grid,.actions,.pages{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
 <script defer data-ha-daily-activity src="ha-daily-activity.js?v=20261012-daily1"></script>
-</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head>
 <body>
 <div class="wrap">
   <div class="top">
@@ -136,7 +136,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
       <h2 style="margin:0">الامتحان الناتج</h2>
       <div>
         <button id="answersBtn" class="secondary" type="button">إظهار الأجوبة</button>
-        <button id="downloadBtn" class="secondary" type="button">⬇️ تحميل الأسئلة</button>
+        <button id="downloadBtn" class="secondary" type="button">⬇️ تنزيل أسئلة PDF</button>
         <button id="openBtn" class="secondary" type="button">📄 فتح الامتحان</button>
         <button id="copyBtn" class="secondary" type="button">نسخ الامتحان</button>
       </div>
@@ -302,14 +302,14 @@ async function callAI(prompt){
       headers:{
         'Content-Type':'application/json',
         'apikey':SUPA_KEY,
-        'Authorization':'Bearer '+SUPA_KEY
+        'Authorization':'Bearer '+(await examSession()).access_token
       },
       body:JSON.stringify({message:prompt}),
       signal:controller.signal
     });
     const data=await res.json().catch(()=>({}));
     if(!res.ok)throw new Error(data?.error||data?.message||('خطأ من الخادم '+res.status));
-    return String(data?.reply||data?.response||data?.text||data?.message||'').trim();
+    return String(data?.answer||data?.reply||data?.response||data?.text||data?.message||'').trim();
   }finally{
     clearTimeout(timer);
   }
@@ -335,7 +335,7 @@ function normalizeExam(raw){
     question:String(q.question||'').trim(),
     options:Array.isArray(q.options)?q.options.map(x=>String(x)) : [],
     answer:Array.isArray(q.answer)?q.answer.map(x=>String(x)).join('، '):String(q.answer??'').trim(),
-    explanation:String(q.explanation||'').trim()
+    explanation:String(q.explanation||'').trim(),source_quote:String(q.source_quote||'').trim(),page:String(q.page||'').trim()
   })).filter(q=>q.question);
 }
 
@@ -400,9 +400,12 @@ generateBtn.onclick=async()=>{
   resultCard.classList.remove('show');
   lastExam=[];
   try{
+    await examSession();
     const text=await extractAll();
+    window.__examSource=text;
 
-    const maxChars=24000;
+    const maxChars=48000;
+    if(text.length>maxChars)throw new Error('المحتوى طويل. اختَر نطاق صفحات أصغر حتى نولّد الأسئلة من كامل النص المحدد بدون حذف.');
     const source=text.length>maxChars
       ? text.slice(0,maxChars)+'\n[تم تقليص النص لطول مناسب مع الحفاظ على البداية والصفحات المحددة قدر الإمكان]'
       : text;
@@ -418,7 +421,7 @@ generateBtn.onclick=async()=>{
 - إذا كان السؤال اختيارياً ضع خيارات منطقية.
 - أرجع النتيجة JSON فقط بدون Markdown وبدون أي كلام إضافي.
 - الشكل المطلوب مصفوفة JSON، وكل عنصر:
-{"type":"mcq|multi|tf|short|essay","question":"نص السؤال","options":["خيار 1","خيار 2"],"answer":"الجواب الصحيح","explanation":"توضيح قصير اختياري"}
+{"type":"mcq|multi|tf|short|essay","question":"نص السؤال","options":["خيار 1","خيار 2"],"answer":"الجواب الصحيح","explanation":"جواب نموذجي وتوضيح مستند للمادة","source_quote":"اقتباس حرفي داعم للإجابة من النص","page":"رقم الصفحة إن توفر"}
 - في صح/خطأ يمكن أن تكون options فارغة.
 - في الأسئلة القصيرة أو المقالية اجعل options فارغة.
 - في الاختيارات المتعددة اكتب في answer كل الأجوبة الصحيحة.
@@ -431,6 +434,8 @@ ${source}`;
 
     const raw=await callAI(prompt);
     lastExam=normalizeExam(raw);
+    const normal=t=>String(t).replace(/[\s\u064B-\u065F\u0670]+/g,'').normalize('NFKC');
+    if(lastExam.some(q=>!q.answer||q.source_quote.length<8||!normal(text).includes(normal(q.source_quote))))throw new Error('لم نستطع توثيق بعض الأجوبة من المادة. أعد المحاولة أو اختَر صفحات أوضح.');
     answersVisible=false;
     answersBtn.textContent='إظهار الأجوبة';
     renderExam();
@@ -537,5 +542,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-</body>
+<script src="ha-study-questions-pdf.js?v=20261016-1"></script></body>
 </html>
