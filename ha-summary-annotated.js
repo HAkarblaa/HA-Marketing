@@ -61,7 +61,7 @@ window.summarizeFile=async function(){
   document.getElementById('resultBox').style.display='block';setProgress('اكتمل الملخص والتأشير — اختر حفظ الملخص أو تنزيل الأصل المؤشّر',100);
   document.getElementById('resultBox').scrollIntoView({behavior:'smooth',block:'start'});
   await source.destroy();
- }catch(e){setProgress('تعذر التأشير: '+(e.message||e),0);}finally{busy=false;btn.disabled=false;document.getElementById('fileInput').disabled=false;}
+ }catch(e){const raw=String(e.message||e);const quota=/quota|RESOURCE_EXHAUSTED|free_tier_requests|billing/i.test(raw);setProgress(quota?'وصلت خدمة الذكاء الاصطناعي إلى حد الاستخدام أو الرصيد المتاح. إذا كانت Gemini، انتظر تجدد حصتها أو فعّل الفوترة للمشروع المرتبط بالمفتاح. تغيير ملفات الموقع لا يرفع هذا الحد.':'تعذر التلخيص: '+raw,0);}finally{busy=false;btn.disabled=false;document.getElementById('fileInput').disabled=false;}
 };
 
 function printSummary(parts,language,name){
