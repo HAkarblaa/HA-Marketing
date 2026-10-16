@@ -50,7 +50,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
   <section class="hero">
     <div class="icon">📝</div>
     <h1>تلخيص المواد الدراسية</h1>
-    <p>ارفع ملف المادة وسيتم استخراج النص وتلخيص أهم الأفكار والتعاريف والنقاط المهمة للمراجعة.</p>
+    <p>ارفع PDF نصّي للحصول على نسخة من صفحاته الأصلية مع تظليل الأسطر المهمة وتعليقات دراسية. الملفات الأخرى تُلخّص كنص منفصل.</p>
   </section>
 
   <section class="box">
@@ -81,7 +81,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
       </div>
     </div>
 
-    <button class="run" id="summarizeBtn" onclick="summarizeFile()" disabled>تلخيص الملف</button>
+    <button class="run" id="summarizeBtn" onclick="summarizeFile()" disabled>تلخيص وتأشير الملف</button>
     <div class="status" id="statusBox">
       <div id="statusText">جاري تجهيز الملف...</div>
       <div class="progress"><div class="bar" id="progressBar"></div></div>
@@ -329,7 +329,7 @@ function button(text,fn){const b=document.createElement('button');b.type='button
 function dialog(title){const d=document.createElement('dialog');d.className='ha-study-output-dialog';const head=document.createElement('div');head.className='ha-study-output-head';const h=document.createElement('h3');h.textContent=title;head.append(h,button('إغلاق',()=>d.close()));d.append(head);document.body.append(d);let clean=[];d.onclose=()=>{clean.forEach(f=>f());d.remove();};d.cleanup=f=>clean.push(f);d.showModal();return d;}
 function notice(container,message){let p=container.querySelector('.ha-study-output-message');if(!p){p=document.createElement('p');p.className='ha-study-output-message';p.setAttribute('role','status');container.append(p);}p.textContent=message;}
 async function getText(o){const t=typeof o.text==='function'?await o.text():o.text;if(typeof t!=='string'||!t.trim())throw new Error('لا يوجد نص قابل للتحويل في هذا الملف.');return t;}
-function textHtml(text,rtl){return '<!doctype html><html lang="ar" dir="'+(rtl?'rtl':'ltr')+'"><meta charset="utf-8"><title>الملف الناتج</title><body style="font:18px/1.9 Arial,Tahoma;white-space:pre-wrap;padding:28px">'+esc(text)+'</body></html>';}
+function textHtml(text,rtl){return '<!doctype html><html lang="ar" dir="'+(rtl?'rtl':'ltr')+'"><meta charset="utf-8"><title>الملف الناتج</title><body style="font:18px/1.9 Arial,Tahoma;white-space:pre-wrap;padding:28px">'+esc(text)+'<script src="ha-summary-annotated.js?v=20261016-1"></script></body></html>';}
 async function word(text,rtl){if(!window.JSZip)throw new Error('تعذر تحميل مكتبة Word. أعد المحاولة عند توفر الإنترنت.');const z=new JSZip();z.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');z.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');const paragraphs=text.split(/\r?\n/).map(line=>'<w:p><w:pPr>'+(rtl?'<w:bidi/><w:jc w:val="right"/>':'')+'</w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>'+(rtl?'<w:rtl/>':'')+'</w:rPr><w:t xml:space="preserve">'+esc(line)+'</w:t></w:r></w:p>').join('');z.file('word/document.xml','<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+paragraphs+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr></w:body></w:document>');return z.generateAsync({type:'blob',mimeType:mime.docx,compression:'DEFLATE'});}
 async function pdf(text,rtl){if(!window.jspdf?.jsPDF||!window.html2canvas)throw new Error('تعذر تحميل مكتبة PDF. أعد المحاولة عند توفر الإنترنت.');const paper=document.createElement('div'),content=document.createElement('div');paper.style.cssText='position:absolute;left:0;top:0;z-index:-1;width:760px;height:1080px;overflow:hidden;background:#fff;color:#111;';content.dir=rtl?'rtl':'ltr';content.style.cssText='font:20px/36px Arial,Tahoma;white-space:pre-wrap;overflow-wrap:anywhere;';content.textContent=text;paper.append(content);document.body.append(paper);try{await document.fonts?.ready;const total=content.scrollHeight,doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});for(let offset=0,page=0;offset<total;offset+=1080,page++){paper.style.height=Math.min(1080,total-offset)+'px';content.style.transform='translateY(-'+offset+'px)';const canvas=await html2canvas(paper,{scale:1.5,backgroundColor:'#fff',useCORS:true,scrollX:0,scrollY:0});if(!canvas.width||!canvas.height)throw new Error('تعذر إنشاء صفحة PDF.');if(page)doc.addPage();doc.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',32,32,531,canvas.height*531/canvas.width);canvas.width=canvas.height=0;}return doc.output('blob');}finally{paper.remove();}}
 async function imageAs(blob,format){const url=URL.createObjectURL(blob);try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('تعذر قراءة الصورة.'));img.src=url;});const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');if(format==='jpg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);}ctx.drawImage(img,0,0);return await new Promise((resolve,reject)=>c.toBlob(b=>{if(!b||b.type!==mime[format])reject(new Error('هذه الصيغة غير مدعومة على الجهاز.'));else resolve(b);},mime[format],.92));}finally{URL.revokeObjectURL(url);}}
@@ -357,5 +357,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-</body>
+<script src="ha-summary-annotated.js?v=20261016-1"></script></body>
 </html>
