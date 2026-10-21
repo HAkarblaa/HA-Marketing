@@ -81,7 +81,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
       </div>
     </div>
 
-    <div id="summaryPages" class="controls" hidden><div class="field"><label for="summaryFrom">من صفحة</label><input id="summaryFrom" type="number" min="1" value="1"></div><div class="field"><label for="summaryTo">إلى صفحة</label><input id="summaryTo" type="number" min="1" placeholder="نهاية الملف"></div></div><p><label><input type="checkbox" id="annotatePDF"> أضف تأشيراً وتعليقات إلى نسخة PDF الأصلية (للملف النصّي فقط)</label></p><p class="note">طلب واحد للنص المحدد، بحد 48000 حرف مع بيانات الصفحات. حصة مزوّد الذكاء الاصطناعي والرصيد قد تختلف؛ لا يمكن عرض المتبقي الحقيقي بدون ربط الخادم. لا يتم قص النص تلقائياً.</p><a href="study-my-files.html">📂 ملفاتي الدراسية</a><button class="run" id="summarizeBtn" onclick="summarizeFile()" disabled>إنشاء الملخص</button>
+    <div id="summaryPages" class="controls" hidden><div class="field"><label for="summaryFrom">من صفحة</label><input id="summaryFrom" type="number" min="1" value="1"></div><div class="field"><label for="summaryTo">إلى صفحة</label><input id="summaryTo" type="number" min="1" placeholder="نهاية الملف"></div></div><p><label><input type="checkbox" id="annotatePDF"> أضف تأشيراً وتعليقات إلى نسخة PDF الأصلية (للملف النصّي فقط)</label></p><p class="note">طلب أساسي واحد للنص المحدد، مع محاولتين إضافيتين عند ازدحام الخدمة فقط، بحد 48000 حرف مع بيانات الصفحات. حصة مزوّد الذكاء الاصطناعي والرصيد قد تختلف؛ لا يمكن عرض المتبقي الحقيقي بدون ربط الخادم. لا يتم قص النص تلقائياً.</p><a href="study-my-files.html">📂 ملفاتي الدراسية</a><button class="run" id="summarizeBtn" onclick="summarizeFile()" disabled>إنشاء الملخص</button>
     <div class="status" id="statusBox">
       <div id="statusText">جاري تجهيز الملف...</div>
       <div class="progress"><div class="bar" id="progressBar"></div></div>
@@ -357,5 +357,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-<script src="ha-study-vault.js?v=20261021-study1"></script><script src="ha-summary-annotated.js?v=20261021-study1"></script></body>
+<script src="ha-study-vault.js?v=20261021-busy2"></script><script src="ha-summary-annotated.js?v=20261021-busy2"></script></body>
 </html>
