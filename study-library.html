@@ -96,7 +96,7 @@ body{margin:0;font-family:Tahoma,Arial;background:#eef4f8;color:#15304b}
     <button id="resetBtn" class="reset" type="button">إعادة الاختيار</button>
   </section>
 
-  <div id="list"><div class="card">اختر المرحلة والصف والمادة حتى تظهر الملفات.</div></div>
+  <section class="section"><label for="materialSearch">بحث في الملفات المعروضة</label><input id="materialSearch" type="search" placeholder="اسم الكتاب أو المادة أو الوصف" style="width:100%;padding:13px;border:1px solid #cddde7;border-radius:12px;margin:8px 0"><label for="materialSort">الترتيب</label><select id="materialSort" style="padding:12px;border-radius:12px"><option value="new">الأحدث</option><option value="name">الاسم</option></select><p id="materialCount" role="status"></p></section><div id="list"><div class="card">اختر المرحلة والصف والمادة حتى تظهر الملفات.</div></div>
 </div>
 
 <script>
@@ -173,17 +173,21 @@ function updateSummary(){
 function render(){
   updateSummary();
   if(!selectedStage || (selectedStage!=='جامعي'&&!selectedGrade) || !selectedSubject){
+    document.getElementById('materialCount').textContent='';
     document.getElementById('list').innerHTML='<div class="card">أكمل الاختيارات حتى تظهر الملفات.</div>';
     return;
   }
-  const a=rows.filter(x=>
+  let a=rows.filter(x=>
     (!selectedStage||x.stage===selectedStage) &&
     (!selectedGrade||x.grade===selectedGrade) &&
     (!selectedSubject||x.subject===selectedSubject) &&
     (!selectedType||x.material_type===selectedType) &&
-    (!selectedBranch||!x.branch_name||x.branch_name===selectedBranch)
+    (!selectedBranch||!x.branch_name||x.branch_name===selectedBranch) &&
+    (![document.getElementById('materialSearch').value.trim()].filter(Boolean).length || [x.title,x.description,x.subject].join(' ').toLocaleLowerCase().includes(document.getElementById('materialSearch').value.trim().toLocaleLowerCase()))
   );
-  document.getElementById('list').innerHTML=a.map(x=>`<div class="card item"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.stage)} ${esc(x.grade||'')} ${esc(x.branch_name||'')} — ${esc(x.subject)} <span class="badge">${esc(x.material_type)}</span></div><p>${esc(x.description||'')}</p></div><div class="actions">${x.file_url?`<a class="btn" href="${esc(x.file_url)}" download target="_blank">⬇️ تحميل مباشر</a>`:''}${x.external_url?`<a class="btn light" href="${esc(x.external_url)}" target="_blank">فتح الرابط</a>`:''}</div></div>`).join('')||'<div class="card empty">لا توجد ملفات بهذا الاختيار حالياً.</div>';
+  if(document.getElementById('materialSort').value==='name')a.sort((x,y)=>String(x.title||'').localeCompare(String(y.title||''),'ar'));
+  document.getElementById('materialCount').textContent='عدد الملفات: '+a.length;
+  document.getElementById('list').innerHTML=a.map(x=>`<div class="card item"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.stage)} ${esc(x.grade||'')} ${esc(x.branch_name||'')} — ${esc(x.subject)} <span class="badge">${esc(x.material_type)}</span></div><p>${esc(x.description||'')}</p></div><div class="actions">${x.file_url?`<a class="btn" href="${esc(x.file_url)}" download target="_blank" rel="noopener">⬇️ تحميل مباشر</a>`:''}${x.external_url?`<a class="btn light" href="${esc(x.external_url)}" target="_blank" rel="noopener">فتح الرابط</a>`:''}</div></div>`).join('')||'<div class="card empty">لا توجد ملفات بهذا الاختيار حالياً.</div>';
 }
 async function load(){
   const {data,error}=await db.from('study_materials').select('*').eq('is_active',true).order('created_at',{ascending:false});
@@ -251,5 +255,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-</body>
+<script>document.getElementById('materialSearch').addEventListener('input',render);document.getElementById('materialSort').addEventListener('change',render);</script></body>
 </html>

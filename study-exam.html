@@ -78,7 +78,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
       <input id="sourceFiles" type="file" multiple accept="image/*,.pdf,.docx,.txt">
       <div class="hint">تگدر ترفع عدة صور، أو ملف PDF / Word / TXT. للـ PDF تگدر تحدد الصفحات المطلوبة.</div>
     </div>
-    <div id="fileInfo" class="filebox">ما تم اختيار ملف بعد.</div>
+    <p>الحد: 20 MB للملفات المختارة و48000 حرف للنص المستخرج. الحصة الحقيقية تتبع مزوّد الذكاء الاصطناعي. <a href="study-my-files.html">ملفاتي الدراسية</a></p><div id="fileInfo" class="filebox">ما تم اختيار ملف بعد.</div>
   </section>
 
   <section class="card">
@@ -191,6 +191,7 @@ sourceFiles.addEventListener('change',async()=>{
       const pdf=await pdfjsLib.getDocument({data:ab}).promise;
       pageTo.value=pdf.numPages;
       fileInfo.textContent=`${files[0].name} — ${pdf.numPages} صفحة`;
+      await pdf.destroy();
     }catch(_e){}
   }else{
     pageFrom.value=1;
@@ -201,12 +202,11 @@ sourceFiles.addEventListener('change',async()=>{
 async function extractPDF(file){
   const ab=await file.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:ab}).promise;
-  const from=Math.max(1,Number(pageFrom.value)||1);
-  const to=Math.min(pdf.numPages,Number(pageTo.value)||pdf.numPages);
-  if(from>to)throw new Error('رقم صفحة البداية أكبر من النهاية');
+  const from=Number(pageFrom.value||1),to=Number(pageTo.value||pdf.numPages);
+  if(!Number.isInteger(from)||!Number.isInteger(to)||from<1||to<from||to>pdf.numPages){await pdf.destroy();throw Error('اختَر صفحات صحيحة من 1 إلى '+pdf.numPages);}
 
   const chunks=[];
-  for(let p=from;p<=to;p++){
+  try{for(let p=from;p<=to;p++){
     setStatus(`جاري قراءة صفحة ${p} من ${to}...`);
     const page=await pdf.getPage(p);
     const content=await page.getTextContent();
@@ -223,9 +223,10 @@ async function extractPDF(file){
       const {data}=await Tesseract.recognize(canvas,'ara+eng');
       text=(data?.text||'').trim();
     }
-    if(text)chunks.push(`\n[صفحة ${p}]\n${text}`);
+    if(!text||text.length<15)throw Error('تعذّرت قراءة الصفحة '+p+' حتى بعد OCR. اختر ملفاً أوضح.');
+    chunks.push(`\n[صفحة ${p}]\n${text}`);page.cleanup();
   }
-  return chunks.join('\n');
+  return chunks.join('\n');}finally{await pdf.destroy();}
 }
 
 async function extractImage(file,index,total){
@@ -250,6 +251,8 @@ async function extractAll(){
   const files=[...sourceFiles.files];
   if(!files.length)throw new Error('اختر ملف أو صور أولاً');
 
+  if(files.reduce((n,f)=>n+f.size,0)>20*1024*1024)throw Error('إجمالي الملفات أكبر من 20 MB. قلل الملفات.');
+  if(files.length>1&&files.some(f=>/\.pdf$/i.test(f.name)))throw Error('ارفع ملف PDF واحد لتكون أرقام الصفحات واضحة، أو مجموعة صور بدون PDF.');
   const all=[];
   let imageNo=0;
   const imageTotal=files.filter(f=>f.type.startsWith('image/')).length;
@@ -308,7 +311,7 @@ async function callAI(prompt){
       signal:controller.signal
     });
     const data=await res.json().catch(()=>({}));
-    if(!res.ok)throw new Error(data?.error||data?.message||('خطأ من الخادم '+res.status));
+    if(!res.ok||data?.error)throw new Error(data?.error||data?.message||('خطأ من الخادم '+res.status));
     return String(data?.answer||data?.reply||data?.response||data?.text||data?.message||'').trim();
   }finally{
     clearTimeout(timer);
@@ -334,6 +337,7 @@ function normalizeExam(raw){
     type:String(q.type||'short'),
     question:String(q.question||'').trim(),
     options:Array.isArray(q.options)?q.options.map(x=>String(x)) : [],
+    answer_parts:Array.isArray(q.answer)?q.answer.map(x=>String(x)):[],
     answer:Array.isArray(q.answer)?q.answer.map(x=>String(x)).join('، '):String(q.answer??'').trim(),
     explanation:String(q.explanation||'').trim(),source_quote:String(q.source_quote||'').trim(),page:String(q.page||'').trim(),correct_indices:Array.isArray(q.correct_indices)?q.correct_indices.map(Number):[]
   })).filter(q=>q.question);
@@ -396,6 +400,9 @@ function downloadExamAuto(){
 }
 
 generateBtn.onclick=async()=>{
+  if(generateBtn.disabled)return;
+  const lockedInputs=[sourceFiles,pageFrom,pageTo,questionType,questionCount,extraInstructions,clearBtn];
+  lockedInputs.forEach(x=>x.disabled=true);
   generateBtn.disabled=true;
   resultCard.classList.remove('show');
   lastExam=[];
@@ -406,9 +413,7 @@ generateBtn.onclick=async()=>{
 
     const maxChars=48000;
     if(text.length>maxChars)throw new Error('المحتوى طويل. اختَر نطاق صفحات أصغر حتى نولّد الأسئلة من كامل النص المحدد بدون حذف.');
-    const source=text.length>maxChars
-      ? text.slice(0,maxChars)+'\n[تم تقليص النص لطول مناسب مع الحفاظ على البداية والصفحات المحددة قدر الإمكان]'
-      : text;
+    const source=text;
 
     setStatus('جاري إنشاء أسئلة الامتحان...');
     const arabicLetters=(source.match(/[\u0621-\u064A]/g)||[]).length;
@@ -431,7 +436,8 @@ generateBtn.onclick=async()=>{
 - في صح/خطأ اجعل answer هو true أو false كنص وoptions فارغة وcorrect_indices فارغة.
 - الإجابات الكتابية لها correct_indices فارغة.
 - في الأسئلة القصيرة أو المقالية اجعل options فارغة.
-- في الاختيارات المتعددة اكتب في answer كل الأجوبة الصحيحة.
+- في السؤال أحادي الاختيار answer يجب أن يطابق نص الخيار الصحيح حرفياً.
+- في الاختيارات المتعددة multi اجعل answer مصفوفة نصوص الخيارات الصحيحة حرفياً، ولا تستعمل نصاً موصولاً بفواصل.
 
 ملاحظات المستخدم:
 ${extraInstructions.value.trim()||'لا توجد ملاحظات إضافية.'}
@@ -440,17 +446,20 @@ ${extraInstructions.value.trim()||'لا توجد ملاحظات إضافية.'}
 ${source}`;
 
     const raw=await callAI(prompt);
-    lastExam=normalizeExam(raw);
+    lastExam=HAStudyExam.validate(normalizeExam(raw),text);
+    if(questionCount.value!=='auto'&&lastExam.length!==Number(questionCount.value))throw Error('عدد الأسئلة المستلم لا يطابق اختيارك. أعد المحاولة أو اختَر العدد تلقائياً.');
     const normal=t=>String(t).replace(/[\s\u064B-\u065F\u0670]+/g,'').normalize('NFKC');
     if(lastExam.some(q=>!q.answer||q.source_quote.length<8||!normal(text).includes(normal(q.source_quote))))throw new Error('لم نستطع توثيق بعض الأجوبة من المادة. أعد المحاولة أو اختَر صفحات أوضح.');
+    let localSaved=true;try{await HAStudyExam.save()}catch(e){localSaved=false;}
     answersVisible=false;
     answersBtn.textContent='إظهار الأجوبة';
     renderExam();
-    setStatus(`✅ تم إنشاء ${lastExam.length} سؤالاً بنجاح. تگدر تحمل الأسئلة أو تفتح الامتحان.`,'ok');
+    setStatus(`✅ تم إنشاء ${lastExam.length} سؤالاً بنجاح. تگدر تحلها وتحملها. ${localSaved?'حُفظت في ملفاتي على هذا الجهاز.':'تعذّر الحفظ المحلي؛ نزّل نسخة.'}`,'ok');
     resultCard.scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){
-    setStatus('تعذر إنشاء الامتحان: '+(e?.message||e),'err');
+    setStatus('تعذر إنشاء الامتحان: '+HAStudyVault.error(e),'err');
   }finally{
+    lockedInputs.forEach(x=>x.disabled=false);
     generateBtn.disabled=false;
     generateBtn.textContent='إنشاء الامتحان';
   }
@@ -549,5 +558,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-<script src="ha-study-questions-pdf.js?v=20261016-1"></script><script src="ha-exam-interactive.js?v=20261017-1"></script></body>
+<script src="ha-study-questions-pdf.js?v=20261021-study1"></script><script src="ha-exam-interactive.js?v=20261017-1"></script><script src="ha-study-vault.js?v=20261021-study1"></script><script src="ha-study-exam-work.js?v=20261021-study1"></script></body>
 </html>
