@@ -208,3 +208,6 @@
   s.defer=true;
   document.head.appendChild(s);
 })();
+
+/* Independent section tools, separate from search, shared across section pages. */
+(function(){if(window.__haSectionToolsRequested)return;window.__haSectionToolsRequested=true;var s=document.createElement('script');s.src=new URL('ha-section-tools.js?v=20261021-tools1',document.currentScript?.src||location.href).href;s.defer=true;document.head.appendChild(s)})();
