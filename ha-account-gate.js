@@ -297,3 +297,24 @@ async function check(force=false){
 }
 check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidden)check(true)});window.addEventListener('online',()=>check(true));setInterval(()=>{if(!document.hidden)check()},60000);
 })();
+
+/* HA game/piano entry ad trigger — 2026-10-24 */
+(function(){
+ 'use strict';
+ if(window.__haGameEntryAds)return;window.__haGameEntryAds=true;
+ const targets=new Set(['snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html']);
+ let lastRequest=-Infinity;
+ document.addEventListener('click',function(event){
+  if(event.defaultPrevented||event.button>0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  const link=event.target.closest&&event.target.closest('a[href]');
+  if(!link||link.hasAttribute('download')||link.target==='_blank')return;
+  let destination;try{destination=new URL(link.href,location.href);}catch(_){return;}
+  if(destination.origin!==location.origin||!destination.pathname.startsWith('/HA-Marketing/'))return;
+  if(!targets.has(destination.pathname.split('/').pop().toLowerCase()))return;
+  const native=window.HAAndroid;if(!native||typeof native.adBreak!=='function')return;
+  const now=performance.now();if(now-lastRequest<1500)return;lastRequest=now;
+  // The native host owns readiness, consent, and frequency limits.
+  // Its v142 bridge acknowledges the request, not ad dismissal; do not block navigation.
+  try{Promise.resolve(native.adBreak()).catch(function(){});}catch(_){}
+ },true);
+})();
