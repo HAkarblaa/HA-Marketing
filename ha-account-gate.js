@@ -117,6 +117,8 @@
     });
     if(!subscription){
       subscription=client.auth.onAuthStateChange((event,session)=>{
+        document.documentElement.setAttribute('data-ha-print-admin','0');
+        setTimeout(()=>window.dispatchEvent(new Event('ha:print-auth-change')),0);
         if(event==='SIGNED_OUT' || (event==='SIGNED_IN' && session?.user?.is_anonymous===true)){
           redirect();return;
         }
@@ -216,7 +218,19 @@
       }
     });
   }
-  window.HA_AccountGate={check,nextURL,safeNext,get state(){return state;}};
+  window.HA_AccountGate={check,nextURL,safeNext,get state(){return state;},
+    async isMainAdmin(){
+      try{
+        const c=await getClient(),u=await c.auth.getUser();
+        const id=u.data?.user?.id;if(u.error||!id||u.data.user.is_anonymous)return false;
+        const r=await c.rpc('is_super_admin');
+        let allowed=!r.error&&r.data===true;
+        if(!allowed){const a=await c.from('app_admins').select('is_super_admin,is_active').eq('user_id',id).maybeSingle();allowed=!a.error&&a.data?.is_active===true&&a.data?.is_super_admin===true;}
+        const current=await c.auth.getUser();
+        return !!(allowed&&!current.error&&current.data?.user?.id===id);
+      }catch(_){return false;}
+    }
+  };
   if(isPublic){
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',publicLinks,{once:true});else publicLinks();
     return;
@@ -317,4 +331,28 @@ check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidde
   // Native owns consent, loaded ads and frequency limits. No timer, retries or navigation blocking.
   try{Promise.resolve(native.adBreak()).catch(function(){});}catch(_){}
  },true);
+})();
+
+/* Print entry visibility: verified main admin only, fail closed. UI restriction only. */
+(function(){
+'use strict';if(window.HAPrintAccess)return;
+const root=document.documentElement;root.setAttribute('data-ha-print-admin','0');
+const css=document.createElement('style');css.textContent='html:not([data-ha-print-admin="1"]) #haNativePrinterEntry,html:not([data-ha-print-admin="1"]) a[href*="image-print.html"]{display:none!important}html[data-ha-print-page]:not([data-ha-print-admin="1"]) main{display:none!important}';document.head.appendChild(css);
+let revision=0,allowed=false;
+function wrapBridge(){
+ const n=window.HAAndroid;if(!n||typeof n.openPrinters!=='function'||n.openPrinters.__haAdminGuard)return;
+ const original=n.openPrinters.bind(n);
+ function guarded(){if(!allowed){alert('الطباعة متاحة للأدمن الرئيسي فقط');return;}return original();}
+ guarded.__haAdminGuard=true;n.openPrinters=guarded;
+}
+function update(ok){allowed=ok;root.setAttribute('data-ha-print-admin',ok?'1':'0');wrapBridge();window.dispatchEvent(new CustomEvent('ha:print-access',{detail:{allowed:ok}}));}
+async function refresh(){const current=++revision;update(false);const ok=await window.HA_AccountGate.isMainAdmin();if(current===revision)update(ok);return current===revision&&ok;}
+window.HAPrintAccess={refresh,get allowed(){return allowed;}};
+document.addEventListener('click',e=>{const el=e.target.closest?.('#haNativePrinterEntry,a[href*="image-print.html"]');if(el&&!allowed){e.preventDefault();e.stopImmediatePropagation();}},true);
+window.addEventListener('ha:native-ready',wrapBridge);
+window.addEventListener('ha:print-auth-change',refresh);
+window.addEventListener('pageshow',refresh);
+
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+wrapBridge();refresh();
 })();
