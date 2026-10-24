@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<title>إدارة المولدة</title>
+
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--primary:#111827;--ok:#15803d;--bad:#b91c1c;--warn:#a16207;--shadow:0 10px 30px rgba(0,0,0,.06)}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,select,textarea{font:inherit}.app{min-height:100vh}.top{position:sticky;top:0;z-index:20;background:rgba(17,24,39,.96);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{display:flex;align-items:center;gap:10px}.logo{width:42px;height:42px;border-radius:14px;background:#fff;color:#111827;display:grid;place-items:center;font-size:24px}.brand h1{font-size:18px;margin:0}.brand small{display:block;color:#cbd5e1;margin-top:2px}.top .actions{display:flex;gap:8px}.iconbtn{border:1px solid #374151;background:#1f2937;color:#fff;border-radius:12px;padding:9px 12px;cursor:pointer}.layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 70px)}.side{background:#fff;border-left:1px solid var(--line);padding:14px;position:sticky;top:70px;height:calc(100vh - 70px);overflow:auto}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;text-align:right;padding:12px;border-radius:12px;cursor:pointer;color:#374151}.nav button.active,.nav button:hover{background:#111827;color:#fff}.main{padding:18px;min-width:0}.view{display:none}.view.active{display:block}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.section-title h2{margin:0;font-size:22px}.section-title p{margin:4px 0 0;color:var(--muted);font-size:13px}.btn{border:0;border-radius:11px;padding:10px 14px;cursor:pointer;background:#111827;color:#fff}.btn.secondary{background:#fff;color:#111827;border:1px solid var(--line)}.btn.green{background:#15803d}.btn.red{background:#b91c1c}.btn.small{padding:7px 10px;font-size:13px}.grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px}.stat .v{font-size:27px;font-weight:700;margin:7px 0}.stat .k{color:var(--muted);font-size:13px}.stat .trend{font-size:12px;color:var(--muted)}.two{grid-template-columns:1.2fr .8fr}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.quick button{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px 10px;cursor:pointer;text-align:center}.quick button:hover{background:#f9fafb}.quick b{display:block;margin-top:7px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:right;font-size:14px}th{background:#f9fafb;color:#4b5563;position:sticky;top:0}tr:last-child td{border-bottom:0}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px}.paid{background:#16a34a;color:#fff;font-weight:700}.due{background:#dc2626;color:#fff;font-weight:700}.partial{background:#facc15;color:#713f12;font-weight:700}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.search{flex:1;min-width:220px;border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:grid;gap:6px}.field label{font-size:13px;color:#4b5563}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;outline:none}.field textarea{min-height:90px;resize:vertical}.full{grid-column:1/-1}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal.open{display:flex}.modal-box{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:18px;box-shadow:0 25px 80px rgba(0,0,0,.25)}.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.modal-head h3{margin:0}.x{border:0;background:#f3f4f6;border-radius:10px;width:36px;height:36px;cursor:pointer}.summary-list{display:grid;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line)}.summary-row:last-child{border-bottom:0}.empty{padding:28px;text-align:center;color:var(--muted)}.note{padding:12px 14px;border-radius:12px;background:#f9fafb;border:1px solid var(--line);color:#4b5563;font-size:13px}.footer-space{height:20px}.mobile-nav{display:none}.money{font-variant-numeric:tabular-nums}.danger-text{color:var(--bad)}.ok-text{color:var(--ok)}.subscriber-paid td{background:#dcfce7}.subscriber-due td{background:#fee2e2}.subscriber-partial td{background:#fef3c7}.subscriber-paid td:first-child{box-shadow:inset -5px 0 #16a34a}.subscriber-due td:first-child{box-shadow:inset -5px 0 #dc2626}.subscriber-partial td:first-child{box-shadow:inset -5px 0 #f59e0b}.subscriber-paid:hover td{background:#bbf7d0}.subscriber-due:hover td{background:#fecaca}.subscriber-partial:hover td{background:#fde68a}.status-legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px}.legend-item{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:12px;border:1px solid var(--line);background:#fff}.legend-dot{width:10px;height:10px;border-radius:50%}.legend-dot.paid{background:#22c55e}.legend-dot.due{background:#ef4444}.legend-dot.partial{background:#f59e0b}.phone-nowrap{white-space:nowrap;direction:ltr;unicode-bidi:isolate;display:inline-block;min-width:112px;text-align:center}.phone-actions{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}.phone-call{color:#0f4c81;text-decoration:none;font-weight:700;cursor:pointer;border-bottom:1px dashed currentColor}.phone-call:active{opacity:.65}.whatsapp-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#16a34a;color:#fff;border-radius:8px;padding:4px 8px;font-size:12px;font-weight:700;line-height:1.35}.whatsapp-link:hover{filter:brightness(.96)}.whatsapp-link:active{opacity:.7}.address-nowrap{white-space:nowrap;display:inline-block;text-align:right}.unpaid-alert-banner{margin-top:14px;background:#fff1f2;border:1px solid #fecaca;border-right:6px solid #dc2626;border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}.unpaid-alert-banner:hover{background:#ffe4e6}.unpaid-alert-banner .alert-main{display:flex;align-items:center;gap:10px}.unpaid-alert-banner .alert-icon{width:42px;height:42px;border-radius:12px;background:#dc2626;color:#fff;display:grid;place-items:center;font-size:22px;flex:0 0 auto}.unpaid-alert-banner .alert-title{font-weight:700;color:#991b1b}.unpaid-alert-banner .alert-sub{font-size:13px;color:#7f1d1d;margin-top:3px}.unpaid-alert-banner .alert-count{background:#dc2626;color:#fff;border-radius:999px;min-width:42px;height:42px;padding:0 12px;display:grid;place-items:center;font-weight:700}.unpaid-mini-list{display:grid;gap:8px;margin-top:12px}.unpaid-mini-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:#fff7f7;border:1px solid #fecaca;border-radius:12px}.unpaid-mini-item .name{font-weight:700}.unpaid-mini-item .amount{color:#b91c1c;font-weight:700}.unpaid-modal-summary{padding:12px 14px;background:#fff1f2;border:1px solid #fecaca;border-radius:12px;color:#991b1b;margin-bottom:12px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.side{display:none}.main{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.two,.three{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.mobile-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;right:0;left:0;background:#fff;border-top:1px solid var(--line);z-index:30;padding:6px calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left));box-shadow:0 -8px 24px rgba(0,0,0,.07)}.mobile-nav button{border:0;background:transparent;padding:8px 3px;font-size:11px;color:#4b5563}.mobile-nav button.active{color:#111827;font-weight:700}.main{padding-bottom:86px}.top .actions .hide-mobile{display:none}}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.stat .v{font-size:21px}.form-grid{grid-template-columns:1fr}.quick{grid-template-columns:1fr 1fr}.section-title{align-items:flex-start}.section-title h2{font-size:19px}.brand small{display:none}}
+
+/* ===== واجهة الموبايل الجديدة ===== */
+.mobile-dashboard-shell,.subs-mobile-cards{display:none}
+@media(max-width:600px){
+  body{background:#f2f6fb}
+  .top{position:sticky;top:0;background:linear-gradient(135deg,#075b96 0%,#0878b7 58%,#0b5d9a 100%);padding:13px 14px 15px;border-radius:0 0 24px 24px;box-shadow:0 8px 28px rgba(2,80,133,.22)}
+  .top .brand{margin:auto;gap:8px}.top .logo{background:transparent;color:#ffd21f;width:44px;height:44px;font-size:31px;border-radius:0}.top .brand h1{font-size:20px;font-weight:800}.top .brand small{display:block;color:#dceeff;font-size:11px}.top .actions{position:absolute;left:10px;top:12px;gap:5px}.top .user-chip{display:none}.top .iconbtn,.top .logout-btn{width:34px;height:34px;padding:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);font-size:0}.top .iconbtn:after{content:'⚙';font-size:17px}.top .logout-btn:after{content:'↪';font-size:17px}.top .hide-mobile{display:none!important}
+  .main{padding:10px 10px 88px}.view#dashboard>.note,.view#dashboard>.section-title,.view#dashboard>.desktop-dashboard-content,.view#dashboard>.desktop-dashboard-content~*{display:none!important}.mobile-dashboard-shell{display:block}
+  .mobile-status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:2px}
+  .mobile-status-card{border:0;border-radius:17px;padding:11px 7px;display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;box-shadow:0 5px 16px rgba(15,23,42,.05);text-align:right}
+  .mobile-status-card.subs{background:linear-gradient(135deg,#eefcf4,#f8fffb)}.mobile-status-card.paidc{background:linear-gradient(135deg,#ecfbf2,#f8fffb)}.mobile-status-card.duec{background:linear-gradient(135deg,#fff0f1,#fff9f9)}
+  .mobile-status-card .ms-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:20px;flex:0 0 auto;background:#fff8}.mobile-status-card.paidc .ms-icon{color:#079447;background:#d8f7e5}.mobile-status-card.duec .ms-icon{color:#dc2626;background:#fee2e2}.mobile-status-card.subs .ms-icon{background:#d8f7e5}
+  .mobile-status-card b{display:block;font-size:11px;font-weight:700;white-space:nowrap}.mobile-status-card strong{display:block;font-size:22px;line-height:1.05;margin-top:3px}.mobile-status-card small{font-size:10px;color:#64748b}
+  .mobile-money-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.mobile-money-card{border-radius:17px;padding:14px 13px;display:flex;align-items:center;gap:10px;min-width:0;box-shadow:0 5px 16px rgba(15,23,42,.04)}.mobile-money-card.blue{background:linear-gradient(120deg,#eaf6ff,#f8fbff)}.mobile-money-card.purple{background:linear-gradient(120deg,#f4efff,#faf8ff)}.mobile-money-card .money-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:22px;background:#fff8;color:#1976d2}.mobile-money-card.purple .money-icon{color:#7c3aed}.mobile-money-card small{display:block;font-size:11px;color:#475569}.mobile-money-card strong{display:block;margin-top:4px;font-size:16px;white-space:nowrap}.mobile-money-card.purple strong{color:#6d28d9}
+  .mobile-quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}.mobile-quick-grid button{border:0;background:#fff;border-radius:15px;padding:12px 5px;box-shadow:0 4px 15px rgba(15,23,42,.05);min-width:0}.mobile-quick-grid button span{display:block;font-size:23px;height:28px}.mobile-quick-grid button b{display:block;font-size:10.5px;margin-top:5px;white-space:nowrap}
+  .mobile-recent-box{margin-top:10px;background:#fff;border-radius:17px;overflow:hidden;box-shadow:0 6px 20px rgba(15,23,42,.06)}.mobile-recent-head{background:linear-gradient(135deg,#075b96,#0878b7);color:#fff;padding:11px 13px;display:flex;align-items:center;justify-content:space-between}.mobile-recent-head h3{margin:0;font-size:16px}.mobile-recent-head button{border:1px solid #fff9;background:transparent;color:#fff;border-radius:9px;padding:6px 9px;font-size:11px}.mobile-recent-list{display:grid}.mobile-recent-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:10px 10px;border-bottom:1px solid #edf2f7}.mobile-recent-item:last-child{border-bottom:0}.mobile-recent-status{min-width:65px;text-align:center;padding:6px 7px;border-radius:999px;font-size:11px;font-weight:700}.mobile-recent-status.paid{background:#22c55e;color:#fff}.mobile-recent-status.due{background:#ef233c;color:#fff}.mobile-recent-status.partial{background:#fbbf24;color:#4a3200}.mobile-recent-info{min-width:0}.mobile-recent-info b{display:block;font-size:13px}.mobile-recent-info small{display:block;color:#64748b;font-size:10.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mobile-recent-contact{display:flex;align-items:center;gap:5px}.mobile-recent-phone{direction:ltr;color:#0b72d9;font-weight:800;font-size:12px;white-space:nowrap;text-decoration:none}.mobile-recent-call,.mobile-recent-wa{width:31px;height:31px;border-radius:9px;color:#fff;display:grid;place-items:center;text-decoration:none;font-size:15px}.mobile-recent-call{background:#1685ee}.mobile-recent-wa{background:#22c55e}
+  .mobile-nav{display:grid!important;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;right:0;left:0;background:#fff;border-top:1px solid #e5e7eb;z-index:30;padding:6px 5px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -7px 22px rgba(15,23,42,.08);border-radius:18px 18px 0 0}.mobile-nav button{border:0;background:transparent;padding:6px 2px 5px;font-size:10.5px;line-height:1.2;color:#475569;border-radius:10px}.mobile-nav button:first-line{font-size:19px}.mobile-nav button.active{color:#0878d1;font-weight:800;background:#eff7ff}
+  #subscribers .table-wrap{display:none}.subs-mobile-cards{display:grid;gap:9px}.subscriber-mobile-card{background:#fff;color:#111827;border:1px solid #e8eef4;border-radius:16px;padding:11px;box-shadow:0 5px 16px rgba(15,23,42,.05)}.subscriber-mobile-card.paid{border-right:5px solid #22c55e}.subscriber-mobile-card.due{border-right:5px solid #ef233c}.subscriber-mobile-card.partial{border-right:5px solid #fbbf24}.subscriber-mobile-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.subscriber-mobile-name{font-weight:800;font-size:15px;color:#0f172a}.subscriber-mobile-meta{font-size:11px;color:#64748b;margin-top:4px}.subscriber-mobile-contact{display:flex;align-items:center;gap:5px;margin-top:9px;flex-wrap:wrap}.subscriber-mobile-contact .phone-call{border:0;background:#eff7ff;color:#0b72d9;border-radius:9px;padding:8px 10px;text-decoration:none}.subscriber-mobile-contact .whatsapp-link{padding:8px 10px;border-radius:9px}.subscriber-mobile-actions{display:flex;gap:6px;margin-top:9px}.subscriber-mobile-actions .btn{flex:1;padding:8px 5px;font-size:11px}.subscriber-mobile-balance{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:9px}.subscriber-mobile-balance span{background:#f8fafc;border-radius:9px;padding:6px;text-align:center;font-size:9.5px;color:#64748b}.subscriber-mobile-balance b{display:block;font-size:10.5px;color:#0f172a;margin-top:3px}
+  #subscribers .section-title{margin-bottom:9px;align-items:center}#subscribers .section-title h2{font-size:18px}#subscribers .section-title p{font-size:10px}#subscribers .section-title .btn{padding:8px 10px;font-size:11px}#subscribers .toolbar{gap:6px;margin-bottom:7px}#subscribers .search{min-width:0;width:100%;font-size:12px;padding:9px}#subscribers .toolbar .btn{font-size:10px;padding:8px}#subscribers .status-legend{gap:4px;margin-bottom:8px}.legend-item{font-size:9px;padding:5px 6px}
+}
+
+
+/* ===== تسجيل الدخول والحساب ===== */
+.app.auth-locked{display:none}
+.auth-screen{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#0f172a 0%,#111827 45%,#1e3a8a 100%);overflow:auto}
+.auth-screen.show{display:flex}
+.auth-card{width:min(440px,100%);background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 100px rgba(0,0,0,.35)}
+.auth-logo{width:68px;height:68px;border-radius:20px;background:#111827;color:#fff;display:grid;place-items:center;font-size:34px;margin:0 auto 12px}
+.auth-title{text-align:center;margin:0;font-size:25px}.auth-sub{text-align:center;color:#6b7280;font-size:13px;line-height:1.8;margin:7px 0 18px}
+.auth-form{display:grid;gap:12px}.auth-field{display:grid;gap:6px}.auth-field label{font-size:13px;color:#4b5563}.auth-field input{width:100%;padding:13px 14px;border:1px solid #d1d5db;border-radius:12px;outline:none;background:#fff}.auth-field input:focus{border-color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.08)}
+.auth-btn{border:0;border-radius:12px;padding:13px 16px;background:#111827;color:#fff;font-weight:700;cursor:pointer}.auth-btn:active{transform:translateY(1px)}
+.auth-switch{margin-top:14px;text-align:center;font-size:13px;color:#6b7280}.auth-switch button{border:0;background:transparent;color:#1d4ed8;font-weight:700;cursor:pointer}
+.auth-error{display:none;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:10px 12px;border-radius:11px;font-size:13px}.auth-error.show{display:block}
+.auth-info{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;padding:10px 12px;border-radius:11px;font-size:13px;line-height:1.7}
+.user-chip{display:flex;align-items:center;gap:8px;border:1px solid #374151;background:#1f2937;color:#fff;border-radius:12px;padding:7px 10px;max-width:180px}.user-chip .avatar{width:28px;height:28px;border-radius:9px;background:#fff;color:#111827;display:grid;place-items:center;font-weight:700}.user-chip .who{min-width:0}.user-chip .who b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.user-chip .who small{display:block;font-size:10px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.logout-btn{border:1px solid #7f1d1d;background:#991b1b;color:#fff;border-radius:12px;padding:9px 11px;cursor:pointer}
+@media(max-width:700px){.auth-card{padding:20px;border-radius:20px}.auth-title{font-size:22px}.user-chip{display:none}.logout-btn{padding:9px 10px}.top{padding:11px 12px}.top .actions{gap:6px}}
+
+/* ===== إدارة حسابات أصحاب المولدات ===== */
+.admin-only{display:none}.admin-only.show{display:block}
+.role-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}.role-badge.superadmin{background:#ede9fe;color:#5b21b6}.role-badge.owner{background:#dbeafe;color:#1d4ed8}.role-badge.disabled{background:#fee2e2;color:#991b1b}
+.amp-type-badge{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.amp-type-badge.normal{background:#e0f2fe;color:#075985;border:1px solid #bae6fd}.amp-type-badge.golden{background:#fff7d6;color:#8a5b00;border:1px solid #f6d365}.subscriber-mobile-meta .amp-type-badge{padding:2px 6px;font-size:9px;vertical-align:middle}
+.accounts-head{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.accounts-head .mini{min-width:145px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.accounts-head .mini b{display:block;font-size:22px;margin-top:5px}.accounts-head .mini span{font-size:12px;color:var(--muted)}
+.account-credential-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:14px;margin:12px 0;line-height:1.9}.account-credential-box code{direction:ltr;unicode-bidi:isolate;display:inline-block;background:#fff;border:1px solid #dbeafe;padding:2px 7px;border-radius:7px;font-weight:700}.account-actions{display:flex;gap:5px;flex-wrap:wrap}
+.superadmin-note{background:#faf5ff;border:1px solid #e9d5ff;border-right:5px solid #7c3aed;border-radius:14px;padding:12px 14px;margin-bottom:14px;color:#5b21b6;font-size:13px;line-height:1.8}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<a href="index.html" style="display:block;text-align:center;padding:10px;background:#e8f3ef;color:#155f66;font:bold 14px Tahoma">← الرئيسية • HA Marketing</a>
+
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">⚡</div>
+    <h1 class="auth-title" id="authTitle">تسجيل الدخول</h1>
+    <div class="auth-sub" id="authSub">أدخل اسم المستخدم أو البريد الإلكتروني أو رقم الهاتف، ثم كلمة المرور.</div>
+    <div class="auth-error" id="authError"></div>
+
+    <form class="auth-form" id="loginForm" onsubmit="loginUser(event)">
+      <div class="auth-field"><label>اسم المستخدم أو البريد أو رقم الهاتف</label><input id="loginIdentifier" name="generator_login_identifier" autocomplete="username" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore="true" required placeholder="admin أو name@example.com أو 07xxxxxxxxx"></div>
+      <div class="auth-field"><label>كلمة المرور</label><input id="loginPassword" name="generator_login_password" type="password" autocomplete="current-password" data-lpignore="true" data-1p-ignore="true" required placeholder="••••••••"></div>
+      <button class="auth-btn" type="submit">دخول</button>
+    </form>
+
+    <form class="auth-form" id="registerForm" onsubmit="registerOwner(event)" style="display:none">
+      <div class="auth-info">هذا الحساب سيكون الأدمن الرئيسي الوحيد الذي ينشئ حسابات أصحاب المولدات.</div>
+      <div class="auth-field"><label>اسم الأدمن الرئيسي</label><input id="regName" required placeholder="الاسم الكامل"></div>
+      <div class="auth-field"><label>اسم المستخدم</label><input id="regUsername" required autocomplete="username" placeholder="بدون فراغات"></div>
+      <div class="auth-field"><label>رقم الهاتف</label><input id="regPhone" inputmode="tel" placeholder="07xxxxxxxxx"></div>
+      <div class="auth-field"><label>كلمة المرور</label><input id="regPassword" type="password" autocomplete="new-password" required minlength="4" placeholder="4 أحرف أو أرقام على الأقل"></div>
+      <div class="auth-field"><label>تأكيد كلمة المرور</label><input id="regPassword2" type="password" autocomplete="new-password" required minlength="4" placeholder="أعد كتابة كلمة المرور"></div>
+      <button class="auth-btn" type="submit">إنشاء الأدمن الرئيسي والدخول</button>
+    </form>
+
+    <div class="auth-switch" id="authSwitch"></div>
+  </div>
+</div>
+
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo">⚡</div><div><h1 id="appTitle">إدارة المولدة</h1><small>إدارة المولدة — بيانات سحابية</small></div></div>
+  <div class="actions"><div class="user-chip" id="currentUserChip"></div><button class="iconbtn hide-mobile" onclick="exportData()">نسخة احتياطية</button><button class="iconbtn" onclick="openSettings()">⚙</button><button class="logout-btn" onclick="logoutUser()" title="تسجيل الخروج">خروج</button></div>
+</header>
+<div class="layout">
+<aside class="side"><div class="nav" id="sideNav"></div></aside>
+<main class="main">
+<section class="view active" id="dashboard">
+<div class="note" style="margin-bottom:14px;border-color:#22c55e;background:#f0fdf4"><b>متصل سحابياً:</b> البيانات محفوظة بحساب صاحب المولدة وتظهر له من أي جهاز بعد تسجيل الدخول.</div>
+<div class="section-title"><div><h2>لوحة التحكم</h2><p id="todayText"></p></div><button class="btn" onclick="openCollection()">+ جباية جديدة</button></div>
+<div class="mobile-dashboard-shell" id="mobileDashboardShell">
+  <div class="mobile-status-grid">
+    <button class="mobile-status-card subs" onclick="showView('subscribers')"><span class="ms-icon">👥</span><span><b>المشتركين</b><strong id="mSubs">0</strong><small>مشترك</small></span></button>
+    <button class="mobile-status-card paidc" onclick="showView('collections')"><span class="ms-icon">✓</span><span><b>المدفوعين</b><strong id="mPaid">0</strong><small>مشترك</small></span></button>
+    <button class="mobile-status-card duec" onclick="showView('debts')"><span class="ms-icon">◷</span><span><b>غير المدفوعين</b><strong id="mDue">0</strong><small>مشترك</small></span></button>
+  </div>
+  <div class="mobile-money-row">
+    <div class="mobile-money-card blue"><span class="money-icon">▣</span><span><small>جباية هذا الشهر</small><strong id="mCollected">0 د.ع</strong></span></div>
+    <div class="mobile-money-card purple"><span class="money-icon">◉</span><span><small>المتبقي</small><strong id="mRemaining">0 د.ع</strong></span></div>
+  </div>
+  <div class="mobile-quick-grid">
+    <button onclick="openSubscriber()"><span>👤＋</span><b>إضافة مشترك</b></button>
+    <button onclick="openCollection()"><span>💵</span><b>تسجيل دفعة</b></button>
+    <button onclick="openFuel()"><span>⛽</span><b>مصاريف الوقود</b></button>
+    <button onclick="showView('reports')"><span>📊</span><b>التقارير</b></button>
+  </div>
+  <div class="mobile-recent-box">
+    <div class="mobile-recent-head"><h3>👥 آخر المشتركين</h3><button onclick="showView('subscribers')">عرض الكل ‹</button></div>
+    <div id="mobileRecentSubscribers" class="mobile-recent-list"></div>
+  </div>
+</div>
+<div class="grid stats desktop-dashboard-content">
+  <div class="card stat"><div class="k">عدد المشتركين</div><div class="v" id="stSubs">0</div><div class="trend">المشتركين المسجلين</div></div>
+  <div class="card stat"><div class="k">إجمالي الأمبيرات</div><div class="v" id="stAmps">0</div><div class="trend">أمبير</div></div>
+  <div class="card stat"><div class="k">مقبوض هذا الشهر</div><div class="v money" id="stCollected">0 د.ع</div><div class="trend">إيرادات الجباية</div></div>
+  <div class="card stat"><div class="k">الديون الحالية</div><div class="v money danger-text" id="stDebt">0 د.ع</div><div class="trend">المبالغ غير المسددة</div></div>
+</div>
+<div id="unpaidAlertBanner" class="unpaid-alert-banner" onclick="showUnpaidAlert(true)" style="display:none">
+  <div class="alert-main"><div class="alert-icon">⚠</div><div><div class="alert-title">تنبيه: يوجد مشتركون غير دافعين لهذا الشهر</div><div class="alert-sub" id="unpaidAlertText">اضغط لعرض الأسماء والمبالغ</div></div></div>
+  <div class="alert-count" id="unpaidAlertCount">0</div>
+</div>
+<div style="height:14px"></div>
+<div class="grid two">
+  <div class="card"><h3 style="margin-top:0">اختصارات سريعة</h3><div class="quick">
+    <button onclick="openSubscriber()">👤<b>إضافة مشترك</b></button><button onclick="openCollection()">💵<b>تسجيل جباية</b></button><button onclick="openExpense()">🧾<b>إضافة مصروف</b></button><button onclick="showView('reports')">📊<b>التقارير</b></button>
+  </div></div>
+  <div class="card"><h3 style="margin-top:0">ملخص الشهر</h3><div class="summary-list" id="monthSummary"></div></div>
+</div>
+<div style="height:14px"></div>
+<div class="card"><h3 style="margin-top:0">آخر عمليات الجباية</h3><div class="table-wrap"><table><thead><tr><th>المشترك</th><th>الشهر</th><th>المبلغ</th><th>التاريخ</th></tr></thead><tbody id="recentCollections"></tbody></table></div></div>
+</section>
+
+<section class="view" id="subscribers">
+<div class="section-title"><div><h2>المشتركين</h2><p>متابعة الأمبيرات والجوزات والجباية للشهر الحالي</p></div><button class="btn" onclick="openSubscriber()">+ إضافة مشترك</button></div>
+<div class="toolbar"><input id="subSearch" class="search" placeholder="بحث بالاسم أو الهاتف أو العنوان أو رقم الجوزة..." oninput="renderSubscribers()"><button class="btn secondary" onclick="exportSubscribersCSV()">تصدير CSV</button></div>
+<div class="status-legend"><span class="legend-item"><i class="legend-dot paid"></i> أخضر: دافع</span><span class="legend-item"><i class="legend-dot due"></i> أحمر: غير دافع</span><span class="legend-item"><i class="legend-dot partial"></i> أصفر: دافع جزء</span></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>الاسم</th><th>الأمبيرات</th><th>النوع</th><th>رقم الجوزة</th><th>الهاتف</th><th>العنوان</th><th>الحساب</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="subsBody"></tbody></table></div><div id="subsMobileCards" class="subs-mobile-cards"></div>
+</section>
+
+<section class="view" id="collections">
+<div class="section-title"><div><h2>الجباية</h2><p>تسجيل المبالغ المستلمة ومتابعة الجباية</p></div><button class="btn" onclick="openCollection()">+ جباية جديدة</button></div>
+<div class="toolbar"><input id="colSearch" class="search" placeholder="بحث باسم المشترك..." oninput="renderCollections()"><input type="month" id="colMonthFilter" class="search" style="max-width:200px" onchange="renderCollections()"></div>
+<div class="table-wrap"><table><thead><tr><th>المشترك</th><th>الشهر</th><th>المطلوب</th><th>المدفوع</th><th>المتبقي</th><th>التاريخ</th><th>حذف</th></tr></thead><tbody id="collectionsBody"></tbody></table></div>
+</section>
+
+<section class="view" id="debts">
+<div class="section-title"><div><h2>الديون</h2><p>المشتركين الذين لديهم مبالغ متبقية</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>المشترك</th><th>الهاتف</th><th>الأمبيرات</th><th>النوع</th><th>المطلوب الحالي</th><th>المقبوض</th><th>الدين</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="debtsBody"></tbody></table></div>
+</section>
+
+<section class="view" id="expenses">
+<div class="section-title"><div><h2>المصاريف</h2><p>الكاز والزيوت والصيانة والمصاريف الأخرى</p></div><button class="btn" onclick="openExpense()">+ إضافة مصروف</button></div>
+<div class="table-wrap"><table><thead><tr><th>النوع</th><th>البيان</th><th>الكمية</th><th>سعر الوحدة</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظات</th><th>حذف</th></tr></thead><tbody id="expensesBody"></tbody></table></div>
+</section>
+
+<section class="view" id="fuel">
+<div class="section-title"><div><h2>الوقود</h2><p>متابعة شراء واستهلاك الكاز</p></div><button class="btn" onclick="openFuel()">+ إضافة وقود</button></div>
+<div class="grid stats" style="margin-bottom:14px"><div class="card stat"><div class="k">إجمالي اللترات</div><div class="v" id="fuelLiters">0</div></div><div class="card stat"><div class="k">إجمالي الكلفة</div><div class="v money" id="fuelCost">0 د.ع</div></div><div class="card stat"><div class="k">سعر لتر الكاز الافتراضي</div><div class="v money" id="fuelDefaultPrice">0 د.ع</div></div><div class="card stat"><div class="k">متوسط سعر اللتر</div><div class="v money" id="fuelAvgPrice">0 د.ع</div></div></div>
+<div class="table-wrap"><table><thead><tr><th>اللترات</th><th>سعر اللتر</th><th>الإجمالي</th><th>التاريخ</th><th>المورد/الملاحظات</th><th>حذف</th></tr></thead><tbody id="fuelBody"></tbody></table></div>
+</section>
+
+<section class="view" id="maintenance">
+<div class="section-title"><div><h2>الصيانة</h2><p>سجل الأعطال وأعمال الصيانة</p></div><button class="btn" onclick="openMaintenance()">+ إضافة صيانة</button></div>
+<div class="table-wrap"><table><thead><tr><th>العطل/العمل</th><th>الكلفة</th><th>الفني</th><th>التاريخ</th><th>ملاحظات</th><th>حذف</th></tr></thead><tbody id="maintenanceBody"></tbody></table></div>
+</section>
+
+<section class="view" id="reports">
+<div class="section-title"><div><h2>التقارير</h2><p>ملخص مالي وتشغيلي</p></div></div>
+<div class="toolbar"><input type="month" id="reportMonth" class="search" style="max-width:220px" onchange="renderReports()"></div>
+<div class="grid stats">
+  <div class="card stat"><div class="k">إيراد الجباية</div><div class="v money" id="rpIncome">0 د.ع</div></div>
+  <div class="card stat"><div class="k">المصاريف</div><div class="v money" id="rpExpenses">0 د.ع</div></div>
+  <div class="card stat"><div class="k">الوقود</div><div class="v money" id="rpFuel">0 د.ع</div></div>
+  <div class="card stat"><div class="k">صافي الربح</div><div class="v money" id="rpProfit">0 د.ع</div></div>
+</div>
+<div style="height:14px"></div>
+<div class="grid two">
+<div class="card"><h3>تفاصيل الجباية</h3><div id="rpCollectionDetails" class="summary-list"></div></div>
+<div class="card"><h3>تفاصيل التشغيل</h3><div id="rpOpsDetails" class="summary-list"></div></div>
+</div>
+</section>
+
+
+<section class="view" id="accounts">
+<div class="section-title"><div><h2>إدارة الحسابات</h2><p>إنشاء حسابات أصحاب المولدات والتحكم بالدخول</p></div><button class="btn" onclick="openCreateOwnerAccount()">+ إنشاء حساب</button></div>
+<div class="superadmin-note"><b>صلاحية الأدمن الرئيسي:</b> تستطيع الدخول من أي موبايل أو حاسبة بدون تقييد جهاز، وإنشاء وتعديل حسابات أصحاب المولدات. صاحب المولدة يُعتمد له أول جهاز تلقائياً، وأي جهاز إضافي يحتاج موافقتك. ويمكن تسجيل الدخول باسم المستخدم أو البريد أو رقم الهاتف.</div>
+<div class="accounts-head">
+  <div class="mini"><span>إجمالي الحسابات</span><b id="accTotal">0</b></div>
+  <div class="mini"><span>الحسابات الفعالة</span><b id="accActive">0</b></div>
+  <div class="mini"><span>الحسابات الموقوفة</span><b id="accDisabled">0</b></div>
+</div>
+<div class="toolbar"><input id="accountSearch" class="search" placeholder="بحث بالاسم أو اسم المستخدم أو البريد أو الهاتف أو اسم المولدة..." oninput="renderAccounts()"><button class="btn secondary" onclick="openCreateOwnerAccount()">إنشاء حساب جديد</button></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>الاسم</th><th>اسم المولدة</th><th>اسم المستخدم</th><th>البريد</th><th>الهاتف</th><th>الصلاحية</th><th>الحالة</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr></thead><tbody id="accountsBody"></tbody></table></div>
+<div style="height:18px"></div>
+<div class="card">
+  <div class="section-title" style="margin-bottom:10px"><div><h3 style="margin:0">طلبات تعديل الحسابات</h3><p>أي تعديل يطلبه صاحب المولدة يبقى معلّقاً إلى أن يوافق الأدمن الرئيسي.</p></div><span class="badge partial" id="pendingAccountRequestsCount">0 معلّق</span></div>
+  <div class="table-wrap"><table><thead><tr><th>صاحب الحساب</th><th>نوع الطلب</th><th>التفاصيل</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="accountRequestsBody"></tbody></table></div>
+</div>
+<div style="height:18px"></div>
+<div class="card">
+  <div class="section-title" style="margin-bottom:10px"><div><h3 style="margin:0">طلبات الأجهزة الإضافية</h3><p>أول جهاز لصاحب المولدة يُعتمد تلقائياً. أي جهاز إضافي لا يدخل إلا بعد موافقة الأدمن الرئيسي.</p></div><span class="badge partial" id="pendingDeviceRequestsCount">0 معلّق</span></div>
+  <div class="table-wrap"><table><thead><tr><th>صاحب الحساب</th><th>الجهاز</th><th>وقت الطلب</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="deviceRequestsBody"></tbody></table></div>
+</div>
+<div style="height:18px"></div>
+<div class="card">
+  <div class="section-title" style="margin-bottom:10px"><div><h3 style="margin:0">الأجهزة المعتمدة</h3><p>يمكنك سحب اعتماد أي جهاز لصاحب مولدة. الأدمن الرئيسي غير مقيد بعدد الأجهزة.</p></div></div>
+  <div class="table-wrap"><table><thead><tr><th>صاحب الحساب</th><th>الجهاز</th><th>تاريخ الاعتماد</th><th>آخر استخدام</th><th>إجراء</th></tr></thead><tbody id="approvedDevicesBody"></tbody></table></div>
+</div>
+</section>
+
+<section class="view" id="account-request">
+<div class="section-title"><div><h2>طلب تعديل الحساب</h2><p>لا يتم تغيير بيانات الحساب أو كلمة المرور إلا بعد موافقة الأدمن الرئيسي.</p></div></div>
+<div class="grid two">
+  <div class="card">
+    <h3 style="margin-top:0">طلب تعديل بيانات الحساب</h3>
+    <div class="note" style="margin-bottom:12px">أرسل البيانات المطلوبة. لن تتغير بيانات حسابك مباشرة، بل تصل للأدمن الرئيسي للموافقة أو الرفض.</div>
+    <form id="accountChangeRequestForm" onsubmit="submitAccountChangeRequest(event)">
+      <div class="form-grid">
+        <div class="field"><label>الاسم</label><input id="reqDisplayName" name="name" required></div>
+        <div class="field"><label>اسم المولدة</label><input id="reqGeneratorName" name="generatorName" required></div>
+        <div class="field"><label>اسم المستخدم</label><input id="reqUsername" name="username" required autocomplete="off"></div>
+        <div class="field"><label>البريد الإلكتروني</label><input id="reqEmail" name="email" type="email" autocomplete="off"></div>
+        <div class="field"><label>رقم الهاتف</label><input id="reqPhone" name="phone" inputmode="tel"></div>
+        <div class="field"><label>العنوان/المنطقة</label><input id="reqAddress" name="address"></div>
+        <div class="full"><button class="btn green">إرسال طلب التعديل</button></div>
+      </div>
+    </form>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">كلمة المرور</h3>
+    <div class="note" style="margin-bottom:12px">لا يستطيع صاحب الحساب تغيير كلمة المرور بنفسه. اضغط الطلب أدناه، وبعدها الأدمن الرئيسي يعيّن كلمة مرور جديدة ويسلمها لك.</div>
+    <button class="btn" onclick="requestPasswordReset()">طلب إعادة تعيين كلمة المرور</button>
+    <div style="height:16px"></div>
+    <h3>حالة طلباتي</h3>
+    <div id="myAccountRequests" class="summary-list"></div>
+  </div>
+</div>
+</section>
+
+<section class="view" id="settings">
+<div class="section-title"><div><h2>الإعدادات</h2><p>بيانات المولدة والتسعيرة والنسخ الاحتياطي</p></div></div>
+<div class="card"><div class="form-grid">
+<div class="field"><label>اسم المولدة</label><input id="setName"></div><div class="field"><label>اسم المالك</label><input id="setOwner"></div>
+<div class="field"><label>رقم الهاتف</label><input id="setPhone"></div><div class="field"><label>المنطقة</label><input id="setArea"></div>
+<div class="field"><label>سعر الأمبير الشهري (د.ع)</label><input id="setAmpPrice" type="number" min="0"></div><div class="field"><label>سعر لتر الكاز الافتراضي (د.ع)</label><input id="setFuelPrice" type="number" min="0"></div>
+<div class="field"><label>سعر لتر الزيت الافتراضي (د.ع)</label><input id="setOilPrice" type="number" min="0"></div><div class="field"><label>أجرة العامل الافتراضية (د.ع)</label><input id="setWorkerCost" type="number" min="0"></div>
+<div class="field"><label>مصروف التشغيل الافتراضي (د.ع)</label><input id="setOperatingCost" type="number" min="0"></div><div class="field"><label>عملة العرض</label><select id="setCurrency"><option value="د.ع">دينار عراقي</option></select></div>
+<div class="full"><div class="note" id="settingsIdentityNote" style="margin-bottom:10px">هذه الأسعار افتراضية لتسريع الإدخال، ويمكن تغيير السعر داخل كل عملية شراء أو مصروف عند الحاجة.</div><button class="btn green" onclick="saveSettings()">حفظ الإعدادات</button></div>
+</div></div>
+<div style="height:14px"></div>
+<div class="card"><h3 style="margin-top:0">النسخ الاحتياطي</h3><div class="toolbar"><button class="btn secondary" onclick="exportData()">تنزيل نسخة JSON</button><label class="btn secondary" style="cursor:pointer">استيراد نسخة<input type="file" id="importFile" accept="application/json" hidden onchange="importData(event)"></label><button class="btn red" onclick="resetAll()">مسح كل البيانات</button></div><div class="note">يتم حفظ البيانات في Supabase حسب حساب صاحب المولدة. ويمكن تنزيل نسخة JSON إضافية للاحتياط.</div></div>
+</section>
+<div class="footer-space"></div>
+</main>
+</div>
+<nav class="mobile-nav" id="mobileNav"></nav>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle"></h3><button class="x" onclick="closeModal()">✕</button></div><div id="modalContent"></div></div></div>
+<script>
+const KEY='generatorManagerDB_demo_v2_40';
+const monthNow=()=>new Date().toISOString().slice(0,7);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmt=n=>Number(n||0).toLocaleString('ar-IQ')+' د.ع';
+const uid=()=>crypto.randomUUID ? crypto.randomUUID() : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
+let db=blankDB();
+function defaultDB(){
+  const m=monthNow(), d=n=>`${m}-${String(n).padStart(2,'0')}`;
+  const subscribers=[
+    {id:'s01',name:'أحمد حسن',phone:'0770 000 0001',area:'حي الحسين',address:'شارع 20 - دار 14',amps:5,fuseNo:'101',notes:'بيانات تجريبية',createdAt:1},
+    {id:'s02',name:'علي كريم',phone:'0780 000 0002',area:'حي المعلمين',address:'قرب المدرسة - دار 7',amps:10,fuseNo:'102',notes:'بيانات تجريبية',createdAt:2},
+    {id:'s03',name:'محمد جاسم',phone:'0750 000 0003',area:'حي الموظفين',address:'فرع 3 - دار 22',amps:6,fuseNo:'103',notes:'بيانات تجريبية',createdAt:3},
+    {id:'s04',name:'حسين كاظم',phone:'0771 000 0004',area:'حي الزهراء',address:'شارع السوق - دار 31',amps:8,fuseNo:'104',notes:'غير مسدد لهذا الشهر',createdAt:4},
+    {id:'s05',name:'مرتضى عباس',phone:'0781 000 0005',area:'حي السلام',address:'محلة 12 - دار 8',amps:5,fuseNo:'105',notes:'دفع جزء من الحساب',createdAt:5},
+    {id:'s06',name:'مصطفى سالم',phone:'0751 000 0006',area:'حي النصر',address:'شارع 10 - دار 19',amps:7,fuseNo:'106',notes:'بيانات تجريبية',createdAt:6},
+    {id:'s07',name:'سجاد حيدر',phone:'0772 000 0007',area:'حي الربيع',address:'قرب الجامع - دار 5',amps:10,fuseNo:'107',notes:'بيانات تجريبية',createdAt:7},
+    {id:'s08',name:'كرار ناظم',phone:'0782 000 0008',area:'حي الأمير',address:'فرع 6 - دار 11',amps:4,fuseNo:'108',notes:'غير مسدد لهذا الشهر',createdAt:8},
+    {id:'s09',name:'زهراء علي',phone:'0752 000 0009',area:'حي الجامعة',address:'شارع 30 - دار 4',amps:6,fuseNo:'109',notes:'بيانات تجريبية',createdAt:9},
+    {id:'s10',name:'حيدر فاضل',phone:'0773 000 0010',area:'حي الرسالة',address:'محلة 7 - دار 16',amps:8,fuseNo:'110',notes:'دفع جزء من الحساب',createdAt:10},
+    {id:'s11',name:'مهدي قاسم',phone:'0783 000 0011',area:'حي الوفاء',address:'شارع 15 - دار 27',amps:5,fuseNo:'111',notes:'بيانات تجريبية',createdAt:11},
+    {id:'s12',name:'نور صباح',phone:'0753 000 0012',area:'حي الغدير',address:'فرع 2 - دار 9',amps:9,fuseNo:'112',notes:'غير مسدد لهذا الشهر',createdAt:12},
+    {id:'s13',name:'عباس شاكر',phone:'0774 000 0013',area:'حي العامل',address:'شارع 12 - دار 18',amps:6,fuseNo:'113',notes:'بيانات تجريبية',createdAt:13},
+    {id:'s14',name:'عمار هادي',phone:'0784 000 0014',area:'حي الصحة',address:'قرب المركز الصحي - دار 3',amps:5,fuseNo:'114',notes:'بيانات تجريبية',createdAt:14},
+    {id:'s15',name:'قاسم عدنان',phone:'0754 000 0015',area:'حي الشهداء',address:'فرع 4 - دار 26',amps:10,fuseNo:'115',notes:'دفع جزء من الحساب',createdAt:15},
+    {id:'s16',name:'حسن راضي',phone:'0775 000 0016',area:'حي العسكري',address:'شارع 8 - دار 12',amps:7,fuseNo:'116',notes:'غير مسدد لهذا الشهر',createdAt:16},
+    {id:'s17',name:'باقر جبار',phone:'0785 000 0017',area:'حي الفرات',address:'محلة 5 - دار 21',amps:4,fuseNo:'117',notes:'بيانات تجريبية',createdAt:17},
+    {id:'s18',name:'مؤمل سعد',phone:'0755 000 0018',area:'حي اليرموك',address:'قرب السوق - دار 10',amps:8,fuseNo:'118',notes:'بيانات تجريبية',createdAt:18},
+    {id:'s19',name:'علياء كريم',phone:'0776 000 0019',area:'حي الخضراء',address:'شارع 25 - دار 6',amps:5,fuseNo:'119',notes:'بيانات تجريبية',createdAt:19},
+    {id:'s20',name:'سارة حسين',phone:'0786 000 0020',area:'حي الزهور',address:'فرع 1 - دار 15',amps:6,fuseNo:'120',notes:'غير مسدد لهذا الشهر',createdAt:20},
+    {id:'s21',name:'منتظر فلاح',phone:'0756 000 0021',area:'حي الهدى',address:'شارع 18 - دار 28',amps:10,fuseNo:'121',notes:'بيانات تجريبية',createdAt:21},
+    {id:'s22',name:'حامد طالب',phone:'0777 000 0022',area:'حي البساتين',address:'قرب الحسينية - دار 9',amps:5,fuseNo:'122',notes:'بيانات تجريبية',createdAt:22},
+    {id:'s23',name:'مازن حميد',phone:'0787 000 0023',area:'حي الرافدين',address:'محلة 3 - دار 17',amps:7,fuseNo:'123',notes:'بيانات تجريبية',createdAt:23},
+    {id:'s24',name:'رائد خليل',phone:'0757 000 0024',area:'حي الكرامة',address:'شارع 14 - دار 24',amps:6,fuseNo:'124',notes:'غير مسدد لهذا الشهر',createdAt:24},
+    {id:'s25',name:'فاطمة ناصر',phone:'0778 000 0025',area:'حي الأطباء',address:'قرب المستوصف - دار 2',amps:4,fuseNo:'125',notes:'دفع جزء من الحساب',createdAt:25},
+    {id:'s26',name:'زينب هاشم',phone:'0788 000 0026',area:'حي المصطفى',address:'فرع 7 - دار 13',amps:8,fuseNo:'126',notes:'بيانات تجريبية',createdAt:26},
+    {id:'s27',name:'جاسم عبد',phone:'0758 000 0027',area:'حي الحوراء',address:'شارع 22 - دار 20',amps:5,fuseNo:'127',notes:'بيانات تجريبية',createdAt:27},
+    {id:'s28',name:'عقيل مهدي',phone:'0779 000 0028',area:'حي القدس',address:'محلة 9 - دار 30',amps:9,fuseNo:'128',notes:'غير مسدد لهذا الشهر',createdAt:28},
+    {id:'s29',name:'سيف ثامر',phone:'0789 000 0029',area:'حي الانتفاضة',address:'قرب المدرسة - دار 8',amps:6,fuseNo:'129',notes:'بيانات تجريبية',createdAt:29},
+    {id:'s30',name:'مهند وليد',phone:'0759 000 0030',area:'حي النخيل',address:'شارع 11 - دار 16',amps:10,fuseNo:'130',notes:'دفع جزء من الحساب',createdAt:30},
+    {id:'s31',name:'ضياء محسن',phone:'0770 000 0031',area:'حي النور',address:'فرع 5 - دار 23',amps:5,fuseNo:'131',notes:'بيانات تجريبية',createdAt:31},
+    {id:'s32',name:'فراس صباح',phone:'0780 000 0032',area:'حي الروضة',address:'محلة 4 - دار 7',amps:7,fuseNo:'132',notes:'غير مسدد لهذا الشهر',createdAt:32},
+    {id:'s33',name:'علي صادق',phone:'0750 000 0033',area:'حي السجاد',address:'شارع 17 - دار 19',amps:4,fuseNo:'133',notes:'بيانات تجريبية',createdAt:33},
+    {id:'s34',name:'كاظم رياض',phone:'0771 000 0034',area:'حي الميثاق',address:'قرب الجامع - دار 11',amps:8,fuseNo:'134',notes:'بيانات تجريبية',createdAt:34},
+    {id:'s35',name:'صادق نعيم',phone:'0781 000 0035',area:'حي الأمل',address:'فرع 8 - دار 25',amps:6,fuseNo:'135',notes:'دفع جزء من الحساب',createdAt:35},
+    {id:'s36',name:'ياسر كامل',phone:'0751 000 0036',area:'حي الصدر',address:'شارع 13 - دار 14',amps:5,fuseNo:'136',notes:'غير مسدد لهذا الشهر',createdAt:36},
+    {id:'s37',name:'علي فؤاد',phone:'0772 000 0037',area:'حي الحرية',address:'محلة 6 - دار 18',amps:10,fuseNo:'137',notes:'بيانات تجريبية',createdAt:37},
+    {id:'s38',name:'حسين نوري',phone:'0782 000 0038',area:'حي السلام الجديد',address:'قرب السوق - دار 4',amps:7,fuseNo:'138',notes:'بيانات تجريبية',createdAt:38},
+    {id:'s39',name:'محمد طالب',phone:'0752 000 0039',area:'حي التعاون',address:'شارع 26 - دار 22',amps:5,fuseNo:'139',notes:'بيانات تجريبية',createdAt:39},
+    {id:'s40',name:'سجاد كريم',phone:'0773 000 0040',area:'حي البركة',address:'فرع 9 - دار 10',amps:8,fuseNo:'140',notes:'غير مسدد لهذا الشهر',createdAt:40}
+  ];
+  const collections=[];
+  subscribers.forEach((s,i)=>{
+    const n=i+1, due=s.amps*18000;
+    if(n%4===0) return; // غير دافع
+    const partial=n%5===0;
+    collections.push({id:`c${String(n).padStart(2,'0')}`,subId:s.id,month:m,amount:partial?Math.round(due/2):due,date:d(2+(i%14)),method:n%3===0?'تحويل':'نقدي',notes:partial?'دفعة جزئية':'مسدد بالكامل',createdAt:1000+n});
+  });
+  const expenses=[
+    {id:'e01',type:'أجور',title:'أجرة عامل',qty:1,unitPrice:120000,amount:120000,date:d(5),notes:'أجرة أسبوعية - تجريبي'},
+    {id:'e02',type:'زيوت',title:'زيت محرك وفلاتر',qty:10,unitPrice:7000,amount:100000,date:d(8),notes:'المبلغ يتضمن الزيت والفلاتر - تجريبي'},
+    {id:'e03',type:'أخرى',title:'مواد تنظيف وإنارة',qty:1,unitPrice:50000,amount:50000,date:d(11),notes:'مصروف تشغيلي'}
+  ];
+  const fuel=[
+    {id:'f01',liters:200,price:750,total:150000,date:d(3),notes:'تجهيز وقود أول'},
+    {id:'f02',liters:160,price:760,total:121600,date:d(10),notes:'تجهيز وقود ثانٍ'}
+  ];
+  const maintenance=[
+    {id:'m01',title:'تبديل فلتر الوقود',cost:25000,tech:'فني المولدة',date:d(6),notes:'صيانة دورية'},
+    {id:'m02',title:'شد وتنظيف السير',cost:50000,tech:'فني المولدة',date:d(12),notes:'صيانة تجريبية'}
+  ];
+  return {settings:{name:'مولدة النور — تجريبي',owner:'صاحب المولدة',phone:'0770 000 9999',area:'منطقة تجريبية',ampPrice:18000,fuelPrice:750,oilPrice:7000,workerCost:120000,operatingCost:50000,currency:'د.ع'},subscribers,collections,expenses,fuel,maintenance};
+}
+function blankDB(){return {settings:{name:'إدارة المولدة',owner:'',phone:'',area:'',ampPrice:18000,fuelPrice:0,oilPrice:0,workerCost:0,operatingCost:0,currency:'د.ع'},subscribers:[],collections:[],expenses:[],fuel:[],maintenance:[]}}
+function loadDB(){return blankDB()}
+let syncTimer=null,syncBusy=false,syncQueued=false;
+const OFFLINE_DB_PREFIX='generator_offline_db_v1:';
+const OFFLINE_PROFILE_PREFIX='generator_offline_profile_v1:';
+const OFFLINE_DIRTY_PREFIX='generator_offline_dirty_v1:';
+const OFFLINE_DEVICE_PREFIX='generator_offline_device_ok_v1:';
+function offlineDbKey(wid){return OFFLINE_DB_PREFIX+String(wid||'none')}
+function cacheLocalDB(wid,data=db){if(!wid)return;try{localStorage.setItem(offlineDbKey(wid),JSON.stringify({savedAt:Date.now(),data}))}catch(e){console.warn('offline cache',e)}}
+function readLocalDB(wid){if(!wid)return null;try{const x=JSON.parse(localStorage.getItem(offlineDbKey(wid))||'null');return x&&x.data?x.data:null}catch(e){return null}}
+function markOfflineDirty(wid,yes=true){if(!wid)return;try{if(yes)localStorage.setItem(OFFLINE_DIRTY_PREFIX+wid,String(Date.now()));else localStorage.removeItem(OFFLINE_DIRTY_PREFIX+wid)}catch(e){}}
+function isOfflineDirty(wid){try{return !!localStorage.getItem(OFFLINE_DIRTY_PREFIX+wid)}catch(e){return false}}
+function cacheProfileLocal(p){if(!p?.user_id)return;try{localStorage.setItem(OFFLINE_PROFILE_PREFIX+p.user_id,JSON.stringify(p))}catch(e){}}
+function readProfileLocal(uid){try{return JSON.parse(localStorage.getItem(OFFLINE_PROFILE_PREFIX+uid)||'null')}catch(e){return null}}
+function cacheDeviceApproved(uid,ok=true){if(!uid)return;try{localStorage.setItem(OFFLINE_DEVICE_PREFIX+uid+':'+getDeviceId(),ok?'1':'0')}catch(e){}}
+function isDeviceApprovedLocal(uid){try{return localStorage.getItem(OFFLINE_DEVICE_PREFIX+uid+':'+getDeviceId())==='1'}catch(e){return false}}
+function save(){
+  renderAll();
+  if(currentWorkspaceId){
+    cacheLocalDB(currentWorkspaceId,db);
+    markOfflineDirty(currentWorkspaceId,true);
+    if(!navigator.onLine){showCloudState('محفوظ على الجهاز — بانتظار المزامنة');return}
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(()=>syncRemoteDB().catch(e=>{console.error(e);showCloudState('محفوظ محلياً — ستتم المزامنة عند رجوع الإنترنت','bad')}),400)
+  }
+}
+const navItems=[['dashboard','الرئيسية','⌂'],['subscribers','المشتركين','👥'],['collections','الجباية','💵'],['debts','الديون','⚠'],['expenses','المصاريف','🧾'],['fuel','الوقود','⛽'],['maintenance','الصيانة','🔧'],['reports','التقارير','📊'],['settings','الإعدادات','⚙']];
+function isSuperAdmin(){return currentAccount()?.role==='superadmin'}
+function initNav(){
+  let items=[...navItems];
+  if(isSuperAdmin()) items.splice(items.length-1,0,['accounts','إدارة الحسابات','🔐']);
+  else items.splice(items.length-1,0,['account-request','طلب تعديل الحساب','📝']);
+  sideNav.innerHTML=items.map(x=>`<button data-v="${x[0]}" onclick="showView('${x[0]}')">${x[2]} &nbsp; ${x[1]}</button>`).join('');
+  mobileNav.innerHTML=items.filter(x=>['dashboard','subscribers','collections','debts','accounts','account-request'].includes(x[0])).slice(0,5).map(x=>`<button data-v="${x[0]}" onclick="showView('${x[0]}')">${x[2]}<br>${x[1]}</button>`).join('')
+}
+function showView(id){
+  if(id==='accounts'&&!isSuperAdmin()){id='dashboard'}
+  if(id==='account-request'&&isSuperAdmin()){id='accounts'}
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const target=document.getElementById(id);if(!target)return;
+  target.classList.add('active');document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===id));
+  if(id==='settings')fillSettings();if(id==='reports')renderReports();if(id==='accounts')renderAccounts();if(id==='account-request'){fillAccountRequestForm();renderMyAccountRequests()}window.scrollTo({top:0,behavior:'smooth'})
+}
+function renderAll(){db.subscribers=(db.subscribers||[]).map(s=>({...s,ampType:normalizeAmpType(s.ampType)}));document.getElementById('appTitle').textContent=db.settings.name||'إدارة المولدة';todayText.textContent=new Intl.DateTimeFormat('ar-IQ',{dateStyle:'full'}).format(new Date());renderDashboard();renderUnpaidAlert();renderSubscribers();renderCollections();renderDebts();renderExpenses();renderFuel();renderMaintenance();renderReports()}
+function normalizeAmpType(v){return String(v||'').toLowerCase()==='golden'?'golden':'normal'}
+function ampTypeLabel(v){return normalizeAmpType(v)==='golden'?'ذهبي':'عادي'}
+function ampTypeBadge(v){const t=normalizeAmpType(v);return `<span class="amp-type-badge ${t}">${t==='golden'?'ذهبي':'عادي'}</span>`}
+function decodeSubscriberNotes(v=''){const raw=String(v||'');const m=raw.match(/\[\[AMP_TYPE:(normal|golden)\]\]/i);return {ampType:normalizeAmpType(m?.[1]),notes:raw.replace(/\[\[AMP_TYPE:(normal|golden)\]\]\s*/i,'').trim()}}
+function encodeSubscriberNotes(notes='',type='normal'){const clean=decodeSubscriberNotes(notes).notes;return `[[AMP_TYPE:${normalizeAmpType(type)}]]${clean?'\n'+clean:''}`}
+function monthlyDue(sub){return Number(sub.amps||0)*Number(db.settings.ampPrice||0)}
+function paidFor(subId,month){return db.collections.filter(c=>c.subId===subId&&c.month===month).reduce((a,c)=>a+Number(c.amount||0),0)}
+function debtForMonth(sub,month){return Math.max(0,monthlyDue(sub)-paidFor(sub.id,month))}
+function statusFor(sub,month){let d=debtForMonth(sub,month),p=paidFor(sub.id,month);return d===0?'paid':p>0?'partial':'due'}
+function unpaidSubscribers(month=monthNow()){return db.subscribers.filter(s=>statusFor(s,month)==='due')}
+function renderUnpaidAlert(){const m=monthNow(),arr=unpaidSubscribers(m),banner=document.getElementById('unpaidAlertBanner');if(!banner)return;if(!arr.length){banner.style.display='none';return}const total=arr.reduce((a,s)=>a+debtForMonth(s,m),0);banner.style.display='flex';unpaidAlertCount.textContent=arr.length.toLocaleString('ar-IQ');unpaidAlertText.textContent=`${arr.length.toLocaleString('ar-IQ')} مشترك غير دافع — إجمالي المتبقي ${fmt(total)} — اضغط لعرض القائمة`}
+function showUnpaidAlert(force=false){const m=monthNow(),arr=unpaidSubscribers(m);if(!arr.length)return;if(!force){const k='generator_unpaid_alert_'+m;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}const total=arr.reduce((a,s)=>a+debtForMonth(s,m),0);const rows=arr.map(s=>`<div class="unpaid-mini-item"><div><div class="name">${esc(s.name)}</div><div style="font-size:12px;color:#6b7280;margin-top:3px">${phoneLink(s.phone)} — ${esc([s.area,s.address].filter(Boolean).join(' - ')||'-')}</div></div><div style="text-align:left"><div class="amount">${fmt(debtForMonth(s,m))}</div><button class="btn small" style="margin-top:5px" onclick="closeModal();openCollection('${s.id}')">تسجيل دفع</button></div></div>`).join('');openModal('⚠ تنبيه غير الدافعين',`<div class="unpaid-modal-summary"><b>${arr.length.toLocaleString('ar-IQ')} مشترك</b> لم يدفعوا أي مبلغ لهذا الشهر، وإجمالي المبالغ المطلوبة منهم <b>${fmt(total)}</b>.</div><div class="unpaid-mini-list">${rows}</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn red" onclick="closeModal();showView('debts')">عرض صفحة الديون</button><button class="btn secondary" onclick="closeModal()">إغلاق</button></div>`) }
+function renderDashboard(){const m=monthNow();const income=db.collections.filter(c=>c.month===m).reduce((a,c)=>a+Number(c.amount||0),0);const debt=db.subscribers.reduce((a,s)=>a+debtForMonth(s,m),0);const exp=db.expenses.filter(e=>(e.date||'').slice(0,7)===m).reduce((a,e)=>a+Number(e.amount||0),0);const fuel=db.fuel.filter(e=>(e.date||'').slice(0,7)===m).reduce((a,e)=>a+Number(e.total||0),0);stSubs.textContent=db.subscribers.length;stAmps.textContent=db.subscribers.reduce((a,s)=>a+Number(s.amps||0),0);stCollected.textContent=fmt(income);stDebt.textContent=fmt(debt);monthSummary.innerHTML=`<div class="summary-row"><span>إجمالي المستحق</span><b>${fmt(db.subscribers.reduce((a,s)=>a+monthlyDue(s),0))}</b></div><div class="summary-row"><span>المقبوض</span><b class="ok-text">${fmt(income)}</b></div><div class="summary-row"><span>المصاريف + الوقود</span><b>${fmt(exp+fuel)}</b></div><div class="summary-row"><span>الصافي التقريبي</span><b>${fmt(income-exp-fuel)}</b></div>`;const recent=[...db.collections].sort((a,b)=>b.createdAt-a.createdAt).slice(0,7);recentCollections.innerHTML=recent.length?recent.map(c=>{let s=db.subscribers.find(x=>x.id===c.subId);return `<tr><td>${esc(s?.name||'محذوف')}</td><td>${c.month}</td><td>${fmt(c.amount)}</td><td>${c.date}</td></tr>`}).join(''):`<tr><td colspan="4" class="empty">لا توجد عمليات بعد</td></tr>`;
+  const paidCount=db.subscribers.filter(s=>statusFor(s,m)==='paid').length,dueCount=db.subscribers.filter(s=>statusFor(s,m)==='due').length,totalDue=db.subscribers.reduce((a,s)=>a+monthlyDue(s),0);
+  if(document.getElementById('mSubs')){mSubs.textContent=db.subscribers.length;mPaid.textContent=paidCount;mDue.textContent=dueCount;mCollected.textContent=fmt(income);mRemaining.textContent=fmt(Math.max(0,totalDue-income));}
+  const mr=document.getElementById('mobileRecentSubscribers');if(mr){const list=[...db.subscribers].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,5);mr.innerHTML=list.length?list.map(s=>{const st=statusFor(s,m),label=st==='paid'?'مدفوع':st==='partial'?'دفع جزئي':'غير مدفوع',address=[s.area,s.address].filter(Boolean).join(' - ')||'-',digits=String(s.phone||'').replace(/\D/g,''),wa=digits.startsWith('0')?'964'+digits.slice(1):digits.startsWith('964')?digits:'964'+digits;return `<div class="mobile-recent-item"><span class="mobile-recent-status ${st}">${label}</span><div class="mobile-recent-info"><b>${esc(s.name)}</b><small>${Number(s.amps||0)} أمبير &nbsp;${ampTypeBadge(s.ampType)}&nbsp; | &nbsp;رقم ${esc(s.fuseNo||'-')}<br>📍 ${esc(address)}</small></div><div class="mobile-recent-contact">${s.phone?`<a class="mobile-recent-phone" href="tel:${digits}">${esc(s.phone)}</a><a class="mobile-recent-call" href="tel:${digits}" aria-label="اتصال">☎</a><a class="mobile-recent-wa" href="https://wa.me/${wa}" target="_blank" rel="noopener" aria-label="واتساب">◉</a>`:''}</div></div>`}).join(''):`<div class="empty">لا يوجد مشتركون بعد</div>`}
+}
+function renderSubscribers(){const q=(subSearch?.value||'').trim().toLowerCase(),m=monthNow();let arr=db.subscribers.filter(s=>[s.name,s.phone,s.area,s.address,s.fuseNo,ampTypeLabel(s.ampType)].join(' ').toLowerCase().includes(q));subsBody.innerHTML=arr.length?arr.map((s,i)=>{let st=statusFor(s,m),paid=paidFor(s.id,m),due=monthlyDue(s),remain=Math.max(0,due-paid),label=st==='paid'?'دافع':st==='partial'?'دافع جزء':'غير دافع',address=[s.area,s.address].filter(Boolean).join(' - ')||'-';return `<tr class="subscriber-${st}"><td>${i+1}</td><td><b>${esc(s.name)}</b></td><td><b>${s.amps}</b></td><td>${ampTypeBadge(s.ampType)}</td><td>${esc(s.fuseNo||'-')}</td><td>${phoneLink(s.phone)}</td><td><span class="address-nowrap">${esc(address)}</span></td><td><b>${fmt(due)}</b></td><td class="ok-text"><b>${fmt(paid)}</b></td><td class="${remain>0?'danger-text':'ok-text'}"><b>${fmt(remain)}</b></td><td><span class="badge ${st}">${label}</span></td><td><button class="btn small" onclick="openCollection('${s.id}')">دفع</button> <button class="btn small secondary" onclick="openSubscriber('${s.id}')">تعديل</button> <button class="btn small red" onclick="deleteSubscriber('${s.id}')">حذف</button></td></tr>`}).join(''):`<tr><td colspan="12" class="empty">لا يوجد مشتركون</td></tr>`;
+  const mobile=document.getElementById('subsMobileCards');if(mobile){mobile.innerHTML=arr.length?arr.map(s=>{let st=statusFor(s,m),paid=paidFor(s.id,m),due=monthlyDue(s),remain=Math.max(0,due-paid),label=st==='paid'?'مدفوع':st==='partial'?'دفع جزئي':'غير مدفوع',address=[s.area,s.address].filter(Boolean).join(' - ')||'-';return `<article class="subscriber-mobile-card ${st}"><div class="subscriber-mobile-top"><div><div class="subscriber-mobile-name">${esc(s.name)}</div><div class="subscriber-mobile-meta">${Number(s.amps||0)} أمبير &nbsp;${ampTypeBadge(s.ampType)}&nbsp; | &nbsp;رقم الجوزة ${esc(s.fuseNo||'-')}<br>📍 ${esc(address)}</div></div><span class="badge ${st}">${label}</span></div><div class="subscriber-mobile-contact">${phoneLink(s.phone)}</div><div class="subscriber-mobile-balance"><span>المطلوب<b>${fmt(due)}</b></span><span>المدفوع<b>${fmt(paid)}</b></span><span>المتبقي<b>${fmt(remain)}</b></span></div><div class="subscriber-mobile-actions"><button class="btn" onclick="openCollection('${s.id}')">تسجيل دفع</button><button class="btn secondary" onclick="openSubscriber('${s.id}')">تعديل</button><button class="btn red" onclick="deleteSubscriber('${s.id}')">حذف</button></div></article>`}).join(''):`<div class="empty">لا يوجد مشتركون</div>`}
+}
+function renderCollections(){const q=(colSearch?.value||'').trim().toLowerCase(),mf=colMonthFilter?.value||'';let arr=[...db.collections].sort((a,b)=>b.createdAt-a.createdAt).filter(c=>{let s=db.subscribers.find(x=>x.id===c.subId);return (!q||(s?.name||'').toLowerCase().includes(q))&&(!mf||c.month===mf)});collectionsBody.innerHTML=arr.length?arr.map(c=>{let s=db.subscribers.find(x=>x.id===c.subId);let due=s?monthlyDue(s):0;let allPaid=s?paidFor(s.id,c.month):c.amount;return `<tr><td>${esc(s?.name||'محذوف')}</td><td>${c.month}</td><td>${fmt(due)}</td><td>${fmt(c.amount)}</td><td>${fmt(Math.max(0,due-allPaid))}</td><td>${c.date}</td><td><button class="btn small red" onclick="deleteCollection('${c.id}')">حذف</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">لا توجد جبايات</td></tr>`}
+function renderDebts(){const m=monthNow();let arr=db.subscribers.map(s=>({s,debt:debtForMonth(s,m),paid:paidFor(s.id,m),st:statusFor(s,m)})).filter(x=>x.debt>0).sort((a,b)=>{if(a.st!==b.st)return a.st==='due'?-1:1;return b.debt-a.debt});debtsBody.innerHTML=arr.length?arr.map(x=>{const label=x.st==='due'?'غير دافع':'دافع جزء';return `<tr class="subscriber-${x.st}"><td><b>${esc(x.s.name)}</b></td><td>${phoneLink(x.s.phone)}</td><td>${x.s.amps}</td><td>${ampTypeBadge(x.s.ampType)}</td><td>${fmt(monthlyDue(x.s))}</td><td>${fmt(x.paid)}</td><td class="danger-text"><b>${fmt(x.debt)}</b></td><td><span class="badge ${x.st}">${label}</span></td><td><button class="btn small" onclick="openCollection('${x.s.id}')">تسجيل دفع</button></td></tr>`}).join(''):`<tr><td colspan="9" class="empty">لا توجد ديون لهذا الشهر</td></tr>`}
+function renderExpenses(){let arr=[...db.expenses].sort((a,b)=>(b.date||'').localeCompare(a.date||''));expensesBody.innerHTML=arr.length?arr.map(e=>`<tr><td>${esc(e.type)}</td><td>${esc(e.title)}</td><td>${e.qty??'-'}</td><td>${e.unitPrice!=null?fmt(e.unitPrice):'-'}</td><td>${fmt(e.amount)}</td><td>${e.date}</td><td>${esc(e.notes||'-')}</td><td><button class="btn small red" onclick="deleteExpense('${e.id}')">حذف</button></td></tr>`).join(''):`<tr><td colspan="8" class="empty">لا توجد مصاريف</td></tr>`}
+function renderFuel(){let arr=[...db.fuel].sort((a,b)=>(b.date||'').localeCompare(a.date||''));let liters=arr.reduce((a,e)=>a+Number(e.liters||0),0),cost=arr.reduce((a,e)=>a+Number(e.total||0),0);fuelLiters.textContent=liters.toLocaleString('ar-IQ');fuelCost.textContent=fmt(cost);fuelDefaultPrice.textContent=fmt(db.settings.fuelPrice||0);fuelAvgPrice.textContent=fmt(liters?Math.round(cost/liters):0);fuelBody.innerHTML=arr.length?arr.map(e=>`<tr><td>${e.liters}</td><td>${fmt(e.price)}</td><td>${fmt(e.total)}</td><td>${e.date}</td><td>${esc(e.notes||'-')}</td><td><button class="btn small red" onclick="deleteFuel('${e.id}')">حذف</button></td></tr>`).join(''):`<tr><td colspan="6" class="empty">لا توجد سجلات وقود</td></tr>`}
+function renderMaintenance(){let arr=[...db.maintenance].sort((a,b)=>(b.date||'').localeCompare(a.date||''));maintenanceBody.innerHTML=arr.length?arr.map(e=>`<tr><td>${esc(e.title)}</td><td>${fmt(e.cost)}</td><td>${esc(e.tech||'-')}</td><td>${e.date}</td><td>${esc(e.notes||'-')}</td><td><button class="btn small red" onclick="deleteMaintenance('${e.id}')">حذف</button></td></tr>`).join(''):`<tr><td colspan="6" class="empty">لا توجد سجلات صيانة</td></tr>`}
+function renderReports(){if(!reportMonth.value)reportMonth.value=monthNow();const m=reportMonth.value||monthNow();const monthExpenses=db.expenses.filter(e=>(e.date||'').slice(0,7)===m);const monthFuel=db.fuel.filter(e=>(e.date||'').slice(0,7)===m);const income=db.collections.filter(c=>c.month===m).reduce((a,c)=>a+Number(c.amount||0),0);const ex=monthExpenses.reduce((a,e)=>a+Number(e.amount||0),0);const fu=monthFuel.reduce((a,e)=>a+Number(e.total||0),0);const fuelLitersMonth=monthFuel.reduce((a,e)=>a+Number(e.liters||0),0);const avgFuel=fuelLitersMonth?Math.round(fu/fuelLitersMonth):0;const oil=monthExpenses.filter(e=>e.type==='زيوت').reduce((a,e)=>a+Number(e.amount||0),0);const labor=monthExpenses.filter(e=>e.type==='أجور').reduce((a,e)=>a+Number(e.amount||0),0);const operating=monthExpenses.filter(e=>e.type!=='زيوت'&&e.type!=='أجور').reduce((a,e)=>a+Number(e.amount||0),0);const mt=db.maintenance.filter(e=>(e.date||'').slice(0,7)===m).reduce((a,e)=>a+Number(e.cost||0),0);const due=db.subscribers.reduce((a,s)=>a+monthlyDue(s),0);const debt=Math.max(0,due-income);const profit=income-ex-fu-mt;rpIncome.textContent=fmt(income);rpExpenses.textContent=fmt(ex+mt);rpFuel.textContent=fmt(fu);rpProfit.textContent=fmt(profit);rpCollectionDetails.innerHTML=`<div class="summary-row"><span>عدد المشتركين</span><b>${db.subscribers.length}</b></div><div class="summary-row"><span>إجمالي الأمبيرات</span><b>${db.subscribers.reduce((a,s)=>a+Number(s.amps||0),0)}</b></div><div class="summary-row"><span>الأمبير العادي</span><b>${db.subscribers.filter(s=>normalizeAmpType(s.ampType)==='normal').reduce((a,s)=>a+Number(s.amps||0),0)} أمبير</b></div><div class="summary-row"><span>الأمبير الذهبي</span><b>${db.subscribers.filter(s=>normalizeAmpType(s.ampType)==='golden').reduce((a,s)=>a+Number(s.amps||0),0)} أمبير</b></div><div class="summary-row"><span>سعر الأمبير</span><b>${fmt(db.settings.ampPrice||0)}</b></div><div class="summary-row"><span>المستحق النظري</span><b>${fmt(due)}</b></div><div class="summary-row"><span>المتبقي</span><b class="danger-text">${fmt(debt)}</b></div>`;rpOpsDetails.innerHTML=`<div class="summary-row"><span>زيوت</span><b>${fmt(oil)}</b></div><div class="summary-row"><span>أجور</span><b>${fmt(labor)}</b></div><div class="summary-row"><span>مصاريف تشغيل وأخرى</span><b>${fmt(operating)}</b></div><div class="summary-row"><span>صيانة</span><b>${fmt(mt)}</b></div><div class="summary-row"><span>وقود</span><b>${fmt(fu)}</b></div><div class="summary-row"><span>كمية الكاز</span><b>${fuelLitersMonth.toLocaleString('ar-IQ')} لتر</b></div><div class="summary-row"><span>متوسط سعر لتر الكاز</span><b>${fmt(avgFuel)}</b></div><div class="summary-row"><span>صافي الشهر</span><b class="${profit>=0?'ok-text':'danger-text'}">${fmt(profit)}</b></div>`}
+function openModal(title,html){modalTitle.textContent=title;modalContent.innerHTML=html;modal.classList.add('open')}
+function closeModal(){modal.classList.remove('open')}
+function openSubscriber(id=''){let s=db.subscribers.find(x=>x.id===id)||{name:'',phone:'',area:'',address:'',amps:1,ampType:'normal',fuseNo:'',notes:''};s.ampType=normalizeAmpType(s.ampType);openModal(id?'تعديل مشترك':'إضافة مشترك',`<form onsubmit="saveSubscriber(event,'${id}')"><div class="form-grid"><div class="field"><label>اسم المشترك *</label><input name="name" required value="${attr(s.name)}"></div><div class="field"><label>رقم الهاتف *</label><input name="phone" inputmode="tel" required value="${attr(s.phone)}"></div><div class="field"><label>عدد الأمبيرات الساحبة *</label><input name="amps" type="number" min="1" step="1" required value="${s.amps}"></div><div class="field"><label>نوع الأمبير *</label><select name="ampType" required><option value="normal" ${s.ampType==='normal'?'selected':''}>عادي</option><option value="golden" ${s.ampType==='golden'?'selected':''}>ذهبي</option></select></div><div class="field"><label>رقم الجوزة *</label><input name="fuseNo" required value="${attr(s.fuseNo||'')}"></div><div class="field"><label>المنطقة</label><input name="area" value="${attr(s.area)}"></div><div class="field"><label>العنوان التفصيلي *</label><input name="address" required value="${attr(s.address)}"></div><div class="field full"><label>ملاحظات</label><textarea name="notes">${esc(s.notes||'')}</textarea></div><div class="full"><button class="btn green">حفظ المشترك</button></div></div></form>`) }
+function saveSubscriber(e,id){e.preventDefault();let f=new FormData(e.target);let o={id:id||uid(),name:f.get('name').trim(),phone:f.get('phone').trim(),area:f.get('area').trim(),address:f.get('address').trim(),amps:Number(f.get('amps')||1),ampType:normalizeAmpType(f.get('ampType')),fuseNo:f.get('fuseNo').trim(),notes:f.get('notes').trim(),createdAt:Date.now()};if(id){let i=db.subscribers.findIndex(x=>x.id===id);o.createdAt=db.subscribers[i].createdAt;db.subscribers[i]=o}else db.subscribers.push(o);save();closeModal()}
+function openCollection(preSub=''){if(!db.subscribers.length)return alert('أضف مشترك أولاً');let opts=db.subscribers.map(s=>`<option value="${s.id}" ${s.id===preSub?'selected':''}>${esc(s.name)} — ${s.amps} أمبير ${ampTypeLabel(s.ampType)}</option>`).join('');openModal('تسجيل جباية',`<form onsubmit="saveCollection(event)"><div class="form-grid"><div class="field full"><label>المشترك *</label><select name="subId" required>${opts}</select></div><div class="field"><label>الشهر *</label><input name="month" type="month" required value="${monthNow()}"></div><div class="field"><label>المبلغ المدفوع (د.ع) *</label><input name="amount" type="number" min="0" required></div><div class="field"><label>تاريخ الدفع *</label><input name="date" type="date" required value="${today()}"></div><div class="field"><label>طريقة الدفع</label><select name="method"><option>نقدي</option><option>تحويل</option><option>أخرى</option></select></div><div class="field full"><label>ملاحظات</label><textarea name="notes"></textarea></div><div class="full"><button class="btn green">حفظ الجباية</button></div></div></form>`)}
+function saveCollection(e){e.preventDefault();let f=new FormData(e.target);db.collections.push({id:uid(),subId:f.get('subId'),month:f.get('month'),amount:Number(f.get('amount')||0),date:f.get('date'),method:f.get('method'),notes:f.get('notes').trim(),createdAt:Date.now()});save();closeModal()}
+function openExpense(){openModal('إضافة مصروف',`<form onsubmit="saveExpense(event)"><div class="form-grid"><div class="field"><label>نوع المصروف</label><select name="type" onchange="setExpenseDefaults(this.value)"><option>تشغيل</option><option>زيوت</option><option>أجور</option><option>نقل</option><option>قطع غيار</option><option>أخرى</option></select></div><div class="field"><label>البيان *</label><input name="title" required></div><div class="field"><label>الكمية</label><input id="expenseQty" name="qty" type="number" min="0" step="0.1" value="1" oninput="calcExpenseAmount()"></div><div class="field"><label>سعر الوحدة (د.ع)</label><input id="expenseUnitPrice" name="unitPrice" type="number" min="0" oninput="calcExpenseAmount()"></div><div class="field"><label>المبلغ الإجمالي *</label><input id="expenseAmount" name="amount" type="number" min="0" required></div><div class="field"><label>التاريخ *</label><input name="date" type="date" required value="${today()}"></div><div class="field full"><label>ملاحظات</label><textarea name="notes"></textarea></div><div class="full"><button class="btn green">حفظ</button></div></div></form>`);setExpenseDefaults('تشغيل')}
+function setExpenseDefaults(type){const q=document.getElementById('expenseQty'),u=document.getElementById('expenseUnitPrice'),a=document.getElementById('expenseAmount');if(!q||!u||!a)return;q.value=1;if(type==='زيوت'){u.value=db.settings.oilPrice||0;a.value=Number(q.value||1)*Number(u.value||0)}else if(type==='أجور'){u.value=db.settings.workerCost||0;a.value=db.settings.workerCost||0}else if(type==='تشغيل'){u.value=db.settings.operatingCost||0;a.value=db.settings.operatingCost||0}else{u.value='';a.value=''}}
+function calcExpenseAmount(){const q=Number(document.getElementById('expenseQty')?.value||0),u=Number(document.getElementById('expenseUnitPrice')?.value||0),a=document.getElementById('expenseAmount');if(a&&q>=0&&u>=0)a.value=Math.round(q*u)}
+function saveExpense(e){e.preventDefault();let f=new FormData(e.target);db.expenses.push({id:uid(),type:f.get('type'),title:f.get('title').trim(),qty:Number(f.get('qty')||0),unitPrice:Number(f.get('unitPrice')||0),amount:Number(f.get('amount')||0),date:f.get('date'),notes:f.get('notes').trim()});save();closeModal()}
+function openFuel(){openModal('إضافة وقود',`<form onsubmit="saveFuel(event)"><div class="form-grid"><div class="field"><label>الكمية باللتر *</label><input id="fuelLitersInput" name="liters" type="number" min="0" step="0.1" required oninput="updateFuelPreview()"></div><div class="field"><label>سعر اللتر *</label><input id="fuelPriceInput" name="price" type="number" min="0" required value="${Number(db.settings.fuelPrice||0)}" oninput="updateFuelPreview()"></div><div class="field"><label>التاريخ *</label><input name="date" type="date" required value="${today()}"></div><div class="field"><label>المورد/ملاحظات</label><input name="notes"></div><div class="full"><div class="note" id="fuelTotalPreview">الإجمالي: ${fmt(0)}</div></div><div class="full"><button class="btn green">حفظ</button></div></div></form>`)}
+function updateFuelPreview(){const l=Number(document.getElementById('fuelLitersInput')?.value||0),p=Number(document.getElementById('fuelPriceInput')?.value||0),el=document.getElementById('fuelTotalPreview');if(el)el.textContent='الإجمالي: '+fmt(l*p)}
+function saveFuel(e){e.preventDefault();let f=new FormData(e.target),liters=Number(f.get('liters')||0),price=Number(f.get('price')||0);db.fuel.push({id:uid(),liters,price,total:liters*price,date:f.get('date'),notes:f.get('notes').trim()});save();closeModal()}
+function openMaintenance(){openModal('إضافة صيانة',`<form onsubmit="saveMaintenance(event)"><div class="form-grid"><div class="field full"><label>العطل أو عمل الصيانة *</label><input name="title" required></div><div class="field"><label>الكلفة</label><input name="cost" type="number" min="0" value="0"></div><div class="field"><label>الفني</label><input name="tech"></div><div class="field"><label>التاريخ *</label><input name="date" type="date" required value="${today()}"></div><div class="field full"><label>ملاحظات</label><textarea name="notes"></textarea></div><div class="full"><button class="btn green">حفظ</button></div></div></form>`)}
+function saveMaintenance(e){e.preventDefault();let f=new FormData(e.target);db.maintenance.push({id:uid(),title:f.get('title').trim(),cost:Number(f.get('cost')||0),tech:f.get('tech').trim(),date:f.get('date'),notes:f.get('notes').trim()});save();closeModal()}
+function deleteSubscriber(id){if(!confirm('حذف المشترك؟'))return;db.subscribers=db.subscribers.filter(x=>x.id!==id);save()}
+function deleteCollection(id){if(confirm('حذف عملية الجباية؟')){db.collections=db.collections.filter(x=>x.id!==id);save()}}
+function deleteExpense(id){if(confirm('حذف المصروف؟')){db.expenses=db.expenses.filter(x=>x.id!==id);save()}}
+function deleteFuel(id){if(confirm('حذف سجل الوقود؟')){db.fuel=db.fuel.filter(x=>x.id!==id);save()}}
+function deleteMaintenance(id){if(confirm('حذف سجل الصيانة؟')){db.maintenance=db.maintenance.filter(x=>x.id!==id);save()}}
+function fillSettings(){
+  setName.value=db.settings.name||'';setOwner.value=db.settings.owner||'';setPhone.value=db.settings.phone||'';setArea.value=db.settings.area||'';setAmpPrice.value=db.settings.ampPrice||0;setFuelPrice.value=db.settings.fuelPrice||0;setOilPrice.value=db.settings.oilPrice||0;setWorkerCost.value=db.settings.workerCost||0;setOperatingCost.value=db.settings.operatingCost||0;setCurrency.value='د.ع';
+  const locked=!isSuperAdmin();[setName,setOwner,setPhone,setArea].forEach(el=>{el.disabled=locked;el.title=locked?'يتطلب موافقة الأدمن الرئيسي':''});
+  const note=document.getElementById('settingsIdentityNote');if(note)note.textContent=locked?'اسم المولدة واسم المالك والهاتف والعنوان لا تتغير مباشرة. استخدم «طلب تعديل الحساب» ليوافق الأدمن الرئيسي. أما الأسعار التشغيلية فيمكنك تعديلها مباشرة.':'يمكن للأدمن الرئيسي تعديل بيانات الحسابات من صفحة إدارة الحسابات.'
+}
+function saveSettings(){
+  const identity=isSuperAdmin()?{name:setName.value.trim()||'إدارة المولدة',owner:setOwner.value.trim(),phone:setPhone.value.trim(),area:setArea.value.trim()}:{name:db.settings.name,owner:db.settings.owner,phone:db.settings.phone,area:db.settings.area};
+  db.settings={...db.settings,...identity,ampPrice:Number(setAmpPrice.value||0),fuelPrice:Number(setFuelPrice.value||0),oilPrice:Number(setOilPrice.value||0),workerCost:Number(setWorkerCost.value||0),operatingCost:Number(setOperatingCost.value||0),currency:'د.ع'};save();alert('تم الحفظ')
+}
+function openSettings(){showView('settings')}
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`generator-backup-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
+function importData(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.subscribers||!d.settings)throw 0;db=d;save();alert('تم استيراد النسخة')}catch(e){alert('ملف غير صالح')}};r.readAsText(file)}
+function resetAll(){if(confirm('سيتم حذف جميع بيانات هذه المولدة نهائياً من السحابة. متأكد؟')){db=blankDB();save();fillSettings()}}
+function exportSubscribersCSV(){let m=monthNow();let rows=[['الاسم','الأمبيرات','نوع الأمبير','رقم الجوزة','الهاتف','المنطقة','العنوان','الحساب','المدفوع','المتبقي','الحالة'],...db.subscribers.map(s=>{let due=monthlyDue(s),paid=paidFor(s.id,m),remain=Math.max(0,due-paid),st=statusFor(s,m);return[s.name,s.amps,ampTypeLabel(s.ampType),s.fuseNo||'',s.phone,s.area,s.address,due,paid,remain,st==='paid'?'دافع':st==='partial'?'دافع جزء':'غير دافع']})];let csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');let blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='subscribers.csv';a.click();URL.revokeObjectURL(a.href)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}function attr(s=''){return esc(s)}
+function phoneHref(v=''){const raw=String(v||'').trim();if(!raw)return'';let clean=raw.replace(/[^0-9+*#]/g,'');if(clean.startsWith('00'))clean='+'+clean.slice(2);return clean}
+function whatsappPhone(v=''){let d=String(v||'').replace(/\D/g,'');if(!d)return'';if(d.startsWith('00964'))d=d.slice(2);else if(d.startsWith('964')){}else if(d.startsWith('0'))d='964'+d.slice(1);else if(d.startsWith('7'))d='964'+d;return d}
+function phoneLink(v=''){const raw=String(v||'').trim();if(!raw)return'<span class="phone-nowrap">-</span>';const href=phoneHref(raw),wa=whatsappPhone(raw);if(!href)return`<span class="phone-nowrap">${esc(raw)}</span>`;return`<span class="phone-actions"><a class="phone-nowrap phone-call" href="tel:${attr(href)}" title="اتصال بـ ${attr(raw)}" aria-label="اتصال بـ ${attr(raw)}">${esc(raw)}</a>${wa?`<a class="whatsapp-link" href="https://wa.me/${attr(wa)}" target="_blank" rel="noopener" title="فتح واتساب" aria-label="فتح واتساب مع ${attr(raw)}">واتساب</a>`:''}</span>`}
+
+// ===== Supabase: الحسابات والصلاحيات والبيانات السحابية =====
+const SUPABASE_URL='https://mjzbhaxahwvmtzssavpy.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_P4vOe1epNoi8JiA9n4GA2Q_QrmtDD2V';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const FN_BASE=SUPABASE_URL+'/functions/v1';
+let appBooted=false,currentAccountState=null,currentProfile=null,currentWorkspaceId=null;
+function normalizeUsername(v){return String(v||'').trim().toLowerCase()}
+function getDeviceId(){
+  const k='generator_device_id_v1';
+  try{let v=localStorage.getItem(k);if(!v){v=(crypto.randomUUID?crypto.randomUUID():'dev-'+Date.now()+'-'+Math.random().toString(36).slice(2));localStorage.setItem(k,v)}return v}catch(e){return 'fallback-'+(navigator.userAgent||'browser').length+'-'+screen.width+'x'+screen.height}
+}
+function getDeviceName(){
+  const ua=navigator.userAgent||'',mobile=/Android|iPhone|iPad|Mobile/i.test(ua),platform=navigator.userAgentData?.platform||navigator.platform||'';
+  let browser='متصفح';if(/Edg\//.test(ua))browser='Edge';else if(/Chrome\//.test(ua))browser='Chrome';else if(/Firefox\//.test(ua))browser='Firefox';else if(/Safari\//.test(ua)&&!/Chrome\//.test(ua))browser='Safari';
+  return (mobile?'موبايل':'حاسبة')+' • '+browser+(platform?' • '+platform:'')
+}
+function currentDevicePayload(){return{device_id:getDeviceId(),device_name:getDeviceName(),user_agent:navigator.userAgent||''}}
+function currentAccount(){return currentAccountState}
+function showAuthError(msg){const el=document.getElementById('authError');el.textContent=msg;el.classList.add('show')}
+function clearAuthError(){const el=document.getElementById('authError');el.textContent='';el.classList.remove('show')}
+function switchAuthMode(){clearAuthError();document.getElementById('registerForm').style.display='none';document.getElementById('loginForm').style.display='grid';document.getElementById('authTitle').textContent='تسجيل الدخول';document.getElementById('authSub').textContent='أدخل اسم المستخدم أو البريد الإلكتروني أو رقم الهاتف، ثم كلمة المرور.';document.getElementById('authSwitch').innerHTML=''}
+function showCloudState(msg,type='ok'){let el=document.getElementById('cloudState');if(!el){el=document.createElement('div');el.id='cloudState';el.style.cssText='position:fixed;left:14px;bottom:76px;z-index:1000;padding:9px 12px;border-radius:10px;font-size:12px;box-shadow:0 4px 16px #0002;transition:.2s';document.body.appendChild(el)}el.textContent=msg;el.style.background=type==='bad'?'#fee2e2':'#dcfce7';el.style.color=type==='bad'?'#991b1b':'#166534';el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2400)}
+
+async function invokeEdge(name,body){
+  const {data,error}=await sb.functions.invoke(name,{body});
+  if(error){
+    let msg='تعذر الاتصال بالخادم.';
+    try{
+      if(error.context && typeof error.context.json==='function'){
+        const j=await error.context.json();
+        if(j&&j.error)msg=j.error;
+      }else if(error.message)msg=error.message;
+    }catch(_){ if(error.message)msg=error.message }
+    throw new Error(msg);
+  }
+  return data||{};
+}
+async function loginUser(e){
+  e.preventDefault();clearAuthError();
+  const btn=e.target.querySelector('button[type="submit"]'),identifier=String(document.getElementById('loginIdentifier').value||'').trim(),password=document.getElementById('loginPassword').value;
+  if(!identifier||!password)return showAuthError('أدخل اسم المستخدم أو البريد أو رقم الهاتف وكلمة المرور.');
+  btn.disabled=true;btn.textContent='جاري الدخول...';
+  try{
+    const device=currentDevicePayload();
+    const j=await invokeEdge('generator-login',{identifier,password,...device});
+    if(!j.access_token||!j.refresh_token)throw new Error(j.error||'بيانات الدخول غير صحيحة.');
+    const {error}=await sb.auth.setSession({access_token:j.access_token,refresh_token:j.refresh_token});if(error)throw error;
+    await enterFromSession();
+  }catch(err){showAuthError(err.message||'تعذر تسجيل الدخول حالياً.')}finally{btn.disabled=false;btn.textContent='دخول'}
+}
+async function verifyCurrentDevice(){
+  const {data:{session}}=await sb.auth.getSession();if(!session)throw new Error('انتهت الجلسة. سجل الدخول من جديد.');
+  const uid=session.user?.id;
+  if(!navigator.onLine){
+    if(isDeviceApprovedLocal(uid))return {allowed:true,offline:true};
+    throw new Error('أول دخول من هذا الجهاز يحتاج إنترنت حتى يتم التحقق منه.');
+  }
+  const r=await invokeEdge('generator-device-check',{...currentDevicePayload(),user_id:uid});
+  if(r?.allowed!==false)cacheDeviceApproved(uid,true);
+  return r;
+}
+function registerOwner(e){e.preventDefault();showAuthError('إنشاء الحسابات متاح للأدمن الرئيسي فقط من داخل لوحة الإدارة.')}
+async function loadCurrentProfile(){
+  const {data:{session}}=await sb.auth.getSession();
+  const uid=session?.user?.id;if(!uid)return null;
+  let p=null;
+  if(navigator.onLine){
+    try{
+      const {data,error}=await sb.from('generator_profiles').select('*').eq('user_id',uid).maybeSingle();
+      if(error)throw error;p=data;if(p)cacheProfileLocal(p);
+    }catch(e){console.warn('profile online failed',e);p=readProfileLocal(uid)}
+  }else p=readProfileLocal(uid);
+  if(!p)return null;if(p.active===false)throw new Error('الحساب غير فعال.');
+  currentProfile=p;currentWorkspaceId=p.workspace_id||null;
+  currentAccountState={id:p.user_id,name:p.display_name||p.username,username:p.username,role:p.role==='super_admin'?'superadmin':'owner',enabled:p.active!==false,workspaceId:p.workspace_id||null};
+  return currentAccountState
+}
+async function enterFromSession(){
+  const a=await loadCurrentProfile();if(!a){if(navigator.onLine)await sb.auth.signOut();throw new Error(navigator.onLine?'الحساب غير مربوط بنظام المولدات.':'لا توجد بيانات محفوظة لهذا الحساب على هذا الجهاز. افتح البرنامج مرة واحدة مع الإنترنت أولاً.');}
+  await verifyCurrentDevice();
+  if(currentWorkspaceId){
+    await loadRemoteDB();
+  }else if(a.role==='superadmin'){
+    // البيانات الافتراضية تظهر للأدمن الرئيسي فقط.
+    // حسابات أصحاب المولدات الجديدة تبدأ فارغة تماماً.
+    db=defaultDB();
+  }else{
+    db=blankDB();
+  }
+  document.getElementById('authScreen').classList.remove('show');document.querySelector('.app').classList.remove('auth-locked');
+  const chip=document.getElementById('currentUserChip'),role=a.role==='superadmin'?'أدمن رئيسي':'صاحب مولدة';
+  if(chip)chip.innerHTML='<span class="avatar">'+esc((a.name||a.username).slice(0,1))+'</span><span class="who"><b>'+esc(a.name||a.username)+'</b><small>'+role+' • @'+esc(a.username)+'</small></span>';
+  await bootApp();
+}
+async function logoutUser(){if(!confirm('تسجيل الخروج من الحساب؟'))return;await sb.auth.signOut();location.reload()}
+
+async function loadRemoteDB(){
+  if(!currentWorkspaceId){db=blankDB();return}
+  const cached=readLocalDB(currentWorkspaceId);
+  if(!navigator.onLine){
+    if(cached){db=cached;showCloudState('وضع أوفلاين — آخر بيانات محفوظة');return}
+    throw new Error('لا توجد نسخة أوفلاين محفوظة. اتصل بالإنترنت مرة واحدة لتحميل بيانات المولدة.');
+  }
+  showCloudState('جاري تحميل البيانات...');
+  try{
+    // إذا توجد تعديلات أوفلاين غير مرفوعة، لا نستبدلها ببيانات السحابة.
+    if(cached&&isOfflineDirty(currentWorkspaceId)){db=cached;await syncRemoteDB();return}
+    const [wr,sr,pr,er,fr,mr]=await Promise.all([
+      sb.from('generator_workspaces').select('*').eq('id',currentWorkspaceId).single(),
+      sb.from('generator_subscribers').select('*').eq('workspace_id',currentWorkspaceId).order('created_at'),
+      sb.from('generator_payments').select('*').eq('workspace_id',currentWorkspaceId).order('payment_date'),
+      sb.from('generator_expenses').select('*').eq('workspace_id',currentWorkspaceId).order('expense_date'),
+      sb.from('generator_fuel').select('*').eq('workspace_id',currentWorkspaceId).order('fuel_date'),
+      sb.from('generator_maintenance').select('*').eq('workspace_id',currentWorkspaceId).order('maintenance_date')
+    ]);
+    for(const r of [wr,sr,pr,er,fr,mr])if(r.error)throw r.error;
+    const w=wr.data||{};
+    db={settings:{name:w.generator_name||'إدارة المولدة',owner:w.owner_name||'',phone:w.phone||'',area:w.address||'',ampPrice:Number(w.amp_price||0),fuelPrice:Number(w.fuel_liter_price||0),oilPrice:Number(w.oil_price||0),workerCost:Number(w.worker_cost||0),operatingCost:Number(w.operating_cost||0),currency:'د.ع'},
+      subscribers:(sr.data||[]).map(x=>{const meta=decodeSubscriberNotes(x.notes||'');return {id:x.id,name:x.full_name||'',phone:x.phone||'',area:x.area||'',address:x.address||'',amps:Number(x.amps||0),ampType:meta.ampType,fuseNo:x.jawza_number||'',notes:meta.notes,createdAt:new Date(x.created_at||Date.now()).getTime()}}),
+      collections:(pr.data||[]).map(x=>({id:x.id,subId:x.subscriber_id,month:(x.bill_month||String(x.payment_date||'').slice(0,7)).slice(0,7),amount:Number(x.amount||0),date:String(x.payment_date||'').slice(0,10),method:x.method||'نقدي',notes:x.notes||'',createdAt:new Date(x.created_at||x.payment_date||Date.now()).getTime()})),
+      expenses:(er.data||[]).map(x=>({id:x.id,type:x.category||'أخرى',title:x.title||x.description||'',qty:Number(x.qty||1),unitPrice:Number(x.unit_price||0),amount:Number(x.amount||0),date:x.expense_date,notes:x.notes||x.description||''})),
+      fuel:(fr.data||[]).map(x=>({id:x.id,liters:Number(x.liters||0),price:Number(x.price_per_liter||0),total:Number(x.total_cost||0),date:x.fuel_date,notes:x.notes||x.supplier||''})),
+      maintenance:(mr.data||[]).map(x=>({id:x.id,title:x.maintenance_type||x.description||'',cost:Number(x.cost||0),tech:x.technician||'',date:x.maintenance_date,notes:x.description||''}))};
+    cacheLocalDB(currentWorkspaceId,db);markOfflineDirty(currentWorkspaceId,false);showCloudState('تم تحميل البيانات')
+  }catch(e){
+    if(cached){db=cached;showCloudState('تعذر الاتصال — تم فتح النسخة المحفوظة','bad');return}
+    throw e
+  }
+}
+
+async function syncRemoteDB(){
+  if(!currentWorkspaceId)return;cacheLocalDB(currentWorkspaceId,db);
+  if(!navigator.onLine){markOfflineDirty(currentWorkspaceId,true);showCloudState('محفوظ على الجهاز — بانتظار المزامنة');return}
+  if(syncBusy){syncQueued=true;return}syncBusy=true;syncQueued=false;
+  const snap=JSON.parse(JSON.stringify(db));
+  try{
+    let r=await sb.from('generator_workspaces').update({generator_name:snap.settings.name||'إدارة المولدة',owner_name:snap.settings.owner||'',phone:snap.settings.phone||'',address:snap.settings.area||'',amp_price:Number(snap.settings.ampPrice||0),fuel_liter_price:Number(snap.settings.fuelPrice||0),oil_price:Number(snap.settings.oilPrice||0),worker_cost:Number(snap.settings.workerCost||0),operating_cost:Number(snap.settings.operatingCost||0)}).eq('id',currentWorkspaceId);if(r.error)throw r.error;
+    for(const table of ['generator_payments','generator_bills','generator_expenses','generator_fuel','generator_maintenance']){let d=await sb.from(table).delete().eq('workspace_id',currentWorkspaceId);if(d.error)throw d.error}
+    let ds=await sb.from('generator_subscribers').delete().eq('workspace_id',currentWorkspaceId);if(ds.error)throw ds.error;
+    if(snap.subscribers.length){const rows=snap.subscribers.map(x=>({id:x.id,workspace_id:currentWorkspaceId,full_name:x.name,amps:Number(x.amps||0),jawza_number:x.fuseNo||null,phone:x.phone||null,area:x.area||null,address:x.address||null,notes:encodeSubscriberNotes(x.notes||'',x.ampType),active:true}));let q=await sb.from('generator_subscribers').insert(rows);if(q.error)throw q.error}
+    if(snap.collections.length){const rows=snap.collections.map(x=>({id:x.id,workspace_id:currentWorkspaceId,subscriber_id:x.subId,bill_id:null,bill_month:(x.month||monthNow())+'-01',amount:Number(x.amount||0),payment_date:(x.date||today())+'T12:00:00Z',method:x.method||'نقدي',notes:x.notes||null}));let q=await sb.from('generator_payments').insert(rows);if(q.error)throw q.error}
+    if(snap.expenses.length){const rows=snap.expenses.map(x=>({id:x.id,workspace_id:currentWorkspaceId,expense_date:x.date||today(),category:x.type||'أخرى',title:x.title||'',qty:Number(x.qty||1),unit_price:Number(x.unitPrice||0),amount:Number(x.amount||0),description:x.notes||null,notes:x.notes||null}));let q=await sb.from('generator_expenses').insert(rows);if(q.error)throw q.error}
+    if(snap.fuel.length){const rows=snap.fuel.map(x=>({id:x.id,workspace_id:currentWorkspaceId,fuel_date:x.date||today(),liters:Number(x.liters||0),price_per_liter:Number(x.price||0),supplier:null,notes:x.notes||null}));let q=await sb.from('generator_fuel').insert(rows);if(q.error)throw q.error}
+    if(snap.maintenance.length){const rows=snap.maintenance.map(x=>({id:x.id,workspace_id:currentWorkspaceId,maintenance_date:x.date||today(),maintenance_type:x.title||'',description:x.notes||null,cost:Number(x.cost||0),technician:x.tech||null}));let q=await sb.from('generator_maintenance').insert(rows);if(q.error)throw q.error}
+    cacheLocalDB(currentWorkspaceId,snap);markOfflineDirty(currentWorkspaceId,false);showCloudState('تمت المزامنة مع السحابة')
+  }catch(e){markOfflineDirty(currentWorkspaceId,true);throw e
+  }finally{syncBusy=false;if(syncQueued)setTimeout(()=>syncRemoteDB(),100)}
+}
+
+async function callAdminFunction(payload){
+  const {data:{session}}=await sb.auth.getSession();if(!session)throw new Error('انتهت الجلسة. سجل الدخول من جديد.');
+  return await invokeEdge('generator-admin-users',payload);
+}
+
+// إدارة الحسابات — للأدمن الرئيسي فقط
+async function renderAccounts(){
+  if(!isSuperAdmin())return;const body=document.getElementById('accountsBody');if(!body)return;body.innerHTML='<tr><td colspan="10" class="empty">جاري تحميل الحسابات...</td></tr>';
+  const q=(document.getElementById('accountSearch')?.value||'').trim().toLowerCase();
+  const [{data:profiles,error:pe},{data:workspaces,error:we}]=await Promise.all([sb.from('generator_profiles').select('*').order('created_at'),sb.from('generator_workspaces').select('*')]);if(pe||we){body.innerHTML='<tr><td colspan="10" class="empty">تعذر تحميل الحسابات</td></tr>';return}
+  const wm=new Map((workspaces||[]).map(w=>[w.id,w]));
+  const all=(profiles||[]).map(p=>{const w=wm.get(p.workspace_id)||{};return{id:p.user_id,name:p.display_name||w.owner_name||p.username,username:p.username,email:p.email||'',phone:p.phone||w.phone||'',address:w.address||'',generatorName:w.generator_name||(p.role==='super_admin'?'الإدارة الرئيسية':''),role:p.role==='super_admin'?'superadmin':'owner',enabled:p.active!==false,createdAt:p.created_at,workspaceId:p.workspace_id}});
+  window._generatorAccounts=all;
+  const arr=all.filter(a=>[a.name,a.username,a.email,a.phone,a.generatorName,a.address].join(' ').toLowerCase().includes(q));
+  document.getElementById('accTotal').textContent=all.length;document.getElementById('accActive').textContent=all.filter(a=>a.enabled).length;document.getElementById('accDisabled').textContent=all.filter(a=>!a.enabled).length;
+  body.innerHTML=arr.length?arr.map((a,i)=>{const admin=a.role==='superadmin',enabled=a.enabled,date=new Date(a.createdAt||Date.now()).toLocaleDateString('ar-IQ');return `<tr><td>${i+1}</td><td><b>${esc(a.name||'-')}</b></td><td>${esc(a.generatorName||'-')}</td><td><b style="direction:ltr;display:inline-block">${esc(a.username)}</b></td><td><span style="direction:ltr;unicode-bidi:isolate;display:inline-block;white-space:nowrap">${esc(a.email||'-')}</span></td><td>${phoneLink(a.phone)}</td><td><span class="role-badge ${admin?'superadmin':'owner'}">${admin?'أدمن رئيسي':'صاحب مولدة'}</span></td><td><span class="badge ${enabled?'paid':'due'}">${enabled?'فعال':'موقوف'}</span></td><td>${date}</td><td><div class="account-actions"><button class="btn small secondary" onclick="openEditAccount('${a.id}')">تعديل</button>${admin?'':`<button class="btn small ${enabled?'red':'green'}" onclick="toggleOwnerAccount('${a.id}',${enabled})">${enabled?'إيقاف':'تفعيل'}</button><button class="btn small red" onclick="deleteOwnerAccount('${a.id}','${attr(a.name)}')">حذف</button>`}</div></td></tr>`}).join(''):`<tr><td colspan="10" class="empty">لا توجد حسابات</td></tr>`
+  await renderAccountRequests();
+  await renderDeviceRequests();
+  await renderApprovedDevices();
+}
+function openCreateOwnerAccount(){
+  if(!isSuperAdmin())return;openModal('إنشاء حساب صاحب مولدة',`<form onsubmit="createOwnerAccount(event)"><div class="form-grid"><div class="field"><label>اسم صاحب المولدة *</label><input name="name" required></div><div class="field"><label>اسم المولدة *</label><input name="generatorName" required placeholder="مثال: مولدة النور"></div><div class="field"><label>البريد الإلكتروني</label><input name="email" type="email" autocomplete="off" placeholder="name@example.com"></div><div class="field"><label>رقم الهاتف</label><input name="phone" inputmode="tel" placeholder="07xxxxxxxxx"></div><div class="field"><label>العنوان/المنطقة</label><input name="address"></div><div class="field"><label>اسم المستخدم *</label><input name="username" required autocomplete="off" placeholder="مثال: noor01"></div><div class="field"><label>كلمة المرور *</label><input name="password" type="password" required minlength="6" autocomplete="new-password"></div><div class="field"><label>تأكيد كلمة المرور *</label><input name="password2" type="password" required minlength="6" autocomplete="new-password"></div><div class="full"><button class="btn green">إنشاء الحساب</button></div></div></form>`)
+}
+async function createOwnerAccount(e){
+  e.preventDefault();if(!isSuperAdmin())return;const f=new FormData(e.target),name=String(f.get('name')||'').trim(),generatorName=String(f.get('generatorName')||'').trim(),email=String(f.get('email')||'').trim().toLowerCase(),phone=String(f.get('phone')||'').trim(),address=String(f.get('address')||'').trim(),username=normalizeUsername(f.get('username')),password=String(f.get('password')||''),p2=String(f.get('password2')||'');
+  if(!name||!generatorName||!username)return alert('أدخل اسم صاحب المولدة واسم المولدة واسم المستخدم.');if(/\s/.test(username))return alert('اسم المستخدم بدون فراغات.');if(password.length<6)return alert('كلمة المرور 6 أحرف أو أرقام على الأقل.');if(password!==p2)return alert('تأكيد كلمة المرور غير مطابق.');
+  const btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='جاري الإنشاء...';try{await callAdminFunction({action:'create',name,generatorName,email,phone,address,username,password});closeModal();await renderAccounts();openModal('تم إنشاء الحساب',`<div class="account-credential-box"><b>سلّم هذه البيانات لصاحب المولدة:</b><br>اسم المستخدم: <code>${esc(username)}</code><br>الرمز: <code>${esc(password)}</code>${email?'<br>البريد: <code>'+esc(email)+'</code>':''}<br>المولدة: <b>${esc(generatorName)}</b></div><div class="note">صاحب المولدة يستطيع تسجيل الدخول باسم المستخدم أو البريد الإلكتروني أو رقم الهاتف مع كلمة المرور، ولا يوجد إنشاء حساب من صفحة الدخول.</div><div style="margin-top:12px"><button class="btn" onclick="closeModal()">تم</button></div>`)}catch(err){alert(err.message)}finally{btn.disabled=false;btn.textContent='إنشاء الحساب'}
+}
+function openEditAccount(id){
+  if(!isSuperAdmin())return;const a=(window._generatorAccounts||[]).find(x=>x.id===id);if(!a)return alert('تعذر العثور على الحساب.');const admin=a.role==='superadmin';
+  openModal(admin?'تعديل حساب الأدمن الرئيسي':'تعديل حساب صاحب المولدة',`<form onsubmit="saveAccountEdit(event,'${a.id}')"><div class="form-grid"><div class="field"><label>الاسم *</label><input name="name" required value="${attr(a.name||'')}"></div>${admin?'':`<div class="field"><label>اسم المولدة *</label><input name="generatorName" required value="${attr(a.generatorName||'')}"></div>`}<div class="field"><label>اسم المستخدم *</label><input name="username" required autocomplete="off" value="${attr(a.username||'')}"></div><div class="field"><label>البريد الإلكتروني${admin?' *':''}</label><input name="email" type="email" ${admin?'required':''} autocomplete="off" value="${attr(a.email||'')}"></div><div class="field"><label>رقم الهاتف</label><input name="phone" inputmode="tel" value="${attr(a.phone||'')}"></div>${admin?'':`<div class="field"><label>العنوان/المنطقة</label><input name="address" value="${attr(a.address||'')}"></div>`}<div class="field"><label>كلمة مرور جديدة</label><input name="password" type="password" minlength="6" autocomplete="new-password" placeholder="اتركها فارغة بدون تغيير"></div><div class="field"><label>تأكيد كلمة المرور الجديدة</label><input name="password2" type="password" minlength="6" autocomplete="new-password"></div><div class="full"><div class="note" style="margin-bottom:10px">إذا ما تريد تغير كلمة المرور، اترك حقلي كلمة المرور فارغين.</div><button class="btn green">حفظ التعديلات</button></div></div></form>`)
+}
+async function saveAccountEdit(e,id){
+  e.preventDefault();if(!isSuperAdmin())return;const a=(window._generatorAccounts||[]).find(x=>x.id===id);if(!a)return;const f=new FormData(e.target),name=String(f.get('name')||'').trim(),generatorName=String(f.get('generatorName')||'').trim(),username=normalizeUsername(f.get('username')),email=String(f.get('email')||'').trim().toLowerCase(),phone=String(f.get('phone')||'').trim(),address=String(f.get('address')||'').trim(),password=String(f.get('password')||''),p2=String(f.get('password2')||'');
+  if(!name||!username)return alert('الاسم واسم المستخدم مطلوبان.');if(a.role!=='superadmin'&&!generatorName)return alert('اسم المولدة مطلوب.');if(a.role==='superadmin'&&!email)return alert('بريد الأدمن الرئيسي مطلوب.');if(/\s/.test(username))return alert('اسم المستخدم بدون فراغات.');if(password&&password.length<6)return alert('كلمة المرور الجديدة 6 أحرف أو أرقام على الأقل.');if(password!==p2)return alert('تأكيد كلمة المرور غير مطابق.');
+  const btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='جاري الحفظ...';try{await callAdminFunction({action:'update_account',userId:id,name,generatorName,email,phone,address,username,password});closeModal();await renderAccounts();if(currentProfile&&currentProfile.user_id===id){alert('تم تعديل حساب الأدمن الرئيسي. سيتم تحديث الصفحة الآن.');location.reload()}else{alert('تم تعديل الحساب بنجاح.')}}catch(err){alert(err.message)}finally{btn.disabled=false;btn.textContent='حفظ التعديلات'}
+}
+async function toggleOwnerAccount(id,enabled){if(!isSuperAdmin())return;try{await callAdminFunction({action:'toggle',userId:id,active:!enabled});await renderAccounts()}catch(err){alert(err.message)}}
+async function deleteOwnerAccount(id,name){if(!isSuperAdmin())return;if(!confirm('حذف حساب '+name+' وجميع بيانات المولدة نهائياً؟'))return;try{await callAdminFunction({action:'delete',userId:id});await renderAccounts()}catch(err){alert(err.message)}}
+
+// طلبات تعديل الحساب — صاحب المولدة يطلب، والأدمن الرئيسي يوافق أو يرفض
+function fillAccountRequestForm(){
+  if(isSuperAdmin()||!currentProfile)return;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''};
+  set('reqDisplayName',currentProfile.display_name||db.settings.owner||'');
+  set('reqGeneratorName',db.settings.name||'');
+  set('reqUsername',currentProfile.username||'');
+  set('reqEmail',currentProfile.email||'');
+  set('reqPhone',currentProfile.phone||db.settings.phone||'');
+  set('reqAddress',db.settings.area||'');
+}
+async function submitAccountChangeRequest(e){
+  e.preventDefault();if(isSuperAdmin()||!currentProfile)return;
+  const f=new FormData(e.target),requested_data={name:String(f.get('name')||'').trim(),generatorName:String(f.get('generatorName')||'').trim(),username:normalizeUsername(f.get('username')),email:String(f.get('email')||'').trim().toLowerCase(),phone:String(f.get('phone')||'').trim(),address:String(f.get('address')||'').trim()};
+  if(!requested_data.name||!requested_data.generatorName||!requested_data.username)return alert('أدخل الاسم واسم المولدة واسم المستخدم.');
+  if(/\s/.test(requested_data.username))return alert('اسم المستخدم بدون فراغات.');
+  const btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='جاري إرسال الطلب...';
+  try{const {error}=await sb.from('generator_account_change_requests').insert({user_id:currentProfile.user_id,workspace_id:currentWorkspaceId,request_type:'profile_update',requested_data});if(error)throw error;alert('تم إرسال طلب التعديل إلى الأدمن الرئيسي.');await renderMyAccountRequests()}catch(err){alert(err.code==='23505'?'عندك طلب تعديل معلّق مسبقاً. انتظر قرار الأدمن الرئيسي.':(err.message||'تعذر إرسال الطلب.'))}finally{btn.disabled=false;btn.textContent='إرسال طلب التعديل'}
+}
+async function requestPasswordReset(){
+  if(isSuperAdmin()||!currentProfile)return;if(!confirm('إرسال طلب إعادة تعيين كلمة المرور إلى الأدمن الرئيسي؟'))return;
+  try{const {error}=await sb.from('generator_account_change_requests').insert({user_id:currentProfile.user_id,workspace_id:currentWorkspaceId,request_type:'password_reset',requested_data:{}});if(error)throw error;alert('تم إرسال طلب إعادة تعيين كلمة المرور. الأدمن الرئيسي وحده يعيّن كلمة المرور الجديدة.');await renderMyAccountRequests()}catch(err){alert(err.code==='23505'?'عندك طلب إعادة تعيين معلّق مسبقاً.':(err.message||'تعذر إرسال الطلب.'))}
+}
+async function renderMyAccountRequests(){
+  const box=document.getElementById('myAccountRequests');if(!box||isSuperAdmin()||!currentProfile)return;box.innerHTML='<div class="empty">جاري التحميل...</div>';
+  const {data,error}=await sb.from('generator_account_change_requests').select('*').eq('user_id',currentProfile.user_id).order('created_at',{ascending:false}).limit(10);
+  if(error){box.innerHTML='<div class="empty">تعذر تحميل الطلبات</div>';return}
+  const st={pending:['قيد الانتظار','partial'],approved:['تمت الموافقة','paid'],rejected:['مرفوض','due']};
+  box.innerHTML=(data||[]).length?(data||[]).map(r=>{const x=st[r.status]||[r.status,''];return `<div class="summary-row"><span>${r.request_type==='password_reset'?'إعادة تعيين كلمة المرور':'تعديل بيانات الحساب'}<small style="display:block;color:#6b7280;margin-top:3px">${new Date(r.created_at).toLocaleString('ar-IQ')}</small></span><b><span class="badge ${x[1]}">${x[0]}</span></b></div>`}).join(''):'<div class="empty">لا توجد طلبات حتى الآن</div>'
+}
+function accountRequestDetails(r){
+  if(r.request_type==='password_reset')return 'طلب إعادة تعيين كلمة المرور';const d=r.requested_data||{};return [`الاسم: ${d.name||'-'}`,`المولدة: ${d.generatorName||'-'}`,`المستخدم: ${d.username||'-'}`,`البريد: ${d.email||'-'}`,`الهاتف: ${d.phone||'-'}`,`العنوان: ${d.address||'-'}`].map(esc).join('<br>')
+}
+async function renderAccountRequests(){
+  if(!isSuperAdmin())return;const body=document.getElementById('accountRequestsBody');if(!body)return;body.innerHTML='<tr><td colspan="6" class="empty">جاري تحميل الطلبات...</td></tr>';
+  const {data,error}=await sb.from('generator_account_change_requests').select('*').order('created_at',{ascending:false}).limit(100);if(error){body.innerHTML='<tr><td colspan="6" class="empty">تعذر تحميل الطلبات</td></tr>';return}
+  const ac=new Map((window._generatorAccounts||[]).map(a=>[a.id,a]));const pending=(data||[]).filter(r=>r.status==='pending').length;const c=document.getElementById('pendingAccountRequestsCount');if(c)c.textContent=pending.toLocaleString('ar-IQ')+' معلّق';
+  const statusMap={pending:['قيد الانتظار','partial'],approved:['تمت الموافقة','paid'],rejected:['مرفوض','due']};
+  body.innerHTML=(data||[]).length?(data||[]).map(r=>{const a=ac.get(r.user_id)||{},st=statusMap[r.status]||[r.status,''];const actions=r.status==='pending'?`<div class="account-actions"><button class="btn small green" onclick="approveAccountRequest('${r.id}','${r.request_type}')">موافقة</button><button class="btn small red" onclick="rejectAccountRequest('${r.id}')">رفض</button></div>`:'-';return `<tr><td><b>${esc(a.name||a.username||r.user_id)}</b><br><small>${esc(a.generatorName||'')}</small></td><td>${r.request_type==='password_reset'?'إعادة تعيين كلمة المرور':'تعديل بيانات الحساب'}</td><td style="min-width:230px">${accountRequestDetails(r)}</td><td>${new Date(r.created_at).toLocaleString('ar-IQ')}</td><td><span class="badge ${st[1]}">${st[0]}</span></td><td>${actions}</td></tr>`}).join(''):'<tr><td colspan="6" class="empty">لا توجد طلبات</td></tr>'
+}
+async function approveAccountRequest(id,type){
+  if(!isSuperAdmin())return;if(type==='password_reset'){openModal('الموافقة على إعادة تعيين كلمة المرور',`<form onsubmit="approvePasswordRequest(event,'${id}')"><div class="form-grid"><div class="field full"><label>كلمة المرور الجديدة *</label><input name="password" type="password" minlength="6" required autocomplete="new-password"></div><div class="field full"><label>تأكيد كلمة المرور *</label><input name="password2" type="password" minlength="6" required autocomplete="new-password"></div><div class="full"><button class="btn green">تعيين كلمة المرور والموافقة</button></div></div></form>`);return}
+  if(!confirm('الموافقة على طلب تعديل بيانات الحساب وتطبيق التغييرات؟'))return;try{await callAdminFunction({action:'approve_request',requestId:id});await renderAccounts();alert('تمت الموافقة وتطبيق التعديلات.')}catch(err){alert(err.message)}
+}
+async function approvePasswordRequest(e,id){
+  e.preventDefault();const f=new FormData(e.target),password=String(f.get('password')||''),p2=String(f.get('password2')||'');if(password.length<6)return alert('كلمة المرور 6 أحرف أو أرقام على الأقل.');if(password!==p2)return alert('تأكيد كلمة المرور غير مطابق.');const btn=e.target.querySelector('button');btn.disabled=true;try{await callAdminFunction({action:'approve_request',requestId:id,password});closeModal();await renderAccounts();alert('تم تعيين كلمة المرور الجديدة والموافقة على الطلب.')}catch(err){alert(err.message)}finally{btn.disabled=false}
+}
+async function rejectAccountRequest(id){if(!isSuperAdmin())return;const note=prompt('سبب الرفض (اختياري):','')??null;if(note===null)return;try{await callAdminFunction({action:'reject_request',requestId:id,note});await renderAccounts()}catch(err){alert(err.message)}}
+
+async function renderDeviceRequests(){
+  if(!isSuperAdmin())return;const body=document.getElementById('deviceRequestsBody');if(!body)return;body.innerHTML='<tr><td colspan="5" class="empty">جاري تحميل طلبات الأجهزة...</td></tr>';
+  const {data,error}=await sb.from('generator_device_requests').select('*').order('created_at',{ascending:false}).limit(100);if(error){body.innerHTML='<tr><td colspan="5" class="empty">تعذر تحميل طلبات الأجهزة</td></tr>';return}
+  const ac=new Map((window._generatorAccounts||[]).map(a=>[a.id,a]));const pending=(data||[]).filter(r=>r.status==='pending').length;const c=document.getElementById('pendingDeviceRequestsCount');if(c)c.textContent=pending.toLocaleString('ar-IQ')+' معلّق';
+  const sm={pending:['قيد الانتظار','partial'],approved:['تمت الموافقة','paid'],rejected:['مرفوض','due']};
+  body.innerHTML=(data||[]).length?(data||[]).map(r=>{const a=ac.get(r.user_id)||{},st=sm[r.status]||[r.status,''];const actions=r.status==='pending'?`<div class="account-actions"><button class="btn small green" onclick="approveDeviceRequest('${r.id}')">موافقة</button><button class="btn small red" onclick="rejectDeviceRequest('${r.id}')">رفض</button></div>`:'-';return `<tr><td><b>${esc(a.name||a.username||r.user_id)}</b><br><small>${esc(a.generatorName||'')}</small></td><td><b>${esc(r.device_name||'جهاز غير معروف')}</b><br><small title="${attr(r.user_agent||'')}">${esc((r.user_agent||'').slice(0,90))}</small></td><td>${new Date(r.created_at).toLocaleString('ar-IQ')}</td><td><span class="badge ${st[1]}">${st[0]}</span></td><td>${actions}</td></tr>`}).join(''):'<tr><td colspan="5" class="empty">لا توجد طلبات أجهزة</td></tr>'
+}
+async function renderApprovedDevices(){
+  if(!isSuperAdmin())return;const body=document.getElementById('approvedDevicesBody');if(!body)return;body.innerHTML='<tr><td colspan="5" class="empty">جاري تحميل الأجهزة...</td></tr>';
+  const {data,error}=await sb.from('generator_user_devices').select('*').eq('approved',true).order('created_at',{ascending:false});if(error){body.innerHTML='<tr><td colspan="5" class="empty">تعذر تحميل الأجهزة</td></tr>';return}
+  const ac=new Map((window._generatorAccounts||[]).map(a=>[a.id,a]));body.innerHTML=(data||[]).length?(data||[]).map(d=>{const a=ac.get(d.user_id)||{};return `<tr><td><b>${esc(a.name||a.username||d.user_id)}</b><br><small>${esc(a.generatorName||'')}</small></td><td><b>${esc(d.device_name||'جهاز غير معروف')}</b></td><td>${d.approved_at?new Date(d.approved_at).toLocaleString('ar-IQ'):'-'}</td><td>${d.last_seen_at?new Date(d.last_seen_at).toLocaleString('ar-IQ'):'-'}</td><td><button class="btn small red" onclick="revokeApprovedDevice('${d.id}','${attr(a.name||a.username||'الحساب')}')">سحب الاعتماد</button></td></tr>`}).join(''):'<tr><td colspan="5" class="empty">لا توجد أجهزة معتمدة بعد</td></tr>'
+}
+async function approveDeviceRequest(id){if(!isSuperAdmin())return;if(!confirm('الموافقة على هذا الجهاز الإضافي؟'))return;try{await callAdminFunction({action:'approve_device_request',requestId:id});await renderDeviceRequests();await renderApprovedDevices();alert('تم اعتماد الجهاز. يستطيع المستخدم تسجيل الدخول منه الآن.')}catch(err){alert(err.message)}}
+async function rejectDeviceRequest(id){if(!isSuperAdmin())return;const note=prompt('سبب الرفض (اختياري):','');if(note===null)return;try{await callAdminFunction({action:'reject_device_request',requestId:id,note});await renderDeviceRequests()}catch(err){alert(err.message)}}
+async function revokeApprovedDevice(id,name){if(!isSuperAdmin())return;if(!confirm('سحب اعتماد هذا الجهاز من '+name+'؟ سيحتاج موافقة جديدة عند الدخول منه.'))return;try{await callAdminFunction({action:'revoke_device',deviceId:id});await renderApprovedDevices();alert('تم سحب اعتماد الجهاز.')}catch(err){alert(err.message)}}
+let deviceWatchTimer=null;
+function startDeviceWatch(){if(deviceWatchTimer)clearInterval(deviceWatchTimer);if(isSuperAdmin())return;deviceWatchTimer=setInterval(async()=>{if(!navigator.onLine)return;try{await verifyCurrentDevice()}catch(e){clearInterval(deviceWatchTimer);await sb.auth.signOut();alert(e.message||'تم إلغاء اعتماد هذا الجهاز.');location.reload()}},300000)}
+
+async function initAuth(){
+  document.querySelector('.app').classList.add('auth-locked');switchAuthMode();
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    try{await enterFromSession();return}
+    catch(e){console.error(e);if(navigator.onLine)await sb.auth.signOut();else showAuthError(e.message||'تعذر فتح النسخة الأوفلاين.')}
+  }
+  document.getElementById('authScreen').classList.add('show');
+  if(!navigator.onLine&&!session)showAuthError('تسجيل الدخول لأول مرة يحتاج إنترنت. بعد أول دخول يشتغل البرنامج أوفلاين.')
+}
+async function warmOfflineAssets(){
+  if(!navigator.onLine||!('caches' in window))return;
+  const cache=await caches.open('ha-generator-flat-assets-v1');
+  const urls=['./ha-generator.html','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'];
+  for(const url of urls){
+    try{const res=await fetch(url,{cache:'reload'});if(res&&res.ok||res.type==='opaque')await cache.put(url,res.clone())}catch(e){console.warn('cache asset',url,e)}
+  }
+}
+async function bootApp(){
+  if(appBooted)return;appBooted=true;startDeviceWatch();initNav();colMonthFilter.value=monthNow();reportMonth.value=monthNow();renderAll();showView(isSuperAdmin()?'accounts':'dashboard');if(currentWorkspaceId)setTimeout(()=>showUnpaidAlert(false),450);
+  window.addEventListener('offline',()=>showCloudState('أوفلاين — التعديلات تنحفظ على الجهاز','bad'));
+  window.addEventListener('online',async()=>{showCloudState('رجع الإنترنت — جاري المزامنة...');if(currentWorkspaceId&&isOfflineDirty(currentWorkspaceId)){try{await syncRemoteDB()}catch(e){console.error(e);showCloudState('تعذرت المزامنة — ستتم المحاولة لاحقاً','bad')}}});
+  if(!navigator.onLine)showCloudState('أوفلاين — آخر نسخة محفوظة','bad');
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./service-worker.js').then(async reg=>{
+      try{await navigator.serviceWorker.ready;await warmOfflineAssets()}catch(e){console.warn('offline warm',e)}
+    }).catch(e=>console.warn('sw',e));
+  }
+}
+
+initAuth();
+</script>
+</body>
+</html>
