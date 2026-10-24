@@ -9,7 +9,7 @@ function install(){
  const label=document.createElement('p');label.textContent='إعلان';label.style.cssText='padding:12px;color:#738795;font:13px Tahoma';slot.appendChild(label);
  const anchor=main.querySelector('#all,.ha-cats');if(anchor)anchor.after(slot);else main.appendChild(slot);
  function send(){frame=0;const r=slot.getBoundingClientRect();let bottom=innerHeight;
-  document.querySelectorAll('.ha-bottom,.ha-bottom-nav,.ha-modern-bottom,.bottom-nav').forEach(el=>{if(getComputedStyle(el).position==='fixed'){const b=el.getBoundingClientRect();if(b.height>0)bottom=Math.min(bottom,b.top);}});
+  document.querySelectorAll('#haRoleBottomNav,[data-ha-compact-nav],.ha-bottom,.ha-bottom-nav,.ha-modern-bottom,.bottom-nav').forEach(el=>{if(getComputedStyle(el).position==='fixed'){const b=el.getBoundingClientRect();if(b.height>0)bottom=Math.min(bottom,b.top);}});
   const scale=window.visualViewport?.scale||1;
   api.setNativeAdSlot({x:r.x,y:r.y,width:r.width,height:r.height,visible:!document.hidden&&scale===1&&r.top>=0&&r.bottom<=bottom&&r.left>=0&&r.right<=innerWidth});
  }

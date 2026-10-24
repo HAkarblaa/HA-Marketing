@@ -388,3 +388,9 @@ addEventListener('ha:native-ready',apply);addEventListener('ha:native-resume',ap
  if(window.__haGrowthLoading)return;window.__haGrowthLoading=true;
  const script=document.createElement('script');script.src=new URL('ha-growth.js?v=20261024-1',document.currentScript.src).href;script.async=true;document.head.appendChild(script);
 })();
+
+/* Compact section navigation; the home navigation keeps its current design. */
+(function(){
+ if(window.__haCompactBottomRequested)return;window.__haCompactBottomRequested=true;
+ const script=document.createElement('script');script.src=new URL('ha-bottom-compact.js?v=1',document.currentScript.src).href;script.async=true;document.head.appendChild(script);
+})();
