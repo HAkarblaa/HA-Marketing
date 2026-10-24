@@ -394,3 +394,6 @@ addEventListener('ha:native-ready',apply);addEventListener('ha:native-resume',ap
  if(window.__haCompactBottomRequested)return;window.__haCompactBottomRequested=true;
  const script=document.createElement('script');script.src=new URL('ha-bottom-compact.js?v=1',document.currentScript.src).href;script.async=true;document.head.appendChild(script);
 })();
+
+/* Independent business modules; installing either package preserves the other. */
+(function(){const base=new URL('./',document.currentScript.src);for(const name of ['ha-generator-entry.js','ha-accounting-entry.js']){const s=document.createElement('script');s.src=new URL(name+'?v=split1',base).href;s.async=true;s.onerror=()=>s.remove();document.head.append(s);}})();

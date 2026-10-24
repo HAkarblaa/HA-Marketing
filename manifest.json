@@ -1,0 +1,11 @@
+{
+  "name": "إدارة المولدة",
+  "short_name": "المولدة",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#075b96",
+  "theme_color": "#075b96",
+  "lang": "ar",
+  "dir": "rtl"
+}
