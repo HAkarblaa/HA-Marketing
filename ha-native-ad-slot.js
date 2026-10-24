@@ -1,8 +1,8 @@
 (function(){
 'use strict';let installed=false,frame=0;
 function install(){
- const api=window.HAAndroid;if(installed||api?.adsApiVersion<2||!api.setNativeAdSlot)return;
- if(!/\/(?:index\.html)?$/.test(location.pathname))return;
+ const api=window.HAAndroid;if(installed||!api||api.adsApiVersion<2||!api.setNativeAdSlot)return;
+ if(!new Set(['','index.html','shop.html','services.html','study.html','entertainment.html','sports-center.html','file-tools.html','football-matches.html','football-statistics.html','football-teams.html']).has(location.pathname.split('/').pop()))return;
  const main=document.querySelector('main');if(!main)return;installed=true;
  const slot=document.createElement('section');slot.id='haNativeContentAd';slot.setAttribute('aria-label','إعلان');
  slot.style.cssText='height:320px;margin:20px 0;background:#fff;border:1px solid #dce8ed;border-radius:16px;overflow:hidden';

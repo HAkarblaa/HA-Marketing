@@ -316,7 +316,7 @@ check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidde
 (function(){
  'use strict';
  if(window.__haNavigationAds)return;window.__haNavigationAds=true;
- const targets=new Set(['index.html','shop.html','services.html','study.html','taxi-delivery.html','entertainment.html','sports-center.html','snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html']);
+ const targets=new Set(['index.html','shop.html','services.html','study.html','taxi-delivery.html','entertainment.html','sports-center.html','snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html','file-tools.html','football-matches.html','football-statistics.html','football-teams.html','football-team.html','football-player.html','football-match-details.html']);
  let lastRequest=-Infinity,navigating=false;
  document.addEventListener('click',function(event){
   if(event.defaultPrevented||event.button>0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
@@ -370,3 +370,21 @@ window.HAContentAds={breakAfterWork:async function(){
  const api=window.HAAndroid;if(api?.adsApiVersion<2||!api?.adBreak)return;
  try{await api.adBreak();}catch(_){}
 }};
+
+/* An optional reward; ordinary services never require watching an ad. */
+(function(){
+'use strict';let installed=false;
+function install(){const api=window.HAAndroid;if(installed||!api||api.adsApiVersion<3)return;
+ const page=location.pathname.split('/').pop()||'index.html';
+ if(!new Set(['index.html','shop.html','services.html','study.html','entertainment.html','sports-center.html','file-tools.html','football-matches.html','football-statistics.html','football-teams.html','piano.html']).has(page))return;
+ const main=document.querySelector('main');if(!main)return;installed=true;
+ const box=document.createElement('section');box.style.cssText='margin:18px 0;padding:16px;border:1px solid #badfdc;border-radius:16px;background:#effbf8;color:#164d4a;direction:rtl';
+ const button=document.createElement('button');button.type='button';button.textContent='شاهد إعلان وفعّل وضع التركيز ١٠ دقائق';button.style.cssText='padding:12px;border:0;border-radius:12px;background:#087f83;color:white;font:inherit;cursor:pointer';
+ const note=document.createElement('p');note.textContent='اختياري: يوقف إعلانات التطبيق التلقائية والبانر مؤقتاً. تگدر تستخدم الخدمات بدون مشاهدة.';note.style.cssText='font-size:14px;line-height:1.7;margin:10px 0 0';note.setAttribute('aria-live','polite');box.append(button,note);main.appendChild(box);
+ let busy=false;
+ async function refresh(){if(busy)return;try{const s=await api.getAdsStatus();const ms=Number(s.focusRemainingMs)||0;button.disabled=ms>0;button.textContent=ms>0?'وضع التركيز مفعّل • '+Math.ceil(ms/60000)+' دقائق':'شاهد إعلان وفعّل وضع التركيز ١٠ دقائق';}catch(_){}}
+ button.addEventListener('click',async()=>{if(busy)return;busy=true;button.disabled=true;note.textContent='جارٍ تجهيز الإعلان…';try{const r=await api.showRewarded({purpose:'focus'});note.textContent=r?.earned===true?'تم تفعيل وضع التركيز ١٠ دقائق.':'ما اكتملت المكافأة أو ماكو إعلان متوفر هسه. تگدر تكمل استخدامك بصورة طبيعية.';}catch(_){note.textContent='تعذر عرض الإعلان. الخدمات تبقى متاحة.';}finally{busy=false;button.disabled=false;refresh();}});
+ addEventListener('ha:native-resume',refresh);setInterval(refresh,30000);refresh();
+}
+addEventListener('ha:native-ready',install);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
