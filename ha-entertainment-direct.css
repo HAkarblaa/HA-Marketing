@@ -1,0 +1,10 @@
+#haEntertainmentDirect.ha-ent-direct-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important;margin:16px 0 22px!important;direction:rtl}
+#haEntertainmentDirect .ha-ent-direct-card{display:block;min-width:0;overflow:hidden;border-radius:23px;background:#fff;border:1px solid #deebf1;box-shadow:0 8px 22px #173b5512;text-decoration:none;color:#183d50;transition:box-shadow .15s ease}
+#haEntertainmentDirect .ha-ent-direct-card:hover{box-shadow:0 12px 28px #173b5526}
+#haEntertainmentDirect .ha-ent-direct-card:focus-visible{outline:3px solid #087f83;outline-offset:3px}
+#haEntertainmentDirect .ha-ent-direct-card img{display:block;width:100%!important;height:auto!important;aspect-ratio:15/7;object-fit:cover!important;margin:0!important;border-radius:0!important}
+#haEntertainmentDirect .ha-ent-direct-body{padding:16px}
+#haEntertainmentDirect h2{margin:0 0 7px!important;font-size:20px!important;line-height:1.4!important;color:#173a51!important}
+#haEntertainmentDirect p{margin:0 0 13px!important;font-size:13px!important;line-height:1.7!important;color:#647e8d!important}
+#haEntertainmentDirect .ha-ent-direct-open{display:inline-block;padding:8px 14px;border-radius:12px;background:#e9f7f4;color:#087f75;font-size:13px;font-weight:bold}
+@media(max-width:700px){#haEntertainmentDirect.ha-ent-direct-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}#haEntertainmentDirect .ha-ent-direct-card{border-radius:18px}#haEntertainmentDirect .ha-ent-direct-body{padding:12px}#haEntertainmentDirect h2{font-size:16px!important}#haEntertainmentDirect p{font-size:11px!important}#haEntertainmentDirect .ha-ent-direct-open{font-size:11px;padding:7px 10px}}
