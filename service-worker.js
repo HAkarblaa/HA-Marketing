@@ -1,5 +1,5 @@
 /* Static site files load from cache immediately; account/order API calls stay live. */
-const CACHE='ha-marketing-ads-v2026-10-24-entertainment-direct-1';
+const CACHE='ha-marketing-ads-v2026-10-24-games-polish-1';
 const CORE=['./ha-bottom-compact.js?v=1','./ha-bottom-compact.css?v=1','./ha-growth.js?v=20261024-1','./ha-growth.css?v=1','./index.html','./ha-account-gate.js?v=20261024-ads147','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{

@@ -45,7 +45,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
 @media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
 </style>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=20261024-1"></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script></head>
 <body>
 <div class="page">
   <div class="topbar">
@@ -263,7 +263,7 @@ function killPlayer(){
   if(Date.now()<rewardProtectionUntil||HARewardedGames.active)return;
   deaths++;beep(120,0.15,'sawtooth');saveProgress();gameRunning=false;cancelAnimationFrame(animation);
   const checkpoint=rewardCheckpoint?{...rewardCheckpoint}:null,index=currentLevelIndex;
-  HARewardedGames.offer({message:'شاهد إعلاناً للرجوع إلى آخر نقطة آمنة بنفس المستوى.',restartLabel:'أعد المستوى من البداية',
+  HARewardedGames.offer({result:{label:'وصلت للمرحلة',score:currentLevelIndex+1,best:bestLevel},message:'شاهد إعلاناً للرجوع إلى آخر نقطة آمنة بنفس المستوى.',restartLabel:'أعد المستوى من البداية',
     continue:()=>{parseLevel(index);if(checkpoint&&!solidAt({x:checkpoint.x,y:checkpoint.y,w:player.w,h:player.h})){player.x=checkpoint.x;player.y=checkpoint.y;}rewardProtectionUntil=Date.now()+2000;keys.left=keys.right=keys.jump=false;setTimeout(startGame,0);},
     restart:()=>{parseLevel(index);showTempMessage('أعد المحاولة');setTimeout(startGame,0);}
   });
@@ -399,11 +399,16 @@ function drawPlayer(x,y,face){ ctx.fillStyle='#16202a'; roundRect(x+6,y+10,18,24
 function drawCloud(x,y,s=1){ ctx.fillStyle='rgba(255,255,255,.75)'; ctx.beginPath(); ctx.arc(x,y,18*s,0,Math.PI*2); ctx.arc(x+20*s,y-8*s,24*s,0,Math.PI*2); ctx.arc(x+48*s,y,18*s,0,Math.PI*2); ctx.fill(); }
 function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); ctx.fill(); }
 
-function loop(){
-  if(gameRunning){ update(1/60); draw(); updateStageUI(); if(gameRunning)animation = requestAnimationFrame(loop); }
+let levelLast=0,levelCarry=0;
+function loop(timestamp=performance.now()){
+ if(!gameRunning)return;if(!levelLast)levelLast=timestamp;
+ const factor=HAGamePolish.get('difficulty','normal')==='easy'?.75:1;
+ levelCarry+=Math.max(0,Math.min(100,timestamp-levelLast))*factor;levelLast=timestamp;
+ let steps=0;while(levelCarry>=1000/60&&gameRunning&&steps++<6){levelCarry-=1000/60;update(1/60);}
+ draw();updateStageUI();if(gameRunning)animation=requestAnimationFrame(loop);
 }
 
-function startGame(){ if(HARewardedGames.active)return;gameRunning=true; document.getElementById('overlay').style.display='none'; cancelAnimationFrame(animation); loop(); }
+function startGame(){ if(HARewardedGames.active)return;hgpPaused=false;levelLast=0;levelCarry=0;gameRunning=true; document.getElementById('overlay').style.display='none'; cancelAnimationFrame(animation); loop(); }
 function restartCurrent(){ if(HARewardedGames.active)return;parseLevel(currentLevelIndex); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); }
 
 function updateStageUI(){
@@ -418,13 +423,13 @@ function updateStageUI(){
     b.classList.toggle('active', i===currentLevelIndex);
     b.classList.toggle('done', i<unlocked-1);
     b.classList.toggle('locked', i>=unlocked);
-    b.disabled=true;
+    b.disabled=i>=unlocked;
     b.style.opacity = i>=unlocked ? '.5' : '1';
   });
 }
 
 // controls
-window.addEventListener('keydown',e=>{
+window.addEventListener('keydown',e=>{if(e.target.closest?.('input,select,textarea,.ha-game-polish'))return;
   if(['ArrowLeft','a','A'].includes(e.key)) keys.left=true;
   if(['ArrowRight','d','D'].includes(e.key)) keys.right=true;
   if([' ','ArrowUp','w','W'].includes(e.key)){ e.preventDefault(); keys.jump=true; jumpQueued=true; }
@@ -448,13 +453,15 @@ function buildLevelButtons(){
     const b = document.createElement('button');
     b.className='lvl';
     b.type='button';
-    b.disabled=true;
+    b.disabled=i>=unlocked;
+    b.onclick=()=>{if(i>=unlocked||HARewardedGames.active)return;gameRunning=false;cancelAnimationFrame(animation);keys.left=keys.right=keys.jump=false;parseLevel(i);saveProgress();startGame();};
     b.textContent = (i+1);
     holder.appendChild(b);
   });
 }
 
 function beep(freq=440,duration=0.08,type='square'){
+  if(!HAGamePolish.get('sound',true))return;
   try{
     const AC = window.AudioContext || window.webkitAudioContext;
     if(!AC) return;
@@ -482,6 +489,10 @@ document.getElementById('portraitBtn').onclick = ()=>setView('portrait');
 document.getElementById('landscapeBtn').onclick = ()=>setView('landscape');
 setView(localStorage.getItem('ha_level_devil_view')||'landscape');
 document.getElementById('fullscreenBtn').onclick = async ()=>{ try{ const el=document.getElementById('wrap'); if(!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} };
+
+let hgpPaused=false;
+HAGamePolish.register({best:()=>bestLevel,bestLabel:'أفضل مرحلة',paused:()=>hgpPaused,pause:value=>{if(value){if(!gameRunning)return;hgpPaused=true;gameRunning=false;cancelAnimationFrame(animation);keys.left=keys.right=keys.jump=false;}else if(hgpPaused){hgpPaused=false;startGame();}},restart:restartCurrent,help:'اختار أي مرحلة مفتوحة من خريطة المراحل. المرحلة الحالية والمراحل المفتوحة محفوظة. وضع التدريب يبطئ اللعبة بدون تغيير قفزاتها.',extras:[{label:'السرعة',get:()=>HAGamePolish.get('difficulty','normal'),set:v=>HAGamePolish.set('difficulty',v),options:[{value:'easy',label:'تدريب أبطأ'},{value:'normal',label:'اعتيادي'}]}]});
+window.addEventListener('pagehide',saveProgress);
 </script>
 <script src="ha-lux-icons.js?v=20260930-1" defer></script><style id="ha-hide-messages-ui">
 /* Hide messaging entry points, including links added after page load. */

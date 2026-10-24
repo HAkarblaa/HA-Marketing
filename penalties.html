@@ -71,7 +71,7 @@
 
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=20261024-1"></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script></head>
 <body>
 
 <div id="menuScreen">
@@ -228,7 +228,7 @@ function reset(){
  aimLine.visible=canAim;aimDot.visible=canAim;updateAim();
 }
 function startShot(owner,goalOverride=null){
- if(shooting)return false;
+ if(shooting||window.haPenaltyPaused)return false;
  shotOwner=owner||'home';forcedGoal=goalOverride;
  shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;
  if(shotOwner==='away'){
@@ -262,7 +262,7 @@ window.haPenaltySceneBusy=()=>shooting;
 
 let clock=new THREE.Clock(),phase=0,judged=false;
 function animate(){
- requestAnimationFrame(animate);let dt=Math.min(clock.getDelta(),.04);phase+=dt*3;power=.48+(Math.sin(phase)+1)*.22;mask.style.height=((1-power)*100)+'%';
+ requestAnimationFrame(animate);if(window.haPenaltyPaused){clock.getDelta();renderer.render(scene,camera);return;}let dt=Math.min(clock.getDelta(),.04);phase+=dt*3;power=.48+(Math.sin(phase)+1)*.22;mask.style.height=((1-power)*100)+'%';
  if(shooting){
   shotT+=dt;let t=shotT;
   if(t<.58){let q=t/.58;player.position.z=4.7-q*2.15;player.position.x=-.8+q*.55;player.rotation.z=Math.sin(q*Math.PI)*-.08}
@@ -474,7 +474,7 @@ function currentOpponent(){
  const m=tournamentUserFixture();
  return m?(m.a===tournament.mine?m.b:m.a):'خصم البطولة';
 }
-function beginGame(){
+function beginGame(){window.haPenaltyPaused=false;HAGamePolish.set('difficulty',by('difficultyMenu').value);HAGamePolish.set('teamType',by('teamTypeMenu').value);HAGamePolish.set('team',by('teamMenu').value);HAGamePolish.set('kicks',by('kickCountMenu').value);
  if(gameMode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج إنترنت');return}
  if(gameMode==='tournament'){
    if(by('tourType').value==='rooms'&&!navigator.onLine){alert('بطولة الغرف تحتاج إنترنت. اختر بطولة ضد الجهاز أو شغّل الإنترنت.');return}
@@ -527,7 +527,7 @@ function finishMatch(){
  if(matchEnded)return;
  if(homeScore<awayScore&&!rewardReplayDeclined&&HARewardedGames.supported()){
   matchEnded=true;setTurn('انتهت الجولة',false,'home');
-  HARewardedGames.offer({message:'شاهد إعلاناً لتحصل على محاولة جديدة ضد نفس الخصم في نفس دور البطولة.',continue:()=>{rewardReplayDeclined=false;beginGame();},restart:()=>{matchEnded=false;rewardReplayDeclined=true;finishMatch();rewardReplayDeclined=false;}});return;
+  HARewardedGames.offer({result:{label:'نتيجة المباراة',score:homeScore+' — '+awayScore,best:points},message:'شاهد إعلاناً لتحصل على محاولة جديدة ضد نفس الخصم في نفس دور البطولة.',continue:()=>{rewardReplayDeclined=false;beginGame();},restart:()=>{matchEnded=false;rewardReplayDeclined=true;finishMatch();rewardReplayDeclined=false;}});return;
  }
  matchEnded=true;
  setTurn('انتهت المباراة',false,'home');
@@ -559,7 +559,7 @@ function afterPair(){
  }
  setTimeout(()=>setTurn(suddenDeath?'ركلة إضافية — دورك':'أنت تسدد',true,'home'),700);
 }
-function startCpuShot(){
+function startCpuShot(){if(window.haPenaltyPaused){setTimeout(startCpuShot,200);return;}
  if(matchEnded)return;
  setTurn('الخصم يسدد...',false,'away');
  const tryStart=()=>{
@@ -604,6 +604,11 @@ by('playAgain').onclick=()=>{
 };
 by('backMenu').onclick=()=>{by('endModal').classList.remove('show');matchEnded=true;setTurn('القائمة',false,'home');by('menuScreen').style.display='flex'};
 
+document.body.classList.add('hgp-penalties');
+for(const [id,key]of [['difficultyMenu','difficulty'],['kickCountMenu','kicks']]){const value=HAGamePolish.get(key,null);if(value&&[...by(id).options].some(x=>x.value===value))by(id).value=value;}
+const savedType=HAGamePolish.get('teamType',null);if(savedType&&[...by('teamTypeMenu').options].some(x=>x.value===savedType)){by('teamTypeMenu').value=savedType;fillTeams();}
+const savedTeam=HAGamePolish.get('team',null);if(savedTeam&&[...by('teamMenu').options].some(x=>x.value===savedTeam))by('teamMenu').value=savedTeam;
+HAGamePolish.register({host:()=>document.body,best:()=>points,bestLabel:'رصيد نقاطك',paused:()=>!!window.haPenaltyPaused,pause:v=>{window.haPenaltyPaused=v},restart:()=>{if(window.HARewardedGames?.active)return;beginGame()},help:'اختيار الفريق والبطولات والصعوبة موجودة في قائمة اللعبة. تحفظ اختيارات الفريق والصعوبة على هذا الجهاز.'});
 })();
 </script>
 
