@@ -7,7 +7,7 @@
   const base=new URL('./',document.currentScript.src);
   const STORAGE='ha-marketing-auth';
   const GUEST='ha_guest_mode';
-  const guestPages=['index.html','', 'study.html','study-summary.html','study-summary[1].html','study-exam.html','study-library.html','study-language.html','study-primary.html','study-middle.html','study-preparatory.html','study-grade-hub.html','study-directory.html','education-news.html','higher-education-news.html','entertainment.html','games.html','games-hub.html','games-ranking.html','snake.html','level-devil.html','bird-game.html','penalties.html','movies.html','series.html','my-activity.html'];
+  const guestPages=['index.html','', 'study.html','study-summary.html','study-summary[1].html','study-exam.html','study-library.html','study-language.html','study-primary.html','study-middle.html','study-preparatory.html','study-grade-hub.html','study-directory.html','education-news.html','higher-education-news.html','entertainment.html','games.html','games-hub.html','games-ranking.html','snake.html','level-devil.html','bird-game.html','penalties.html','movies.html','series.html','my-activity.html','war-game.html'];
   const guestPage=guestPages.includes(location.pathname.slice(base.pathname.length));
   const NEXT='ha_account_return_to';
   const VERIFIED='ha_account_verified_session';
@@ -316,7 +316,7 @@ check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidde
 (function(){
  'use strict';
  if(window.__haNavigationAds)return;window.__haNavigationAds=true;
- const targets=new Set(['index.html','shop.html','services.html','study.html','taxi-delivery.html','entertainment.html','sports-center.html','snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html','file-tools.html','football-matches.html','football-statistics.html','football-teams.html','football-team.html','football-player.html','football-match-details.html']);
+ const targets=new Set(['index.html','shop.html','services.html','study.html','taxi-delivery.html','entertainment.html','sports-center.html','snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html','war-game.html','file-tools.html','football-matches.html','football-statistics.html','football-teams.html','football-team.html','football-player.html','football-match-details.html']);
  let lastRequest=-Infinity,navigating=false;
  document.addEventListener('click',function(event){
   if(event.defaultPrevented||event.button>0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;

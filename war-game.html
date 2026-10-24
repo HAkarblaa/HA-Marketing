@@ -73,7 +73,7 @@ border:1px solid #ffffff20;z-index:9;overflow:hidden;backdrop-filter:blur(3px)}
 #minimap{width:100%;height:100%;display:block}
 
 </style>
-<link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
+<link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-tank-levels.css?v=1"></head>
 <body>
 <div class="wrap">
   <div class="top">
@@ -87,7 +87,7 @@ border:1px solid #ffffff20;z-index:9;overflow:hidden;backdrop-filter:blur(3px)}
       <div><small>النقاط</small><b id="score">0</b></div>
       <div><small>الطاقة</small><b id="hp">100</b></div>
       <div><small>الدرع</small><b id="armor">40</b></div>
-      <div><small>الموجة</small><b id="wave">1</b></div>
+      <div><small>المستوى</small><b id="wave">1</b></div>
       <div><small>الأعداء</small><b id="kills">0</b></div>
     </div>
 
@@ -120,7 +120,7 @@ border:1px solid #ffffff20;z-index:9;overflow:hidden;backdrop-filter:blur(3px)}
     </div>
 
     <div id="select" class="select">
-      <h2>اختَر دبابتك</h2>
+      <h2>حرب الدبابات • ٢٠ مستوى</h2>
       <p>كل دبابة تختلف بالسرعة والدرع وقوة السلاح</p>
       <div class="tanks">
         <button class="tankChoice active" data-tank="balanced">
@@ -133,7 +133,7 @@ border:1px solid #ffffff20;z-index:9;overflow:hidden;backdrop-filter:blur(3px)}
           <div class="tankMini">💪</div><b>العملاق</b><small>درع قوي<br>أبطأ</small>
         </button>
       </div>
-      <button id="startSelected" class="startSelected">▶ ابدأ المعركة</button>
+      <label class="tank-stage-label" for="tankStage">المستوى</label><select id="tankStage" aria-label="اختيار المستوى"></select><p id="tankProgress"></p><p>دمّر 7 دبابات بكل مستوى. كل خامس مستوى بيه زعيم لازم تهزمه. تكمل المستوى تاخذ إصلاح ودرع.</p><button id="startSelected" class="startSelected">▶ ابدأ المعركة</button>
     </div>
 
 
@@ -147,12 +147,13 @@ border:1px solid #ffffff20;z-index:9;overflow:hidden;backdrop-filter:blur(3px)}
       </div>
     </div>
 
-    <div id="gameOver" class="gameover">
+    <dialog id="tankLevelDone" dir="rtl"><h2 id="tankLevelTitle">أكملت المستوى!</h2><p id="tankLevelText"></p><button id="tankNext">المستوى التالي</button><button id="tankMenu">اختيار مستوى</button><p id="tankLevelStatus" role="status"></p></dialog>
+<div id="gameOver" class="gameover">
       <h2>انتهت المعركة</h2>
       <p>
         النقاط: <b id="finalScore">0</b><br>
         الدبابات المدمرة: <b id="finalKills">0</b><br>
-        وصلت إلى الموجة: <b id="finalWave">1</b>
+        وصلت إلى المستوى: <b id="finalWave">1</b>
       </p>
       <button id="againBtn">إعادة المعركة</button>
     </div>
@@ -188,6 +189,13 @@ const ENEMY_TYPES={
   boss:{r:28,hp:14,speed:30,color:'#8c2020',cool:.85,damage:20}
 };
 
+const MAX_STAGE=20;let progress={unlocked:1,completed:0,best:0};
+try{const saved=JSON.parse(localStorage.getItem('ha_tank_campaign_v1')||'{}');progress={unlocked:Math.max(1,Math.min(MAX_STAGE,Math.floor(Number(saved.unlocked)||1))),completed:Math.max(0,Math.min(MAX_STAGE,Math.floor(Number(saved.completed)||0))),best:Math.max(0,Number(saved.best)||0)};}catch(_){}
+const stageSelect=document.getElementById('tankStage'),stageDialog=document.getElementById('tankLevelDone');
+let selectedStage=1,stageKillsBase=0,stagePending=false,adBusy=false;
+function saveCampaign(){try{localStorage.setItem('ha_tank_campaign_v1',JSON.stringify(progress))}catch(_){}renderStages();}
+function renderStages(){stageSelect.replaceChildren();for(let n=1;n<=MAX_STAGE;n++){const option=document.createElement('option');option.value=String(n);option.disabled=n>progress.unlocked;option.textContent=(n<=progress.completed?'✓ ':n>progress.unlocked?'🔒 ':'')+'المستوى '+n+(n%5===0?' • زعيم':'');stageSelect.appendChild(option);}stageSelect.value=String(selectedStage);document.getElementById('tankProgress').textContent='المفتوح: '+progress.unlocked+' / '+MAX_STAGE+' • أفضل نتيجة: '+progress.best;}
+async function adBoundary(){if(window.HA_AccountGate?.state==='redirecting')return;try{await window.HAContentAds?.breakAfterWork();}catch(_){} }
 let selectedTank='balanced';
 let p,enemies=[],bullets=[],enemyBullets=[],rocks=[],particles=[],powerups=[];
 let score=0,kills=0,wave=1,running=false,paused=false,last=0,spawnTimer=0,fireCooldown=0,rocketCooldown=0,heavyCooldown=0;
@@ -199,8 +207,8 @@ function reset(){
   const t=cfg();
   p={x:215,y:410,r:18,hp:t.hp,maxHp:t.hp,armor:t.armor,maxArmor:t.armor,bodyAngle:-Math.PI/2,turretAngle:-Math.PI/2,speed:t.speed};
   enemies=[];bullets=[];enemyBullets=[];particles=[];powerups=[];
-  score=0;kills=0;wave=1;running=false;paused=false;spawnTimer=.4;fireCooldown=0;rocketCooldown=0;heavyCooldown=0;move={x:0,y:0};bossSpawned=false;mapSeed=0;aimX=215;aimY=260;autoTarget=null;targetIndex=0;lastUpgradeWave=0;damageBoost=1;reloadBoost=1;holdFire=false;holdRocket=false;holdHeavy=false;
-  buildMap();
+  score=0;kills=0;wave=selectedStage;stageKillsBase=0;stagePending=false;running=false;paused=false;spawnTimer=.4;fireCooldown=0;rocketCooldown=0;heavyCooldown=0;move={x:0,y:0};bossSpawned=false;mapSeed=0;aimX=215;aimY=260;autoTarget=null;targetIndex=0;lastUpgradeWave=0;damageBoost=1;reloadBoost=1;holdFire=false;holdRocket=false;holdHeavy=false;
+  if(stageDialog.open)stageDialog.close();buildMap();
   over.classList.remove('show');upgradeCard.classList.remove('show');
   msg.textContent='اختَر دبابتك — العتلة للحركة وأزرار اليمين للأسلحة';
   pauseBtn.textContent='Ⅱ إيقاف';
@@ -368,7 +376,7 @@ function spawnBoss(){
   Object.assign(e,{x:c.width/2,y:60,angle:Math.PI/2,strafe:1,think:.35});
   enemies.push(e);
   bossSpawned=true;
-  msg.textContent='⚠ زعيم الموجة ظهر!';
+  msg.textContent='⚠ زعيم المستوى ظهر!';
   try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(_e){}
 }
 
@@ -439,8 +447,22 @@ function dropPowerup(x,y){
   });
 }
 
+function completeStage(){
+ stagePending=true;paused=true;holdFire=holdRocket=holdHeavy=false;move={x:0,y:0};
+ progress.completed=Math.max(progress.completed,wave);progress.unlocked=Math.max(progress.unlocked,Math.min(MAX_STAGE,wave+1));progress.best=Math.max(progress.best,score);saveCampaign();
+ document.getElementById('tankLevelTitle').textContent=wave===MAX_STAGE?'🏆 أكملت جميع المستويات!':'✅ أكملت المستوى '+wave;
+ document.getElementById('tankLevelText').textContent='نقاطك: '+score+(wave===MAX_STAGE?' • بطل الحملة! تگدر تعيد المستويات المفتوحة.':' • مكافأة المتابعة: إصلاح 25 طاقة و20 درع.')+' تقدّمك محفوظ على هذا الجهاز.';
+ document.getElementById('tankNext').textContent=wave===MAX_STAGE?'إعادة الحملة':'المستوى التالي';document.getElementById('tankLevelStatus').textContent='';stageDialog.showModal();
+}
+function clearControls(){holdFire=holdRocket=holdHeavy=false;move={x:0,y:0};joyKnob.style.transform='translate(-50%,-50%)';}
+async function levelAction(menu){if(adBusy)return;adBusy=true;document.getElementById('tankNext').disabled=document.getElementById('tankMenu').disabled=true;document.getElementById('tankLevelStatus').textContent='جارٍ المتابعة…';
+ try{await adBoundary();if(stageDialog.open)stageDialog.close();if(menu||wave===MAX_STAGE){selectedStage=menu?Math.min(progress.unlocked,MAX_STAGE):1;reset();select.style.display='flex';renderStages();return;}
+ wave++;stageKillsBase=kills;enemies=[];bullets=[];enemyBullets=[];particles=[];powerups=[];bossSpawned=false;spawnTimer=.8;
+ p.hp=Math.min(p.maxHp,p.hp+25);p.armor=Math.min(p.maxArmor,p.armor+20);p.x=215;p.y=410;clearControls();buildMap();stagePending=false;paused=false;running=true;last=performance.now();pauseBtn.textContent='Ⅱ إيقاف';msg.textContent='المستوى '+wave+' — دمّر 7 دبابات'+(wave%5===0?' واهزم الزعيم':'');updateHud();
+ }finally{adBusy=false;document.getElementById('tankNext').disabled=document.getElementById('tankMenu').disabled=false;}}
+document.getElementById('tankNext').onclick=()=>levelAction(false);document.getElementById('tankMenu').onclick=()=>levelAction(true);stageDialog.addEventListener('cancel',e=>{e.preventDefault();if(!adBusy)levelAction(true);});
 function end(){
-  running=false;paused=false;
+  if(!running)return;running=false;paused=false;clearControls();progress.best=Math.max(progress.best,score);saveCampaign();
   finalScore.textContent=score;
   finalKills.textContent=kills;
   finalWave.textContent=wave;
@@ -449,15 +471,15 @@ function end(){
 }
 
 function update(dt){
-  if(!running||paused)return;
+  if(!running||paused||stagePending)return;
+  if(kills-stageKillsBase>=7&&(wave%5!==0||(bossSpawned&&!enemies.some(e=>e.type==='boss')))){completeStage();return;}
 
-  wave=1+Math.floor(kills/7);
 
   if(wave>1 && wave%3===0 && wave!==lastUpgradeWave && !upgradeCard.classList.contains('show')){
     lastUpgradeWave=wave;
     paused=true;
     upgradeCard.classList.add('show');
-    msg.textContent='وصلت لموجة ترقية — اختَر تطوير واحد';
+    msg.textContent='وصلت لمستوى ترقية — اختَر تطوير واحد';return;
   }
   fireCooldown=Math.max(0,fireCooldown-dt);
   rocketCooldown=Math.max(0,rocketCooldown-dt);
@@ -838,6 +860,7 @@ function loop(t){
 }
 
 function start(){
+  if(stagePending||adBusy||upgradeCard.classList.contains('show'))return;
   if(running && paused){
     paused=false;pauseBtn.textContent='Ⅱ إيقاف';last=performance.now();msg.textContent='';return;
   }
@@ -855,12 +878,12 @@ document.querySelectorAll('.tankChoice').forEach(btn=>{
   });
 });
 
-document.getElementById('startSelected').onclick=start;
+document.getElementById('startSelected').onclick=()=>{const n=Number(stageSelect.value);selectedStage=Number.isInteger(n)&&n>=1&&n<=progress.unlocked?n:1;reset();start();};
 document.getElementById('restartBtn').onclick=()=>{reset();select.style.display='flex'};
-document.getElementById('againBtn').onclick=()=>{reset();select.style.display='flex'};
+document.getElementById('againBtn').onclick=async()=>{if(adBusy)return;adBusy=true;document.getElementById('againBtn').disabled=true;try{await adBoundary();reset();select.style.display='flex';}finally{adBusy=false;document.getElementById('againBtn').disabled=false;}};
 
 pauseBtn.onclick=()=>{
-  if(!running)return;
+  if(!running||stagePending||adBusy||upgradeCard.classList.contains('show'))return;
   paused=!paused;
   pauseBtn.textContent=paused?'▶ متابعة':'Ⅱ إيقاف';
   msg.textContent=paused?'المعركة متوقفة مؤقتاً':'';
@@ -973,6 +996,8 @@ document.querySelectorAll('[data-upgrade]').forEach(btn=>{
   });
 });
 
+renderStages();
+window.addEventListener('blur',()=>{if(running&&!stagePending){paused=true;clearControls();pauseBtn.textContent='▶ متابعة';}});
 reset();
 raf=requestAnimationFrame(loop);
 })();
