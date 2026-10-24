@@ -316,8 +316,8 @@ check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidde
 (function(){
  'use strict';
  if(window.__haNavigationAds)return;window.__haNavigationAds=true;
- const targets=new Set(['shop.html','services.html','study.html','taxi-delivery.html','entertainment.html','sports-center.html','snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html']);
- let lastRequest=-Infinity;
+ const targets=new Set(['index.html','shop.html','services.html','study.html','taxi-delivery.html','entertainment.html','sports-center.html','snake.html','level-devil.html','bird-game.html','penalties.html','chess.html','royal-chess.html','piano.html']);
+ let lastRequest=-Infinity,navigating=false;
  document.addEventListener('click',function(event){
   if(event.defaultPrevented||event.button>0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
   const link=event.target.closest&&event.target.closest('a[href]');
@@ -327,9 +327,17 @@ check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidde
   if(destination.pathname===location.pathname)return;
   if(!targets.has(destination.pathname.split('/').pop().toLowerCase()))return;
   const native=window.HAAndroid;if(!native||typeof native.adBreak!=='function')return;
+  if(navigating&&native.adsApiVersion>=2){event.preventDefault();event.stopImmediatePropagation();return;}
   const now=performance.now();if(now-lastRequest<1500)return;lastRequest=now;
-  // Native owns consent, loaded ads and frequency limits. No timer, retries or navigation blocking.
-  try{Promise.resolve(native.adBreak()).catch(function(){});}catch(_){}
+  // v2 replies after dismissal. Keep the next page/game paused until then.
+  if(native.adsApiVersion>=2){
+   event.preventDefault();event.stopImmediatePropagation();
+   if(navigating)return;navigating=true;
+   Promise.resolve().then(()=>native.adBreak()).catch(()=>null).finally(()=>location.assign(destination.href));
+  }else{
+   // Older app versions keep their existing bridge behavior and cooldown.
+   try{Promise.resolve(native.adBreak()).catch(function(){});}catch(_){}
+  }
  },true);
 })();
 
@@ -356,3 +364,9 @@ window.addEventListener('pageshow',refresh);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 wrapBridge();refresh();
 })();
+
+/* Explicit completion boundary for study tools; never called on download/print taps. */
+window.HAContentAds={breakAfterWork:async function(){
+ const api=window.HAAndroid;if(api?.adsApiVersion<2||!api?.adBreak)return;
+ try{await api.adBreak();}catch(_){}
+}};

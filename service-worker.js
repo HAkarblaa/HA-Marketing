@@ -1,6 +1,6 @@
 /* Static site files load from cache immediately; account/order API calls stay live. */
-const CACHE='ha-marketing-daily-activity-v2026-10-12-1';
-const CORE=['./index.html','./ha-account-gate.js?v=20261010-speed1','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
+const CACHE='ha-marketing-ads-v2026-10-24-146';
+const CORE=['./index.html','./ha-account-gate.js?v=20261024-ads146','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);

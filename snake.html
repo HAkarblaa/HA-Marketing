@@ -6,7 +6,7 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script src="ha-account-gate.js?v=20261024-ads146"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -50,7 +50,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 <script src="ha-theme.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="game-ranking.js"></script>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=20261024-1"></script></head>
 <body>
 <div class="wrap">
   <div class="top">
@@ -131,13 +131,11 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   }
 
   function finishAndRestart(message){
-    const finalScore=score;
-    updateBest();
-    if(runStarted){
-      HA_GameRanking.record('snake',finalScore,{won:false,playId:rankPlayId});
-    }
-    reset(message);
-    setTimeout(()=>start(),450);
+    clearInterval(timer);running=false;paused=false;updateBest();
+    HARewardedGames.offer({message:'شاهد إعلاناً وكمل بنفس النقاط والمستوى بمحاولة إضافية.',
+      continue:()=>{snake=[{x:8,y:9},{x:7,y:9},{x:6,y:9}];dir={x:1,y:0};nextDir={x:1,y:0};food=randomFood();draw();start();},
+      restart:()=>{if(runStarted)HA_GameRanking.record('snake',score,{won:false,playId:rankPlayId});reset(message);start();}
+    });
   }
 
   function randomFood(){
@@ -159,7 +157,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
 
   function start(){
     if(running && paused){ paused=false; msg.textContent=''; startLoop(); return; }
-    if(running)return;
+    if(window.HARewardedGames?.active||running)return;
     running=true; paused=false; runStarted=true; msg.textContent='';
     startLoop();
   }
@@ -290,6 +288,7 @@ canvas{display:block;width:100%;aspect-ratio:1/1;background:#a9b982;touch-action
   playBtn.onclick=start;
   pauseBtn.onclick=togglePause;
   restartBtn.onclick=()=>{
+    if(window.HARewardedGames?.active)return;
     if(runStarted)HA_GameRanking.record('snake',score,{won:false,playId:rankPlayId});
     reset();start();
   };

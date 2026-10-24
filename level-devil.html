@@ -6,7 +6,7 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script src="ha-account-gate.js?v=20261024-ads146"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -45,7 +45,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
 @media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
 </style>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=20261024-1"></script></head>
 <body>
 <div class="page">
   <div class="topbar">
@@ -224,7 +224,9 @@ function saveProgress(){
 const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawnY:0};
 let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let coins=[]; let exitDoor=null;
 
+let rewardCheckpoint=null,rewardProtectionUntil=0;
 function parseLevel(index){
+  rewardCheckpoint=null;
   if(index < 0 || index >= levels.length) index = 0;
   if(index >= unlocked) index = Math.max(0, unlocked-1);
   currentLevelIndex = index;
@@ -258,11 +260,13 @@ function solidAt(rect){
 }
 
 function killPlayer(){
-  deaths++;
-  beep(120,0.15,'sawtooth');
-  saveProgress();
-  parseLevel(currentLevelIndex);
-  showTempMessage('سقطت! أعد المحاولة');
+  if(Date.now()<rewardProtectionUntil||HARewardedGames.active)return;
+  deaths++;beep(120,0.15,'sawtooth');saveProgress();gameRunning=false;cancelAnimationFrame(animation);
+  const checkpoint=rewardCheckpoint?{...rewardCheckpoint}:null,index=currentLevelIndex;
+  HARewardedGames.offer({message:'شاهد إعلاناً للرجوع إلى آخر نقطة آمنة بنفس المستوى.',restartLabel:'أعد المستوى من البداية',
+    continue:()=>{parseLevel(index);if(checkpoint&&!solidAt({x:checkpoint.x,y:checkpoint.y,w:player.w,h:player.h})){player.x=checkpoint.x;player.y=checkpoint.y;}rewardProtectionUntil=Date.now()+2000;keys.left=keys.right=keys.jump=false;setTimeout(startGame,0);},
+    restart:()=>{parseLevel(index);showTempMessage('أعد المحاولة');setTimeout(startGame,0);}
+  });
 }
 
 function completeLevel(){
@@ -305,6 +309,8 @@ let tempMessage=''; let tempMessageTimer=0;
 function showTempMessage(msg){ tempMessage=msg; tempMessageTimer=120; }
 
 function update(dt){
+  if(HARewardedGames.active)return;
+  if(player.onGround&&!spikes.some(s=>rectsIntersect(player,{x:s.x-16,y:s.y-20,w:s.w+32,h:s.h+20}))&&!traps.some(t=>rectsIntersect(player,{x:t.x-8,y:t.y-8,w:t.w+16,h:t.h+16})))rewardCheckpoint={x:player.x,y:player.y};
   if(levelTransitioning){
     if(tempMessageTimer>0) tempMessageTimer--;
     return;
@@ -394,11 +400,11 @@ function drawCloud(x,y,s=1){ ctx.fillStyle='rgba(255,255,255,.75)'; ctx.beginPat
 function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); ctx.fill(); }
 
 function loop(){
-  if(gameRunning){ update(1/60); draw(); updateStageUI(); animation = requestAnimationFrame(loop); }
+  if(gameRunning){ update(1/60); draw(); updateStageUI(); if(gameRunning)animation = requestAnimationFrame(loop); }
 }
 
-function startGame(){ gameRunning=true; document.getElementById('overlay').style.display='none'; cancelAnimationFrame(animation); loop(); }
-function restartCurrent(){ parseLevel(currentLevelIndex); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); }
+function startGame(){ if(HARewardedGames.active)return;gameRunning=true; document.getElementById('overlay').style.display='none'; cancelAnimationFrame(animation); loop(); }
+function restartCurrent(){ if(HARewardedGames.active)return;parseLevel(currentLevelIndex); document.getElementById('overlay').style.display='none'; if(!gameRunning) startGame(); }
 
 function updateStageUI(){
   document.getElementById('hudLevel').textContent = currentLevelIndex+1;
