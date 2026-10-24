@@ -1,6 +1,6 @@
 /* Static site files load from cache immediately; account/order API calls stay live. */
-const CACHE='ha-marketing-ads-v2026-10-24-147-no-focus-1';
-const CORE=['./index.html','./ha-account-gate.js?v=20261024-ads147','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
+const CACHE='ha-marketing-ads-v2026-10-24-engagement-1';
+const CORE=['./ha-growth.js?v=20261024-1','./ha-growth.css?v=1','./index.html','./ha-account-gate.js?v=20261024-ads147','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
@@ -21,10 +21,12 @@ function cacheable(url,request){
   if(url.searchParams.has('code')||url.searchParams.has('access_token')||url.searchParams.has('refresh_token'))return false;
   return request.mode==='navigate'||/\.(?:html|css|js|png|jpg|jpeg|webp|svg|woff2?|ico)$/i.test(url.pathname);
 }
+let writes=0,trimming=false;
+async function trim(cache){if(trimming||++writes%20!==0)return;trimming=true;try{const keys=await cache.keys();for(const key of keys.slice(0,Math.max(0,keys.length-240)))await cache.delete(key);}finally{trimming=false;}}
 async function refresh(request,cache){
   const response=await fetch(request);
-  if(response.ok&&response.type!=='opaque'&&!response.redirected){
-    try{await cache.put(request,response.clone());}catch(_e){}
+  if(response.ok&&response.type!=='opaque'&&!response.redirected&&Number(response.headers.get('content-length')||0)<=5*1024*1024){
+    try{await cache.put(request,response.clone());await trim(cache);}catch(_e){}
   }
   return response;
 }

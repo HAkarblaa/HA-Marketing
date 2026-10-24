@@ -7,7 +7,7 @@
   const base=new URL('./',document.currentScript.src);
   const STORAGE='ha-marketing-auth';
   const GUEST='ha_guest_mode';
-  const guestPages=['index.html','', 'study.html','study-summary.html','study-summary[1].html','study-exam.html','study-library.html','study-language.html','study-primary.html','study-middle.html','study-preparatory.html','study-grade-hub.html','study-directory.html','education-news.html','higher-education-news.html','entertainment.html','games.html','games-hub.html','games-ranking.html','snake.html','level-devil.html','bird-game.html','penalties.html','movies.html','series.html'];
+  const guestPages=['index.html','', 'study.html','study-summary.html','study-summary[1].html','study-exam.html','study-library.html','study-language.html','study-primary.html','study-middle.html','study-preparatory.html','study-grade-hub.html','study-directory.html','education-news.html','higher-education-news.html','entertainment.html','games.html','games-hub.html','games-ranking.html','snake.html','level-devil.html','bird-game.html','penalties.html','movies.html','series.html','my-activity.html'];
   const guestPage=guestPages.includes(location.pathname.slice(base.pathname.length));
   const NEXT='ha_account_return_to';
   const VERIFIED='ha_account_verified_session';
@@ -218,7 +218,7 @@
       }
     });
   }
-  window.HA_AccountGate={check,nextURL,safeNext,get state(){return state;},
+  window.HA_AccountGate={check,nextURL,safeNext,getClient,get state(){return state;},
     async isMainAdmin(){
       try{
         const c=await getClient(),u=await c.auth.getUser();
@@ -381,4 +381,10 @@ function apply(){
  wrapped.__haNoFocus=true;api.showRewarded=wrapped;
 }
 addEventListener('ha:native-ready',apply);addEventListener('ha:native-resume',apply);apply();
+})();
+
+/* Shared website enhancements, loaded once without delaying the existing interface. */
+(function(){
+ if(window.__haGrowthLoading)return;window.__haGrowthLoading=true;
+ const script=document.createElement('script');script.src=new URL('ha-growth.js?v=20261024-1',document.currentScript.src).href;script.async=true;document.head.appendChild(script);
 })();
