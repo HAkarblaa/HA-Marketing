@@ -6,7 +6,7 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script src="ha-account-gate.js?v=20261026-public1"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -129,12 +129,12 @@ body{background:
 </style>
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"></head>
 <body>
-<div id="gate" class="overlay"><div class="gate"><h2>🔒 فحص صلاحية الأدمن الرئيسي</h2><p id="gateText">جاري التحقق من الحساب...</p><a class="secondary" href="entertainment.html">الرجوع للترفيه</a></div></div>
+<div id="gate" class="overlay"><div class="gate"><h2>🎲 لودو</h2><p id="gateText">جاري تجهيز اللعبة...</p><a class="secondary" href="entertainment.html">الرجوع للترفيه</a></div></div>
 <div id="toast" class="toast"></div>
 <div id="app" class="app hidden">
   <div class="top">
     <a class="back" href="entertainment.html">‹</a>
-    <div class="brand"><h1>🎲 لودو</h1><small>فردي ضد الجهاز أو أونلاين — تصميم ثلاثي الأبعاد — نسخة الأدمن الرئيسي</small></div>
+    <div class="brand"><h1>🎲 لودو</h1><small>اللعب ضد الجهاز متاح للجميع وبدون إنترنت</small></div>
     <div class="actions"><button id="soundBtn" class="iconbtn" title="الصوت">🔊</button><button id="musicBtn" class="iconbtn" title="الموسيقى">🎵</button></div>
   </div>
   <div class="notice">🛡️ هذه النسخة مخفية عن المستخدمين ومحمية بصلاحية <b>Super Admin</b>. تصميم <b>3D</b> مع لوحة وأحجار ونرد مجسّم، وتقدر تلعب <b>فردي ضد الجهاز</b> أو تختبر اللعب الأونلاين من جهازين.</div>
@@ -172,7 +172,7 @@ body{background:
 'use strict';
 const SB_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SB_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
-const db=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
+const db=window.supabase?supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}}):null;
 const $=id=>document.getElementById(id);
 const TRACK=[
 [6,1],[6,2],[6,3],[6,4],[6,5],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],[7,14],[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],[7,0],[6,0]
@@ -354,7 +354,7 @@ function applyRoom(r){
 }
 async function subscribeRoom(){if(channel){await db.removeChannel(channel);channel=null}if(!room)return;channel=db.channel('ha-ludo-'+room.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'ludo_rooms',filter:'id=eq.'+room.id},p=>applyRoom(p.new)).on('postgres_changes',{event:'DELETE',schema:'public',table:'ludo_rooms',filter:'id=eq.'+room.id},()=>{toast('تم إغلاق الغرفة');resetUi()}).subscribe()}
 
-async function createRoom(){
+async function createRoom(){if(!navigator.onLine||!me||!isSuper){$('createMsg').textContent='الغرف الأونلاين تحتاج اتصالاً وحساباً مخوّلاً. اللعب ضد الجهاز متاح للجميع.';return;}
  $('createBtn').disabled=true;$('createMsg').textContent='جاري إنشاء الغرفة...';
  try{
   for(let attempt=0;attempt<5;attempt++){
@@ -363,7 +363,7 @@ async function createRoom(){
   }throw new Error('تعذر توليد كود فريد');
  }catch(e){console.warn(e);$('createMsg').textContent='تعذر الإنشاء. تأكد من تشغيل ملف SQL.'}finally{$('createBtn').disabled=false}
 }
-async function joinRoom(){
+async function joinRoom(){if(!navigator.onLine||!me||!isSuper){$('joinMsg').textContent='الغرف الأونلاين تحتاج اتصالاً وحساباً مخوّلاً. اللعب ضد الجهاز متاح للجميع.';return;}
  const code=normalizeCode($('joinCode').value);$('joinCode').value=code;if(code.length!==6)return toast('اكتب كود الغرفة من 6 أحرف');$('joinBtn').disabled=true;$('joinMsg').textContent='جاري الدخول...';
  try{
   const {data:r,error}=await db.from('ludo_rooms').select('*').eq('code',code).maybeSingle();if(error)throw error;if(!r)throw new Error('الغرفة غير موجودة');if(r.guest_client_id&&r.guest_client_id!==clientId)throw new Error('الغرفة ممتلئة');
@@ -392,15 +392,9 @@ async function loadRanking(){
 $('rankBtn').onclick=loadRanking;
 
 async function checkAccess(){
- try{
-  const {data:{session},error}=await db.auth.getSession();if(error||!session){$('gateText').innerHTML='سجّل الدخول بحساب الأدمن الرئيسي أولاً.';return}me=session.user;
-  let ok=false;try{const r=await db.rpc('is_super_admin');if(!r.error)ok=!!r.data}catch(_e){}
-  if(!ok){try{const r=await db.from('app_admins').select('is_super_admin,is_active').eq('user_id',me.id).maybeSingle();ok=!!(r.data?.is_super_admin&&r.data?.is_active)}catch(_e){}}
-  if(!ok){$('gateText').innerHTML='هذه اللعبة متاحة حالياً للأدمن الرئيسي فقط.';return}
-  isSuper=true;try{const r=await db.from('profiles').select('full_name,username').eq('id',me.id).maybeSingle();profile=r.data||null}catch(_e){}
-  $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('onlineDot').className=navigator.onLine?'dot on':'dot wait';$('netText').textContent=navigator.onLine?'متصل':'بدون إنترنت';buildBoard();loadRanking();if(musicOn)startMusic();
-  const q=new URLSearchParams(location.search).get('room');if(q){$('joinCode').value=normalizeCode(q);joinRoom()}
- }catch(e){console.warn(e);$('gateText').textContent='تعذر التحقق من الصلاحية. حاول تحديث الصفحة.'}
+ $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('onlineDot').className=navigator.onLine?'dot on':'dot wait';$('netText').textContent=navigator.onLine?'متصل':'بدون إنترنت';buildBoard();
+ if(db&&navigator.onLine){try{const r=await db.auth.getSession();me=r.data?.session?.user||null;if(me){const a=await db.rpc('is_super_admin');isSuper=!a.error&&a.data===true;const p=await db.from('profiles').select('full_name,username').eq('id',me.id).maybeSingle();profile=p.data||null;}loadRanking();}catch(e){console.warn(e)}}
+ const q=new URLSearchParams(location.search).get('room');if(q&&me&&isSuper){$('joinCode').value=normalizeCode(q);joinRoom()}
 }
 checkAccess();
 </script>

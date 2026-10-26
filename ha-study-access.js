@@ -1,0 +1,6 @@
+/* No signup form. AI requests use a separate, real anonymous Supabase session. */
+(function(){'use strict';let client,mainClient,pending;const URL='https://ubayrhtshgtgggxprrek.supabase.co',KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
+async function session(main){if(!main&&window.supabase?.createClient){mainClient??=supabase.createClient(URL,KEY,{auth:{storageKey:'ha-marketing-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});main=mainClient;}if(main?.auth){try{const r=await main.auth.getSession();if(r.data?.session?.access_token)return r.data.session;}catch(_){}}
+ if(!navigator.onLine)throw Error('أداة الذكاء الاصطناعي تحتاج اتصال إنترنت.');
+ if(pending)return pending;pending=(async()=>{if(!window.supabase?.createClient)throw Error('تعذّر تحميل خدمة الدراسة. أعد المحاولة مع الإنترنت.');client??=supabase.createClient(URL,KEY,{auth:{storageKey:'ha-study-guest-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});let r=await client.auth.getSession();if(r.data?.session?.access_token)return r.data.session;r=await client.auth.signInAnonymously();if(r.error||!r.data?.session)throw Error('خدمة الدراسة للضيف تحتاج تفعيل Anonymous Sign-ins بإعدادات Supabase. '+(r.error?.message||''));return r.data.session;})();try{return await pending}finally{pending=null}}
+window.HAStudyAccess={session};})();

@@ -6,7 +6,7 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261008-required1"></script>
+<script src="ha-account-gate.js?v=20261026-public1"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -37,7 +37,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-</head>
+<script src="ha-study-access.js?v=20261026-1"></script></head>
 <body class="ha-ui-final ha-family-study"><div class="ha-family-strip"><a href="study.html">← الدراسة</a><div><b>تلخيص المواد</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
 <div class="topbar">
   <button class="back" onclick="history.length>1?history.back():location.href='study.html'" aria-label="رجوع">→</button>
@@ -136,13 +136,7 @@ function formatBytes(n){if(n<1024)return n+' B';if(n<1048576)return (n/1024).toF
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function setProgress(text,pct){const b=document.getElementById('statusBox');b.style.display='block';document.getElementById('statusText').textContent=text;document.getElementById('progressBar').style.width=Math.max(0,Math.min(100,pct))+'%'}
 
-async function ensureSession(){
-  const {data:{session}}=await db.auth.getSession();
-  if(session)return session;
-  alert('سجّل دخولك أولاً حتى تستخدم تلخيص المواد.');
-  location.href='login.html?next=study-summary.html';
-  return null;
-}
+async function ensureSession(){try{return await HAStudyAccess.session(db)}catch(e){alert(e.message);return null}}
 
 async function extractText(file){
   const ext=(file.name.split('.').pop()||'').toLowerCase();

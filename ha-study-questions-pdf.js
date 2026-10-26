@@ -1,9 +1,5 @@
 /* Separate printable questions and evidence-backed model answers. */
-async function examSession(){
- if(!window.__examAuthClient)window.__examAuthClient=supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
- const {data,error}=await window.__examAuthClient.auth.getSession();
- if(error||!data.session||data.session.user?.is_anonymous){location.href='login.html?next=study-exam.html';throw Error('سجّل دخولك لإنشاء الأسئلة.');}return data.session;
-}
+async function examSession(){return HAStudyAccess.session(window.__examAuthClient);}
 (function(){
 let exporting=false;
 async function savePdf(answers){

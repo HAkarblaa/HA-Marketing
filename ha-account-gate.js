@@ -1,4 +1,4 @@
-/* HA Marketing - open immediately for a saved signed-in account; guests must sign in.
+/* HA Marketing - public sections open without a main account; other sections keep the account gate.
    UI gate only: database RLS and existing role checks remain authoritative. */
 (function(){
   'use strict';
@@ -7,7 +7,7 @@
   const base=new URL('./',document.currentScript.src);
   const STORAGE='ha-marketing-auth';
   const GUEST='ha_guest_mode';
-  const guestPages=['index.html','', 'study.html','study-summary.html','study-summary[1].html','study-exam.html','study-library.html','study-language.html','study-primary.html','study-middle.html','study-preparatory.html','study-grade-hub.html','study-directory.html','education-news.html','higher-education-news.html','entertainment.html','games.html','games-hub.html','games-ranking.html','snake.html','level-devil.html','bird-game.html','penalties.html','movies.html','series.html','my-activity.html','war-game.html','tower-builder.html'];
+  const guestPages=["", "backgammon.html", "bird-game.html", "brick-breaker.html", "car-dodge.html", "car-racing.html", "chess.html", "coin-runner.html", "courses-both.html", "courses-inperson.html", "courses-online.html", "courses.html", "domino.html", "drawing-camera.html", "education-news.html", "entertainment.html", "file-tools.html", "football-match-details.html", "football-matches.html", "football-news.html", "football-player.html", "football-statistics.html", "football-team.html", "football-teams.html", "football.html", "game-center.html", "game-leaderboard.html", "games-hub.html", "games-ranking.html", "games.html", "gym.html", "ha-generator.html", "higher-education-news.html", "index.html", "jumper.html", "level-devil.html", "ludo.html", "ministerial-distinguished.html", "ministerial-middle.html", "ministerial-preparatory.html", "ministerial-primary.html", "ministerial-questions.html", "ministerial-vocational.html", "movies.html", "penaltie.html", "penalties.html", "piano.html", "series.html", "snake.html", "sports-center.html", "sports.html", "study-directory.html", "study-exam.html", "study-grade-hub.html", "study-language.html", "study-library.html", "study-middle.html", "study-my-files.html", "study-notes.html", "study-planner.html", "study-preparatory.html", "study-primary.html", "study-summary.html", "study-summary[1].html", "study.html", "tower-builder.html", "war-game.html"];
   const guestPage=guestPages.includes(location.pathname.slice(base.pathname.length));
   const NEXT='ha_account_return_to';
   const VERIFIED='ha_account_verified_session';
@@ -63,7 +63,7 @@
     box.querySelector('a').hidden=!error;
   }
   function redirect(){
-    if(guestPage && read(localStorage,GUEST)==='1'){allowGuest();return;}
+    if(guestPage){allowGuest();return;}
     state='redirecting';run++;lock();rememberPage();clearTimeout(expiryTimer);
     remove(localStorage,'ha_logged_in');remove(sessionStorage,VERIFIED);
     location.replace(loginURL());
@@ -138,7 +138,7 @@
   }
   function check(){
     if(isPublic || state==='redirecting')return Promise.resolve();
-    if(guestPage && read(localStorage,GUEST)==='1' && !savedSession()){allowGuest();return Promise.resolve();}
+    if(guestPage && !savedSession()){allowGuest();return Promise.resolve();}
     const cached=savedSession();
     if(cached)allow(cached);
     else if(!navigator.onLine || (!read(localStorage,STORAGE)&&!hasCallback())){redirect();return Promise.resolve();}
@@ -193,7 +193,7 @@
     dialog=document.createElement('dialog');dialog.id='haGuestDialog';dialog.dir='rtl';
     dialog.style.cssText='border:0;border-radius:24px;padding:24px;width:min(88vw,380px);text-align:center;color:#16324f;font-family:Tahoma,Arial;background:white;box-shadow:0 20px 80px #0004';
     const title=document.createElement('h2');title.textContent='يجب إنشاء حساب';
-    const text=document.createElement('p');text.textContent='لاستخدام التسوق أو النقل أو طلب خدمة، أنشئ حساباً أو سجّل الدخول. الدراسة والترفيه متاحان للضيف.';text.style.lineHeight='1.8';
+    const text=document.createElement('p');text.textContent='لاستخدام التسوق أو النقل أو طلب خدمة، أنشئ حساباً أو سجّل الدخول. الدراسة والترفيه والرياضة متاحة بدون حساب. المولدة تستخدم بيانات دخولها الخاصة.';text.style.lineHeight='1.8';
     dialog.append(title,text);
     for(const [label,page,color] of [['إنشاء حساب','register.html','#07996f'],['تسجيل الدخول','login.html','#087de1']]){
       const a=document.createElement('a');const url=new URL(page,base);url.searchParams.set('next',target);a.href=url.href;a.textContent=label;a.style.cssText='display:block;margin:10px 0;padding:13px;border-radius:13px;color:white;text-decoration:none;background:'+color;dialog.append(a);
@@ -202,7 +202,7 @@
     dialog.addEventListener('close',()=>dialog.remove(),{once:true});
   }
   document.addEventListener('click',event=>{
-    if(read(localStorage,GUEST)!=='1'||savedSession())return;
+    if(savedSession())return;
     const a=event.target.closest?.('a[href]');if(!a||a.closest('#haGuestDialog'))return;
     const url=new URL(a.href,location.href);if(url.origin!==base.origin||!url.pathname.startsWith(base.pathname))return;
     const page=url.pathname.slice(base.pathname.length);
@@ -238,7 +238,7 @@
   rememberPage();
   // Synchronous local session check removes the boot lock before the page is painted.
   const initial=savedSession();
-  if(!initial && guestPage && read(localStorage,GUEST)==='1'){allowGuest();return;}
+  if(!initial && guestPage){allowGuest();return;}
   if(initial)allow(initial);
   else if(!read(localStorage,STORAGE)&&!hasCallback()){redirect();return;}
   else lock();
@@ -397,3 +397,5 @@ addEventListener('ha:native-ready',apply);addEventListener('ha:native-resume',ap
 
 /* Independent business modules; installing either package preserves the other. */
 (function(){const base=new URL('./',document.currentScript.src);for(const name of ['ha-generator-entry.js','ha-accounting-entry.js']){const s=document.createElement('script');s.src=new URL(name+'?v=split1',base).href;s.async=true;s.onerror=()=>s.remove();document.head.append(s);}})();
+
+(function(){'use strict';if(window.__haEntertainmentOfflineBoot)return;window.__haEntertainmentOfflineBoot=true;const s=document.createElement('script');s.src=new URL('ha-entertainment-offline.js?v=20261026-public1',document.currentScript.src).href;s.defer=true;document.head.append(s);})();

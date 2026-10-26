@@ -1,54 +1,18 @@
-/* Static site files load from cache immediately; account/order API calls stay live. */
-const CACHE='ha-marketing-ads-v2026-10-24-tower-main-menu-20261026-5';
-const CORE=['./ha-bottom-compact.js?v=1','./ha-bottom-compact.css?v=1','./ha-growth.js?v=20261024-hide-entry2','./ha-growth.css?v=1','./index.html','./ha-account-gate.js?v=20261024-ads147','./ha-section-artwork.js?v=20261010-speed-images2','./ha-modern-green.js?v=20261010-speed1','./ha-notification-open.js?v=20261010-speed1'];
-self.addEventListener('install',event=>{
-  event.waitUntil((async()=>{
-    const cache=await caches.open(CACHE);
-    await Promise.allSettled(CORE.map(url=>cache.add(url)));
-    await self.skipWaiting();
-  })());
-});
-self.addEventListener('activate',event=>{
-  event.waitUntil((async()=>{
-    const keys=await caches.keys();
-    await Promise.all(keys.filter(key=>key.startsWith('ha-marketing-')&&key!==CACHE).map(key=>caches.delete(key)));
-    await self.clients.claim();
-  })());
-});
-function cacheable(url,request){
-  if(request.method!=='GET'||request.cache==='no-store'||url.origin!==self.location.origin)return false;
-  if(request.headers.has('Authorization'))return false;
-  if(url.searchParams.has('code')||url.searchParams.has('access_token')||url.searchParams.has('refresh_token'))return false;
-  return request.mode==='navigate'||/\.(?:html|css|js|png|jpg|jpeg|webp|svg|woff2?|ico)$/i.test(url.pathname);
-}
-let writes=0,trimming=false;
-async function trim(cache){if(trimming||++writes%20!==0)return;trimming=true;try{const keys=await cache.keys();for(const key of keys.slice(0,Math.max(0,keys.length-240)))await cache.delete(key);}finally{trimming=false;}}
-async function refresh(request,cache){
-  const response=await fetch(request);
-  if(response.ok&&response.type!=='opaque'&&!response.redirected&&Number(response.headers.get('content-length')||0)<=5*1024*1024){
-    try{await cache.put(request,response.clone());await trim(cache);}catch(_e){}
-  }
-  return response;
-}
-self.addEventListener('fetch',event=>{
-  const request=event.request,url=new URL(request.url);
-  if(!cacheable(url,request))return;
-  event.respondWith((async()=>{
-    const cache=await caches.open(CACHE),cached=await cache.match(request);
-    const force=request.cache==='reload'||request.cache==='no-store';
-    if(cached&&!force){
-      // Hashed artwork never changes at the same URL. Other static files refresh
-      // in the background, so taps do not wait for a network timeout.
-      if(!/\/ha-fast-[a-f0-9]{20}\./.test(url.pathname))event.waitUntil(refresh(request,cache).catch(()=>{}));
-      return cached;
-    }
-    try{return await refresh(request,cache);}catch(_e){
-      if(cached)return cached;
-      if(request.mode==='navigate'){
-        const fallback=await cache.match(new URL('./index.html',self.location.href).href);
-        if(fallback)return Response.redirect(new URL('./index.html',self.location.href).href,302);
-      }
-      return Response.error();
-    }
-  })());
-});
+/* Public entertainment bundle is cached separately from ordinary site resources. */
+const CACHE='ha-marketing-public-access-20261026-1';
+const OFFLINE='ha-entertainment-offline-20261026-1',MANIFEST=new URL('ha-entertainment-offline-manifest.json',self.registration.scope).href;
+const CORE=['./index.html','./ha-account-gate.js','./ha-entertainment-offline.js','./ha-entertainment-offline.html'];let preparing=null,progress={state:'checking',done:0,total:0};
+async function announce(value){progress=value;const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});for(const c of clients)c.postMessage({type:'HA_ENTERTAINMENT_PROGRESS',...value});}
+async function timedFetch(request){const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);try{return await fetch(request,{signal:c.signal,cache:'reload',credentials:'omit'})}finally{clearTimeout(t)}}
+async function manifest(cache,network=false){if(network){const r=await timedFetch(MANIFEST);if(!r.ok)throw Error('manifest unavailable');const data=await r.clone().json();if(!Array.isArray(data.assets)||!data.assets.length)throw Error('invalid manifest');await cache.put(MANIFEST,r);return data.assets;}const r=await cache.match(MANIFEST);return r?(await r.json()).assets:[];}
+function resource(path){const u=new URL(path,self.registration.scope);if(u.origin!==self.location.origin||!u.pathname.startsWith(new URL(self.registration.scope).pathname)||u.search||u.hash)throw Error('invalid offline resource');return u.href;}
+async function status(){if(preparing)return announce(progress);const cache=await caches.open(OFFLINE),assets=await manifest(cache).catch(()=>[]),keys=new Set((await cache.keys()).map(r=>r.url)),done=assets.filter(p=>keys.has(resource(p))).length;return announce({state:assets.length&&done===assets.length?'ready':'error',done,total:assets.length});}
+function prepare(){if(preparing)return preparing;preparing=(async()=>{const cache=await caches.open(OFFLINE);let assets;try{assets=await manifest(cache,true)}catch(_){await statusDuringFailure(cache);return;}const keys=new Set((await cache.keys()).map(r=>r.url));let done=assets.filter(p=>keys.has(resource(p))).length;await announce({state:'loading',done,total:assets.length});let index=0;async function work(){while(index<assets.length){const url=resource(assets[index++]);if(keys.has(url))continue;try{const r=await timedFetch(url);if(!r.ok||r.redirected||r.type==='opaque')continue;await cache.put(url,r);done++;}catch(_){}if(done%10===0)await announce({state:'loading',done,total:assets.length});}}await Promise.all(Array.from({length:6},work));await announce({state:done===assets.length?'ready':'error',done,total:assets.length});})().catch(()=>announce({state:'error',done:0,total:0})).finally(()=>{preparing=null});return preparing;}
+async function statusDuringFailure(cache){const assets=await manifest(cache).catch(()=>[]),keys=new Set((await cache.keys()).map(r=>r.url)),done=assets.filter(p=>keys.has(resource(p))).length;await announce({state:assets.length&&done===assets.length?'ready':'error',done,total:assets.length});}
+self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.allSettled(CORE.map(p=>cache.add(p)));await prepare();await self.skipWaiting();})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if((key.startsWith('ha-marketing-')&&key!==CACHE)||(key.startsWith('ha-entertainment-offline-')&&key!==OFFLINE))await caches.delete(key);await self.clients.claim();})()));
+self.addEventListener('message',event=>{if(event.data?.type==='HA_PREPARE_ENTERTAINMENT')event.waitUntil(prepare());if(event.data?.type==='HA_ENTERTAINMENT_STATUS')event.waitUntil(status());});
+function cacheable(url,request){return request.method==='GET'&&request.cache!=='no-store'&&url.origin===self.location.origin&&!request.headers.has('Authorization')&&!['code','access_token','refresh_token'].some(k=>url.searchParams.has(k))&&(request.mode==='navigate'||/\.(?:html|css|js|png|jpg|jpeg|webp|svg|woff2?|ico)$/i.test(url.pathname));}
+let writes=0;
+async function refresh(request,cache){const r=await fetch(request);if(r.ok&&r.type!=='opaque'&&!r.redirected&&Number(r.headers.get('content-length')||0)<5*1024*1024){try{await cache.put(request,r.clone());if(++writes%20===0){const keys=await cache.keys();for(const k of keys.slice(0,Math.max(0,keys.length-240)))await cache.delete(k);}}catch(_){}}return r;}
+self.addEventListener('fetch',event=>{const request=event.request,url=new URL(request.url);if(!cacheable(url,request))return;event.respondWith((async()=>{const offline=await caches.open(OFFLINE);const bundled=await offline.match(request,{ignoreSearch:true});if(bundled&&request.cache!=='reload')return bundled;const cache=await caches.open(CACHE),cached=await cache.match(request);if(cached&&request.cache!=='reload'){event.waitUntil(refresh(request,cache).catch(()=>{}));return cached;}try{return await refresh(request,cache)}catch(_){if(bundled)return bundled;if(cached)return cached;if(request.mode==='navigate'){const fallback=await cache.match(new URL('./ha-entertainment-offline.html',self.registration.scope).href);if(fallback)return fallback;}return Response.error();}})());});
