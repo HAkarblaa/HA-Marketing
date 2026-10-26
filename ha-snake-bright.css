@@ -1,0 +1,25 @@
+/* Snake-only layout; shared game pages are unchanged. */
+html body{background:linear-gradient(145deg,#e3fcf3,#e8f4ff 55%,#f1ebff)!important;color:#173c53!important;padding:12px 10px max(24px,env(safe-area-inset-bottom))!important}
+html body .wrap{width:min(520px,100%)}
+html body .phone{background:linear-gradient(145deg,#fff,#eaf8ff)!important;border:1px solid #cbe5ee!important;border-radius:27px;padding:12px!important;box-shadow:0 16px 42px #176e9b1b!important}
+html body .top .title b{color:#164a66!important}html body .title small{color:#548095!important;font-size:11px}
+html body .back{background:#fff!important;color:#167cbd!important;border:1px solid #cce6ee!important}
+html body .brand{color:#23817c!important;letter-spacing:0;font-size:13px;margin:2px 0 10px}
+html body .screen{border:0!important;border-radius:20px;padding:10px!important;overflow:hidden}
+html body .hud{font-family:Tahoma,Arial,sans-serif!important;font-size:11px;gap:6px;margin-bottom:9px}
+html body .hud>div{background:#ffffff21;border:1px solid #ffffff25;border-radius:11px;padding:9px 3px;text-align:center!important}
+html body .hud span{display:block;font:800 21px Arial;margin-top:3px}
+html body canvas#game{width:100%!important;height:auto!important;aspect-ratio:1;border:1px solid #ffffff30!important;border-radius:13px;box-shadow:0 5px 16px #002d4b22;touch-action:none!important}
+html body .msg{font:12px/1.7 Tahoma,Arial,sans-serif!important;min-height:40px;display:grid;place-items:center;margin-top:8px}
+html body .control-pad{margin:12px auto 0;padding:8px;border:1px solid #cfe7ed!important;border-radius:22px;background:#e7f5fb!important;box-shadow:none!important}
+html body .controls{grid-template-columns:58px 58px 58px;grid-template-rows:43px 43px 43px;gap:6px}
+html body .key{width:58px;height:43px;border:0!important;border-radius:13px;background:linear-gradient(160deg,#31b9f6,#2079e2)!important;color:#fff!important;box-shadow:0 3px 0 #1665b7,0 5px 10px #2187c422!important}
+html body .key.center{background:linear-gradient(145deg,#21cf9b,#079c94)!important;box-shadow:0 3px 0 #087c77!important}
+html body .bottom{margin-top:12px}html body .action{border:0!important;color:#fff!important;background:linear-gradient(140deg,#429df6,#266adf)!important;border-radius:14px;font:700 13px Tahoma;padding:13px 8px}
+html body .action.primary{background:linear-gradient(140deg,#20bf91,#079d98)!important}
+html body .note{color:#53778c!important;font:11px/1.9 Tahoma;max-width:450px;margin:12px auto}
+html body .ha-game-polish{background:#ffffffd9!important;border:1px solid #d4e9f2!important;border-radius:20px!important;box-shadow:0 6px 20px #296b8d0c!important}
+html body .ha-game-polish button,html body .ha-game-polish a{border-radius:10px!important}
+@media(max-width:360px){html body{padding:8px 6px!important}html body .phone{padding:8px!important}html body .hud{font-size:10px}html body .controls{grid-template-columns:52px 52px 52px;grid-template-rows:40px 40px 40px}html body .key{width:52px;height:40px}}
+
+.snake-settings{background:#fff;border:1px solid #cfe7ed;border-radius:16px;margin-bottom:10px;overflow:hidden}.snake-settings summary{cursor:pointer;padding:12px 15px;color:#176c8d;font:bold 13px Tahoma}.snake-settings .ha-game-polish{margin:0!important;border:0!important;box-shadow:none!important}.key:focus-visible,.action:focus-visible,.snake-settings summary:focus-visible{outline:3px solid #ffb623;outline-offset:3px}
