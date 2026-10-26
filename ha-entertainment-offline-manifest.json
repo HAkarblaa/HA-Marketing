@@ -1,5 +1,5 @@
 {
-  "version": "20261026-uniform-contact1",
+  "version": "20261026-six-games-ranking1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -146,6 +146,7 @@
     "ha-section-tools.css",
     "ha-section-tools.js",
     "ha-sections-premium.css",
+    "ha-selected-ranking.js",
     "ha-snake-bright.css",
     "ha-snake-smooth.js",
     "ha-study-access.js",
@@ -173,6 +174,8 @@
     "ha-vendor-pdf-worker.js",
     "ha-vendor-pdf.js",
     "ha-vendor-supabase.js",
+    "ha-vendor-three.core.min.js",
+    "ha-vendor-three.module.min.js",
     "ha-vendor-xlsx.js",
     "home-1.svg",
     "home-2.svg",

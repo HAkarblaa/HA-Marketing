@@ -45,7 +45,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none
 @media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.stagebox{order:1}}
 @media (max-width:480px){.page{padding:8px}.brand h1{font-size:20px}.brand p{display:none}.logo{width:42px;height:42px;font-size:23px}.topbar{margin-bottom:8px}.stagebox{padding:8px;border-radius:20px}.card{padding:12px;border-radius:18px}.levels{grid-template-columns:repeat(5,1fr);max-height:215px}.mobile-controls{grid-template-columns:auto auto 1fr;gap:7px;margin-top:8px;direction:ltr}.pad{gap:7px}.ctrl{min-height:62px;min-width:72px;font-size:31px}.jump{min-width:86px;padding:0 14px;font-size:17px}.actions{direction:rtl;gap:6px}.actions button{padding:9px 8px;font-size:12px}.badge{padding:6px 9px;font-size:11px}}
 </style>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script></head>
 <body>
 <div class="page">
   <div class="topbar">
@@ -225,7 +225,7 @@ const player = {x:0,y:0,w:28,h:40,vx:0,vy:0,onGround:false,face:1,spawnX:0,spawn
 let tiles=[]; let spikes=[]; let traps=[]; let movers=[]; let coins=[]; let exitDoor=null;
 
 let rewardCheckpoint=null,rewardProtectionUntil=0;
-function parseLevel(index){
+let keepRankAttempt=false;function parseLevel(index){if(!keepRankAttempt)window.HASelectedRanking?.start('level-devil');
   rewardCheckpoint=null;
   if(index < 0 || index >= levels.length) index = 0;
   if(index >= unlocked) index = Math.max(0, unlocked-1);
@@ -261,10 +261,10 @@ function solidAt(rect){
 
 function killPlayer(){
   if(Date.now()<rewardProtectionUntil||HARewardedGames.active)return;
-  deaths++;beep(120,0.15,'sawtooth');saveProgress();gameRunning=false;cancelAnimationFrame(animation);
+  window.HASelectedRanking?.submit('level-devil',0,false);deaths++;beep(120,0.15,'sawtooth');saveProgress();gameRunning=false;cancelAnimationFrame(animation);
   const checkpoint=rewardCheckpoint?{...rewardCheckpoint}:null,index=currentLevelIndex;
   HARewardedGames.offer({result:{label:'وصلت للمرحلة',score:currentLevelIndex+1,best:bestLevel},message:'شاهد إعلاناً للرجوع إلى آخر نقطة آمنة بنفس المستوى.',restartLabel:'أعد المستوى من البداية',
-    continue:()=>{parseLevel(index);if(checkpoint&&!solidAt({x:checkpoint.x,y:checkpoint.y,w:player.w,h:player.h})){player.x=checkpoint.x;player.y=checkpoint.y;}rewardProtectionUntil=Date.now()+2000;keys.left=keys.right=keys.jump=false;setTimeout(startGame,0);},
+    continue:()=>{keepRankAttempt=true;try{parseLevel(index)}finally{keepRankAttempt=false;}if(checkpoint&&!solidAt({x:checkpoint.x,y:checkpoint.y,w:player.w,h:player.h})){player.x=checkpoint.x;player.y=checkpoint.y;}rewardProtectionUntil=Date.now()+2000;keys.left=keys.right=keys.jump=false;setTimeout(startGame,0);},
     restart:()=>{parseLevel(index);showTempMessage('أعد المحاولة');setTimeout(startGame,0);}
   });
 }
@@ -272,7 +272,7 @@ function killPlayer(){
 function completeLevel(){
   // امنع تسجيل الوصول للباب أكثر من مرة أثناء نفس الانتقال
   if(levelTransitioning) return;
-  levelTransitioning = true;
+  levelTransitioning = true;window.HASelectedRanking?.submit('level-devil',100,true);
 
   const completedIndex = currentLevelIndex;
   const nextIndex = completedIndex + 1;
