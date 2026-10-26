@@ -1,19 +1,19 @@
 (function(){
-'use strict';const $=id=>document.getElementById(id),canvas=$('towerCanvas'),ctx=canvas.getContext('2d'),dialog=$('towerDialog'),W=136,H=70,BASE=(420-W)/2;
+'use strict';const $=id=>document.getElementById(id),canvas=$('towerCanvas'),ctx=canvas.getContext('2d'),dialog=$('towerDialog'),W=92,H=70,BASE=(420-W)/2;
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch(_){return fallback}},write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch(_){}};
 const old=read('ha_tower_progress_v1',{});let progress={best:Math.max(0,Math.floor(Number(old.best)||0)),wallet:Math.max(0,Math.floor(Number(old.wallet)||0)),theme:['day','sunset','night'].includes(old.theme)?old.theme:'day',sound:old.sound!==false};
 let stack=[],lives=3,mode='menu',paused=false,busy=false,camera=0,elapsed=0,last=0,raf=0,fall=null,flash='',flashTime=0,confetti=[],checkpoint=null,lean=0,leanVelocity=0,leanTarget=0;
 let audio;
 function tone(hz=660){if(!progress.sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;audio??=new A();if(audio.state==='suspended')audio.resume().catch(()=>{});const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;o.frequency.value=hz;g.gain.setValueAtTime(.045,t);g.gain.exponentialRampToValueAtTime(.0001,t+.15);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.16);o.onended=()=>{o.disconnect();g.disconnect()};}catch(_){}}
 function topY(){return 650-stack.length*H}
-function aimX(){return BASE+Math.sin(elapsed*(.00105+Math.min(stack.length,80)*.000018)+stack.length*.55)*108}
+function aimX(){return BASE+Math.sin(elapsed*(.00138+Math.min(stack.length,80)*.000023)+stack.length*.55)*108}
 function towerPoint(x,y){const dx=x-210,dy=y-650;return {x:210+dx*Math.cos(lean)-dy*Math.sin(lean),y:650+dx*Math.sin(lean)+dy*Math.cos(lean)}}
-function balance(){if(!stack.length){leanTarget=0;return;}const average=stack.reduce((n,f)=>n+f.x-BASE,0)/stack.length,offset=stack.at(-1).x-BASE;leanTarget=Math.max(-.095,Math.min(.095,(average*.65+offset*.35)*.002))/Math.max(1,stack.length/6);}
+function balance(){if(!stack.length){leanTarget=0;return;}const average=stack.reduce((n,f)=>n+f.x-BASE,0)/stack.length,offset=stack.at(-1).x-BASE;leanTarget=Math.max(-.095,Math.min(.095,(average*.65+offset*.35)*.0032))/Math.max(1,stack.length/6);}
 
 function persist(){write('ha_tower_progress_v1',progress)}
-function saveRun(){if(!['ready','dropping','settling','missing'].includes(mode)||lives<1)return;checkpoint={stack:stack.map(f=>({x:f.x})),lives};write('ha_tower_run_v2',checkpoint);}
-function loadRun(){let r=read('ha_tower_run_v2',null);if(!r){const legacy=read('ha_tower_run_v1',null);if(legacy&&Array.isArray(legacy.stack))r={stack:legacy.stack.map(f=>({x:f.x+12})),lives:legacy.lives};}
- if(!r||!Array.isArray(r.stack)||r.stack.length>20000||!r.stack.every(f=>Number.isFinite(f.x)&&f.x>=-420&&f.x<=840)||!Number.isInteger(r.lives)||r.lives<1||r.lives>3)return null;return r;}
+function saveRun(){if(!['ready','dropping','settling','missing'].includes(mode)||lives<1)return;checkpoint={stack:stack.map(f=>({x:f.x})),width:W,lives};write('ha_tower_run_v2',checkpoint);}
+function loadRun(){let r=read('ha_tower_run_v2',null);if(!r){const legacy=read('ha_tower_run_v1',null);if(legacy&&Array.isArray(legacy.stack))r={stack:legacy.stack,width:160,lives:legacy.lives};}
+ if(!r||!Array.isArray(r.stack)||r.stack.length>20000||!r.stack.every(f=>Number.isFinite(f.x)&&f.x>=-420&&f.x<=840)||!Number.isInteger(r.lives)||r.lives<1||r.lives>3)return null;const savedWidth=Number(r.width)||136;if(![92,136,160].includes(savedWidth))return null;const oldBase=(420-savedWidth)/2;return {...r,width:W,stack:r.stack.map(f=>({x:BASE+(f.x-oldBase)*W/savedWidth}))};}
 function hud(){$('towerFloors').textContent=stack.length;$('towerBest').textContent=progress.best;$('towerLives').textContent='♥ '.repeat(lives)+'♡ '.repeat(3-lives);$('towerDrop').disabled=mode!=='ready'||paused||busy;$('towerPause').textContent=paused?'▶':'Ⅱ';$('towerSound').textContent=progress.sound?'🔊':'🔇';}
 function menu(){saveRun();mode='menu';paused=false;checkpoint=loadRun();$('towerDialogTitle').textContent='🏗 برج الأحلام';$('towerDialogText').textContent='ابنِ أعلى برج! الطابق البعيد عن السنتر يميل بالبرج يمين أو يسار. قرّب الطابق التالي من المنتصف حتى تستعيد التوازن.';$('towerThemeField').hidden=false;for(const option of $('towerTheme').options)option.disabled=option.value==='sunset'&&progress.wallet<20||option.value==='night'&&progress.wallet<50;$('towerTheme').value=progress.theme;$('towerPrimary').textContent='ابدأ برج جديد';$('towerSecondary').textContent='متابعة البرج المحفوظ';$('towerSecondary').hidden=!checkpoint;$('towerDialogStatus').textContent='';if(!dialog.open)dialog.showModal();hud();}
 function start(){stack=[];lives=3;fall=null;camera=0;elapsed=0;lean=leanVelocity=leanTarget=0;confetti=[];mode='ready';paused=false;last=0;if(dialog.open)dialog.close();$('towerStatus').textContent='اضغط بالوقت المناسب حتى تنزّل الطابق';saveRun();hud();}
@@ -22,13 +22,13 @@ function drop(){if(mode!=='ready'||paused||busy||dialog.open)return;tone(420);fa
 function placement(){const target=stack.at(-1)?.x??BASE;
  // Convert the descending centre to the leaning tower's local support plane.
  const landingX=(fall.x+W/2-210+(topY()-650)*Math.sin(lean))/Math.cos(lean)+210-W/2;
- const offset=landingX-target,overlap=W-Math.abs(offset),perfect=Math.abs(offset)<=8;
+ const offset=landingX-target,overlap=W-Math.abs(offset),perfect=Math.abs(offset)<=6;
  const centre=(stack.reduce((sum,f)=>sum+f.x+W/2,0)+landingX+W/2)/(stack.length+1);
  const valid=overlap>=W*.58&&centre>=210-W*.48&&centre<=210+W*.48;
  if(!valid){lives--;if(lives<=0){write('ha_tower_run_v2',null);write('ha_tower_run_v1',null);checkpoint=null;}fall.vy=.12;fall.rotation=offset<0?-.08:.08;fall.age=0;mode='missing';if(lives>0)saveRun();flash='حاول تضبطها أكثر';flashTime=1000;tone(170);$('towerStatus').textContent='الطابق ما توازن — باقي '+lives+' محاولة';hud();return;}
  stack.push({x:perfect?target:landingX});progress.best=Math.max(progress.best,stack.length);progress.wallet+=perfect?3:1;persist();balance();
  // Off-centre placement gives the spring a directional impulse.
- leanVelocity+=Math.max(-.00012,Math.min(.00012,offset*.000003))/Math.max(1,stack.length/6);
+ leanVelocity+=Math.max(-.00018,Math.min(.00018,offset*.000005))/Math.max(1,stack.length/6);
  flash=perfect?'بالسنتر!':'طابق جديد!';flashTime=900;
  const position=towerPoint(stack.at(-1).x+W/2,topY());for(let i=0;i<(perfect?16:6);i++)confetti.push({x:position.x,y:position.y+camera,vx:(Math.random()-.5)*.15,vy:-Math.random()*.18,life:900,color:['#ffe290','#ff839c','#6fe8ce'][i%3]});
  fall=null;mode='settling';elapsed=0;tone(perfect?880:660);$('towerStatus').textContent=perfect?'بناء متقن — كمّل برجك!':offset>0?'ميلان لليمين — حاول توازن الطابق الجاي':'ميلان لليسار — حاول توازن الطابق الجاي';saveRun();hud();}
@@ -37,7 +37,7 @@ async function boundary(){try{await window.HAContentAds?.breakAfterWork();}catch
 async function primary(){if(busy)return;if(mode==='menu'){progress.theme=$('towerTheme').value;persist();start();return;}busy=true;$('towerPrimary').disabled=$('towerSecondary').disabled=true;$('towerDialogStatus').textContent='جارٍ المتابعة…';try{await boundary();start();}finally{busy=false;$('towerPrimary').disabled=$('towerSecondary').disabled=false;$('towerDialogStatus').textContent='';hud();}}
 function pause(){if(dialog.open||!['ready','dropping','settling','missing'].includes(mode))return;paused=!paused;last=0;if(paused){saveRun();$('towerStatus').textContent='متوقفة — اضغط متابعة';}else $('towerStatus').textContent='كمل برجك';hud();}
 function update(dt){if(paused||dialog.open)return;elapsed+=dt;// A damped spring, integrated in small slices, keeps rocking independent of FPS.
- let remaining=dt;while(remaining>0){const d=Math.min(8,remaining);leanVelocity+=((leanTarget-lean)*.000008-leanVelocity*.003)*d;lean+=leanVelocity*d;lean=Math.max(-.14/Math.max(1,stack.length/6),Math.min(.14/Math.max(1,stack.length/6),lean));remaining-=d;}
+ let remaining=dt;while(remaining>0){const d=Math.min(8,remaining);leanVelocity+=((leanTarget-lean)*.000016-leanVelocity*.0042)*d;lean+=leanVelocity*d;lean=Math.max(-.14/Math.max(1,stack.length/6),Math.min(.14/Math.max(1,stack.length/6),lean));remaining-=d;}
  const top=towerPoint((stack.at(-1)?.x??BASE)+W/2,topY());camera+=(Math.max(0,450-top.y)-camera)*Math.min(1,dt*.005);if(flashTime>0)flashTime-=dt;for(const p of confetti){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=dt*.0003;p.life-=dt;}confetti=confetti.filter(p=>p.life>0);
  if(mode==='dropping'){fall.vy+=dt*.0022;fall.y+=fall.vy*dt;const localX=(fall.x+W/2-210+(topY()-650)*Math.sin(lean))/Math.cos(lean)+210;const support=towerPoint(localX,topY()).y;if(fall.y>=support-H){fall.y=support-H;placement();}}
  else if(mode==='missing'){fall.age+=dt;fall.vy+=dt*.0025;fall.y+=fall.vy*dt;fall.x+=fall.rotation*dt*.4;fall.rotation+=Math.sign(fall.rotation)*dt*.0003;if(fall.age>850){fall=null;if(lives<=0)end();else{mode='ready';elapsed=0;saveRun();hud();}}}
