@@ -1,5 +1,5 @@
 {
-  "version": "20261026-offline2",
+  "version": "20261026-ranking-ui1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -115,6 +115,8 @@
     "ha-game-polish.css",
     "ha-game-polish.js",
     "ha-games-common.js",
+    "ha-games-ranking.css",
+    "ha-games-ranking.js",
     "ha-games-style.css",
     "ha-generator-cover.svg",
     "ha-generator-entry.js",
