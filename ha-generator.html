@@ -57,8 +57,8 @@
 .superadmin-note{background:#faf5ff;border:1px solid #e9d5ff;border-right:5px solid #7c3aed;border-radius:14px;padding:12px 14px;margin-bottom:14px;color:#5b21b6;font-size:13px;line-height:1.8}
 
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
+<script src="ha-vendor-supabase.js"></script>
+<script defer src="ha-entertainment-offline.js?v=20261026-offline2"></script></head>
 <body>
 <a href="index.html" style="display:block;text-align:center;padding:10px;background:#e8f3ef;color:#155f66;font:bold 14px Tahoma">← الرئيسية • HA Marketing</a>
 
@@ -350,7 +350,7 @@ const OFFLINE_PROFILE_PREFIX='generator_offline_profile_v1:';
 const OFFLINE_DIRTY_PREFIX='generator_offline_dirty_v1:';
 const OFFLINE_DEVICE_PREFIX='generator_offline_device_ok_v1:';
 function offlineDbKey(wid){return OFFLINE_DB_PREFIX+String(wid||'none')}
-function cacheLocalDB(wid,data=db){if(!wid)return;try{localStorage.setItem(offlineDbKey(wid),JSON.stringify({savedAt:Date.now(),data}))}catch(e){console.warn('offline cache',e)}}
+function cacheLocalDB(wid,data=db){if(!wid)return;try{localStorage.setItem(offlineDbKey(wid),JSON.stringify({savedAt:Date.now(),data}))}catch(e){const message='تعذّر حفظ بيانات المولدة على الجهاز. صدّر نسخة احتياطية قبل إغلاق الصفحة.';showCloudState(message,'bad');alert(message);throw e;}}
 function readLocalDB(wid){if(!wid)return null;try{const x=JSON.parse(localStorage.getItem(offlineDbKey(wid))||'null');return x&&x.data?x.data:null}catch(e){return null}}
 function markOfflineDirty(wid,yes=true){if(!wid)return;try{if(yes)localStorage.setItem(OFFLINE_DIRTY_PREFIX+wid,String(Date.now()));else localStorage.removeItem(OFFLINE_DIRTY_PREFIX+wid)}catch(e){}}
 function isOfflineDirty(wid){try{return !!localStorage.getItem(OFFLINE_DIRTY_PREFIX+wid)}catch(e){return false}}
@@ -502,8 +502,7 @@ async function loginUser(e){
   }catch(err){showAuthError(err.message||'تعذر تسجيل الدخول حالياً.')}finally{btn.disabled=false;btn.textContent='دخول'}
 }
 async function verifyCurrentDevice(){
-  const {data:{session}}=await sb.auth.getSession();if(!session)throw new Error('انتهت الجلسة. سجل الدخول من جديد.');
-  const uid=session.user?.id;
+  const session=navigator.onLine?(await sb.auth.getSession()).data?.session:null;const uid=session?.user?.id||(!navigator.onLine?currentProfile?.user_id:null);if(!uid)throw Error('أول دخول يحتاج إنترنت.');
   if(!navigator.onLine){
     if(isDeviceApprovedLocal(uid))return {allowed:true,offline:true};
     throw new Error('أول دخول من هذا الجهاز يحتاج إنترنت حتى يتم التحقق منه.');
@@ -514,8 +513,7 @@ async function verifyCurrentDevice(){
 }
 function registerOwner(e){e.preventDefault();showAuthError('إنشاء الحسابات متاح للأدمن الرئيسي فقط من داخل لوحة الإدارة.')}
 async function loadCurrentProfile(){
-  const {data:{session}}=await sb.auth.getSession();
-  const uid=session?.user?.id;if(!uid)return null;
+  let uid;if(!navigator.onLine){try{uid=JSON.parse(localStorage.getItem(GENERATOR_IDENTITY)||'null')?.uid}catch(_){}}else{const {data:{session}}=await sb.auth.getSession();uid=session?.user?.id;}if(!uid)return null;
   let p=null;
   if(navigator.onLine){
     try{
@@ -543,15 +541,15 @@ async function enterFromSession(){
   document.getElementById('authScreen').classList.remove('show');document.querySelector('.app').classList.remove('auth-locked');
   const chip=document.getElementById('currentUserChip'),role=a.role==='superadmin'?'أدمن رئيسي':'صاحب مولدة';
   if(chip)chip.innerHTML='<span class="avatar">'+esc((a.name||a.username).slice(0,1))+'</span><span class="who"><b>'+esc(a.name||a.username)+'</b><small>'+role+' • @'+esc(a.username)+'</small></span>';
-  await bootApp();
+  localStorage.setItem(GENERATOR_IDENTITY,JSON.stringify({uid:currentProfile.user_id}));await bootApp();
 }
-async function logoutUser(){if(!confirm('تسجيل الخروج من الحساب؟'))return;await sb.auth.signOut();location.reload()}
+async function logoutUser(){if(!confirm('تسجيل الخروج من الحساب؟'))return;localStorage.removeItem(GENERATOR_IDENTITY);await sb.auth.signOut({scope:'local'});location.reload()}
 
 async function loadRemoteDB(){
   if(!currentWorkspaceId){db=blankDB();return}
   const cached=readLocalDB(currentWorkspaceId);
   if(!navigator.onLine){
-    if(cached){db=cached;showCloudState('وضع أوفلاين — آخر بيانات محفوظة');return}
+    if(cached){db=cached;if(!isOfflineDirty(currentWorkspaceId)&&!localStorage.getItem(GENERATOR_BASE+currentWorkspaceId))rememberGeneratorBase(db);showCloudState('وضع أوفلاين — آخر بيانات محفوظة');return}
     throw new Error('لا توجد نسخة أوفلاين محفوظة. اتصل بالإنترنت مرة واحدة لتحميل بيانات المولدة.');
   }
   showCloudState('جاري تحميل البيانات...');
@@ -574,30 +572,43 @@ async function loadRemoteDB(){
       expenses:(er.data||[]).map(x=>({id:x.id,type:x.category||'أخرى',title:x.title||x.description||'',qty:Number(x.qty||1),unitPrice:Number(x.unit_price||0),amount:Number(x.amount||0),date:x.expense_date,notes:x.notes||x.description||''})),
       fuel:(fr.data||[]).map(x=>({id:x.id,liters:Number(x.liters||0),price:Number(x.price_per_liter||0),total:Number(x.total_cost||0),date:x.fuel_date,notes:x.notes||x.supplier||''})),
       maintenance:(mr.data||[]).map(x=>({id:x.id,title:x.maintenance_type||x.description||'',cost:Number(x.cost||0),tech:x.technician||'',date:x.maintenance_date,notes:x.description||''}))};
-    cacheLocalDB(currentWorkspaceId,db);markOfflineDirty(currentWorkspaceId,false);showCloudState('تم تحميل البيانات')
+    cacheLocalDB(currentWorkspaceId,db);rememberGeneratorBase(db);markOfflineDirty(currentWorkspaceId,false);showCloudState('تم تحميل البيانات')
   }catch(e){
-    if(cached){db=cached;showCloudState('تعذر الاتصال — تم فتح النسخة المحفوظة','bad');return}
+    if(cached){db=cached;showCloudState(e.message||'تعذر الاتصال — تم فتح النسخة المحفوظة','bad');return}
     throw e
   }
 }
 
+
+const GENERATOR_BASE='generator_sync_base_v2:';
+const GENERATOR_IDENTITY='generator_offline_identity_v2';
+const generatorTables={subscribers:'generator_subscribers',collections:'generator_payments',expenses:'generator_expenses',fuel:'generator_fuel',maintenance:'generator_maintenance'};
+function generatorWire(snap){return {settings:{generator_name:snap.settings.name||'إدارة المولدة',owner_name:snap.settings.owner||'',phone:snap.settings.phone||'',address:snap.settings.area||'',amp_price:Number(snap.settings.ampPrice||0),fuel_liter_price:Number(snap.settings.fuelPrice||0),oil_price:Number(snap.settings.oilPrice||0),worker_cost:Number(snap.settings.workerCost||0),operating_cost:Number(snap.settings.operatingCost||0)},tables:{subscribers:snap.subscribers.map(x=>({id:x.id,workspace_id:currentWorkspaceId,full_name:x.name,amps:Number(x.amps||0),jawza_number:x.fuseNo||null,phone:x.phone||null,area:x.area||null,address:x.address||null,notes:encodeSubscriberNotes(x.notes||'',x.ampType)})),collections:snap.collections.map(x=>({id:x.id,workspace_id:currentWorkspaceId,subscriber_id:x.subId,bill_id:null,bill_month:(x.month||monthNow())+'-01',amount:Number(x.amount||0),payment_date:(x.date||today())+'T12:00:00Z',method:x.method||'نقدي',notes:x.notes||null})),expenses:snap.expenses.map(x=>({id:x.id,workspace_id:currentWorkspaceId,expense_date:x.date||today(),category:x.type||'أخرى',title:x.title||'',qty:Number(x.qty||1),unit_price:Number(x.unitPrice||0),amount:Number(x.amount||0),description:x.notes||null,notes:x.notes||null})),fuel:snap.fuel.map(x=>({id:x.id,workspace_id:currentWorkspaceId,fuel_date:x.date||today(),liters:Number(x.liters||0),price_per_liter:Number(x.price||0),supplier:null,notes:x.notes||null})),maintenance:snap.maintenance.map(x=>({id:x.id,workspace_id:currentWorkspaceId,maintenance_date:x.date||today(),maintenance_type:x.title||'',description:x.notes||null,cost:Number(x.cost||0),technician:x.tech||null}))}};}
+function rememberGeneratorBase(data){if(currentWorkspaceId)localStorage.setItem(GENERATOR_BASE+currentWorkspaceId,JSON.stringify(generatorWire(data)));}
+function generatorEqual(a,b){if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object')return false;const keys=Object.keys(a).sort(),other=Object.keys(b).sort();return keys.length===other.length&&keys.every((k,i)=>k===other[i]&&generatorEqual(a[k],b[k]));}
+async function generatorCloud(){const tables=Object.values(generatorTables);const result=await Promise.all([sb.from('generator_workspaces').select('*').eq('id',currentWorkspaceId).single(),...tables.map(t=>sb.from(t).select('*').eq('workspace_id',currentWorkspaceId))]);for(const r of result)if(r.error)throw r.error;const [wr,sr,pr,er,fr,mr]=result;const w=wr.data||{};let data;data={settings:{name:w.generator_name||'إدارة المولدة',owner:w.owner_name||'',phone:w.phone||'',area:w.address||'',ampPrice:Number(w.amp_price||0),fuelPrice:Number(w.fuel_liter_price||0),oilPrice:Number(w.oil_price||0),workerCost:Number(w.worker_cost||0),operatingCost:Number(w.operating_cost||0),currency:'د.ع'},
+      subscribers:(sr.data||[]).map(x=>{const meta=decodeSubscriberNotes(x.notes||'');return {id:x.id,name:x.full_name||'',phone:x.phone||'',area:x.area||'',address:x.address||'',amps:Number(x.amps||0),ampType:meta.ampType,fuseNo:x.jawza_number||'',notes:meta.notes,createdAt:new Date(x.created_at||Date.now()).getTime()}}),
+      collections:(pr.data||[]).map(x=>({id:x.id,subId:x.subscriber_id,month:(x.bill_month||String(x.payment_date||'').slice(0,7)).slice(0,7),amount:Number(x.amount||0),date:String(x.payment_date||'').slice(0,10),method:x.method||'نقدي',notes:x.notes||'',createdAt:new Date(x.created_at||x.payment_date||Date.now()).getTime()})),
+      expenses:(er.data||[]).map(x=>({id:x.id,type:x.category||'أخرى',title:x.title||x.description||'',qty:Number(x.qty||1),unitPrice:Number(x.unit_price||0),amount:Number(x.amount||0),date:x.expense_date,notes:x.notes||x.description||''})),
+      fuel:(fr.data||[]).map(x=>({id:x.id,liters:Number(x.liters||0),price:Number(x.price_per_liter||0),total:Number(x.total_cost||0),date:x.fuel_date,notes:x.notes||x.supplier||''})),
+      maintenance:(mr.data||[]).map(x=>({id:x.id,title:x.maintenance_type||x.description||'',cost:Number(x.cost||0),tech:x.technician||'',date:x.maintenance_date,notes:x.description||''}))};;return {data,rawSettings:w,raw:Object.fromEntries(tables.map((t,i)=>[t,result[i+1].data||[]]))};}
+function generatorCAS(q,row,fields){for(const k of fields){if(k==='id'||k==='workspace_id')continue;const value=row[k];if(value===null||value===undefined)q=q.is(k,null);else q=q.eq(k,value);}if(row.updated_at)q=q.eq('updated_at',row.updated_at);return q;}
+async function generatorChecked(q){const r=await q.select('id');if(r.error)throw r.error;if(!r.data?.length)throw Error('تعارض مزامنة: السجل تغيّر من جهاز آخر. بقيت تعديلاتك محفوظة محلياً.');}
 async function syncRemoteDB(){
-  if(!currentWorkspaceId)return;cacheLocalDB(currentWorkspaceId,db);
-  if(!navigator.onLine){markOfflineDirty(currentWorkspaceId,true);showCloudState('محفوظ على الجهاز — بانتظار المزامنة');return}
-  if(syncBusy){syncQueued=true;return}syncBusy=true;syncQueued=false;
-  const snap=JSON.parse(JSON.stringify(db));
-  try{
-    let r=await sb.from('generator_workspaces').update({generator_name:snap.settings.name||'إدارة المولدة',owner_name:snap.settings.owner||'',phone:snap.settings.phone||'',address:snap.settings.area||'',amp_price:Number(snap.settings.ampPrice||0),fuel_liter_price:Number(snap.settings.fuelPrice||0),oil_price:Number(snap.settings.oilPrice||0),worker_cost:Number(snap.settings.workerCost||0),operating_cost:Number(snap.settings.operatingCost||0)}).eq('id',currentWorkspaceId);if(r.error)throw r.error;
-    for(const table of ['generator_payments','generator_bills','generator_expenses','generator_fuel','generator_maintenance']){let d=await sb.from(table).delete().eq('workspace_id',currentWorkspaceId);if(d.error)throw d.error}
-    let ds=await sb.from('generator_subscribers').delete().eq('workspace_id',currentWorkspaceId);if(ds.error)throw ds.error;
-    if(snap.subscribers.length){const rows=snap.subscribers.map(x=>({id:x.id,workspace_id:currentWorkspaceId,full_name:x.name,amps:Number(x.amps||0),jawza_number:x.fuseNo||null,phone:x.phone||null,area:x.area||null,address:x.address||null,notes:encodeSubscriberNotes(x.notes||'',x.ampType),active:true}));let q=await sb.from('generator_subscribers').insert(rows);if(q.error)throw q.error}
-    if(snap.collections.length){const rows=snap.collections.map(x=>({id:x.id,workspace_id:currentWorkspaceId,subscriber_id:x.subId,bill_id:null,bill_month:(x.month||monthNow())+'-01',amount:Number(x.amount||0),payment_date:(x.date||today())+'T12:00:00Z',method:x.method||'نقدي',notes:x.notes||null}));let q=await sb.from('generator_payments').insert(rows);if(q.error)throw q.error}
-    if(snap.expenses.length){const rows=snap.expenses.map(x=>({id:x.id,workspace_id:currentWorkspaceId,expense_date:x.date||today(),category:x.type||'أخرى',title:x.title||'',qty:Number(x.qty||1),unit_price:Number(x.unitPrice||0),amount:Number(x.amount||0),description:x.notes||null,notes:x.notes||null}));let q=await sb.from('generator_expenses').insert(rows);if(q.error)throw q.error}
-    if(snap.fuel.length){const rows=snap.fuel.map(x=>({id:x.id,workspace_id:currentWorkspaceId,fuel_date:x.date||today(),liters:Number(x.liters||0),price_per_liter:Number(x.price||0),supplier:null,notes:x.notes||null}));let q=await sb.from('generator_fuel').insert(rows);if(q.error)throw q.error}
-    if(snap.maintenance.length){const rows=snap.maintenance.map(x=>({id:x.id,workspace_id:currentWorkspaceId,maintenance_date:x.date||today(),maintenance_type:x.title||'',description:x.notes||null,cost:Number(x.cost||0),technician:x.tech||null}));let q=await sb.from('generator_maintenance').insert(rows);if(q.error)throw q.error}
-    cacheLocalDB(currentWorkspaceId,snap);markOfflineDirty(currentWorkspaceId,false);showCloudState('تمت المزامنة مع السحابة')
-  }catch(e){markOfflineDirty(currentWorkspaceId,true);throw e
-  }finally{syncBusy=false;if(syncQueued)setTimeout(()=>syncRemoteDB(),100)}
+ if(!currentWorkspaceId)return;cacheLocalDB(currentWorkspaceId,db);if(!navigator.onLine){markOfflineDirty(currentWorkspaceId,true);showCloudState('محفوظ على الجهاز — بانتظار المزامنة');return;}if(syncBusy){syncQueued=true;return;}syncBusy=true;syncQueued=false;
+ const wid=currentWorkspaceId,snap=JSON.parse(JSON.stringify(db)),desired=generatorWire(snap);let baseline;
+ try{const session=await sb.auth.getSession();if(session.error||session.data?.session?.user?.id!==currentProfile?.user_id)throw Error('سجّل دخول نفس حساب المولدة حتى نزامن التعديلات.');await verifyCurrentDevice();baseline=JSON.parse(localStorage.getItem(GENERATOR_BASE+wid)||'null');if(!baseline)throw Error('توجد تعديلات قديمة بدون نسخة مقارنة. صدّر نسخة احتياطية قبل تسويتها؛ لم تُحذف بيانات السحابة.');
+ const remote=await generatorCloud(),server=generatorWire(remote.data),ops=[];
+ const settingsChanged=Object.keys(desired.settings).filter(k=>!generatorEqual(desired.settings[k],baseline.settings[k]));for(const k of settingsChanged)if(!generatorEqual(server.settings[k],baseline.settings[k])&&!generatorEqual(server.settings[k],desired.settings[k]))throw Error('تعارض بإعدادات المولدة من جهاز آخر؛ تعديلاتك محفوظة محلياً.');
+ for(const [key,table]of Object.entries(generatorTables)){const before=new Map((baseline.tables[key]||[]).map(r=>[r.id,r])),after=new Map(desired.tables[key].map(r=>[r.id,r])),cloud=new Map(server.tables[key].map(r=>[r.id,r])),raw=new Map(remote.raw[table].map(r=>[r.id,r]));for(const id of new Set([...before.keys(),...after.keys()])){const previous=before.get(id),next=after.get(id),now=cloud.get(id);if(generatorEqual(previous,next))continue;if(!generatorEqual(now,previous)&&!generatorEqual(now,next))throw Error('تعارض بسجل '+table+'؛ بقيت تعديلاتك محفوظة بدون استبدال سجل جهاز آخر.');ops.push({key,table,id,next,now,raw:raw.get(id)});}}
+ // Deletions of children precede subscriber deletion; unrelated cloud rows are untouched.
+ ops.sort((a,b)=>(a.key==='subscribers'?1:0)-(b.key==='subscribers'?1:0));
+ if(settingsChanged.length){const patch=Object.fromEntries(settingsChanged.map(k=>[k,desired.settings[k]]));if(!settingsChanged.every(k=>generatorEqual(server.settings[k],desired.settings[k])))await generatorChecked(generatorCAS(sb.from('generator_workspaces').update(patch).eq('id',wid),remote.rawSettings,settingsChanged));Object.assign(baseline.settings,patch);localStorage.setItem(GENERATOR_BASE+wid,JSON.stringify(baseline));}
+ // New subscribers must be inserted before their new payments.
+ const inserts=ops.filter(o=>o.next&&!o.now&&o.key==='subscribers');for(const o of inserts){const r=await sb.from(o.table).insert({...o.next,active:true});if(r.error)throw r.error;o.applied=true;}
+ for(const o of ops){if(!o.applied&&!generatorEqual(o.now,o.next)){if(o.next&&o.now)await generatorChecked(generatorCAS(sb.from(o.table).update(o.next).eq('id',o.id).eq('workspace_id',wid),o.raw,Object.keys(o.next)));else if(o.next){const r=await sb.from(o.table).insert(o.next);if(r.error)throw r.error;}else if(o.now)await generatorChecked(generatorCAS(sb.from(o.table).delete().eq('id',o.id).eq('workspace_id',wid),o.raw,Object.keys(o.now)));}const m=new Map((baseline.tables[o.key]||[]).map(r=>[r.id,r]));if(o.next)m.set(o.id,o.next);else m.delete(o.id);baseline.tables[o.key]=[...m.values()];localStorage.setItem(GENERATOR_BASE+wid,JSON.stringify(baseline));}
+ const latest=await generatorCloud(),serverSnapshot=JSON.parse(JSON.stringify(latest.data)),local=db,merged=latest.data;for(const key of Object.keys(generatorTables)){const before=new Map(snap[key].map(r=>[r.id,r])),after=new Map(local[key].map(r=>[r.id,r])),rows=new Map(merged[key].map(r=>[r.id,r]));for(const id of new Set([...before.keys(),...after.keys()])){if(generatorEqual(before.get(id),after.get(id)))continue;if(after.has(id))rows.set(id,after.get(id));else rows.delete(id);}merged[key]=[...rows.values()];}for(const k of Object.keys(local.settings))if(!generatorEqual(local.settings[k],snap.settings[k]))merged.settings[k]=local.settings[k];rememberGeneratorBase(serverSnapshot);db=merged;cacheLocalDB(wid,db);const remains=!generatorEqual(generatorWire(db),JSON.parse(localStorage.getItem(GENERATOR_BASE+wid)));markOfflineDirty(wid,remains);syncQueued=remains;renderAll();showCloudState(remains?'محفوظ محلياً — جاري إكمال المزامنة':'تمت المزامنة بدون تكرار السجلات');
+ }catch(e){syncQueued=false;markOfflineDirty(wid,true);showCloudState(e.message||'تعذرت المزامنة — النسخة المحلية محفوظة','bad');throw e;}finally{syncBusy=false;if(syncQueued)setTimeout(()=>syncRemoteDB().catch(console.warn),500);}
 }
 
 async function callAdminFunction(payload){
@@ -709,6 +720,8 @@ function startDeviceWatch(){if(deviceWatchTimer)clearInterval(deviceWatchTimer);
 
 async function initAuth(){
   document.querySelector('.app').classList.add('auth-locked');switchAuthMode();
+  if(!navigator.onLine&&localStorage.getItem(GENERATOR_IDENTITY)){try{await enterFromSession();return}catch(e){showAuthError(e.message);document.getElementById('authScreen').classList.add('show');return}}
+  if(!navigator.onLine){showAuthError('أول دخول على هذا الجهاز يحتاج إنترنت حتى نحفظ بيانات حساب المولدة.');document.getElementById('authScreen').classList.add('show');return;}
   const {data:{session}}=await sb.auth.getSession();
   if(session){
     try{await enterFromSession();return}
@@ -717,14 +730,7 @@ async function initAuth(){
   document.getElementById('authScreen').classList.add('show');
   if(!navigator.onLine&&!session)showAuthError('تسجيل الدخول لأول مرة يحتاج إنترنت. بعد أول دخول يشتغل البرنامج أوفلاين.')
 }
-async function warmOfflineAssets(){
-  if(!navigator.onLine||!('caches' in window))return;
-  const cache=await caches.open('ha-generator-flat-assets-v1');
-  const urls=['./ha-generator.html','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'];
-  for(const url of urls){
-    try{const res=await fetch(url,{cache:'reload'});if(res&&res.ok||res.type==='opaque')await cache.put(url,res.clone())}catch(e){console.warn('cache asset',url,e)}
-  }
-}
+async function warmOfflineAssets(){const reg=await navigator.serviceWorker.ready;reg.active?.postMessage({type:'HA_PREPARE_ENTERTAINMENT'});}
 async function bootApp(){
   if(appBooted)return;appBooted=true;startDeviceWatch();initNav();colMonthFilter.value=monthNow();reportMonth.value=monthNow();renderAll();showView(isSuperAdmin()?'accounts':'dashboard');if(currentWorkspaceId)setTimeout(()=>showUnpaidAlert(false),450);
   window.addEventListener('offline',()=>showCloudState('أوفلاين — التعديلات تنحفظ على الجهاز','bad'));

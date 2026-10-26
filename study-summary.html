@@ -6,14 +6,14 @@
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261026-public1"></script>
+<script src="ha-account-gate.js?v=20261026-offline2"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>تلخيص المواد - HA Marketing</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="ha-vendor-supabase.js"></script>
+<script src="ha-vendor-pdf.js"></script>
+<script src="ha-vendor-mammoth.js"></script>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
@@ -37,7 +37,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
 <link rel="stylesheet" href="ha-premium-theme.css"><script src="ha-theme.js"></script>
 <link rel="stylesheet" href="ha-theme.css">
 <link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-role-bottom-nav.css?v=20260930-1"><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-unified-sections-final.css?v=20261001-1"><link rel="stylesheet" href="ha-card-customizer.css?v=20261001-compact3">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><style id="ha-study-output-style">.ha-study-output{margin-top:12px;padding:14px;border:1px solid #dcebe3;border-radius:14px;background:#f2faf6;color:#173f30}.ha-study-output strong{display:block;font-size:13px;overflow-wrap:anywhere}.ha-study-output-actions,.ha-study-output-formats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.ha-study-output button,.ha-study-output-dialog button{border:0;border-radius:12px;padding:11px 18px;background:#087a56;color:#fff;cursor:pointer;font:inherit}.ha-study-output button:disabled,.ha-study-output-dialog button:disabled{opacity:.6;cursor:wait}.ha-study-output-dialog{direction:rtl;width:min(720px,94vw);max-height:90vh;border:0;border-radius:18px;padding:20px;color:#173f30;background:#fff;font:15px/1.7 Arial,Tahoma;z-index:2147483601}.ha-study-output-dialog::backdrop{background:#123b3280}.ha-study-output-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.ha-study-output-head h3{margin:0;font-size:19px}.ha-study-output-preview{margin-top:16px}.ha-study-output-preview pre{white-space:pre-wrap;overflow-wrap:anywhere;font:16px/1.9 Arial,Tahoma}.ha-study-output-preview img{max-width:100%;max-height:60vh;object-fit:contain}.ha-study-output-preview iframe{width:100%;height:60vh;border:1px solid #dcebe3;border-radius:12px}#fileOutputActions{grid-column:1/-1;width:100%}.ha-study-output-actions button{flex:1;min-width:90px}
+<script src="ha-vendor-jszip.js"></script><script src="ha-vendor-jspdf.js"></script><script src="ha-vendor-html2canvas.js"></script><style id="ha-study-output-style">.ha-study-output{margin-top:12px;padding:14px;border:1px solid #dcebe3;border-radius:14px;background:#f2faf6;color:#173f30}.ha-study-output strong{display:block;font-size:13px;overflow-wrap:anywhere}.ha-study-output-actions,.ha-study-output-formats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.ha-study-output button,.ha-study-output-dialog button{border:0;border-radius:12px;padding:11px 18px;background:#087a56;color:#fff;cursor:pointer;font:inherit}.ha-study-output button:disabled,.ha-study-output-dialog button:disabled{opacity:.6;cursor:wait}.ha-study-output-dialog{direction:rtl;width:min(720px,94vw);max-height:90vh;border:0;border-radius:18px;padding:20px;color:#173f30;background:#fff;font:15px/1.7 Arial,Tahoma;z-index:2147483601}.ha-study-output-dialog::backdrop{background:#123b3280}.ha-study-output-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.ha-study-output-head h3{margin:0;font-size:19px}.ha-study-output-preview{margin-top:16px}.ha-study-output-preview pre{white-space:pre-wrap;overflow-wrap:anywhere;font:16px/1.9 Arial,Tahoma}.ha-study-output-preview img{max-width:100%;max-height:60vh;object-fit:contain}.ha-study-output-preview iframe{width:100%;height:60vh;border:1px solid #dcebe3;border-radius:12px}#fileOutputActions{grid-column:1/-1;width:100%}.ha-study-output-actions button{flex:1;min-width:90px}
 </style><style>[hidden]{display:none!important}#summaryPages input{width:100%;padding:11px;border:1px solid #ccd9e3;border-radius:10px;font:inherit}#annotatePDF{width:auto;min-height:20px;accent-color:#087b74}</style><script src="ha-study-access.js?v=20261026-1"></script></head>
 <body class="ha-ui-final ha-family-study"><div class="ha-family-strip"><a href="study.html">← الدراسة</a><div><b>تلخيص المواد</b><small>HA Marketing</small></div><a href="index.html">الرئيسية</a></div>
 <div class="topbar">
@@ -104,7 +104,7 @@ label{font-weight:700;font-size:14px}.field{display:flex;flex-direction:column;g
 const SUPABASE_URL='https://ubayrhtshgtgggxprrek.supabase.co';
 const SUPABASE_KEY='sb_publishable_p3108yoDkdJTLqVXhkvmBg_KVqe-1ll';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ha-marketing-auth'}});
-pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc='ha-vendor-pdf-worker.js';
 
 const MAX_FILE_SIZE=20*1024*1024;
 const MAX_TEXT_CHARS=48000;
@@ -351,5 +351,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-<script src="ha-study-vault.js?v=20261026-guest1"></script><script src="ha-summary-annotated.js?v=20261026-guest1"></script></body>
+<script src="ha-study-vault.js?v=20261026-offline2"></script><script src="ha-summary-annotated.js?v=20261026-offline2"></script></body>
 </html>

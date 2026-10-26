@@ -1,0 +1,2 @@
+/* A disconnected round never becomes eligible later. No offline score queue. */
+(function(){'use strict';if(window.HAOnlineRound)return;let epoch=0,serial=0,current=null;function begin(){return current={id:++serial,epoch,online:navigator.onLine!==false}}function eligible(ticket=current){return !!ticket&&ticket.online&&ticket.epoch===epoch&&navigator.onLine!==false}addEventListener('offline',()=>{epoch++});window.HAOnlineRound={begin,ticket:()=>current,eligible};})();

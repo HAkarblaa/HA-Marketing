@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><script src="ha-online-round.js?v=20261026-1"></script>
 <!-- HA: account required for app pages -->
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
 <noscript><meta http-equiv="refresh" content="0;url=login.html"></noscript>
-<script src="ha-account-gate.js?v=20261026-public1"></script>
+<script src="ha-account-gate.js?v=20261026-offline2"></script>
 <script id="ha-modern-boot">document.documentElement.setAttribute('data-ha-modern','1');document.documentElement.setAttribute('data-ha-theme','light');document.documentElement.style.colorScheme='light';</script>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#287de9">
 <title>لودو 3D - HA Marketing</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="ha-vendor-supabase.js"></script>
 <style>
 :root{--bg:#05080d;--panel:#0d1622;--panel2:#111e2e;--gold:#f0c765;--gold2:#ffe6a5;--muted:#93a3b6;--line:#ffffff16;--red:#ef4444;--blue:#3b82f6;--green:#22c55e;--yellow:#eab308}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#8c5d1d20,transparent 30%),linear-gradient(180deg,#030507,#07111b 58%,#020407);color:#fff;min-height:100vh}button,input{font:inherit}.hidden{display:none!important}.app{width:min(1080px,100%);margin:auto;padding:12px 12px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.back,.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #e3b45355;background:#0c141f;color:var(--gold2);display:grid;place-items:center;text-decoration:none;font-size:23px}.brand{text-align:center;flex:1}.brand h1{font-size:22px;margin:0;color:var(--gold2)}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.actions{display:flex;gap:6px}.iconbtn{cursor:pointer;font-size:18px}
@@ -293,7 +293,7 @@ async function movePiece(i){
 }
 $('rollBtn').onclick=rollDice;
 
-function startSolo(){
+function startSolo(){window.HAOnlineRound?.begin();
  playMode='solo';cpuBusy=false;soloResultSaved=false;seat='red';lastRevision=-1;lastFinishedRevision=-1;
  room={id:null,code:'SOLO',host_client_id:clientId,guest_client_id:'CPU',host_user_id:me?.id||null,guest_user_id:null,host_name:profile?.full_name||profile?.username||'أنت',host_username:profile?.username||'',guest_name:'الجهاز',guest_username:'CPU',status:'playing',revision:0};
  state=initialState('playing');state.lastEvent={text:'🤖 بدأت مباراة فردية ضد الجهاز',at:Date.now()};
@@ -340,7 +340,7 @@ async function cpuTakeTurn(){
 async function finalizeSoloResult(){
  if(playMode!=='solo'||soloResultSaved||state?.phase!=='finished')return;soloResultSaved=true;
  const won=state.winner==='red';if(won)sfx('win');else sfx('lose');
- try{const {error}=await db.rpc('ha_ludo_record_solo',{p_won:won});if(error)console.warn('solo result',error);else loadRanking()}catch(e){console.warn('solo result',e)}
+ if(!window.HAOnlineRound?.eligible())return;try{const {error}=await db.rpc('ha_ludo_record_solo',{p_won:won});if(error)console.warn('solo result',error);else loadRanking()}catch(e){console.warn('solo result',e)}
 }
 
 
