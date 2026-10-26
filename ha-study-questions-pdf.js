@@ -7,7 +7,7 @@ async function savePdf(answers){
  const buttons=[...document.querySelectorAll('#resultCard button')];buttons.forEach(b=>b.disabled=true);
  let host;
  try{
-  if(!window.jspdf||!window.html2canvas)throw Error('تعذر تحميل أداة PDF. أعد فتح الصفحة.');
+  await HAFileDownload.ensure('pdf');
   const english=window.__examLanguage==='English';
   const pdf=new jspdf.jsPDF({unit:'mm',format:'a4'});const title=answers?(english?'Model answers':'نموذج الإجابة'):(english?'Questions':'ورقة الأسئلة');
   host=document.createElement('div');host.dir=english?'ltr':'rtl';host.style.cssText='position:absolute;left:-10000px;top:0;width:720px;background:white;color:#15253b;font:18px/1.8 Tahoma,Arial;padding:22px;box-sizing:border-box';document.body.append(host);
@@ -26,7 +26,7 @@ async function savePdf(answers){
    }
    y+=5;canvas.width=canvas.height=0;
   }
-  pdf.save((answers?'أجوبة-نموذجية':'أسئلة')+'-HA-Marketing.pdf');
+  await HAFileDownload.save(pdf.output('blob'),(answers?'أجوبة-نموذجية':'أسئلة')+'-HA-Marketing.pdf');
  }catch(e){alert(e.message||'تعذر إنشاء PDF');}finally{host?.remove();exporting=false;buttons.forEach(b=>b.disabled=false);}
 }
 downloadBtn.onclick=()=>savePdf(false);

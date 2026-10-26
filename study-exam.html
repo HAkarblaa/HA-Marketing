@@ -59,7 +59,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:650px){.grid,.actions,.pages{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
 <script defer data-ha-daily-activity src="ha-daily-activity.js?v=20261012-daily1"></script>
-<script src="ha-vendor-html2canvas.js"></script><script src="ha-vendor-jspdf.js"></script><script src="ha-study-access.js?v=20261026-1"></script></head>
+<script src="ha-vendor-html2canvas.js"></script><script src="ha-vendor-jspdf.js"></script><script src="ha-study-access.js?v=20261026-1"></script><script src="ha-file-download.js?v=20261026-save3"></script></head>
 <body>
 <div class="wrap">
   <div class="top">
@@ -384,20 +384,7 @@ function examQuestionsOnlyText(){
   }).join('\n\n');
 }
 
-function downloadExamAuto(){
-  if(!lastExam.length)return;
-  const title='امتحان-HA-Marketing-'+new Date().toISOString().slice(0,10)+'.txt';
-  const content='امتحان HA Marketing\n\n'+examQuestionsOnlyText();
-  const blob=new Blob(['\ufeff'+content],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=title;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
+async function downloadExamAuto(){if(!lastExam.length)return;try{await HAFileDownload.save(new Blob(['\ufeffامتحان HA Marketing\n\n'+examQuestionsOnlyText()],{type:'text/plain;charset=utf-8'}),'امتحان-HA-Marketing-'+new Date().toISOString().slice(0,10)+'.txt')}catch(e){setStatus(e.message,'err')}}
 
 generateBtn.onclick=async()=>{
   if(generateBtn.disabled)return;
@@ -508,18 +495,7 @@ function openExamFile(){
   setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
 
-function downloadExamFile(){
-  if(!lastExam.length)return;
-  const blob=new Blob(['\ufeff'+examHtmlDocument()],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='امتحان-HA-Marketing-'+new Date().toISOString().slice(0,10)+'.html';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
+async function downloadExamFile(){if(!lastExam.length)return;try{await HAFileDownload.save(new Blob([examHtmlDocument()],{type:'text/html;charset=utf-8'}),'امتحان-HA-Marketing-'+new Date().toISOString().slice(0,10)+'.html')}catch(e){setStatus(e.message,'err')}}
 
 downloadBtn.onclick=downloadExamFile;
 openBtn.onclick=openExamFile;
@@ -559,5 +535,5 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-<script src="ha-study-questions-pdf.js?v=20261026-offline2"></script><script src="ha-exam-interactive.js?v=20261017-1"></script><script src="ha-study-vault.js?v=20261026-offline2"></script><script src="ha-study-exam-work.js?v=20261021-study1"></script></body>
+<script src="ha-study-questions-pdf.js?v=20261026-save3"></script><script src="ha-exam-interactive.js?v=20261017-1"></script><script src="ha-study-vault.js?v=20261026-save3"></script><script src="ha-study-exam-work.js?v=20261021-study1"></script></body>
 </html>
