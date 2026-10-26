@@ -1,5 +1,5 @@
 {
-  "version": "20261026-ranking-ui1",
+  "version": "20261026-uniform-contact1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -47,6 +47,8 @@
     "ha-business-tools.css",
     "ha-card-customizer.css",
     "ha-card-customizer.js",
+    "ha-contact-cover.svg",
+    "ha-contact.html",
     "ha-daily-activity.js",
     "ha-entertainment-direct.css",
     "ha-entertainment-offline.html",
@@ -161,6 +163,8 @@
     "ha-theme.js",
     "ha-tower-music.js",
     "ha-unified-sections-final.css",
+    "ha-uniform-cards.css",
+    "ha-uniform-cards.js",
     "ha-vendor-html2canvas.js",
     "ha-vendor-jspdf.js",
     "ha-vendor-jszip.js",
