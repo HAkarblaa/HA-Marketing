@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "ha_marketplace": {
+      "items": {
+        ".read": true,
+        ".indexOn": ["createdAt"],
+        "$itemId": {
+          ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('owner').val() === auth.uid) || (data.exists() && data.child('owner').val() === auth.uid && !newData.exists()))",
+          ".validate": "newData.hasChildren(['title','price','category','condition','city','seller','phone','description','createdAt','owner']) && newData.child('title').isString() && newData.child('title').val().length <= 90 && newData.child('price').isNumber() && newData.child('price').val() > 0 && newData.child('price').val() <= 10000000000 && newData.child('description').isString() && newData.child('description').val().length <= 1500 && newData.child('city').isString() && newData.child('seller').isString() && newData.child('phone').isString() && newData.child('category').isString() && newData.child('condition').isString() && newData.child('createdAt').isNumber() && newData.child('owner').val() === auth.uid"
+        }
+      }
+    }
+  }
+}
