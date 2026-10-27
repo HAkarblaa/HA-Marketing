@@ -1,5 +1,5 @@
 {
-  "version": "20261027-six-games-ranking2",
+  "version": "20261027-xo1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -255,6 +255,10 @@
     "transport-4.svg",
     "transport-5.svg",
     "transport.jpg",
-    "war-game.html"
+    "war-game.html",
+    "tic-tac-toe.html",
+    "ha-xo.js",
+    "ha-xo.css",
+    "ha-xo-cover.svg"
   ]
 }
