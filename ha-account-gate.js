@@ -398,6 +398,6 @@ addEventListener('ha:native-ready',apply);addEventListener('ha:native-resume',ap
 /* Independent business modules; installing either package preserves the other. */
 (function(){const base=new URL('./',document.currentScript.src);for(const name of ['ha-generator-entry.js','ha-accounting-entry.js']){const s=document.createElement('script');s.src=new URL(name+'?v=split1',base).href;s.async=true;s.onerror=()=>s.remove();document.head.append(s);}})();
 
-(function(){'use strict';if(window.__haEntertainmentOfflineBoot)return;window.__haEntertainmentOfflineBoot=true;const s=document.createElement('script');s.src=new URL('ha-entertainment-offline.js?v=20261026-public1',document.currentScript.src).href;s.defer=true;document.head.append(s);})();
+(function(){'use strict';if(window.__haEntertainmentOfflineBoot)return;window.__haEntertainmentOfflineBoot=true;const s=document.createElement('script');s.src=new URL('ha-entertainment-offline.js?v=20261027-lazy1',document.currentScript.src).href;s.defer=true;document.head.append(s);})();
 
 (function(){const s=document.createElement("script");s.src=new URL("ha-uniform-cards.js?v=20261026-1",document.currentScript.src).href;s.defer=true;document.head.append(s)})();
