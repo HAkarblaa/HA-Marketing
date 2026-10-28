@@ -1,5 +1,5 @@
 {
-  "version": "20261028-dama1",
+  "version": "20261028-domino1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -264,6 +264,10 @@
     "ha-dama.js",
     "ha-dama-engine.js",
     "ha-dama.css",
-    "ha-dama-cover.svg"
+    "ha-dama-cover.svg",
+    "ha-domino.js",
+    "ha-domino-engine.js",
+    "ha-domino.css",
+    "ha-domino-cover.svg"
   ]
 }
