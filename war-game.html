@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><script src="ha-online-round.js?v=20261026-1"></script>
+<meta charset="utf-8"><script>document.documentElement.classList.add("ha-arcade-lobby");</script><script src="ha-online-round.js?v=20261026-1"></script>
 <!-- HA: account required for app pages -->
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
@@ -73,8 +73,8 @@ border:1px solid #ffffff20;z-index:9;overflow:hidden;backdrop-filter:blur(3px)}
 #minimap{width:100%;height:100%;display:block}
 
 </style>
-<link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-tank-levels.css?v=1"><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script></head>
-<body>
+<link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><link rel="stylesheet" href="ha-tank-levels.css?v=1"><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><script src="ha-rewarded-games.js"></script><script src="ha-game-polish.js"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script></head>
+<body data-ha-arcade="war-game">
 <div class="wrap">
   <div class="top">
     <a class="back" href="entertainment.html">‹</a>
@@ -195,7 +195,7 @@ const stageSelect=document.getElementById('tankStage'),stageDialog=document.getE
 let selectedStage=1,stageKillsBase=0,stagePending=false,adBusy=false;
 function saveCampaign(){try{localStorage.setItem('ha_tank_campaign_v1',JSON.stringify(progress))}catch(_){}renderStages();}
 function renderStages(){stageSelect.replaceChildren();for(let n=1;n<=MAX_STAGE;n++){const option=document.createElement('option');option.value=String(n);option.disabled=n>progress.unlocked;option.textContent=(n<=progress.completed?'✓ ':n>progress.unlocked?'🔒 ':'')+'المستوى '+n+(n%5===0?' • زعيم':'');stageSelect.appendChild(option);}stageSelect.value=String(selectedStage);document.getElementById('tankProgress').textContent='المفتوح: '+progress.unlocked+' / '+MAX_STAGE+' • أفضل نتيجة: '+progress.best;}
-async function adBoundary(){if(window.HA_AccountGate?.state==='redirecting')return;try{await window.HAContentAds?.breakAfterWork();}catch(_){} }
+async function adBoundary(){await window.HAArcade?.beforeNew();}
 let selectedTank='balanced';
 let p,enemies=[],bullets=[],enemyBullets=[],rocks=[],particles=[],powerups=[];
 let score=0,kills=0,wave=1,running=false,paused=false,last=0,spawnTimer=0,fireCooldown=0,rocketCooldown=0,heavyCooldown=0;
@@ -321,7 +321,7 @@ function updateAutoAim(){
 }
 
 function shoot(kind='normal'){
-  if(!running||paused)return;
+  if(!running||paused||window.HAArcade?.blocked())return;
   updateAutoAim();
 
   let sp=410,damage=cfg().damage*damageBoost,r=4,color='#ffd65a';
@@ -447,7 +447,7 @@ function dropPowerup(x,y){
   });
 }
 
-function completeStage(){window.HASelectedRanking?.submit('war-game',score,wave===MAX_STAGE);
+function completeStage(){window.HAArcade?.ended();window.HASelectedRanking?.submit('war-game',score,wave===MAX_STAGE);
  stagePending=true;paused=true;holdFire=holdRocket=holdHeavy=false;move={x:0,y:0};
  progress.completed=Math.max(progress.completed,wave);progress.unlocked=Math.max(progress.unlocked,Math.min(MAX_STAGE,wave+1));progress.best=Math.max(progress.best,score);saveCampaign();
  document.getElementById('tankLevelTitle').textContent=wave===MAX_STAGE?'🏆 أكملت جميع المستويات!':'✅ أكملت المستوى '+wave;
@@ -462,12 +462,15 @@ async function levelAction(menu){if(adBusy)return;adBusy=true;document.getElemen
  }finally{adBusy=false;document.getElementById('tankNext').disabled=document.getElementById('tankMenu').disabled=false;}}
 document.getElementById('tankNext').onclick=()=>levelAction(false);document.getElementById('tankMenu').onclick=()=>levelAction(true);stageDialog.addEventListener('cancel',e=>{e.preventDefault();if(!adBusy)levelAction(true);});
 function end(){
-  if(!running)return;window.HASelectedRanking?.submit('war-game',score,false);running=false;paused=false;clearControls();progress.best=Math.max(progress.best,score);saveCampaign();
+  if(!running)return;window.HAArcade?.ended();window.HASelectedRanking?.submit('war-game',score,false);running=false;paused=false;clearControls();progress.best=Math.max(progress.best,score);saveCampaign();
   finalScore.textContent=score;
   finalKills.textContent=kills;
   finalWave.textContent=wave;
   upgradeCard.classList.remove('show');over.classList.add('show');
-  try{navigator.vibrate&&navigator.vibrate([80,50,100])}catch(_e){}
+  window.HAGamePolish?.tone('lose');
+  over.classList.remove('show');
+  window.HARewardedGames.offer({result:{label:'نقاط المعركة',score,best:progress.best},message:'شاهد إعلاناً وكمل من نفس المستوى والنقاط بطاقة ودرع مجددين.',continue:()=>{p.hp=p.maxHp;p.armor=p.maxArmor;enemyBullets=[];enemies=enemies.filter(e=>Math.hypot(e.x-p.x,e.y-p.y)>100);over.classList.remove('show');running=true;paused=false;last=performance.now();clearControls();updateHud();},restart:()=>{reset();select.style.display='flex';}});
+
 }
 
 function update(dt){
@@ -853,6 +856,7 @@ function drawMinimap(){
 }
 
 function loop(t){
+  if(window.HAArcade?.blocked()){last=t;raf=requestAnimationFrame(loop);return;}
   const dt=Math.min(.035,(t-last)/1000||0);
   last=t;
   update(dt);draw();
@@ -860,6 +864,7 @@ function loop(t){
 }
 
 function start(){
+  if(window.HAArcade?.blocked())return;
   if(stagePending||adBusy||upgradeCard.classList.contains('show'))return;
   if(running && paused){
     paused=false;pauseBtn.textContent='Ⅱ إيقاف';last=performance.now();msg.textContent='';return;
@@ -956,7 +961,7 @@ joystick.addEventListener('pointercancel',releaseJoystick);
 joystick.addEventListener('lostpointercapture',releaseJoystick);
 
 
-document.addEventListener('keydown',e=>{
+document.addEventListener('keydown',e=>{if(window.HAArcade?.blocked())return;
   if(e.key==='ArrowUp')setDir('up',true);
   if(e.key==='ArrowDown')setDir('down',true);
   if(e.key==='ArrowLeft')setDir('left',true);
@@ -998,8 +1003,10 @@ document.querySelectorAll('[data-upgrade]').forEach(btn=>{
 
 renderStages();
 window.addEventListener('blur',()=>{if(running&&!stagePending){paused=true;clearControls();pauseBtn.textContent='▶ متابعة';}});
+window.HAArcade?.register({newGame:()=>{reset();select.style.display='flex';renderStages()},pause:()=>{if(running){paused=true;clearControls();pauseBtn.textContent='▶ متابعة';}},resume:()=>{if(running&&!stagePending&&!upgradeCard.classList.contains('show')){paused=false;last=performance.now();pauseBtn.textContent='Ⅱ إيقاف';}},canResume:()=>running&&!stagePending,help:'اختَر دبابتك ومستوى مفتوحاً من المراحل. حرّك العتلة واضغط الأسلحة؛ التصويب تلقائي. دمّر 7 دبابات لكل مستوى، وكل خامس مستوى فيه زعيم.'});
+window.HAGamePolish.register({best:()=>progress.best,paused:()=>paused,pause:v=>{paused=v;clearControls()},restart:()=>{reset();select.style.display='flex'},help:'20 مستوى محفوظة على جهازك. اختَر الدبابة من شاشة المراحل، والتحكم بالعتلة وأزرار الأسلحة.'});
 reset();
-raf=requestAnimationFrame(loop);
+requestAnimationFrame(loop);
 })();
 </script>
 <script src="ha-game-engagement.js"></script>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><script src="ha-online-round.js?v=20261026-1"></script>
+<meta charset="utf-8"><script>document.documentElement.classList.add("ha-arcade-lobby");</script><script src="ha-online-round.js?v=20261026-1"></script>
 <!-- HA: account required for app pages -->
 <style id="ha-account-gate-style">html[data-ha-account-lock] body,html[data-ha-account-lock] body *{visibility:hidden!important;pointer-events:none!important}#haAccountGate,#haAccountGate *{visibility:visible!important;pointer-events:auto!important}#haAccountGate{position:fixed;inset:0;z-index:2147483647;background:#f5f7fa;color:#15283b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;font:16px Arial,Tahoma,sans-serif;text-align:center;direction:rtl}#haAccountGate strong{font-size:24px}#haAccountGate p{max-width:420px;line-height:1.8}#haAccountGate button,#haAccountGate a{border:0;border-radius:12px;padding:12px 22px;background:#111;color:#fff;text-decoration:none;font:inherit;cursor:pointer}#haAccountGate [hidden]{display:none!important}</style>
 <script id="ha-account-gate-boot">document.documentElement.setAttribute("data-ha-account-lock","1");</script>
@@ -71,8 +71,8 @@
 
 </style>
 <script type="importmap">{"imports":{"three":"./ha-vendor-three.module.min.js"}}</script>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script></head>
-<body>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script></head>
+<body data-ha-arcade="penalties">
 
 <div id="menuScreen">
  <div class="menuCard">
@@ -94,14 +94,14 @@
    <button class="modeBtn active" data-mode="cpu">🤖 ضد الجهاز<small>يعمل بدون نت</small></button>
    <button class="modeBtn" data-mode="local">👥 لاعبان محلياً<small>على نفس الجهاز</small></button>
    <button class="modeBtn" data-mode="tournament">🏆 بطولة<small>مجموعات وإقصائيات</small></button>
-   <button class="modeBtn" data-mode="online">🌐 أونلاين<small>يحتاج إنترنت</small></button>
+   <button class="modeBtn" data-mode="online" hidden>🌐 أونلاين<small>يحتاج إنترنت</small></button>
   </div>
   <div id="tournamentBox">
    <div class="tourGrid">
     <div class="menuField"><label>اسم البطولة</label><input id="tourName" value="بطولة HA"></div>
     <div class="menuField"><label>عدد الفرق</label><select id="tourTeams"><option value="8">8 فرق</option><option value="16">16 فريق</option></select></div>
     <div class="menuField"><label>النظام</label><input id="tourFormatLabel" value="بطولة متعددة الفرق — خروج مغلوب" readonly></div>
-    <div class="menuField"><label>نوع البطولة</label><select id="tourType"><option value="cpu">ضد الجهاز</option><option value="rooms">غرف أونلاين</option></select></div>
+    <div class="menuField"><label>نوع البطولة</label><select id="tourType"><option value="cpu">ضد الجهاز</option></select></div>
    </div>
    <div style="margin-top:8px;padding:9px 11px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff12;font-size:12px;line-height:1.8">🏆 بالبطولة ما تختار خصم. اللعبة تسحب عدة فرق تلقائياً، وكل فوز ينقلك للخصم التالي إلى نصف النهائي والنهائي.</div>
    <button id="viewTournament" class="menuAction" style="width:100%;margin-top:8px">📋 عرض جدول البطولة</button>
@@ -262,7 +262,7 @@ window.haPenaltySceneBusy=()=>shooting;
 
 let clock=new THREE.Clock(),phase=0,judged=false;
 function animate(){
- requestAnimationFrame(animate);if(window.haPenaltyPaused){clock.getDelta();renderer.render(scene,camera);return;}let dt=Math.min(clock.getDelta(),.04);phase+=dt*3;power=.48+(Math.sin(phase)+1)*.22;mask.style.height=((1-power)*100)+'%';
+ requestAnimationFrame(animate);if(window.haPenaltyPaused||window.HAArcade?.blocked()){clock.getDelta();return;}let dt=Math.min(clock.getDelta(),.04);phase+=dt*3;power=.48+(Math.sin(phase)+1)*.22;mask.style.height=((1-power)*100)+'%';
  if(shooting){
   shotT+=dt;let t=shotT;
   if(t<.58){let q=t/.58;player.position.z=4.7-q*2.15;player.position.x=-.8+q*.55;player.rotation.z=Math.sin(q*Math.PI)*-.08}
@@ -524,7 +524,7 @@ function finalizeTournament(){
 }
 let rewardReplayDeclined=false;
 function finishMatch(){
- if(matchEnded)return;window.HASelectedRanking?.submit('penalties',homeScore*10+(homeScore>awayScore?30:0),homeScore>awayScore);
+ if(matchEnded)return;window.HAArcade?.ended();window.HASelectedRanking?.submit('penalties',homeScore*10+(homeScore>awayScore?30:0),homeScore>awayScore);
  if(homeScore<awayScore&&!rewardReplayDeclined&&HARewardedGames.supported()){
   matchEnded=true;setTurn('انتهت الجولة',false,'home');
   HARewardedGames.offer({result:{label:'نتيجة المباراة',score:homeScore+' — '+awayScore,best:points},message:'شاهد إعلاناً لتحصل على محاولة جديدة ضد نفس الخصم في نفس دور البطولة.',continue:()=>{rewardReplayDeclined=false;beginGame();},restart:()=>{matchEnded=false;rewardReplayDeclined=true;finishMatch();rewardReplayDeclined=false;}});return;
@@ -563,7 +563,7 @@ function startCpuShot(){if(window.haPenaltyPaused){setTimeout(startCpuShot,200);
  if(matchEnded)return;
  setTurn('الخصم يسدد...',false,'away');
  const tryStart=()=>{
-   if(matchEnded)return;
+   if(matchEnded)return;if(window.haPenaltyPaused){setTimeout(tryStart,200);return;}
    if(typeof window.haPenaltyOpponentShoot!=='function'){setTimeout(tryStart,150);return}
    const ok=window.haPenaltyOpponentShoot();
    if(!ok)setTimeout(tryStart,150);
@@ -593,7 +593,7 @@ window.haPenaltyShotResult=({side,goal})=>{
  }
 };
 
-by('playAgain').onclick=()=>{
+by('playAgain').onclick=async()=>{await window.HAArcade?.beforeNew();
  by('endModal').classList.remove('show');
  if(gameMode==='tournament'){
    if(tournament&&tournament.complete){makeTournament()}
@@ -608,6 +608,7 @@ document.body.classList.add('hgp-penalties');
 for(const [id,key]of [['difficultyMenu','difficulty'],['kickCountMenu','kicks']]){const value=HAGamePolish.get(key,null);if(value&&[...by(id).options].some(x=>x.value===value))by(id).value=value;}
 const savedType=HAGamePolish.get('teamType',null);if(savedType&&[...by('teamTypeMenu').options].some(x=>x.value===savedType)){by('teamTypeMenu').value=savedType;fillTeams();}
 const savedTeam=HAGamePolish.get('team',null);if(savedTeam&&[...by('teamMenu').options].some(x=>x.value===savedTeam))by('teamMenu').value=savedTeam;
+window.HAArcade?.register({newGame:()=>{by('menuScreen').style.display='flex';window.haPenaltyPaused=true},pause:()=>{window.haPenaltyPaused=true},resume:()=>{window.haPenaltyPaused=false},canResume:()=>!matchEnded&&by('menuScreen').style.display==='none',help:'اختر فريقك والخصم وعدد الركلات. حرّك العتلة للتصويب واضغط تسديد. متاح ضد الجهاز، لاعبان على نفس الموبايل، وبطولة محلية.'});
 HAGamePolish.register({host:()=>document.body,best:()=>points,bestLabel:'رصيد نقاطك',paused:()=>!!window.haPenaltyPaused,pause:v=>{window.haPenaltyPaused=v},restart:()=>{if(window.HARewardedGames?.active)return;beginGame()},help:'اختيار الفريق والبطولات والصعوبة موجودة في قائمة اللعبة. تحفظ اختيارات الفريق والصعوبة على هذا الجهاز.'});
 })();
 </script>
