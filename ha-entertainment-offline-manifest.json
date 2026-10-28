@@ -1,5 +1,5 @@
 {
-  "version": "20261027-xo-ads1",
+  "version": "20261028-dama1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -259,6 +259,11 @@
     "tic-tac-toe.html",
     "ha-xo.js",
     "ha-xo.css",
-    "ha-xo-cover.svg"
+    "ha-xo-cover.svg",
+    "dama.html",
+    "ha-dama.js",
+    "ha-dama-engine.js",
+    "ha-dama.css",
+    "ha-dama-cover.svg"
   ]
 }
