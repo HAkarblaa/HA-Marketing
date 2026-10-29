@@ -1,5 +1,5 @@
 {
-  "version": "20261029-chess17",
+  "version": "20261029-comms18",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -296,6 +296,8 @@
     "ha-chess-ai.js",
     "ha-chess.js",
     "ha-chess.css",
-    "ha-game-chess-v2.webp"
+    "ha-game-chess-v2.webp",
+    "ha-game-comms.js",
+    "ha-game-comms.css"
   ]
 }
