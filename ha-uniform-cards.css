@@ -29,3 +29,25 @@ html body .ha-main #all#all.ha-restored-main-cards>#haContactEntry>span{position
 html body .ha-main #all#all.ha-restored-main-cards>#haContactEntry strong{color:white!important;font:800 14px/1.4 Tahoma!important;text-shadow:0 2px 5px #28194c}
 html body .ha-main #all#all.ha-restored-main-cards>#haContactEntry small{display:block;color:#f2ebff!important;font:9px/1.4 Tahoma!important;margin-top:3px}
 @media(max-width:360px){html body [data-ha-uniform-grid]{gap:9px!important}html body[data-ha-uniform-section] .ha-cats>[data-ha-uniform]:not([hidden])>.ico{width:25px!important;height:25px!important;font-size:21px!important}html body[data-ha-uniform-section] .ha-cats>[data-ha-uniform]:not([hidden])>small{display:none!important}}
+
+/* New artwork only for generator, contact and sports home cards. */
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry,[href="sports-center.html"]){position:relative!important;isolation:isolate!important;overflow:hidden!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry)>img{display:none!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry,[href="sports-center.html"])::before{content:''!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;z-index:0!important;background-size:cover!important;background-position:center!important;opacity:1!important;transform:none!important;filter:none!important}
+html body .ha-main #all#all#all #haGeneratorEntry::before{background-image:url('ha-home-generator-v2.webp')!important}
+html body .ha-main #all#all#all #haContactEntry::before{background-image:url('ha-home-contact-v2.webp')!important}
+html body .ha-main #all#all#all [href="sports-center.html"]::before{background-image:url('ha-home-sports-v2.webp')!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry,[href="sports-center.html"])::after{content:''!important;display:block!important;position:absolute!important;inset:45% 0 0!important;width:auto!important;height:auto!important;z-index:1!important;background:linear-gradient(transparent,#082e40ed)!important;border-radius:0!important;pointer-events:none!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry)>span{position:absolute!important;inset:auto 16px 14px 12px!important;z-index:3!important;padding:0!important;transform:none!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry) strong,html body .ha-main #all#all#all [href="sports-center.html"]>strong{display:block!important;color:white!important;font:800 20px/1.5 Tahoma,Arial,sans-serif!important;text-shadow:0 1px 4px #0005!important;opacity:1!important;visibility:visible!important;text-align:right!important;padding:0!important;margin:0!important}
+html body .ha-main #all#all#all [href="sports-center.html"]>strong{position:absolute!important;inset:auto 16px 14px auto!important;z-index:3!important;transform:none!important;background:transparent!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry) small{display:block!important;color:#f1f9ff!important;font:12px/1.5 Tahoma,Arial,sans-serif!important;margin-top:2px!important;opacity:1!important}
+html body .ha-main #all#all#all [href="sports-center.html"]>strong::after,html body .ha-main #all#all#all [href="sports-center.html"]>.ha-sports-chevron{display:none!important}
+@media(max-width:640px){
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry)>span{inset:auto 10px 8px 8px!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry) strong,html body .ha-main #all#all#all [href="sports-center.html"]>strong{font-size:14px!important}
+html body .ha-main #all#all#all [href="sports-center.html"]>strong{inset:auto 10px 8px auto!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry) small{font-size:9px!important}
+}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry)>span{display:block!important;height:auto!important;min-height:0!important;max-height:none!important;width:auto!important}
+html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry) strong,html body .ha-main #all#all#all :is(#haGeneratorEntry,#haContactEntry) small{position:static!important;inset:auto!important;transform:none!important;height:auto!important;min-height:0!important;max-height:none!important;width:auto!important;background:transparent!important}
