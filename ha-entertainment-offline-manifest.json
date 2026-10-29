@@ -1,5 +1,5 @@
 {
-  "version": "20261029-homecards16",
+  "version": "20261029-chess17",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -291,6 +291,11 @@
     "ha-game-tower-v2.webp",
     "ha-home-generator-v2.webp",
     "ha-home-contact-v2.webp",
-    "ha-home-sports-v2.webp"
+    "ha-home-sports-v2.webp",
+    "ha-chess-vendor.js",
+    "ha-chess-ai.js",
+    "ha-chess.js",
+    "ha-chess.css",
+    "ha-game-chess-v2.webp"
   ]
 }
