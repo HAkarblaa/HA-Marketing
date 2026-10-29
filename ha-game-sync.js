@@ -1,0 +1,5 @@
+/* Realtime invalidations only: authoritative game state stays in its protected RPC. */
+(()=>{'use strict';let current=null;function detach(){if(!current)return;const s=current;current=null;s.closed=true;clearTimeout(s.timer);s.db.removeChannel(s.channel).catch(()=>{})}
+function attach(game,room,db,refresh){if(room.status==='closed'){detach();return}const key=game+':'+room.code;if(current?.key===key){current.refresh=refresh;return}detach();if(!db?.channel)return;const s=current={key,db,refresh,closed:false,live:false,timer:null,channel:null};function wake(){if(s.closed)return;clearTimeout(s.timer);s.timer=setTimeout(()=>{if(s.closed)return;try{if(s.refresh()===false)wake()}catch{wake()}},60)}
+s.channel=db.channel('ha-game-'+key).on('postgres_changes',{event:'*',schema:'public',table:'ha_game_ticks',filter:'id=eq.'+key},wake).subscribe(status=>{if(s.closed)return;s.live=status==='SUBSCRIBED';if(s.live)wake()})}
+window.HAGameSync={attach,detach,connected:()=>!!current?.live};addEventListener('pagehide',detach);})();

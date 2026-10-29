@@ -1,5 +1,5 @@
 {
-  "version": "20261029-comms18",
+  "version": "20261029-ludo19",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -298,6 +298,11 @@
     "ha-chess.css",
     "ha-game-chess-v2.webp",
     "ha-game-comms.js",
-    "ha-game-comms.css"
+    "ha-game-comms.css",
+    "ha-ludo-engine.js",
+    "ha-ludo.js",
+    "ha-ludo.css",
+    "ha-game-ludo.svg",
+    "ha-game-sync.js"
   ]
 }
