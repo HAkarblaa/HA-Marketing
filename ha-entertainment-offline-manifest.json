@@ -1,5 +1,5 @@
 {
-  "version": "20261029-study14",
+  "version": "20261029-gamecards15",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -277,6 +277,17 @@
     "ha-study-convert-v2.webp",
     "ha-study-questions-v2.webp",
     "ha-study-files-v2.webp",
-    "ha-study-drawing-v2.webp"
+    "ha-study-drawing-v2.webp",
+    "ha-game-cards-v2.css",
+    "ha-game-domino-v2.webp",
+    "ha-game-dama-v2.webp",
+    "ha-game-xo-v2.webp",
+    "ha-game-snake-v2.webp",
+    "ha-game-devil-v2.webp",
+    "ha-game-bird-v2.webp",
+    "ha-game-penalties-v2.webp",
+    "ha-game-piano-v2.webp",
+    "ha-game-tanks-v2.webp",
+    "ha-game-tower-v2.webp"
   ]
 }

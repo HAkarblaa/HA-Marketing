@@ -1,0 +1,16 @@
+
+html body #haEntertainmentDirect#haEntertainmentDirect{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important;margin:18px 0 26px!important}
+html body #haEntertainmentDirect#haEntertainmentDirect>a{position:relative!important;display:block!important;width:100%!important;max-width:none!important;min-width:0!important;padding:0!important;margin:0!important;aspect-ratio:1.85!important;overflow:hidden!important;border:1px solid #dceae8!important;border-radius:22px!important;background:#edf9f5!important;box-shadow:0 8px 24px #173c5014!important;isolation:isolate}
+html body #haEntertainmentDirect#haEntertainmentDirect>a>img{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;margin:0!important;border-radius:0!important;z-index:0}
+html body #haEntertainmentDirect#haEntertainmentDirect .ha-ent-direct-body{position:absolute!important;inset:auto 0 0!important;z-index:2!important;padding:38px 16px 13px!important;background:linear-gradient(transparent,#082e40ed)!important;text-align:right!important;pointer-events:none}
+html body #haEntertainmentDirect#haEntertainmentDirect h2{font:800 19px/1.5 Tahoma,Arial,sans-serif!important;color:#fff!important;margin:0!important;text-shadow:0 1px 3px #0006}
+html body #haEntertainmentDirect#haEntertainmentDirect p,html body #haEntertainmentDirect#haEntertainmentDirect .ha-ent-direct-open{display:none!important}
+html body #haEntertainmentDirect#haEntertainmentDirect>a::before,html body #haEntertainmentDirect#haEntertainmentDirect>a::after{display:none!important}
+html body #haEntertainmentDirect#haEntertainmentDirect>a[hidden]{display:none!important}
+html body #haEntertainmentDirect#haEntertainmentDirect>a:focus-visible{outline:3px solid #008f86!important;outline-offset:4px}
+@media(max-width:700px){
+html body #haEntertainmentDirect#haEntertainmentDirect{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}
+html body #haEntertainmentDirect#haEntertainmentDirect>a{border-radius:17px!important}
+html body #haEntertainmentDirect#haEntertainmentDirect .ha-ent-direct-body{padding:25px 10px 8px!important}
+html body #haEntertainmentDirect#haEntertainmentDirect h2{font-size:13px!important}
+}
