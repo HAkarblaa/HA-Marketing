@@ -354,7 +354,7 @@ function wrapBridge(){
  guarded.__haAdminGuard=true;n.openPrinters=guarded;
 }
 function update(ok){allowed=ok;root.setAttribute('data-ha-print-admin',ok?'1':'0');wrapBridge();window.dispatchEvent(new CustomEvent('ha:print-access',{detail:{allowed:ok}}));}
-async function refresh(){const current=++revision;update(false);const ok=await window.HA_AccountGate.isMainAdmin();if(current===revision)update(ok);return current===revision&&ok;}
+async function refresh(){const current=++revision;update(false);const business=["ha-generator.html","ha-accounting.html","store-accounting.html"].includes(location.pathname.split("/").pop());const ok=business||await window.HA_AccountGate.isMainAdmin();if(current===revision)update(ok);return current===revision&&ok;}
 window.HAPrintAccess={refresh,get allowed(){return allowed;}};
 document.addEventListener('click',e=>{const el=e.target.closest?.('#haNativePrinterEntry,a[href*="image-print.html"]');if(el&&!allowed){e.preventDefault();e.stopImmediatePropagation();}},true);
 window.addEventListener('ha:native-ready',wrapBridge);

@@ -1,5 +1,5 @@
 {
-  "version": "20261029-ludo19",
+  "version": "20261030-businessprint",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -303,6 +303,7 @@
     "ha-ludo.js",
     "ha-ludo.css",
     "ha-game-ludo.svg",
-    "ha-game-sync.js"
+    "ha-game-sync.js",
+    "ha-business-print.js"
   ]
 }
