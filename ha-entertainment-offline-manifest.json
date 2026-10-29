@@ -1,5 +1,5 @@
 {
-  "version": "20261029-tank13",
+  "version": "20261029-study14",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -270,6 +270,13 @@
     "ha-domino.css",
     "ha-domino-cover.svg",
     "ha-arcade-menu.js",
-    "ha-arcade-menu.css"
+    "ha-arcade-menu.css",
+    "ha-study-cards-v2.css",
+    "ha-study-translation-v2.webp",
+    "ha-study-summary-v2.webp",
+    "ha-study-convert-v2.webp",
+    "ha-study-questions-v2.webp",
+    "ha-study-files-v2.webp",
+    "ha-study-drawing-v2.webp"
   ]
 }
