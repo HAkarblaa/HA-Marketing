@@ -1,6 +1,6 @@
 /* Public entertainment bundle is cached separately from ordinary site resources. */
-const CACHE='ha-marketing-arcade-20261030-print1';
-const OFFLINE='ha-entertainment-offline-20261030-print1',MANIFEST=new URL('ha-entertainment-offline-manifest.json',self.registration.scope).href;
+const CACHE='ha-marketing-arcade-20261030-mic2';
+const OFFLINE='ha-entertainment-offline-20261030-mic2',MANIFEST=new URL('ha-entertainment-offline-manifest.json',self.registration.scope).href;
 const CORE=['./index.html','./ha-account-gate.js','./ha-entertainment-offline.js','./ha-entertainment-offline.html'];let preparing=null,progress={state:'checking',done:0,total:0};
 async function announce(value){progress=value;const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});for(const c of clients)c.postMessage({type:'HA_ENTERTAINMENT_PROGRESS',...value});}
 async function timedFetch(request){const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);try{return await fetch(request,{signal:c.signal,cache:'reload',credentials:'omit'})}finally{clearTimeout(t)}}
