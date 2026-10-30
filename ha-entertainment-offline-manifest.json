@@ -1,5 +1,5 @@
 {
-  "version": "20261030-audiopath13",
+  "version": "20261030-adminvoice14",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -41,6 +41,7 @@
     "ha-account-gate.js",
     "ha-accounting-cover.svg",
     "ha-accounting-entry.js",
+    "ha-admin-call-gate.js",
     "ha-all-sections-premium.css",
     "ha-arcade-menu.css",
     "ha-arcade-menu.js",
