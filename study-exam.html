@@ -75,8 +75,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <section class="card">
     <h2>1. الملف أو الصور</h2>
     <div class="drop">
-      <input id="sourceFiles" type="file" multiple accept="image/*,.pdf,.docx,.txt">
-      <div class="hint">تگدر ترفع عدة صور، أو ملف PDF / Word / TXT. للـ PDF تگدر تحدد الصفحات المطلوبة.</div>
+      <input id="sourceFiles" type="file" multiple accept="*/*" aria-label="اختيار ملف PDF أو Word DOCX أو TXT أو صور">
+      <div class="hint">اضغط اختيار الملفات، ثم اختار من المستندات أو التنزيلات. يدعم PDF / Word DOCX / TXT وعدة صور. للـ PDF تگدر تحدد الصفحات المطلوبة.</div>
     </div>
     <p>الحد: 20 MB للملفات المختارة و48000 حرف للنص المستخرج. الحصة الحقيقية تتبع مزوّد الذكاء الاصطناعي. <a href="study-my-files.html">ملفاتي الدراسية</a></p><div id="fileInfo" class="filebox">ما تم اختيار ملف بعد.</div>
   </section>
@@ -177,6 +177,15 @@ function setStatus(text,type=''){
   statusBox.className='status'+(type?' '+type:'');
 }
 
+function examFileKind(file){
+  const name=String(file.name||'').toLowerCase(),mime=String(file.type||'').toLowerCase();
+  if(mime==='application/pdf'||name.endsWith('.pdf'))return 'pdf';
+  if(mime==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||name.endsWith('.docx'))return 'docx';
+  if(mime.startsWith('image/')||/\.(png|jpe?g|webp|gif|bmp|tiff?)$/.test(name))return 'image';
+  if(mime.startsWith('text/')||name.endsWith('.txt'))return 'text';
+  return '';
+}
+
 sourceFiles.addEventListener('change',async()=>{
   const files=[...sourceFiles.files];
   if(!files.length){
@@ -185,7 +194,8 @@ sourceFiles.addEventListener('change',async()=>{
   }
   fileInfo.textContent=files.map(f=>f.name).join(' • ');
 
-  if(files.length===1 && files[0].type==='application/pdf'){
+  const bad=files.find(f=>!examFileKind(f));if(bad){fileInfo.textContent='الملف غير مدعوم: '+bad.name;setStatus('اختر PDF أو Word بصيغة DOCX أو TXT أو صورة. ملفات Word القديمة DOC تحتاج تحويل إلى DOCX.','err');return}
+  if(files.length===1 && examFileKind(files[0])==='pdf'){
     try{
       const ab=await files[0].arrayBuffer();
       const pdf=await pdfjsLib.getDocument({data:ab}).promise;
@@ -252,20 +262,21 @@ async function extractAll(){
   if(!files.length)throw new Error('اختر ملف أو صور أولاً');
 
   if(files.reduce((n,f)=>n+f.size,0)>20*1024*1024)throw Error('إجمالي الملفات أكبر من 20 MB. قلل الملفات.');
-  if(files.length>1&&files.some(f=>/\.pdf$/i.test(f.name)))throw Error('ارفع ملف PDF واحد لتكون أرقام الصفحات واضحة، أو مجموعة صور بدون PDF.');
+  if(files.length>1&&files.some(f=>examFileKind(f)==='pdf'))throw Error('ارفع ملف PDF واحد لتكون أرقام الصفحات واضحة، أو مجموعة صور بدون PDF.');
   const all=[];
   let imageNo=0;
-  const imageTotal=files.filter(f=>f.type.startsWith('image/')).length;
+  const bad=files.find(f=>!examFileKind(f));if(bad)throw Error('نوع الملف غير مدعوم: '+bad.name+'؛ اختر PDF أو DOCX أو TXT أو صور.');
+  const imageTotal=files.filter(f=>examFileKind(f)==='image').length;
 
   for(const f of files){
-    if(f.type==='application/pdf' || f.name.toLowerCase().endsWith('.pdf')){
+    if(examFileKind(f)==='pdf'){
       all.push(await extractPDF(f));
-    }else if(f.type.startsWith('image/')){
+    }else if(examFileKind(f)==='image'){
       imageNo++;
       all.push(await extractImage(f,imageNo,imageTotal));
-    }else if(f.name.toLowerCase().endsWith('.docx')){
+    }else if(examFileKind(f)==='docx'){
       all.push(await extractWord(f));
-    }else if(f.type.startsWith('text/') || f.name.toLowerCase().endsWith('.txt')){
+    }else if(examFileKind(f)==='text'){
       all.push(await extractTXT(f));
     }else{
       throw new Error('نوع الملف غير مدعوم: '+f.name);
