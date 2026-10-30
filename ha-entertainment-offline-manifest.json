@@ -1,5 +1,5 @@
 {
-  "version": "20261030-voice6",
+  "version": "20261030-market8",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -304,6 +304,10 @@
     "ha-ludo.css",
     "ha-game-ludo.svg",
     "ha-game-sync.js",
-    "ha-business-print.js"
+    "ha-business-print.js",
+    "marketplace.html",
+    "marketplace.js",
+    "marketplace.css",
+    "ha-classifieds-cover.svg"
   ]
 }
