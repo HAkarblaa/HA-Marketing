@@ -1,5 +1,5 @@
 {
-  "version": "20261031-adminsections1",
+  "version": "20261031-brightcards2",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -165,6 +165,8 @@
     "ha-growth.js",
     "ha-home-contact-v2.webp",
     "ha-home-generator-v2.webp",
+    "ha-home-marketplace-bright.webp",
+    "ha-home-sports-bright.webp",
     "ha-home-sports-v2.webp",
     "ha-i18n.css",
     "ha-i18n.js",
