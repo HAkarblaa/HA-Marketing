@@ -1,5 +1,5 @@
 {
-  "version": "20261101-overview10",
+  "version": "20261101-identity11",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -324,6 +324,11 @@
     "football-statistics.html",
     "football-statistics.js",
     "football-statistics-core.js",
-    "football-statistics.css"
+    "football-statistics.css",
+    "ha-identity.html",
+    "ha-identity.js",
+    "ha-identity.css",
+    "ha-identity-page.js",
+    "sports-center.html"
   ]
 }

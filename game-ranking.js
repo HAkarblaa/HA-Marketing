@@ -35,9 +35,9 @@ async function record(gameKey,score,options){
   gameKey=String(gameKey||'').toLowerCase();
   if(!ALLOWED_GAMES.includes(gameKey))return {ok:false,reason:'game'};
   const play=plays.get(String(options.playId||''));if(!play||play.used||!window.HAOnlineRound?.eligible(play.ticket))return {ok:false,reason:'offline_round'};play.used=true;
-  const c=db();
+  const c=window.HAIdentity?await window.HAIdentity.client(false):db();
   if(!c)return {ok:false,reason:'sdk'};
-  const user=await currentUser();
+  const user=window.HAIdentity?(await c.auth.getSession()).data?.session?.user:await currentUser();
   if(!user)return {ok:false,guest:true};if(!window.HAOnlineRound?.eligible(play.ticket))return {ok:false,reason:'offline_round'};
 
   const points=Math.max(0,Math.min(100000,Math.floor(Number(score)||0)));
