@@ -1,5 +1,5 @@
 {
-  "version": "20261101-allnav8",
+  "version": "20261101-predictions9",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -316,6 +316,10 @@
     "transport-4.svg",
     "transport-5.svg",
     "transport.jpg",
-    "war-game.html"
+    "war-game.html",
+    "match-predictions.html",
+    "match-predictions.js",
+    "match-predictions.css",
+    "sports-predictions-cover.svg"
   ]
 }
