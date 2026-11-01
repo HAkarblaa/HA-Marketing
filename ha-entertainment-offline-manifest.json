@@ -1,5 +1,5 @@
 {
-  "version": "20261101-marketguest5",
+  "version": "20261101-studytext6",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -163,6 +163,7 @@
     "ha-generator.html",
     "ha-growth.css",
     "ha-growth.js",
+    "ha-home-card-text.js",
     "ha-home-contact-v2.webp",
     "ha-home-generator-v2.webp",
     "ha-home-marketplace-bright.webp",
