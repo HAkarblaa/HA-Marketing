@@ -1,5 +1,5 @@
 {
-  "version": "20261101-predictions9",
+  "version": "20261101-overview10",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -320,6 +320,10 @@
     "match-predictions.html",
     "match-predictions.js",
     "match-predictions.css",
-    "sports-predictions-cover.svg"
+    "sports-predictions-cover.svg",
+    "football-statistics.html",
+    "football-statistics.js",
+    "football-statistics-core.js",
+    "football-statistics.css"
   ]
 }
