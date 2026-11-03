@@ -71,7 +71,7 @@
 
 </style>
 <script type="importmap">{"imports":{"three":"./ha-vendor-three.module.min.js"}}</script>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script><link rel="stylesheet" href="ha-penalty-classic.css?v=20261103-classic1"></head>
 <body data-ha-arcade="penalties">
 
 <div id="menuScreen">
@@ -128,7 +128,7 @@
 
 <!-- حُذف دور التحكم بحارس المرمى: اللعب الآن تسديد فقط -->
 <div class="hud">
- <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>ركلات الجزاء 3D</small><div id="homeDots" class="shotDots"></div><div id="awayDots" class="shotDots"></div></div>
+ <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>HA FOOTBALL · PENALTY CUP</small><div id="homeDots" class="shotDots"></div><div id="awayDots" class="shotDots"></div></div>
  <div class="power"><div class="track"><div id="mask"></div></div></div>
  <div class="joy" id="joy"><div class="joyKnob" id="joyKnob"></div></div>
  <div class="tools">
@@ -138,151 +138,10 @@
   <button class="tool" data-ball="dirt">🌪️ ترابية</button>
  </div>
  <button id="shoot">تسديد</button>
- <div class="tip">حرّك الزر الدائري للتوجيه بكل الاتجاهات ثم اضغط تسديد</div>
+ <div class="tip">وجّه نحو الزاوية • اضغط مطولاً للتسديد بقوة</div>
  <div id="msg">GOAL!</div>
 </div>
-<script type="module">
-import * as THREE from 'three';
-
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9bc8eb);scene.fog=new THREE.Fog(0x9bc8eb,55,130);
-const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.1,220);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;document.getElementById('game').appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xffffff,0x234526,2.3));const sun=new THREE.DirectionalLight(0xffffff,2.7);sun.position.set(-14,22,11);sun.castShadow=true;scene.add(sun);
-
-const pitch=new THREE.Mesh(new THREE.PlaneGeometry(72,110),new THREE.MeshStandardMaterial({color:0x178c3c,roughness:1}));pitch.rotation.x=-Math.PI/2;pitch.position.z=-24;pitch.receiveShadow=true;scene.add(pitch);
-for(let i=0;i<12;i++){let s=new THREE.Mesh(new THREE.PlaneGeometry(72,5),new THREE.MeshBasicMaterial({color:i%2?0x1d9b43:0x147e36,transparent:true,opacity:.35}));s.rotation.x=-Math.PI/2;s.position.set(0,.006,5-i*5);scene.add(s)}
-const standMat=new THREE.MeshStandardMaterial({color:0x263142});
-for(const x of [-28,28]){let s=new THREE.Mesh(new THREE.BoxGeometry(14,9,50),standMat);s.position.set(x,4,-18);scene.add(s)}
-let back=new THREE.Mesh(new THREE.BoxGeometry(70,10,10),standMat);back.position.set(0,5,-33);scene.add(back);
-for(let i=0;i<160;i++){let c=new THREE.Mesh(new THREE.SphereGeometry(.1,6,5),new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(Math.random(),.75,.58)}));let side=Math.random()<.5?-1:1;c.position.set(side*(21+Math.random()*12),1+Math.random()*7,-2-Math.random()*39);scene.add(c)}
-
-const white=new THREE.MeshStandardMaterial({color:0xf7f7f7});
-function post(x,y,z,sx,sy,sz){let m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),white);m.position.set(x,y,z);m.castShadow=true;scene.add(m)}
-post(-4.8,1.45,-12,.18,2.9,.18);post(4.8,1.45,-12,.18,2.9,.18);post(0,2.9,-12,9.78,.18,.18);
-const netMat=new THREE.LineBasicMaterial({color:0xf4f8ff,transparent:true,opacity:.65});
-for(let x=-4.7;x<=4.7;x+=.55)scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,.08,-12.06),new THREE.Vector3(x,2.82,-12.06)]),netMat));
-for(let y=.12;y<=2.8;y+=.34)scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.7,y,-12.06),new THREE.Vector3(4.7,y,-12.06)]),netMat));
-
-function human(shirt,shorts){
- const g=new THREE.Group(),skin=new THREE.MeshStandardMaterial({color:0xb9784d}),sm=new THREE.MeshStandardMaterial({color:shirt}),hm=new THREE.MeshStandardMaterial({color:shorts});
- let head=new THREE.Mesh(new THREE.SphereGeometry(.27,16,12),skin);head.position.y=2.35;g.add(head);
- let body=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.85,6,12),sm);body.position.y=1.52;g.add(body);
- let hip=new THREE.Mesh(new THREE.BoxGeometry(.72,.36,.43),hm);hip.position.y=.92;g.add(hip);
- for(const x of [-.22,.22]){let leg=new THREE.Mesh(new THREE.CapsuleGeometry(.105,.65,5,10),skin);leg.position.set(x,.38,0);g.add(leg)}
- for(const x of [-.48,.48]){let arm=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.62,5,10),skin);arm.position.set(x,1.55,0);arm.rotation.z=x<0?-.18:.18;g.add(arm)}
- g.traverse(o=>{if(o.isMesh)o.castShadow=true});return g
-}
-const player=human(0xd51d29,0xffffff);player.position.set(-.8,0,4.7);player.rotation.y=Math.PI;player.scale.set(1.18,1.18,1.18);scene.add(player);
-const keeper=human(0xf0d31e,0x161616);keeper.position.set(0,0,-11.5);keeper.scale.set(.92,.92,.92);scene.add(keeper);
-
-const ballMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.55});const ball=new THREE.Mesh(new THREE.SphereGeometry(.23,24,18),ballMat);ball.position.set(.25,.23,2.25);ball.castShadow=true;scene.add(ball);
-const curveMat=new THREE.LineDashedMaterial({color:0x6dff63,dashSize:.32,gapSize:.22});let aimLine=new THREE.Line(new THREE.BufferGeometry(),curveMat);scene.add(aimLine);
-let aimDot=new THREE.Mesh(new THREE.RingGeometry(.25,.34,24),new THREE.MeshBasicMaterial({color:0x6dff63,side:THREE.DoubleSide}));aimDot.rotation.x=-Math.PI/2;scene.add(aimDot);
-
-let shooting=false,shotT=0,target=new THREE.Vector3(),keeperTarget=0,power=.55;
-let shotOwner='home',forcedGoal=null;
-const mask=document.getElementById('mask'),msg=document.getElementById('msg');
-const joy=document.getElementById('joy'),joyKnob=document.getElementById('joyKnob');
-let aimX=0, aimY=0;
-
-function updateAim(){
-  const x=aimX*4.0;
-  const y=1.35 + aimY*1.25;
-  const end=new THREE.Vector3(x,y,-11.65);
-  const mid=new THREE.Vector3(x*.35,1.7 + aimY*.65,-4.5);
-  const curve=new THREE.QuadraticBezierCurve3(ball.position.clone(),mid,end);
-  aimLine.geometry.dispose();
-  aimLine.geometry=new THREE.BufferGeometry().setFromPoints(curve.getPoints(30));
-  aimLine.computeLineDistances();
-  aimDot.position.set(end.x,end.y,-11.56);
-  aimDot.rotation.set(0,0,0);
-}
-
-function moveJoystick(clientX,clientY){
-  const r=joy.getBoundingClientRect();
-  const cx=r.left+r.width/2, cy=r.top+r.height/2;
-  let dx=clientX-cx, dy=clientY-cy;
-  const max=r.width*.34;
-  const len=Math.hypot(dx,dy);
-  if(len>max){dx=dx/len*max;dy=dy/len*max}
-  joyKnob.style.transform=`translate(${dx}px,${dy}px)`;
-  aimX=dx/max;
-  aimY=-dy/max;
-  updateAim();
-}
-let joyPointer=null;
-joy.addEventListener('pointerdown',e=>{joyPointer=e.pointerId;joy.setPointerCapture(e.pointerId);moveJoystick(e.clientX,e.clientY)});
-joy.addEventListener('pointermove',e=>{if(e.pointerId===joyPointer)moveJoystick(e.clientX,e.clientY)});
-joy.addEventListener('pointerup',e=>{if(e.pointerId===joyPointer)joyPointer=null});
-joy.addEventListener('pointercancel',()=>{joyPointer=null});
-updateAim();
-
-document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');let t=b.dataset.ball;if(t==='fire'){ballMat.color.set(0xff6b21);ballMat.emissive.set(0xaa1800);ballMat.emissiveIntensity=1.5}else if(t==='ice'){ballMat.color.set(0x9befff);ballMat.emissive.set(0x187cc5);ballMat.emissiveIntensity=1.2}else if(t==='dirt'){ballMat.color.set(0x9b6a3b);ballMat.emissive.set(0)}else{ballMat.color.set(0xffffff);ballMat.emissive.set(0)}});
-
-function reset(){
- shooting=false;shotT=0;forcedGoal=null;
- player.position.set(-.8,0,4.7);player.rotation.set(0,Math.PI,0);
- keeper.position.set(0,0,-11.5);keeper.rotation.set(0,0,0);
- ball.position.set(.25,.23,2.25);camera.position.set(0,5.7,14.7);camera.lookAt(0,1.7,-8);
- const canAim=window.haCanPlayerShoot!==false;
- aimLine.visible=canAim;aimDot.visible=canAim;updateAim();
-}
-function startShot(owner,goalOverride=null){
- if(shooting||window.haPenaltyPaused)return false;
- shotOwner=owner||'home';forcedGoal=goalOverride;
- shooting=true;shotT=0;aimLine.visible=false;aimDot.visible=false;
- if(shotOwner==='away'){
-   const d=document.getElementById('difficultyMenu')?.value||'medium';
-   const chance=d==='hard' ? .76 : d==='easy' ? .43 : .59;
-   const willGoal=goalOverride===null?Math.random()<chance:!!goalOverride;
-   forcedGoal=willGoal;
-   const x=(Math.random()*7.2)-3.6;
-   const y=.65+Math.random()*1.9;
-   target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);
-   if(willGoal){
-     let off=(1.15+Math.random()*1.5)*(Math.random()<.5?-1:1);
-     keeperTarget=THREE.MathUtils.clamp(x+off,-3.7,3.7);
-   }else{
-     keeperTarget=THREE.MathUtils.clamp(x+(Math.random()-.5)*.7,-3.7,3.7);
-   }
- }else{
-   let x=aimX*4.0;let y=1.0+power*.8+aimY*1.25;
-   target.set(x,THREE.MathUtils.clamp(y,.35,2.75),-12.15);
-   keeperTarget=Math.random()*7.4-3.7;
- }
- return true;
-}
-document.getElementById('shoot').onclick=()=>{
- if(shooting||window.haCanPlayerShoot===false)return;
- startShot(window.haActiveSide||'home');
-};
-window.haPenaltyOpponentShoot=()=>startShot('away');
-window.haPenaltySceneBusy=()=>shooting;
-
-
-let clock=new THREE.Clock(),phase=0,judged=false;
-function animate(){
- requestAnimationFrame(animate);if(window.haPenaltyPaused||window.HAArcade?.blocked()){clock.getDelta();return;}let dt=Math.min(clock.getDelta(),.04);phase+=dt*3;power=.48+(Math.sin(phase)+1)*.22;mask.style.height=((1-power)*100)+'%';
- if(shooting){
-  shotT+=dt;let t=shotT;
-  if(t<.58){let q=t/.58;player.position.z=4.7-q*2.15;player.position.x=-.8+q*.55;player.rotation.z=Math.sin(q*Math.PI)*-.08}
-  if(t>.38&&t<1.38){let q=Math.min((t-.38),1),start=new THREE.Vector3(.25,.23,2.25),mid=new THREE.Vector3(target.x*.28,2.15,-4.8),c=new THREE.QuadraticBezierCurve3(start,mid,target);ball.position.copy(c.getPoint(q));ball.rotation.x+=dt*18;ball.rotation.z+=dt*9;if(q>.24){let d=Math.min((q-.24)/.48,1);keeper.position.x=THREE.MathUtils.lerp(0,keeperTarget,d);keeper.position.y=Math.sin(d*Math.PI)*.72;keeper.rotation.z=-keeperTarget*.16*d}camera.position.z=THREE.MathUtils.lerp(14.7,10.8,q);camera.position.y=THREE.MathUtils.lerp(5.7,4.4,q);camera.lookAt(ball.position.x*.22,1.55,-8.7)}
-  if(t>=1.38&&!judged){
-   judged=true;
-   let saved=Math.abs(target.x-keeperTarget)<.75&&target.y<2.1;
-   let goal=forcedGoal===null?!saved:!!forcedGoal;
-   if(shotOwner==='away') msg.textContent=goal?'هدف للخصم!':'الحارس تصدى!';
-   else msg.textContent=goal?'GOAL!':'تصدي!';
-   msg.classList.add('show');
-   if(typeof window.haPenaltyShotResult==='function') window.haPenaltyShotResult({side:shotOwner,goal});
-  }
-  if(t>2.15){msg.classList.remove('show');judged=false;reset()}
- }
- renderer.render(scene,camera)
-}
-animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-</script>
+<script type="module" src="ha-penalty-classic.js?v=20261103-classic1"></script>
 
 <script>
 (function(){
@@ -474,7 +333,7 @@ function currentOpponent(){
  const m=tournamentUserFixture();
  return m?(m.a===tournament.mine?m.b:m.a):'خصم البطولة';
 }
-function beginGame(){window.haPenaltyPaused=false;HAGamePolish.set('difficulty',by('difficultyMenu').value);HAGamePolish.set('teamType',by('teamTypeMenu').value);HAGamePolish.set('team',by('teamMenu').value);HAGamePolish.set('kicks',by('kickCountMenu').value);
+function beginGame(){window.haPenaltyResetScene?.();window.haPenaltyPaused=false;HAGamePolish.set('difficulty',by('difficultyMenu').value);HAGamePolish.set('teamType',by('teamTypeMenu').value);HAGamePolish.set('team',by('teamMenu').value);HAGamePolish.set('kicks',by('kickCountMenu').value);
  if(gameMode==='online'&&!navigator.onLine){alert('الأونلاين يحتاج إنترنت');return}
  if(gameMode==='tournament'){
    if(by('tourType').value==='rooms'&&!navigator.onLine){alert('بطولة الغرف تحتاج إنترنت. اختر بطولة ضد الجهاز أو شغّل الإنترنت.');return}
@@ -623,4 +482,4 @@ a[href*="chat.html"],a[href*="study-class-messages.html"],.c-chat,.chat-card-pre
 html body .ha-bottom-inner,html body .ha-modern-bottominner,html body .bottom-inner{display:flex!important}
 html body .ha-bottom-inner>a,html body .ha-modern-bottominner>a,html body .bottom-inner>a{flex:1 1 0!important;min-width:0!important}
 </style>
-</body></html>
+<div id="classicLabel" aria-hidden="true">HA FOOTBALL · CLASSIC EDITION</div></body></html>

@@ -1,5 +1,5 @@
 {
-  "version": "20261101-identity11",
+  "version": "20261103-penalty-classic1",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -329,6 +329,9 @@
     "ha-identity.js",
     "ha-identity.css",
     "ha-identity-page.js",
-    "sports-center.html"
+    "sports-center.html",
+    "ha-penalty-classic.js",
+    "ha-penalty-classic.css",
+    "ha-penalty-software.js"
   ]
 }
