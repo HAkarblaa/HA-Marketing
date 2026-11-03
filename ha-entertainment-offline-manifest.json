@@ -1,5 +1,5 @@
 {
-  "version": "20261103-penalty-pro2",
+  "version": "20261103-penalty-flight3",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -332,6 +332,27 @@
     "sports-center.html",
     "ha-penalty-classic.js",
     "ha-penalty-classic.css",
-    "ha-penalty-software.js"
+    "ha-penalty-software.js",
+    "ha-penalty-flight.js",
+    "penalty-team-assets/flag-iq.png",
+    "penalty-team-assets/flag-ir.png",
+    "penalty-team-assets/flag-sa.png",
+    "penalty-team-assets/flag-kw.png",
+    "penalty-team-assets/flag-qa.png",
+    "penalty-team-assets/flag-ar.png",
+    "penalty-team-assets/flag-br.png",
+    "penalty-team-assets/flag-fr.png",
+    "penalty-team-assets/flag-es.png",
+    "penalty-team-assets/flag-de.png",
+    "penalty-team-assets/flag-pt.png",
+    "penalty-team-assets/flag-gb-eng.png",
+    "penalty-team-assets/club-86.png",
+    "penalty-team-assets/club-83.png",
+    "penalty-team-assets/club-382.png",
+    "penalty-team-assets/club-364.png",
+    "penalty-team-assets/club-132.png",
+    "penalty-team-assets/club-103.png",
+    "penalty-team-assets/club-110.png",
+    "penalty-team-assets/club-160.png"
   ]
 }
