@@ -71,7 +71,7 @@
 
 </style>
 <script type="importmap">{"imports":{"three":"./ha-vendor-three.module.min.js"}}</script>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script><link rel="stylesheet" href="ha-penalty-classic.css?v=20261106-keeper5"></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script><link rel="stylesheet" href="ha-penalty-classic.css?v=20261106-shotstyles6"></head>
 <body data-ha-arcade="penalties">
 
 <div id="menuScreen">
@@ -132,11 +132,19 @@
  <div class="power"><div class="track"><div id="mask"></div></div></div>
  <div class="joy" id="joy"><div class="joyKnob" id="joyKnob"></div></div>
  
+ <div id="aimReticle" aria-hidden="true" hidden><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="15" stroke="#11231d" stroke-width="6"/><circle cx="22" cy="22" r="15" stroke="currentColor" stroke-width="3"/><path d="M22 2v10m0 20v10M2 22h10m20 0h10" stroke="#11231d" stroke-width="5"/><path d="M22 2v10m0 20v10M2 22h10m20 0h10" stroke="white" stroke-width="2.5"/><circle cx="22" cy="22" r="3" fill="white" stroke="#11231d" stroke-width="1.5"/></svg></div>
+ <div id="shotOptions" role="group" aria-label="اختيار طريقة التسديد" hidden>
+  <button type="button" data-shot-style="normal" aria-pressed="true">عادية</button>
+  <button type="button" data-shot-style="power" aria-pressed="false">قوية</button>
+  <button type="button" data-shot-style="curve" aria-pressed="false">مقوّسة</button>
+  <button type="button" data-shot-style="chip" aria-pressed="false">ساقطة</button>
+  <button type="button" id="shotFeint" aria-pressed="false">خدعة قبل التسديد</button>
+ </div>
  <button id="shoot">تسديد</button>
  <div class="tip">وجّه نحو الزاوية • اضغط مطولاً للتسديد بقوة</div>
  <div id="msg">GOAL!</div>
 </div>
-<script type="module" src="ha-penalty-classic.js?v=20261106-keeper5"></script>
+<script type="module" src="ha-penalty-classic.js?v=20261106-shotstyles6"></script>
 
 <script>
 (function(){

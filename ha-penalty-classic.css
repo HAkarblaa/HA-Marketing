@@ -6,3 +6,17 @@ body.hgp-penalties .tools{display:none!important}
 
 /* Shot results remain readable on phone and desktop. */
 body.hgp-penalties .shotDots{gap:7px!important;min-height:14px}body.hgp-penalties .shotDots i{width:11px!important;height:11px!important;border:1px solid #ffffff80!important}body.hgp-penalties .shotDots i.goal{background:#18d45e!important;box-shadow:0 0 6px #16e56780!important}body.hgp-penalties .shotDots i.miss{background:#f33e4c!important;box-shadow:0 0 6px #ff314e80!important}body.hgp-penalties .shotDots i.current{background:#ffffff40!important;box-shadow:0 0 0 2px #ffdb60!important}
+
+/* Target projected from the exact aim point, independent of the 3D renderer. */
+#aimReticle{position:fixed;top:0;left:0;width:42px;height:42px;pointer-events:none;color:#ffdc49;z-index:2;filter:drop-shadow(0 1px 3px #0008)}
+#aimReticle svg{width:100%;height:100%;display:block}
+#aimReticle[data-wide="true"]{color:#ff7167}
+#shotOptions{position:absolute;right:14px;bottom:103px;z-index:3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;width:145px;padding:5px;background:#101e29ed;border:1px solid #ffffff60;border-radius:11px;pointer-events:auto;direction:rtl}
+#shotOptions button{min-height:34px;padding:4px;border:1px solid #ffffff50;border-radius:7px;background:#203b4f;color:white;font:700 12px system-ui;cursor:pointer;touch-action:manipulation}
+#shotOptions button[aria-pressed="true"]{color:#15261f;background:#ffdf68;border-color:white}
+#shotFeint{grid-column:1/-1}
+#shotOptions[hidden],#aimReticle[hidden]{display:none!important}
+@media(max-width:650px){#shotOptions{right:8px;bottom:101px;width:133px}#aimReticle{width:38px;height:38px}}
+@media(max-height:450px) and (orientation:landscape){#shotOptions{bottom:82px}}
+body.hgp-penalties #joy{border:3px solid #ffdf68!important;background:#142b37c7!important;box-shadow:0 0 0 2px #15251c,0 4px 14px #0008!important}
+body.hgp-penalties #joyKnob{background:#ffe17a!important;border:2px solid #fff8d7!important}

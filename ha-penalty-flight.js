@@ -1,25 +1,32 @@
 // Fixed-step ball flight shared by gameplay and numerical checks. Metres / seconds.
 export const SHOT_RANGE={x:5.65,minY:.23,maxY:3.85};
+function shotMotion(x,power,style){
+ const base=1.04-.40*power;
+ return {
+  T:style==='power'?.77-.29*power:style==='chip'?base+.41:base,
+  ax:style==='curve'?(Math.sign(x)||1)*6.8:0
+ };
+}
 // Aim at the ball's intercept point in front of the goal, not its final aim mark.
-export function planKeeper({x,y,power=.6,difficulty='medium',random=Math.random}){
- const T=1.04-.40*power,q=11.15/12,t=T*q;
- const targetX=x*q,targetY=.22+(y-.22)*q+4.905*t*(T-t);
- const profile={easy:[.58,.48,.13],medium:[.86,.32,.08],hard:[.94,.23,.045]}[difficulty]||[.86,.32,.08];
+export function planKeeper({x,y,power=.6,difficulty='medium',style='normal',feint=false,random=Math.random}){
+ const {T,ax}=shotMotion(x,power,style),q=11.15/12,t=T*q;
+ const targetX=x*q-.5*ax*t*(T-t),targetY=.22+(y-.22)*q+4.905*t*(T-t);
+ const profile={easy:[.50,.48,.15],medium:[.76,.34,.10],hard:[.85,.26,.065]}[difficulty]||[.76,.34,.10];
  const [read,spread,reaction]=profile;
- const accurate=random()<read-(power-.6)*.12;
+ const accurate=random()<read-(power-.6)*.12-(feint?.10:0);
  const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
  return {
   x:clamp(accurate?targetX+(random()*2-1)*spread:-targetX*.63+(random()*2-1)*1.4,-4.30,4.30),
   y:clamp(accurate?targetY+(random()*2-1)*spread:1.08+(random()*2-1)*.62,.23,3.12),
-  reaction
+  reaction, fooled:feint&&!accurate
  };
 }
-export function tracePenalty({x,y,power=.6,keeperX=0,keeperY=1.1}){
- const dt=1/240,r=.22,g=9.81,T=1.04-.40*power,p={x:0,y:r,z:0},v={x:x/T,y:(y-r+.5*g*T*T)/T,z:-12/T},points=[{...p,t:0}],events=[];
+export function tracePenalty({x,y,power=.6,style='normal',keeperX=0,keeperY=1.1}){
+ const dt=1/240,r=.22,g=9.81,{T,ax}=shotMotion(x,power,style),p={x:0,y:r,z:0},v={x:x/T-.5*ax*(T+dt),y:(y-r+.5*g*T*T)/T,z:-12/T},points=[{...p,t:0}],events=[];
  let glove=false,goal=false,post=false,net=false,goalAt=null;
  function impact(type,time,n,restitution,at=p){const dot=v.x*n.x+v.y*n.y+v.z*n.z;if(dot>=0)return false;v.x-=(1+restitution)*dot*n.x;v.y-=(1+restitution)*dot*n.y;v.z-=(1+restitution)*dot*n.z;events.push({type,t:time,x:at.x,y:at.y,z:at.z});return true}
  for(let step=1;step<=960;step++){
-  const t=step*dt,old={...p};v.y-=g*dt;p.x+=v.x*dt;p.y+=v.y*dt;p.z+=v.z*dt;
+  const t=step*dt,old={...p};if(!glove&&!post&&!goal)v.x+=ax*dt;v.y-=g*dt;p.x+=v.x*dt;p.y+=v.y*dt;p.z+=v.z*dt;
   if(!glove&&old.z>-11.15&&p.z<=-11.15){const f=(old.z+11.15)/(old.z-p.z),cx=old.x+(p.x-old.x)*f,cy=old.y+(p.y-old.y)*f,dx=cx-keeperX,dy=cy-keeperY,d=Math.hypot(dx,dy);
    if(d<.57){glove=true;const nz=Math.sqrt(Math.max(.025,.57*.57-d*d)),len=Math.hypot(dx,dy,nz),n={x:dx/len,y:dy/len,z:nz/len};impact('glove',t,n,.67);p.z=-11.14;p.x=cx;p.y=cy;}
   }
@@ -33,6 +40,6 @@ export function tracePenalty({x,y,power=.6,keeperX=0,keeperY=1.1}){
   if(p.y<r){p.y=r;if(v.y<-.5){v.y=-v.y*.42;v.x*=.88;v.z*=.88}else{v.y=0;v.x*=.991;v.z*=.991}}
   points.push({...p,t});
  }
- const contacts=events.filter(e=>['glove','post','crossbar'].includes(e.type));const decisionAt=goalAt??Math.min(3.2,Math.max(T+.10,...contacts.map(e=>e.t+.35)));return {points,events,goal,saved:glove,post,net,goalAt,decisionAt,duration:4};
+ const contacts=events.filter(e=>['glove','post','crossbar'].includes(e.type));const decisionAt=goalAt??Math.min(3.2,Math.max(T+.10,...contacts.map(e=>e.t+.35)));return {points,events,goal,saved:glove,post,net,goalAt,decisionAt,arrivalTime:T,duration:4};
 }
 export function sampleFlight(trace,time){const f=Math.max(0,Math.min(trace.points.length-1,time*240)),i=Math.floor(f),a=trace.points[i],b=trace.points[Math.min(i+1,trace.points.length-1)],q=f-i;return {x:a.x+(b.x-a.x)*q,y:a.y+(b.y-a.y)*q,z:a.z+(b.z-a.z)*q}}
