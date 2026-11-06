@@ -71,12 +71,12 @@
 
 </style>
 <script type="importmap">{"imports":{"three":"./ha-vendor-three.module.min.js"}}</script>
-<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script><link rel="stylesheet" href="ha-penalty-classic.css?v=20261103-flight3"></head>
+<link rel="stylesheet" href="ha-modern-blue.css?v=20260926-1"><script src="ha-modern-blue.js?v=20260926-1" defer></script><link rel="stylesheet" href="ha-lux-icons.css?v=20260930-1"><script src="ha-rewarded-games.js?v=polish1-20261024-1"></script><link rel="stylesheet" href="ha-game-polish.css?v=1"><script src="ha-game-polish.js?v=1"></script><script src="ha-vendor-supabase.js"></script><script src="ha-selected-ranking.js?v=20261026-six1"></script><link rel="stylesheet" href="ha-arcade-menu.css?v=20261028-1"><script src="ha-arcade-menu.js?v=20261028-1"></script><link rel="stylesheet" href="ha-penalty-classic.css?v=20261103-crowd4"></head>
 <body data-ha-arcade="penalties">
 
 <div id="menuScreen">
  <div class="menuCard">
-  <div class="menuTitle"><h1>⚽ ركلات الجزاء 3D</h1><p>اختر فريقك وطريقة اللعب</p></div>
+  <div class="menuTitle"><h1>⚽ ركلات الجزاء 3D</h1><p>اختر فريقك وطريقة اللعب</p><p style="font-size:10px;opacity:.75">3D face: Lee Perry-Smith · <a href="ha-penalty-FACE-LICENSE.txt" target="_blank" rel="noopener">CC BY 3.0</a></p></div>
   <div class="walletMenu">
    <div class="menuPill">⭐ نقاط <span id="menuPoints">0</span></div>
    <div class="menuPill">💎 جواهر <span id="menuGems">0</span></div>
@@ -128,7 +128,7 @@
 
 <!-- حُذف دور التحكم بحارس المرمى: اللعب الآن تسديد فقط -->
 <div class="hud">
- <div class="score"><span id="score"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>HA FOOTBALL · PENALTY CUP</small><div id="homeDots" class="shotDots"></div><div id="awayDots" class="shotDots"></div></div>
+ <div class="score"><span id="score" aria-live="polite"><span id="homeTeamText">العراق</span> <span id="homeScoreText">0</span> - <span id="awayScoreText">0</span> <span id="awayTeamText">إيران</span></span><small>HA FOOTBALL · PENALTY CUP</small><div id="homeDots" class="shotDots"></div><div id="awayDots" class="shotDots"></div></div>
  <div class="power"><div class="track"><div id="mask"></div></div></div>
  <div class="joy" id="joy"><div class="joyKnob" id="joyKnob"></div></div>
  
@@ -136,7 +136,7 @@
  <div class="tip">وجّه نحو الزاوية • اضغط مطولاً للتسديد بقوة</div>
  <div id="msg">GOAL!</div>
 </div>
-<script type="module" src="ha-penalty-classic.js?v=20261103-flight3"></script>
+<script type="module" src="ha-penalty-classic.js?v=20261103-crowd4"></script>
 
 <script>
 (function(){
@@ -304,16 +304,16 @@ by('shopOpen').onclick=()=>{
  }
 };
 
-function updateShotDots(){const render=(id,arr,kicks)=>{const el=by(id);if(!el)return;const count=suddenDeath?Math.max(maxKicks+1,kicks+1):maxKicks;let h='';for(let i=0;i<count;i++){let c='';if(i<arr.length)c=arr[i]?'goal':'miss';else if(i===kicks)c='current';h+='<i class="'+c+'"></i>'}el.innerHTML=h};render('homeDots',homeResults,homeKicks);render('awayDots',awayResults,awayKicks)}
+function updateShotDots(){const render=(id,arr,kicks)=>{const el=by(id);if(!el)return;const count=suddenDeath?Math.max(maxKicks+1,kicks+1):maxKicks;let h='';for(let i=0;i<count;i++){let c='';if(i<arr.length)c=arr[i]?'goal':'miss';else if(i===kicks&&window.haActiveSide===(id==='homeDots'?'home':'away'))c='current';h+='<i class="'+c+'" aria-label="الركلة '+(i+1)+': '+(c==='goal'?'هدف':c==='miss'?'إخفاق':'لم تلعب')+'"></i>'}el.innerHTML=h};render('homeDots',homeResults,homeKicks);render('awayDots',awayResults,awayKicks)}
 function updateMatchHud(){
- by('homeScoreText').textContent=homeScore;
+ updateShotDots();by('homeScoreText').textContent=homeScore;
  by('awayScoreText').textContent=awayScore;
  by('hudKicks').textContent=homeKicks+'/'+maxKicks+' - '+awayKicks+'/'+maxKicks+(suddenDeath?' +':'');
 }
 function setTurn(label,canShoot,side='home'){
  by('hudTurn').textContent=label;
  window.haCanPlayerShoot=!!canShoot;
- window.haActiveSide=side;
+ window.haActiveSide=side;updateShotDots();
  const shoot=by('shoot');
  if(shoot){shoot.disabled=!canShoot;shoot.style.opacity=canShoot?'1':'.45'}
 }

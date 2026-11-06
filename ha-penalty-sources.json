@@ -1,0 +1,102 @@
+{
+  "العراق": {
+    "file": "ha-penalty-flag-iq.png",
+    "source": "https://flagcdn.com/w320/iq.png",
+    "image": "https://flagcdn.com/w320/iq.png"
+  },
+  "إيران": {
+    "file": "ha-penalty-flag-ir.png",
+    "source": "https://flagcdn.com/w320/ir.png",
+    "image": "https://flagcdn.com/w320/ir.png"
+  },
+  "السعودية": {
+    "file": "ha-penalty-flag-sa.png",
+    "source": "https://flagcdn.com/w320/sa.png",
+    "image": "https://flagcdn.com/w320/sa.png"
+  },
+  "الكويت": {
+    "file": "ha-penalty-flag-kw.png",
+    "source": "https://flagcdn.com/w320/kw.png",
+    "image": "https://flagcdn.com/w320/kw.png"
+  },
+  "قطر": {
+    "file": "ha-penalty-flag-qa.png",
+    "source": "https://flagcdn.com/w320/qa.png",
+    "image": "https://flagcdn.com/w320/qa.png"
+  },
+  "الأرجنتين": {
+    "file": "ha-penalty-flag-ar.png",
+    "source": "https://flagcdn.com/w320/ar.png",
+    "image": "https://flagcdn.com/w320/ar.png"
+  },
+  "البرازيل": {
+    "file": "ha-penalty-flag-br.png",
+    "source": "https://flagcdn.com/w320/br.png",
+    "image": "https://flagcdn.com/w320/br.png"
+  },
+  "فرنسا": {
+    "file": "ha-penalty-flag-fr.png",
+    "source": "https://flagcdn.com/w320/fr.png",
+    "image": "https://flagcdn.com/w320/fr.png"
+  },
+  "إسبانيا": {
+    "file": "ha-penalty-flag-es.png",
+    "source": "https://flagcdn.com/w320/es.png",
+    "image": "https://flagcdn.com/w320/es.png"
+  },
+  "ألمانيا": {
+    "file": "ha-penalty-flag-de.png",
+    "source": "https://flagcdn.com/w320/de.png",
+    "image": "https://flagcdn.com/w320/de.png"
+  },
+  "البرتغال": {
+    "file": "ha-penalty-flag-pt.png",
+    "source": "https://flagcdn.com/w320/pt.png",
+    "image": "https://flagcdn.com/w320/pt.png"
+  },
+  "إنجلترا": {
+    "file": "ha-penalty-flag-gb-eng.png",
+    "source": "https://flagcdn.com/w320/gb-eng.png",
+    "image": "https://flagcdn.com/w320/gb-eng.png"
+  },
+  "ريال مدريد": {
+    "file": "ha-penalty-club-86.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/86",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/86.png"
+  },
+  "برشلونة": {
+    "file": "ha-penalty-club-83.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/83",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/83.png"
+  },
+  "مانشستر سيتي": {
+    "file": "ha-penalty-club-382.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/382",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/382.png"
+  },
+  "ليفربول": {
+    "file": "ha-penalty-club-364.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/364",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/364.png"
+  },
+  "بايرن ميونخ": {
+    "file": "ha-penalty-club-132.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/132",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/132.png"
+  },
+  "ميلان": {
+    "file": "ha-penalty-club-103.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/103",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/103.png"
+  },
+  "إنتر": {
+    "file": "ha-penalty-club-110.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/110",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/110.png"
+  },
+  "باريس سان جيرمان": {
+    "file": "ha-penalty-club-160.png",
+    "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/160",
+    "image": "https://a.espncdn.com/i/teamlogos/soccer/500/160.png"
+  }
+}

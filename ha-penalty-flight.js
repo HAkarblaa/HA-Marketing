@@ -19,6 +19,6 @@ export function tracePenalty({x,y,power=.6,keeperX=0,keeperY=1.1}){
   if(p.y<r){p.y=r;if(v.y<-.5){v.y=-v.y*.42;v.x*=.88;v.z*=.88}else{v.y=0;v.x*=.991;v.z*=.991}}
   points.push({...p,t});
  }
- return {points,events,goal,saved:glove,post,net,goalAt,duration:4};
+ const contacts=events.filter(e=>['glove','post','crossbar'].includes(e.type));const decisionAt=goalAt??Math.min(3.2,Math.max(T+.10,...contacts.map(e=>e.t+.35)));return {points,events,goal,saved:glove,post,net,goalAt,decisionAt,duration:4};
 }
 export function sampleFlight(trace,time){const f=Math.max(0,Math.min(trace.points.length-1,time*240)),i=Math.floor(f),a=trace.points[i],b=trace.points[Math.min(i+1,trace.points.length-1)],q=f-i;return {x:a.x+(b.x-a.x)*q,y:a.y+(b.y-a.y)*q,z:a.z+(b.z-a.z)*q}}

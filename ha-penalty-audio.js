@@ -1,0 +1,7 @@
+// Locally bundled, synthesized stadium bed, reactions and ball impacts.
+export class PenaltyStadiumAudio{
+ constructor(enabled){this.enabled=enabled;this.started=false;this.blocked=true;this.voices=[];this.samples=new Map();for(const name of ['crowd','goal','miss','build','save','kick','post','glove']){const a=new Audio('ha-penalty-'+name+'.wav');a.preload='auto';this.samples.set(name,a)}this.bed=this.samples.get('crowd');this.bed.addEventListener('playing',()=>{const host=document.getElementById('game');if(host)host.dataset.audio='playing'});this.bed.loop=true;this.bed.volume=.20;document.addEventListener('visibilitychange',()=>{if(document.hidden)this.update(true)});}
+ start(){this.started=true;this.update(false);this.bed.play().catch(()=>{});}
+ update(blocked){const quiet=blocked||document.hidden||!this.enabled();if(quiet!==this.blocked){this.blocked=quiet;for(const a of this.voices)if(quiet)a.pause();if(quiet)this.bed.pause();else if(this.started)this.bed.play().catch(()=>{})}this.voices=this.voices.filter(a=>!a.ended)}
+ play(name){if(!this.started||this.blocked||!this.enabled())return;const source=this.samples.get(name);if(!source)return;const a=source.cloneNode();a.volume=({goal:.75,miss:.55,build:.32,save:.65,kick:.65,glove:.65,post:.7})[name]||.5;this.voices.push(a);if(this.voices.length>8)this.voices.shift().pause();a.addEventListener('playing',()=>{const host=document.getElementById('game');if(host)host.dataset.lastSound=name});a.play().catch(()=>{})}
+}

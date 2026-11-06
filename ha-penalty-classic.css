@@ -3,3 +3,6 @@ body.hgp-penalties{background:#356a39!important;color:white}body.hgp-penalties #
 
 /* Standard ball only. */
 body.hgp-penalties .tools{display:none!important}
+
+/* Shot results remain readable on phone and desktop. */
+body.hgp-penalties .shotDots{gap:7px!important;min-height:14px}body.hgp-penalties .shotDots i{width:11px!important;height:11px!important;border:1px solid #ffffff80!important}body.hgp-penalties .shotDots i.goal{background:#18d45e!important;box-shadow:0 0 6px #16e56780!important}body.hgp-penalties .shotDots i.miss{background:#f33e4c!important;box-shadow:0 0 6px #ff314e80!important}body.hgp-penalties .shotDots i.current{background:#ffffff40!important;box-shadow:0 0 0 2px #ffdb60!important}
