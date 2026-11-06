@@ -1,5 +1,5 @@
 import {PenaltyStadiumAudio} from './ha-penalty-audio.js';
-import {tracePenalty,sampleFlight,SHOT_RANGE} from './ha-penalty-flight.js';
+import {tracePenalty,sampleFlight,SHOT_RANGE,planKeeper} from './ha-penalty-flight.js';
 import * as THREE from './ha-vendor-three.module.min.js';
 import {PenaltyCanvasRenderer} from './ha-penalty-software.js';
 const $=id=>document.getElementById(id),host=$('game'),TAU=Math.PI*2,clamp=THREE.MathUtils.clamp,lerp=THREE.MathUtils.lerp;
@@ -70,11 +70,11 @@ function reachKeeperHands(x,y,z,blend){
  }
 }
 function animateKeeper(s,q){
- const raw=clamp((q-.14)/.75,0,1),d=raw*raw*(3-2*raw),side=Math.sign(s.keeper)||1,land=clamp((t-1.9)/.55,0,1),rise=clamp((t-2.65)/1.0,0,1),recover=rise*rise*(3-2*rise),angle=-side*d*1.28*(1-recover);
- if(raw===0){keeperStance(clamp(q/.14,0,1));return}
- poseHuman(keeper,0,0,d*(1-recover));const centreY=lerp(1.15,Math.max(.65,s.ky-.1),d)+Math.sin(raw*Math.PI)*.48;
+ const reaction=s.reaction??.08,raw=clamp((q-reaction)/(.90-reaction),0,1),d=raw*raw*(3-2*raw),side=Math.sign(s.keeper)||1,land=clamp((t-1.9)/.55,0,1),rise=clamp((t-2.65)/1.0,0,1),recover=rise*rise*(3-2*rise),angle=-side*d*1.28*(1-recover);
+ if(raw===0){keeperStance(clamp(q/reaction,0,1));return}
+ poseHuman(keeper,0,0,d*(1-recover));const centreY=lerp(1.15,Math.max(.54,s.ky-.42),d)+Math.sin(raw*Math.PI)*(.38+.21*Math.max(0,s.ky-1.3));
  keeper.rotation.set(-.10*(1-d)*(1-recover),0,angle);
- keeper.position.set((s.keeper*d+Math.sin(angle)*1.15)*(1-recover),lerp(centreY, .52,land)*(1-recover)+1.15*recover-Math.cos(angle)*1.15,-11.5+d*.35*(1-recover));
+ keeper.position.set(((s.keeper-Math.sign(s.keeper)*.36)*d+Math.sin(angle)*1.15)*(1-recover),lerp(centreY, .52,land)*(1-recover)+1.15*recover-Math.cos(angle)*1.15,-11.5+d*.35*(1-recover));
  const u=keeper.userData;u.legs[side>0?0:1].rotation.x=-.7*Math.sin(raw*Math.PI);u.knees[side>0?1:0].rotation.x=.45*(1-d)-.25*d;u.legs[0].rotation.z=.13*d;u.legs[1].rotation.z=-.18*d;
  if(rise>0){u.knees[0].rotation.x=-.95*(1-recover);u.knees[1].rotation.x=-.6*(1-recover);u.arms[0].rotation.x=-.6*(1-recover);u.arms[1].rotation.x=-.8*(1-recover)}
  else reachKeeperHands(s.keeper,s.ky,-11.15,clamp(raw*2.7,0,1)*(1-land*.65));
@@ -95,9 +95,9 @@ function moveJoystick(cx,cy){const joy=$('joy'),r=joy.getBoundingClientRect(),ma
 let pointer=null;$('joy').onpointerdown=e=>{if(shot)return;pointer=e.pointerId;$('joy').setPointerCapture(pointer);moveJoystick(e.clientX,e.clientY)};$('joy').onpointermove=e=>{if(e.pointerId===pointer&&!shot)moveJoystick(e.clientX,e.clientY)};$('joy').onpointerup=()=>pointer=null;$('joy').onpointercancel=()=>pointer=null;
 const stadiumAudio=new PenaltyStadiumAudio(()=>window.HAGamePolish?.get('sound',true)!==false);$('startGameFull').addEventListener('click',()=>stadiumAudio.start());$('shoot').addEventListener('pointerdown',()=>stadiumAudio.start());
 function sound(type){stadiumAudio.play(type==='win'?'goal':type==='lose'?'miss':type==='tick'?'kick':type)}
-function beginShot(owner='home',override=null){if(shot||window.haPenaltyPaused||window.HAArcade?.blocked())return false;changeKit(owner);let {x,y}=aimedPoint(),k=0,ky=.75;const cpu=owner==='away'&&window.haCanPlayerShoot===false;let forced=override;
- if(cpu){const d=$('difficultyMenu')?.value||'medium';forced=override===null?Math.random()<(d==='hard'?.76:d==='easy'?.43:.59):override;x=(Math.random()<.5?-1:1)*(1.15+Math.random()*2.65);y=.5+Math.random()*2.1;k=forced?clamp(-x*.65,-3.8,3.8):x+(Math.random()-.5)*.35;ky=forced?.7:y;}else{k=(Math.random()*2-1)*3.9;ky=.55+Math.random()*1.9}
- const flight=tracePenalty({x,y,power,keeperX:k,keeperY:ky});shot={owner,x,y,keeper:k,ky,goal:flight.goal,saved:flight.saved,post:flight.post,power,flight,reported:false,eventIndex:0,kicked:false,celebration:celebrationSequence++%3};t=0;targetMark.visible=false;aimLine.visible=false;charging=false;host.dataset.stage='run-up';stadiumAudio.play('build');return true}
+function beginShot(owner='home',override=null){if(shot||window.haPenaltyPaused||window.HAArcade?.blocked())return false;changeKit(owner);let {x,y}=aimedPoint(),k=0,ky=.75;const cpu=owner==='away'&&window.haCanPlayerShoot===false;const difficulty=$('difficultyMenu')?.value||'medium';let forced=override,reaction=.08;
+ if(cpu){const d=difficulty;forced=override===null?Math.random()<(d==='hard'?.76:d==='easy'?.43:.59):override;x=(Math.random()<.5?-1:1)*(1.15+Math.random()*2.65);y=.5+Math.random()*2.1;k=forced?clamp(-x*.65,-3.8,3.8):x+(Math.random()-.5)*.35;ky=forced?.7:y;}else{const plan=planKeeper({x,y,power,difficulty});k=plan.x;ky=plan.y;reaction=plan.reaction}
+ const flight=tracePenalty({x,y,power,keeperX:k,keeperY:ky});shot={owner,x,y,keeper:k,ky,reaction,goal:flight.goal,saved:flight.saved,post:flight.post,power,flight,reported:false,eventIndex:0,kicked:false,celebration:celebrationSequence++%3};t=0;targetMark.visible=false;aimLine.visible=false;charging=false;host.dataset.stage='run-up';stadiumAudio.play('build');return true}
 $('shoot').onpointerdown=e=>{if(shot||window.haCanPlayerShoot===false)return;charging=true;charge=0;$('shoot').setPointerCapture(e.pointerId)};$('shoot').onpointerup=()=>{if(!charging)return;charging=false;beginShot(window.haActiveSide||'home')};$('shoot').onpointercancel=()=>charging=false;$('shoot').onclick=()=>{if(!shot&&window.haCanPlayerShoot!==false)beginShot(window.haActiveSide||'home')};
 window.haPenaltyOpponentShoot=()=>beginShot('away');window.haPenaltySceneBusy=()=>!!shot;window.haPenaltyResetScene=ready;
 addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();if(shot)return;if(e.key==='ArrowLeft')aimX=clamp(aimX-.12,-1,1);if(e.key==='ArrowRight')aimX=clamp(aimX+.12,-1,1);if(e.key==='ArrowUp')aimY=clamp(aimY+.12,-1,1);if(e.key==='ArrowDown')aimY=clamp(aimY-.12,-1,1);if(e.key===' '&&window.haCanPlayerShoot!==false)beginShot(window.haActiveSide||'home');setAim()});

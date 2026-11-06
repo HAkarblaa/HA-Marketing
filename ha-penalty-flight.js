@@ -1,5 +1,19 @@
 // Fixed-step ball flight shared by gameplay and numerical checks. Metres / seconds.
 export const SHOT_RANGE={x:5.65,minY:.23,maxY:3.85};
+// Aim at the ball's intercept point in front of the goal, not its final aim mark.
+export function planKeeper({x,y,power=.6,difficulty='medium',random=Math.random}){
+ const T=1.04-.40*power,q=11.15/12,t=T*q;
+ const targetX=x*q,targetY=.22+(y-.22)*q+4.905*t*(T-t);
+ const profile={easy:[.58,.48,.13],medium:[.86,.32,.08],hard:[.94,.23,.045]}[difficulty]||[.86,.32,.08];
+ const [read,spread,reaction]=profile;
+ const accurate=random()<read-(power-.6)*.12;
+ const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
+ return {
+  x:clamp(accurate?targetX+(random()*2-1)*spread:-targetX*.63+(random()*2-1)*1.4,-4.30,4.30),
+  y:clamp(accurate?targetY+(random()*2-1)*spread:1.08+(random()*2-1)*.62,.23,3.12),
+  reaction
+ };
+}
 export function tracePenalty({x,y,power=.6,keeperX=0,keeperY=1.1}){
  const dt=1/240,r=.22,g=9.81,T=1.04-.40*power,p={x:0,y:r,z:0},v={x:x/T,y:(y-r+.5*g*T*T)/T,z:-12/T},points=[{...p,t:0}],events=[];
  let glove=false,goal=false,post=false,net=false,goalAt=null;
