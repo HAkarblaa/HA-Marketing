@@ -1,5 +1,5 @@
 {
-  "version": "20261114-adminprint1",
+  "version": "20261114-adminprinthome2",
   "assets": [
     "backgammon.html",
     "bird-game.html",
@@ -364,6 +364,7 @@
     "ha-penalty-kick.wav",
     "ha-penalty-build.wav",
     "ha-penalty-save.wav",
-    "ha-penalty-glove.wav"
+    "ha-penalty-glove.wav",
+    "ha-print-home-card.svg"
   ]
 }

@@ -416,13 +416,32 @@ const style=document.createElement('style');style.textContent=`
 #haSectionPrintEntry{position:fixed;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:9000;display:flex;gap:7px;align-items:center;border:1px solid #fff9;border-radius:25px;padding:10px 14px;background:#086e79;color:white;box-shadow:0 4px 16px #153d4940;font:700 14px Tahoma,Arial;cursor:pointer}
 #haSectionPrintDialog{direction:rtl;width:min(410px,calc(100vw - 30px));max-height:85vh;overflow:auto;border:1px solid #cbdde3;border-radius:20px;padding:20px;background:#fff;color:#173b4b;box-shadow:0 10px 50px #0005;font:16px/1.7 Tahoma,Arial;z-index:2147483647}
 #haSectionPrintDialog::backdrop{background:#001b2e88}#haSectionPrintDialog h2{margin:0 0 12px;font-size:21px}#haSectionPrintDialog button,#haSectionPrintDialog a{display:block;width:100%;box-sizing:border-box;text-align:center;margin:9px 0;border:0;border-radius:11px;padding:12px;background:#087e89;color:white;font:700 15px/1.6 Tahoma,Arial;text-decoration:none;cursor:pointer}#haSectionPrintDialog .close{background:#e8f0f3;color:#274d60}#haSectionPrintNotice{min-height:1.7em;font-size:13px;color:#526c78;margin:10px 0 0}
-html:not([data-ha-print-main-admin="1"]) #haSectionPrintEntry{display:none!important}
+html:not([data-ha-print-main-admin="1"]) #haSectionPrintEntry#haSectionPrintEntry.ha-section-print-home,html:not([data-ha-print-main-admin="1"]) #haSectionPrintEntry{display:none!important}
+#haSectionPrintEntry.ha-section-print-home{position:relative!important;inset:auto!important;bottom:auto!important;right:auto!important;display:block!important;width:100%!important;min-width:0!important;min-height:0!important;aspect-ratio:1.85/1!important;padding:0!important;overflow:hidden!important;border-radius:20px!important;background:#087bcf!important;box-shadow:0 10px 24px #164b6719!important;z-index:auto!important;text-decoration:none!important}
+#haSectionPrintEntry.ha-section-print-home::before{display:none!important}
+#haSectionPrintEntry.ha-section-print-home>img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+#haSectionPrintEntry.ha-section-print-home>strong{position:absolute!important;right:18px!important;bottom:35px!important;color:white!important;font:800 clamp(19px,2.2vw,29px)/1.3 Tahoma,Arial!important;text-shadow:0 2px 5px #032d56!important;z-index:2!important;margin:0!important}
+#haSectionPrintEntry.ha-section-print-home>small{position:absolute!important;right:18px!important;bottom:14px!important;color:#fff!important;font:13px/1.5 Tahoma,Arial!important;text-shadow:0 1px 3px #032d56!important;z-index:2!important}
+#haSectionPrintEntry.ha-section-print-home>.ha-feature-chevron{position:absolute!important;left:13px!important;bottom:17px!important;display:grid!important;place-items:center!important;width:37px!important;height:37px!important;border-radius:50%!important;background:#043b70b0!important;color:white!important;font:700 31px/1 Tahoma!important;z-index:2!important}
+@media(max-width:600px){#haSectionPrintEntry.ha-section-print-home>strong{right:10px!important;bottom:28px!important;font-size:17px!important}#haSectionPrintEntry.ha-section-print-home>small{right:10px!important;bottom:9px!important;font-size:9px!important}#haSectionPrintEntry.ha-section-print-home>.ha-feature-chevron{width:28px!important;height:28px!important;left:8px!important;bottom:10px!important}}
 @media print{#haSectionPrintEntry,#haSectionPrintDialog,dialog::backdrop{display:none!important}html[data-ha-section-printing] body{background:#fff!important}html[data-ha-section-printing] [data-ha-print-hide],html[data-ha-section-printing] nav,html[data-ha-section-printing] #bottomNav,html[data-ha-section-printing] .bottom-nav,html[data-ha-section-printing] .bottom-bar,html[data-ha-section-printing] #haArcadeToolbar{display:none!important}}
 `;
 document.head.appendChild(style);
 function close(){const dialog=panel;panel=null;if(dialog){if(dialog.open)dialog.close();dialog.remove();}document.documentElement.removeAttribute('data-ha-section-printing');}
 function setAccess(ok){verified=ok===true;if(!verified){close();button?.remove();button=null;return;}mount();}
-function mount(){if(!verified||!document.body||button)return;button=document.createElement('button');button.id='haSectionPrintEntry';button.type='button';button.textContent='🖨 طباعة';button.setAttribute('aria-label','فتح قائمة الطباعة');button.setAttribute('aria-haspopup','dialog');button.addEventListener('click',open);document.body.appendChild(button);}
+function mount(){
+ if(!verified||!document.body||button)return;
+ const page=location.pathname.split('/').pop(),home=page===''||page==='index.html',grid=home?document.querySelector('.ha-main #all.ha-cats'):null;
+ if(home&&!grid&&document.readyState==='loading')return;
+ button=document.createElement(grid?'a':'button');button.id='haSectionPrintEntry';
+ if(grid){
+  button.className='ha-cat ha-home-feature ha-section-print-home';button.href=new URL('image-print.html',printBase).href;button.setAttribute('data-search','طباعة طابعات بلوتوث واي فاي صور ملفات PDF');button.setAttribute('data-no-i18n','');
+  const image=document.createElement('img');image.className='ha-feature-art';image.src=new URL('ha-print-home-card.svg',printBase).href;image.alt='';image.width=960;image.height=520;image.decoding='async';
+  const title=document.createElement('strong');title.textContent='الطابعات والطباعة';const subtitle=document.createElement('small');subtitle.textContent='طباعة الصور وPDF وإعدادات الطابعات';
+  const arrow=document.createElement('span');arrow.className='ha-feature-chevron';arrow.textContent='‹';arrow.setAttribute('aria-hidden','true');button.append(image,title,subtitle,arrow);grid.prepend(button);
+ }else{button.type='button';button.textContent='🖨 طباعة';document.body.appendChild(button);}
+ button.setAttribute('aria-label','فتح قائمة الطابعات والطباعة');button.setAttribute('aria-haspopup','dialog');button.addEventListener('click',e=>{e.preventDefault();open();});
+}
 async function requireAdmin(){if(!verified)return false;const ok=await window.HA_AccountGate?.isMainAdmin?.();if(!ok)setAccess(false);return ok===true;}
 function open(){if(!verified)return;close();panel=document.createElement('dialog');panel.id='haSectionPrintDialog';panel.setAttribute('aria-labelledby','haSectionPrintTitle');
  const title=document.createElement('h2');title.id='haSectionPrintTitle';title.textContent='الطباعة';panel.appendChild(title);
