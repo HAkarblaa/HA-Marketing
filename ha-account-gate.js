@@ -346,16 +346,16 @@ check(true);document.addEventListener('visibilitychange',()=>{if(!document.hidde
 'use strict';if(window.HAPrintAccess)return;
 const root=document.documentElement;root.setAttribute('data-ha-print-admin','0');
 const css=document.createElement('style');css.textContent='html:not([data-ha-print-admin="1"]) #haNativePrinterEntry,html:not([data-ha-print-admin="1"]) a[href*="image-print.html"]{display:none!important}html[data-ha-print-page]:not([data-ha-print-admin="1"]) main{display:none!important}';document.head.appendChild(css);
-let revision=0,allowed=false;
+let revision=0,allowed=false,mainAdmin=false;
 function wrapBridge(){
  const n=window.HAAndroid;if(!n||typeof n.openPrinters!=='function'||n.openPrinters.__haAdminGuard)return;
  const original=n.openPrinters.bind(n);
  function guarded(){if(!allowed){alert('الطباعة متاحة للأدمن الرئيسي فقط');return;}return original();}
  guarded.__haAdminGuard=true;n.openPrinters=guarded;
 }
-function update(ok){allowed=ok;root.setAttribute('data-ha-print-admin',ok?'1':'0');wrapBridge();window.dispatchEvent(new CustomEvent('ha:print-access',{detail:{allowed:ok}}));}
-async function refresh(){const current=++revision;update(false);const business=["ha-generator.html","ha-accounting.html","store-accounting.html"].includes(location.pathname.split("/").pop());const ok=business||await window.HA_AccountGate.isMainAdmin();if(current===revision)update(ok);return current===revision&&ok;}
-window.HAPrintAccess={refresh,get allowed(){return allowed;}};
+function update(ok,main=false){allowed=ok;mainAdmin=main;root.setAttribute('data-ha-print-admin',ok?'1':'0');root.setAttribute('data-ha-print-main-admin',main?'1':'0');wrapBridge();window.dispatchEvent(new CustomEvent('ha:print-access',{detail:{allowed:ok,mainAdmin:main}}));}
+async function refresh(){const current=++revision;const business=["ha-generator.html","ha-accounting.html","store-accounting.html"].includes(location.pathname.split("/").pop());update(business,false);const main=await window.HA_AccountGate.isMainAdmin();const ok=business||main;if(current===revision)update(ok,main);return current===revision&&ok;}
+window.HAPrintAccess={refresh,get allowed(){return allowed;},get mainAdmin(){return mainAdmin;}};
 document.addEventListener('click',e=>{const el=e.target.closest?.('#haNativePrinterEntry,a[href*="image-print.html"]');if(el&&!allowed){e.preventDefault();e.stopImmediatePropagation();}},true);
 window.addEventListener('ha:native-ready',wrapBridge);
 window.addEventListener('ha:print-auth-change',refresh);
@@ -403,3 +403,40 @@ addEventListener('ha:native-ready',apply);addEventListener('ha:native-resume',ap
 (function(){const s=document.createElement("script");s.src=new URL("ha-uniform-cards.js?v=20261026-1",document.currentScript.src).href;s.defer=true;document.head.append(s)})();
 
 (function(){if(window.HAIdentityReady)return;const path=new URL('ha-identity.js?v=20261101-identity11',document.currentScript.src).href;window.HAIdentityReady=new Promise(resolve=>{if(window.HAIdentity){resolve(window.HAIdentity);return}const s=document.createElement('script');s.src=path;s.onload=()=>resolve(window.HAIdentity||null);s.onerror=()=>resolve(null);document.head.append(s)});})();
+
+/* One main-admin print command for every section using this shared gate. */
+(function(){
+'use strict';
+if(window.HASectionPrint)return;
+const printBase=new URL('./',document.currentScript.src);
+const excluded=['login.html','register.html','forgot-password.html','delete-account.html'];
+if(excluded.includes(location.pathname.split('/').pop()))return;
+let button=null,panel=null,verified=false;
+const style=document.createElement('style');style.textContent=`
+#haSectionPrintEntry{position:fixed;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:9000;display:flex;gap:7px;align-items:center;border:1px solid #fff9;border-radius:25px;padding:10px 14px;background:#086e79;color:white;box-shadow:0 4px 16px #153d4940;font:700 14px Tahoma,Arial;cursor:pointer}
+#haSectionPrintDialog{direction:rtl;width:min(410px,calc(100vw - 30px));max-height:85vh;overflow:auto;border:1px solid #cbdde3;border-radius:20px;padding:20px;background:#fff;color:#173b4b;box-shadow:0 10px 50px #0005;font:16px/1.7 Tahoma,Arial;z-index:2147483647}
+#haSectionPrintDialog::backdrop{background:#001b2e88}#haSectionPrintDialog h2{margin:0 0 12px;font-size:21px}#haSectionPrintDialog button,#haSectionPrintDialog a{display:block;width:100%;box-sizing:border-box;text-align:center;margin:9px 0;border:0;border-radius:11px;padding:12px;background:#087e89;color:white;font:700 15px/1.6 Tahoma,Arial;text-decoration:none;cursor:pointer}#haSectionPrintDialog .close{background:#e8f0f3;color:#274d60}#haSectionPrintNotice{min-height:1.7em;font-size:13px;color:#526c78;margin:10px 0 0}
+html:not([data-ha-print-main-admin="1"]) #haSectionPrintEntry{display:none!important}
+@media print{#haSectionPrintEntry,#haSectionPrintDialog,dialog::backdrop{display:none!important}html[data-ha-section-printing] body{background:#fff!important}html[data-ha-section-printing] [data-ha-print-hide],html[data-ha-section-printing] nav,html[data-ha-section-printing] #bottomNav,html[data-ha-section-printing] .bottom-nav,html[data-ha-section-printing] .bottom-bar,html[data-ha-section-printing] #haArcadeToolbar{display:none!important}}
+`;
+document.head.appendChild(style);
+function close(){const dialog=panel;panel=null;if(dialog){if(dialog.open)dialog.close();dialog.remove();}document.documentElement.removeAttribute('data-ha-section-printing');}
+function setAccess(ok){verified=ok===true;if(!verified){close();button?.remove();button=null;return;}mount();}
+function mount(){if(!verified||!document.body||button)return;button=document.createElement('button');button.id='haSectionPrintEntry';button.type='button';button.textContent='🖨 طباعة';button.setAttribute('aria-label','فتح قائمة الطباعة');button.setAttribute('aria-haspopup','dialog');button.addEventListener('click',open);document.body.appendChild(button);}
+async function requireAdmin(){if(!verified)return false;const ok=await window.HA_AccountGate?.isMainAdmin?.();if(!ok)setAccess(false);return ok===true;}
+function open(){if(!verified)return;close();panel=document.createElement('dialog');panel.id='haSectionPrintDialog';panel.setAttribute('aria-labelledby','haSectionPrintTitle');
+ const title=document.createElement('h2');title.id='haSectionPrintTitle';title.textContent='الطباعة';panel.appendChild(title);
+ const notice=document.createElement('p');notice.id='haSectionPrintNotice';notice.setAttribute('role','status');notice.textContent='اختار طباعة هذا القسم أو صورة وملف PDF.';
+ const action=(text,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.addEventListener('click',async()=>{b.disabled=true;try{if(await requireAdmin())await fn();}catch{if(notice.isConnected)notice.textContent='تعذّر فتح الطباعة. أعد المحاولة أو افتح إعدادات الطابعة.';}finally{b.disabled=false}});panel.appendChild(b);return b;};
+ action('طباعة القسم الحالي',()=>{close();document.documentElement.setAttribute('data-ha-section-printing','1');try{const api=window.HAAndroid;if(typeof api?.print==='function')api.print();else if(typeof window.HAPort?.postMessage==='function')window.HAPort.postMessage(JSON.stringify({id:'print-section-'+Date.now(),action:'print'}));else window.print();}catch(e){document.documentElement.removeAttribute('data-ha-section-printing');throw e;}});
+ action('اختيار صورة أو ملف PDF للطباعة',()=>{location.href=new URL('image-print.html',printBase).href;});
+ if(typeof window.HAAndroid?.openPrinters==='function')action('إعدادات الطابعة • بلوتوث / واي فاي',()=>window.HAAndroid.openPrinters());
+ const cancel=action('إغلاق',close);cancel.className='close';panel.appendChild(notice);const dialog=panel;dialog.addEventListener('close',()=>{dialog.remove();if(panel===dialog)panel=null;button?.focus();},{once:true});document.body.appendChild(panel);panel.showModal();
+}
+window.HASectionPrint={get allowed(){return verified;},open};
+addEventListener('ha:print-access',e=>setAccess(e.detail?.mainAdmin===true));
+addEventListener('afterprint',()=>document.documentElement.removeAttribute('data-ha-section-printing'));
+addEventListener('pagehide',()=>{setAccess(false);});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});
+setAccess(window.HAPrintAccess?.mainAdmin===true);
+})();
